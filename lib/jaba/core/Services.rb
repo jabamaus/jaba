@@ -65,8 +65,13 @@ class Services
     if !id
       definition_error("'#{type}' must have an id", nil, type, file: file)
     end
+    
     if (!(id.is_a?(Symbol) or id.is_a?(String)) or id !~ /^[a-zA-Z0-9_.]+$/)
       definition_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'", nil, type, file: file)
+    end
+    
+    if definition_defined?(id)
+      definition_error("'#{id}' multiply defined", id, type, file: file)
     end
     
     @definition_lookup[id] = Definition.new(id, file, line, block)
@@ -179,7 +184,7 @@ private
 
     m = ''
     m << 'Definition error ' if !warning
-    m << "#{where}: #{msg.capitalize}"
+    m << "#{where}: #{msg.capitalize_first}"
 
     e = DefinitionError.new(m)
     e.instance_variable_set(:@definition_id, definition_id)

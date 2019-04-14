@@ -33,4 +33,17 @@ class String
     File.basename(self)
   end
   
+  ##
+  #
+  def capitalize_first!
+    self[0] = self[0].chr.upcase
+    self
+  end
+
+  ##
+  #
+  def capitalize_first
+    dup.capitalize_first!
+  end
+  
 end
