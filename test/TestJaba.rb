@@ -1,12 +1,12 @@
-require'minitest/spec'
-
+require 'minitest/spec'
+require_relative '../lib/jaba/jaba'
 
 module JABA
 
   class JabaTestCase < Minitest::Spec
     
     def jaba(&block)
-      Jaba.run do |c|
+      JABA.run do |c|
         if block_given?
           c.definitions do
             instance_eval(&block)
@@ -17,14 +17,8 @@ module JABA
     
   end
   
-  class TestJaba < JabaTestCase
-
-    describe 'Jaba' do
-      
-    end
-
-  end
-  
 end
+
+Dir.glob("#{__dir__}/tests/*.rb").each{|f| require f}
 
 Minitest.run(ARGV)

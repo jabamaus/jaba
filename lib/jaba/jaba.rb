@@ -1,6 +1,6 @@
-module JABA
-
 require_relative 'core/Services'
+
+module JABA
 
 ##
 #
@@ -15,6 +15,12 @@ end
 #
 class Input
   
+  ##
+  #
+  attr_accessor :root
+  
+  ##
+  #
   attr_block :definitions
   
   ##
@@ -25,9 +31,25 @@ class Input
 end
 
 ##
-# Output from Jaba, returned by Jaba.run.
+# Output from Jaba, returned by JABA.run.
 #
 class Output
+
+  ##
+  # Array of files newly created by this run of JABA.
+  #
+  attr_reader :added_files
+  
+  ##
+  # Array of existing files that were modified by this run of JABA.
+  #
+  attr_reader :modified_files
+  
+  ##
+  # Array of any warnings that were generated.
+  #
+  attr_reader :warnings
+  
 end
 
 ##
@@ -38,38 +60,47 @@ end
 ##
 # The API available for defining projects, workspaces, targets etc.
 #
-class TopLevelDefinitionsAPI < BasicObject
+class GlobalDefinitionAPI < BasicObject
   
   include CommonDefinitionAPI
   
   ##
   # Define a target.
   #
-  def target(name, &block)
+  def target(id, **options, &block)
+    @services.register_definition(:target, id, **options, &block)
   end
   
   ##
   # Define a project.
   #
-  def project(name, &block)
+  def project(id, **options, &block)
+    @services.register_definition(:project, id, &block)
   end
   
   ##
   # Define a workspace.
   #
-  def workspace(name, &block)
+  def workspace(id, **options, &block)
+    @services.register_definition(:workspace, id, &block)
   end
   
   ##
   # Define a category.
   #
-  def category(name, &block)
+  def category(id, **options, &block)
+    @services.register_definition(:category, id, &block)
   end
   
   ##
   # Define definition to be included by other definitions.
   #
-  def shared(&block)
+  def shared(id, **options, &block)
+    @services.register_definition(:shared, id, **options, &block)
+  end
+  
+  def __internal_set_services(s)
+    @services = s
   end
   
 end
