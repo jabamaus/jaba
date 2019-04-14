@@ -65,37 +65,37 @@ class GlobalDefinitionAPI < BasicObject
   include CommonDefinitionAPI
   
   ##
-  # Define a target.
+  # Define a target. id is required but default to nil in case user omitted it - will be validated for in register_definition.
   #
-  def target(id, **options, &block)
+  def target(id=nil, **options, &block)
     @services.register_definition(:target, id, **options, &block)
   end
   
   ##
   # Define a project.
   #
-  def project(id, **options, &block)
+  def project(id=nil, **options, &block)
     @services.register_definition(:project, id, &block)
   end
   
   ##
   # Define a workspace.
   #
-  def workspace(id, **options, &block)
+  def workspace(id=nil, **options, &block)
     @services.register_definition(:workspace, id, &block)
   end
   
   ##
   # Define a category.
   #
-  def category(id, **options, &block)
+  def category(id=nil, **options, &block)
     @services.register_definition(:category, id, &block)
   end
   
   ##
   # Define definition to be included by other definitions.
   #
-  def shared(id, **options, &block)
+  def shared(id=nil, **options, &block)
     @services.register_definition(:shared, id, **options, &block)
   end
   
