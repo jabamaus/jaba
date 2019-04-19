@@ -47,3 +47,20 @@ class String
   end
   
 end
+
+##
+#
+class Hash
+
+  ##
+  # Appends value to array referenced by key, creating array if it does not exist. Value being passed in can be a single value or array.
+  # Existing key can be optionally cleared.
+  #
+  def push_value(key, value, clear: false)
+    v = self[key] = self.fetch(key, [])
+    v.clear if clear
+    value.is_a?(Array) ? v.concat(value) : v << value
+    self
+  end
+  
+end
