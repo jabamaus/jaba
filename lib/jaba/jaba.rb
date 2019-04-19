@@ -4,7 +4,7 @@ module JABA
 
 ##
 #
-def self.run(&block)
+def self.run
   s = Services.new
   yield s.input if block_given?
   s.run
