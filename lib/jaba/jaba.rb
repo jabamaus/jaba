@@ -5,8 +5,8 @@ module JABA
 ##
 #
 def self.run(&block)
-  s = Services.new(&block)
-  yield s.input
+  s = Services.new
+  yield s.input if block_given?
   s.run
 end
 
@@ -136,4 +136,8 @@ class DefinitionError < StandardError
   
 end
 
+end
+
+if __FILE__ == $0
+  JABA.run
 end
