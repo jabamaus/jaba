@@ -1,4 +1,5 @@
 require_relative 'core/Services'
+require_relative 'ExtensionAPI'
 
 module JABA
 
@@ -58,11 +59,11 @@ module CommonDefinitionAPI
 end
 
 ##
-# The API available for defining projects, workspaces, targets etc.
 #
-class GlobalDefinitionAPI < BasicObject
+class Globals < BasicObject
   
   include CommonDefinitionAPI
+  include GlobalExtensions
   
   ##
   # Define a target. id is required but default to nil in case user omitted it - will be validated for in register_definition.
@@ -75,21 +76,21 @@ class GlobalDefinitionAPI < BasicObject
   # Define a project.
   #
   def project(id=nil, **options, &block)
-    @services.register_definition(:project, id, &block)
+    @services.register_definition(:project, id, **options, &block)
   end
   
   ##
   # Define a workspace.
   #
   def workspace(id=nil, **options, &block)
-    @services.register_definition(:workspace, id, &block)
+    @services.register_definition(:workspace, id, **options, &block)
   end
   
   ##
   # Define a category.
   #
   def category(id=nil, **options, &block)
-    @services.register_definition(:category, id, &block)
+    @services.register_definition(:category, id, **options, &block)
   end
   
   ##

@@ -29,8 +29,8 @@ class Services
     
     @file_read_cache = {}
     
-    @global_api = GlobalDefinitionAPI.new
-    @global_api.__internal_set_services(self)
+    @globals = Globals.new
+    @globals.__internal_set_services(self)
   end
   
   ##
@@ -54,6 +54,7 @@ class Services
   end
   
   ##
+  # type can be eg :project, :workspace, :target, :shared, :attr, :attr_type etc,
   #
   def register_definition(type, id, **options, &block)
     if caller[1] !~ /^(.*)?:(\d+):/
@@ -136,8 +137,8 @@ private
   ##
   #
   def execute_definitions(file=nil, &block)
-    @global_api.instance_eval(&block) if block_given?
-    @global_api.instance_eval(read_file(file), file) if file
+    @globals.instance_eval(&block) if block_given?
+    @globals.instance_eval(read_file(file), file) if file
   rescue DefinitionError
     raise
   rescue Exception => e # Catch all errors, including SyntaxErrors, by rescuing Exception
