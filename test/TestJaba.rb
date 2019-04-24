@@ -5,8 +5,9 @@ module JABA
 
   class JabaTestCase < Minitest::Spec
     
-    def jaba(&block)
+    def jaba(load_paths: nil, &block)
       JABA.run do |c|
+        c.load_paths = load_paths
         if block_given?
           c.definitions do
             instance_eval(&block)

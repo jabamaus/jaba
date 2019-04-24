@@ -9,7 +9,7 @@ class Services
   ##
   # Records information about each definition the user has made.
   #
-  Definition = Struct.new(:id, :file, :line, :block)
+  Definition = Struct.new(:type, :id, :file, :line, :block)
   
   ##
   #
@@ -64,16 +64,20 @@ class Services
     file = $1
     line = $2.to_i
     
+    def_data = Definition.new(type, id, file, line, block)
+    @current_definition = def_data
+    
     if id
       if (!(id.is_a?(Symbol) or id.is_a?(String)) or id !~ /^[a-zA-Z0-9_.]+$/)
-        definition_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'", nil, type, file: file)
+        definition_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'")
       end
       if definition_defined?(id)
-        definition_error("'#{id}' multiply defined", id, type, file: file)
+        definition_error("'#{id}' multiply defined")
       end
     end
     
-    @definition_lookup[id] = Definition.new(id, file, line, block)
+    @definition_lookup[id] = def_data
+    @current_definition = nil
   end
   
   ##
@@ -92,15 +96,15 @@ class Services
   
   ##
   #
-  def definition_warning(msg, definition_id, definition_type, file: nil, callstack: nil)
-    e = make_definition_error(msg, definition_id, definition_type, file, callstack, warning: true)
+  def definition_warning(msg)
+    e = make_definition_error(msg, warning: true)
     warning e.message
   end
   
   ##
   #
-  def definition_error(msg, definition_id, definition_type, file: nil, callstack: nil)
-    raise make_definition_error(msg, definition_id, definition_type, file, callstack)
+  def definition_error(msg)
+    raise make_definition_error(msg)
   end
   
   ##
@@ -119,11 +123,13 @@ private
   ##
   #
   def execute
-    if input.definitions
-      execute_definitions(&input.definitions)
-    else
-      load_definitions
-    end
+    # Load and execute any definition files specified in Input#load_paths
+    #
+    load_definitions
+
+    # Execute any definitions supplied inline in a block
+    #
+    execute_definitions(&input.definitions) if input.definitions
     
     op = Output.new
     op.instance_variable_set(:@added_files, @added_files)
@@ -135,28 +141,45 @@ private
   ##
   #
   def execute_definitions(file=nil, &block)
+    @current_definition = nil
     @globals.instance_eval(&block) if block_given?
     @globals.instance_eval(read_file(file), file) if file
   rescue DefinitionError
-    raise
+    raise # Prevent fallthrough to next case
   rescue Exception => e # Catch all errors, including SyntaxErrors, by rescuing Exception
-    definition_error("#{e.class}: #{e.message}", nil, nil, file: file, callstack: e.backtrace)
+    raise make_definition_error("#{e.class}: #{e.message}", file: file, callstack: e.backtrace)
   end
   
   ##
   #
   def load_definitions
+    files = []
+    Array(input.load_paths).each do |p|
+      raise "#{p} does not exist" if !File.exist?(p)
+      if File.directory?(p)
+        files.concat(Dir.glob("#{p}/*.rb"))
+      else
+        files << p
+      end
+    end
+    files.each do |f|
+      execute_definitions(f)
+    end
   end
   
   ##
   #
-  def make_definition_error(msg, definition_id, definition_type, file, callstack, warning: false)
+  def make_definition_error(msg, file: nil, callstack: nil, warning: false)
     line = nil
+    def_type = nil
+    def_id = nil
     where = ''
-
-    if definition_id
-      def_data = get_definition(definition_id)
+    def_data = @current_definition
+    
+    if def_data
       file = def_data.file
+      def_type = def_data.type
+      def_id = def_data.id
     end
 
     if file
@@ -177,8 +200,8 @@ private
       end
       where << " #{file.basename}"
       where << ":#{line}" if line
-    elsif definition_id
-      where << " in '#{definition_id}' #{definition_type}"
+    elsif def_data
+      where << " in '#{def_id}' #{def_type}"
     end
 
     m = ''
@@ -186,8 +209,8 @@ private
     m << "#{where}: #{msg.capitalize_first}"
 
     e = DefinitionError.new(m)
-    e.instance_variable_set(:@definition_id, definition_id)
-    e.instance_variable_set(:@definition_type, definition_type)
+    e.instance_variable_set(:@definition_type, def_type)
+    e.instance_variable_set(:@definition_id, def_id)
     e.instance_variable_set(:@file, file)
     e.instance_variable_set(:@line, line)
     e.instance_variable_set(:@where, where)

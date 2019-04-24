@@ -21,6 +21,11 @@ class Input
   attr_accessor :root
   
   ##
+  # One or more filenames and/or directories from which to load definitions.
+  #
+  attr_accessor :load_paths
+  
+  ##
   #
   attr_block :definitions
   
@@ -111,14 +116,14 @@ end
 #
 class DefinitionError < StandardError
   
-  # The definition that the error occurred in. nil if the error did not happen inside a definition.
-  #
-  attr_reader :definition_id
-  
-  # The type of the definition that the error occurred in (eg text_file/cpp). nil if the error did not happen inside
+  # The type of the definition that the error occurred in (eg project/workspace). nil if the error did not happen inside
   # a definition.
   #
   attr_reader :definition_type
+
+  # The definition that the error occurred in. nil if the error did not happen inside a definition.
+  #
+  attr_reader :definition_id
   
   ##
   # The definition file the error occurred in. Not available if definitions were executed as a block.

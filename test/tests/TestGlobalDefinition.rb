@@ -3,21 +3,7 @@ module JABA
 class TestGlobalDefinition < JabaTestCase
 
   describe 'GlobalDefinition' do
-=begin
-    it 'requires an id' do
-      e = assert_raises DefinitionError do
-        jaba do
-          shared do
-          end
-        end
-      end
-      e.message.must_match("'shared' must have an id")
-      e.file.wont_be_nil
-      e.line.wont_be_nil
-      e.definition_id.must_be_nil
-      e.definition_type.must_equal(:shared)
-    end
-=end
+  
     it 'rejects invalid ids' do
       jaba do
         shared :Alpha_Num3r1cs_With_Underscores_Are_Valid_Everything_Else_Is_Not do
@@ -41,20 +27,49 @@ class TestGlobalDefinition < JabaTestCase
       end.message.must_match(/'1' is an invalid id/)
     end
     
-    it 'detects duplicate ids' do
-      e = assert_raises DefinitionError do
+    it 'detects duplicate ids with definitions of the same type' do
+      assert_raises DefinitionError do
         jaba do
           shared :a do
           end
           target :a do
           end
         end
+      end.message.must_match('\'a\' multiply defined')
+      assert_raises DefinitionError do
+        jaba do
+          project :b do
+          end
+          project :b do
+          end
+        end
+      end.message.must_match('\'b\' multiply defined')
+      e = assert_raises DefinitionError do
+        jaba do
+          category :c do
+          end
+          category :c do
+          end
+        end
       end
-      e.file.wont_be_nil
-      e.line.wont_be_nil
-      e.message.must_match('\'a\' multiply defined')
+      e.message.must_match('\'c\' multiply defined')
     end
-    
+=begin
+    it 'allows different types to have the same id' do
+      jaba do
+        shared :a do
+        end
+        project :a do
+        end
+        target :a do
+        end
+        workspace :a do
+        end
+        attr :a do
+        end
+      end
+    end
+=end
   end
   
 end
