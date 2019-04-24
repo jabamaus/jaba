@@ -23,7 +23,7 @@ class AttributeTemplate
   def set_var(:var, val=nil, &block)
     if block_given?
       if !val.nil?
-        @services.definition_errror('Must provide a default value or a block but not both')
+        @services.definition_error('Must provide a default value or a block but not both')
       end
       instance_variable_set(":@#{var}", block)
     else
