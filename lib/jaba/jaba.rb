@@ -66,7 +66,7 @@ class Globals < BasicObject
   include GlobalExtensions
   
   ##
-  # Define a target. id is required but default to nil in case user omitted it - will be validated for in register_definition.
+  # Define a target.
   #
   def target(id=nil, **options, &block)
     @services.register_definition(:target, id, **options, &block)

@@ -43,63 +43,43 @@ class AttributeDefinition
   ##
   # Set the type of the attribute. Optional as a attribute does not require a type.
   #
-  def type(t)
-    @templ.set_type(t)
+  def type(val)
+    @templ.set_var(:type, val)
   end
   
   ##
   # Set help for the attribute. Required.
   #
-  # Options ::
-  #
-  #   override :: [true|false*] Set to true to overwrite existing help instead of appending to the existing string.
-  #
-  def help(h, **options)
-    @templ.set_help(h, **options)
+  def help(val=nil, &block)
+    @templ.set_var(:help, val, &block)
   end
   
   ##
   # Set any number of flags to control the behaviour of the attribute. Flags should be ORd together, eg ARRAY|ALLOW_DUPES.
   #
-  # Options ::
-  #
-  #   override :: [true|false*] Set to true to overwrite existing flags instead of ORing with existing ones.
-  #
-  def flags(f, **options)
-    @templ.set_flags(f, **options)
+  def flags(val=nil, &block)
+    @templ.set_var(:flags, val, &block)
   end
   
   ##
   # Set attribute default value. Can be specified as a value or a block.
   #
-  # Options ::
-  #
-  #   override :: [true|false*] Set to true with array values to overwrite existing value instead of extending them. 
-  #
-  def default(val=nil, **options, &block)
-    @templ.set_default(val, **options, &block)
+  def default(val=nil, &block)
+    @templ.set_var(:default, val, &block)
   end
   
   ##
   # Use in conjunction with a choice attribute to specify an array of valid items.
   #
-  # Options ::
-  #
-  #   override :: [true|false*] Set to true with array values to overwrite existing value instead of extending them.
-  #
-  def items(i, **options)
-    @templ.set_items(i, **options)
+  def items(val=nil, &block)
+    @templ.set_var(:items, val, &block)
   end
   
   ##
   # Specify the options this attribute accepts.
   #
-  # Options ::
-  #
-  #   override :: [true|false*] Set to true with array values to overwrite existing value instead of extending them.
-  #
-  def options(o, **options)
-    @templ.set_options(o, **options)
+  def options(v=nil, &block)
+    @templ.set_var(:options, val, &block)
   end
   
   ##
@@ -117,12 +97,8 @@ class AttributeDefinition
   #   raise "invalid" if val.empty?
   # end
   #
-  # Options ::
-  #
-  #   override :: [true|false*] Set to true overwrite any 'base' hooks rather than adding addtional hooks.
-  #
-  def validate(**options, &block)
-    @templ.define_hook(:validate, **options, &block)
+  def validate(&block)
+    @templ.set_var(:validate, &block)
   end
   
   ##
@@ -133,30 +109,20 @@ class AttributeDefinition
   #   raise "invalid" if elem.nil?
   # end
   #
-  # Options ::
-  #
-  #   override :: [true|false*] Set to true overwrite any 'base' hooks rather than adding addtional hooks.
-  #
-  def validate_elem(**options, &block)
-    @templ.define_hook(:validate_elem, **options, &block)
+  def validate_elem(&block)
+    @templ.set_var(:validate_elem, &block)
   end
   
   ##
-  # Options ::
   #
-  #   override :: [true|false*] Set to true overwrite any 'base' hooks rather than adding addtional hooks.
-  #
-  def post_set(**options, &block)
-    @templ.define_hook(:post_set, **options, &block)
+  def post_set(&block)
+    @templ.set_var(:post_set, &block)
   end
   
   ##
-  # Options ::
   #
-  #   override :: [true|false*] Set to true overwrite any 'base' hooks rather than adding addtional hooks.
-  #
-  def make_handle(**options, &block)
-    @templ.define_hook(:make_handle, **options, &block)
+  def make_handle(&block)
+    @templ.set_var(:make_handle, &block)
   end
   
 end
