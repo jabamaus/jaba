@@ -7,7 +7,7 @@ class Class
   #
   def attr_block(*attrs)
     attrs.each do |a|
-      self.class_eval "def #{a}(&block); block_given? ? @#{a}_block = block : @#{a}_block ; end"
+      self.class_eval "def #{a}(&block); block_given? ? @#{a} = block : @#{a} ; end"
     end
   end
   

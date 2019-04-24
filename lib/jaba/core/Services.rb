@@ -15,7 +15,7 @@ class Services
   #
   def initialize
     @input = Input.new
-    @input.instance_variable_set(:@definitions_block, nil)
+    @input.instance_variable_set(:@definitions, nil)
     @input.root = Dir.getwd
     @input.verbose = false
     
