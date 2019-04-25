@@ -98,8 +98,7 @@ class Services
   ##
   #
   def definition_warning(msg)
-    e = make_definition_error(msg, warning: true)
-    warning e.message
+    warning make_definition_error(msg, warn: true).message
   end
   
   ##
@@ -173,7 +172,7 @@ private
   
   ##
   #
-  def make_definition_error(msg, file: nil, callstack: nil, warning: false)
+  def make_definition_error(msg, file: nil, callstack: nil, warn: false)
     line = nil
     def_type = nil
     def_id = nil
@@ -209,7 +208,7 @@ private
     end
 
     m = ''
-    m << 'Definition error ' if !warning
+    m << 'Definition error ' if !warn
     m << "#{where}: #{msg.capitalize_first}"
 
     e = DefinitionError.new(m)
