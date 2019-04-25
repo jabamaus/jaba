@@ -29,11 +29,6 @@ class Input
   #
   attr_block :definitions
   
-  ##
-  # Print verbose output? Defaults to false.
-  #
-  attr_boolean :verbose
-  
 end
 
 ##

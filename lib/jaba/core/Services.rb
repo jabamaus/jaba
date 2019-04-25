@@ -17,7 +17,6 @@ class Services
     @input = Input.new
     @input.instance_variable_set(:@definitions, nil)
     @input.root = Dir.getwd
-    @input.verbose = false
     
     @info = []
     @warnings = []
@@ -111,8 +110,7 @@ class Services
   
   ##
   #
-  def read_file(file, encoding: nil, desc: nil)
-    puts "#{desc} '#{file}'" if (desc and input.verbose?)
+  def read_file(file, encoding: nil)
     cached = @file_read_cache[file]
     return cached if cached
     content = IO.read(file, encoding: encoding)
