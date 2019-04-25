@@ -25,7 +25,7 @@ class Services
     @added_files = []
     @modified_file = []
     
-    @definition_lookup = {}
+    @definition_registry = {}
     
     @file_read_cache = {}
     
@@ -71,27 +71,29 @@ class Services
       if (!(id.is_a?(Symbol) or id.is_a?(String)) or id !~ /^[a-zA-Z0-9_.]+$/)
         definition_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'")
       end
-      if definition_defined?(id)
+      if definition_defined?(type, id)
         definition_error("'#{id}' multiply defined")
       end
     end
     
-    @definition_lookup[id] = def_data
+    @definition_registry.push_value(type, def_data)
     @current_definition = nil
   end
   
   ##
   #
-  def get_definition(id, fail_if_not_found: true)
-    d = @definition_lookup[id]
+  def get_definition(type, id, fail_if_not_found: true)
+    defs = @definition_registry[type]
+    return nil if !defs
+    d = defs.find{|dd| dd.id == id}
     raise "No '#{id}' definition found" if (!d and fail_if_not_found)
     d
   end
 
   ##
   #
-  def definition_defined?(id)
-    @definition_lookup.has_key?(id)
+  def definition_defined?(type, id)
+    get_definition(type, id, fail_if_not_found: false) != nil
   end
   
   ##

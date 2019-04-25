@@ -32,7 +32,7 @@ class TestGlobalDefinition < JabaTestCase
         jaba do
           shared :a do
           end
-          target :a do
+          shared :a do
           end
         end
       end.message.must_match('\'a\' multiply defined')
@@ -54,7 +54,7 @@ class TestGlobalDefinition < JabaTestCase
       end
       e.message.must_match('\'c\' multiply defined')
     end
-=begin
+
     it 'allows different types to have the same id' do
       jaba do
         shared :a do
@@ -69,7 +69,7 @@ class TestGlobalDefinition < JabaTestCase
         end
       end
     end
-=end
+
   end
   
 end
