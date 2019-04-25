@@ -141,8 +141,10 @@ private
   ##
   #
   def execute_definitions(file=nil, &block)
-    @current_definition = nil
-    @globals.instance_eval(&block) if block_given?
+    if block_given?
+      file = block.source_location[0]
+      @globals.instance_eval(&block)
+    end
     @globals.instance_eval(read_file(file), file) if file
   rescue DefinitionError
     raise # Prevent fallthrough to next case
