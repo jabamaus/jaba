@@ -141,11 +141,13 @@ private
   ##
   #
   def execute_definitions(file=nil, &block)
+    if file
+      @globals.instance_eval(read_file(file), file)
+    end
     if block_given?
       file = block.source_location[0]
       @globals.instance_eval(&block)
     end
-    @globals.instance_eval(read_file(file), file) if file
   rescue DefinitionError
     raise # Prevent fallthrough to next case
   rescue Exception => e # Catch all errors, including SyntaxErrors, by rescuing Exception
