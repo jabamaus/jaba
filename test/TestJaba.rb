@@ -8,11 +8,7 @@ module JABA
     def jaba(load_paths: nil, &block)
       JABA.run do |c|
         c.load_paths = load_paths
-        if block_given?
-          c.definitions do
-            instance_eval(&block)
-          end
-        end
+        c.definitions(&block) if block_given?
       end
     end
     
