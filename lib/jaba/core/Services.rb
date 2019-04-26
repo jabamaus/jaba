@@ -1,4 +1,5 @@
 require_relative 'Utils'
+require_relative 'JabaType'
 
 module JABA
 
@@ -9,7 +10,7 @@ class Services
   ##
   # Records information about each definition the user has made.
   #
-  Definition = Struct.new(:type, :id, :file, :line, :block)
+  Definition = Struct.new(:type, :id, :file, :line, :block, :options)
   
   ##
   #
@@ -24,14 +25,18 @@ class Services
     @added_files = []
     @modified_file = []
     
+    @definition_type_registry = {}
+    @jaba_type_registry = {}
     @definition_registry = {}
     
     @file_read_cache = {}
     
-    @globals = Globals.new
-    @globals.__internal_set_services(self)
+    @toplevel_definition_api = TopLevelDefinitionAPI.new
+    @type_extension_api = DefinitionTypeExtensionAPI.new
+
+    @toplevel_definition_api.__internal_set_obj(self)
   end
-  
+
   ##
   #
   def run
@@ -53,6 +58,20 @@ class Services
   end
   
   ##
+  #
+  def extend_type(type, **options, &block)
+    if caller[1] !~ /^(.*)?:(\d+):/
+      raise "Could not determine file and line number for '#{type}'"
+    end
+    
+    file = $1
+    line = $2.to_i
+    
+    def_data = Definition.new(type, nil, file, line, block, options)
+    @definition_type_registry.push_value(type, def_data)
+  end
+  
+  ##
   # type can be eg :project, :workspace, :target, :shared, :attr, :attr_type etc.
   #
   def register_definition(type, id, **options, &block)
@@ -63,7 +82,7 @@ class Services
     file = $1
     line = $2.to_i
     
-    def_data = Definition.new(type, id, file, line, block)
+    def_data = Definition.new(type, id, file, line, block, options)
     @current_definition = def_data
     
     if id
@@ -128,8 +147,18 @@ private
 
     # Execute any definitions supplied inline in a block
     #
-    execute_definitions(&input.definitions) if input.definitions
+    if input.definitions
+      execute_definitions(&input.definitions)
+    end
     
+    @definition_type_registry.each do |type_id, defs|
+      defs.each do |d|
+        jt = @jaba_type_registry.fetch(type_id, JabaType.new)
+        @type_extension_api.__internal_set_obj(jt)
+        @type_extension_api.instance_eval(&d.block)
+      end
+    end
+      
     op = Output.new
     op.instance_variable_set(:@added_files, @added_files)
     op.instance_variable_set(:@modified_files, @modified_files)
@@ -141,11 +170,11 @@ private
   #
   def execute_definitions(file=nil, &block)
     if file
-      @globals.instance_eval(read_file(file), file)
+      @toplevel_definition_api.instance_eval(read_file(file), file)
     end
     if block_given?
       file = block.source_location[0]
-      @globals.instance_eval(&block)
+      @toplevel_definition_api.instance_eval(&block)
     end
   rescue DefinitionError
     raise # Prevent fallthrough to next case
@@ -157,6 +186,7 @@ private
   #
   def load_definitions
     files = []
+    files << "#{__dir__}/Types.rb" # Load core type definitions
     Array(input.load_paths).each do |p|
       raise "#{p} does not exist" if !File.exist?(p)
       if File.directory?(p)
@@ -204,7 +234,9 @@ private
       where << " #{file.basename}"
       where << ":#{line}" if line
     elsif def_data
-      where << " in '#{def_id}' #{def_type}"
+      where << " in"
+      where << " #{def_id}" if def_id
+      where << " #{def_type}"
     end
 
     m = ''
@@ -220,7 +252,7 @@ private
     e
 
   end
-  
+
 end
 
 end

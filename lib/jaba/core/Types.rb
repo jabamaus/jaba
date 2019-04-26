@@ -1,4 +1,4 @@
-category do
+extend_category do
   attr :name do
     help 'Display name of category. Maps to name of solution folder in a Visual Studio solution'
     flags REQUIRED
@@ -20,5 +20,5 @@ category do
   end
 end
 
-project do
+extend_project do
 end

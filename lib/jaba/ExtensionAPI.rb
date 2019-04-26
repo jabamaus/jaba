@@ -4,82 +4,103 @@ module JABA
 
 ##
 #
-module GlobalExtensions
+module TopLevelDefinitionExtensionAPI
 
   ##
-  # Define a new attribute. See AttributeDefinition class below.
   #
-  def attr(id=nil, **options, &block)
-    @services.register_definition(:attr, id, **options, &block)
+  def attr_type(id=nil, **options, &block)
+    @obj.register_attr_type(:attr_type, id, **options, &block)
   end
   
   ##
-  # Define a new attribute type. Advanced. Used for extending Jaba.
   #
-  def attr_type(id=nil, **options, &block)
-    @services.register_definition(:attr_type, id, **options, &block)
+  def extend_target(**options, &block)
+    @obj.extend_type(:target, **options, &block)
+  end
+  
+  ##
+  #
+  def extend_project(**options, &block)
+    @obj.extend_type(:project, **options, &block)
+  end
+  
+  ##
+  #
+  def extend_workspace(**options, &block)
+    @obj.extend_type(:workspace, **options, &block)
+  end
+  
+  ##
+  #
+  def extend_category(**options, &block)
+    @obj.extend_type(:category, **options, &block)
   end
   
 end
 
 ##
-# For example this attribute definition:
 #
-# attr :my_attr do
-#   help 'My help string explaining what the attr does'
-#   type :path
-#   flags ARRAY|UNORDERED|ALLOW_DUPES
-#   options [:group, :force]
-# end
+class DefinitionTypeExtensionAPI < DefinitionAPI
+  
+  ##
+  # Define a new attribute. See AttributeDefinitionAPI class below.
+  #
+  def attr(id=nil, **options, &block)
+    @obj.register_attr(id, **options, &block)
+  end
+  
+  ##
+  #
+  def override_attr(id=nil, **options, &block)
+    @obj.override_attr(id, **options, &block)
+  end
+  
+end
+
+##
 #
-# Would allow definitions to use the my_attr attribute eg:
-#
-# shared :my_shared do
-#   my_attr ['/path1', '/path2'], :group
-# end
-#
-class AttributeDefinition
+class AttributeDefinitionAPI < DefinitionAPI
 
   ##
   # Set the type of the attribute. Optional as a attribute does not require a type.
   #
   def type(val)
-    @templ.set_var(:type, val)
+    @obj.set_var(:type, val)
   end
   
   ##
   # Set help for the attribute. Required.
   #
   def help(val=nil, &block)
-    @templ.set_var(:help, val, &block)
+    @obj.set_var(:help, val, &block)
   end
   
   ##
   # Set any number of flags to control the behaviour of the attribute. Flags should be ORd together, eg ARRAY|ALLOW_DUPES.
   #
   def flags(val=nil, &block)
-    @templ.set_var(:flags, val, &block)
+    @obj.set_var(:flags, val, &block)
   end
   
   ##
   # Set attribute default value. Can be specified as a value or a block.
   #
   def default(val=nil, &block)
-    @templ.set_var(:default, val, &block)
+    @obj.set_var(:default, val, &block)
   end
   
   ##
   # Use in conjunction with a choice attribute to specify an array of valid items.
   #
   def items(val=nil, &block)
-    @templ.set_var(:items, val, &block)
+    @obj.set_var(:items, val, &block)
   end
   
   ##
   # Specify the options this attribute accepts.
   #
   def options(v=nil, &block)
-    @templ.set_var(:options, val, &block)
+    @obj.set_var(:options, val, &block)
   end
   
   ##
@@ -98,7 +119,7 @@ class AttributeDefinition
   # end
   #
   def validate(&block)
-    @templ.set_var(:validate, &block)
+    @obj.set_var(:validate, &block)
   end
   
   ##
@@ -110,19 +131,19 @@ class AttributeDefinition
   # end
   #
   def validate_elem(&block)
-    @templ.set_var(:validate_elem, &block)
+    @obj.set_var(:validate_elem, &block)
   end
   
   ##
   #
   def post_set(&block)
-    @templ.set_var(:post_set, &block)
+    @obj.set_var(:post_set, &block)
   end
   
   ##
   #
   def make_handle(&block)
-    @templ.set_var(:make_handle, &block)
+    @obj.set_var(:make_handle, &block)
   end
   
 end

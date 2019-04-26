@@ -1,5 +1,7 @@
+# This file deals with invoking Jaba, whether running standalone or embedding in other code
+#
 require_relative 'core/Services'
-require_relative 'ExtensionAPI'
+require_relative 'DefinitionAPI'
 
 module JABA
 
@@ -50,59 +52,6 @@ class Output
   # Array of any warnings that were generated.
   #
   attr_reader :warnings
-  
-end
-
-##
-#
-module CommonDefinitionAPI
-end
-
-##
-#
-class Globals < BasicObject
-  
-  include CommonDefinitionAPI
-  include GlobalExtensions
-  
-  ##
-  # Define a target.
-  #
-  def target(id=nil, **options, &block)
-    @services.register_definition(:target, id, **options, &block)
-  end
-  
-  ##
-  # Define a project.
-  #
-  def project(id=nil, **options, &block)
-    @services.register_definition(:project, id, **options, &block)
-  end
-  
-  ##
-  # Define a workspace.
-  #
-  def workspace(id=nil, **options, &block)
-    @services.register_definition(:workspace, id, **options, &block)
-  end
-  
-  ##
-  # Define a category.
-  #
-  def category(id=nil, **options, &block)
-    @services.register_definition(:category, id, **options, &block)
-  end
-  
-  ##
-  # Define definition to be included by other definitions.
-  #
-  def shared(id=nil, **options, &block)
-    @services.register_definition(:shared, id, **options, &block)
-  end
-  
-  def __internal_set_services(s)
-    @services = s
-  end
   
 end
 

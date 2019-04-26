@@ -5,12 +5,6 @@ class TestBoolAttribute < JabaTestCase
   describe 'BoolAttribute' do
     
     it 'defaults to false' do
-      jaba do
-        attr :a do
-          type :bool
-        end
-        project
-      end
     end
     
     it 'requires a default of true or false' do

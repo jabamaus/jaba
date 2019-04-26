@@ -65,8 +65,6 @@ class TestGlobalDefinition < JabaTestCase
         end
         workspace :a do
         end
-        attr :a do
-        end
       end
     end
 

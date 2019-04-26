@@ -1,9 +1,28 @@
 module JABA
 
+class JabaType
+
+  ##
+  #
+  def initialize
+  end
+  
+  ##
+  #
+  def register_attr(id, **options, &block)
+  end
+  
+  ##
+  #
+  def override_attr(id, **options, &block)
+  end
+  
+end
+
 ##
-# Manages shared data that is common to Attributes instanced from this template.
+# Manages shared data that is common to Attributes instanced from this definition.
 #
-class AttributeTemplate
+class AttributeDefinition
 
   ##
   #
@@ -20,7 +39,7 @@ class AttributeTemplate
   
   ##
   #
-  def set_var(:var, val=nil, &block)
+  def set_var(var, val=nil, &block)
     if block_given?
       if !val.nil?
         @services.definition_error('Must provide a default value or a block but not both')
