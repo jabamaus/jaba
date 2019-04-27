@@ -12,6 +12,8 @@ class Services
   #
   Definition = Struct.new(:type, :id, :file, :line, :block, :options)
   
+  attr_reader :attr_definition_api
+  
   ##
   #
   def initialize
@@ -31,8 +33,10 @@ class Services
     
     @file_read_cache = {}
     
+    @next_flag = 1 << 0
     @toplevel_definition_api = TopLevelDefinitionAPI.new
     @type_extension_api = DefinitionTypeExtensionAPI.new
+    @attr_definition_api = AttributeDefinitionAPI.new
 
     @toplevel_definition_api.__internal_set_obj(self)
   end
@@ -55,6 +59,13 @@ class Services
   #
   def warning(msg)
     @warnings << msg
+  end
+  
+  ##
+  #
+  def register_attr_flag(id)
+    JABA.const_set(id, @next_flag)
+    @next_flag <<= 1
   end
   
   ##
@@ -153,10 +164,12 @@ private
     
     @definition_type_registry.each do |type_id, defs|
       defs.each do |d|
-        jt = @jaba_type_registry.fetch(type_id, JabaType.new)
+        @current_definition = d
+        jt = @jaba_type_registry.fetch(type_id, JabaType.new(self))
         @type_extension_api.__internal_set_obj(jt)
         @type_extension_api.instance_eval(&d.block)
       end
+      @current_definition = nil
     end
       
     op = Output.new

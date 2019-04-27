@@ -17,6 +17,15 @@ class TestExtensionGrammar < JabaTestCase
       end
     end
 
+    it 'supports definining new attribute flags' do
+      jaba do
+        attr_flag :Foo
+        attr_flag :Bar
+      end
+      Foo.must_equal(AllowDupes << 1)
+      Bar.must_equal(Foo << 1)
+    end
+    
   end
   
 end

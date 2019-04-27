@@ -9,7 +9,13 @@ module TopLevelDefinitionExtensionAPI
   ##
   #
   def attr_type(id=nil, **options, &block)
-    @obj.register_attr_type(:attr_type, id, **options, &block)
+    @obj.register_attr_type(id, **options, &block)
+  end
+  
+  ##
+  #
+  def attr_flag(id=nil)
+    @obj.register_attr_flag(id)
   end
   
   ##

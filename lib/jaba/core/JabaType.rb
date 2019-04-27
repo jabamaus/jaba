@@ -1,15 +1,31 @@
 module JABA
 
+##
+# eg project/workspace/category etc.
+#
 class JabaType
 
   ##
   #
-  def initialize
+  def initialize(services)
+    @services = services
+    @attribute_defs = []
   end
   
   ##
   #
   def register_attr(id, **options, &block)
+    if !id.is_a?(Symbol)
+      @services.definition_error("'#{id}' attribute id must be specified as a symbol")
+    end
+    if @attribute_defs.find{|d| d.id == id}
+      @services.definition_error("'#{id}' attribute multiply defined")
+    end
+    ad = AttributeDefinition.new(id)
+    api = @services.attr_definition_api
+    api.__internal_set_obj(ad)
+    api.instance_eval(&block) if block_given?
+    @attribute_defs << ad
   end
   
   ##
@@ -24,10 +40,12 @@ end
 #
 class AttributeDefinition
 
+  attr_reader :id
+  
   ##
   #
-  def initialize(name)
-    @name = name
+  def initialize(id)
+    @id = id
 
     @default = nil
     @flags = nil
@@ -44,9 +62,9 @@ class AttributeDefinition
       if !val.nil?
         @services.definition_error('Must provide a default value or a block but not both')
       end
-      instance_variable_set(":@#{var}", block)
+      instance_variable_set("@#{var}", block)
     else
-      instance_variable_set(":@#{var}", val)
+      instance_variable_set("@#{var}", val)
     end
   end
   
