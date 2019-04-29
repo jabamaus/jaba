@@ -82,10 +82,10 @@ class AttributeDefinitionAPI < DefinitionAPI
   end
   
   ##
-  # Set any number of flags to control the behaviour of the attribute. Flags should be ORd together, eg ARRAY|ALLOW_DUPES.
+  # Set any number of flags to control the behaviour of the attribute.
   #
-  def flags(val=nil, &block)
-    @obj.set_var(:flags, val, &block)
+  def flags(*flags, &block)
+    @obj.set_var(:flags, flags, &block)
   end
   
   ##
@@ -105,8 +105,8 @@ class AttributeDefinitionAPI < DefinitionAPI
   ##
   # Specify the options this attribute accepts.
   #
-  def options(v=nil, &block)
-    @obj.set_var(:options, val, &block)
+  def options(*opts, &block)
+    @obj.set_var(:options, opts, &block)
   end
   
   ##

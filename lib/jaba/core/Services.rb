@@ -33,7 +33,6 @@ class Services
     
     @file_read_cache = {}
     
-    @next_flag = 1 << 0
     @toplevel_definition_api = TopLevelDefinitionAPI.new
     @type_extension_api = DefinitionTypeExtensionAPI.new
     @attr_definition_api = AttributeDefinitionAPI.new
@@ -64,8 +63,6 @@ class Services
   ##
   #
   def register_attr_flag(id)
-    JABA.const_set(id, @next_flag)
-    @next_flag <<= 1
   end
   
   ##
