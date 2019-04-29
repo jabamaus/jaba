@@ -33,6 +33,12 @@ class JabaType
   def override_attr(id, **options, &block)
   end
   
+  ##
+  #
+  def each_attr(&block)
+    @attribute_defs.each(&block)
+  end
+  
 end
 
 ##
@@ -68,9 +74,6 @@ class AttributeDefinition
     end
   end
   
-end
-
-class Attribute
 end
 
 end

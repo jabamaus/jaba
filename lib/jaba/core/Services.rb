@@ -1,5 +1,6 @@
 require_relative 'Utils'
 require_relative 'JabaType'
+require_relative 'JabaObject'
 
 module JABA
 
@@ -30,6 +31,7 @@ class Services
     @definition_type_registry = {}
     @jaba_type_registry = {}
     @definition_registry = {}
+    @node_registry = {}
     
     @file_read_cache = {}
     
@@ -159,16 +161,34 @@ private
       execute_definitions(&input.definitions)
     end
     
+    # Create types
+    #
     @definition_type_registry.each do |type_id, defs|
       defs.each do |d|
         @current_definition = d
         jt = @jaba_type_registry.fetch(type_id, JabaType.new(self))
+        @node_registry.push_value(type_id, jt)
         @type_extension_api.__internal_set_obj(jt)
         @type_extension_api.instance_eval(&d.block)
       end
       @current_definition = nil
     end
+    
+    # Create instances of types
+    #
+    @node_registry[:target].each do |t|
+    end
+    
+    @node_registry[:category].each do |c|
+    end
+    
+    @node_registry[:project].each do |p|
+      jo = JabaObject.new(p)
+    end
       
+    @node_registry[:workspace].each do |w|
+    end
+    
     op = Output.new
     op.instance_variable_set(:@added_files, @added_files)
     op.instance_variable_set(:@modified_files, @modified_files)
