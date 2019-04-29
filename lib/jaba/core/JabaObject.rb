@@ -27,6 +27,11 @@ class JabaObject
     end
   end
   
+  ##
+  #
+  def handle_attr(id, called_from_definitions, *args, **key_value_args, &block)
+  end
+  
 end
 
 end

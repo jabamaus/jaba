@@ -4,7 +4,7 @@ module JABA
 
 ##
 #
-module TopLevelDefinitionExtensionAPI
+module TopLevelExtensionAPI
 
   ##
   #
@@ -46,7 +46,7 @@ end
 
 ##
 #
-class DefinitionTypeExtensionAPI < DefinitionAPI
+class JabaTypeAPI < APIBase
   
   ##
   # Define a new attribute. See AttributeDefinitionAPI class below.
@@ -72,7 +72,7 @@ end
 
 ##
 #
-class AttributeDefinitionAPI < DefinitionAPI
+class AttributeDefinitionAPI < APIBase
 
   ##
   # Set the type of the attribute. Optional as a attribute does not require a type.

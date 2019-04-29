@@ -35,11 +35,11 @@ class Services
     
     @file_read_cache = {}
     
-    @toplevel_definition_api = TopLevelDefinitionAPI.new
-    @type_extension_api = DefinitionTypeExtensionAPI.new
+    @toplevel_api = TopLevelAPI.new
+    @jaba_type_api = JabaTypeAPI.new
     @attr_definition_api = AttributeDefinitionAPI.new
 
-    @toplevel_definition_api.__internal_set_obj(self)
+    @toplevel_api.__internal_set_obj(self)
   end
 
   ##
@@ -168,8 +168,8 @@ private
         @current_definition = d
         jt = @jaba_type_registry.fetch(type_id, JabaType.new(self))
         @node_registry.push_value(type_id, jt)
-        @type_extension_api.__internal_set_obj(jt)
-        @type_extension_api.instance_eval(&d.block)
+        @jaba_type_api.__internal_set_obj(jt)
+        @jaba_type_api.instance_eval(&d.block)
       end
       @current_definition = nil
     end
@@ -200,11 +200,11 @@ private
   #
   def execute_definitions(file=nil, &block)
     if file
-      @toplevel_definition_api.instance_eval(read_file(file), file)
+      @toplevel_api.instance_eval(read_file(file), file)
     end
     if block_given?
       file = block.source_location[0]
-      @toplevel_definition_api.instance_eval(&block)
+      @toplevel_api.instance_eval(&block)
     end
   rescue DefinitionError
     raise # Prevent fallthrough to next case
