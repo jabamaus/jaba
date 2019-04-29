@@ -61,6 +61,13 @@ class DefinitionTypeExtensionAPI < DefinitionAPI
     @obj.override_attr(id, **options, &block)
   end
   
+  ##
+  # Include one or more shared definitions in this one.
+  #
+  def include(*shared_definition_ids, args: nil)
+    @obj.include_shared(*shared_definition_ids, args: args)
+  end
+  
 end
 
 ##
