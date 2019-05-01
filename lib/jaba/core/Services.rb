@@ -37,6 +37,7 @@ class Services
     @toplevel_api = TopLevelAPI.new
     @jaba_type_api = JabaTypeAPI.new
     @attr_definition_api = AttributeDefinitionAPI.new
+    @jaba_object_api = JabaObjectAPI.new
 
     @toplevel_api.__internal_set_obj(self)
   end
@@ -184,31 +185,51 @@ private
       @jaba_type_api.__internal_set_obj(jt)
       @jaba_type_api.instance_eval(&def_data.block)
       @current_definition = nil
+      jt
     end
     
     # Extend JabaTypes
     #
     @types_to_extend.each do |def_data|
-      # TODO
+      @current_definition = def_data
+      jt = @jaba_types.find{|t| t.type == def_data.type}
+      if !jt
+        definition_error("'#{def_data.type}' has not been defined")
+      end
+      @jaba_type_api.__internal_set_obj(jt)
+      @jaba_type_api.instance_eval(&def_data.block)
+      @current_definition = nil#
     end
     
     # Create instances of types
-    # TODO: do in dependency order
+    # TODO: do generically and in dependency order
     #
-    defs = @definition_registry[:text]
-    if defs
-      defs.each do |def_data|
-        jt = @jaba_types.find(def_data.type)
-        jo = JabaObject.new(jt, def_data)
-        jo.call_generators
-      end
-    end
+    create_instances(:text)
+    create_instances(:target)
+    create_instances(:category)
+    create_instances(:project)
+    create_instances(:workspace)
     
     op = Output.new
     op.instance_variable_set(:@added_files, @added_files)
     op.instance_variable_set(:@modified_files, @modified_files)
     op.instance_variable_set(:@warnings, @warnings)
     op
+  end
+  
+  ##
+  #
+  def create_instances(type)
+    defs = @definition_registry[type]
+    if defs
+      defs.each do |def_data|
+        jt = @jaba_types.find{|t| t.type == def_data.type}
+        jo = JabaObject.new(jt, def_data)
+        @jaba_object_api.__internal_set_obj(jo)
+        @jaba_object_api.instance_eval(&def_data.block)
+        jo.call_generators
+      end
+    end
   end
   
   ##

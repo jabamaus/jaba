@@ -63,6 +63,12 @@ class TopLevelAPI < APIBase
     @obj.define_instance(:shared, id, **options, &block)
   end
   
+  ##
+  #
+  def text(id=nil, **options, &block)
+    @obj.define_instance(:text, id, **options, &block)
+  end
+  
 end
 
 ##

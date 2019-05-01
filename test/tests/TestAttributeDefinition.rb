@@ -5,18 +5,21 @@ class TestAttributeDefinition < JabaTest
   describe 'AttributeDefinition' do
     
     it 'requires attribute id to be a symbol' do
-      assert_raises DefinitionError do
+      e = assert_raises DefinitionError do
         jaba do
           extend :project do
             attr 'attr' do
             end
           end
         end
-      end.message.must_match('\'attr\' attribute id must be specified as a symbol')
+      end
+      e.message.must_match('\'attr\' attribute id must be specified as a symbol')
+      e.definition_type.must_equal(:project)
+      e.definition_id.must_be_nil
     end
     
     it 'detects duplicate attribute ids' do
-      assert_raises DefinitionError do
+      e = assert_raises DefinitionError do
         jaba do
           extend :project do
             attr :a do
@@ -25,7 +28,10 @@ class TestAttributeDefinition < JabaTest
             end
           end
         end
-      end.message.must_match("'a' attribute multiply defined")
+      end
+      e.message.must_match("'a' attribute multiply defined")
+      e.definition_type.must_equal(:project)
+      e.definition_id.must_be_nil
     end
     
   end

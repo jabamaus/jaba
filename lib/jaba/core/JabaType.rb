@@ -15,6 +15,12 @@ class JabaType
   
   ##
   #
+  def type
+    @def_data.type
+  end
+  
+  ##
+  #
   def define_attr(id, **options, &block)
     if !id.is_a?(Symbol)
       @services.definition_error("'#{id}' attribute id must be specified as a symbol")
@@ -60,6 +66,12 @@ class AttributeDefinition
     @items = nil
     @options = nil
     @type = nil
+  end
+  
+  ##
+  #
+  def type
+    nil # TODO
   end
   
   ##

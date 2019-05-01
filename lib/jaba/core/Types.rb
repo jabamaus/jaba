@@ -3,9 +3,13 @@ attr_flag :array
 attr_flag :unordered
 attr_flag :allow_dupes
 
+##
+#
 define :target do
 end
 
+##
+#
 define :category do
   attr :name do
     help 'Display name of category. Maps to name of solution folder in a Visual Studio solution'
@@ -28,8 +32,38 @@ define :category do
   end
 end
 
+##
+#
+define :text do
+  attr :filename do
+    help 'Path to the filename to be generated'
+    type :file
+    flags :required
+  end
+  
+  attr :content do
+    help 'Directly set content of file as a string'
+  end
+  
+  attr :line do
+    help 'Set content of file line by line'
+    flags :array, :allow_dupes, :unordered
+  end
+  
+  attr :eol do
+    help 'Newline style'
+    type :choice
+    items [:native, :unix, :windows]
+    default :native
+  end
+end
+
+##
+#
 define :project do
 end
 
+##
+#
 define :workspace do
 end
