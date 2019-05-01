@@ -1,12 +1,12 @@
 module JABA
 
-class TestExtensionGrammar < JabaTestCase
+class TestExtensionGrammar < JabaTest
 
   describe 'ExtensionGrammar' do
 
     it 'supports adding an attribute to core types' do
       jaba do
-        extend_project do
+        extend :project do
           attr :a do
           end
         end
@@ -22,7 +22,7 @@ class TestExtensionGrammar < JabaTestCase
         attr_flag :foo
         attr_flag :bar
         
-        extend_project do
+        extend :project do
           attr :a do
             flags :foo, :bar
           end

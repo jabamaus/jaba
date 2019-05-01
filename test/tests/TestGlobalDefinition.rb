@@ -1,6 +1,6 @@
 module JABA
 
-class TestGlobalDefinition < JabaTestCase
+class TestGlobalDefinition < JabaTest
 
   describe 'GlobalDefinition' do
   

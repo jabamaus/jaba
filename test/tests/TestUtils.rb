@@ -1,6 +1,6 @@
 module JABA
   
-class TestUtils < JabaTestCase
+class TestUtils < JabaTest
   
   describe 'Hash' do
   

@@ -28,10 +28,9 @@ class Services
     @added_files = []
     @modified_file = []
     
-    @definition_type_registry = {}
-    @jaba_type_registry = {}
-    @definition_registry = {}
-    @node_registry = {}
+    @jaba_types = []
+    @extended_types = []
+    @definition_registry = {} # TODO: not a good name
     
     @file_read_cache = {}
     
@@ -69,6 +68,19 @@ class Services
   
   ##
   #
+  def define_type(type, **options, &block)
+    if caller[1] !~ /^(.*)?:(\d+):/
+      raise "Could not determine file and line number for '#{type}'"
+    end
+    
+    file = $1
+    line = $2.to_i
+    
+    @jaba_types << Definition.new(type, nil, file, line, block, options)
+  end
+  
+  ##
+  #
   def extend_type(type, **options, &block)
     if caller[1] !~ /^(.*)?:(\d+):/
       raise "Could not determine file and line number for '#{type}'"
@@ -77,8 +89,7 @@ class Services
     file = $1
     line = $2.to_i
     
-    def_data = Definition.new(type, nil, file, line, block, options)
-    @definition_type_registry.push_value(type, def_data)
+    @extended_types << Definition.new(type, nil, file, line, block, options)
   end
   
   ##
@@ -161,32 +172,32 @@ private
       execute_definitions(&input.definitions)
     end
     
-    # Create types
+    # Create a JabaType object for each defined type
     #
-    @definition_type_registry.each do |type_id, defs|
-      defs.each do |d|
-        @current_definition = d
-        jt = @jaba_type_registry.fetch(type_id, JabaType.new(self))
-        @node_registry.push_value(type_id, jt)
-        @jaba_type_api.__internal_set_obj(jt)
-        @jaba_type_api.instance_eval(&d.block)
-      end
+    @jaba_types.map! do |def_data|
+      @current_definition = def_data
+      jt = JabaType.new(self, def_data)
+      @jaba_type_api.__internal_set_obj(jt)
+      @jaba_type_api.instance_eval(&def_data.block)
       @current_definition = nil
     end
     
-    # Create instances of types
+    # Extend JabaTypes
     #
-    @node_registry[:target].each do |t|
+    @extended_types.each do |def_data|
+      # TODO
     end
     
-    @node_registry[:category].each do |c|
-    end
-    
-    @node_registry[:project].each do |p|
-      jo = JabaObject.new(p)
-    end
-      
-    @node_registry[:workspace].each do |w|
+    # Create instances of types
+    # TODO: do in dependency order
+    #
+    defs = @definition_registry[:text]
+    if defs
+      defs.each do |def_data|
+        jt = @jaba_types.find(def_data.type)
+        jo = JabaObject.new(jt)
+        jo.call_generators
+      end
     end
     
     op = Output.new

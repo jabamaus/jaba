@@ -7,8 +7,9 @@ class JabaType
 
   ##
   #
-  def initialize(services)
+  def initialize(services, def_data)
     @services = services
+    @def_data = def_data
     @attribute_defs = []
   end
   

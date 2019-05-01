@@ -88,6 +88,12 @@ class JabaObjectAPI < APIBase
     @obj.handle_attr(attr_name, true, *args, **key_value_args, &block)
   end
   
+  ##
+  #
+  def generator(&block)
+    @obj.register_generator(&block)
+  end
+  
 end
 
 end

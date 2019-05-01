@@ -20,26 +20,14 @@ module TopLevelExtensionAPI
   
   ##
   #
-  def extend_target(**options, &block)
-    @obj.extend_type(:target, **options, &block)
+  def define(type=nil, **options, &block)
+    @obj.define_type(type, **options, &block)
   end
   
   ##
   #
-  def extend_project(**options, &block)
-    @obj.extend_type(:project, **options, &block)
-  end
-  
-  ##
-  #
-  def extend_workspace(**options, &block)
-    @obj.extend_type(:workspace, **options, &block)
-  end
-  
-  ##
-  #
-  def extend_category(**options, &block)
-    @obj.extend_type(:category, **options, &block)
+  def extend(type=nil, **options, &block)
+    @obj.extend_type(type, **options, &block)
   end
   
 end

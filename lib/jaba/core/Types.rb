@@ -3,10 +3,10 @@ attr_flag :array
 attr_flag :unordered
 attr_flag :allow_dupes
 
-extend_target do
+define :target do
 end
 
-extend_category do
+define :category do
   attr :name do
     help 'Display name of category. Maps to name of solution folder in a Visual Studio solution'
     flags :required
@@ -28,8 +28,8 @@ extend_category do
   end
 end
 
-extend_project do
+define :project do
 end
 
-extend_workspace do
+define :workspace do
 end

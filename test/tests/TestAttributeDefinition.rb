@@ -1,13 +1,13 @@
 module JABA
 
-class TestAttributeDefinition < JabaTestCase
+class TestAttributeDefinition < JabaTest
 
   describe 'AttributeDefinition' do
     
     it 'requires attribute id to be a symbol' do
       assert_raises DefinitionError do
         jaba do
-          extend_project do
+          extend :project do
             attr 'attr' do
             end
           end
@@ -18,7 +18,7 @@ class TestAttributeDefinition < JabaTestCase
     it 'detects duplicate attribute ids' do
       assert_raises DefinitionError do
         jaba do
-          extend_project do
+          extend :project do
             attr :a do
             end
             attr :a do

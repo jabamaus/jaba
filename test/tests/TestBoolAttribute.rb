@@ -1,6 +1,6 @@
 module JABA
 
-class TestBoolAttribute < JabaTestCase
+class TestBoolAttribute < JabaTest
 
   describe 'BoolAttribute' do
     

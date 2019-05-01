@@ -1,6 +1,6 @@
 module JABA
 
-class TestErrorReporting < JabaTestCase
+class TestErrorReporting < JabaTest
   
   def find_line_number(string, file=__FILE__)
     IO.read(file).each_line.find_index {|line| line.include?(string)} + 1
@@ -25,7 +25,7 @@ class TestErrorReporting < JabaTestCase
     end
 
     it 'provides exception information when a definition contains an error when definitions supplied in a separate file' do
-      fullpath = "#{__dir__}/temp/TestErrorReporting1.rb"
+      fullpath = "#{temp_dir}/TestErrorReporting1.rb"
       IO.write(fullpath, "\n\ncategory 'invalid id' do\nend\n")
       e = assert_raises DefinitionError do
         jaba(load_paths: fullpath)

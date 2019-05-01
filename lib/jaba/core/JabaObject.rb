@@ -25,6 +25,21 @@ class JabaObject
       attr = Attribute.new(attr_def)
       @attributes << attr
     end
+    @generators = []
+  end
+  
+  ##
+  #
+  def register_generator(&block)
+    @generators << block
+  end
+  
+  ##
+  #
+  def call_generators
+    @generators.each do |block|
+      block.call
+    end
   end
   
   ##

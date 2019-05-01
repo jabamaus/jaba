@@ -3,13 +3,18 @@ require_relative '../lib/jaba/jaba'
 
 module JABA
 
-  class JabaTestCase < Minitest::Spec
+  class JabaTest < Minitest::Spec
     
     def jaba(load_paths: nil, &block)
       JABA.run do |c|
         c.load_paths = load_paths
         c.definitions(&block) if block_given?
       end
+    end
+    
+    def temp_dir
+    # TODO: ensure dir exists
+      "#{__dir__}/tests/temp"
     end
     
   end
