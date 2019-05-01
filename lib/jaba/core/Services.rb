@@ -29,7 +29,7 @@ class Services
     @modified_file = []
     
     @jaba_types = []
-    @extended_types = []
+    @types_to_extend = []
     @definition_registry = {} # TODO: not a good name
     
     @file_read_cache = {}
@@ -63,7 +63,12 @@ class Services
   
   ##
   #
-  def register_attr_flag(id)
+  def define_attr_type(id, **options, &block)
+  end
+  
+  ##
+  #
+  def define_attr_flag(id)
   end
   
   ##
@@ -89,13 +94,12 @@ class Services
     file = $1
     line = $2.to_i
     
-    @extended_types << Definition.new(type, nil, file, line, block, options)
+    @types_to_extend << Definition.new(type, nil, file, line, block, options)
   end
   
   ##
-  # type can be eg :project, :workspace, :target, :shared, :attr, :attr_type etc.
   #
-  def register_definition(type, id, **options, &block)
+  def define_instance(type, id, **options, &block)
     if caller[1] !~ /^(.*)?:(\d+):/
       raise "Could not determine file and line number for '#{type}' '#{id}'"
     end
@@ -184,7 +188,7 @@ private
     
     # Extend JabaTypes
     #
-    @extended_types.each do |def_data|
+    @types_to_extend.each do |def_data|
       # TODO
     end
     
@@ -195,7 +199,7 @@ private
     if defs
       defs.each do |def_data|
         jt = @jaba_types.find(def_data.type)
-        jo = JabaObject.new(jt)
+        jo = JabaObject.new(jt, def_data)
         jo.call_generators
       end
     end

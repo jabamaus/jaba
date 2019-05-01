@@ -9,13 +9,13 @@ module TopLevelExtensionAPI
   ##
   #
   def attr_type(id=nil, **options, &block)
-    @obj.register_attr_type(id, **options, &block)
+    @obj.define_attr_type(id, **options, &block)
   end
   
   ##
   #
   def attr_flag(id=nil)
-    @obj.register_attr_flag(id)
+    @obj.define_attr_flag(id)
   end
   
   ##
@@ -40,13 +40,13 @@ class JabaTypeAPI < APIBase
   # Define a new attribute. See AttributeDefinitionAPI class below.
   #
   def attr(id=nil, **options, &block)
-    @obj.register_attr(id, **options, &block)
+    @obj.define_attr(id, **options, &block)
   end
   
   ##
   #
-  def override_attr(id=nil, **options, &block)
-    @obj.override_attr(id, **options, &block)
+  def extend(id=nil, **options, &block)
+    @obj.extend_attr(id, **options, &block)
   end
   
   ##

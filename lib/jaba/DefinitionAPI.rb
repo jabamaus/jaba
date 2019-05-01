@@ -25,42 +25,42 @@ class TopLevelAPI < APIBase
   ##
   #
   def src_tree(id=nil, **option, &block)
-    @obj.register_definition(:src_tree, id, **options, &block)
+    @obj.define_instance(:src_tree, id, **options, &block)
   end
   
   ##
   # Define a target.
   #
   def target(id=nil, **options, &block)
-    @obj.register_definition(:target, id, **options, &block)
+    @obj.define_instance(:target, id, **options, &block)
   end
   
   ##
   # Define a project.
   #
   def project(id=nil, **options, &block)
-    @obj.register_definition(:project, id, **options, &block)
+    @obj.define_instance(:project, id, **options, &block)
   end
   
   ##
   # Define a workspace.
   #
   def workspace(id=nil, **options, &block)
-    @obj.register_definition(:workspace, id, **options, &block)
+    @obj.define_instance(:workspace, id, **options, &block)
   end
   
   ##
   # Define a category.
   #
   def category(id=nil, **options, &block)
-    @obj.register_definition(:category, id, **options, &block)
+    @obj.define_instance(:category, id, **options, &block)
   end
   
   ##
   # Define definition to be included by other definitions.
   #
   def shared(id=nil, **options, &block)
-    @obj.register_definition(:shared, id, **options, &block)
+    @obj.define_instance(:shared, id, **options, &block)
   end
   
 end
@@ -91,7 +91,7 @@ class JabaObjectAPI < APIBase
   ##
   #
   def generator(&block)
-    @obj.register_generator(&block)
+    @obj.define_generator(&block)
   end
   
 end

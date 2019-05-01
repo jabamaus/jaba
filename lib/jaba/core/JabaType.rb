@@ -15,7 +15,7 @@ class JabaType
   
   ##
   #
-  def register_attr(id, **options, &block)
+  def define_attr(id, **options, &block)
     if !id.is_a?(Symbol)
       @services.definition_error("'#{id}' attribute id must be specified as a symbol")
     end
@@ -31,7 +31,7 @@ class JabaType
   
   ##
   #
-  def override_attr(id, **options, &block)
+  def extend_attr(id, **options, &block)
   end
   
   ##

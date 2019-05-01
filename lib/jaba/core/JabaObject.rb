@@ -18,8 +18,9 @@ class JabaObject
 
   ##
   #
-  def initialize(jaba_type)
+  def initialize(jaba_type, def_data)
     @jaba_type = jaba_type
+    @def_data = def_data
     @attributes = []
     @jaba_type.each_attr do |attr_def|
       attr = Attribute.new(attr_def)
@@ -30,7 +31,7 @@ class JabaObject
   
   ##
   #
-  def register_generator(&block)
+  def define_generator(&block)
     @generators << block
   end
   
@@ -40,6 +41,11 @@ class JabaObject
     @generators.each do |block|
       block.call
     end
+  end
+  
+  ##
+  #
+  def include_shared(ids, args: [])
   end
   
   ##
