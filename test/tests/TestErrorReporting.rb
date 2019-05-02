@@ -2,10 +2,6 @@ module JABA
 
 class TestErrorReporting < JabaTest
   
-  def find_line_number(string, file=__FILE__)
-    IO.read(file).each_line.find_index {|line| line.include?(string)} + 1
-  end
-  
   describe 'Error reporting' do
     
     it 'provides exception information when a definition contains an error when definitions supplied in a block' do
@@ -16,7 +12,7 @@ class TestErrorReporting < JabaTest
         end
       end
       e.file.must_equal(__FILE__)
-      line = find_line_number('category \'invalid id\' do')
+      line = find_line_number('category \'invalid id\' do', __FILE__)
       e.line.must_equal(line)
       e.message.must_equal("Definition error at TestErrorReporting.rb:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'")
       e.definition_type.must_equal(:category)
@@ -48,7 +44,7 @@ class TestErrorReporting < JabaTest
         end
       end
       e.file.must_equal(__FILE__)
-      line = find_line_number('bad code')
+      line = find_line_number('bad code', __FILE__)
       e.line.must_equal(line)
       e.definition_type.must_be_nil
       e.definition_id.must_be_nil

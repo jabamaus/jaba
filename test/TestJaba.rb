@@ -5,6 +5,8 @@ module JABA
 
   class JabaTest < Minitest::Spec
     
+    ##
+    #
     def jaba(load_paths: nil, &block)
       JABA.run do |c|
         c.load_paths = load_paths
@@ -12,11 +14,20 @@ module JABA
       end
     end
     
+    ##
+    #
     def temp_dir
     # TODO: ensure dir exists
       "#{__dir__}/tests/temp"
     end
     
+    ##
+    # Helper for testing error reporting.
+    #
+    def find_line_number(string, file)
+      IO.read(file).each_line.find_index {|line| line.include?(string)} + 1
+    end
+  
   end
   
 end
