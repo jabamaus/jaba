@@ -30,6 +30,26 @@ class TestExtensionGrammar < JabaTest
       end
     end
 
+    it 'supports defining new attribute types' do
+      e = assert_raises DefinitionError do
+        jaba do
+          attr_type :a do
+            validate do
+              raise 'failed validation'
+            end
+          end
+          extend :text do
+            attr :b do
+              type :a
+            end
+          end
+        end
+      end
+      e.message.must_match('failed validation')
+      e.definition_type.must_equal(:text)
+      e.definition_id.must_be_nil
+    end
+    
     it 'supports definining new attribute flags' do
       jaba do
         attr_flag :foo

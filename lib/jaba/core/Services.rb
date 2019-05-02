@@ -28,6 +28,7 @@ class Services
     @added_files = []
     @modified_file = []
     
+    @jaba_attr_types = []
     @jaba_types = []
     @types_to_extend = []
     @definition_registry = {} # TODO: not a good name
@@ -35,6 +36,7 @@ class Services
     @file_read_cache = {}
     
     @toplevel_api = TopLevelAPI.new
+    @attr_type_api = AttributeTypeAPI.new
     @jaba_type_api = JabaTypeAPI.new
     @attr_definition_api = AttributeDefinitionAPI.new
     @jaba_object_api = JabaObjectAPI.new
@@ -64,7 +66,22 @@ class Services
   
   ##
   #
-  def define_attr_type(id, **options, &block)
+  def define_attr_type(type, **options, &block)
+    if caller[1] !~ /^(.*)?:(\d+):/
+      raise "Could not determine file and line number for '#{type}'"
+    end
+    
+    file = $1
+    line = $2.to_i
+    
+    @jaba_attr_types << Definition.new(type, nil, file, line, block, options)
+  end
+  
+  ##
+  #
+  def get_attribute_type(type)
+    # TODO: fail if not found
+    @jaba_attr_types.find{|at| at.type == type}
   end
   
   ##
@@ -177,6 +194,17 @@ private
       execute_definitions(&input.definitions)
     end
     
+    # Create attribute types
+    #
+    @jaba_attr_types.map! do |def_data|
+      @current_definition = def_data
+      at = AttributeType.new(self, def_data)
+      @attr_type_api.__internal_set_obj(at)
+      @attr_type_api.instance_eval(&def_data.block)
+      @current_definition = nil
+      at
+    end
+    
     # Create a JabaType object for each defined type
     #
     @jaba_types.map! do |def_data|
@@ -198,8 +226,10 @@ private
       end
       @jaba_type_api.__internal_set_obj(jt)
       @jaba_type_api.instance_eval(&def_data.block)
-      @current_definition = nil#
+      @current_definition = nil
     end
+    
+    @jaba_types.each(&:init)
     
     # Create instances of types
     # TODO: do generically and in dependency order

@@ -34,6 +34,18 @@ end
 
 ##
 #
+class AttributeTypeAPI < APIBase
+  
+  ##
+  #
+  def validate(&block)
+    @obj.set_block(:validator, &block)
+  end
+  
+end
+
+##
+#
 class JabaTypeAPI < APIBase
   
   ##

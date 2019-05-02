@@ -1,6 +1,43 @@
 module JABA
 
 ##
+#
+class AttributeType
+
+  attr_reader :validator
+  
+  ##
+  #
+  def initialize(services, def_data)
+    @services = services
+    @def_data = def_data
+    @validator = nil
+  end
+  
+  ##
+  #
+  def type
+    @def_data.type
+  end
+  
+  ##
+  #
+  def set_var(var, val)
+    instance_variable_set("@#{var}", val)
+  end
+  
+  ##
+  #
+  def set_block(var, &block)
+    if !block_given?
+      @services.definition_error('Must provide a block')
+    end
+    instance_variable_set("@#{var}", block)
+  end
+  
+end
+
+##
 # eg project/workspace/category etc.
 #
 class JabaType
@@ -28,7 +65,7 @@ class JabaType
     if @attribute_defs.find{|d| d.id == id}
       @services.definition_error("'#{id}' attribute multiply defined")
     end
-    ad = AttributeDefinition.new(id)
+    ad = AttributeDefinition.new(@services, id)
     api = @services.attr_definition_api
     api.__internal_set_obj(ad)
     api.instance_eval(&block) if block_given?
@@ -46,6 +83,12 @@ class JabaType
     @attribute_defs.each(&block)
   end
   
+  ##
+  #
+  def init
+    @attribute_defs.each(&:init)
+  end
+  
 end
 
 ##
@@ -54,10 +97,12 @@ end
 class AttributeDefinition
 
   attr_reader :id
+  attr_reader :type # eg :bool, :file, :path etc
   
   ##
   #
-  def initialize(id)
+  def initialize(services, id)
+    @services = services
     @id = id
 
     @default = nil
@@ -66,12 +111,7 @@ class AttributeDefinition
     @items = nil
     @options = nil
     @type = nil
-  end
-  
-  ##
-  #
-  def type
-    nil # TODO
+    @type_obj = nil
   end
   
   ##
@@ -84,6 +124,23 @@ class AttributeDefinition
       instance_variable_set("@#{var}", block)
     else
       instance_variable_set("@#{var}", val)
+    end
+  end
+  
+  ##
+  #
+  def init
+    # Convert type id to AttributeType object if type has been set
+    #
+    if @type
+      @type_obj = @services.get_attribute_type(@type)
+    end
+    
+    if @type_obj
+      v = @type_obj.validator
+      if v
+        v.call
+      end
     end
   end
   
