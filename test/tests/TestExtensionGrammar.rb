@@ -35,7 +35,7 @@ class TestExtensionGrammar < JabaTest
         jaba do
           attr_type :a do
             validate do
-              raise 'failed validation'
+              raise 'Failed validation'
             end
           end
           extend :text do
@@ -45,9 +45,11 @@ class TestExtensionGrammar < JabaTest
           end
         end
       end
-      e.message.must_match('failed validation')
-      e.definition_type.must_equal(:text)
-      e.definition_id.must_be_nil
+      e.message.must_match('Failed validation')
+      e.file.must_equal(__FILE__)
+      e.line.must_equal(find_line_number('raise \'Failed validation\'', __FILE__))
+      e.definition_type.must_equal(:attr_type)
+      e.definition_id.must_equal(:a)
     end
     
     it 'supports definining new attribute flags' do
