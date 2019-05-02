@@ -8,7 +8,7 @@ class Attribute
   #
   def initialize(attr_def)
     @def = attr_def
-    @value = nil
+    set(attr_def.default)
   end
   
   ##
