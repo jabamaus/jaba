@@ -42,6 +42,8 @@ end
 #
 class JabaType
 
+  attr_reader :def_data
+  
   ##
   #
   def initialize(services, def_data)
@@ -98,6 +100,7 @@ class AttributeDefinition
 
   attr_reader :id
   attr_reader :type # eg :bool, :file, :path etc
+  attr_reader :default
   
   ##
   #
