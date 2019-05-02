@@ -302,7 +302,6 @@ private
     line = nil
     def_type = nil
     def_id = nil
-    where = ''
     def_data = @current_definition
     
     if def_data
@@ -322,29 +321,20 @@ private
           raise "Failed to extract line number from '#{call_line}'"
         end
         line = $1.to_i
-        where << 'at'
       elsif def_data
         line = def_data.line
-        where << 'near'
       end
-      where << " #{file.basename}"
-      where << ":#{line}" if line
-    elsif def_data
-      where << " in"
-      where << " #{def_id}" if def_id
-      where << " #{def_type}"
     end
 
     m = ''
     m << 'Definition error ' if !warn
-    m << "#{where}: #{msg.capitalize_first}"
+    m << "at #{file.basename}:#{line}: #{msg.capitalize_first}"
 
     e = DefinitionError.new(m)
     e.instance_variable_set(:@definition_type, def_type)
     e.instance_variable_set(:@definition_id, def_id)
     e.instance_variable_set(:@file, file)
     e.instance_variable_set(:@line, line)
-    e.instance_variable_set(:@where, where)
     e.set_backtrace([])
     e
 

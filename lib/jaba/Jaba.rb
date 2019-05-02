@@ -79,11 +79,6 @@ class DefinitionError < StandardError
   #
   attr_reader :line
   
-  ##
-  # Convenience for combining definition_id, definition_type, file and line into a string, depending on context.
-  #
-  attr_reader :where
-  
 end
 
 end
