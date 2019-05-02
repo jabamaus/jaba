@@ -18,6 +18,8 @@ class TestErrorReporting < JabaTest
       e.definition_type.must_equal(:category)
       e.definition_id.must_equal('invalid id')
       e.where.must_equal("at TestErrorReporting.rb:#{line}")
+      e.backtrace.must_equal([])
+      e.cause.must_be_nil
     end
 
     it 'provides exception information when a definition contains an error when definitions supplied in a separate file' do
@@ -33,6 +35,8 @@ class TestErrorReporting < JabaTest
       e.definition_type.must_equal(:category)
       e.definition_id.must_equal('invalid id')
       e.where.must_equal("at TestErrorReporting1.rb:#{line}")
+      e.backtrace.must_equal([])
+      e.cause.must_be_nil
     end
     
     it 'provides exception information when a there is a syntax error when definitions supplied in a block' do
@@ -46,9 +50,12 @@ class TestErrorReporting < JabaTest
       e.file.must_equal(__FILE__)
       line = find_line_number('bad code', __FILE__)
       e.line.must_equal(line)
+      e.message.must_match("Definition error at TestErrorReporting.rb:#{line}: NameError: undefined local variable or method")
       e.definition_type.must_be_nil
       e.definition_id.must_be_nil
       e.where.must_equal("at TestErrorReporting.rb:#{line}")
+      e.backtrace.must_equal([])
+      e.cause.wont_be_nil
     end
 
     it 'provides exception information when a there is a syntax error when definitions supplied in a separate file' do
@@ -63,6 +70,8 @@ class TestErrorReporting < JabaTest
       e.definition_type.must_be_nil
       e.definition_id.must_be_nil
       e.where.must_equal("at TestErrorReporting2.rb:#{line}")
+      e.backtrace.must_equal([])
+      e.cause.wont_be_nil
     end
     
   end

@@ -345,6 +345,7 @@ private
     e.instance_variable_set(:@file, file)
     e.instance_variable_set(:@line, line)
     e.instance_variable_set(:@where, where)
+    e.set_backtrace([])
     e
 
   end
