@@ -79,9 +79,12 @@ class Services
   
   ##
   #
-  def get_attribute_type(type)
-    # TODO: fail if not found
-    @jaba_attr_types.find{|at| at.type == type}
+  def get_attribute_type(type, fail_if_not_found: true)
+    t = @jaba_attr_types.find{|at| at.type == type}
+    if (!t and fail_if_not_found)
+      definition_error("'#{type}' attribute type is undefined. Valid types: #{@jaba_attr_types.map{|at| at.type}}")
+    end
+    t
   end
   
   ##
@@ -327,8 +330,9 @@ private
     end
 
     m = ''
-    m << 'Definition error ' if !warn
-    m << "at #{file.basename}:#{line}: #{msg.capitalize_first}"
+    m << 'Definition error' if !warn
+    m << " at #{file.basename}:#{line}:" if file
+    m << " #{msg.capitalize_first}"
 
     e = DefinitionError.new(m)
     e.instance_variable_set(:@definition_type, def_type)

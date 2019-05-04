@@ -93,17 +93,17 @@ class JabaObjectAPI < APIBase
   def include(*shared_definition_ids, args: nil)
     @obj.include_shared(*shared_definition_ids, args: args)
   end
-  
-  ##
-  #
-  def method_missing(attr_name, *args, **key_value_args, &block)
-    @obj.handle_attr(attr_name, true, *args, **key_value_args, &block)
-  end
-  
+
   ##
   #
   def generator(&block)
     @obj.define_generator(&block)
+  end
+  
+  ##
+  #
+  def method_missing(attr_id, *args, **key_value_args, &block)
+    @obj.handle_attr(attr_id, true, *args, **key_value_args, &block)
   end
   
 end

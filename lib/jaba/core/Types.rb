@@ -5,6 +5,41 @@ attr_flag :allow_dupes
 
 ##
 #
+attr_type :bool do
+end
+
+##
+#
+attr_type :choice do
+end
+
+##
+#
+attr_type :dir do
+end
+
+##
+#
+attr_type :file do
+end
+
+##
+#
+attr_type :path do
+end
+
+##
+#
+attr_type :keyvalue do
+end
+
+##
+#
+attr_type :reference do
+end
+
+##
+#
 define :target do
 end
 
