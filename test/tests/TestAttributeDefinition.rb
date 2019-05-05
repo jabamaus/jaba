@@ -14,8 +14,6 @@ class TestAttributeDefinition < JabaTest
         end
       end
       e.message.must_match('\'attr\' attribute id must be specified as a symbol')
-      e.definition_type.must_equal(:project)
-      e.definition_id.must_be_nil
     end
     
     it 'detects duplicate attribute ids' do
@@ -30,8 +28,6 @@ class TestAttributeDefinition < JabaTest
         end
       end
       e.message.must_match("'a' attribute multiply defined")
-      e.definition_type.must_equal(:project)
-      e.definition_id.must_be_nil
     end
     
   end

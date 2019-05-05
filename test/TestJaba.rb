@@ -30,15 +30,13 @@ module JABA
   
     ##
     #
-    def check_fails(msg:, file:, line:, type:, id:)
+    def check_fails(msg:, file:, line:)
       e = assert_raises DefinitionError do
         yield
       end
       e.message.must_match(msg)
       e.file.must_equal(file)
       e.line.must_equal(find_line_number(line, file))
-      e.definition_type.must_equal(type)
-      e.definition_id.must_equal(id)
       e.backtrace.must_equal([])
     end
   end

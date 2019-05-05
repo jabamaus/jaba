@@ -303,14 +303,10 @@ private
   #
   def make_definition_error(msg, file: nil, callstack: nil, warn: false)
     line = nil
-    def_type = nil
-    def_id = nil
     def_data = @current_definition
     
     if def_data
       file = def_data.file
-      def_type = def_data.type
-      def_id = def_data.id
     end
 
     if file
@@ -339,8 +335,6 @@ private
     m << " #{msg.capitalize_first}"
 
     e = DefinitionError.new(m)
-    e.instance_variable_set(:@definition_type, def_type)
-    e.instance_variable_set(:@definition_id, def_id)
     e.instance_variable_set(:@file, file)
     e.instance_variable_set(:@line, line)
     e.set_backtrace([])

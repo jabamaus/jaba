@@ -31,8 +31,6 @@ class TestBoolAttribute < JabaTest
       #e.message.must_match('\'enabled\' attribute has invalid default')
       #e.file.must_equal(__FILE__)
       #e.line.must_equal(find_line_number('default 1', __FILE__))
-      #e.definition_type.must_equal(:text)
-      #e.definition_id.must_be_nil
     end
     
     it 'supports boolean accessor when reading' do

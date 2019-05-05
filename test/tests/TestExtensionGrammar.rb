@@ -5,12 +5,12 @@ class TestExtensionGrammar < JabaTest
   describe 'ExtensionGrammar' do
 
     it 'fails if try to extend undefined type' do
-      #check_fails(msg: "'undefined' has not been defined", file: __FILE__, line: 'extend :undefined', type: :undefined, id: nil) do
+      check_fails(msg: "'undefined' has not been defined", file: __FILE__, line: 'extend :undefined') do
         jaba do
           extend :undefined do
           end
         end
-      #end
+      end
     end
     
     it 'supports adding an attribute to core types' do
@@ -28,7 +28,7 @@ class TestExtensionGrammar < JabaTest
     end
 
     it 'supports defining new attribute types' do
-      #check_fails(msg: 'Failed validation', file: __FILE__, line: "raise 'Failed validation'", type: :attr_type, id: :a) do
+      #check_fails(msg: 'Failed validation', file: __FILE__, line: "raise 'Failed validation'") do
         jaba do
           attr_type :a do
             validate do
@@ -57,8 +57,6 @@ class TestExtensionGrammar < JabaTest
       e.message.must_match(/'undefined' attribute type is undefined. Valid types: \[.*?\]/)
       #e.file.must_equal(__FILE__)
       #e.line.must_equal(find_line_number('attr :undefined', __FILE__))
-      #e.definition_type.must_equal(:a)
-      #e.definition_id.must_be_nil
     end
     
     it 'supports definining new attribute flags' do

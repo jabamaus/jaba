@@ -51,8 +51,6 @@ class TestText < JabaTest
         end
       end
       e.message.must_match('\'filename\' property requires a value')
-      e.definition_type.must_equal(:text_file)
-      e.definition_id.must_equal(:a)
     end
 
     it 'can add src files to a text file' do

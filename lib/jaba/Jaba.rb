@@ -60,15 +60,6 @@ end
 #
 class DefinitionError < StandardError
   
-  # The type of the definition that the error occurred in (eg project/workspace). nil if the error did not happen inside
-  # a definition.
-  #
-  attr_reader :definition_type
-
-  # The definition that the error occurred in. nil if the error did not happen inside a definition.
-  #
-  attr_reader :definition_id
-  
   ##
   # The definition file the error occurred in. Not available if definitions were executed as a block.
   #
