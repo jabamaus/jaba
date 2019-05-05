@@ -4,6 +4,7 @@ module JABA
 #
 class AttributeType
 
+  attr_reader :default
   attr_reader :validator
   
   ##
@@ -11,6 +12,7 @@ class AttributeType
   def initialize(services, def_data)
     @services = services
     @def_data = def_data
+    @default = nil
     @validator = nil
   end
   
@@ -140,9 +142,24 @@ class AttributeDefinition
     end
     
     if @type_obj
+      # If default has not already been set fall back to the default specified by the attribute type, if one
+      # has been set there.
+      #
+      if @default.nil?
+        default_hook = @type_obj.default
+        
+        if default_hook
+          @default = instance_eval(&default_hook)
+        end
+      end
+      
       v = @type_obj.validator
       if v
-        v.call
+        begin
+          instance_eval(&v)
+        rescue => e
+          @services.definition_error(e.message)
+        end
       end
     end
   end

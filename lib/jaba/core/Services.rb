@@ -331,7 +331,11 @@ private
 
     m = ''
     m << 'Definition error' if !warn
-    m << " at #{file.basename}:#{line}:" if file
+    if file
+      m << " at #{file.basename}:#{line}:"
+    else
+      m << ' at unknown location:' # TODO
+    end
     m << " #{msg.capitalize_first}"
 
     e = DefinitionError.new(m)

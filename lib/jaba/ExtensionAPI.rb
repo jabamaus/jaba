@@ -38,6 +38,12 @@ class AttributeTypeAPI < APIBase
   
   ##
   #
+  def default(&block)
+    @obj.set_block(:default, &block)
+  end
+  
+  ##
+  #
   def validate(&block)
     @obj.set_block(:validator, &block)
   end
