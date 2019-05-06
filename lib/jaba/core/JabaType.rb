@@ -58,7 +58,7 @@ class JabaType
     if @attribute_defs.find{|d| d.id == id}
       @services.definition_error("'#{id}' attribute multiply defined", block.source_location)
     end
-    ad = AttributeDefinition.new(@services, id)
+    ad = AttributeDefinition.new(@services, id, block.source_location)
     api = @services.attr_definition_api
     api.__internal_set_obj(ad)
     api.instance_eval(&block) if block_given?
@@ -95,9 +95,10 @@ class AttributeDefinition
   
   ##
   #
-  def initialize(services, id)
+  def initialize(services, id, source_location)
     @services = services
     @id = id
+    @source_location = source_location
 
     @default = nil
     @flags = nil
@@ -118,21 +119,21 @@ class AttributeDefinition
       instance_variable_set("@#{var}", block)
     else
       instance_variable_set("@#{var}", val)
+      case var
+      when :type
+        # Convert type id to AttributeType object
+        #
+        @type_obj = @services.get_attribute_type(@type)
+        if !@type_obj
+          @services.definition_error("'#{@type}' attribute type is undefined. Valid types: #{@services.jaba_attr_types.map{|at| at.type}}", caller[1])
+        end
+      end
     end
   end
   
   ##
   #
   def init
-    # Convert type id to AttributeType object if type has been set
-    #
-    if @type
-      @type_obj = @services.get_attribute_type(@type)
-      if !@type_obj
-        @services.definition_error("'#{@type}' attribute type is undefined. Valid types: #{@services.jaba_attr_types.map{|at| at.type}}", nil) # TODO: source_location
-      end
-    end
-    
     if @type_obj
       # If default has not already been set fall back to the default specified by the attribute type, if one
       # has been set there.
@@ -150,7 +151,7 @@ class AttributeDefinition
         begin
           instance_eval(&v)
         rescue => e
-          @services.definition_error(e.message, e.backtrace[0])
+          @services.definition_error("'#{id}' attribute definition failed validation: #{e.message.capitalize_first}", @source_location)
         end
       end
     end

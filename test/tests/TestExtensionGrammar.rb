@@ -28,11 +28,11 @@ class TestExtensionGrammar < JabaTest
     end
 
     it 'supports defining new attribute types' do
-      check_fails(msg: 'Failed validation', file: __FILE__, line: "raise 'Failed validation'") do
+      check_fails(msg: "'b' attribute definition failed validation: Invalid", file: __FILE__, line: "raise 'invalid'") do
         jaba do
           attr_type :a do
             validate do
-              raise 'Failed validation'
+              raise 'invalid'
             end
           end
           extend :text do
@@ -45,7 +45,7 @@ class TestExtensionGrammar < JabaTest
     end
     
     it 'detects usage of undefined attribute types' do
-      e = assert_raises DefinitionError do
+      check_fails(msg: /'undefined' attribute type is undefined. Valid types: \[.*?\]/, file: __FILE__, line: 'type :undefined') do
         jaba do
           define :a do
             attr :b do
@@ -54,9 +54,6 @@ class TestExtensionGrammar < JabaTest
           end
         end
       end
-      e.message.must_match(/'undefined' attribute type is undefined. Valid types: \[.*?\]/)
-      #e.file.must_equal(__FILE__)
-      #e.line.must_equal(find_line_number('attr :undefined', __FILE__))
     end
     
     it 'supports definining new attribute flags' do
