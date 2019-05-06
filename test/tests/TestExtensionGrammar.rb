@@ -28,7 +28,8 @@ class TestExtensionGrammar < JabaTest
     end
 
     it 'supports defining new attribute types' do
-      check_fails(msg: "'b' attribute definition failed validation: Invalid", file: __FILE__, line: "raise 'invalid'") do
+      check_fails(msg: "'b' attribute definition failed validation: Invalid", file: __FILE__, line: "raise 'invalid'",
+                  backtrace: ["#{__FILE__}:#{find_line_number('attr :b do', __FILE__)}"]) do
         jaba do
           attr_type :a do
             validate do

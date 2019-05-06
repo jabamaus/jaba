@@ -151,7 +151,7 @@ class AttributeDefinition
         begin
           instance_eval(&v)
         rescue => e
-          @services.definition_error("'#{id}' attribute definition failed validation: #{e.message.capitalize_first}", @source_location)
+          @services.definition_error("'#{id}' attribute definition failed validation: #{e.message.capitalize_first}", e.backtrace[0], backtrace: [@source_location])
         end
       end
     end

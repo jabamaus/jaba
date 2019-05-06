@@ -25,7 +25,10 @@ module JABA
     # Helper for testing error reporting.
     #
     def find_line_number(string, file)
-      ln = IO.read(file).each_line.find_index {|line| line =~ /^\s+#{string}/}
+      if !File.exist?(file)
+        raise "#{file} does not exist"
+      end
+      ln = IO.read(file).each_line.find_index {|l| l =~ /^\s+#{string}/}
       if ln.nil?
         raise "'#{string}' not found in #{file}"
       end
@@ -34,14 +37,18 @@ module JABA
   
     ##
     #
-    def check_fails(msg:, file:, line:)
+    def check_fails(msg:, file:, line:, backtrace: nil)
       e = assert_raises DefinitionError do
         yield
       end
       e.message.must_match(msg)
       e.file.must_equal(file)
       e.line.must_equal(find_line_number(line, file))
-      e.backtrace.must_equal([])
+      if backtrace
+        e.backtrace.must_equal(backtrace)
+      else
+        e.backtrace.must_equal([])
+      end
       e
     end
   end

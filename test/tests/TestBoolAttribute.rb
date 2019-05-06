@@ -7,21 +7,23 @@ class TestBoolAttribute < JabaTest
     it 'defaults to false' do
       jaba do
         extend :text do
-          attr :enabled do
+          attr :a do
             type :bool
           end
         end
         text :t do
-          enabled.must_equal(false)
+          a.must_equal(false)
         end
       end
     end
     
     it 'requires a default of true or false' do
-      check_fails(msg: 'Default must be boolean', file: __FILE__, line: 'default 1')  do
+      # TODO: remove hard coded absolute path
+      check_fails(msg: 'Default must be boolean', file: "C:/projects/GitHub/jaba/lib/jaba/core/Types.rb", line: "raise 'Default must be boolean'",
+                  backtrace: ["#{__FILE__}:#{find_line_number('attr :b do', __FILE__)}"]) do
         jaba do
           extend :text do
-            attr :enabled do
+            attr :b do
               type :bool
               default 1
             end
@@ -33,17 +35,17 @@ class TestBoolAttribute < JabaTest
     it 'supports boolean accessor when reading' do
       jaba do
         extend :text do
-          attr :enabled do
+          attr :c do
             type :bool
             default true
           end
         end
         text :b do
-          enabled.must_equal(true)
-          enabled?.must_equal(true)
-          enabled false
-          enabled.must_equal(false)
-          enabled?.must_equal(false)
+          c.must_equal(true)
+          c?.must_equal(true)
+          c false
+          c.must_equal(false)
+          c?.must_equal(false)
         end
       end
     end

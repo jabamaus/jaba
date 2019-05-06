@@ -129,14 +129,14 @@ class Services
   
   ##
   #
-  def definition_warning(msg, source_location)
-    warning make_definition_error(msg, source_location, warn: true).message
+  def definition_warning(msg, source_location, backtrace: nil)
+    warning make_definition_error(msg, source_location, backtrace: backtrace, warn: true).message
   end
   
   ##
   #
-  def definition_error(msg, source_location)
-    raise make_definition_error(msg, source_location)
+  def definition_error(msg, source_location, backtrace: nil)
+    raise make_definition_error(msg, source_location, backtrace: backtrace)
   end
   
   ##
@@ -261,7 +261,7 @@ private
 
   ##
   #
-  def make_definition_error(msg, source_location, warn: false)
+  def make_definition_error(msg, source_location, backtrace: nil, warn: false)
     m = ''
     file = nil
     line = nil
@@ -289,7 +289,12 @@ private
     if source_location
       e.instance_variable_set(:@file, file)
       e.instance_variable_set(:@line, line)
-      e.set_backtrace([])
+      if backtrace
+        backtrace = backtrace.map{|elem| Array(elem).join(':')}
+        e.set_backtrace(backtrace)
+      else
+        e.set_backtrace([])
+      end
     end
     e
   end
