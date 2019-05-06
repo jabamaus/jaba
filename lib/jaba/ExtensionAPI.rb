@@ -44,8 +44,8 @@ class AttributeTypeAPI < APIBase
   
   ##
   #
-  def validate(&block)
-    @obj.set_block(:validator, &block)
+  def validate_value(&block)
+    @obj.set_block(:value_validator, &block)
   end
   
 end

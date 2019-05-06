@@ -218,7 +218,7 @@ private
     if defs
       defs.each do |def_data|
         jt = @jaba_types.find{|t| t.type == def_data.type}
-        jo = JabaObject.new(jt, def_data.id, def_data.block.source_location)
+        jo = JabaObject.new(self, jt, def_data.id, def_data.block.source_location)
         @jaba_object_api.__internal_set_obj(jo)
         @jaba_object_api.instance_eval(&def_data.block)
         jo.call_generators

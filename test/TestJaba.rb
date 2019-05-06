@@ -28,7 +28,7 @@ module JABA
       if !File.exist?(file)
         raise "#{file} does not exist"
       end
-      ln = IO.read(file).each_line.find_index {|l| l =~ /^\s+#{string}/}
+      ln = IO.read(file).each_line.find_index {|l| l =~ /^\s+#{Regexp.escape(string)}/}
       if ln.nil?
         raise "'#{string}' not found in #{file}"
       end

@@ -25,6 +25,18 @@ end
 
 ##
 #
+class Object
+
+  ##
+  #
+  def boolean?
+    (is_a?(TrueClass) or is_a?(FalseClass))
+  end
+  
+end
+
+##
+#
 class String
 
   ##

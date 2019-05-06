@@ -19,7 +19,7 @@ class TestBoolAttribute < JabaTest
     
     it 'requires a default of true or false' do
       # TODO: remove hard coded absolute path
-      check_fails(msg: 'Default must be boolean', file: "C:/projects/GitHub/jaba/lib/jaba/core/Types.rb", line: "raise 'Default must be boolean'",
+      check_fails(msg: ':bool attributes only accept [true|false]', file: "C:/projects/GitHub/jaba/lib/jaba/core/Types.rb", line: "raise ':bool attributes only accept [true|false]'",
                   backtrace: ["#{__FILE__}:#{find_line_number('attr :b do', __FILE__)}"]) do
         jaba do
           extend :text do
@@ -32,25 +32,54 @@ class TestBoolAttribute < JabaTest
       end
     end
     
+    it 'only allows boolean values' do
+      check_fails(msg: ':bool attributes only accept [true|false]', file: __FILE__, line: "c 1") do
+        jaba do
+          extend :text do
+            attr :c do
+              type :bool
+              default true
+            end
+          end
+          text :b do
+            c 1
+          end
+        end
+      end
+    end
+    
     it 'supports boolean accessor when reading' do
       jaba do
         extend :text do
-          attr :c do
+          attr :d do
             type :bool
             default true
           end
         end
         text :b do
-          c.must_equal(true)
-          c?.must_equal(true)
-          c false
-          c.must_equal(false)
-          c?.must_equal(false)
+          d.must_equal(true)
+          d?.must_equal(true)
+          d false
+          d.must_equal(false)
+          d?.must_equal(false)
         end
       end
     end
     
     it 'rejects boolean accessor on non-boolean properties' do
+      check_fails(msg: "'e' attribute is not of type :bool", file: __FILE__, line: 'if e?') do
+        jaba do
+          extend :text do
+            attr :e do
+              type :file
+            end
+          end
+          text :a do
+            if e?
+            end
+          end
+        end
+      end
     end
     
   end

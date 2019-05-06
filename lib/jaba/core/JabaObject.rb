@@ -6,8 +6,9 @@ class Attribute
 
   ##
   #
-  def initialize(attr_def)
-    @def = attr_def
+  def initialize(services, attr_def)
+    @services = services
+    @attr_def = attr_def
     set(attr_def.default)
   end
   
@@ -20,6 +21,14 @@ class Attribute
   ##
   #
   def set(value, from_definitions=false, *options, prefix: nil, suffix: nil, **key_value_options, &block)
+    vv = @attr_def.type_obj&.value_validator
+    if vv
+      begin
+        instance_exec(value, &vv)
+      rescue => e
+        @services.definition_error("'#{@attr_def.id}' attribute failed validation: #{e.message.capitalize_first}", e.backtrace[0], backtrace: [@source_location])
+      end
+    end
     @value = value
   end
   
@@ -33,7 +42,8 @@ class JabaObject
   
   ##
   #
-  def initialize(jaba_type, id, source_location)
+  def initialize(services, jaba_type, id, source_location)
+    @services = services
     @jaba_type = jaba_type
     @id = id
     @source_location = source_location
@@ -44,7 +54,7 @@ class JabaObject
     @generators = []
 
     @jaba_type.each_attr do |attr_def|
-      a = Attribute.new(attr_def)
+      a = Attribute.new(services, attr_def)
       if attr_def.type == :bool
         @attribute_lookup["#{attr_def.id}?".to_sym] = a
       end
@@ -55,10 +65,8 @@ class JabaObject
   
   ##
   #
-  def get_attr(id, fail_if_not_found: true)
-    a = @attribute_lookup[id]
-    raise NoMethodError, "'#{id}' attribute not found in '#{definition_id}'" if (!a and fail_if_not_found)
-    a
+  def get_attr(id)
+    @attribute_lookup[id]
   end
   
   ##
@@ -84,15 +92,20 @@ class JabaObject
   #
   def handle_attr(id, called_from_definitions, *args, **key_value_args, &block)
     getter = (args.empty? and key_value_args.empty?)
-    a = get_attr(id, fail_if_not_found: false)
+    a = get_attr(id)
 
-    # TODO: try to unify errors
-    if called_from_definitions
-      if !a
-        definition_error("'#{id}' attribute not defined", @source_location) # TODO: wrong source location
+    if !a
+      if called_from_definitions
+        raw_id = id.to_s.chomp('?').to_sym # Remove any trailing '?' (used with boolean attrs) to get the raw name
+        a2 = get_attr(raw_id)
+        if a2
+          @services.definition_error("'#{raw_id}' attribute is not of type :bool", caller[1])
+        else
+          @services.definition_error("'#{raw_id}' attribute not defined", caller[1])
+        end
+      else
+        raise NoMethodError, "'#{id}' attribute not defined"
       end
-    elsif !a
-      raise NoMethodError, "'#{id}' attribute not defined"
     end
     
     if getter

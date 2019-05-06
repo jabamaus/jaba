@@ -7,9 +7,9 @@ attr_flag :allow_dupes
 #
 attr_type :bool do
   default {false}
-  validate do
-    if (!default.is_a?(::TrueClass) and !default.is_a?(::FalseClass))
-      raise 'Default must be boolean'
+  validate_value do |value|
+    if !value.boolean?
+      raise ':bool attributes only accept [true|false]'
     end
   end
 end

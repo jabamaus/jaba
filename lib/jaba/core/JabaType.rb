@@ -6,7 +6,7 @@ class AttributeType
 
   attr_reader :default
   attr_reader :type
-  attr_reader :validator
+  attr_reader :value_validator
   
   ##
   #
@@ -14,7 +14,7 @@ class AttributeType
     @services = services
     @type = type_id
     @default = nil
-    @validator = nil
+    @value_validator = nil
   end
 
   ##
@@ -91,6 +91,7 @@ class AttributeDefinition
 
   attr_reader :id
   attr_reader :type # eg :bool, :file, :path etc
+  attr_reader :type_obj # AttributeType object
   attr_reader :default
   
   ##
@@ -146,12 +147,14 @@ class AttributeDefinition
         end
       end
       
-      v = @type_obj.validator
-      if v
-        begin
-          instance_eval(&v)
-        rescue => e
-          @services.definition_error("'#{id}' attribute definition failed validation: #{e.message.capitalize_first}", e.backtrace[0], backtrace: [@source_location])
+      if @default
+        vv = @type_obj.value_validator
+        if vv
+          begin
+            instance_exec(@default, &vv)
+          rescue => e
+            @services.definition_error("'#{id}' attribute definition failed validation: #{e.message.capitalize_first}", e.backtrace[0], backtrace: [@source_location])
+          end
         end
       end
     end
