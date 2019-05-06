@@ -9,9 +9,14 @@ class Services
   attr_reader :input
   
   ##
+  # For error reporting.
+  #
+  SourceLocation = Struct.new(:file, :line)
+  
+  ##
   # Records information about each definition the user has made.
   #
-  Definition = Struct.new(:type, :id, :file, :line, :block, :options)
+  Definition = Struct.new(:type, :id, :source_location, :block, :options)
   
   attr_reader :attr_definition_api
   
@@ -67,14 +72,7 @@ class Services
   ##
   #
   def define_attr_type(type, **options, &block)
-    if caller[1] !~ /^(.*)?:(\d+):/
-      raise "Could not determine file and line number for '#{type}'"
-    end
-    
-    file = $1
-    line = $2.to_i
-    
-    @jaba_attr_types << Definition.new(type, nil, file, line, block, options)
+    @jaba_attr_types << Definition.new(type, nil, find_source_location, block, options)
   end
   
   ##
@@ -95,40 +93,19 @@ class Services
   ##
   #
   def define_type(type, **options, &block)
-    if caller[1] !~ /^(.*)?:(\d+):/
-      raise "Could not determine file and line number for '#{type}'"
-    end
-    
-    file = $1
-    line = $2.to_i
-    
-    @jaba_types << Definition.new(type, nil, file, line, block, options)
+    @jaba_types << Definition.new(type, nil, find_source_location, block, options)
   end
   
   ##
   #
   def extend_type(type, **options, &block)
-    if caller[1] !~ /^(.*)?:(\d+):/
-      raise "Could not determine file and line number for '#{type}'"
-    end
-    
-    file = $1
-    line = $2.to_i
-    
-    @types_to_extend << Definition.new(type, nil, file, line, block, options)
+    @types_to_extend << Definition.new(type, nil, find_source_location, block, options)
   end
   
   ##
   #
   def define_instance(type, id, **options, &block)
-    if caller[1] !~ /^(.*)?:(\d+):/
-      raise "Could not determine file and line number for '#{type}' '#{id}'"
-    end
-    
-    file = $1
-    line = $2.to_i
-    
-    def_data = Definition.new(type, id, file, line, block, options)
+    def_data = Definition.new(type, id, find_source_location, block, options)
     @current_definition = def_data
     
     if id
@@ -301,12 +278,22 @@ private
   
   ##
   #
+  def find_source_location
+    if caller[2] !~ /^(.*)?:(\d+):/
+      raise 'Could not determine file and line number'
+    end
+
+    SourceLocation.new($1, $2.to_i)
+  end
+  
+  ##
+  #
   def make_definition_error(msg, file: nil, callstack: nil, warn: false)
     line = nil
     def_data = @current_definition
     
     if def_data
-      file = def_data.file
+      file = def_data.source_location.file
     end
 
     if file
@@ -321,7 +308,7 @@ private
         end
         line = $1.to_i
       elsif def_data
-        line = def_data.line
+        line = def_data.source_location.line
       end
     end
 
