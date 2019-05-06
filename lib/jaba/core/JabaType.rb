@@ -5,23 +5,18 @@ module JABA
 class AttributeType
 
   attr_reader :default
+  attr_reader :type
   attr_reader :validator
   
   ##
   #
-  def initialize(services, def_data)
+  def initialize(services, type_id)
     @services = services
-    @def_data = def_data
+    @type = type_id
     @default = nil
     @validator = nil
   end
-  
-  ##
-  #
-  def type
-    @def_data.type
-  end
-  
+
   ##
   #
   def set_var(var, val)
@@ -32,7 +27,7 @@ class AttributeType
   #
   def set_block(var, &block)
     if !block_given?
-      @services.definition_error('Must provide a block')
+      raise 'Must provide a block'
     end
     instance_variable_set("@#{var}", block)
   end
@@ -44,30 +39,24 @@ end
 #
 class JabaType
 
-  attr_reader :def_data
+  attr_reader :type
   
   ##
   #
-  def initialize(services, def_data)
+  def initialize(services, type_id)
     @services = services
-    @def_data = def_data
+    @type = type_id
     @attribute_defs = []
-  end
-  
-  ##
-  #
-  def type
-    @def_data.type
   end
   
   ##
   #
   def define_attr(id, **options, &block)
     if !id.is_a?(Symbol)
-      @services.definition_error("'#{id}' attribute id must be specified as a symbol")
+      @services.definition_error("'#{id}' attribute id must be specified as a symbol", block.source_location)
     end
     if @attribute_defs.find{|d| d.id == id}
-      @services.definition_error("'#{id}' attribute multiply defined")
+      @services.definition_error("'#{id}' attribute multiply defined", block.source_location)
     end
     ad = AttributeDefinition.new(@services, id)
     api = @services.attr_definition_api
@@ -124,7 +113,7 @@ class AttributeDefinition
   def set_var(var, val=nil, &block)
     if block_given?
       if !val.nil?
-        @services.definition_error('Must provide a default value or a block but not both')
+        raise 'Must provide a default value or a block but not both' # TODO: test
       end
       instance_variable_set("@#{var}", block)
     else
@@ -139,6 +128,9 @@ class AttributeDefinition
     #
     if @type
       @type_obj = @services.get_attribute_type(@type)
+      if !@type_obj
+        @services.definition_error("'#{@type}' attribute type is undefined. Valid types: #{@services.jaba_attr_types.map{|at| at.type}}", nil) # TODO: source_location
+      end
     end
     
     if @type_obj
@@ -158,7 +150,7 @@ class AttributeDefinition
         begin
           instance_eval(&v)
         rescue => e
-          @services.definition_error(e.message)
+          @services.definition_error(e.message, e.backtrace[0])
         end
       end
     end

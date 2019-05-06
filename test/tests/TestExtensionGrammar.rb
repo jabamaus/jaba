@@ -28,11 +28,11 @@ class TestExtensionGrammar < JabaTest
     end
 
     it 'supports defining new attribute types' do
-      #check_fails(msg: 'Failed validation', file: __FILE__, line: "raise 'Failed validation'") do
+      check_fails(msg: 'Failed validation', file: __FILE__, line: "raise 'Failed validation'") do
         jaba do
           attr_type :a do
             validate do
-              #raise 'Failed validation' # TODO
+              raise 'Failed validation'
             end
           end
           extend :text do
@@ -41,7 +41,7 @@ class TestExtensionGrammar < JabaTest
             end
           end
         end
-      #end
+      end
     end
     
     it 'detects usage of undefined attribute types' do

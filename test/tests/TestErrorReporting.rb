@@ -14,7 +14,7 @@ class TestErrorReporting < JabaTest
       e.file.must_equal(__FILE__)
       line = find_line_number('category \'invalid id\' do', __FILE__)
       e.line.must_equal(line)
-      e.message.must_equal("Definition error at TestErrorReporting.rb:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'")
+      e.message.must_equal("Error at TestErrorReporting.rb:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'")
       e.backtrace.must_equal([])
       e.cause.must_be_nil
     end
@@ -28,7 +28,7 @@ class TestErrorReporting < JabaTest
       e.file.must_equal(fullpath)
       line = 3
       e.line.must_equal(line)
-      e.message.must_equal("Definition error at TestErrorReporting1.rb:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'")
+      e.message.must_equal("Error at TestErrorReporting1.rb:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'")
       e.backtrace.must_equal([])
       e.cause.must_be_nil
     end
@@ -44,7 +44,7 @@ class TestErrorReporting < JabaTest
       e.file.must_equal(__FILE__)
       line = find_line_number('bad code', __FILE__)
       e.line.must_equal(line)
-      e.message.must_match("Definition error at TestErrorReporting.rb:#{line}: NameError: undefined local variable or method")
+      e.message.must_match("Error at TestErrorReporting.rb:#{line}: NameError: undefined local variable or method")
       e.backtrace.must_equal([])
       e.cause.wont_be_nil
     end

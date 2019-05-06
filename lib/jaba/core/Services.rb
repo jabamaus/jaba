@@ -9,16 +9,12 @@ class Services
   attr_reader :input
   
   ##
-  # For error reporting.
-  #
-  SourceLocation = Struct.new(:file, :line)
-  
-  ##
   # Records information about each definition the user has made.
   #
-  Definition = Struct.new(:type, :id, :source_location, :block, :options)
+  Definition = Struct.new(:type, :id, :block, :options)
   
   attr_reader :attr_definition_api
+  attr_reader :jaba_attr_types
   
   ##
   #
@@ -72,17 +68,13 @@ class Services
   ##
   #
   def define_attr_type(type, **options, &block)
-    @jaba_attr_types << Definition.new(type, nil, find_source_location, block, options)
+    @jaba_attr_types << Definition.new(type, nil, block, options)
   end
   
   ##
   #
   def get_attribute_type(type, fail_if_not_found: true)
-    t = @jaba_attr_types.find{|at| at.type == type}
-    if (!t and fail_if_not_found)
-      definition_error("'#{type}' attribute type is undefined. Valid types: #{@jaba_attr_types.map{|at| at.type}}")
-    end
-    t
+    @jaba_attr_types.find{|at| at.type == type}
   end
   
   ##
@@ -93,32 +85,30 @@ class Services
   ##
   #
   def define_type(type, **options, &block)
-    @jaba_types << Definition.new(type, nil, find_source_location, block, options)
+    @jaba_types << Definition.new(type, nil, block, options)
   end
   
   ##
   #
   def extend_type(type, **options, &block)
-    @types_to_extend << Definition.new(type, nil, find_source_location, block, options)
+    @types_to_extend << Definition.new(type, nil, block, options)
   end
   
   ##
   #
   def define_instance(type, id, **options, &block)
-    def_data = Definition.new(type, id, find_source_location, block, options)
-    @current_definition = def_data
+    def_data = Definition.new(type, id, block, options)
     
     if id
       if (!(id.is_a?(Symbol) or id.is_a?(String)) or id !~ /^[a-zA-Z0-9_.]+$/)
-        definition_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'")
+        definition_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'", block.source_location)
       end
       if definition_defined?(type, id)
-        definition_error("'#{id}' multiply defined")
+        definition_error("'#{id}' multiply defined", block.source_location)
       end
     end
     
     @definition_registry.push_value(type, def_data)
-    @current_definition = nil
   end
   
   ##
@@ -139,14 +129,14 @@ class Services
   
   ##
   #
-  def definition_warning(msg)
-    warning make_definition_error(msg, warn: true).message
+  def definition_warning(msg, source_location)
+    warning make_definition_error(msg, source_location, warn: true).message
   end
   
   ##
   #
-  def definition_error(msg)
-    raise make_definition_error(msg)
+  def definition_error(msg, source_location)
+    raise make_definition_error(msg, source_location)
   end
   
   ##
@@ -177,36 +167,30 @@ private
     # Create attribute types
     #
     @jaba_attr_types.map! do |def_data|
-      @current_definition = def_data
-      at = AttributeType.new(self, def_data)
+      at = AttributeType.new(self, def_data.type)
       @attr_type_api.__internal_set_obj(at)
       @attr_type_api.instance_eval(&def_data.block)
-      @current_definition = nil
       at
     end
     
     # Create a JabaType object for each defined type
     #
     @jaba_types.map! do |def_data|
-      @current_definition = def_data
-      jt = JabaType.new(self, def_data)
+      jt = JabaType.new(self, def_data.type)
       @jaba_type_api.__internal_set_obj(jt)
       @jaba_type_api.instance_eval(&def_data.block)
-      @current_definition = nil
       jt
     end
     
     # Extend JabaTypes
     #
     @types_to_extend.each do |def_data|
-      @current_definition = def_data
       jt = @jaba_types.find{|t| t.type == def_data.type}
       if !jt
-        definition_error("'#{def_data.type}' has not been defined")
+        definition_error("'#{def_data.type}' has not been defined", def_data.block.source_location)
       end
       @jaba_type_api.__internal_set_obj(jt)
       @jaba_type_api.instance_eval(&def_data.block)
-      @current_definition = nil
     end
     
     @jaba_types.each(&:init)
@@ -234,7 +218,7 @@ private
     if defs
       defs.each do |def_data|
         jt = @jaba_types.find{|t| t.type == def_data.type}
-        jo = JabaObject.new(jt, def_data)
+        jo = JabaObject.new(jt, def_data.id, def_data.block.source_location)
         @jaba_object_api.__internal_set_obj(jo)
         @jaba_object_api.instance_eval(&def_data.block)
         jo.call_generators
@@ -249,13 +233,12 @@ private
       @toplevel_api.instance_eval(read_file(file), file)
     end
     if block_given?
-      file = block.source_location[0]
       @toplevel_api.instance_eval(&block)
     end
   rescue DefinitionError
     raise # Prevent fallthrough to next case
   rescue Exception => e # Catch all errors, including SyntaxErrors, by rescuing Exception
-    raise make_definition_error("#{e.class}: #{e.message}", file: file, callstack: e.backtrace)
+    raise make_definition_error("#{e.class}: #{e.message}", e.backtrace[0])
   end
   
   ##
@@ -275,58 +258,40 @@ private
       execute_definitions(f)
     end
   end
-  
+
   ##
   #
-  def find_source_location
-    if caller[2] !~ /^(.*)?:(\d+):/
-      raise 'Could not determine file and line number'
-    end
-
-    SourceLocation.new($1, $2.to_i)
-  end
-  
-  ##
-  #
-  def make_definition_error(msg, file: nil, callstack: nil, warn: false)
-    line = nil
-    def_data = @current_definition
-    
-    if def_data
-      file = def_data.source_location.file
-    end
-
-    if file
-      # See if callstack includes definition file and extract line number from it, to give exact line if inside a
-      # definition, else use definition's line number.
-      #
-      callstack = caller if !callstack
-      call_line = callstack.find{|f| f =~ /#{file}/}
-      if call_line
-        if call_line !~ /^.*?:(\d+):/
-          raise "Failed to extract line number from '#{call_line}'"
-        end
-        line = $1.to_i
-      elsif def_data
-        line = def_data.source_location.line
-      end
-    end
-
+  def make_definition_error(msg, source_location, warn: false)
     m = ''
-    m << 'Definition error' if !warn
-    if file
+    file = nil
+    line = nil
+    
+    if source_location
+      if source_location.is_a?(Array)
+        file = source_location[0]
+        line = source_location[1]
+      else
+        if source_location !~ /^(.+):(\d+):/
+          raise "Could not determine file and line number from source location '#{source_location}'"
+        end
+        file = $1
+        line = $2.to_i
+      end
+      m << (warn ? 'Warning' : 'Error')
       m << " at #{file.basename}:#{line}:"
+      m << " #{msg.capitalize_first}"
     else
-      m << ' at unknown location:' # TODO
+      m << msg
     end
-    m << " #{msg.capitalize_first}"
-
+    
     e = DefinitionError.new(m)
-    e.instance_variable_set(:@file, file)
-    e.instance_variable_set(:@line, line)
-    e.set_backtrace([])
+    
+    if source_location
+      e.instance_variable_set(:@file, file)
+      e.instance_variable_set(:@line, line)
+      e.set_backtrace([])
+    end
     e
-
   end
 
 end

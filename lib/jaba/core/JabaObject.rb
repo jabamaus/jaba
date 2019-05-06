@@ -29,11 +29,14 @@ end
 #
 class JabaObject
 
+  attr_reader :id
+  
   ##
   #
-  def initialize(jaba_type, def_data)
+  def initialize(jaba_type, id, source_location)
     @jaba_type = jaba_type
-    @def_data = def_data
+    @id = id
+    @source_location = source_location
     
     @attributes = []
     @attribute_lookup = {}
@@ -86,7 +89,7 @@ class JabaObject
     # TODO: try to unify errors
     if called_from_definitions
       if !a
-        definition_error("'#{id}' attribute not defined")
+        definition_error("'#{id}' attribute not defined", @source_location) # TODO: wrong source location
       end
     elsif !a
       raise NoMethodError, "'#{id}' attribute not defined"

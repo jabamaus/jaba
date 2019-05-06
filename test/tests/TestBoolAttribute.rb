@@ -18,7 +18,7 @@ class TestBoolAttribute < JabaTest
     end
     
     it 'requires a default of true or false' do
-      e = assert_raises DefinitionError do
+      check_fails(msg: 'Default must be boolean', file: __FILE__, line: 'default 1')  do
         jaba do
           extend :text do
             attr :enabled do
@@ -28,9 +28,6 @@ class TestBoolAttribute < JabaTest
           end
         end
       end
-      #e.message.must_match('\'enabled\' attribute has invalid default')
-      #e.file.must_equal(__FILE__)
-      #e.line.must_equal(find_line_number('default 1', __FILE__))
     end
     
     it 'supports boolean accessor when reading' do

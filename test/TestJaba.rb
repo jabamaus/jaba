@@ -25,7 +25,7 @@ module JABA
     # Helper for testing error reporting.
     #
     def find_line_number(string, file)
-      IO.read(file).each_line.find_index {|line| line.include?(string)} + 1
+      IO.read(file).each_line.find_index {|line| line =~ /^\s+#{string}/} + 1
     end
   
     ##
