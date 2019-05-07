@@ -2,7 +2,9 @@ require 'minitest/spec'
 require_relative '../lib/jaba/jaba'
 
 module JABA
-
+  
+  CoreTypesFile = "C:/projects/GitHub/jaba/lib/jaba/core/Types.rb" # TODO: remove hard coded absolute path
+  
   class JabaTest < Minitest::Spec
     
     ##

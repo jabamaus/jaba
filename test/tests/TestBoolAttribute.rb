@@ -18,8 +18,7 @@ class TestBoolAttribute < JabaTest
     end
     
     it 'requires a default of true or false' do
-      # TODO: remove hard coded absolute path
-      check_fails(msg: ':bool attributes only accept [true|false]', file: "C:/projects/GitHub/jaba/lib/jaba/core/Types.rb", line: "raise ':bool attributes only accept [true|false]'",
+      check_fails(msg: ':bool attributes only accept [true|false]', file: CoreTypesFile, line: "raise ':bool attributes only accept [true|false]'",
                   backtrace: ["#{__FILE__}:#{find_line_number('attr :b do', __FILE__)}"]) do
         jaba do
           extend :text do
@@ -33,7 +32,8 @@ class TestBoolAttribute < JabaTest
     end
     
     it 'only allows boolean values' do
-      check_fails(msg: ':bool attributes only accept [true|false]', file: __FILE__, line: "c 1") do
+      check_fails(msg: ':bool attributes only accept [true|false]', file: CoreTypesFile, line: "raise ':bool attributes only accept [true|false]'",
+                  backtrace: ["#{__FILE__}:#{find_line_number('c 1', __FILE__)}"]) do
         jaba do
           extend :text do
             attr :c do

@@ -21,12 +21,14 @@ class Attribute
   ##
   #
   def set(value, from_definitions=false, *options, prefix: nil, suffix: nil, **key_value_options, &block)
-    vv = @attr_def.type_obj&.value_validator
-    if vv
-      begin
-        instance_exec(value, &vv)
-      rescue => e
-        @services.definition_error("'#{@attr_def.id}' attribute failed validation: #{e.message.capitalize_first}", e.backtrace[0], backtrace: [@source_location])
+    if from_definitions
+      vv = @attr_def.type_obj&.value_validator
+      if vv
+        begin
+          instance_exec(value, &vv)
+        rescue => e
+          @services.definition_error("'#{@attr_def.id}' attribute failed validation: #{e.message.capitalize_first}", e.backtrace[0], backtrace: [caller[3]])
+        end
       end
     end
     @value = value
