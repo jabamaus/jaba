@@ -20,7 +20,7 @@ class TestErrorReporting < JabaTest
     end
 
     it 'provides exception information when a definition contains an error when definitions supplied in a separate file' do
-      fullpath = "#{temp_dir}/TestErrorReporting1.rb"
+      fullpath = "#{temp_dir}/definitions.rb"
       IO.write(fullpath, "\n\ncategory 'invalid id' do\nend\n")
       e = assert_raises DefinitionError do
         jaba(load_paths: fullpath)
@@ -28,7 +28,7 @@ class TestErrorReporting < JabaTest
       e.file.must_equal(fullpath)
       line = 3
       e.line.must_equal(line)
-      e.message.must_equal("Error at TestErrorReporting1.rb:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'")
+      e.message.must_equal("Error at definitions.rb:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'")
       e.backtrace.must_equal([])
       e.cause.must_be_nil
     end
@@ -50,7 +50,7 @@ class TestErrorReporting < JabaTest
     end
 
     it 'provides exception information when a there is a syntax error when definitions supplied in a separate file' do
-      fullpath = "#{__dir__}/temp/TestErrorReporting2.rb"
+      fullpath = "#{temp_dir}/definitions.rb"
       IO.write(fullpath, "\n\nbad code\n")
       e = assert_raises DefinitionError do
         jaba(load_paths: fullpath)
