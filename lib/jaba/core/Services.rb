@@ -7,14 +7,13 @@ module JABA
 class Services
 
   attr_reader :input
-  
+  attr_reader :attr_definition_api
+  attr_reader :jaba_attr_types
+
   ##
   # Records information about each definition the user has made.
   #
   Definition = Struct.new(:type, :id, :block, :options)
-  
-  attr_reader :attr_definition_api
-  attr_reader :jaba_attr_types
   
   ##
   #
@@ -26,8 +25,9 @@ class Services
     @info = []
     @warnings = []
     
+    @all_generated_files = {}
     @added_files = []
-    @modified_file = []
+    @modified_files = []
     
     @jaba_attr_types = []
     @jaba_types = []
@@ -149,6 +149,50 @@ class Services
     content
   end
   
+  ##
+  #
+  def write_file(fn, content)
+    equal = false
+    exists = File.exist?(fn)
+    existing_content = exists ? IO.binread(fn).force_encoding(content.encoding) : nil
+    equal = (exists and content == existing_content)
+    
+    if !equal
+      dir = File.dirname(fn)
+      if !File.exist?(dir)
+        FileUtils.makedirs(fn)
+      end
+      File.open(file.basename, 'wb') {|f| f.write(content)}
+    end
+    
+    if !exists
+      :added
+    elsif !equal
+      :modified
+    end
+  end
+  
+  ##
+  #
+  def save_file(filename, content, eol)
+    if (eol == :windows or (eol == :native and windows?))
+      content.gsub!("\n", "\r\n")
+    end
+    #filename = filename.cleanpath
+    #log "Saving #{filename}"
+    warning "Duplicate file '#{filename}' generated" if @all_generated_files.has_key?(filename)
+    
+    #register_src_file(filename)
+    @all_generated_files[filename] = nil
+    
+    case write_file(filename, content)
+    when :modified
+      @modified_files << filename
+    when :added
+      @added_files << filename
+    end
+  end
+
 private
 
   ##

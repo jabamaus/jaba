@@ -79,6 +79,22 @@ end
 
 module JABA
 
+module OS
+  
+  ##
+  #
+  def windows?
+    true
+  end
+  
+  ##
+  #
+  def mac?
+    false
+  end
+  
+end
+
 ##
 #
 class Hooks
