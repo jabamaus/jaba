@@ -14,7 +14,7 @@ class APIBase < BasicObject
   ##
   #
   def raise(msg)
-    @obj.instance_variable_get(:@services).definition_error(msg) # TODO: improve
+    @obj.instance_variable_get(:@services).definition_error(msg, ::Kernel.caller[0]) # TODO: improve
   end
   
 end
@@ -91,7 +91,7 @@ class JabaObjectAPI < APIBase
   # Include one or more shared definitions in this one.
   #
   def include(*shared_definition_ids, args: nil)
-    @obj.include_shared(*shared_definition_ids, args: args)
+    @obj.include_shared(shared_definition_ids, args)
   end
 
   ##

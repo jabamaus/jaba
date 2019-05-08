@@ -87,7 +87,26 @@ class JabaObject
   
   ##
   #
-  def include_shared(ids, args: [])
+  def include_shared(ids, args)
+    ids.each do |id|
+      df = @services.get_definition(:shared, id, fail_if_not_found: false)
+      if !df
+        @services.definition_error("Shared definition '#{id}' not found", caller[3])
+      end
+      
+      n_expected_args = df.block.arity
+      n_supplied_args = args ? Array(args).size : 0
+      
+      if (n_supplied_args != n_expected_args)
+        @services.definition_error("shared definition '#{id}' expects #{n_expected_args} arguments but #{n_supplied_args} were passed", caller[3])
+      end
+      
+      if args.nil?
+        @services.jaba_object_api.instance_eval(&df.block)
+      else
+        @services.jaba_object_api.instance_exec(*args, &df.block)
+      end
+    end
   end
   
   ##

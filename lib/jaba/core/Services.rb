@@ -9,6 +9,7 @@ class Services
   attr_reader :input
   attr_reader :attr_definition_api
   attr_reader :jaba_attr_types
+  attr_reader :jaba_object_api
 
   ##
   # Records information about each definition the user has made.
