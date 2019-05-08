@@ -25,7 +25,7 @@ class JabaTest < Minitest::Spec
   ##
   #
   def temp_dir
-    dir = "#{JabaTest.temp_root}/#{self.name.delete(':')}"
+    dir = "#{JabaTest.temp_root}/#{self.class.name.split('::').last}/#{self.name.delete(':')}"
     if !File.exist?(dir)
       FileUtils.makedirs(dir)
     end
