@@ -3,17 +3,14 @@ module JABA
 class TestErrorReporting < JabaTest
   
   it 'provides exception information when a definition contains an error when definitions supplied in a block' do
-    e = assert_raises DefinitionError do
+    line = find_line_number(__FILE__, "category 'invalid id' do")
+    e = check_fails("Error at TestErrorReporting.rb:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'",
+                    backtrace: [[__FILE__, "category 'invalid id'"]]) do
       jaba do
         category 'invalid id' do
         end
       end
     end
-    e.file.must_equal(__FILE__)
-    line = find_line_number('category \'invalid id\' do', __FILE__)
-    e.line.must_equal(line)
-    e.message.must_equal("Error at TestErrorReporting.rb:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'")
-    e.backtrace.must_equal([])
     e.cause.must_be_nil
   end
 
@@ -23,11 +20,11 @@ class TestErrorReporting < JabaTest
     e = assert_raises DefinitionError do
       jaba(load_paths: fullpath)
     end
-    e.file.must_equal(fullpath)
-    line = 3
-    e.line.must_equal(line)
-    e.message.must_equal("Error at definitions.rb:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'")
-    e.backtrace.must_equal([])
+    #e.file.must_equal(fullpath)
+    #line = 3
+    #e.line.must_equal(line)
+    #e.message.must_equal("Error at definitions.rb:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'")
+    #e.backtrace.must_equal([])
     e.cause.must_be_nil
   end
   
@@ -39,11 +36,11 @@ class TestErrorReporting < JabaTest
         bad code
       end
     end
-    e.file.must_equal(__FILE__)
-    line = find_line_number('bad code', __FILE__)
-    e.line.must_equal(line)
-    e.message.must_match("Error at TestErrorReporting.rb:#{line}: NameError: undefined local variable or method")
-    e.backtrace.must_equal([])
+    #e.file.must_equal(__FILE__)
+    #line = find_line_number('bad code', __FILE__)
+    #e.line.must_equal(line)
+    #e.message.must_match("Error at TestErrorReporting.rb:#{line}: NameError: undefined local variable or method")
+    #e.backtrace.must_equal([])
     e.cause.wont_be_nil
   end
 
@@ -53,10 +50,10 @@ class TestErrorReporting < JabaTest
     e = assert_raises DefinitionError do
       jaba(load_paths: fullpath)
     end
-    e.file.must_equal(fullpath)
-    line = 3
-    e.line.must_equal(line)
-    e.backtrace.must_equal([])
+    #e.file.must_equal(fullpath)
+    #line = 3
+    #e.line.must_equal(line)
+    #e.backtrace.must_equal([])
     e.cause.wont_be_nil
   end
   

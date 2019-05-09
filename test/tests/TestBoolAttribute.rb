@@ -14,10 +14,13 @@ class TestBoolAttribute < JabaTest
       end
     end
   end
-  
+
   it 'requires a default of true or false' do
-    check_fails(msg: ':bool attributes only accept [true|false]', file: CoreTypesFile, line: "raise ':bool attributes only accept [true|false]'",
-                backtrace: ["#{__FILE__}:#{find_line_number('attr :b do', __FILE__)}"]) do
+    check_fails(':bool attributes only accept [true|false]',
+                backtrace: [
+                  [CoreTypesFile, "raise ':bool attributes only accept [true|false]'"],
+                  [__FILE__, 'attr :b do'] # evaluated later so exact call line is lost
+                ]) do
       jaba do
         extend :text do
           attr :b do
@@ -28,10 +31,13 @@ class TestBoolAttribute < JabaTest
       end
     end
   end
-  
+
   it 'only allows boolean values' do
-    check_fails(msg: ':bool attributes only accept [true|false]', file: CoreTypesFile, line: "raise ':bool attributes only accept [true|false]'",
-                backtrace: ["#{__FILE__}:#{find_line_number('c 1', __FILE__)}"]) do
+    check_fails(':bool attributes only accept [true|false]',
+                backtrace: [
+                  [CoreTypesFile, "raise ':bool attributes only accept [true|false]'"],
+                  [__FILE__, 'c 1']
+                ]) do
       jaba do
         extend :text do
           attr :c do
@@ -45,7 +51,7 @@ class TestBoolAttribute < JabaTest
       end
     end
   end
-  
+
   it 'supports boolean accessor when reading' do
     jaba do
       extend :text do
@@ -65,7 +71,7 @@ class TestBoolAttribute < JabaTest
   end
   
   it 'rejects boolean accessor on non-boolean properties' do
-    check_fails(msg: "'e' attribute is not of type :bool", file: __FILE__, line: 'if e?') do
+    check_fails("'e' attribute is not of type :bool", backtrace: [[__FILE__, 'if e?']]) do
       jaba do
         extend :text do
           attr :e do

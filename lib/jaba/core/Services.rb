@@ -26,6 +26,8 @@ class Services
     @info = []
     @warnings = []
     
+    @definition_src_files = []
+    
     @all_generated_files = {}
     @added_files = []
     @modified_files = []
@@ -102,10 +104,10 @@ class Services
     
     if id
       if (!(id.is_a?(Symbol) or id.is_a?(String)) or id !~ /^[a-zA-Z0-9_.]+$/)
-        definition_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'", block.source_location)
+        definition_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'")
       end
       if definition_defined?(type, id)
-        definition_error("'#{id}' multiply defined", block.source_location)
+        definition_error("'#{id}' multiply defined")
       end
     end
     
@@ -130,14 +132,14 @@ class Services
   
   ##
   #
-  def definition_warning(msg, source_location, backtrace: nil)
-    warning make_definition_error(msg, source_location, backtrace: backtrace, warn: true).message
+  def definition_warning(msg, callstack: nil)
+    warning make_definition_error(msg, callstack: callstack, warn: true).message
   end
   
   ##
   #
-  def definition_error(msg, source_location, backtrace: nil)
-    raise make_definition_error(msg, source_location, backtrace: backtrace)
+  def definition_error(msg, callstack: nil)
+    raise make_definition_error(msg, callstack: callstack)
   end
   
   ##
@@ -232,7 +234,7 @@ private
     @types_to_extend.each do |def_data|
       jt = @jaba_types.find{|t| t.type == def_data.type}
       if !jt
-        definition_error("'#{def_data.type}' has not been defined", def_data.block.source_location)
+        definition_error("'#{def_data.type}' has not been defined", callstack: def_data.block)
       end
       @jaba_type_api.__internal_set_obj(jt)
       @jaba_type_api.instance_eval(&def_data.block)
@@ -263,7 +265,7 @@ private
     if defs
       defs.each do |def_data|
         jt = @jaba_types.find{|t| t.type == def_data.type}
-        jo = JabaObject.new(self, jt, def_data.id, def_data.block.source_location)
+        jo = JabaObject.new(self, jt, def_data.id)
         @jaba_object_api.__internal_set_obj(jo)
         @jaba_object_api.instance_eval(&def_data.block)
         jo.call_generators
@@ -278,69 +280,91 @@ private
       @toplevel_api.instance_eval(read_file(file), file)
     end
     if block_given?
+      @definition_src_files << block.source_location[0]
       @toplevel_api.instance_eval(&block)
     end
   rescue DefinitionError
     raise # Prevent fallthrough to next case
   rescue Exception => e # Catch all errors, including SyntaxErrors, by rescuing Exception
-    raise make_definition_error("#{e.class}: #{e.message}", e.backtrace[0])
+    raise make_definition_error("#{e.class}: #{e.message}", callstack: e.backtrace)
   end
   
   ##
   #
   def load_definitions
-    files = []
-    files << "#{__dir__}/Types.rb" # Load core type definitions
+    @definition_src_files << "#{__dir__}/Types.rb" # Load core type definitions
     Array(input.load_paths).each do |p|
       raise "#{p} does not exist" if !File.exist?(p)
       if File.directory?(p)
-        files.concat(Dir.glob("#{p}/*.rb"))
+        @definition_src_files.concat(Dir.glob("#{p}/*.rb"))
       else
-        files << p
+        @definition_src_files << p
       end
     end
-    files.each do |f|
+    @definition_src_files.each do |f|
       execute_definitions(f)
     end
   end
 
   ##
+  # Errors can be raised in 3 contexts:
   #
-  def make_definition_error(msg, source_location, backtrace: nil, warn: false)
-    m = ''
-    file = nil
-    line = nil
-    
-    if source_location
-      if source_location.is_a?(Array)
-        file = source_location[0]
-        line = source_location[1]
+  # 1) Syntax errors/other ruby errors that are raised by the initial evaluation of the definition files or block in execute_definitions.
+  #    In this case no definition information will have been loaded. In this case the callstack is passed in and will be the backtrace of the
+  #    ruby exception.
+  # 2) Errors that are raised explicitly in the definitions themselves, or from in core code that is called directly from the definitions.
+  #    In this context the relevant definition lines will be in the callstack when the error was raised. In this case no callstack needs
+  #    to be passed in and the relevant callstack will be automatically extracted from the current callstack by extracting all lines that
+  #    contain a reference to any definition source file.
+  # 3) Finally, errors can be raised from core code that are not in the context of definition execution - eg after they have finished
+  #    executing in a validation phase. In this case there will be no definition-level callstack and the closest possible source file location
+  #    must be passed in.
+  #
+  # If the callstack is passed in it can either take the format of a normal ruby callstack as returned by Exception#backtrace or by 'caller' method,
+  # or it can be a block (indicating that the error occurred somewhere in that block of code). In the case of a block the blocks source code location
+  # is used and the callstack will only have one item. A block will be passed when the error is raised from outside the context of definition execution
+  # - see case 3 above.
+  #
+  def make_definition_error(msg, callstack: nil, warn: false)
+    if callstack
+      if callstack.is_a?(Proc)
+        cs = callstack.source_location.join(':')
       else
-        if source_location !~ /^(.+):(\d+):/
-          raise "Could not determine file and line number from source location '#{source_location}'"
-        end
-        file = $1
-        line = $2.to_i
+        cs = callstack
       end
-      m << (warn ? 'Warning' : 'Error')
-      m << " at #{file.basename}:#{line}:"
-      m << " #{msg.capitalize_first}"
     else
-      m << msg
+      cs = caller
     end
+    
+    # Extract any lines in the callstack that contain references to definition source files.
+    #
+    lines = Array(cs).select{|c| @definition_src_files.any?{|sf| c.include?(sf)}}
+    raise 'Callstack must not be empty' if lines.empty?
+    
+    # Clean up lines so they only contain file and line information and not the additional ':in ...' that ruby includes. This is not useful
+    # in definition errors.
+    #
+    lines.map!{|l| l.sub(/:in .*/, '')}
+
+    # Extract file and line information from the first callstack item, which is where the main error occurred.
+    #
+    if lines[0] !~ /^(.+):(\d+)/
+      raise "Could not extract file and line number from '#{lines[0]}'"
+    end
+    
+    file = $1
+    line = $2.to_i
+    
+    m = ''
+    m << (warn ? 'Warning' : 'Error')
+    m << (callstack.is_a?(Proc) ? ' near' : ' at')
+    m << " #{file.basename}:#{line}:"
+    m << " #{msg.capitalize_first}"
     
     e = DefinitionError.new(m)
-    
-    if source_location
-      e.instance_variable_set(:@file, file)
-      e.instance_variable_set(:@line, line)
-      if backtrace
-        backtrace = backtrace.map{|elem| Array(elem).join(':')}
-        e.set_backtrace(backtrace)
-      else
-        e.set_backtrace([])
-      end
-    end
+    e.instance_variable_set(:@file, file)
+    e.instance_variable_set(:@line, line)
+    e.set_backtrace(lines)
     e
   end
 

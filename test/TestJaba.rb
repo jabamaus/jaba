@@ -35,7 +35,7 @@ class JabaTest < Minitest::Spec
   ##
   # Helper for testing error reporting.
   #
-  def find_line_number(string, file)
+  def find_line_number(file, string)
     if !File.exist?(file)
       raise "#{file} does not exist"
     end
@@ -48,18 +48,17 @@ class JabaTest < Minitest::Spec
 
   ##
   #
-  def check_fails(msg:, file:, line:, backtrace: nil)
+  def check_fails(msg, backtrace:)
     e = assert_raises DefinitionError do
       yield
     end
     e.message.must_match(msg)
-    e.file.must_equal(file)
-    e.line.must_equal(find_line_number(line, file))
-    if backtrace
-      e.backtrace.must_equal(backtrace)
-    else
-      e.backtrace.must_equal([])
-    end
+
+    e.file.must_equal(backtrace[0][0])
+    e.line.must_equal(find_line_number(backtrace[0][0], backtrace[0][1]))
+ 
+    backtrace = backtrace.map{|elem| "#{elem[0]}:#{find_line_number(elem[0], elem[1])}"}
+    e.backtrace.slice(0, backtrace.size).must_equal(backtrace)
     e
   end
 end

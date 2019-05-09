@@ -5,7 +5,7 @@ class TestShared < JabaTest
   it 'allows inclusion of shared definitions in any object' do
    # TODO: check backtrace includes include statement
     [:text, :project, :workspace, :category].each do |type| # TODO: include :shared
-      check_fails(msg: 'Included', file: __FILE__, line: "raise 'Included'") do
+      check_fails('Included', backtrace: [[__FILE__, "raise 'Included'"]]) do
         jaba do
           shared :a do
             raise 'Included'
@@ -20,7 +20,7 @@ class TestShared < JabaTest
   end
 
   it 'fails if shared definition does not exist' do
-    check_fails(msg: "Shared definition 'b' not found", file: __FILE__, line: 'include :b') do
+    check_fails("Shared definition 'b' not found", backtrace: [[__FILE__, 'include :b']]) do
       jaba do
         shared :a do
         end
@@ -46,7 +46,7 @@ class TestShared < JabaTest
   end
   
   it 'catches argument mismatches' do
-    check_fails(msg: "Shared definition 'd' expects 3 arguments but 0 were passed", file: __FILE__, line: 'include :d') do
+    check_fails("Shared definition 'd' expects 3 arguments but 0 were passed", backtrace: [[__FILE__, 'include :d']]) do
       jaba do
         shared :d do |a1, a2, a3|
         end
@@ -55,7 +55,7 @@ class TestShared < JabaTest
         end
       end
     end
-    check_fails(msg: "Shared definition 'e' expects 0 arguments but 1 were passed", file: __FILE__, line: 'include :e, args: [1]') do
+    check_fails("Shared definition 'e' expects 0 arguments but 1 were passed", backtrace: [[__FILE__, 'include :e, args: [1]']]) do
       jaba do
         shared :e do
         end
@@ -64,7 +64,7 @@ class TestShared < JabaTest
         end
       end
     end
-    check_fails(msg: "Shared definition 'f' expects 2 arguments but 3 were passed", file: __FILE__, line: 'include :f, args: [1, 2, 3]') do
+    check_fails("Shared definition 'f' expects 2 arguments but 3 were passed", backtrace: [[__FILE__, 'include :f, args: [1, 2, 3]']]) do
       jaba do
         shared :f do |a1, a2|
         end
