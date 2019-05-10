@@ -40,6 +40,7 @@ end
 class JabaType
 
   attr_reader :type
+  attr_reader :generators
   
   ##
   #
@@ -47,6 +48,7 @@ class JabaType
     @services = services
     @type = type_id
     @attribute_defs = []
+    @generators = []
   end
   
   ##
@@ -74,6 +76,12 @@ class JabaType
   #
   def each_attr(&block)
     @attribute_defs.each(&block)
+  end
+  
+  ##
+  #
+  def define_generator(&block)
+    @generators << block
   end
   
   ##

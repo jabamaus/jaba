@@ -74,6 +74,12 @@ class JabaTypeAPI < APIBase
     @obj.include_shared(*shared_definition_ids, args: args)
   end
   
+  ##
+  #
+  def generate(&block)
+    @obj.define_generator(&block)
+  end
+  
 end
 
 ##

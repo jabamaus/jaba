@@ -14,6 +14,12 @@ class Attribute
   
   ##
   #
+  def id
+    @attr_def.id
+  end
+  
+  ##
+  #
   def get(from_definitions=false)
     @value
   end
@@ -79,9 +85,23 @@ class JabaObject
   ##
   #
   def call_generators
+    # Call generators defined per-type
+    #
+    @jaba_type.generators.each do |block|
+      instance_eval(&block)
+    end
+    
+    # Call generators defined per-object
+    #
     @generators.each do |block|
       block.call
     end
+  end
+  
+  ##
+  #
+  def save_file(filename, content, eol)
+    @services.save_file(filename, content, eol)
   end
   
   ##

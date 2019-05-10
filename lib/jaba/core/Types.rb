@@ -97,6 +97,12 @@ define :text do
     items [:native, :unix, :windows]
     default :native
   end
+  
+  generate do
+  # TODO: fix when arrays supported
+    str = content# ? content : "#{line.join("\n")}\n"
+    save_file(filename, str, eol)
+  end
 end
 
 ##

@@ -2,7 +2,6 @@ module JABA
 
 class TestText < JabaTest
 
-=begin
   it 'can generate a text file' do
     fn = "#{temp_dir}/a"
     jaba do
@@ -15,6 +14,7 @@ class TestText < JabaTest
     IO.read(fn).must_equal('b')
   end
 
+=begin
   it 'can generate a text file line by line' do
     fn = "#{temp_dir}/a"
     jaba do
