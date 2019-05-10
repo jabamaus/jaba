@@ -3,9 +3,8 @@ module JABA
 class TestShared < JabaTest
 
   it 'allows inclusion of shared definitions in any object' do
-   # TODO: check backtrace includes include statement
     [:text, :project, :workspace, :category].each do |type| # TODO: include :shared
-      check_fails('Included', backtrace: [[__FILE__, "raise 'Included'"]]) do
+      check_fails('Included', backtrace: [[__FILE__, "raise 'Included'"], [__FILE__, 'include :a']]) do
         jaba do
           shared :a do
             raise 'Included'

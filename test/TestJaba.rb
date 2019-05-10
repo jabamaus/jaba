@@ -35,13 +35,14 @@ class JabaTest < Minitest::Spec
   ##
   # Helper for testing error reporting.
   #
-  def find_line_number(file, string)
+  def find_line_number(file, line)
+    return line if line.is_a?(Numeric)
     if !File.exist?(file)
       raise "#{file} does not exist"
     end
-    ln = IO.read(file).each_line.find_index {|l| l =~ /^\s+#{Regexp.escape(string)}/}
+    ln = IO.read(file).each_line.find_index {|l| l =~ /^\s+#{Regexp.escape(line)}/}
     if ln.nil?
-      raise "'#{string}' not found in #{file}"
+      raise "'#{line}' not found in #{file}"
     end
     ln + 1
   end
