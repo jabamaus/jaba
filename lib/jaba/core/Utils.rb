@@ -83,13 +83,13 @@ module OS
   
   ##
   #
-  def windows?
+  def self.windows?
     true
   end
   
   ##
   #
-  def mac?
+  def self.mac?
     false
   end
   

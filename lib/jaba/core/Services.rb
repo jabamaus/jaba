@@ -165,7 +165,7 @@ class Services
       if !File.exist?(dir)
         FileUtils.makedirs(fn)
       end
-      File.open(file.basename, 'wb') {|f| f.write(content)}
+      File.open(fn.basename, 'wb') {|f| f.write(content)}
     end
     
     if !exists
@@ -178,7 +178,7 @@ class Services
   ##
   #
   def save_file(filename, content, eol)
-    if (eol == :windows or (eol == :native and windows?))
+    if (eol == :windows or (eol == :native and OS.windows?))
       content.gsub!("\n", "\r\n")
     end
     #filename = filename.cleanpath
