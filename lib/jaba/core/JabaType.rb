@@ -27,7 +27,7 @@ class AttributeType
   #
   def set_block(var, &block)
     if !block_given?
-      raise 'Must provide a block'
+      @services.jaba_error('Must provide a block')
     end
     instance_variable_set("@#{var}", block)
   end
@@ -123,7 +123,7 @@ class AttributeDefinition
   def set_var(var, val=nil, &block)
     if block_given?
       if !val.nil?
-        raise 'Must provide a default value or a block but not both' # TODO: test
+        @services.jaba_error('Must provide a default value or a block but not both') # TODO: test
       end
       instance_variable_set("@#{var}", block)
     else

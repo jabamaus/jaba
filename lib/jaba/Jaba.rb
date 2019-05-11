@@ -56,9 +56,15 @@ class Output
 end
 
 ##
-# Raised when there is an error in the user definitions.
+# Raised when there is an error raised from inside Jaba, either from the user definitions or from internal library
+# code.
 #
 class JabaError < StandardError
+  
+  ##
+  # True if error is an internal error as opposed to a user error in the definitions.
+  #
+  attr_boolean :internal
   
   ##
   # The definition file the error occurred in. Not available if definitions were executed as a block.

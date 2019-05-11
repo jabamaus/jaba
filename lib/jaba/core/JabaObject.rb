@@ -135,16 +135,12 @@ class JabaObject
     a = get_attr(id)
 
     if !a
-      if called_from_definitions
-        raw_id = id.to_s.chomp('?').to_sym # Remove any trailing '?' (used with boolean attrs) to get the raw name
-        a2 = get_attr(raw_id)
-        if a2
-          @services.jaba_error("'#{raw_id}' attribute is not of type :bool")
-        else
-          @services.jaba_error("'#{raw_id}' attribute not defined")
-        end
+      raw_id = id.to_s.chomp('?').to_sym # Remove any trailing '?' (used with boolean attrs) to get the raw name
+      a2 = get_attr(raw_id)
+      if a2
+        @services.jaba_error("'#{raw_id}' attribute is not of type :bool")
       else
-        raise NoMethodError, "'#{id}' attribute not defined"
+        @services.jaba_error("'#{raw_id}' attribute not defined")
       end
     end
     

@@ -120,7 +120,7 @@ class Services
     defs = @definition_registry[type]
     return nil if !defs
     d = defs.find{|dd| dd.id == id}
-    raise "No '#{id}' definition found" if (!d and fail_if_not_found)
+    jaba_error("No '#{id}' definition found") if (!d and fail_if_not_found)
     d
   end
 
@@ -296,7 +296,7 @@ private
   def load_definitions
     @definition_src_files << "#{__dir__}/Types.rb" # Load core type definitions
     Array(input.load_paths).each do |p|
-      raise "#{p} does not exist" if !File.exist?(p)
+      jaba_error("#{p} does not exist") if !File.exist?(p)
       if File.directory?(p)
         @definition_src_files.concat(Dir.glob("#{p}/*.rb"))
       else
@@ -309,7 +309,7 @@ private
   end
 
   ##
-  # Errors can be raised in 3 contexts:
+  # Errors can be raised in 4 contexts:
   #
   # 1) Syntax errors/other ruby errors that are raised by the initial evaluation of the definition files or block in execute_definitions.
   #    In this case no definition information will have been loaded. In this case the callstack is passed in and will be the backtrace of the
@@ -318,9 +318,10 @@ private
   #    In this context the relevant definition lines will be in the callstack when the error was raised. In this case no callstack needs
   #    to be passed in and the relevant callstack will be automatically extracted from the current callstack by extracting all lines that
   #    contain a reference to any definition source file.
-  # 3) Finally, errors can be raised from core code that are not in the context of definition execution - eg after they have finished
+  # 3) Errors can be raised from core code that are about user definitions but are not in their context - eg after they have finished
   #    executing in a validation phase. In this case there will be no definition-level callstack and the closest possible source file location
   #    must be passed in.
+  # 4) Errors can be raised internally from core code. In this case the internal? method on the JabaError exception will be true.
   #
   # If the callstack is passed in it can either take the format of a normal ruby callstack as returned by Exception#backtrace or by 'caller' method,
   # or it can be a block (indicating that the error occurred somewhere in that block of code). In the case of a block the blocks source code location
@@ -341,7 +342,15 @@ private
     # Extract any lines in the callstack that contain references to definition source files.
     #
     lines = Array(cs).select{|c| @definition_src_files.any?{|sf| c.include?(sf)}}
-    raise 'Callstack must not be empty' if lines.empty?
+    
+    # If no references to definition files assume the error came from internal library code. Do no further processing as
+    # so the exception will have the normal ruby backtrace.
+    #
+    if lines.empty?
+      e = JabaError.new(m)
+      e.instance_variable_set(:@internal, true)
+      return e
+    end
     
     # Clean up lines so they only contain file and line information and not the additional ':in ...' that ruby includes. This is not useful
     # in definition errors.
@@ -364,6 +373,7 @@ private
     m << " #{msg.capitalize_first}"
     
     e = JabaError.new(m)
+    e.instance_variable_set(:@internal, false)
     e.instance_variable_set(:@file, file)
     e.instance_variable_set(:@line, line)
     e.set_backtrace(lines)
