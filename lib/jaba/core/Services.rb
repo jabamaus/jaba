@@ -154,18 +154,20 @@ class Services
   
   ##
   #
-  def write_file(fn, content)
+  def write_file(fn, str)
     equal = false
     exists = File.exist?(fn)
-    existing_content = exists ? IO.binread(fn).force_encoding(content.encoding) : nil
-    equal = (exists and content == existing_content)
+    existing_str = exists ? IO.binread(fn).force_encoding(str.encoding) : nil
+    equal = (exists and str == existing_str)
     
     if !equal
       dir = File.dirname(fn)
       if !File.exist?(dir)
-        FileUtils.makedirs(fn)
+        FileUtils.makedirs(dir)
       end
-      File.open(fn.basename, 'wb') {|f| f.write(content)}
+      File.open(fn, 'wb') do |f|
+        f.write(str)
+      end
     end
     
     if !exists
