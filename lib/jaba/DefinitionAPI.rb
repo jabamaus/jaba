@@ -14,7 +14,7 @@ class APIBase < BasicObject
   ##
   #
   def raise(msg)
-    @obj.instance_variable_get(:@services).definition_error(msg) # TODO: improve
+    @obj.instance_variable_get(:@services).jaba_error(msg) # TODO: improve
   end
   
 end

@@ -33,7 +33,7 @@ class Attribute
         begin
           instance_exec(value, &vv)
         rescue => e
-          @services.definition_error("'#{@attr_def.id}' attribute failed validation: #{e.message.capitalize_first}", callstack: e.backtrace)
+          @services.jaba_error("'#{@attr_def.id}' attribute failed validation: #{e.message.capitalize_first}", callstack: e.backtrace)
         end
       end
     end
@@ -110,14 +110,14 @@ class JabaObject
     ids.each do |id|
       df = @services.get_definition(:shared, id, fail_if_not_found: false)
       if !df
-        @services.definition_error("Shared definition '#{id}' not found")
+        @services.jaba_error("Shared definition '#{id}' not found")
       end
       
       n_expected_args = df.block.arity
       n_supplied_args = args ? Array(args).size : 0
       
       if (n_supplied_args != n_expected_args)
-        @services.definition_error("shared definition '#{id}' expects #{n_expected_args} arguments but #{n_supplied_args} were passed")
+        @services.jaba_error("shared definition '#{id}' expects #{n_expected_args} arguments but #{n_supplied_args} were passed")
       end
       
       if args.nil?
@@ -139,9 +139,9 @@ class JabaObject
         raw_id = id.to_s.chomp('?').to_sym # Remove any trailing '?' (used with boolean attrs) to get the raw name
         a2 = get_attr(raw_id)
         if a2
-          @services.definition_error("'#{raw_id}' attribute is not of type :bool")
+          @services.jaba_error("'#{raw_id}' attribute is not of type :bool")
         else
-          @services.definition_error("'#{raw_id}' attribute not defined")
+          @services.jaba_error("'#{raw_id}' attribute not defined")
         end
       else
         raise NoMethodError, "'#{id}' attribute not defined"

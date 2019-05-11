@@ -104,10 +104,10 @@ class Services
     
     if id
       if (!(id.is_a?(Symbol) or id.is_a?(String)) or id !~ /^[a-zA-Z0-9_.]+$/)
-        definition_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'")
+        jaba_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'")
       end
       if definition_defined?(type, id)
-        definition_error("'#{id}' multiply defined")
+        jaba_error("'#{id}' multiply defined")
       end
     end
     
@@ -132,14 +132,14 @@ class Services
   
   ##
   #
-  def definition_warning(msg, callstack: nil)
-    warning make_definition_error(msg, callstack: callstack, warn: true).message
+  def jaba_warning(msg, callstack: nil)
+    warning make_jaba_error(msg, callstack: callstack, warn: true).message
   end
   
   ##
   #
-  def definition_error(msg, callstack: nil)
-    raise make_definition_error(msg, callstack: callstack)
+  def jaba_error(msg, callstack: nil)
+    raise make_jaba_error(msg, callstack: callstack)
   end
   
   ##
@@ -236,7 +236,7 @@ private
     @types_to_extend.each do |def_data|
       jt = @jaba_types.find{|t| t.type == def_data.type}
       if !jt
-        definition_error("'#{def_data.type}' has not been defined", callstack: def_data.block)
+        jaba_error("'#{def_data.type}' has not been defined", callstack: def_data.block)
       end
       @jaba_type_api.__internal_set_obj(jt)
       @jaba_type_api.instance_eval(&def_data.block)
@@ -288,7 +288,7 @@ private
   rescue DefinitionError
     raise # Prevent fallthrough to next case
   rescue Exception => e # Catch all errors, including SyntaxErrors, by rescuing Exception
-    raise make_definition_error("#{e.class}: #{e.message}", callstack: e.backtrace)
+    raise make_jaba_error("#{e.class}: #{e.message}", callstack: e.backtrace)
   end
   
   ##
@@ -327,7 +327,7 @@ private
   # is used and the callstack will only have one item. A block will be passed when the error is raised from outside the context of definition execution
   # - see case 3 above.
   #
-  def make_definition_error(msg, callstack: nil, warn: false)
+  def make_jaba_error(msg, callstack: nil, warn: false)
     if callstack
       if callstack.is_a?(Proc)
         cs = callstack.source_location.join(':')

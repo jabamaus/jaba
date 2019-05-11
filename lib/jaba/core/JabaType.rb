@@ -55,10 +55,10 @@ class JabaType
   #
   def define_attr(id, **options, &block)
     if !id.is_a?(Symbol)
-      @services.definition_error("'#{id}' attribute id must be specified as a symbol")
+      @services.jaba_error("'#{id}' attribute id must be specified as a symbol")
     end
     if @attribute_defs.find{|d| d.id == id}
-      @services.definition_error("'#{id}' attribute multiply defined")
+      @services.jaba_error("'#{id}' attribute multiply defined")
     end
     ad = AttributeDefinition.new(@services, id, block.source_location)
     api = @services.attr_definition_api
@@ -134,7 +134,7 @@ class AttributeDefinition
         #
         @type_obj = @services.get_attribute_type(@type)
         if !@type_obj
-          @services.definition_error("'#{@type}' attribute type is undefined. Valid types: #{@services.jaba_attr_types.map{|at| at.type}}")
+          @services.jaba_error("'#{@type}' attribute type is undefined. Valid types: #{@services.jaba_attr_types.map{|at| at.type}}")
         end
       end
     end
@@ -161,7 +161,7 @@ class AttributeDefinition
           begin
             instance_exec(@default, &vv)
           rescue => e
-            @services.definition_error("'#{id}' attribute definition failed validation: #{e.message.capitalize_first}", callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: wrap up a bit nicer so join not required
+            @services.jaba_error("'#{id}' attribute definition failed validation: #{e.message.capitalize_first}", callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: wrap up a bit nicer so join not required
           end
         end
       end
