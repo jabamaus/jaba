@@ -50,7 +50,7 @@ class JabaTest < Minitest::Spec
   ##
   #
   def check_fails(msg, backtrace:)
-    e = assert_raises DefinitionError do
+    e = assert_raises JabaError do
       yield
     end
     e.message.must_match(msg)

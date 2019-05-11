@@ -43,7 +43,7 @@ class TestText < JabaTest
   end
   
   it 'fails if no filename specified' do
-    e = assert_raises DefinitionError do
+    e = assert_raises JabaError do
       jaba do
         text :a do
         end

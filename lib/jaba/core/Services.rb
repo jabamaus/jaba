@@ -285,7 +285,7 @@ private
       @definition_src_files << block.source_location[0]
       @toplevel_api.instance_eval(&block)
     end
-  rescue DefinitionError
+  rescue JabaError
     raise # Prevent fallthrough to next case
   rescue Exception => e # Catch all errors, including SyntaxErrors, by rescuing Exception
     raise make_jaba_error("#{e.class}: #{e.message}", callstack: e.backtrace)
@@ -363,7 +363,7 @@ private
     m << " #{file.basename}:#{line}:"
     m << " #{msg.capitalize_first}"
     
-    e = DefinitionError.new(m)
+    e = JabaError.new(m)
     e.instance_variable_set(:@file, file)
     e.instance_variable_set(:@line, line)
     e.set_backtrace(lines)

@@ -58,7 +58,7 @@ end
 ##
 # Raised when there is an error in the user definitions.
 #
-class DefinitionError < StandardError
+class JabaError < StandardError
   
   ##
   # The definition file the error occurred in. Not available if definitions were executed as a block.
