@@ -2,14 +2,16 @@ module JABA
 
 ##
 #
-class Attribute
+class AttributeBase
 
+  attr_reader :attr_def
+  
   ##
   #
   def initialize(services, attr_def)
     @services = services
     @attr_def = attr_def
-    set(attr_def.default)
+    @set = false
   end
   
   ##
@@ -20,7 +22,35 @@ class Attribute
   
   ##
   #
-  def get(from_definitions=false)
+  def set?
+    @set
+  end
+  
+  ##
+  #
+  def required?
+    @attr_def.has_flag?(:required)
+  end
+  
+end
+
+##
+#
+class Attribute < AttributeBase
+
+  ##
+  #
+  def initialize(services, attr_def)
+    super
+    d = @attr_def.default
+    if (!d.nil? and !d.is_a?(Proc))
+      set(d)
+    end
+  end
+  
+  ##
+  #
+  def get
     @value
   end
   
@@ -38,6 +68,52 @@ class Attribute
       end
     end
     @value = value
+    @set = true
+  end
+  
+  ##
+  #
+  def process_flags(warn: true)
+  end
+  
+end
+
+##
+#
+class AttributeArray < AttributeBase
+  
+  ##
+  #
+  def initialize(services, attr_def)
+    super
+    @elems = []
+  end
+  
+  ##
+  #
+  def get
+    @elems.map{|e| e.get}
+  end
+  
+  ##
+  #
+  def set(values, from_definitions=false, *options, **key_value_options, &block)
+    Array(values).each do |v|
+      elem = Attribute.new(@services, @attr_def)
+      elem.set(v, from_definitions, *options, **key_value_options, &block)
+      @elems << elem
+    end
+    @set = true
+  end
+  
+  ##
+  #
+  def process_flags(warn: true)
+    if !@attr_def.has_flag?(:allow_dupes)
+      if (@elems.uniq!(&:get) and warn)
+        @services.jaba_warning("'#{id}' array attribute contains duplicates")
+      end
+    end
   end
   
 end
@@ -50,10 +126,11 @@ class JabaObject
   
   ##
   #
-  def initialize(services, jaba_type, id)
+  def initialize(services, jaba_type, id, source_location)
     @services = services
     @jaba_type = jaba_type
     @id = id
+    @source_location = source_location
     
     @attributes = []
     @attribute_lookup = {}
@@ -61,7 +138,7 @@ class JabaObject
     @generators = []
 
     @jaba_type.each_attr do |attr_def|
-      a = Attribute.new(services, attr_def)
+      a = attr_def.has_flag?(:array) ? AttributeArray.new(services, attr_def) : Attribute.new(services, attr_def)
       if attr_def.type == :bool
         @attribute_lookup["#{attr_def.id}?".to_sym] = a
       end
@@ -74,6 +151,17 @@ class JabaObject
   #
   def get_attr(id)
     @attribute_lookup[id]
+  end
+  
+  ##
+  #
+  def post_create
+    @attributes.each do |a|
+      if (a.required? and !a.set?)
+        @services.jaba_error("'#{a.id}' attribute requires a value", callstack: [@source_location.join(':'), a.attr_def.source_location.join(':')]) # TODO: wrap up nicer
+      end
+      a.process_flags(warn: true)
+    end
   end
   
   ##
@@ -145,7 +233,7 @@ class JabaObject
     end
     
     if getter
-      a.get(called_from_definitions)
+      a.get
     else
       a.set(args.shift, called_from_definitions, *args, **key_value_args, &block)
     end    

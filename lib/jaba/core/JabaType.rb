@@ -43,6 +43,7 @@ class AttributeDefinition
   attr_reader :type # eg :bool, :file, :path etc
   attr_reader :type_obj # AttributeType object
   attr_reader :default
+  attr_reader :source_location
   
   ##
   #
@@ -58,6 +59,12 @@ class AttributeDefinition
     @options = nil
     @type = nil
     @type_obj = nil
+  end
+  
+  ##
+  #
+  def has_flag?(flag)
+    (@flags and @flags.index(flag) != nil)
   end
   
   ##

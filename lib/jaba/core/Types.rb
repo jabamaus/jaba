@@ -99,11 +99,8 @@ define :text do
   end
   
   generate do
-  # TODO: fix when arrays supported
-    if filename
-      str = content ? content : ""#"#{line.join("\n")}\n"
-      save_file(filename, str, eol)
-    end
+    str = content ? content : "#{line.join("\n")}\n"
+    save_file(filename, str, eol)
   end
 end
 

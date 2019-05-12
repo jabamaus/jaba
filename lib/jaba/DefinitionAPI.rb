@@ -102,7 +102,7 @@ class JabaObjectAPI < APIBase
 
   ##
   #
-  def generator(&block)
+  def generate(&block)
     @obj.define_generator(&block)
   end
   

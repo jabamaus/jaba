@@ -14,7 +14,6 @@ class TestText < JabaTest
     IO.read(fn).must_equal('b')
   end
 
-=begin
   it 'can generate a text file line by line' do
     fn = "#{temp_dir}/a"
     jaba do
@@ -41,17 +40,16 @@ class TestText < JabaTest
     File.exist?(fn).must_equal(true)
     IO.read(fn).must_equal("1\n2\n3\n")
   end
-  
+
   it 'fails if no filename specified' do
-    e = assert_raises JabaError do
+    check_fails("'filename' attribute requires a value", backtrace: [[__FILE__, 'text :t do'], [CoreTypesFile, 'attr :filename do']]) do
       jaba do
-        text :a do
+        text :t do
         end
       end
     end
-    e.message.must_match('\'filename\' property requires a value')
   end
-
+=begin
   it 'can add src files to a text file' do
     make_file('a.cpp')
     make_file('b.cpp')

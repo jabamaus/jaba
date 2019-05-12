@@ -23,7 +23,6 @@ class Services
     @input.instance_variable_set(:@definitions, nil)
     @input.root = Dir.getwd
     
-    @info = []
     @warnings = []
     
     @definition_src_files = []
@@ -54,18 +53,6 @@ class Services
     Dir.chdir(input.root) do
       return execute
     end
-  end
-  
-  ##
-  #
-  def info(msg)
-    @info << msg
-  end
-  
-  ##
-  #
-  def warning(msg)
-    @warnings << msg
   end
   
   ##
@@ -133,7 +120,7 @@ class Services
   ##
   #
   def jaba_warning(msg, callstack: nil)
-    warning make_jaba_error(msg, callstack: callstack, warn: true).message
+    @warnings << make_jaba_error(msg, callstack: callstack, warn: true).message
   end
   
   ##
@@ -254,9 +241,10 @@ private
         if !jt
           jaba_error("'#{type}' type is not defined. Cannot instance.", callstack: def_data.block)
         end
-        jo = JabaObject.new(self, jt, def_data.id)
+        jo = JabaObject.new(self, jt, def_data.id, def_data.block.source_location)
         @jaba_object_api.__internal_set_obj(jo)
         @jaba_object_api.instance_eval(&def_data.block)
+        jo.post_create
         jo.call_generators
       end
     end
