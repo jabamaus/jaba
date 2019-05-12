@@ -35,67 +35,6 @@ class AttributeType
 end
 
 ##
-# eg project/workspace/category etc.
-#
-class JabaType
-
-  attr_reader :type
-  attr_reader :generators
-  
-  ##
-  #
-  def initialize(services, type_id)
-    @services = services
-    @type = type_id
-    @attribute_defs = []
-    @generators = []
-  end
-  
-  ##
-  #
-  def define_attr(id, **options, &block)
-    if !id.is_a?(Symbol)
-      @services.jaba_error("'#{id}' attribute id must be specified as a symbol")
-    end
-    if !block_given?
-      @services.jaba_error("'#{id}' attribute requires a block")
-    end
-    if @attribute_defs.find{|d| d.id == id}
-      @services.jaba_error("'#{id}' attribute multiply defined")
-    end
-    ad = AttributeDefinition.new(@services, id, block.source_location)
-    api = @services.attr_definition_api
-    api.__internal_set_obj(ad)
-    api.instance_eval(&block)
-    @attribute_defs << ad
-  end
-  
-  ##
-  #
-  def extend_attr(id, **options, &block)
-  end
-  
-  ##
-  #
-  def each_attr(&block)
-    @attribute_defs.each(&block)
-  end
-  
-  ##
-  #
-  def define_generator(&block)
-    @generators << block
-  end
-  
-  ##
-  #
-  def init
-    @attribute_defs.each(&:init)
-  end
-  
-end
-
-##
 # Manages shared data that is common to Attributes instanced from this definition.
 #
 class AttributeDefinition
@@ -169,6 +108,67 @@ class AttributeDefinition
         end
       end
     end
+  end
+  
+end
+
+##
+# eg project/workspace/category etc.
+#
+class JabaType
+
+  attr_reader :type
+  attr_reader :generators
+  
+  ##
+  #
+  def initialize(services, type_id)
+    @services = services
+    @type = type_id
+    @attribute_defs = []
+    @generators = []
+  end
+  
+  ##
+  #
+  def define_attr(id, **options, &block)
+    if !id.is_a?(Symbol)
+      @services.jaba_error("'#{id}' attribute id must be specified as a symbol")
+    end
+    if !block_given?
+      @services.jaba_error("'#{id}' attribute requires a block")
+    end
+    if @attribute_defs.find{|d| d.id == id}
+      @services.jaba_error("'#{id}' attribute multiply defined")
+    end
+    ad = AttributeDefinition.new(@services, id, block.source_location)
+    api = @services.attr_definition_api
+    api.__internal_set_obj(ad)
+    api.instance_eval(&block)
+    @attribute_defs << ad
+  end
+  
+  ##
+  #
+  def extend_attr(id, **options, &block)
+  end
+  
+  ##
+  #
+  def each_attr(&block)
+    @attribute_defs.each(&block)
+  end
+  
+  ##
+  #
+  def define_generator(&block)
+    @generators << block
+  end
+  
+  ##
+  #
+  def init
+    @attribute_defs.each(&:init)
   end
   
 end
