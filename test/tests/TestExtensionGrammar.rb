@@ -2,6 +2,19 @@ module JABA
 
 class TestExtensionGrammar < JabaTest
 
+  it 'supports creating new object types' do
+    jaba do
+      define :test do
+        attr :a do
+        end
+      end
+      test :t do
+        a 'b'
+        a.must_equal('b')
+      end
+    end
+  end
+
   it 'fails if try to extend undefined type' do
     check_fails("'undefined' has not been defined", backtrace: [[__FILE__, 'extend :undefined']]) do
       jaba do

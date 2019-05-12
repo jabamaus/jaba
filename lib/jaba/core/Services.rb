@@ -245,34 +245,27 @@ private
     @jaba_types.each(&:init)
     
     # Create instances of types
-    # TODO: do generically and in dependency order
+    # TODO: do in dependency order
     #
-    create_instances(:text)
-    create_instances(:target)
-    create_instances(:category)
-    create_instances(:project)
-    create_instances(:workspace)
-    
-    op = Output.new
-    op.instance_variable_set(:@added_files, @added_files)
-    op.instance_variable_set(:@modified_files, @modified_files)
-    op.instance_variable_set(:@warnings, @warnings)
-    op
-  end
-  
-  ##
-  #
-  def create_instances(type)
-    defs = @definition_registry[type]
-    if defs
+    @definition_registry.each do |type, defs|
+      next if type == :shared
+      jt = @jaba_types.find{|t| t.type == type}
       defs.each do |def_data|
-        jt = @jaba_types.find{|t| t.type == def_data.type}
+        if !jt
+          jaba_error("'#{type}' type is not defined. Cannot instance.", callstack: def_data.block)
+        end
         jo = JabaObject.new(self, jt, def_data.id)
         @jaba_object_api.__internal_set_obj(jo)
         @jaba_object_api.instance_eval(&def_data.block)
         jo.call_generators
       end
     end
+    
+    op = Output.new
+    op.instance_variable_set(:@added_files, @added_files)
+    op.instance_variable_set(:@modified_files, @modified_files)
+    op.instance_variable_set(:@warnings, @warnings)
+    op
   end
   
   ##
@@ -288,7 +281,7 @@ private
   rescue JabaError
     raise # Prevent fallthrough to next case
   rescue Exception => e # Catch all errors, including SyntaxErrors, by rescuing Exception
-    raise make_jaba_error("#{e.class}: #{e.message}", callstack: e.backtrace)
+    raise make_jaba_error(nil, syntax: true, callstack: e.backtrace)
   end
   
   ##
@@ -328,7 +321,7 @@ private
   # is used and the callstack will only have one item. A block will be passed when the error is raised from outside the context of definition execution
   # - see case 3 above.
   #
-  def make_jaba_error(msg, callstack: nil, warn: false)
+  def make_jaba_error(msg, syntax: false, callstack: nil, warn: false)
     if callstack
       if callstack.is_a?(Proc)
         cs = callstack.source_location.join(':')
@@ -365,12 +358,22 @@ private
     
     file = $1
     line = $2.to_i
-    
     m = ''
-    m << (warn ? 'Warning' : 'Error')
+    
+    if warn
+      m << 'Warning'
+    elsif syntax
+      m << 'Syntax error'
+    else
+      m << 'Error'
+    end
+    
     m << (callstack.is_a?(Proc) ? ' near' : ' at')
-    m << " #{file.basename}:#{line}:"
-    m << " #{msg.capitalize_first}"
+    m << " #{file.basename}:#{line}"
+    
+    if msg
+      m << ": #{msg.capitalize_first}"
+    end
     
     e = JabaError.new(m)
     e.instance_variable_set(:@internal, false)

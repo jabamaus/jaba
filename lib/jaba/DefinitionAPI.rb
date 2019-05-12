@@ -75,6 +75,12 @@ class TopLevelAPI < APIBase
     @obj.define_instance(:text, id, **options, &block)
   end
   
+  ##
+  #
+  def method_missing(type, id, **options, &block)
+    @obj.define_instance(type, id, **options, &block)
+  end
+  
 end
 
 ##

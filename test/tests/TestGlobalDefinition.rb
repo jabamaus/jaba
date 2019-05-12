@@ -69,6 +69,15 @@ class TestGlobalDefinition < JabaTest
     end
   end
   
+  it 'rejects attempts to instance an unknown type' do
+    check_fails("'undefined' type is not defined. Cannot instance", backtrace: [[__FILE__, 'undefined :a']]) do
+      jaba do
+        undefined :a do
+        end
+      end
+    end
+  end
+  
 end
 
 end

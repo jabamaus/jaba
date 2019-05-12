@@ -27,7 +27,7 @@ class TestErrorReporting < JabaTest
   
   it 'provides exception information when a there is a syntax error when definitions supplied in a block' do
     line = find_line_number(__FILE__, 'bad code')
-    e = check_fails("Error at TestErrorReporting.rb:#{line}: NameError: undefined local variable or method", backtrace: [[__FILE__, line]]) do
+    e = check_fails("Syntax error at TestErrorReporting.rb:#{line}", backtrace: [[__FILE__, line]]) do
       jaba do
         shared :a do
         end
@@ -41,7 +41,7 @@ class TestErrorReporting < JabaTest
     fullpath = "#{temp_dir}/definitions.rb"
     IO.write(fullpath, "\n\nbad code\n")
     line = 3
-    e = check_fails("Error at definitions.rb:3: NameError: undefined local variable or method", backtrace: [[fullpath, 3]]) do
+    e = check_fails("Syntax error at definitions.rb:3", backtrace: [[fullpath, 3]]) do
       jaba(load_paths: fullpath)
     end
     e.cause.wont_be_nil
