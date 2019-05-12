@@ -57,13 +57,16 @@ class JabaType
     if !id.is_a?(Symbol)
       @services.jaba_error("'#{id}' attribute id must be specified as a symbol")
     end
+    if !block_given?
+      @services.jaba_error("'#{id}' attribute requires a block")
+    end
     if @attribute_defs.find{|d| d.id == id}
       @services.jaba_error("'#{id}' attribute multiply defined")
     end
     ad = AttributeDefinition.new(@services, id, block.source_location)
     api = @services.attr_definition_api
     api.__internal_set_obj(ad)
-    api.instance_eval(&block) if block_given?
+    api.instance_eval(&block)
     @attribute_defs << ad
   end
   
@@ -123,7 +126,7 @@ class AttributeDefinition
   def set_var(var, val=nil, &block)
     if block_given?
       if !val.nil?
-        @services.jaba_error('Must provide a default value or a block but not both') # TODO: test
+        @services.jaba_error('Must provide a default value or a block but not both')
       end
       instance_variable_set("@#{var}", block)
     else

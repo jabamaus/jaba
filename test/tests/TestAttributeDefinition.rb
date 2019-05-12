@@ -13,6 +13,16 @@ class TestAttributeDefinition < JabaTest
     end
   end
   
+  it 'requires a block to be supplied' do
+    check_fails("'b' attribute requires a block", backtrace: [[__FILE__, 'attr :b']]) do
+      jaba do
+        extend :project do
+          attr :b
+        end
+      end
+    end
+  end
+  
   it 'detects duplicate attribute ids' do
     check_fails("'a' attribute multiply defined", backtrace: [[__FILE__, 'attr :a do # this one']]) do
       jaba do
