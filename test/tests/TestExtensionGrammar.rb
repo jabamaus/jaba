@@ -47,12 +47,12 @@ class TestExtensionGrammar < JabaTest
             raise 'invalid'
           end
         end
-        extend :text do
+        define :test do
           attr :b do
             type :a
           end
         end
-        text :t do
+        test :t do
           b 'c'
         end
       end

@@ -4,12 +4,12 @@ class TestBoolAttribute < JabaTest
 
   it 'defaults to false' do
     jaba do
-      extend :text do
+      define :test do
         attr :a do
           type :bool
         end
       end
-      text :t do
+      test :t do
         a.must_equal(false)
       end
     end
@@ -22,7 +22,7 @@ class TestBoolAttribute < JabaTest
                   [__FILE__, 'attr :b do'] # evaluated later so exact call line is lost
                 ]) do
       jaba do
-        extend :text do
+        define :test do
           attr :b do
             type :bool
             default 1
@@ -39,13 +39,13 @@ class TestBoolAttribute < JabaTest
                   [__FILE__, 'c 1']
                 ]) do
       jaba do
-        extend :text do
+        define :test do
           attr :c do
             type :bool
             default true
           end
         end
-        text :b do
+        test :b do
           c 1
         end
       end
@@ -54,13 +54,13 @@ class TestBoolAttribute < JabaTest
 
   it 'supports boolean accessor when reading' do
     jaba do
-      extend :text do
+      define :test do
         attr :d do
           type :bool
           default true
         end
       end
-      text :b do
+      test :b do
         d.must_equal(true)
         d?.must_equal(true)
         d false
@@ -73,12 +73,12 @@ class TestBoolAttribute < JabaTest
   it 'rejects boolean accessor on non-boolean properties' do
     check_fails("'e' attribute is not of type :bool", backtrace: [[__FILE__, 'if e?']]) do
       jaba do
-        extend :text do
+        define :test do
           attr :e do
             type :file
           end
         end
-        text :a do
+        test :a do
           if e?
           end
         end

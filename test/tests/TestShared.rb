@@ -23,7 +23,9 @@ class TestShared < JabaTest
       jaba do
         shared :a do
         end
-        text :c do
+        define :test do
+        end
+        test :c do
           include :b
         end
       end
@@ -33,12 +35,16 @@ class TestShared < JabaTest
   it 'supports passing args to shared definitions' do
     jaba do
       shared :a do |n1, s1, s2, s3, n2|
-        content "#{s3}#{s1}#{n2}#{s2}#{n1}"
+        c "#{s3}#{s1}#{n2}#{s2}#{n1}"
+      end
+      define :test do
+        attr :c do
+        end
       end
       1.upto(10) do |n|
-        text "t#{n}" do
+        test "t#{n}" do
           include :a, args: [n, 'a', 'b', 'c', 4]
-          content.must_equal("ca4b#{n}")
+          c.must_equal("ca4b#{n}")
         end
       end
     end
