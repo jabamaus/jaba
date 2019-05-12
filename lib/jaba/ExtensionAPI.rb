@@ -8,25 +8,25 @@ module TopLevelExtensionAPI
 
   ##
   #
-  def attr_type(id=nil, **options, &block)
+  def attr_type(id, **options, &block)
     @obj.define_attr_type(id, **options, &block)
   end
   
   ##
   #
-  def attr_flag(id=nil)
+  def attr_flag(id)
     @obj.define_attr_flag(id)
   end
   
   ##
   #
-  def define(type=nil, **options, &block)
+  def define(type, **options, &block)
     @obj.define_type(type, **options, &block)
   end
   
   ##
   #
-  def extend(type=nil, **options, &block)
+  def extend(type, **options, &block)
     @obj.extend_type(type, **options, &block)
   end
   
@@ -57,13 +57,13 @@ class JabaTypeAPI < APIBase
   ##
   # Define a new attribute. See AttributeDefinitionAPI class below.
   #
-  def attr(id=nil, **options, &block)
+  def attr(id, **options, &block)
     @obj.define_attr(id, **options, &block)
   end
   
   ##
   #
-  def extend(id=nil, **options, &block)
+  def extend(id, **options, &block)
     @obj.extend_attr(id, **options, &block)
   end
   
