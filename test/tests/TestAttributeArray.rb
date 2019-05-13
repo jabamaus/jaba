@@ -20,6 +20,27 @@ class TestAttributeArray < JabaTest
     #op.warnings.must_equal(["Warning at TestAttributeArray.rb:6: 'a' array attribute contains duplicates"]) # TODO: turn into check_warn util
   end
   
+  it 'allows flagging arrays with :allow_dupes' do
+    jaba do
+      define :test do
+        attr :a do
+          flags :array, :allow_dupes
+        end
+      end
+      test :t do
+        a [5, 5, 6, 6, 7, 7, 7]
+        generate do
+          a.must_equal [5, 5, 6, 6, 7, 7, 7]
+        end
+      end
+    end
+  end
+  
+  it 'sorts by default' do
+    jaba do
+    end
+  end
+  
 end
 
 end
