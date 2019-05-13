@@ -10,6 +10,7 @@ class Services
   attr_reader :attr_definition_api
   attr_reader :jaba_attr_types
   attr_reader :jaba_object_api
+  attr_reader :default_attr_type # If an attribute does not specify a specific type it gets this
 
   ##
   # Records information about each definition the user has made.
@@ -32,6 +33,9 @@ class Services
     @modified_files = []
     
     @jaba_attr_types = []
+    @default_attr_type = AttributeType.new(self, nil)
+    @default_attr_type.freeze
+    
     @jaba_types = []
     @types_to_extend = []
     @definition_registry = {} # TODO: not a good name

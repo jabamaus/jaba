@@ -14,6 +14,8 @@ class AttributeType
     @services = services
     @type = type_id
     @default = nil
+    @supports_sort = true
+    @supports_uniq = true
     @value_validator = nil
   end
 
@@ -30,6 +32,18 @@ class AttributeType
       @services.jaba_error('Must provide a block')
     end
     instance_variable_set("@#{var}", block)
+  end
+  
+  ##
+  #
+  def supports_sort?
+    @supports_sort
+  end
+  
+  ##
+  #
+  def supports_uniq?
+    @supports_uniq
   end
   
 end
@@ -92,26 +106,24 @@ class AttributeDefinition
   ##
   #
   def init
-    if @type_obj
-      # If default has not already been set fall back to the default specified by the attribute type, if one
-      # has been set there.
-      #
-      if @default.nil?
-        default_hook = @type_obj.default
-        
-        if default_hook
-          @default = instance_eval(&default_hook)
-        end
-      end
-      
-      if @default
-        vv = @type_obj.value_validator
-        if vv
-          begin
-            instance_exec(@default, &vv)
-          rescue => e
-            @services.jaba_error("'#{id}' attribute definition failed validation: #{e.message.capitalize_first}", callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: wrap up a bit nicer so join not required
-          end
+    if !@type_obj
+      @type_obj = @services.default_attr_type
+    end
+    
+    # If default has not already been set fall back to the default specified by the attribute type, if one
+    # has been set there.
+    #
+    if @default.nil?
+      @default = @type_obj.default
+    end
+    
+    if @default
+      vv = @type_obj.value_validator
+      if vv
+        begin
+          instance_exec(@default, &vv)
+        rescue => e
+          @services.jaba_error("'#{id}' attribute definition failed validation: #{e.message.capitalize_first}", callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: wrap up a bit nicer so join not required
         end
       end
     end

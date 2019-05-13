@@ -38,8 +38,20 @@ class AttributeTypeAPI < APIBase
   
   ##
   #
-  def default(&block)
-    @obj.set_block(:default, &block)
+  def default(val)
+    @obj.set_var(:default, val)
+  end
+  
+  ##
+  #
+  def supports_sort(boolean)
+    @obj.set_var(:supports_sort, boolean)
+  end
+  
+  ##
+  #
+  def supports_uniq(boolean)
+    @obj.set_var(:supports_uniq, boolean)
   end
   
   ##

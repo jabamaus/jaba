@@ -58,7 +58,7 @@ class Attribute < AttributeBase
   #
   def set(value, from_definitions=false, *options, prefix: nil, suffix: nil, **key_value_options, &block)
     if from_definitions
-      vv = @attr_def.type_obj&.value_validator
+      vv = @attr_def.type_obj.value_validator
       if vv
         begin
           instance_exec(value, &vv)
@@ -69,6 +69,16 @@ class Attribute < AttributeBase
     end
     @value = value
     @set = true
+  end
+  
+  ##
+  #
+  def <=>(other)
+    if @value.respond_to?(:casecmp) # Subtlety here. Don't check if responds to to_s as would incorrectly sort numbers by string.
+      @value.to_s.casecmp(other.get.to_s)
+    else
+      @value <=> other.get
+    end
   end
   
   ##
@@ -109,9 +119,16 @@ class AttributeArray < AttributeBase
   ##
   #
   def process_flags(warn: true)
-    if !@attr_def.has_flag?(:allow_dupes)
+    if (!@attr_def.has_flag?(:allow_dupes) and attr_def.type_obj.supports_uniq?)
       if (@elems.uniq!(&:get) and warn)
         @services.jaba_warning("'#{id}' array attribute contains duplicates")
+      end
+    end
+    if (!@attr_def.has_flag?(:unordered) and attr_def.type_obj.supports_sort?)
+      begin
+        @elems.sort!
+      rescue
+        @services.jaba_error("Failed to sort #{id}. Might be missing <=> operator")
       end
     end
   end

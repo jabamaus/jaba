@@ -1,12 +1,18 @@
-attr_flag :required
 attr_flag :array
-attr_flag :unordered
 attr_flag :allow_dupes
+attr_flag :read_only
+attr_flag :required
+attr_flag :unordered
+
+# TODO: think about compatibility of flags to attribute types, eg :no_make_rel_to_genroot only applies to :path, :file and :dir attrs
 
 ##
 #
 attr_type :bool do
-  default {false}
+  default false
+  supports_sort false
+  supports_uniq false
+  
   validate_value do |value|
     if !value.boolean?
       raise ':bool attributes only accept [true|false]'
