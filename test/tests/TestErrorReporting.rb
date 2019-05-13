@@ -26,12 +26,12 @@ class TestErrorReporting < JabaTest
   end
   
   it 'provides exception information when a there is a syntax error when definitions supplied in a block' do
-    line = find_line_number(__FILE__, 'bad code')
+    line = find_line_number(__FILE__, 'BAD CODE')
     e = check_fails("Syntax error at TestErrorReporting.rb:#{line}", backtrace: [[__FILE__, line]]) do
       jaba do
         shared :a do
         end
-        bad code
+        BAD CODE
       end
     end
     e.cause.wont_be_nil
@@ -39,7 +39,7 @@ class TestErrorReporting < JabaTest
 
   it 'provides exception information when a there is a syntax error when definitions supplied in a separate file' do
     fullpath = "#{temp_dir}/definitions.rb"
-    IO.write(fullpath, "\n\nbad code\n")
+    IO.write(fullpath, "\n\nBAD CODE\n")
     line = 3
     e = check_fails("Syntax error at definitions.rb:3", backtrace: [[fullpath, 3]]) do
       jaba(load_paths: fullpath)

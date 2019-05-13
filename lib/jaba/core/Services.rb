@@ -269,7 +269,7 @@ private
   rescue JabaError
     raise # Prevent fallthrough to next case
   rescue Exception => e # Catch all errors, including SyntaxErrors, by rescuing Exception
-    raise make_jaba_error(nil, syntax: true, callstack: e.backtrace)
+    raise make_jaba_error(e.message, syntax: true, callstack: e.backtrace)
   end
   
   ##
@@ -324,11 +324,13 @@ private
     #
     lines = Array(cs).select{|c| @definition_src_files.any?{|sf| c.include?(sf)}}
     
+    # TODO: include DefinitionAPI.rb/ExtensionAPI.rb info in syntax errors
+    
     # If no references to definition files assume the error came from internal library code. Do no further processing as
     # so the exception will have the normal ruby backtrace.
     #
     if lines.empty?
-      e = JabaError.new(m)
+      e = JabaError.new(msg)
       e.instance_variable_set(:@internal, true)
       return e
     end
@@ -337,7 +339,7 @@ private
     # in definition errors.
     #
     lines.map!{|l| l.sub(/:in .*/, '')}
-
+    
     # Extract file and line information from the first callstack item, which is where the main error occurred.
     #
     if lines[0] !~ /^(.+):(\d+)/
@@ -358,10 +360,7 @@ private
     
     m << (callstack.is_a?(Proc) ? ' near' : ' at')
     m << " #{file.basename}:#{line}"
-    
-    if msg
-      m << ": #{msg.capitalize_first}"
-    end
+    m << ": #{msg.capitalize_first}"
     
     e = JabaError.new(m)
     e.instance_variable_set(:@internal, false)
