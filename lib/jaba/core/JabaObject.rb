@@ -97,6 +97,7 @@ class AttributeArray < AttributeBase
   def initialize(services, attr_def)
     super
     @elems = []
+    @excludes = nil
   end
   
   ##
@@ -108,6 +109,15 @@ class AttributeArray < AttributeBase
   ##
   #
   def set(values, from_definitions=false, *options, prefix: nil, suffix: nil, **key_value_options, &block)
+    exclude = false
+    options.each do |opt|
+      case opt
+      when :exclude
+        @excludes = [] if @excludes.nil?
+        exclude = true
+      end
+    end
+    
     Array(values).each do |v|
       elem = Attribute.new(@services, @attr_def)
       
@@ -119,14 +129,25 @@ class AttributeArray < AttributeBase
       end
       
       elem.set(v, from_definitions, *options, **key_value_options, &block)
-      @elems << elem
+      
+      if exclude
+        @excludes << elem
+      else
+        @elems << elem
+      end
     end
-    @set = true
+    
+    if !exclude
+      @set = true
+    end
   end
   
   ##
   #
   def process_flags(warn: true)
+    if @excludes
+      @elems.delete_if{|e| @excludes.any?{|ex| ex.get == e.get}}
+    end
     if (!@attr_def.has_flag?(:allow_dupes) and attr_def.type_obj.supports_uniq?)
       if (@elems.uniq!(&:get) and warn)
         @services.jaba_warning("'#{id}' array attribute contains duplicates")

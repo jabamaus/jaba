@@ -131,6 +131,43 @@ class TestAttributeArray < JabaTest
     end
   end
   
+  it 'supports excluding elements' do
+    jaba do
+      define :test do
+        attr :a do
+          flags :array
+        end
+      end
+      test :t do
+        a [:a, :b, :c, :d, :e]
+        a :c, :exclude
+        a [:d, :e], :exclude
+        generate do
+          a.must_equal [:a, :b]
+        end
+      end
+    end
+  end
+=begin
+  it 'supports conditional excluding' do
+    jaba do
+      define :test do
+        attr :a do
+          flags :array
+        end
+      end
+      test :t do
+        a [:a, :b, :c, :d, :e]
+        a exclude_if {val == :a}
+        a exclude_if {val == :a or val == :c}
+        generate do
+          a.must_equal [:a, :b]
+        end
+      end
+    end
+  end
+=end
+  
 end
 
 end
