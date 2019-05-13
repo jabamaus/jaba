@@ -56,7 +56,7 @@ class Attribute < AttributeBase
   
   ##
   #
-  def set(value, from_definitions=false, *options, prefix: nil, suffix: nil, **key_value_options, &block)
+  def set(value, from_definitions=false, *options, **key_value_options, &block)
     if from_definitions
       vv = @attr_def.type_obj.value_validator
       if vv
@@ -107,9 +107,17 @@ class AttributeArray < AttributeBase
   
   ##
   #
-  def set(values, from_definitions=false, *options, **key_value_options, &block)
+  def set(values, from_definitions=false, *options, prefix: nil, suffix: nil, **key_value_options, &block)
     Array(values).each do |v|
       elem = Attribute.new(@services, @attr_def)
+      
+      if (prefix or suffix)
+        if !v.is_a?(String)
+          @services.jaba_error('prefix/suffix option can only be used with arrays of strings')
+        end
+        v = "#{prefix}#{v}#{suffix}"
+      end
+      
       elem.set(v, from_definitions, *options, **key_value_options, &block)
       @elems << elem
     end

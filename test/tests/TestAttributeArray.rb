@@ -84,6 +84,53 @@ class TestAttributeArray < JabaTest
     end
   end
   
+  it 'allows flagging arrays as unordered' do
+    jaba do
+      define :test do
+        attr :a do
+          flags :array, :unordered, :allow_dupes
+        end
+      end
+      test :t do
+        a ['j', 'a', 'b', 'a']
+        generate do
+          a.must_equal ['j', 'a', 'b', 'a']
+        end
+      end
+    end
+  end
+  
+  it 'supports prefix and suffix options' do
+    jaba do
+      define :test do
+        attr :a do
+          flags :array, :unordered, :allow_dupes
+        end
+      end
+      test :t do
+        a ['j', 'a', 'b', 'a'], prefix: '1', suffix: 'z'
+        generate do
+          a.must_equal ['1jz', '1az', '1bz', '1az']
+        end
+      end
+    end
+  end
+  
+  it 'only allows prefix/suffix on string elements' do
+    check_fails('Prefix/suffix option can only be used with arrays of strings', backtrace: [[__FILE__, 'a [1, 2, 3]']]) do
+      jaba do
+        define :test do
+          attr :a do
+            flags :array
+          end
+        end
+        test :t do
+          a [1, 2, 3], prefix: 'a', suffix: 'b'
+        end
+      end
+    end
+  end
+  
 end
 
 end
