@@ -139,9 +139,9 @@ class TestAttributeArray < JabaTest
         end
       end
       test :t do
-        a [:a, :b, :c, :d, :e]
-        a :c, :exclude
-        a [:d, :e], :exclude
+        a :a
+        a [:b], exclude: [:c]
+        a [:c, :d, :e], exclude: [:d, :e]
         generate do
           a.must_equal [:a, :b]
         end
@@ -157,9 +157,9 @@ class TestAttributeArray < JabaTest
         end
       end
       test :t do
-        a [:a, :b, :c, :d, :e]
-        a exclude_if {|ex| ex == :e}
-        a exclude_if {|ex| ex == :d or ex == :c}
+        a [:a]
+        a [:b, :c], exclude: lambda {|e| e == :e}
+        a [:d, :e], exclude: lambda {|e| e == :d or e == :c}
         generate do
           a.must_equal [:a, :b]
         end

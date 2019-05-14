@@ -1,7 +1,5 @@
 module JABA
 
-class JabaExcludeProc < Proc ; end
-
 ##
 #
 class AttributeBase
@@ -113,19 +111,8 @@ class AttributeArray < AttributeBase
   
   ##
   #
-  def set(values, via_api=false, *args, prefix: nil, suffix: nil, **key_value_args, &block)
-    values = Array(values)
-    
-    exclude = false
-    args.each do |opt|
-      case opt
-      when :exclude
-        exclude = true
-      end
-    end
-    
-    values.each do |v|
-      exclude = true if v.is_a?(JabaExcludeProc)
+  def set(values, via_api=false, *args, prefix: nil, suffix: nil, exclude: nil, **key_value_args, &block)
+    Array(values).each do |v|
       elem = Attribute.new(@services, @attr_def)
       
       if (prefix or suffix)
@@ -137,16 +124,11 @@ class AttributeArray < AttributeBase
       
       elem.set(v, via_api, *args, **key_value_args, &block)
       
-      if exclude
-        @excludes << elem
-      else
-        @elems << elem
-      end
-    end
-    
-    if !exclude
+      @elems << elem
       @set = true
     end
+    
+    @excludes.concat(Array(exclude)) if exclude
   end
   
   ##
@@ -155,11 +137,10 @@ class AttributeArray < AttributeBase
     if @excludes
       @elems.delete_if do |e|
         @excludes.any? do |ex|
-          ex_val = ex.get
-          if ex_val.is_a?(Proc)
-            ex_val.call(e.get)
+          if ex.is_a?(Proc)
+            ex.call(e.get)
           else
-            ex_val == e.get # TODO: use a match? Probably.
+            ex == e.get # TODO: use a match? Probably.
           end
         end
       end
@@ -312,12 +293,6 @@ class JabaObject
   #
   def method_missing(attr_id, *args, **key_value_args, &block)
     handle_attr(attr_id, false, *args, **key_value_args, &block)
-  end
-  
-  ##
-  #
-  def exclude_if(&block)
-    JabaExcludeProc.new(&block)
   end
   
 end

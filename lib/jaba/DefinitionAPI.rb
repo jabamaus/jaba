@@ -108,8 +108,8 @@ class JabaObjectAPI < APIBase
   
   ##
   #
-  def exclude_if(&block)
-    @obj.exclude_if(&block)
+  def lambda(&block)
+    ::Kernel.lambda(&block)
   end
   
   ##
