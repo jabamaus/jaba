@@ -59,6 +59,9 @@ class Attribute < AttributeBase
   ##
   #
   def set(value, via_api=false, *args, **key_value_args, &block)
+    if value.is_a?(Array)
+      @services.jaba_error("'#{@attr_def.id}' attribute cannot accept an array as not flagged with :array")
+    end
     if via_api
       vv = @attr_def.type_obj.value_validator
       if vv

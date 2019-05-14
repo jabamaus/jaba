@@ -86,6 +86,21 @@ class TestBoolAttribute < JabaTest
     end
   end
   
+  it 'rejects passing array to non-array property' do
+    check_fails("'f' attribute cannot accept an array as not flagged with :array", backtrace: [[__FILE__, 'f [true, false]']]) do
+      jaba do
+        define :test do
+          attr :f do
+            type :bool
+          end
+        end
+        test :t do
+          f [true, false]
+        end
+      end
+    end
+  end
+  
 end
 
 end
