@@ -58,7 +58,7 @@ class Attribute < AttributeBase
   
   ##
   #
-  def set(value, via_api=false, *options, **key_value_options, &block)
+  def set(value, via_api=false, *args, **key_value_args, &block)
     if via_api
       vv = @attr_def.type_obj.value_validator
       if vv
@@ -110,7 +110,7 @@ class AttributeArray < AttributeBase
   
   ##
   #
-  def set(values, via_api=false, *args, prefix: nil, suffix: nil, **key_value_options, &block)
+  def set(values, via_api=false, *args, prefix: nil, suffix: nil, **key_value_args, &block)
     exclude = false
     args.each do |opt|
       case opt
@@ -130,7 +130,7 @@ class AttributeArray < AttributeBase
         v = "#{prefix}#{v}#{suffix}"
       end
       
-      elem.set(v, via_api, *args, **key_value_options, &block)
+      elem.set(v, via_api, *args, **key_value_args, &block)
       
       if exclude
         @excludes << elem
