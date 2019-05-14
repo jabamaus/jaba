@@ -1,5 +1,7 @@
 module JABA
 
+class JabaExcludeProc < Proc ; end
+
 ##
 #
 class AttributeBase
@@ -97,7 +99,7 @@ class AttributeArray < AttributeBase
   def initialize(services, attr_def)
     super
     @elems = []
-    @excludes = nil
+    @excludes = []
   end
   
   ##
@@ -113,12 +115,12 @@ class AttributeArray < AttributeBase
     options.each do |opt|
       case opt
       when :exclude
-        @excludes = [] if @excludes.nil?
         exclude = true
       end
     end
     
     Array(values).each do |v|
+      exclude = true if v.is_a?(JabaExcludeProc)
       elem = Attribute.new(@services, @attr_def)
       
       if (prefix or suffix)
@@ -146,7 +148,16 @@ class AttributeArray < AttributeBase
   #
   def process_flags(warn: true)
     if @excludes
-      @elems.delete_if{|e| @excludes.any?{|ex| ex.get == e.get}}
+      @elems.delete_if do |e|
+        @excludes.any? do |ex|
+          ex_val = ex.get
+          if ex_val.is_a?(Proc)
+            ex_val.call(e.get)
+          else
+            ex_val == e.get # TODO: use a match? Probably.
+          end
+        end
+      end
     end
     if (!@attr_def.has_flag?(:allow_dupes) and attr_def.type_obj.supports_uniq?)
       if (@elems.uniq!(&:get) and warn)
@@ -282,13 +293,19 @@ class JabaObject
       a.get
     else
       a.set(args.shift, called_from_definitions, *args, **key_value_args, &block)
-    end    
+    end
   end
   
   ##
   #
   def method_missing(attr_name, *args, **key_value_args, &block)
     handle_attr(attr_name, true, *args, **key_value_args, &block)
+  end
+  
+  ##
+  #
+  def exclude_if(&block)
+    JabaExcludeProc.new(&block)
   end
   
 end

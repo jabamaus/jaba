@@ -108,6 +108,12 @@ class JabaObjectAPI < APIBase
   
   ##
   #
+  def exclude_if(&block)
+    @obj.exclude_if(&block)
+  end
+  
+  ##
+  #
   def method_missing(attr_id, *args, **key_value_args, &block)
     @obj.handle_attr(attr_id, true, *args, **key_value_args, &block)
   end

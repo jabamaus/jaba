@@ -148,7 +148,7 @@ class TestAttributeArray < JabaTest
       end
     end
   end
-=begin
+
   it 'supports conditional excluding' do
     jaba do
       define :test do
@@ -158,15 +158,14 @@ class TestAttributeArray < JabaTest
       end
       test :t do
         a [:a, :b, :c, :d, :e]
-        a exclude_if {val == :a}
-        a exclude_if {val == :a or val == :c}
+        a exclude_if {|ex| ex == :e}
+        a exclude_if {|ex| ex == :d or ex == :c}
         generate do
           a.must_equal [:a, :b]
         end
       end
     end
   end
-=end
   
 end
 
