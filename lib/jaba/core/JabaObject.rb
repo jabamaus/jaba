@@ -58,8 +58,8 @@ class Attribute < AttributeBase
   
   ##
   #
-  def set(value, from_definitions=false, *options, **key_value_options, &block)
-    if from_definitions
+  def set(value, via_api=false, *options, **key_value_options, &block)
+    if via_api
       vv = @attr_def.type_obj.value_validator
       if vv
         begin
@@ -110,9 +110,9 @@ class AttributeArray < AttributeBase
   
   ##
   #
-  def set(values, from_definitions=false, *options, prefix: nil, suffix: nil, **key_value_options, &block)
+  def set(values, via_api=false, *args, prefix: nil, suffix: nil, **key_value_options, &block)
     exclude = false
-    options.each do |opt|
+    args.each do |opt|
       case opt
       when :exclude
         exclude = true
@@ -130,7 +130,7 @@ class AttributeArray < AttributeBase
         v = "#{prefix}#{v}#{suffix}"
       end
       
-      elem.set(v, from_definitions, *options, **key_value_options, &block)
+      elem.set(v, via_api, *args, **key_value_options, &block)
       
       if exclude
         @excludes << elem
@@ -275,7 +275,7 @@ class JabaObject
   
   ##
   #
-  def handle_attr(id, called_from_definitions, *args, **key_value_args, &block)
+  def handle_attr(id, via_api, *args, **key_value_args, &block)
     getter = (args.empty? and key_value_args.empty?)
     a = get_attr(id)
 
@@ -292,14 +292,14 @@ class JabaObject
     if getter
       a.get
     else
-      a.set(args.shift, called_from_definitions, *args, **key_value_args, &block)
+      a.set(args.shift, via_api, *args, **key_value_args, &block)
     end
   end
   
   ##
   #
-  def method_missing(attr_name, *args, **key_value_args, &block)
-    handle_attr(attr_name, true, *args, **key_value_args, &block)
+  def method_missing(attr_id, *args, **key_value_args, &block)
+    handle_attr(attr_id, false, *args, **key_value_args, &block)
   end
   
   ##
