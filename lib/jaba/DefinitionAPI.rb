@@ -30,7 +30,7 @@ class TopLevelAPI < APIBase
   
   ##
   #
-  def src_tree(id, **option, &block)
+  def src_tree(id, **options, &block)
     @obj.define_instance(:src_tree, id, **options, &block)
   end
   

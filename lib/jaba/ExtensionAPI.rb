@@ -83,7 +83,7 @@ class JabaTypeAPI < APIBase
   # Include one or more shared definitions in this one.
   #
   def include(*shared_definition_ids, args: nil)
-    @obj.include_shared(*shared_definition_ids, args: args)
+    @obj.include_shared(shared_definition_ids, args: args)
   end
   
   ##
