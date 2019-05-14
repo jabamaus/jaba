@@ -137,10 +137,16 @@ class AttributeArray < AttributeBase
     if @excludes
       @elems.delete_if do |e|
         @excludes.any? do |ex|
+          val = e.get
           if ex.is_a?(Proc)
-            ex.call(e.get)
+            ex.call(val)
+          elsif ex.is_a?(Regexp)
+            if !val.is_a?(String)
+              @services.jaba_error('exclude regex can only operate on strings')
+            end
+            val.match(ex)
           else
-            ex == e.get # TODO: use a match? Probably.
+            ex == val
           end
         end
       end

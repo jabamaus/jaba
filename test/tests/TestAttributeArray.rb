@@ -137,19 +137,25 @@ class TestAttributeArray < JabaTest
         attr :a do
           flags :array
         end
+        attr :b do
+          flags :array
+        end
       end
       test :t do
         a :a
         a [:b], exclude: [:c]
         a [:c, :d, :e], exclude: [:d, :e]
+        b [1, 2, 3, 4]
+        b exclude: [2, 3]
         generate do
           a.must_equal [:a, :b]
+          b.must_equal [1, 4]
         end
       end
     end
   end
 
-  it 'supports conditional excluding' do
+  it 'supports excluding elements with regexes' do
     jaba do
       define :test do
         attr :a do
@@ -157,11 +163,48 @@ class TestAttributeArray < JabaTest
         end
       end
       test :t do
+        a ['one', 'two', 'three', 'four']
+        a exclude: [/o/, 'three']
+        generate do
+          a.must_equal []
+        end
+      end
+    end
+  end
+  
+  it 'fails if excluding with regex on non-strings' do
+    check_fails('Exclude regex can only operate on strings', backtrace: [[__FILE__, 'a [1, 2, 3, 4, 43]']]) do
+      jaba do
+        define :test do
+          attr :a do
+            flags :array
+          end
+        end
+        test :t do
+          a [1, 2, 3, 4, 43], exclude: [/3/]
+        end
+      end
+    end
+  end
+  
+  it 'supports conditional excluding' do
+    jaba do
+      define :test do
+        attr :a do
+          flags :array
+        end
+        attr :b do
+          flags :array
+        end
+      end
+      test :t do
         a [:a]
         a [:b, :c], exclude: lambda {|e| e == :e}
         a [:d, :e], exclude: lambda {|e| e == :d or e == :c}
+        b [1, 2, 3, 4], exclude: lambda {|e| e > 2}
         generate do
           a.must_equal [:a, :b]
+          b.must_equal [1, 2]
         end
       end
     end
