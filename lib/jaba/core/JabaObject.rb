@@ -5,12 +5,14 @@ module JABA
 class AttributeBase
 
   attr_reader :attr_def
+  attr_reader :api_call_line
   
   ##
   #
   def initialize(services, attr_def)
     @services = services
     @attr_def = attr_def
+    @api_call_line = nil
     @set = false
   end
   
@@ -56,11 +58,12 @@ class Attribute < AttributeBase
   
   ##
   #
-  def set(value, via_api=false, *args, **key_value_args, &block)
+  def set(value, api_call_line=nil, *args, **key_value_args, &block)
+    @api_call_line = api_call_line
     if value.is_a?(Array)
       @services.jaba_error("'#{@attr_def.id}' attribute cannot accept an array as not flagged with :array")
     end
-    if via_api
+    if api_call_line
       vv = @attr_def.type_obj.value_validator
       if vv
         begin
@@ -111,18 +114,19 @@ class AttributeArray < AttributeBase
   
   ##
   #
-  def set(values, via_api=false, *args, prefix: nil, suffix: nil, exclude: nil, **key_value_args, &block)
+  def set(values, api_call_line=nil, *args, prefix: nil, suffix: nil, exclude: nil, **key_value_args, &block)
+    @api_call_line = api_call_line
     Array(values).each do |v|
       elem = Attribute.new(@services, @attr_def)
       
       if (prefix or suffix)
         if !v.is_a?(String)
-          @services.jaba_error('prefix/suffix option can only be used with arrays of strings')
+          @services.jaba_error('prefix/suffix option can only be used with arrays of strings', callstack: api_call_line)
         end
         v = "#{prefix}#{v}#{suffix}"
       end
       
-      elem.set(v, via_api, *args, **key_value_args, &block)
+      elem.set(v, api_call_line, *args, **key_value_args, &block)
       
       @elems << elem
       @set = true
@@ -142,7 +146,7 @@ class AttributeArray < AttributeBase
             ex.call(val)
           elsif ex.is_a?(Regexp)
             if !val.is_a?(String)
-              @services.jaba_error('exclude regex can only operate on strings')
+              @services.jaba_error('exclude regex can only operate on strings', callstack: e.api_call_line)
             end
             val.match(ex)
           else
@@ -153,14 +157,14 @@ class AttributeArray < AttributeBase
     end
     if (!@attr_def.has_flag?(:allow_dupes) and attr_def.type_obj.supports_uniq?)
       if (@elems.uniq!(&:get) and warn)
-        @services.jaba_warning("'#{id}' array attribute contains duplicates")
+        @services.jaba_warning("'#{id}' array attribute contains duplicates", callstack: api_call_line)
       end
     end
     if (!@attr_def.has_flag?(:unordered) and attr_def.type_obj.supports_sort?)
       begin
         @elems.sort!
       rescue
-        @services.jaba_error("Failed to sort #{id}. Might be missing <=> operator")
+        @services.jaba_error("Failed to sort #{id}. Might be missing <=> operator", callstack: api_call_line)
       end
     end
   end
@@ -270,7 +274,7 @@ class JabaObject
   # eg my_attr 'val', :export, :exclude would make args equal to ['val', :opt1, :opt2]. If however the value being passed in is
   # an array it could be eg [['val1', 'val2'], :opt1, :opt2].
   #  
-  def handle_attr(id, via_api, *args, **key_value_args, &block)
+  def handle_attr(id, api_call_line, *args, **key_value_args, &block)
     getter = (args.empty? and key_value_args.empty?)
     a = get_attr(id)
 
@@ -291,14 +295,14 @@ class JabaObject
       # depending on what the user passed in (see comment at top of this method.
       #
       value = args.shift
-      a.set(value, via_api, *args, **key_value_args, &block)
+      a.set(value, api_call_line, *args, **key_value_args, &block)
     end
   end
   
   ##
   #
   def method_missing(attr_id, *args, **key_value_args, &block)
-    handle_attr(attr_id, false, *args, **key_value_args, &block)
+    handle_attr(attr_id, nil, *args, **key_value_args, &block)
   end
   
 end
