@@ -111,6 +111,8 @@ class AttributeArray < AttributeBase
   ##
   #
   def set(values, via_api=false, *args, prefix: nil, suffix: nil, **key_value_args, &block)
+    values = Array(values)
+    
     exclude = false
     args.each do |opt|
       case opt
@@ -119,7 +121,7 @@ class AttributeArray < AttributeBase
       end
     end
     
-    Array(values).each do |v|
+    values.each do |v|
       exclude = true if v.is_a?(JabaExcludeProc)
       elem = Attribute.new(@services, @attr_def)
       
@@ -274,7 +276,10 @@ class JabaObject
   end
   
   ##
-  #
+  # If an attribute set operation is being performed, args contains the 'value' and then a list optional symbols which act as options.
+  # eg my_attr 'val', :export, :exclude would make args equal to ['val', :opt1, :opt2]. If however the value being passed in is
+  # an array it could be eg [['val1', 'val2'], :opt1, :opt2].
+  #  
   def handle_attr(id, via_api, *args, **key_value_args, &block)
     getter = (args.empty? and key_value_args.empty?)
     a = get_attr(id)
@@ -292,7 +297,11 @@ class JabaObject
     if getter
       a.get
     else
-      a.set(args.shift, via_api, *args, **key_value_args, &block)
+      # Get the value by popping the first element from the front of the list. This could yield a single value or an array,
+      # depending on what the user passed in (see comment at top of this method.
+      #
+      value = args.shift
+      a.set(value, via_api, *args, **key_value_args, &block)
     end
   end
   
