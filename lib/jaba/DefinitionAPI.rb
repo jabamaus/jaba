@@ -84,6 +84,7 @@ class TopLevelAPI < APIBase
 end
 
 ##
+# TODO: make a list of reserved words that could come into use in the future and protect against usage
 #
 class JabaObjectAPI < APIBase
 
@@ -110,6 +111,13 @@ class JabaObjectAPI < APIBase
   #
   def lambda(&block)
     ::Kernel.lambda(&block)
+  end
+  
+  ##
+  # Clears any previously set values. Sets single attribute values to nil and clears array attributes.
+  #
+  def wipe(*attr_ids)
+    @obj.wipe_attrs(attr_ids)
   end
   
   ##

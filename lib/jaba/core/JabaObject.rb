@@ -44,6 +44,7 @@ class Attribute < AttributeBase
   #
   def initialize(services, attr_def)
     super
+    @value = nil
     d = @attr_def.default
     if (!d.nil? and !d.is_a?(Proc))
       set(d)
@@ -75,6 +76,16 @@ class Attribute < AttributeBase
     end
     @value = value
     @set = true
+  end
+  
+  ##
+  #
+  def clear
+    @value = nil
+    d = @attr_def.default
+    if (!d.nil? and !d.is_a?(Proc))
+      @value = d
+    end
   end
   
   ##
@@ -133,6 +144,12 @@ class AttributeArray < AttributeBase
     end
     
     @excludes.concat(Array(exclude)) if exclude
+  end
+  
+  ##
+  #
+  def clear
+    @elems.clear
   end
   
   ##
@@ -203,6 +220,7 @@ class JabaObject
   ##
   #
   def get_attr(id)
+  # TODO: fail id not found
     @attribute_lookup[id]
   end
   
@@ -303,6 +321,17 @@ class JabaObject
   #
   def method_missing(attr_id, *args, **key_value_args, &block)
     handle_attr(attr_id, nil, *args, **key_value_args, &block)
+  end
+  
+  ##
+  #
+  def wipe_attrs(ids)
+    ids.each do |id|
+      if !id.is_a?(Symbol)
+        @services.jaba_error("'#{id}' must be specified as a symbol")
+      end
+      get_attr(id).clear
+    end
   end
   
 end

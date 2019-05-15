@@ -210,6 +210,33 @@ class TestAttributeArray < JabaTest
     end
   end
   
+  it 'supports clearing arrays' do
+    jaba do
+      define :test do
+        attr :a do
+          flags :array
+        end
+        attr :b do
+          default 1
+        end
+      end
+      test :t do
+        a [1, 2]
+        a 3
+        a [4, 5]
+        a.must_equal [1, 2, 3, 4, 5]
+        b 2
+        b.must_equal(2)
+        wipe :a, :b
+        a.must_equal []
+        b.must_equal 1
+      end
+    end
+  end
+  
+  it 'supports clearing excludes' do
+  end
+  
 end
 
 end
