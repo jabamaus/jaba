@@ -22,7 +22,6 @@ class Services
   def initialize
     @input = Input.new
     @input.instance_variable_set(:@definitions, nil)
-    @input.root = Dir.getwd
     
     @warnings = []
     
@@ -54,9 +53,70 @@ class Services
   ##
   #
   def run
-    Dir.chdir(input.root) do
-      return execute
+    # Load and execute any definition files specified in Input#load_paths
+    #
+    load_definitions
+
+    # Execute any definitions supplied inline in a block
+    #
+    if input.definitions
+      execute_definitions(&input.definitions)
     end
+    
+    # Create attribute types
+    #
+    @jaba_attr_types.map! do |def_data|
+      at = AttributeType.new(self, def_data.type)
+      @attr_type_api.__internal_set_obj(at)
+      @attr_type_api.instance_eval(&def_data.block)
+      at
+    end
+    
+    # Create a JabaType object for each defined type
+    #
+    @jaba_types.map! do |def_data|
+      jt = JabaType.new(self, def_data.type)
+      @jaba_type_api.__internal_set_obj(jt)
+      @jaba_type_api.instance_eval(&def_data.block)
+      jt
+    end
+    
+    # Extend JabaTypes
+    #
+    @types_to_extend.each do |def_data|
+      jt = @jaba_types.find{|t| t.type == def_data.type}
+      if !jt
+        jaba_error("'#{def_data.type}' has not been defined", callstack: def_data.block)
+      end
+      @jaba_type_api.__internal_set_obj(jt)
+      @jaba_type_api.instance_eval(&def_data.block)
+    end
+    
+    @jaba_types.each(&:init)
+    
+    # Create instances of types
+    # TODO: do in dependency order
+    #
+    @definition_registry.each do |type, defs|
+      next if type == :shared
+      jt = @jaba_types.find{|t| t.type == type}
+      defs.each do |def_data|
+        if !jt
+          jaba_error("'#{type}' type is not defined. Cannot instance.", callstack: def_data.block)
+        end
+        jo = JabaObject.new(self, jt, def_data.id, def_data.block.source_location)
+        @jaba_object_api.__internal_set_obj(jo)
+        @jaba_object_api.instance_eval(&def_data.block)
+        jo.post_create
+        jo.call_generators
+      end
+    end
+    
+    op = Output.new
+    op.instance_variable_set(:@added_files, @added_files)
+    op.instance_variable_set(:@modified_files, @modified_files)
+    op.instance_variable_set(:@warnings, @warnings)
+    op
   end
   
   ##
@@ -190,75 +250,6 @@ class Services
   end
 
 private
-
-  ##
-  #
-  def execute
-    # Load and execute any definition files specified in Input#load_paths
-    #
-    load_definitions
-
-    # Execute any definitions supplied inline in a block
-    #
-    if input.definitions
-      execute_definitions(&input.definitions)
-    end
-    
-    # Create attribute types
-    #
-    @jaba_attr_types.map! do |def_data|
-      at = AttributeType.new(self, def_data.type)
-      @attr_type_api.__internal_set_obj(at)
-      @attr_type_api.instance_eval(&def_data.block)
-      at
-    end
-    
-    # Create a JabaType object for each defined type
-    #
-    @jaba_types.map! do |def_data|
-      jt = JabaType.new(self, def_data.type)
-      @jaba_type_api.__internal_set_obj(jt)
-      @jaba_type_api.instance_eval(&def_data.block)
-      jt
-    end
-    
-    # Extend JabaTypes
-    #
-    @types_to_extend.each do |def_data|
-      jt = @jaba_types.find{|t| t.type == def_data.type}
-      if !jt
-        jaba_error("'#{def_data.type}' has not been defined", callstack: def_data.block)
-      end
-      @jaba_type_api.__internal_set_obj(jt)
-      @jaba_type_api.instance_eval(&def_data.block)
-    end
-    
-    @jaba_types.each(&:init)
-    
-    # Create instances of types
-    # TODO: do in dependency order
-    #
-    @definition_registry.each do |type, defs|
-      next if type == :shared
-      jt = @jaba_types.find{|t| t.type == type}
-      defs.each do |def_data|
-        if !jt
-          jaba_error("'#{type}' type is not defined. Cannot instance.", callstack: def_data.block)
-        end
-        jo = JabaObject.new(self, jt, def_data.id, def_data.block.source_location)
-        @jaba_object_api.__internal_set_obj(jo)
-        @jaba_object_api.instance_eval(&def_data.block)
-        jo.post_create
-        jo.call_generators
-      end
-    end
-    
-    op = Output.new
-    op.instance_variable_set(:@added_files, @added_files)
-    op.instance_variable_set(:@modified_files, @modified_files)
-    op.instance_variable_set(:@warnings, @warnings)
-    op
-  end
   
   ##
   #

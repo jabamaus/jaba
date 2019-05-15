@@ -19,10 +19,6 @@ end
 class Input
   
   ##
-  #
-  attr_accessor :root
-  
-  ##
   # One or more filenames and/or directories from which to load definitions.
   #
   attr_accessor :load_paths

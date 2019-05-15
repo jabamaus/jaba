@@ -1,5 +1,6 @@
 attr_flag :array
 attr_flag :allow_dupes
+attr_flag :no_check_exist
 attr_flag :read_only
 attr_flag :required
 attr_flag :unordered
@@ -108,6 +109,20 @@ end
 ##
 #
 define :project do
+  attr :root do
+    help 'Root of the project specified as a relative path to the file that contains the project definition. ' \
+         'All paths are specified relative to this. Project files will be generated here unless the genroot attribute is used.'
+    type :dir
+    default '.'
+  end
+  
+  attr :genroot do
+    help 'Directory in which projects will be generated. Specified as a relative path from <root>. If not specified ' \
+     'projects will be generated in <root>'
+    type :dir
+    default '.'
+    flags :no_check_exist
+  end
 end
 
 ##
