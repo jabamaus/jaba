@@ -125,25 +125,35 @@ class AttributeArray < AttributeBase
   
   ##
   #
-  def set(values, api_call_line=nil, *args, prefix: nil, suffix: nil, exclude: nil, **key_value_args, &block)
+  def set(values, api_call_line=nil, *args, prefix: nil, postfix: nil, exclude: nil, **key_value_args, &block)
     @api_call_line = api_call_line
+    
     Array(values).each do |v|
       elem = Attribute.new(@services, @attr_def)
-      
-      if (prefix or suffix)
-        if !v.is_a?(String)
-          @services.jaba_error('prefix/suffix option can only be used with arrays of strings', callstack: api_call_line)
-        end
-        v = "#{prefix}#{v}#{suffix}"
-      end
-      
+      v = apply_pre_post_fix(prefix, postfix, v)
       elem.set(v, api_call_line, *args, **key_value_args, &block)
-      
       @elems << elem
       @set = true
     end
     
-    @excludes.concat(Array(exclude)) if exclude
+    if exclude
+      Array(exclude).each do |e|
+        @excludes << apply_pre_post_fix(prefix, postfix, e)
+      end
+    end
+  end
+  
+  ##
+  #
+  def apply_pre_post_fix(pre, post, val)
+    if (pre or post)
+      if !val.is_a?(String)
+        @services.jaba_error('prefix/postfix option can only be used with arrays of strings', callstack: api_call_line)
+      end
+      "#{pre}#{val}#{post}"
+    else
+      val
+    end
   end
   
   ##

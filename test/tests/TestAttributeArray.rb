@@ -100,7 +100,7 @@ class TestAttributeArray < JabaTest
     end
   end
   
-  it 'supports prefix and suffix options' do
+  it 'supports prefix and postfix options' do
     jaba do
       define :test do
         attr :a do
@@ -108,7 +108,7 @@ class TestAttributeArray < JabaTest
         end
       end
       test :t do
-        a ['j', 'a', 'b', 'a'], prefix: '1', suffix: 'z'
+        a ['j', 'a', 'b', 'a'], prefix: '1', postfix: 'z'
         generate do
           a.must_equal ['1jz', '1az', '1bz', '1az']
         end
@@ -116,8 +116,8 @@ class TestAttributeArray < JabaTest
     end
   end
   
-  it 'only allows prefix/suffix on string elements' do
-    check_fails('Prefix/suffix option can only be used with arrays of strings', backtrace: [[__FILE__, 'a [1, 2, 3]']]) do
+  it 'only allows prefix/postfix on string elements' do
+    check_fails('Prefix/postfix option can only be used with arrays of strings', backtrace: [[__FILE__, 'a [1, 2, 3]']]) do
       jaba do
         define :test do
           attr :a do
@@ -125,7 +125,7 @@ class TestAttributeArray < JabaTest
           end
         end
         test :t do
-          a [1, 2, 3], prefix: 'a', suffix: 'b'
+          a [1, 2, 3], prefix: 'a', postfix: 'b'
         end
       end
     end
@@ -155,6 +155,23 @@ class TestAttributeArray < JabaTest
     end
   end
 
+  it 'supports :prefix and :postfix in conjunction with :exclude' do
+    jaba do
+      define :test do
+        attr :a do
+          flags :array, :unordered
+        end
+      end
+      test :t do
+        a ['abc', 'acc', 'adc', 'aec']
+        a exclude: ['c', 'd'], prefix: 'a', postfix: 'c'
+        generate do
+          a.must_equal ['abc', 'aec']
+        end
+      end
+    end
+  end
+  
   it 'supports excluding elements with regexes' do
     jaba do
       define :test do
