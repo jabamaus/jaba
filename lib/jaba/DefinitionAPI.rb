@@ -29,12 +29,6 @@ class TopLevelAPI < APIBase
   include TopLevelExtensionAPI
   
   ##
-  #
-  def src_tree(id, **options, &block)
-    @obj.define_instance(:src_tree, id, **options, &block)
-  end
-  
-  ##
   # Define a target.
   #
   def target(id, **options, &block)
