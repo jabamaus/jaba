@@ -29,13 +29,6 @@ class TopLevelAPI < APIBase
   include TopLevelExtensionAPI
   
   ##
-  # Define a target.
-  #
-  def target(id, **options, &block)
-    @obj.define_instance(:target, id, **options, &block)
-  end
-  
-  ##
   # Define a project.
   #
   def project(id, **options, &block)

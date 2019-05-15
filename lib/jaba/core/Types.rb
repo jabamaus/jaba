@@ -52,11 +52,6 @@ end
 
 ##
 #
-define :target do
-end
-
-##
-#
 define :category do
   attr :name do
     help 'Display name of category. Maps to name of solution folder in a Visual Studio solution'

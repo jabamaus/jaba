@@ -62,8 +62,6 @@ class TestGlobalDefinition < JabaTest
       end
       project :a do
       end
-      target :a do
-      end
       workspace :a do
       end
     end
