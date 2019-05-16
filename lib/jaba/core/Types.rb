@@ -58,8 +58,6 @@ end
 ##
 #
 define :sku do
-  evaluate :per_type
-  
   attr :platform do
   end
   
@@ -83,7 +81,6 @@ end
 ##
 #
 define :category do
-  evaluate :per_type
   
   attr :name do
     help 'Display name of category. Maps to name of solution folder in a Visual Studio solution'
@@ -109,7 +106,6 @@ end
 ##
 #
 define :text do
-  evaluate :per_type
   
   attr :filename do
     help 'Path to the filename to be generated'
