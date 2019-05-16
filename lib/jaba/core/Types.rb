@@ -163,13 +163,13 @@ define :project do
      'projects will be generated in <root>'
     type :dir
     default '.'
-    flags :per_platform, :no_check_exist
+    flags :per_sku, :no_check_exist
   end
   
   attr :src do
     help 'Source files. Evaluated once per project so this should be the union of all source files required for all target platforms.'
     type :path
-    flags :per_type, :array
+    flags :per_sku, :array
   end
   
   attr :targets do
