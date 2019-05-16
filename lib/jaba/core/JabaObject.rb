@@ -145,6 +145,12 @@ class AttributeArray < AttributeBase
   
   ##
   #
+  def each_attr(&block)
+    @elems.each(&block)
+  end
+  
+  ##
+  #
   def apply_pre_post_fix(pre, post, val)
     if (pre or post)
       if !val.is_a?(String)
