@@ -32,6 +32,8 @@ class TestExtensionGrammar < JabaTest
       end
       
       project :p do
+        skus [:win32_vs2017]
+        targets [:t]
         a 'val'
         a.must_equal('val')
       end

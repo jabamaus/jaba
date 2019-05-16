@@ -1,6 +1,10 @@
+# TODO: add help string to flags
 attr_flag :array
 attr_flag :allow_dupes
 attr_flag :no_check_exist
+attr_flag :per_type
+attr_flag :per_sku
+attr_flag :per_target
 attr_flag :read_only
 attr_flag :required
 attr_flag :unordered
@@ -53,7 +57,34 @@ end
 
 ##
 #
+define :sku do
+  evaluate :per_type
+  
+  attr :platform do
+  end
+  
+  attr :host do
+  end
+end
+
+##
+# Define skus for VisualStudio.
+#
+[:win32, :x64].each do |p|
+  [2015, 2017, 2019].each do |vs|
+    host = "vs#{vs}"
+    sku "#{p}_#{host}".to_sym do
+      platform p
+      host host
+    end
+  end
+end
+
+##
+#
 define :category do
+  evaluate :per_type
+  
   attr :name do
     help 'Display name of category. Maps to name of solution folder in a Visual Studio solution'
     flags :required
@@ -78,6 +109,8 @@ end
 ##
 #
 define :text do
+  evaluate :per_type
+  
   attr :filename do
     help 'Path to the filename to be generated'
     type :file
@@ -109,11 +142,20 @@ end
 ##
 #
 define :project do
+  evaluate :per_type, :per_sku, :per_target
+  
+  attr :skus do
+    help 'skus'
+    type :reference
+    flags :per_type, :array, :unordered, :required
+  end
+  
   attr :root do
     help 'Root of the project specified as a relative path to the file that contains the project definition. ' \
          'All paths are specified relative to this. Project files will be generated here unless the genroot attribute is used.'
     type :dir
     default '.'
+    flags :per_type
   end
   
   attr :genroot do
@@ -121,11 +163,24 @@ define :project do
      'projects will be generated in <root>'
     type :dir
     default '.'
-    flags :no_check_exist
+    flags :per_platform, :no_check_exist
   end
+  
+  attr :src do
+    help 'Source files. Evaluated once per project so this should be the union of all source files required for all target platforms.'
+    type :path
+    flags :per_type, :array
+  end
+  
+  attr :targets do
+    help 'Targets'
+    flags :per_sku, :array, :required, :unordered
+  end
+  
 end
 
 ##
 #
 define :workspace do
+  evaluate :per_type, :per_sku
 end
