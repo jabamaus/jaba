@@ -2,9 +2,6 @@
 attr_flag :array
 attr_flag :allow_dupes
 attr_flag :no_check_exist
-attr_flag :per_type
-attr_flag :per_sku
-attr_flag :per_target
 attr_flag :read_only
 attr_flag :required
 attr_flag :unordered
@@ -138,12 +135,11 @@ end
 ##
 #
 define :project do
-  evaluate :per_type, :per_sku, :per_target
   
   attr :skus do
     help 'skus'
     type :reference
-    flags :per_type, :array, :unordered, :required
+    flags :array, :unordered, :required
   end
   
   attr :root do
@@ -151,7 +147,6 @@ define :project do
          'All paths are specified relative to this. Project files will be generated here unless the genroot attribute is used.'
     type :dir
     default '.'
-    flags :per_type
   end
   
   attr :genroot do
@@ -159,18 +154,18 @@ define :project do
      'projects will be generated in <root>'
     type :dir
     default '.'
-    flags :per_sku, :no_check_exist
+    flags :no_check_exist
   end
   
   attr :src do
     help 'Source files. Evaluated once per project so this should be the union of all source files required for all target platforms.'
     type :path
-    flags :per_sku, :array
+    flags :array
   end
   
   attr :targets do
     help 'Targets'
-    flags :per_sku, :array, :required, :unordered
+    flags :array, :required, :unordered
   end
   
 end
@@ -178,5 +173,4 @@ end
 ##
 #
 define :workspace do
-  evaluate :per_type, :per_sku
 end

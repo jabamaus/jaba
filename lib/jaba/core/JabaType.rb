@@ -138,7 +138,6 @@ class JabaType
 
   attr_reader :type
   attr_reader :generators
-  attr_reader :evaluation_contexts
   
   ##
   #
@@ -147,13 +146,6 @@ class JabaType
     @type = type_id
     @attribute_defs = []
     @generators = []
-    @evaluation_contexts = [:per_type]
-  end
-  
-  ##
-  #
-  def set_evaluation_contexts(contexts)
-    @evaluation_contexts = contexts
   end
   
   ##

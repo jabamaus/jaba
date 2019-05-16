@@ -67,12 +67,6 @@ end
 class JabaTypeAPI < APIBase
   
   ##
-  #
-  def evaluate(*contexts)
-    @obj.set_evaluation_contexts(contexts)
-  end
-  
-  ##
   # Define a new attribute. See AttributeDefinitionAPI class below.
   #
   def attr(id, **options, &block)
