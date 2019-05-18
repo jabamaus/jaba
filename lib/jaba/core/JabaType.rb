@@ -15,6 +15,30 @@ class JabaAPIObject
     @api.__internal_set_obj(self)
   end
   
+  ##
+  #
+  def include_shared(ids, args)
+    ids.each do |id|
+      df = @services.get_definition(:shared, id, fail_if_not_found: false)
+      if !df
+        @services.jaba_error("Shared definition '#{id}' not found")
+      end
+      
+      n_expected_args = df.block.arity
+      n_supplied_args = args ? Array(args).size : 0
+      
+      if (n_supplied_args != n_expected_args)
+        @services.jaba_error("shared definition '#{id}' expects #{n_expected_args} arguments but #{n_supplied_args} were passed")
+      end
+      
+      if args.nil?
+        @api.instance_eval(&df.block)
+      else
+        @api.instance_exec(*args, &df.block)
+      end
+    end
+  end
+  
 end
 
 ##

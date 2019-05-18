@@ -283,30 +283,6 @@ class JabaObject < JabaAPIObject
   end
   
   ##
-  #
-  def include_shared(ids, args)
-    ids.each do |id|
-      df = @services.get_definition(:shared, id, fail_if_not_found: false)
-      if !df
-        @services.jaba_error("Shared definition '#{id}' not found")
-      end
-      
-      n_expected_args = df.block.arity
-      n_supplied_args = args ? Array(args).size : 0
-      
-      if (n_supplied_args != n_expected_args)
-        @services.jaba_error("shared definition '#{id}' expects #{n_expected_args} arguments but #{n_supplied_args} were passed")
-      end
-      
-      if args.nil?
-        @services.jaba_object_api.instance_eval(&df.block)
-      else
-        @services.jaba_object_api.instance_exec(*args, &df.block)
-      end
-    end
-  end
-  
-  ##
   # If an attribute set operation is being performed, args contains the 'value' and then a list optional symbols which act as options.
   # eg my_attr 'val', :export, :exclude would make args equal to ['val', :opt1, :opt2]. If however the value being passed in is
   # an array it could be eg [['val1', 'val2'], :opt1, :opt2].

@@ -3,7 +3,9 @@ module JABA
 class TestShared < JabaTest
 
   it 'allows inclusion of shared definitions in any object' do
-    [:text, :project, :workspace, :category].each do |type| # TODO: include :shared
+    # check that all types support include directive
+    #
+    [:text, :project, :workspace, :category, :attr_type, :define].each do |type|
       check_fails('Included', backtrace: [[__FILE__, "raise 'Included'"], [__FILE__, 'include :a']]) do
         jaba do
           shared :a do
@@ -15,7 +17,42 @@ class TestShared < JabaTest
         end
       end
     end
-    # TODO: extend to test types
+    
+    jaba do
+      shared :at_setup do
+        init_attr_def do
+          flags :allow_dupes
+        end
+      end
+     
+      attr_type :at do
+        include :at_setup
+      end
+     
+      shared :attr_setup do
+        flags :array
+      end
+      
+      shared :attrs do
+        attr :a, type: :at do
+         include :attr_setup
+        end
+        attr :b, type: :at do
+          include :attr_setup
+        end
+      end
+      define :test do
+        include :attrs
+      end
+      test :t do
+        a [3, 3, 2, 2, 1, 1]
+        b [5, 5, 4, 4, 3, 3]
+        generate do
+          a.must_equal [1, 1, 2, 2, 3, 3]
+          b.must_equal [3, 3, 4, 4, 5, 5]
+        end
+      end
+    end
   end
 
   it 'fails if shared definition does not exist' do

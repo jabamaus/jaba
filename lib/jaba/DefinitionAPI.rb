@@ -5,16 +5,23 @@ module JABA
 class APIBase < BasicObject
 
   ##
-  # Internal use only.
+  # Include one or more shared definitions in this one.
   #
-  def __internal_set_obj(o)
-    @obj = o
+  def include(*shared_definition_ids, args: nil)
+    @obj.include_shared(shared_definition_ids, args)
   end
   
   ##
   #
   def raise(msg)
     @obj.services.jaba_error(msg)
+  end
+
+  ##
+  # Internal use only.
+  #
+  def __internal_set_obj(o)
+    @obj = o
   end
   
 end
@@ -26,6 +33,7 @@ require_relative 'ExtensionAPI'
 #
 class TopLevelAPI < APIBase
   
+  undef_method :include
   include TopLevelExtensionAPI
   
   ##
@@ -81,13 +89,6 @@ class JabaObjectAPI < APIBase
     @obj.id
   end
   
-  ##
-  # Include one or more shared definitions in this one.
-  #
-  def include(*shared_definition_ids, args: nil)
-    @obj.include_shared(shared_definition_ids, args)
-  end
-
   ##
   #
   def generate(&block)

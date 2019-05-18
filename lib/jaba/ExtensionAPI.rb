@@ -68,13 +68,6 @@ class JabaTypeAPI < APIBase
   end
   
   ##
-  # Include one or more shared definitions in this one.
-  #
-  def include(*shared_definition_ids, args: nil)
-    @obj.include_shared(shared_definition_ids, args: args)
-  end
-  
-  ##
   #
   def generate(&block)
     @obj.define_generator(&block)
