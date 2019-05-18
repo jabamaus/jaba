@@ -67,7 +67,7 @@ class Services
     #
     @jaba_attr_types.map! do |def_data|
       at = AttributeType.new(self, def_data.type)
-      at.api.instance_eval(&def_data.block)
+      at.api_eval(&def_data.block)
       at
     end
     
@@ -75,7 +75,7 @@ class Services
     #
     @jaba_types.map! do |def_data|
       jt = JabaType.new(self, def_data.type)
-      jt.api.instance_eval(&def_data.block)
+      jt.api_eval(&def_data.block)
       jt
     end
     
@@ -86,8 +86,7 @@ class Services
       if !jt
         jaba_error("'#{def_data.type}' has not been defined", callstack: def_data.block)
       end
-      jt.api.__internal_set_obj(jt)
-      jt.api.instance_eval(&def_data.block)
+      jt.api_eval(&def_data.block)
     end
     
     @jaba_types.each(&:init)
@@ -103,7 +102,7 @@ class Services
           jaba_error("'#{type}' type is not defined. Cannot instance.", callstack: def_data.block)
         end
         jo = JabaObject.new(self, jt, def_data.id, def_data.block.source_location)
-        jo.api.instance_eval(&def_data.block)
+        jo.api_eval(&def_data.block)
         jo.post_create
         jo.call_generators
       end

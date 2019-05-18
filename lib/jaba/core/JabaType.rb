@@ -12,7 +12,17 @@ class JabaAPIObject
   def initialize(services, api)
     @services = services
     @api = api
+  end
+  
+  ##
+  #
+  def api_eval(args=nil, &block)
     @api.__internal_set_obj(self)
+    if args
+      @api.instance_exec(args, &block)
+    else
+      @api.instance_eval(&block)
+    end
   end
   
   ##
@@ -31,11 +41,7 @@ class JabaAPIObject
         @services.jaba_error("shared definition '#{id}' expects #{n_expected_args} arguments but #{n_supplied_args} were passed")
       end
       
-      if args.nil?
-        @api.instance_eval(&df.block)
-      else
-        @api.instance_exec(*args, &df.block)
-      end
+      api_eval(args, &df.block)
     end
   end
   
@@ -105,7 +111,7 @@ class AttributeDefinition < JabaAPIObject
     @type_obj = @services.get_attribute_type(@type)
     
     if @type_obj.init_attr_hook
-      @api.instance_eval(&@type_obj.init_attr_hook)
+      api_eval(&@type_obj.init_attr_hook)
     end
   end
   
@@ -187,7 +193,7 @@ class JabaType < JabaAPIObject
       @services.jaba_error("'#{id}' attribute multiply defined")
     end
     ad = AttributeDefinition.new(@services, id, type, self, block.source_location)
-    ad.api.instance_eval(&block)
+    ad.api_eval(&block)
     @attribute_defs << ad
     ad
   end
