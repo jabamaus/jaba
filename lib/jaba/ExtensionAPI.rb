@@ -38,20 +38,8 @@ class AttributeTypeAPI < APIBase
   
   ##
   #
-  def default(val)
-    @obj.set_var(:default, val)
-  end
-  
-  ##
-  #
-  def supports_sort(boolean)
-    @obj.set_var(:supports_sort, boolean)
-  end
-  
-  ##
-  #
-  def supports_uniq(boolean)
-    @obj.set_var(:supports_uniq, boolean)
+  def init_attr_def(&block)
+    @obj.set_block(:init_attr_hook, &block)
   end
   
   ##
@@ -99,10 +87,10 @@ end
 class AttributeDefinitionAPI < APIBase
 
   ##
-  # Set the type of the attribute. Optional as a attribute does not require a type.
+  # Define a child attribute. Only possible on attributes of type :container.
   #
-  def type(val)
-    @obj.set_var(:type, val)
+  def attr(id, **options, &block)
+    @obj.define_child_attr(id, **options, &block)
   end
   
   ##
@@ -132,14 +120,7 @@ class AttributeDefinitionAPI < APIBase
   def items(val=nil, &block)
     @obj.set_var(:items, val, &block)
   end
-  
-  ##
-  # Specify the options this attribute accepts.
-  #
-  def options(*opts, &block)
-    @obj.set_var(:options, opts, &block)
-  end
-  
+ 
   ##
   # Validation hook. Implement attribute validation here. For single value attributes the value of the attribute is passed to the block,
   # along with any options that were specified in user definitions. Options can be ommitted from the block arguments if not required.

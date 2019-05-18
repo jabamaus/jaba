@@ -11,9 +11,10 @@ attr_flag :unordered
 ##
 #
 attr_type :bool do
-  default false
-  supports_sort false
-  supports_uniq false
+  init_attr_def do
+    default false
+    flags :unordered, :allow_dupes
+  end
   
   validate_value do |value|
     if !value.boolean?
@@ -54,24 +55,9 @@ end
 
 ##
 #
-define :sku do
-  attr :platform do
-  end
-  
-  attr :host do
-  end
-end
-
-##
-# Define skus for VisualStudio.
-#
-[:win32, :x64].each do |p|
-  [2015, 2017, 2019].each do |vs|
-    host = "vs#{vs}"
-    sku "#{p}_#{host}".to_sym do
-      platform p
-      host host
-    end
+attr_type :container do
+  init_attr_def do
+    flags :array
   end
 end
 
@@ -94,19 +80,18 @@ define :category do
     end
   end
   
-  attr :parent do
+  attr :parent, type: :reference do
     help 'Makes this category a child of the specified category.'
-    type :reference
   end
+  
 end
 
 ##
 #
 define :text do
   
-  attr :filename do
+  attr :filename, type: :file do
     help 'Path to the filename to be generated'
-    type :file
     flags :required
   end
   
@@ -119,9 +104,8 @@ define :text do
     flags :array, :allow_dupes, :unordered
   end
   
-  attr :eol do
+  attr :eol, type: :choice do
     help 'Newline style'
-    type :choice
     items [:native, :unix, :windows]
     default :native
   end
@@ -130,36 +114,32 @@ define :text do
     str = content ? content : "#{line.join("\n")}\n"
     save_file(filename, str, eol)
   end
+  
 end
 
 ##
 #
 define :project do
   
-  attr :skus do
-    help 'skus'
-    type :reference
+  attr :platforms do
     flags :array, :unordered, :required
   end
   
-  attr :root do
+  attr :root, type: :dir do
     help 'Root of the project specified as a relative path to the file that contains the project definition. ' \
          'All paths are specified relative to this. Project files will be generated here unless the genroot attribute is used.'
-    type :dir
     default '.'
   end
   
-  attr :genroot do
+  attr :genroot, type: :dir do
     help 'Directory in which projects will be generated. Specified as a relative path from <root>. If not specified ' \
      'projects will be generated in <root>'
-    type :dir
     default '.'
     flags :no_check_exist
   end
   
-  attr :src do
+  attr :src, type: :path do
     help 'Source files. Evaluated once per project so this should be the union of all source files required for all target platforms.'
-    type :path
     flags :array
   end
   

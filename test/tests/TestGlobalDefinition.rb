@@ -61,7 +61,7 @@ class TestGlobalDefinition < JabaTest
       shared :a do
       end
       project :a do
-        skus [:win32_vs2017]
+        platforms [:win32]
         targets [:t]
       end
       workspace :a do

@@ -4,19 +4,17 @@ module JABA
 #
 class AttributeType
 
-  attr_reader :default
   attr_reader :type
   attr_reader :value_validator
+  attr_reader :init_attr_hook
   
   ##
   #
   def initialize(services, type_id)
     @services = services
     @type = type_id
-    @default = nil
-    @supports_sort = true
-    @supports_uniq = true
     @value_validator = nil
+    @init_attr_hook = nil
   end
 
   ##
@@ -34,18 +32,6 @@ class AttributeType
     instance_variable_set("@#{var}", block)
   end
   
-  ##
-  #
-  def supports_sort?
-    @supports_sort
-  end
-  
-  ##
-  #
-  def supports_uniq?
-    @supports_uniq
-  end
-  
 end
 
 ##
@@ -61,18 +47,34 @@ class AttributeDefinition
   
   ##
   #
-  def initialize(services, id, source_location)
+  def initialize(services, id, type, jaba_type_obj, source_location)
     @services = services
     @id = id
+    @type = type
+    @jaba_type_obj = jaba_type_obj
     @source_location = source_location
 
+    @child_attrs = []
+    
     @default = nil
-    @flags = nil
+    @flags = []
     @help = nil
     @items = nil
-    @options = nil
-    @type = nil
-    @type_obj = nil
+    
+    if @type
+      @type_obj = @services.get_attribute_type(@type)
+      if !@type_obj
+        @services.jaba_error("'#{@type}' attribute type is undefined. Valid types: #{@services.jaba_attr_types.map{|at| at.type}}")
+      end
+    else
+      @type_obj = @services.default_attr_type
+    end
+    
+    if @type_obj.init_attr_hook
+      api = @services.attr_definition_api
+      api.__internal_set_obj(self)
+      api.instance_eval(&@type_obj.init_attr_hook)
+    end
   end
   
   ##
@@ -83,22 +85,25 @@ class AttributeDefinition
   
   ##
   #
-  def set_var(var, val=nil, &block)
+  def define_child_attr(id, child_type:, **options, &block)
+    ad = @jaba_type_obj.define_attr(child_type, **options, &block)
+    @child_attrs << ad
+  end
+  
+  ##
+  #
+  def set_var(var_name, val=nil, **options, &block)
     if block_given?
       if !val.nil?
         @services.jaba_error('Must provide a default value or a block but not both')
       end
-      instance_variable_set("@#{var}", block)
+      instance_variable_set("@#{var_name}", block)
     else
-      instance_variable_set("@#{var}", val)
-      case var
-      when :type
-        # Convert type id to AttributeType object
-        #
-        @type_obj = @services.get_attribute_type(@type)
-        if !@type_obj
-          @services.jaba_error("'#{@type}' attribute type is undefined. Valid types: #{@services.jaba_attr_types.map{|at| at.type}}")
-        end
+      var = instance_variable_get("@#{var_name}")
+      if var.is_a?(Array)
+        var.concat(Array(val))
+      else
+        instance_variable_set("@#{var_name}", val)
       end
     end
   end
@@ -106,17 +111,6 @@ class AttributeDefinition
   ##
   #
   def init
-    if !@type_obj
-      @type_obj = @services.default_attr_type
-    end
-    
-    # If default has not already been set fall back to the default specified by the attribute type, if one
-    # has been set there.
-    #
-    if @default.nil?
-      @default = @type_obj.default
-    end
-    
     if @default
       vv = @type_obj.value_validator
       if vv
@@ -150,7 +144,7 @@ class JabaType
   
   ##
   #
-  def define_attr(id, **options, &block)
+  def define_attr(id, type: nil, **options, &block)
     if !id.is_a?(Symbol)
       @services.jaba_error("'#{id}' attribute id must be specified as a symbol")
     end
@@ -160,11 +154,12 @@ class JabaType
     if @attribute_defs.find{|d| d.id == id}
       @services.jaba_error("'#{id}' attribute multiply defined")
     end
-    ad = AttributeDefinition.new(@services, id, block.source_location)
+    ad = AttributeDefinition.new(@services, id, type, self, block.source_location)
     api = @services.attr_definition_api
     api.__internal_set_obj(ad)
     api.instance_eval(&block)
     @attribute_defs << ad
+    ad
   end
   
   ##

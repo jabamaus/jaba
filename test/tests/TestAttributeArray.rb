@@ -67,11 +67,10 @@ class TestAttributeArray < JabaTest
     end
   end
   
-  it 'does not sort bool arrays' do
+  it 'does not sort or strip duplicates from bool arrays' do
     jaba do
       define :test do
-        attr :a do
-          type :bool
+        attr :a, type: :bool do
           flags :array
         end
       end

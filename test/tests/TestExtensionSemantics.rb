@@ -32,7 +32,7 @@ class TestExtensionGrammar < JabaTest
       end
       
       project :p do
-        skus [:win32_vs2017]
+        platforms [:win32]
         targets [:t]
         a 'val'
         a.must_equal('val')
@@ -50,8 +50,7 @@ class TestExtensionGrammar < JabaTest
           end
         end
         define :test do
-          attr :b do
-            type :a
+          attr :b, type: :a do
           end
         end
         test :t do
@@ -62,11 +61,10 @@ class TestExtensionGrammar < JabaTest
   end
   
   it 'detects usage of undefined attribute types' do
-    check_fails(/'undefined' attribute type is undefined. Valid types: \[.*?\]/, backtrace: [[__FILE__, 'type :undefined']]) do
+    check_fails(/'undefined' attribute type is undefined. Valid types: \[.*?\]/, backtrace: [[__FILE__, 'attr :b, type: :undefined']]) do
       jaba do
         define :a do
-          attr :b do
-            type :undefined
+          attr :b, type: :undefined do
           end
         end
       end
@@ -86,7 +84,47 @@ class TestExtensionGrammar < JabaTest
     end
     # TODO: test something
   end
-  
+=begin
+  # TODO: check only :container attr can have children
+  it 'can build a tree of object instances' do
+    jaba do
+      define :test do
+        attr :root do
+        end
+        attr :skus do
+          type :container, child_type: :sku
+          attr :name do
+          end
+        end
+        
+      end
+      test :t do
+        root 1
+        skus [:a, :b, :c]
+        case sku
+        when :a
+          name 'sku_a'
+        when :b
+          name 'sku_b'
+        when :c
+          name 'sku_c'
+        end
+        generate do
+          root.must_equal 1
+          sku_obj_a = skus[0]
+          sku_obj_b = skus[1]
+          sku_obj_c = skus[2]
+          sku_obj_a.sku.must_equal(:a)
+          sku_obj_b.sku.must_equal(:b)
+          sku_obj_c.sku.must_equal(:c)
+          sku_obj_a.name.must_equal('sku_a')
+          sku_obj_b.name.must_equal('sku_b')
+          sku_obj_c.name.must_equal('sku_c')
+        end
+      end
+    end
+  end
+=end
 end
 
 end

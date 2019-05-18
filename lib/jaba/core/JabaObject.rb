@@ -188,12 +188,12 @@ class AttributeArray < AttributeBase
         end
       end
     end
-    if (!@attr_def.has_flag?(:allow_dupes) and attr_def.type_obj.supports_uniq?)
+    if !@attr_def.has_flag?(:allow_dupes)
       if (@elems.uniq!(&:get) and warn)
         @services.jaba_warning("'#{id}' array attribute contains duplicates", callstack: api_call_line)
       end
     end
-    if (!@attr_def.has_flag?(:unordered) and attr_def.type_obj.supports_sort?)
+    if !@attr_def.has_flag?(:unordered)
       begin
         @elems.sort!
       rescue

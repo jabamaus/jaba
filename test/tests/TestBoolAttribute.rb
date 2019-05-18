@@ -5,8 +5,7 @@ class TestBoolAttribute < JabaTest
   it 'defaults to false' do
     jaba do
       define :test do
-        attr :a do
-          type :bool
+        attr :a, type: :bool do
         end
       end
       test :t do
@@ -19,12 +18,11 @@ class TestBoolAttribute < JabaTest
     check_fails(':bool attributes only accept [true|false]',
                 backtrace: [
                   [CoreTypesFile, "raise ':bool attributes only accept [true|false]'"],
-                  [__FILE__, 'attr :b do'] # evaluated later so exact call line is lost
+                  [__FILE__, 'attr :b, type: :bool do'] # evaluated later so exact call line is lost
                 ]) do
       jaba do
         define :test do
-          attr :b do
-            type :bool
+          attr :b, type: :bool do
             default 1
           end
         end
@@ -40,8 +38,7 @@ class TestBoolAttribute < JabaTest
                 ]) do
       jaba do
         define :test do
-          attr :c do
-            type :bool
+          attr :c, type: :bool do
             default true
           end
         end
@@ -55,8 +52,7 @@ class TestBoolAttribute < JabaTest
   it 'supports boolean accessor when reading' do
     jaba do
       define :test do
-        attr :d do
-          type :bool
+        attr :d, type: :bool do
           default true
         end
       end
@@ -74,8 +70,7 @@ class TestBoolAttribute < JabaTest
     check_fails("'e' attribute is not of type :bool", backtrace: [[__FILE__, 'if e?']]) do
       jaba do
         define :test do
-          attr :e do
-            type :file
+          attr :e, type: :file do
           end
         end
         test :a do
