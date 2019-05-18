@@ -7,7 +7,9 @@ module JABA
 class Services
 
   attr_reader :input
+  attr_reader :attr_type_api
   attr_reader :attr_definition_api
+  attr_reader :jaba_type_api
   attr_reader :jaba_object_api
 
   ##
@@ -30,9 +32,6 @@ class Services
     @modified_files = []
     
     @jaba_attr_types = []
-    @default_attr_type = AttributeType.new(self, nil)
-    @default_attr_type.freeze
-    
     @jaba_types = []
     @types_to_extend = []
     @definition_registry = {} # TODO: not a good name
@@ -45,6 +44,9 @@ class Services
     @attr_definition_api = AttributeDefinitionAPI.new
     @jaba_object_api = JabaObjectAPI.new
 
+    @default_attr_type = AttributeType.new(self, nil)
+    @default_attr_type.freeze
+    
     @toplevel_api.__internal_set_obj(self)
   end
 
@@ -65,8 +67,7 @@ class Services
     #
     @jaba_attr_types.map! do |def_data|
       at = AttributeType.new(self, def_data.type)
-      @attr_type_api.__internal_set_obj(at)
-      @attr_type_api.instance_eval(&def_data.block)
+      at.api.instance_eval(&def_data.block)
       at
     end
     
@@ -74,8 +75,7 @@ class Services
     #
     @jaba_types.map! do |def_data|
       jt = JabaType.new(self, def_data.type)
-      @jaba_type_api.__internal_set_obj(jt)
-      @jaba_type_api.instance_eval(&def_data.block)
+      jt.api.instance_eval(&def_data.block)
       jt
     end
     
@@ -86,8 +86,8 @@ class Services
       if !jt
         jaba_error("'#{def_data.type}' has not been defined", callstack: def_data.block)
       end
-      @jaba_type_api.__internal_set_obj(jt)
-      @jaba_type_api.instance_eval(&def_data.block)
+      jt.api.__internal_set_obj(jt)
+      jt.api.instance_eval(&def_data.block)
     end
     
     @jaba_types.each(&:init)
@@ -103,8 +103,7 @@ class Services
           jaba_error("'#{type}' type is not defined. Cannot instance.", callstack: def_data.block)
         end
         jo = JabaObject.new(self, jt, def_data.id, def_data.block.source_location)
-        @jaba_object_api.__internal_set_obj(jo)
-        @jaba_object_api.instance_eval(&def_data.block)
+        jo.api.instance_eval(&def_data.block)
         jo.post_create
         jo.call_generators
       end

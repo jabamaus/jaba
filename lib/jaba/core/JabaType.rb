@@ -5,11 +5,14 @@ module JABA
 class JabaAPIObject
   
   attr_reader :services
+  attr_reader :api
   
   ##
   #
-  def initialize(services)
+  def initialize(services, api)
     @services = services
+    @api = api
+    @api.__internal_set_obj(self)
   end
   
 end
@@ -25,7 +28,7 @@ class AttributeType < JabaAPIObject
   ##
   #
   def initialize(services, type_id)
-    super(services)
+    super(services, services.attr_type_api)
     @type = type_id
     @value_validator = nil
     @init_attr_hook = nil
@@ -62,7 +65,7 @@ class AttributeDefinition < JabaAPIObject
   ##
   #
   def initialize(services, id, type, jaba_type_obj, source_location)
-    super(services)
+    super(services, services.attr_definition_api)
     @id = id
     @type = type
     @jaba_type_obj = jaba_type_obj
@@ -78,9 +81,7 @@ class AttributeDefinition < JabaAPIObject
     @type_obj = @services.get_attribute_type(@type)
     
     if @type_obj.init_attr_hook
-      api = @services.attr_definition_api
-      api.__internal_set_obj(self)
-      api.instance_eval(&@type_obj.init_attr_hook)
+      @api.instance_eval(&@type_obj.init_attr_hook)
     end
   end
   
@@ -143,7 +144,7 @@ class JabaType < JabaAPIObject
   ##
   #
   def initialize(services, type_id)
-    super(services)
+    super(services, services.jaba_type_api)
     @type = type_id
     @attribute_defs = []
     @generators = []
@@ -162,9 +163,7 @@ class JabaType < JabaAPIObject
       @services.jaba_error("'#{id}' attribute multiply defined")
     end
     ad = AttributeDefinition.new(@services, id, type, self, block.source_location)
-    api = @services.attr_definition_api
-    api.__internal_set_obj(ad)
-    api.instance_eval(&block)
+    ad.api.instance_eval(&block)
     @attribute_defs << ad
     ad
   end

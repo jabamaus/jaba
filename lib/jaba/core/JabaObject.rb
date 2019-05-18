@@ -213,7 +213,7 @@ class JabaObject < JabaAPIObject
   ##
   #
   def initialize(services, jaba_type, id, source_location)
-    super(services)
+    super(services, services.jaba_object_api)
     @jaba_type = jaba_type
     @id = id
     @source_location = source_location
