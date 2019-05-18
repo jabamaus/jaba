@@ -2,7 +2,7 @@ module JABA
 
 ##
 #
-class JabaBase
+class JabaAPIObject
   
   attr_reader :services
   
@@ -16,7 +16,7 @@ end
 
 ##
 #
-class AttributeType < JabaBase
+class AttributeType < JabaAPIObject
 
   attr_reader :type
   attr_reader :value_validator
@@ -51,7 +51,7 @@ end
 ##
 # Manages shared data that is common to Attributes instanced from this definition.
 #
-class AttributeDefinition < JabaBase
+class AttributeDefinition < JabaAPIObject
 
   attr_reader :id
   attr_reader :type # eg :bool, :file, :path etc
@@ -135,7 +135,7 @@ end
 ##
 # eg project/workspace/category etc.
 #
-class JabaType < JabaBase
+class JabaType < JabaAPIObject
 
   attr_reader :type
   attr_reader :generators

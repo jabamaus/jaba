@@ -2,7 +2,7 @@ module JABA
 
 ##
 #
-class AttributeBase < JabaBase
+class AttributeBase
 
   attr_reader :attr_def
   attr_reader :api_call_line
@@ -10,7 +10,7 @@ class AttributeBase < JabaBase
   ##
   #
   def initialize(services, attr_def)
-    super(services)
+    @services = services
     @attr_def = attr_def
     @api_call_line = nil
     @set = false
@@ -206,7 +206,7 @@ end
 
 ##
 #
-class JabaObject < JabaBase
+class JabaObject < JabaAPIObject
 
   attr_reader :id
   
