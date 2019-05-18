@@ -8,9 +8,7 @@ class Services
 
   attr_reader :input
   attr_reader :attr_definition_api
-  attr_reader :jaba_attr_types
   attr_reader :jaba_object_api
-  attr_reader :default_attr_type # If an attribute does not specify a specific type it gets this
 
   ##
   # Records information about each definition the user has made.
@@ -127,8 +125,15 @@ class Services
   
   ##
   #
-  def get_attribute_type(type, fail_if_not_found: true)
-    @jaba_attr_types.find{|at| at.type == type}
+  def get_attribute_type(type)
+    if type.nil?
+      return @default_attr_type
+    end
+    t = @jaba_attr_types.find{|at| at.type == type}
+    if !t
+      jaba_error("'#{type}' attribute type is undefined. Valid types: #{@jaba_attr_types.map{|at| at.type}}")
+    end
+    t
   end
   
   ##

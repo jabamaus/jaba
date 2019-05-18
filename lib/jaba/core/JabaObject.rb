@@ -235,9 +235,12 @@ class JabaObject
   
   ##
   #
-  def get_attr(id)
-  # TODO: fail id not found
-    @attribute_lookup[id]
+  def get_attr(id, fail_if_not_found: true)
+    a = @attribute_lookup[id]
+    if (!a and fail_if_not_found)
+      jaba_error("'#{a}' attribute not found in '#{id}'")
+    end
+    a
   end
   
   ##
@@ -310,11 +313,11 @@ class JabaObject
   #  
   def handle_attr(id, api_call_line, *args, **key_value_args, &block)
     getter = (args.empty? and key_value_args.empty?)
-    a = get_attr(id)
+    a = get_attr(id, fail_if_not_found: false)
 
     if !a
       raw_id = id.to_s.chomp('?').to_sym # Remove any trailing '?' (used with boolean attrs) to get the raw name
-      a2 = get_attr(raw_id)
+      a2 = get_attr(raw_id, fail_if_not_found: false)
       if a2
         @services.jaba_error("'#{raw_id}' attribute is not of type :bool")
       else

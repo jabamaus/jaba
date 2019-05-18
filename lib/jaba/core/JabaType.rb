@@ -61,14 +61,7 @@ class AttributeDefinition
     @help = nil
     @items = nil
     
-    if @type
-      @type_obj = @services.get_attribute_type(@type)
-      if !@type_obj
-        @services.jaba_error("'#{@type}' attribute type is undefined. Valid types: #{@services.jaba_attr_types.map{|at| at.type}}")
-      end
-    else
-      @type_obj = @services.default_attr_type
-    end
+    @type_obj = @services.get_attribute_type(@type)
     
     if @type_obj.init_attr_hook
       api = @services.attr_definition_api
