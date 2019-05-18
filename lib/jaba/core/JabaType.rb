@@ -2,7 +2,21 @@ module JABA
 
 ##
 #
-class AttributeType
+class JabaBase
+  
+  attr_reader :services
+  
+  ##
+  #
+  def initialize(services)
+    @services = services
+  end
+  
+end
+
+##
+#
+class AttributeType < JabaBase
 
   attr_reader :type
   attr_reader :value_validator
@@ -11,7 +25,7 @@ class AttributeType
   ##
   #
   def initialize(services, type_id)
-    @services = services
+    super(services)
     @type = type_id
     @value_validator = nil
     @init_attr_hook = nil
@@ -37,7 +51,7 @@ end
 ##
 # Manages shared data that is common to Attributes instanced from this definition.
 #
-class AttributeDefinition
+class AttributeDefinition < JabaBase
 
   attr_reader :id
   attr_reader :type # eg :bool, :file, :path etc
@@ -48,7 +62,7 @@ class AttributeDefinition
   ##
   #
   def initialize(services, id, type, jaba_type_obj, source_location)
-    @services = services
+    super(services)
     @id = id
     @type = type
     @jaba_type_obj = jaba_type_obj
@@ -121,7 +135,7 @@ end
 ##
 # eg project/workspace/category etc.
 #
-class JabaType
+class JabaType < JabaBase
 
   attr_reader :type
   attr_reader :generators
@@ -129,7 +143,7 @@ class JabaType
   ##
   #
   def initialize(services, type_id)
-    @services = services
+    super(services)
     @type = type_id
     @attribute_defs = []
     @generators = []
