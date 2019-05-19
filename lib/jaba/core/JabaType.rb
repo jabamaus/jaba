@@ -159,8 +159,8 @@ class AttributeDefinition < JabaAPIObject
     if adv
       begin
         api_eval(&adv)
-      rescue => e
-        @services.jaba_error("'#{id}' attribute definition failed validation: #{e.message.capitalize_first}", callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: wrap up a bit nicer so join not required
+      rescue JabaError => e
+        @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}", callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: wrap up a bit nicer so join not required
       end
     end
     if @default
@@ -168,8 +168,8 @@ class AttributeDefinition < JabaAPIObject
       if vv
         begin
           api_eval(@default, &vv)
-        rescue => e
-          @services.jaba_error("'#{id}' attribute definition failed validation: #{e.message.capitalize_first}", callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: wrap up a bit nicer so join not required
+        rescue JabaError => e
+          @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}", callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: wrap up a bit nicer so join not required
         end
       end
     end

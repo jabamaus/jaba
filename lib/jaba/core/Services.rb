@@ -308,6 +308,8 @@ private
   # - see case 3 above.
   #
   def make_jaba_error(msg, syntax: false, callstack: nil, warn: false)
+    msg = msg.capitalize_first
+    
     if callstack
       if callstack.is_a?(Proc)
         cs = callstack.source_location.join(':')
@@ -358,9 +360,10 @@ private
     
     m << (callstack.is_a?(Proc) ? ' near' : ' at')
     m << " #{file.basename}:#{line}"
-    m << ": #{msg.capitalize_first}"
+    m << ": #{msg}"
     
     e = JabaError.new(m)
+    e.instance_variable_set(:@raw_message, msg)
     e.instance_variable_set(:@internal, false)
     e.instance_variable_set(:@file, file)
     e.instance_variable_set(:@line, line)

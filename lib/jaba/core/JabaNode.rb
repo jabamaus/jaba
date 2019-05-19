@@ -69,8 +69,8 @@ class Attribute < AttributeBase
       if vv
         begin
           @attr_def.api_eval(value, &vv)
-        rescue => e
-          @services.jaba_error("'#{@attr_def.id}' attribute failed validation: #{e.message.capitalize_first}", callstack: e.backtrace)
+        rescue JabaError => e
+          @services.jaba_error("'#{@attr_def.id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
         end
       end
     end

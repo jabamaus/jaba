@@ -58,6 +58,10 @@ end
 class JabaError < StandardError
   
   ##
+  #
+  attr_reader :raw_message
+  
+  ##
   # True if error is an internal error as opposed to a user error in the definitions.
   #
   attr_boolean :internal
@@ -77,5 +81,13 @@ end
 end
 
 if __FILE__ == $0
-  JABA.run
+  begin
+    JABA.run do |j|
+      j.load_paths = "#{__dir__}/../../examples/HelloWorld/HelloWorld.rb" # TODO: remove
+    end
+  rescue JABA::JabaError => e
+    puts e.message
+    puts 'Backtrace:'
+    puts e.backtrace.map{|line| "  #{line}"}
+  end
 end
