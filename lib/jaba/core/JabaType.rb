@@ -190,14 +190,12 @@ class AttributeDefinition < JabaAPIObject
       @properties = {}
     end
     @properties[id] = Property.new(val)
-    @api.instance_eval "def #{id}(val=nil) ; @obj.handle_property(:#{id}, val) ; end"
   end
 
   ##
   #
   def get_property(id)
-    return nil if !@properties
-    p = @properties[id]
+    p = @properties ? @properties[id] : nil
     if !p
       @services.jaba_error("'#{id}' property not defined")
     end

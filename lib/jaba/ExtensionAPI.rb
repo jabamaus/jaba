@@ -138,6 +138,12 @@ class AttributeDefinitionAPI < APIBase
     @obj.add_property(id, val)
   end
   
+  ##
+  #
+  def method_missing(id, val=nil)
+    @obj.handle_property(id, val)
+  end
+
 end
 
 end
