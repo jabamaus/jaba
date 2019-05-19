@@ -186,14 +186,14 @@ class Services
   
   ##
   #
-  def jaba_warning(msg, callstack: nil)
-    @warnings << make_jaba_error(msg, callstack: callstack, warn: true).message
+  def jaba_warning(msg, **options)
+    @warnings << make_jaba_error(msg, warn: true, **options).message
   end
   
   ##
   #
-  def jaba_error(msg, callstack: nil)
-    raise make_jaba_error(msg, callstack: callstack)
+  def jaba_error(msg, **options)
+    raise make_jaba_error(msg, **options)
   end
   
   ##
@@ -267,7 +267,7 @@ private
   rescue JabaError
     raise # Prevent fallthrough to next case
   rescue Exception => e # Catch all errors, including SyntaxErrors, by rescuing Exception
-    raise make_jaba_error(e.message, syntax: true, callstack: e.backtrace)
+    jaba_error(e.message, syntax: true, callstack: e.backtrace)
   end
   
   ##

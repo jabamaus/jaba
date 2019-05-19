@@ -17,11 +17,17 @@ class JabaAPIObject
   ##
   #
   def api_eval(args=nil, &block)
-    @api.__internal_set_obj(self)
-    if !args.nil?
-      @api.instance_exec(args, &block)
-    else
-      @api.instance_eval(&block)
+    begin
+      @api.__internal_set_obj(self)
+      if !args.nil?
+        @api.instance_exec(args, &block)
+      else
+        @api.instance_eval(&block)
+      end
+    rescue JabaError
+      raise
+    rescue Exception => e
+      @services.jaba_error(e.message, callstack: e.backtrace)
     end
   end
   
