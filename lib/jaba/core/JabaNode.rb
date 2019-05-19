@@ -68,7 +68,7 @@ class Attribute < AttributeBase
       vv = @attr_def.type_obj.value_validator
       if vv
         begin
-          instance_exec(value, &vv)
+          @attr_def.api_eval(value, &vv)
         rescue => e
           @services.jaba_error("'#{@attr_def.id}' attribute failed validation: #{e.message.capitalize_first}", callstack: e.backtrace)
         end
@@ -266,13 +266,13 @@ class JabaNode < JabaAPIObject
     # Call generators defined per-type
     #
     @jaba_type.generators.each do |block|
-      instance_eval(&block)
+      instance_eval(&block) # TODO: run against an api
     end
     
     # Call generators defined per-node
     #
     @generators.each do |block|
-      block.call
+      block.call  # TODO: run against an api
     end
   end
   

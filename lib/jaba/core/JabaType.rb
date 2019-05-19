@@ -18,7 +18,7 @@ class JabaAPIObject
   #
   def api_eval(args=nil, &block)
     @api.__internal_set_obj(self)
-    if args
+    if !args.nil?
       @api.instance_exec(args, &block)
     else
       @api.instance_eval(&block)
@@ -54,6 +54,7 @@ class AttributeType < JabaAPIObject
   attr_reader :type
   attr_reader :value_validator
   attr_reader :init_attr_hook
+  attr_reader :attr_def_validator
   
   ##
   #
@@ -62,6 +63,7 @@ class AttributeType < JabaAPIObject
     @type = type_id
     @value_validator = nil
     @init_attr_hook = nil
+    @attr_def_validator = nil
   end
 
   ##
@@ -122,7 +124,7 @@ class AttributeDefinition < JabaAPIObject
   ##
   #
   def has_flag?(flag)
-    (@flags and @flags.index(flag) != nil)
+    @flags.index(flag) != nil
   end
   
   ##
@@ -153,11 +155,19 @@ class AttributeDefinition < JabaAPIObject
   ##
   #
   def init
+    adv = @type_obj.attr_def_validator
+    if adv
+      begin
+        api_eval(&adv)
+      rescue => e
+        @services.jaba_error("'#{id}' attribute definition failed validation: #{e.message.capitalize_first}", callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: wrap up a bit nicer so join not required
+      end
+    end
     if @default
       vv = @type_obj.value_validator
       if vv
         begin
-          instance_exec(@default, &vv)
+          api_eval(@default, &vv)
         rescue => e
           @services.jaba_error("'#{id}' attribute definition failed validation: #{e.message.capitalize_first}", callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: wrap up a bit nicer so join not required
         end
@@ -169,31 +179,33 @@ class AttributeDefinition < JabaAPIObject
   
   ##
   #
-  def add_property(id)
+  def add_property(id, val=nil)
     if @properties.nil?
       @properties = {}
     end
-    @properties[id] = Property.new(nil)
+    @properties[id] = Property.new(val)
+    @api.instance_eval "def #{id}(val=nil) ; @obj.handle_property(:#{id}, val) ; end"
   end
 
   ##
   #
   def get_property(id)
+    return nil if !@properties
     p = @properties[id]
     if !p
-      jaba_error("'#{id}' property not defined")
+      @services.jaba_error("'#{id}' property not defined")
     end
     p
   end
   
   ##
   #
-  def handle_property(id, *args)
+  def handle_property(id, val)
     p = get_property(id)
-    if (args.empty? and options.empty?)
+    if val.nil?
       return p.value
     else
-      p.value = args
+      p.value = val
     end
   end
   

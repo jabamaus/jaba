@@ -44,6 +44,12 @@ class AttributeTypeAPI < APIBase
   
   ##
   #
+  def validate_attr_def(&block)
+    @obj.set_block(:attr_def_validator, &block)
+  end
+  
+  ##
+  #
   def validate(&block)
     @obj.set_block(:value_validator, &block)
   end
@@ -128,14 +134,8 @@ class AttributeDefinitionAPI < APIBase
   
   ##
   #
-  def add_property(id)
-    @obj.add_property(id)
-  end
-  
-  ##
-  #
-  def method_missing(id, *args)
-    @obj.handle_property(id, *args)
+  def add_property(id, val=nil)
+    @obj.add_property(id, val)
   end
   
 end

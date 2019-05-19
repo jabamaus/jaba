@@ -27,7 +27,19 @@ end
 #
 attr_type :choice do
   init_attr_def do
-    add_property :items
+    add_property :items, []
+  end
+  
+  validate_attr_def do
+    if items.empty?
+      raise "'items' must be set"
+    end
+  end
+  
+  validate do |value|
+    if !items.include?(value)
+      raise "must be one of #{items}"
+    end
   end
 end
 
