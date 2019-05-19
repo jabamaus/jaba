@@ -81,7 +81,7 @@ end
 ##
 # TODO: make a list of reserved words that could come into use in the future and protect against usage
 #
-class JabaObjectAPI < APIBase
+class JabaNodeAPI < APIBase
 
   ##
   #

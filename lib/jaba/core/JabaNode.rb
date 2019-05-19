@@ -206,14 +206,14 @@ end
 
 ##
 #
-class JabaObject < JabaAPIObject
+class JabaNode < JabaAPIObject
 
   attr_reader :id
   
   ##
   #
   def initialize(services, jaba_type, id, source_location)
-    super(services, services.jaba_object_api)
+    super(services, services.jaba_node_api)
     @jaba_type = jaba_type
     @id = id
     @source_location = source_location
@@ -269,7 +269,7 @@ class JabaObject < JabaAPIObject
       instance_eval(&block)
     end
     
-    # Call generators defined per-object
+    # Call generators defined per-node
     #
     @generators.each do |block|
       block.call

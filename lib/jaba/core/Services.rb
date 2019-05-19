@@ -1,6 +1,6 @@
 require_relative 'Utils'
 require_relative 'JabaType'
-require_relative 'JabaObject'
+require_relative 'JabaNode'
 
 module JABA
 
@@ -10,7 +10,7 @@ class Services
   attr_reader :attr_type_api
   attr_reader :attr_definition_api
   attr_reader :jaba_type_api
-  attr_reader :jaba_object_api
+  attr_reader :jaba_node_api
 
   ##
   # Records information about each definition the user has made.
@@ -42,7 +42,7 @@ class Services
     @attr_type_api = AttributeTypeAPI.new
     @jaba_type_api = JabaTypeAPI.new
     @attr_definition_api = AttributeDefinitionAPI.new
-    @jaba_object_api = JabaObjectAPI.new
+    @jaba_node_api = JabaNodeAPI.new
 
     @default_attr_type = AttributeType.new(self, nil)
     @default_attr_type.freeze
@@ -101,10 +101,10 @@ class Services
         if !jt
           jaba_error("'#{type}' type is not defined. Cannot instance.", callstack: def_data.block)
         end
-        jo = JabaObject.new(self, jt, def_data.id, def_data.block.source_location)
-        jo.api_eval(&def_data.block)
-        jo.post_create
-        jo.call_generators
+        jn = JabaNode.new(self, jt, def_data.id, def_data.block.source_location)
+        jn.api_eval(&def_data.block)
+        jn.post_create
+        jn.call_generators
       end
     end
     

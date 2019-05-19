@@ -2,7 +2,7 @@ module JABA
 
 class TestExtensionGrammar < JabaTest
 
-  it 'supports creating new object types' do
+  it 'supports creating new node types' do
     jaba do
       define :test do
         attr :a do
@@ -86,7 +86,7 @@ class TestExtensionGrammar < JabaTest
   end
 =begin
   # TODO: check only :container attr can have children
-  it 'can build a tree of object instances' do
+  it 'can build a tree of nodes' do
     jaba do
       define :test do
         attr :root do
