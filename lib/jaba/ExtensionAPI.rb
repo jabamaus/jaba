@@ -44,7 +44,7 @@ class AttributeTypeAPI < APIBase
   
   ##
   #
-  def validate_value(&block)
+  def validate(&block)
     @obj.set_block(:value_validator, &block)
   end
   
@@ -108,41 +108,10 @@ class AttributeDefinitionAPI < APIBase
   end
   
   ##
-  # Use in conjunction with a choice attribute to specify an array of valid items.
-  #
-  def items(val=nil, &block)
-    @obj.set_var(:items, val, &block)
-  end
- 
-  ##
-  # Validation hook. Implement attribute validation here. For single value attributes the value of the attribute is passed to the block,
-  # along with any options that were specified in user definitions. Options can be ommitted from the block arguments if not required.
-  #
-  # validate do |val, options|
-  #   raise "invalid" if val.nil?
-  # end
-  #
-  # For attributes flagged with ARRAY 'val' will be an array and no options will be passed as options are associated with the elements.
-  # To validate element by element with options use validate_elem.
-  #
-  # validate do |val|
-  #   raise "invalid" if val.empty?
-  # end
+  # Called for single value attributes and each element of attrbutes flagged with :array.
   #
   def validate(&block)
-    @obj.set_var(:validate, &block)
-  end
-  
-  ##
-  # Validation hook for use only with array attributes. Each element of the array is passed to the block in turn along with any
-  # options that were specified in user definitions.
-  #
-  # validate do |elem, options|
-  #   raise "invalid" if elem.nil?
-  # end
-  #
-  def validate_elem(&block)
-    @obj.set_var(:validate_elem, &block)
+    @obj.set_var(:value_validator, &block)
   end
   
   ##
@@ -155,6 +124,18 @@ class AttributeDefinitionAPI < APIBase
   #
   def make_handle(&block)
     @obj.set_var(:make_handle, &block)
+  end
+  
+  ##
+  #
+  def add_property(id)
+    @obj.add_property(id)
+  end
+  
+  ##
+  #
+  def method_missing(id, *args)
+    @obj.handle_property(id, *args)
   end
   
 end

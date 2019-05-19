@@ -102,11 +102,15 @@ class AttributeDefinition < JabaAPIObject
     @source_location = source_location
 
     @child_attrs = []
-    
     @default = nil
     @flags = []
     @help = nil
-    @items = nil
+    
+    @value_validator = nil
+    @post_set = nil
+    @make_handle = nil
+    
+    @properties = nil
     
     @type_obj = @services.get_attribute_type(@type)
     
@@ -158,6 +162,38 @@ class AttributeDefinition < JabaAPIObject
           @services.jaba_error("'#{id}' attribute definition failed validation: #{e.message.capitalize_first}", callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: wrap up a bit nicer so join not required
         end
       end
+    end
+  end
+  
+  Property = Struct.new(:value)
+  
+  ##
+  #
+  def add_property(id)
+    if @properties.nil?
+      @properties = {}
+    end
+    @properties[id] = Property.new(nil)
+  end
+
+  ##
+  #
+  def get_property(id)
+    p = @properties[id]
+    if !p
+      jaba_error("'#{id}' property not defined")
+    end
+    p
+  end
+  
+  ##
+  #
+  def handle_property(id, *args)
+    p = get_property(id)
+    if (args.empty? and options.empty?)
+      return p.value
+    else
+      p.value = args
     end
   end
   

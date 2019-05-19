@@ -16,7 +16,7 @@ attr_type :bool do
     flags :unordered, :allow_dupes
   end
   
-  validate_value do |value|
+  validate do |value|
     if !value.boolean?
       raise ':bool attributes only accept [true|false]'
     end
@@ -26,6 +26,9 @@ end
 ##
 #
 attr_type :choice do
+  init_attr_def do
+    add_property :items
+  end
 end
 
 ##

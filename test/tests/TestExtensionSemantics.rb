@@ -45,7 +45,7 @@ class TestExtensionGrammar < JabaTest
     check_fails("'b' attribute failed validation: Invalid", backtrace: [[__FILE__, "raise 'invalid'"], [__FILE__, "b 'c'"]]) do 
       jaba do
         attr_type :a do
-          validate_value do |val|
+          validate do |val|
             raise 'invalid'
           end
         end
