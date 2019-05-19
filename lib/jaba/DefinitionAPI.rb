@@ -18,6 +18,12 @@ class APIBase < BasicObject
   end
 
   ##
+  #
+  def puts(str)
+    ::Kernel.puts(str)
+  end
+  
+  ##
   # Internal use only.
   #
   def __internal_set_obj(o)
