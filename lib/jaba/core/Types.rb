@@ -167,33 +167,65 @@ end
 #
 define :project do
   
-  attr :platforms, type: :reference do
-    flags :array, :unordered, :required
+  #dependencies [:platform, :host]
+=begin
+  build_nodes do
+    root_node = make_node(:platforms, :root) # also disable them automatically
+    root_node.platforms.each do |p|
+      platform_node = root_node.make_node(platform: p)
+      hosts_node = platform_node.make_node(:hosts)
+      hosts.each do |h|
+        host_node = hosts_node.make_node(host: h)
+        project = host_node.make_node(group: :project) # Could have a collapse_parents option to include all parent attrs in this node so don't have to search up tree all the time
+        project.targets.each do |t|
+          project.make_node(group: :target)
+        end
+      end
+    end
+    # Then build a VCProject/XCodeProject for each project node
   end
-  
+=end
   attr :root, type: :dir do
     help 'Root of the project specified as a relative path to the file that contains the project definition. ' \
          'All paths are specified relative to this. Project files will be generated here unless the genroot attribute is used.'
     default '.'
   end
-  
-  attr :genroot, type: :dir do
-    help 'Directory in which projects will be generated. Specified as a relative path from <root>. If not specified ' \
-     'projects will be generated in <root>'
-    default '.'
-    flags :no_check_exist
+
+  attr :platforms, type: :reference do
+    flags :array, :unordered, :required
   end
   
-  attr :src, type: :path do
-    help 'Source files. Evaluated once per project so this should be the union of all source files required for all target platforms.'
-    flags :array
+  attr :platform do
+  end
+    
+  attr :hosts, type: :reference do
   end
   
-  attr :targets do
-    help 'Targets'
-    flags :array, :required, :unordered
+  attr :host do
   end
+
+  #group :project do
+    attr :genroot, type: :dir do
+      help 'Directory in which projects will be generated. Specified as a relative path from <root>. If not specified ' \
+       'projects will be generated in <root>'
+      default '.'
+      flags :no_check_exist
+    end
+    
+    attr :src, type: :path do
+      help 'Source files. Evaluated once per project so this should be the union of all source files required for all target platforms.'
+      flags :array
+    end
+    
+    attr :targets do
+      help 'Targets'
+      flags :array, :required, :unordered
+    end
+  #end
   
+  #group :target do
+  #end
+    
 end
 
 ##

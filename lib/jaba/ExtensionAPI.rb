@@ -57,6 +57,18 @@ class AttributeTypeAPI < APIBase
 end
 
 ##
+# TODO: consider driving attrs from types eg.
+#
+# reference :platforms do
+# end
+#
+# dir :root do
+# end
+#
+# or maybe
+#
+# attr_dir :root do
+# end
 #
 class JabaTypeAPI < APIBase
   
