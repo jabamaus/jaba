@@ -1,6 +1,6 @@
 module JABA
 
-class TestExtensionGrammar < JabaTest
+class TestExtensionSemantics < JabaTest
 
   it 'supports creating new node types' do
     jaba do
