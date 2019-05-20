@@ -70,10 +70,41 @@ end
 
 ##
 #
-attr_type :container do
-  init_attr_def do
-    flags :array
+define :platform do
+end
+
+platform :win32 do
+end
+
+platform :x64 do
+end
+
+platform :ios do
+end
+
+platform :macos do
+end
+
+##
+#
+define :host do
+
+  attr :visual_studio, type: :bool do
   end
+  
+  attr :xcode, type: :bool do
+  end
+  
+end
+
+[2008, 2013, 2015, 2017, 2019].each do |vs_year|
+  host "vs#{vs_year}".to_sym do
+    visual_studio true
+  end
+end
+
+host :xcode do
+  xcode true
 end
 
 ##
