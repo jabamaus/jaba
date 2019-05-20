@@ -86,13 +86,6 @@ end
 class AttributeDefinitionAPI < APIBase
 
   ##
-  # Define a child attribute. Only possible on attributes of type :container.
-  #
-  def attr(id, **options, &block)
-    @obj.define_child_attr(id, **options, &block)
-  end
-  
-  ##
   # Set help for the attribute. Required.
   #
   def help(val=nil, &block)

@@ -109,7 +109,6 @@ class AttributeDefinition < JabaAPIObject
     @jaba_type_obj = jaba_type_obj
     @source_location = source_location
 
-    @child_attrs = []
     @default = nil
     @flags = []
     @help = nil
@@ -131,13 +130,6 @@ class AttributeDefinition < JabaAPIObject
   #
   def has_flag?(flag)
     @flags.index(flag) != nil
-  end
-  
-  ##
-  #
-  def define_child_attr(id, child_type:, **options, &block)
-    ad = @jaba_type_obj.define_attr(child_type, **options, &block)
-    @child_attrs << ad
   end
   
   ##
@@ -234,7 +226,7 @@ class JabaType < JabaAPIObject
   
   ##
   #
-  def define_attr(id, type: nil, **options, &block)
+  def define_attr(id, type: nil, &block)
     if !id.is_a?(Symbol)
       @services.jaba_error("'#{id}' attribute id must be specified as a symbol")
     end
