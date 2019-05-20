@@ -12,9 +12,33 @@ class TestChoiceAttribute < JabaTest
       end
     end
   end
+  
+  it 'requires default to be in items' do
+    check_fails("Must be one of [1, 2, 3]", trace: [CoreTypesFile, "raise \"must be one of", __FILE__, '# tag2']) do
+      jaba do
+        define :test do
+          attr :a, type: :choice do # tag2
+            items [1, 2, 3]
+            default 4
+          end
+        end
+      end
+    end
+    check_fails("Must be one of [1, 2, 3]", trace: [CoreTypesFile, "raise \"must be one of", __FILE__, '# tag3']) do
+      jaba do
+        define :test do
+          attr :a, type: :choice do # tag3
+            items [1, 2, 3]
+            flags :array
+            default [1, 2, 4]
+          end
+        end
+      end
+    end
+  end
 
   it 'rejects invalid choices' do
-    check_fails("Must be one of [:a, :b, :c]", trace: [CoreTypesFile, "raise \"must be one of", __FILE__, '# tag2']) do
+    check_fails("Must be one of [:a, :b, :c]", trace: [CoreTypesFile, "raise \"must be one of", __FILE__, '# tag4']) do
       jaba do
         define :test do
           attr :a, type: :choice do
@@ -22,11 +46,11 @@ class TestChoiceAttribute < JabaTest
           end
         end
         test :t do
-          a :d # tag2
+          a :d # tag4
         end
       end
     end
-    check_fails("Must be one of [:a, :b, :c]", trace: [CoreTypesFile, "raise \"must be one of", __FILE__, '# tag3']) do
+    check_fails("Must be one of [:a, :b, :c]", trace: [CoreTypesFile, "raise \"must be one of", __FILE__, '# tag5']) do
       jaba do
         define :test do
           attr :a, type: :choice do
@@ -35,7 +59,7 @@ class TestChoiceAttribute < JabaTest
           end
         end
         test :t do
-          a [:a, :b, :c, :d] # tag3
+          a [:a, :b, :c, :d] # tag5
         end
       end
     end
