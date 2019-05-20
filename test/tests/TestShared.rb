@@ -6,13 +6,13 @@ class TestShared < JabaTest
     # check that all types support include directive
     #
     [:text, :project, :workspace, :category, :attr_type, :define].each do |type|
-      check_fails('Included', backtrace: [[__FILE__, "raise 'Included'"], [__FILE__, 'include :a']]) do
+      check_fails('Included', backtrace: [[__FILE__, "raise 'Included'"], [__FILE__, '# tag1']]) do
         jaba do
           shared :a do
             raise 'Included'
           end
           __send__(type, :t) do
-            include :a
+            include :a # tag1
           end
         end
       end
@@ -56,14 +56,14 @@ class TestShared < JabaTest
   end
 
   it 'fails if shared definition does not exist' do
-    check_fails("Shared definition 'b' not found", backtrace: [[__FILE__, 'include :b']]) do
+    check_fails("Shared definition 'b' not found", backtrace: [[__FILE__, '# tag2']]) do
       jaba do
         shared :a do
         end
         define :test do
         end
         test :c do
-          include :b
+          include :b # tag2
         end
       end
     end
@@ -88,30 +88,30 @@ class TestShared < JabaTest
   end
   
   it 'catches argument mismatches' do
-    check_fails("Shared definition 'd' expects 3 arguments but 0 were passed", backtrace: [[__FILE__, 'include :d']]) do
+    check_fails("Shared definition 'd' expects 3 arguments but 0 were passed", backtrace: [[__FILE__, '# tag3']]) do
       jaba do
         shared :d do |a1, a2, a3|
         end
         text :t do
-          include :d
+          include :d # tag3
         end
       end
     end
-    check_fails("Shared definition 'e' expects 0 arguments but 1 were passed", backtrace: [[__FILE__, 'include :e, args: [1]']]) do
+    check_fails("Shared definition 'e' expects 0 arguments but 1 were passed", backtrace: [[__FILE__, '# tag4']]) do
       jaba do
         shared :e do
         end
         text :t do
-          include :e, args: [1]
+          include :e, args: [1] # tag4
         end
       end
     end
-    check_fails("Shared definition 'f' expects 2 arguments but 3 were passed", backtrace: [[__FILE__, 'include :f, args: [1, 2, 3]']]) do
+    check_fails("Shared definition 'f' expects 2 arguments but 3 were passed", backtrace: [[__FILE__, '# tag5']]) do
       jaba do
         shared :f do |a1, a2|
         end
         text :t do
-          include :f, args: [1, 2, 3]
+          include :f, args: [1, 2, 3] # tag5
         end
       end
     end

@@ -3,14 +3,14 @@ module JABA
 class TestAttribute < JabaTest
 
   it 'rejects passing array to single value attribute' do
-    check_fails("'a' attribute cannot accept an array as not flagged with :array", backtrace: [[__FILE__, 'a [1, 2]']]) do
+    check_fails("'a' attribute cannot accept an array as not flagged with :array", backtrace: [[__FILE__, '# tag1']]) do
       jaba do
         define :test do
           attr :a do
           end
         end
         test :t do
-          a [1, 2]
+          a [1, 2] # tag1
         end
       end
     end

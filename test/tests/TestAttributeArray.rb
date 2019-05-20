@@ -116,7 +116,7 @@ class TestAttributeArray < JabaTest
   end
   
   it 'only allows prefix/postfix on string elements' do
-    check_fails('Prefix/postfix option can only be used with arrays of strings', backtrace: [[__FILE__, 'a [1, 2, 3]']]) do
+    check_fails('Prefix/postfix option can only be used with arrays of strings', backtrace: [[__FILE__, '# tag1']]) do
       jaba do
         define :test do
           attr :a do
@@ -124,7 +124,7 @@ class TestAttributeArray < JabaTest
           end
         end
         test :t do
-          a [1, 2, 3], prefix: 'a', postfix: 'b'
+          a [1, 2, 3], prefix: 'a', postfix: 'b' # tag1
         end
       end
     end
@@ -189,7 +189,7 @@ class TestAttributeArray < JabaTest
   end
   
   it 'fails if excluding with regex on non-strings' do
-    check_fails('Exclude regex can only operate on strings', backtrace: [[__FILE__, 'a [1, 2, 3, 4, 43]']]) do
+    check_fails('Exclude regex can only operate on strings', backtrace: [[__FILE__, '# tag2']]) do
       jaba do
         define :test do
           attr :a do
@@ -197,7 +197,7 @@ class TestAttributeArray < JabaTest
           end
         end
         test :t do
-          a [1, 2, 3, 4, 43], exclude: [/3/]
+          a [1, 2, 3, 4, 43], exclude: [/3/] # tag2
         end
       end
     end

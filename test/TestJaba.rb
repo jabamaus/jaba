@@ -40,7 +40,7 @@ class JabaTest < Minitest::Spec
     if !File.exist?(file)
       raise "#{file} does not exist"
     end
-    ln = IO.read(file).each_line.find_index {|l| l =~ /^\s+#{Regexp.escape(line)}/}
+    ln = IO.read(file).each_line.find_index {|l| l =~ / #{Regexp.escape(line)}/}
     if ln.nil?
       raise "'#{line}' not found in #{file}"
     end

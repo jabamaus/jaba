@@ -12,45 +12,45 @@ class TestGlobalDefinition < JabaTest
       end
     end
     
-    check_fails("'Space invalid' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'", backtrace: [[__FILE__, "shared 'Space invalid'"]]) do
+    check_fails("'Space invalid' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'", backtrace: [[__FILE__, '# tag1']]) do
       jaba do
-        shared 'Space invalid' do
+        shared 'Space invalid' do # tag1
         end
       end
     end
     
-    check_fails("'1' is an invalid id", backtrace: [[__FILE__, 'shared 1 do']]) do
+    check_fails("'1' is an invalid id", backtrace: [[__FILE__, '# tag2']]) do
       jaba do
-        shared 1 do
+        shared 1 do # tag2
         end
       end
     end
   end
   
   it 'detects duplicate ids with definitions of the same type' do
-    check_fails("'a' multiply defined", backtrace: [[__FILE__, 'shared :a do # this one']]) do
+    check_fails("'a' multiply defined", backtrace: [[__FILE__, '# tag3']]) do
       jaba do
         shared :a do
         end
-        shared :a do # this one
+        shared :a do # tag3
         end
       end
     end
 
-    check_fails("'b' multiply defined", backtrace: [[__FILE__, 'project :b do # this one']]) do
+    check_fails("'b' multiply defined", backtrace: [[__FILE__, '# tag4']]) do
       jaba do
         project :b do
         end
-        project :b do # this one
+        project :b do # tag4
         end
       end
     end
     
-    check_fails("'c' multiply defined", backtrace: [[__FILE__, 'category :c do # this one']]) do
+    check_fails("'c' multiply defined", backtrace: [[__FILE__, '# tag5']]) do
       jaba do
         category :c do
         end
-        category :c do # this one
+        category :c do # tag5
         end
       end
     end
@@ -70,9 +70,9 @@ class TestGlobalDefinition < JabaTest
   end
   
   it 'rejects attempts to instance an unknown type' do
-    check_fails("'undefined' type is not defined. Cannot instance", backtrace: [[__FILE__, 'undefined :a']]) do
+    check_fails("'undefined' type is not defined. Cannot instance", backtrace: [[__FILE__, '# tag6']]) do
       jaba do
-        undefined :a do
+        undefined :a do # tag6
         end
       end
     end
