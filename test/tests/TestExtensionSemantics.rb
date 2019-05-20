@@ -16,7 +16,7 @@ class TestExtensionGrammar < JabaTest
   end
 
   it 'fails if try to extend undefined type' do
-    check_fails("'undefined' has not been defined", backtrace: [[__FILE__, '# tag1']]) do
+    check_fails("'undefined' has not been defined", trace: [__FILE__, '# tag1']) do
       jaba do
         extend :undefined do # tag1
         end
@@ -42,7 +42,7 @@ class TestExtensionGrammar < JabaTest
 
   # TODO: extend
   it 'supports defining new attribute types' do
-    check_fails("'b' attribute failed validation: Invalid", backtrace: [[__FILE__, "raise 'invalid'"], [__FILE__, '# tag2']]) do 
+    check_fails("'b' attribute failed validation: Invalid", trace: [__FILE__, "raise 'invalid'", __FILE__, '# tag2']) do 
       jaba do
         attr_type :a do
           validate do |val|
@@ -61,7 +61,7 @@ class TestExtensionGrammar < JabaTest
   end
   
   it 'detects usage of undefined attribute types' do
-    check_fails(/'undefined' attribute type is undefined. Valid types: \[.*?\]/, backtrace: [[__FILE__, '# tag3']]) do
+    check_fails(/'undefined' attribute type is undefined. Valid types: \[.*?\]/, trace: [__FILE__, '# tag3']) do
       jaba do
         define :a do
           attr :b, type: :undefined do # tag3

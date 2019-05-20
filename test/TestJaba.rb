@@ -49,20 +49,23 @@ class JabaTest < Minitest::Spec
 
   ##
   #
-  def check_fails(msg, backtrace:, internal: false)
+  def check_fails(msg, trace:, internal: false)
     e = assert_raises JabaError do
       yield
     end
     
-    file = backtrace[0][0]
-    line = find_line_number(file, backtrace[0][1])
+    file = trace[0]
+    line = find_line_number(file, trace[1])
     
     e.file.must_equal(file)
     e.line.must_equal(line)
     e.message.must_match(msg)
     e.internal?.must_equal(internal)
     
-    backtrace = backtrace.map{|elem| "#{elem[0]}:#{find_line_number(elem[0], elem[1])}"}
+    backtrace = []
+    trace.each_slice(2) do |elem|
+      backtrace << "#{elem[0]}:#{find_line_number(elem[0], elem[1])}"
+    end
     e.backtrace.slice(0, backtrace.size).must_equal(backtrace)
     e
   end

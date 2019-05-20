@@ -42,7 +42,7 @@ class TestText < JabaTest
   end
 
   it 'fails if no filename specified' do
-    check_fails("'filename' attribute requires a value", backtrace: [[__FILE__, '# tag1'], [CoreTypesFile, 'attr :filename, type: :file do']]) do
+    check_fails("'filename' attribute requires a value", trace: [__FILE__, '# tag1', CoreTypesFile, 'attr :filename, type: :file do']) do
       jaba do
         text :t do # tag1
         end

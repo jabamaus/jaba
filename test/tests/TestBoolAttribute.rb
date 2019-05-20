@@ -16,9 +16,9 @@ class TestBoolAttribute < JabaTest
 
   it 'requires a default of true or false' do
     check_fails(':bool attributes only accept [true|false]',
-                backtrace: [
-                  [CoreTypesFile, "raise ':bool attributes only accept [true|false]'"],
-                  [__FILE__, '# tag1'] # evaluated later so exact call line is lost
+                trace: [
+                  CoreTypesFile, "raise ':bool attributes only accept [true|false]'",
+                  __FILE__, '# tag1' # evaluated later so exact call line is lost
                 ]) do
       jaba do
         define :test do
@@ -32,9 +32,9 @@ class TestBoolAttribute < JabaTest
 
   it 'only allows boolean values' do
     check_fails(':bool attributes only accept [true|false]',
-                backtrace: [
-                  [CoreTypesFile, "raise ':bool attributes only accept [true|false]'"],
-                  [__FILE__, '# tag2']
+                trace: [
+                  CoreTypesFile, "raise ':bool attributes only accept [true|false]'",
+                  __FILE__, '# tag2'
                 ]) do
       jaba do
         define :test do
@@ -67,7 +67,7 @@ class TestBoolAttribute < JabaTest
   end
   
   it 'rejects boolean accessor on non-boolean properties' do
-    check_fails("'e' attribute is not of type :bool", backtrace: [[__FILE__, '# tag3']]) do
+    check_fails("'e' attribute is not of type :bool", trace: [__FILE__, '# tag3']) do
       jaba do
         define :test do
           attr :e, type: :file do
