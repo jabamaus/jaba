@@ -167,7 +167,7 @@ end
 #
 define :project do
   
-  attr :platforms do
+  attr :platforms, type: :reference do
     flags :array, :unordered, :required
   end
   
