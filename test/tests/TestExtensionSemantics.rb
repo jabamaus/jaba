@@ -85,46 +85,88 @@ class TestExtensionSemantics < JabaTest
     # TODO: test something
   end
 =begin
-  # TODO: check only :container attr can have children
   it 'can build a tree of nodes' do
     jaba do
-      define :test do
+      define :test_project do
         attr :root do
+          default '.'
         end
-        attr :skus do
-          type :container, child_type: :sku
-          attr :name do
-          end
+
+        attr :platforms do
+          flags :array, :unordered, :required
         end
         
-      end
-      test :t do
-        root 1
-        skus [:a, :b, :c]
-        case sku
-        when :a
-          name 'sku_a'
-        when :b
-          name 'sku_b'
-        when :c
-          name 'sku_c'
+        attr :platform do
         end
+          
+        attr :hosts do
+        end
+        
+        attr :host do
+        end
+
+        attr :src do
+        end
+        
+        attr :targets do
+          flags :array, :required, :unordered
+        end
+        
+        attr :target do
+        end
+        
+        attr :rtti do
+        end
+    
+        build_nodes do
+          @project_nodes = []
+          root_node = make_node(:root, :platform) # also disable them automatically
+          root_node.platforms.each do |p|
+            platform_hosts_node = make_node(parent: root_node, platform: p, :hosts)
+            platform_hosts_node.hosts.each do |h|
+              project_node = make_node(parent: platform_hosts_node, host: h, :src, :targets)
+              @project_nodes << project_node
+              project_node.targets.each do |t|
+                make_node(parent: project_node, target: t, :rti)
+              end
+            end
+          end
+        end
+      end
+      
+      test_project :t do
+        platforms [:win32, :x64]
+        root 'test'
+        case platform
+        when :win32
+          hosts [:vs2013, :vs2015]
+          if host == :vs2013
+            src 'win32_vs2013_src'
+          else
+            src 'x64_vs2015_src'
+          end
+        when :x64
+          hosts [:vs2017, :vs2019]
+          if host == :vs2013
+            src 'win32_vs2017_src'
+          else
+            src 'x64_vs2019_src'
+          end
+        end
+        case host
+        when :vs2013, :vs2017
+          targets [:debug, :release]
+        else
+          target [:dev, :check]
+        end
+        
         generate do
-          root.must_equal 1
-          sku_obj_a = skus[0]
-          sku_obj_b = skus[1]
-          sku_obj_c = skus[2]
-          sku_obj_a.sku.must_equal(:a)
-          sku_obj_b.sku.must_equal(:b)
-          sku_obj_c.sku.must_equal(:c)
-          sku_obj_a.name.must_equal('sku_a')
-          sku_obj_b.name.must_equal('sku_b')
-          sku_obj_c.name.must_equal('sku_c')
         end
       end
     end
   end
 =end
+
 end
 
 end

@@ -101,10 +101,7 @@ class Services
         if !jt
           jaba_error("'#{type}' type is not defined. Cannot instance.", callstack: def_data.block)
         end
-        jn = JabaNode.new(self, jt, def_data.id, def_data.block.source_location)
-        jn.api_eval(&def_data.block)
-        jn.post_create
-        jn.call_generators
+        jt.build_nodes(def_data)
       end
     end
     

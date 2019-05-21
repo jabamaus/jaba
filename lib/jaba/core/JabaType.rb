@@ -214,6 +214,7 @@ class JabaType < JabaAPIObject
 
   attr_reader :type
   attr_reader :generators
+  attr_reader :build_node_hook
   
   ##
   #
@@ -222,6 +223,7 @@ class JabaType < JabaAPIObject
     @type = type_id
     @attribute_defs = []
     @generators = []
+    @build_node_hook = nil
   end
   
   ##
@@ -255,14 +257,38 @@ class JabaType < JabaAPIObject
   
   ##
   #
+  def define_hook(id, &block)
+    instance_variable_set("@{#id}_hook", &block)
+  end
+  
+  ##
+  #
   def define_generator(&block)
     @generators << block
   end
   
   ##
   #
+  def make_node(parent: nil)
+  end
+  
+  ##
+  #
   def init
     @attribute_defs.each(&:init)
+  end
+  
+  ##
+  #
+  def build_nodes(def_data)
+    if @build_node_hook
+      @build_node_hook.call # TODO: api_eval
+    else
+      jn = JabaNode.new(@services, self, def_data.id, def_data.block.source_location)
+      jn.api_eval(&def_data.block)
+      jn.post_create
+      jn.call_generators
+    end
   end
   
 end

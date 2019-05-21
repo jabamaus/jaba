@@ -87,6 +87,12 @@ class JabaTypeAPI < APIBase
   
   ##
   #
+  def build_nodes(&block)
+    @obj.define_hook(:build_nodes, &block)
+  end
+  
+  ##
+  # TODO: rationalise all hook handling
   def generate(&block)
     @obj.define_generator(&block)
   end
