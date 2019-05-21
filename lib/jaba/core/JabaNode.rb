@@ -207,7 +207,6 @@ class JabaNode < JabaAPIObject
   attr_reader :generator_hooks
   ##
   #
-  def initialize(services, jaba_type, id, source_location)
   def initialize(services, jaba_type, id, attrs_mask, parent, source_location)
     super(services, services.jaba_node_api)
     @jaba_type = jaba_type
