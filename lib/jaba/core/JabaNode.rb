@@ -145,12 +145,6 @@ class AttributeArray < AttributeBase
   
   ##
   #
-  def each_attr(&block)
-    @elems.each(&block)
-  end
-  
-  ##
-  #
   def apply_pre_post_fix(pre, post, val)
     if (pre or post)
       if !val.is_a?(String)
@@ -209,21 +203,25 @@ end
 class JabaNode < JabaAPIObject
 
   attr_reader :id
-  
+  attr_reader :attributes
+  attr_reader :generator_hooks
   ##
   #
   def initialize(services, jaba_type, id, source_location)
+  def initialize(services, jaba_type, id, attrs_mask, parent, source_location)
     super(services, services.jaba_node_api)
     @jaba_type = jaba_type
     @id = id
+    @parent = parent
     @source_location = source_location
     
     @attributes = []
     @attribute_lookup = {}
+    @attr_def_mask = attrs_mask ? Array(attrs_mask).map{|id| @jaba_type.get_attr_def(id)} : nil
+    @generator_hooks = []
     
-    @generators = []
-
-    @jaba_type.each_attr do |attr_def|
+    attr_defs = @attr_def_mask ? @attr_def_mask : @jaba_type.attribute_defs
+    attr_defs.each do |attr_def|
       a = attr_def.has_flag?(:array) ? AttributeArray.new(services, attr_def) : Attribute.new(services, attr_def)
       if attr_def.type == :bool
         @attribute_lookup["#{attr_def.id}?".to_sym] = a
@@ -235,10 +233,10 @@ class JabaNode < JabaAPIObject
   
   ##
   #
-  def get_attr(id, fail_if_not_found: true)
-    a = @attribute_lookup[id]
+  def get_attr(attr_id, fail_if_not_found: true)
+    a = @attribute_lookup[attr_id]
     if (!a and fail_if_not_found)
-      jaba_error("'#{a}' attribute not found in '#{id}'")
+      @services.jaba_error("'#{attr_id}' attribute not found in '#{id}'")
     end
     a
   end
@@ -257,23 +255,7 @@ class JabaNode < JabaAPIObject
   ##
   #
   def define_generator(&block)
-    @generators << block
-  end
-  
-  ##
-  #
-  def call_generators
-    # Call generators defined per-type
-    #
-    @jaba_type.generators.each do |block|
-      instance_eval(&block) # TODO: run against an api
-    end
-    
-    # Call generators defined per-node
-    #
-    @generators.each do |block|
-      block.call  # TODO: run against an api
-    end
+    @generator_hooks << block
   end
   
   ##
@@ -288,6 +270,12 @@ class JabaNode < JabaAPIObject
   # an array it could be eg [['val1', 'val2'], :opt1, :opt2].
   #  
   def handle_attr(id, api_call_line, *args, **key_value_args, &block)
+    if @attr_def_mask
+      if @attr_def_mask.none?{|ad| ad.id == id} # TODO: doesn't work with boolean accessor
+        return nil
+      end
+    end
+    
     getter = (args.empty? and key_value_args.empty?)
     a = get_attr(id, fail_if_not_found: false)
 

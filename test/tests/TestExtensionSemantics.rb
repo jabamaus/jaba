@@ -84,7 +84,7 @@ class TestExtensionSemantics < JabaTest
     end
     # TODO: test something
   end
-=begin
+
   it 'can build a tree of nodes' do
     jaba do
       define :test_project do
@@ -100,6 +100,7 @@ class TestExtensionSemantics < JabaTest
         end
           
         attr :hosts do
+          flags :array, :unordered, :required
         end
         
         attr :host do
@@ -120,17 +121,21 @@ class TestExtensionSemantics < JabaTest
     
         build_nodes do
           @project_nodes = []
-          root_node = make_node(:root, :platform) # also disable them automatically
+          root_node = make_node(attrs_mask: [:root, :platforms])
+          root_node.attributes.size.must_equal(2)
+          root_node.attributes[0].id.must_equal(:root)
+          root_node.attributes[1].id.must_equal(:platforms)
           root_node.platforms.each do |p|
-            platform_hosts_node = make_node(parent: root_node, platform: p, :hosts)
+            platform_hosts_node = make_node(parent: root_node, attrs_mask: [:platform, :hosts]) {|n| n.platform p}
             platform_hosts_node.hosts.each do |h|
-              project_node = make_node(parent: platform_hosts_node, host: h, :src, :targets)
+              project_node = make_node(parent: platform_hosts_node, attrs_mask: [:host, :src, :targets]) {|n| n.host h}
               @project_nodes << project_node
               project_node.targets.each do |t|
-                make_node(parent: project_node, target: t, :rti)
+                make_node(parent: project_node, attrs_mask: [:target, :rtti]){|n| n.target t}
               end
             end
           end
+          root_node
         end
       end
       
@@ -157,7 +162,7 @@ class TestExtensionSemantics < JabaTest
         when :vs2013, :vs2017
           targets [:debug, :release]
         else
-          target [:dev, :check]
+          targets [:dev, :check]
         end
         
         generate do
@@ -165,7 +170,6 @@ class TestExtensionSemantics < JabaTest
       end
     end
   end
-=end
 
 end
 

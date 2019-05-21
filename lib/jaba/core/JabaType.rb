@@ -213,8 +213,8 @@ end
 class JabaType < JabaAPIObject
 
   attr_reader :type
+  attr_reader :attribute_defs
   attr_reader :generators
-  attr_reader :build_node_hook
   
   ##
   #
@@ -222,8 +222,9 @@ class JabaType < JabaAPIObject
     super(services, services.jaba_type_api)
     @type = type_id
     @attribute_defs = []
+    @attribute_def_lookup = {}
     @generators = []
-    @build_node_hook = nil
+    @build_nodes_hook = nil
   end
   
   ##
@@ -235,12 +236,13 @@ class JabaType < JabaAPIObject
     if !block_given?
       @services.jaba_error("'#{id}' attribute requires a block")
     end
-    if @attribute_defs.find{|d| d.id == id}
+    if get_attr_def(id, fail_if_not_found: false)
       @services.jaba_error("'#{id}' attribute multiply defined")
     end
     ad = AttributeDefinition.new(@services, id, type, self, block.source_location)
     ad.api_eval(&block)
     @attribute_defs << ad
+    @attribute_def_lookup[id] = ad
     ad
   end
   
@@ -251,14 +253,18 @@ class JabaType < JabaAPIObject
   
   ##
   #
-  def each_attr(&block)
-    @attribute_defs.each(&block)
+  def get_attr_def(id, fail_if_not_found: true)
+    a = @attribute_def_lookup[id]
+    if (!a and fail_if_not_found)
+      @services.jaba_error("'#{id}' attribute definition not found in '#{type}'")
+    end
+    a
   end
   
   ##
   #
   def define_hook(id, &block)
-    instance_variable_set("@{#id}_hook", &block)
+    instance_variable_set("@#{id}_hook", block)
   end
   
   ##
@@ -269,7 +275,12 @@ class JabaType < JabaAPIObject
   
   ##
   #
-  def make_node(parent: nil)
+  def make_node(attrs_mask: nil, parent: nil)
+    jn = JabaNode.new(@services, self, @current_def_data.id, attrs_mask, parent, @current_def_data.block.source_location)
+    yield jn if block_given?
+    jn.api_eval(&@current_def_data.block)
+    jn.post_create
+    jn
   end
   
   ##
@@ -281,14 +292,16 @@ class JabaType < JabaAPIObject
   ##
   #
   def build_nodes(def_data)
-    if @build_node_hook
-      @build_node_hook.call # TODO: api_eval
+    @current_def_data = def_data
+    if @build_nodes_hook
+      result = instance_eval(&@build_nodes_hook) # TODO: what api should build_nodes hook be targeting?
+      if (result.nil? or !result.is_a?(JabaNode) or result.parent != nil)
+        @services.jaba_error("'build_nodes' hook must return root node") # TODO: test this
+      end
+      return result
     else
-      jn = JabaNode.new(@services, self, def_data.id, def_data.block.source_location)
-      jn.api_eval(&def_data.block)
-      jn.post_create
-      jn.call_generators
-    end
+      return make_node
+    end 
   end
   
 end

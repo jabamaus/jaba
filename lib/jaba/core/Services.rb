@@ -101,7 +101,20 @@ class Services
         if !jt
           jaba_error("'#{type}' type is not defined. Cannot instance.", callstack: def_data.block)
         end
-        jt.build_nodes(def_data)
+        root_node = jt.build_nodes(def_data)
+        
+        # TODO: what to do here if a tree of nodes is instanced?
+        # Call generators defined per-type
+        #
+        jt.generators.each do |block|
+          root_node.instance_eval(&block) # TODO: which api?
+        end
+        
+        # Call generators defined per-node
+        #
+        root_node.generator_hooks.each do |gh|
+          root_node.instance_eval(&gh) # TODO: which api?
+        end
       end
     end
     
