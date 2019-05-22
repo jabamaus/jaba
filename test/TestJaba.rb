@@ -60,7 +60,7 @@ class JabaTest < Minitest::Spec
     e.file.must_equal(file)
     e.line.must_equal(line)
     e.message.must_match(msg)
-    e.internal?.must_equal(internal)
+    e.internal.must_equal(internal)
     
     backtrace = []
     trace.each_slice(2) do |elem|

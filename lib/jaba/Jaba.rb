@@ -64,7 +64,7 @@ class JabaError < StandardError
   ##
   # True if error is an internal error as opposed to a user error in the definitions.
   #
-  attr_boolean :internal
+  attr_reader :internal
   
   ##
   # The definition file the error occurred in. Not available if definitions were executed as a block.

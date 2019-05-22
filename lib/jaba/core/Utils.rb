@@ -11,16 +11,6 @@ class Class
     end
   end
   
-  ##
-  # Defines a boolean attribute(s). Boolean member variable must be initialised.
-  #
-  def attr_boolean(*attrs)
-    attrs.each do |a|
-      self.class_eval("def #{a}?; @#{a}; end")
-      self.class_eval("def #{a}=(val); @#{a}=val; end")
-    end
-  end
-  
 end
 
 ##
