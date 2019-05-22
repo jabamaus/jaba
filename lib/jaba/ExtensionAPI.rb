@@ -39,19 +39,19 @@ class AttributeTypeAPI < APIBase
   ##
   #
   def init_attr_def(&block)
-    @obj.set_block(:init_attr_hook, &block)
+    @obj.set_var(:init_attr_hook, &block)
   end
   
   ##
   #
   def validate_attr_def(&block)
-    @obj.set_block(:attr_def_validator, &block)
+    @obj.set_var(:attr_def_validator, &block)
   end
   
   ##
   #
   def validate(&block)
-    @obj.set_block(:value_validator, &block)
+    @obj.set_var(:value_validator, &block)
   end
   
 end

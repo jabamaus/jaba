@@ -44,6 +44,8 @@ class TestAttributeDefinition < JabaTest
           add_property :c, 1
           add_property :d, []
           add_property :e
+          add_property :f do
+          end
           b.must_equal('b')
           c.must_equal(1)
           d.must_equal([])
@@ -51,12 +53,14 @@ class TestAttributeDefinition < JabaTest
           b 'c'
           c 2
           d [:d, :e]
+          e :g
           b.must_equal('c')
           c.must_equal(2)
           d.must_equal [:d, :e]
           d [:f]
           d :g
           d.must_equal [:d, :e, :f, :g]
+          e.must_equal(:g)
         end
       end
     end

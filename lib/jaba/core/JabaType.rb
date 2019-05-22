@@ -51,6 +51,37 @@ class JabaAPIObject
     end
   end
   
+  ##
+  #
+  def set_var(var_name, val=nil, &block)
+    if block_given?
+      if !val.nil?
+        @services.jaba_error('Must provide a default value or a block but not both')
+      end
+      instance_variable_set("@#{var_name}", block)
+    else
+      var = instance_variable_get("@#{var_name}")
+      if var.is_a?(Array)
+        var.concat(Array(val))
+      else
+        instance_variable_set("@#{var_name}", val)
+      end
+    end
+  end
+  
+  ##
+  #
+  def handle_property(id, val, &block)
+    if !instance_variable_defined?("@#{id}")
+      @services.jaba_error("'#{id}' property not defined")
+    end
+    if val.nil?
+      return instance_variable_get("@#{id}")
+    else
+      set_var(id, val, &block)
+    end
+  end
+  
 end
 
 ##
@@ -72,15 +103,6 @@ class AttributeType < JabaAPIObject
     @attr_def_validator = nil
   end
 
-  ##
-  #
-  def set_block(var, &block)
-    if !block_given?
-      @services.jaba_error('Must provide a block')
-    end
-    instance_variable_set("@#{var}", block)
-  end
-  
 end
 
 ##
@@ -126,24 +148,6 @@ class AttributeDefinition < JabaAPIObject
   
   ##
   #
-  def set_var(var_name, val=nil, **options, &block)
-    if block_given?
-      if !val.nil?
-        @services.jaba_error('Must provide a default value or a block but not both')
-      end
-      instance_variable_set("@#{var_name}", block)
-    else
-      var = instance_variable_get("@#{var_name}")
-      if var.is_a?(Array)
-        var.concat(Array(val))
-      else
-        instance_variable_set("@#{var_name}", val)
-      end
-    end
-  end
-  
-  ##
-  #
   def init
     adv = @type_obj.attr_def_validator
     if adv
@@ -162,19 +166,6 @@ class AttributeDefinition < JabaAPIObject
           @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}", callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: wrap up a bit nicer so join not required
         end
       end
-    end
-  end
-  
-  ##
-  #
-  def handle_property(id, val)
-    if !instance_variable_defined?("@#{id}")
-      @services.jaba_error("'#{id}' property not defined")
-    end
-    if val.nil?
-      return instance_variable_get("@#{id}")
-    else
-      set_var(id, val)
     end
   end
   
