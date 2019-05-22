@@ -95,43 +95,4 @@ module OS
   
 end
 
-##
-#
-class Hooks
-  
-  ##
-  #
-  def initialize
-    @hooks = {}
-  end
-  
-  ##
-  #
-  def define_hook(id, override: false, &block)
-    @hooks.push_value(id, block, clear: override)
-  end
-  
-  ##
-  #
-  def hook_defined?(id)
-    @hooks.key?(id)
-  end
-  
-  ##
-  #
-  def call_hook(id, *args, receiver: self)
-    result = nil
-    hooks = @hooks[id]
-    if hooks
-      hooks.each do |hook|
-        result = receiver.instance_exec(*args, &hook)
-      end
-    else
-      raise "'#{id}' hook undefined"
-    end
-    result
-  end
-  
-end
-
 end

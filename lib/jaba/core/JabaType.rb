@@ -82,6 +82,20 @@ class JabaAPIObject
     end
   end
   
+  ##
+  # TODO: test
+  def define_hook(id, allow_multiple: false, &block)
+    if allow_multiple
+      instance_variable_get("@#{id}_hooks") << block
+    else
+      hook = "@#{id}_hook"
+      if instance_variable_get(hook)
+        @services.jaba_error("'#{id}' hook already set")
+      end
+      instance_variable_set(hook, block)
+    end
+  end
+  
 end
 
 ##
@@ -89,18 +103,18 @@ end
 class AttributeType < JabaAPIObject
 
   attr_reader :type
-  attr_reader :value_validator
-  attr_reader :init_attr_hook
-  attr_reader :attr_def_validator
+  attr_reader :init_attr_def_hook
+  attr_reader :validate_attr_def_hook
+  attr_reader :validate_value_hook
   
   ##
   #
   def initialize(services, type_id)
     super(services, services.attr_type_api)
     @type = type_id
-    @value_validator = nil
-    @init_attr_hook = nil
-    @attr_def_validator = nil
+    @init_attr_def_hook = nil
+    @validate_attr_def_hook = nil
+    @validate_value_hook = nil
   end
 
 end
@@ -129,14 +143,14 @@ class AttributeDefinition < JabaAPIObject
     @flags = []
     @help = nil
     
-    @value_validator = nil
-    @post_set = nil
-    @make_handle = nil
+    @validate_hook = nil
+    @post_set_hook = nil
+    @make_handle_hook = nil
     
     @type_obj = @services.get_attribute_type(@type)
     
-    if @type_obj.init_attr_hook
-      api_eval(&@type_obj.init_attr_hook)
+    if @type_obj.init_attr_def_hook
+      api_eval(&@type_obj.init_attr_def_hook)
     end
   end
   
@@ -149,19 +163,19 @@ class AttributeDefinition < JabaAPIObject
   ##
   #
   def init
-    adv = @type_obj.attr_def_validator
-    if adv
+    hook = @type_obj.validate_attr_def_hook
+    if hook
       begin
-        api_eval(&adv)
+        api_eval(&hook)
       rescue JabaError => e
         @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}", callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: wrap up a bit nicer so join not required
       end
     end
     if @default
-      vv = @type_obj.value_validator
-      if vv
+      hook = @type_obj.validate_value_hook
+      if hook
         begin
-          api_eval(@default, &vv)
+          api_eval(@default, &hook)
         rescue JabaError => e
           @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}", callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: wrap up a bit nicer so join not required
         end
@@ -178,7 +192,7 @@ class JabaType < JabaAPIObject
 
   attr_reader :type
   attr_reader :attribute_defs
-  attr_reader :generators
+  attr_reader :generate_hooks
   
   ##
   #
@@ -187,7 +201,7 @@ class JabaType < JabaAPIObject
     @type = type_id
     @attribute_defs = []
     @attribute_def_lookup = {}
-    @generators = []
+    @generate_hooks = []
     @build_nodes_hook = nil
   end
   
@@ -223,18 +237,6 @@ class JabaType < JabaAPIObject
       @services.jaba_error("'#{id}' attribute definition not found in '#{type}'")
     end
     a
-  end
-  
-  ##
-  #
-  def define_hook(id, &block)
-    instance_variable_set("@#{id}_hook", block)
-  end
-  
-  ##
-  #
-  def define_generator(&block)
-    @generators << block
   end
   
   ##

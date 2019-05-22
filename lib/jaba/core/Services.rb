@@ -106,7 +106,7 @@ class Services
         # TODO: what to do here if a tree of nodes is instanced?
         # Call generators defined per-type
         #
-        jt.generators.each do |block|
+        jt.generate_hooks.each do |block|
           nodes.each do |n|
             n.instance_eval(&block) # TODO: which api?
           end
@@ -115,7 +115,7 @@ class Services
         # Call generators defined per-node
         #
         nodes.each do |n|
-          n.generator_hooks.each do |gh|
+          n.generate_hooks.each do |gh|
             n.instance_eval(&gh) # TODO: which api?
           end
         end

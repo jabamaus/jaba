@@ -42,11 +42,11 @@ class TestExtensionSemantics < JabaTest
 
   # TODO: extend
   it 'supports defining new attribute types' do
-    check_fails("'b' attribute failed validation: Invalid", trace: [__FILE__, "raise 'invalid'", __FILE__, '# tag2']) do 
+    check_fails("'b' attribute failed validation: Invalid", trace: [__FILE__, '# tag2A', __FILE__, '# tag2B']) do 
       jaba do
         attr_type :a do
-          validate do |val|
-            raise 'invalid'
+          validate_value do |val|
+            raise 'invalid' # tag2A'
           end
         end
         define :test do
@@ -54,7 +54,7 @@ class TestExtensionSemantics < JabaTest
           end
         end
         test :t do
-          b 'c' # tag2
+          b 'c' # tag2B
         end
       end
     end

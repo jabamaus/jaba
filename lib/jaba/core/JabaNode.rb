@@ -65,10 +65,10 @@ class Attribute < AttributeBase
       @services.jaba_error("'#{@attr_def.id}' attribute cannot accept an array as not flagged with :array")
     end
     if api_call_line
-      vv = @attr_def.type_obj.value_validator
-      if vv
+      hook = @attr_def.type_obj.validate_value_hook
+      if hook
         begin
-          @attr_def.api_eval(value, &vv)
+          @attr_def.api_eval(value, &hook)
         rescue JabaError => e
           @services.jaba_error("'#{@attr_def.id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
         end
@@ -204,7 +204,7 @@ class JabaNode < JabaAPIObject
 
   attr_reader :id
   attr_reader :attributes
-  attr_reader :generator_hooks
+  attr_reader :generate_hooks
   
   ##
   #
@@ -218,7 +218,7 @@ class JabaNode < JabaAPIObject
     @attributes = []
     @attribute_lookup = {}
     @attr_def_mask = attrs_mask ? Array(attrs_mask).map{|id| @jaba_type.get_attr_def(id)} : nil
-    @generator_hooks = []
+    @generate_hooks = []
     
     attr_defs = @attr_def_mask ? @attr_def_mask : @jaba_type.attribute_defs
     attr_defs.each do |attr_def|
@@ -252,12 +252,6 @@ class JabaNode < JabaAPIObject
       end
       a.process_flags(warn: true)
     end
-  end
-  
-  ##
-  #
-  def define_generator(&block)
-    @generator_hooks << block
   end
   
   ##

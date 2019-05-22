@@ -39,19 +39,19 @@ class AttributeTypeAPI < APIBase
   ##
   #
   def init_attr_def(&block)
-    @obj.set_var(:init_attr_hook, &block)
+    @obj.define_hook(:init_attr_def, &block)
   end
   
   ##
   #
   def validate_attr_def(&block)
-    @obj.set_var(:attr_def_validator, &block)
+    @obj.define_hook(:validate_attr_def, &block)
   end
   
   ##
   #
-  def validate(&block)
-    @obj.set_var(:value_validator, &block)
+  def validate_value(&block)
+    @obj.define_hook(:validate_value, &block)
   end
   
 end
@@ -92,9 +92,9 @@ class JabaTypeAPI < APIBase
   end
   
   ##
-  # TODO: rationalise all hook handling
+  #
   def generate(&block)
-    @obj.define_generator(&block)
+    @obj.define_hook(:generate, allow_multiple: true, &block)
   end
   
 end
@@ -128,19 +128,19 @@ class AttributeDefinitionAPI < APIBase
   # Called for single value attributes and each element of attrbutes flagged with :array.
   #
   def validate(&block)
-    @obj.set_var(:value_validator, &block)
+    @obj.define_hook(:validate, &block)
   end
   
   ##
   #
   def post_set(&block)
-    @obj.set_var(:post_set, &block)
+    @obj.define_hook(:post_set, &block)
   end
   
   ##
   #
   def make_handle(&block)
-    @obj.set_var(:make_handle, &block)
+    @obj.define_hook(:make_handle, &block)
   end
   
   ##
