@@ -74,12 +74,6 @@ class AttributeType < JabaAPIObject
 
   ##
   #
-  def set_var(var, val)
-    instance_variable_set("@#{var}", val)
-  end
-  
-  ##
-  #
   def set_block(var, &block)
     if !block_given?
       @services.jaba_error('Must provide a block')
@@ -116,8 +110,6 @@ class AttributeDefinition < JabaAPIObject
     @value_validator = nil
     @post_set = nil
     @make_handle = nil
-    
-    @properties = nil
     
     @type_obj = @services.get_attribute_type(@type)
     
@@ -173,35 +165,16 @@ class AttributeDefinition < JabaAPIObject
     end
   end
   
-  Property = Struct.new(:value)
-  
-  ##
-  #
-  def add_property(id, val=nil)
-    if @properties.nil?
-      @properties = {}
-    end
-    @properties[id] = Property.new(val)
-  end
-
-  ##
-  #
-  def get_property(id)
-    p = @properties ? @properties[id] : nil
-    if !p
-      @services.jaba_error("'#{id}' property not defined")
-    end
-    p
-  end
-  
   ##
   #
   def handle_property(id, val)
-    p = get_property(id)
+    if !instance_variable_defined?("@#{id}")
+      @services.jaba_error("'#{id}' property not defined")
+    end
     if val.nil?
-      return p.value
+      return instance_variable_get("@#{id}")
     else
-      p.value = val
+      set_var(id, val)
     end
   end
   

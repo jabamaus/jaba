@@ -146,7 +146,7 @@ class AttributeDefinitionAPI < APIBase
   ##
   #
   def add_property(id, val=nil)
-    @obj.add_property(id, val)
+    @obj.set_var(id, val)
   end
   
   ##
