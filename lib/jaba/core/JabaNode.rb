@@ -222,9 +222,6 @@ class JabaNode < JabaAPIObject
     attr_defs = @attr_def_mask ? @attr_def_mask : @jaba_type.attribute_defs
     attr_defs.each do |attr_def|
       a = attr_def.has_flag?(:array) ? AttributeArray.new(services, attr_def) : Attribute.new(services, attr_def)
-      if attr_def.type == :bool
-        @attribute_lookup["#{attr_def.id}?".to_sym] = a
-      end
       @attribute_lookup[attr_def.id] = a
       @attributes << a
     end
@@ -270,7 +267,7 @@ class JabaNode < JabaAPIObject
   #  
   def handle_attr(id, api_call_line, *args, **key_value_args, &block)
     if @attr_def_mask
-      if @attr_def_mask.none?{|ad| ad.id == id} # TODO: doesn't work with boolean accessor
+      if @attr_def_mask.none?{|ad| ad.id == id}
         return nil
       end
     end
@@ -279,13 +276,7 @@ class JabaNode < JabaAPIObject
     a = get_attr(id, fail_if_not_found: false)
 
     if !a
-      raw_id = id.to_s.chomp('?').to_sym # Remove any trailing '?' (used with boolean attrs) to get the raw name
-      a2 = get_attr(raw_id, fail_if_not_found: false)
-      if a2
-        @services.jaba_error("'#{raw_id}' attribute is not of type :bool")
-      else
-        @services.jaba_error("'#{raw_id}' attribute not defined")
-      end
+      @services.jaba_error("'#{raw_id}' attribute not defined")
     end
     
     if getter
