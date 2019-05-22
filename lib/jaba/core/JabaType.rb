@@ -295,12 +295,12 @@ class JabaType < JabaAPIObject
     @current_def_data = def_data
     if @build_nodes_hook
       result = instance_eval(&@build_nodes_hook) # TODO: what api should build_nodes hook be targeting?
-      if (result.nil? or !result.is_a?(JabaNode) or result.parent != nil)
-        @services.jaba_error("'build_nodes' hook must return root node") # TODO: test this
+      if (result.nil? or !result.is_a?(Array) or result.empty? or !result[0].is_a?(JabaNode))
+        @services.jaba_error("'build_nodes' hook must return an array of nodes") # TODO: test this
       end
       return result
     else
-      return make_node
+      return [make_node]
     end 
   end
   
