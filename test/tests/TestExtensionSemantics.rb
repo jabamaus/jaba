@@ -120,22 +120,19 @@ class TestExtensionSemantics < JabaTest
         end
     
         build_nodes do
-          @project_nodes = []
+          project_nodes = []
           root_node = make_node(attrs_mask: [:root, :platforms])
-          root_node.attributes.size.must_equal(2)
-          root_node.attributes[0].id.must_equal(:root)
-          root_node.attributes[1].id.must_equal(:platforms)
           root_node.platforms.each do |p|
             platform_hosts_node = make_node(parent: root_node, attrs_mask: [:platform, :hosts]) {|n| n.platform p}
             platform_hosts_node.hosts.each do |h|
               project_node = make_node(parent: platform_hosts_node, attrs_mask: [:host, :src, :targets]) {|n| n.host h}
-              @project_nodes << project_node
+              project_nodes << project_node
               project_node.targets.each do |t|
                 make_node(parent: project_node, attrs_mask: [:target, :rtti]){|n| n.target t}
               end
             end
           end
-          root_node
+          project_nodes
         end
       end
       
@@ -148,12 +145,12 @@ class TestExtensionSemantics < JabaTest
           if host == :vs2013
             src 'win32_vs2013_src'
           else
-            src 'x64_vs2015_src'
+            src 'win32_vs2015_src'
           end
         when :x64
           hosts [:vs2017, :vs2019]
-          if host == :vs2013
-            src 'win32_vs2017_src'
+          if host == :vs2017
+            src 'x64_vs2017_src'
           else
             src 'x64_vs2019_src'
           end
@@ -166,6 +163,28 @@ class TestExtensionSemantics < JabaTest
         end
         
         generate do
+          platforms.must_equal [:win32, :x64]
+          [:win32, :x64].must_include(platform)
+          [:vs2013, :vs2015, :vs2017, :vs2019].must_include(host)
+          
+          case host
+          when :vs2013
+            platform.must_equal(:win32)
+            src.must_equal 'win32_vs2013_src'
+            targets.must_equal [:debug, :release]
+          when :vs2015
+            platform.must_equal(:win32)
+            src.must_equal 'win32_vs2015_src'
+            targets.must_equal [:dev, :check]
+          when :vs2017
+            platform.must_equal(:x64)
+            src.must_equal 'x64_vs2017_src'
+             targets.must_equal [:debug, :release]
+          when :vs2019
+            platform.must_equal(:x64)
+            src.must_equal 'x64_vs2019_src'
+            targets.must_equal [:dev, :check]
+          end
         end
       end
     end

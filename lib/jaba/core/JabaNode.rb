@@ -228,11 +228,16 @@ class JabaNode < JabaAPIObject
   end
   
   ##
-  #
-  def get_attr(attr_id, fail_if_not_found: true)
+  # TODO: This needs testing
+  def get_attr(attr_id, fail_if_not_found: true, search_parents: false)
     a = @attribute_lookup[attr_id]
-    if (!a and fail_if_not_found)
-      @services.jaba_error("'#{attr_id}' attribute not found in '#{id}'")
+    if !a
+      if (search_parents and @parent)
+        return @parent.get_attr(attr_id, fail_if_not_found: false, search_parents: true)
+      end
+      if fail_if_not_found
+        @services.jaba_error("'#{attr_id}' attribute not found")
+      end
     end
     a
   end
@@ -266,27 +271,34 @@ class JabaNode < JabaAPIObject
   # an array it could be eg [['val1', 'val2'], :opt1, :opt2].
   #  
   def handle_attr(id, api_call_line, *args, **key_value_args, &block)
-    if @attr_def_mask
-      if @attr_def_mask.none?{|ad| ad.id == id}
+    # First determine if it is a set or a get operation
+    #
+    is_get = (args.empty? and key_value_args.empty?)
+
+    if is_get
+      # If its a get operation, look for attribute in this node and all parent nodes
+      #
+      a = get_attr(id, search_parents: true, fail_if_not_found: false)
+      
+      if !a
+        # TODO: check if property is defined at all
         return nil
       end
-    end
-    
-    getter = (args.empty? and key_value_args.empty?)
-    a = get_attr(id, fail_if_not_found: false)
-
-    if !a
-      @services.jaba_error("'#{raw_id}' attribute not defined")
-    end
-    
-    if getter
-      a.get
+      
+      return a.get
     else
+      if (@attr_def_mask and @attr_def_mask.none?{|ad| ad.id == id})
+        return nil
+      end
+
+      a = get_attr(id)
+      
       # Get the value by popping the first element from the front of the list. This could yield a single value or an array,
       # depending on what the user passed in (see comment at top of this method.
       #
       value = args.shift
       a.set(value, api_call_line, *args, **key_value_args, &block)
+      return nil
     end
   end
   
