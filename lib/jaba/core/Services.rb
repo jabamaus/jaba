@@ -22,6 +22,7 @@ class Services
   def initialize
     @input = Input.new
     @input.instance_variable_set(:@definitions, nil)
+    @input.instance_variable_set(:@load_paths, nil)
     
     @warnings = []
     
@@ -33,12 +34,12 @@ class Services
     
     @jaba_attr_types = []
     @jaba_types = []
-    @types_to_extend = []
+    @jaba_types_to_extend = []
     @definition_registry = {} # TODO: not a good name
     
     @file_read_cache = {}
     
-    @toplevel_api = TopLevelAPI.new
+    @top_level_api = TopLevelAPI.new
     @attr_type_api = AttributeTypeAPI.new
     @jaba_type_api = JabaTypeAPI.new
     @attr_definition_api = AttributeDefinitionAPI.new
@@ -47,9 +48,49 @@ class Services
     @default_attr_type = AttributeType.new(self, nil)
     @default_attr_type.freeze
     
-    @toplevel_api.__internal_set_obj(self)
+    @top_level_api.__internal_set_obj(self)
   end
 
+  ##
+  #
+  def define_attr_flag(id)
+  end
+  
+  ##
+  #
+  def define_attr_type(type, **options, &block)
+    @jaba_attr_types << Definition.new(type, nil, block, options)
+  end
+  
+  ##
+  #
+  def define_type(type, **options, &block)
+    @jaba_types << Definition.new(type, nil, block, options)
+  end
+  
+  ##
+  #
+  def extend_type(type, **options, &block)
+    @jaba_types_to_extend << Definition.new(type, nil, block, options)
+  end
+  
+  ##
+  #
+  def define_instance(type, id, **options, &block)
+    def_data = Definition.new(type, id, block, options)
+    
+    if id
+      if (!(id.is_a?(Symbol) or id.is_a?(String)) or id !~ /^[a-zA-Z0-9_.]+$/)
+        jaba_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'")
+      end
+      if definition_defined?(type, id)
+        jaba_error("'#{id}' multiply defined")
+      end
+    end
+    
+    @definition_registry.push_value(type, def_data)
+  end
+  
   ##
   #
   def run
@@ -81,7 +122,7 @@ class Services
     
     # Extend JabaTypes
     #
-    @types_to_extend.each do |def_data|
+    @jaba_types_to_extend.each do |def_data|
       jt = @jaba_types.find{|t| t.type == def_data.type}
       if !jt
         jaba_error("'#{def_data.type}' has not been defined", callstack: def_data.block)
@@ -103,7 +144,6 @@ class Services
         end
         nodes = jt.build_nodes(def_data)
         
-        # TODO: what to do here if a tree of nodes is instanced?
         # Call generators defined per-type
         #
         jt.generate_hooks.each do |block|
@@ -131,12 +171,6 @@ class Services
   
   ##
   #
-  def define_attr_type(type, **options, &block)
-    @jaba_attr_types << Definition.new(type, nil, block, options)
-  end
-  
-  ##
-  #
   def get_attribute_type(type)
     if type.nil?
       return @default_attr_type
@@ -150,45 +184,13 @@ class Services
   
   ##
   #
-  def define_attr_flag(id)
-  end
-  
-  ##
-  #
-  def define_type(type, **options, &block)
-    @jaba_types << Definition.new(type, nil, block, options)
-  end
-  
-  ##
-  #
-  def extend_type(type, **options, &block)
-    @types_to_extend << Definition.new(type, nil, block, options)
-  end
-  
-  ##
-  #
-  def define_instance(type, id, **options, &block)
-    def_data = Definition.new(type, id, block, options)
-    
-    if id
-      if (!(id.is_a?(Symbol) or id.is_a?(String)) or id !~ /^[a-zA-Z0-9_.]+$/)
-        jaba_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'")
-      end
-      if definition_defined?(type, id)
-        jaba_error("'#{id}' multiply defined")
-      end
-    end
-    
-    @definition_registry.push_value(type, def_data)
-  end
-  
-  ##
-  #
   def get_definition(type, id, fail_if_not_found: true)
     defs = @definition_registry[type]
     return nil if !defs
     d = defs.find{|dd| dd.id == id}
-    jaba_error("No '#{id}' definition found") if (!d and fail_if_not_found)
+    if (!d and fail_if_not_found)
+      jaba_error("No '#{id}' definition found")
+    end
     d
   end
 
@@ -272,11 +274,11 @@ private
   #
   def execute_definitions(file=nil, &block)
     if file
-      @toplevel_api.instance_eval(read_file(file), file)
+      @top_level_api.instance_eval(read_file(file), file)
     end
     if block_given?
       @definition_src_files << block.source_location[0]
-      @toplevel_api.instance_eval(&block)
+      @top_level_api.instance_eval(&block)
     end
   rescue JabaError
     raise # Prevent fallthrough to next case
@@ -289,7 +291,9 @@ private
   def load_definitions
     @definition_src_files << "#{__dir__}/Types.rb" # Load core type definitions
     Array(input.load_paths).each do |p|
-      jaba_error("#{p} does not exist") if !File.exist?(p)
+      if !File.exist?(p)
+        jaba_error("#{p} does not exist")
+      end
       if File.directory?(p)
         @definition_src_files.concat(Dir.glob("#{p}/*.rb"))
       else

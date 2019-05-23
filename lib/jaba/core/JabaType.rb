@@ -226,11 +226,6 @@ class JabaType < JabaAPIObject
   
   ##
   #
-  def extend_attr(id, **options, &block)
-  end
-  
-  ##
-  #
   def get_attr_def(id, fail_if_not_found: true)
     a = @attribute_def_lookup[id]
     if (!a and fail_if_not_found)

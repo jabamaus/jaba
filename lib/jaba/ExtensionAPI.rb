@@ -81,12 +81,6 @@ class JabaTypeAPI < APIBase
   
   ##
   #
-  def extend(id, **options, &block)
-    @obj.extend_attr(id, **options, &block)
-  end
-  
-  ##
-  #
   def build_nodes(&block)
     @obj.define_hook(:build_nodes, &block)
   end
