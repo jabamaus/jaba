@@ -117,6 +117,14 @@ class TestExtensionSemantics < JabaTest
         end
         
         attr :rtti do
+          default do
+            case platform
+            when :win32
+              default 'on'
+            when :x64
+              default 'off'
+            end
+          end
         end
     
         build_nodes do
@@ -170,6 +178,7 @@ class TestExtensionSemantics < JabaTest
           case host
           when :vs2013
             platform.must_equal(:win32)
+            rtti.must_equal('on')
             src.must_equal 'win32_vs2013_src'
             targets.must_equal [:debug, :release]
           when :vs2015
@@ -177,9 +186,10 @@ class TestExtensionSemantics < JabaTest
             src.must_equal 'win32_vs2015_src'
             targets.must_equal [:dev, :check]
           when :vs2017
+            rtti.must_equal('off')
             platform.must_equal(:x64)
             src.must_equal 'x64_vs2017_src'
-             targets.must_equal [:debug, :release]
+            targets.must_equal [:debug, :release]
           when :vs2019
             platform.must_equal(:x64)
             src.must_equal 'x64_vs2019_src'

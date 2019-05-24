@@ -9,11 +9,17 @@ class AttributeBase
   
   ##
   #
-  def initialize(services, attr_def)
+  def initialize(services, attr_def, node)
     @services = services
     @attr_def = attr_def
+    @node = node
     @api_call_line = nil
     @set = false
+    @default = @attr_def.default
+    @default_is_proc = @default.is_a?(Proc)
+    if (!@default.nil? and !@default_is_proc)
+      set(@default)
+    end
   end
   
   ##
@@ -42,19 +48,19 @@ class Attribute < AttributeBase
 
   ##
   #
-  def initialize(services, attr_def)
-    super
+  def initialize(services, attr_def, node)
     @value = nil
-    d = @attr_def.default
-    if (!d.nil? and !d.is_a?(Proc))
-      set(d)
-    end
+    super
   end
   
   ##
   #
   def get
-    @value
+    if (!set? and @default_is_proc)
+      @node.api_eval(&@default)
+    else
+      @value
+    end
   end
   
   ##
@@ -111,16 +117,20 @@ class AttributeArray < AttributeBase
   
   ##
   #
-  def initialize(services, attr_def)
-    super
+  def initialize(services, attr_def, node)
     @elems = []
     @excludes = []
+    super
   end
   
   ##
   #
   def get
-    @elems.map{|e| e.get}
+    if (!set? and @default_is_proc)
+      @node.api_eval(&@default)
+    else
+      @elems.map{|e| e.get}
+    end
   end
   
   ##
@@ -129,7 +139,7 @@ class AttributeArray < AttributeBase
     @api_call_line = api_call_line
     
     Array(values).each do |v|
-      elem = Attribute.new(@services, @attr_def)
+      elem = Attribute.new(@services, @attr_def, @node)
       v = apply_pre_post_fix(prefix, postfix, v)
       elem.set(v, api_call_line, *args, **key_value_args, &block)
       @elems << elem
@@ -222,7 +232,8 @@ class JabaNode < JabaAPIObject
     
     attr_defs = @attr_def_mask ? @attr_def_mask : @jaba_type.attribute_defs
     attr_defs.each do |attr_def|
-      a = attr_def.has_flag?(:array) ? AttributeArray.new(services, attr_def) : Attribute.new(services, attr_def)
+      klass = attr_def.has_flag?(:array) ? AttributeArray : Attribute
+      a = klass.new(services, attr_def, self)
       @attribute_lookup[attr_def.id] = a
       @attributes << a
     end
