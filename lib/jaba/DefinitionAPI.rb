@@ -26,7 +26,7 @@ class APIBase < BasicObject
   ##
   # Internal use only.
   #
-  def __internal_set_obj(o)
+  def __set_obj(o)
     @obj = o
   end
   

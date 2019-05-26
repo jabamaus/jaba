@@ -18,7 +18,7 @@ class JabaAPIObject
   #
   def api_eval(args=nil, &block)
     begin
-      @api.__internal_set_obj(self)
+      @api.__set_obj(self)
       if !args.nil?
         @api.instance_exec(args, &block)
       else

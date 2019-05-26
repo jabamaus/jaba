@@ -48,7 +48,7 @@ class Services
     @default_attr_type = AttributeType.new(self, nil)
     @default_attr_type.freeze
     
-    @top_level_api.__internal_set_obj(self)
+    @top_level_api.__set_obj(self)
   end
 
   ##
