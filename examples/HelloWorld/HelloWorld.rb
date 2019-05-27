@@ -57,3 +57,20 @@ define :test_project do
   end
    
 end
+
+build_use_case do
+
+  setup do
+    file "AppRoot/main.cpp"
+  end
+  
+  jaba do
+    project :myApp do
+      root 'AppRoot'
+    end
+  end
+  
+  verify do
+  end
+  
+end

@@ -89,7 +89,7 @@ class Attribute < AttributeBase
   def clear
     @value = nil
     d = @attr_def.default
-    if (!d.nil? and !d.is_a?(Proc))
+    if (!d.nil? and !@default_is_proc)
       @value = d
     end
   end
