@@ -1,8 +1,11 @@
+require_relative 'CoreExtensions'
 require_relative 'Utils'
 require_relative 'JabaType'
 require_relative 'JabaNode'
 
 module JABA
+
+using JABACoreExtensions
 
 class Services
 
