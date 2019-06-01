@@ -192,7 +192,7 @@ class TestExtensionSemantics < JabaTest
           case host
           when :vs2013
             platform.must_equal(:win32)
-            rtti.must_equal('on')
+            rtti.must_equal('on') if rtti # TODO: add assert_property(:rtti, 'on') ?
             src.must_equal 'win32_vs2013_src'
             targets.must_equal [:debug, :release]
           when :vs2015
@@ -200,7 +200,7 @@ class TestExtensionSemantics < JabaTest
             src.must_equal 'win32_vs2015_src'
             targets.must_equal [:dev, :check]
           when :vs2017
-            rtti.must_equal('off')
+            rtti.must_equal('off') if rtti
             platform.must_equal(:x64)
             src.must_equal 'x64_vs2017_src'
             targets.must_equal [:debug, :release]

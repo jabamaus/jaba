@@ -2,6 +2,22 @@ module JABA
 
 class TestAttributeArray < JabaTest
 
+  it 'allows setting a default array' do
+    jaba do
+      define :test do
+        attr :a do
+          flags :array
+          default [1, 2, 3]
+        end
+      end
+      test :t do
+        generate do
+          a.must_equal [1, 2, 3]
+        end
+      end
+    end
+  end
+  
   it 'strips duplicates by default' do
     op = jaba do
       define :test do

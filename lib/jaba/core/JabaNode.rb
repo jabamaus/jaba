@@ -17,9 +17,6 @@ class AttributeBase
     @set = false
     @default = @attr_def.default
     @default_is_proc = @default.is_a?(Proc)
-    if (!@default.nil? and !@default_is_proc)
-      set(@default)
-    end
   end
   
   ##
@@ -48,9 +45,15 @@ class Attribute < AttributeBase
 
   ##
   #
-  def initialize(services, attr_def, node)
+  def initialize(services, attr_def, parent_array, node)
+    super(services, attr_def, node)
     @value = nil
-    super
+    
+    # If its not an element of an attribute array, initialize with default value if it has a concrete one
+    #
+    if (!parent_array and !@default.nil? and !@default_is_proc)
+      set(@default)
+    end
   end
   
   ##
@@ -118,9 +121,12 @@ class AttributeArray < AttributeBase
   ##
   #
   def initialize(services, attr_def, node)
+    super
     @elems = []
     @excludes = []
-    super
+    if @default.is_a?(Array)
+      set(@default)
+    end
   end
   
   ##
@@ -139,7 +145,7 @@ class AttributeArray < AttributeBase
     @api_call_line = api_call_line
     
     Array(values).each do |v|
-      elem = Attribute.new(@services, @attr_def, @node)
+      elem = Attribute.new(@services, @attr_def, self, @node)
       v = apply_pre_post_fix(prefix, postfix, v)
       elem.set(v, api_call_line, *args, **key_value_args, &block)
       @elems << elem
@@ -232,8 +238,7 @@ class JabaNode < JabaAPIObject
     
     attr_defs = @attr_def_mask ? @attr_def_mask : @jaba_type.attribute_defs
     attr_defs.each do |attr_def|
-      klass = attr_def.has_flag?(:array) ? AttributeArray : Attribute
-      a = klass.new(services, attr_def, self)
+      a = attr_def.has_flag?(:array) ? AttributeArray.new(services, attr_def, self) : Attribute.new(services, attr_def, nil, self)
       @attribute_lookup[attr_def.id] = a
       @attributes << a
     end
