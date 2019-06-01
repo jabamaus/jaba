@@ -106,15 +106,15 @@ class TestExtensionSemantics < JabaTest
           default '.'
         end
 
-        attr :platforms do
-          flags :array, :unordered, :required
+        attr_array :platforms do
+          flags :unordered, :required
         end
         
         attr :platform do
         end
           
-        attr :hosts do
-          flags :array, :unordered, :required
+        attr_array :hosts do
+          flags :unordered, :required
         end
         
         attr :host do
@@ -123,8 +123,8 @@ class TestExtensionSemantics < JabaTest
         attr :src do
         end
         
-        attr :targets do
-          flags :array, :required, :unordered
+        attr_array :targets do
+          flags :required, :unordered
         end
         
         attr :target do

@@ -81,6 +81,12 @@ class JabaTypeAPI < APIBase
   
   ##
   #
+  def attr_array(id, **options, &block)
+    @obj.define_attr(id, array: true, **options, &block)
+  end
+  
+  ##
+  #
   def build_nodes(&block)
     @obj.define_hook(:build_nodes, &block)
   end
@@ -119,7 +125,7 @@ class AttributeDefinitionAPI < APIBase
   end
   
   ##
-  # Called for single value attributes and each element of attrbutes flagged with :array.
+  # Called for single value attributes and each element of array attributes.
   #
   def validate(&block)
     @obj.define_hook(:validate, &block)

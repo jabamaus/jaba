@@ -71,7 +71,7 @@ class Attribute < AttributeBase
   def set(value, api_call_line=nil, *args, **key_value_args, &block)
     @api_call_line = api_call_line
     if value.is_a?(Array)
-      @services.jaba_error("'#{@attr_def.id}' attribute cannot accept an array as not flagged with :array")
+      @services.jaba_error("'#{@attr_def.id}' attribute is not an array so cannot accept one")
     end
     if api_call_line
       hook = @attr_def.type_obj.validate_value_hook
@@ -238,7 +238,7 @@ class JabaNode < JabaAPIObject
     
     attr_defs = @attr_def_mask ? @attr_def_mask : @jaba_type.attribute_defs
     attr_defs.each do |attr_def|
-      a = attr_def.has_flag?(:array) ? AttributeArray.new(services, attr_def, self) : Attribute.new(services, attr_def, nil, self)
+      a = attr_def.array? ? AttributeArray.new(services, attr_def, self) : Attribute.new(services, attr_def, nil, self)
       @attribute_lookup[attr_def.id] = a
       @attributes << a
     end

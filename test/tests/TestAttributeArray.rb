@@ -5,8 +5,7 @@ class TestAttributeArray < JabaTest
   it 'allows setting a default array' do
     jaba do
       define :test do
-        attr :a do
-          flags :array
+        attr_array :a do
           default [1, 2, 3]
         end
       end
@@ -21,8 +20,7 @@ class TestAttributeArray < JabaTest
   it 'strips duplicates by default' do
     op = jaba do
       define :test do
-        attr :a do
-          flags :array
+        attr_array :a do
         end
       end
       test :t do
@@ -39,8 +37,8 @@ class TestAttributeArray < JabaTest
   it 'allows flagging arrays with :allow_dupes' do
     jaba do
       define :test do
-        attr :a do
-          flags :array, :allow_dupes
+        attr_array :a do
+          flags :allow_dupes
         end
       end
       test :t do
@@ -55,17 +53,13 @@ class TestAttributeArray < JabaTest
   it 'sorts by default' do
     jaba do
       define :test do
-        attr :a do
-          flags :array
+        attr_array :a do
         end
-        attr :b do
-          flags :array
+        attr_array :b do
         end
-        attr :c do
-          flags :array
+        attr_array :c do
         end
-        attr :d do
-          flags :array
+        attr_array :d do
         end
       end
       test :t do
@@ -86,8 +80,7 @@ class TestAttributeArray < JabaTest
   it 'does not sort or strip duplicates from bool arrays' do
     jaba do
       define :test do
-        attr :a, type: :bool do
-          flags :array
+        attr_array :a, type: :bool do
         end
       end
       test :t do
@@ -102,8 +95,8 @@ class TestAttributeArray < JabaTest
   it 'allows flagging arrays as unordered' do
     jaba do
       define :test do
-        attr :a do
-          flags :array, :unordered, :allow_dupes
+        attr_array :a do
+          flags :unordered, :allow_dupes
         end
       end
       test :t do
@@ -118,8 +111,8 @@ class TestAttributeArray < JabaTest
   it 'supports prefix and postfix options' do
     jaba do
       define :test do
-        attr :a do
-          flags :array, :unordered, :allow_dupes
+        attr_array :a do
+          flags :unordered, :allow_dupes
         end
       end
       test :t do
@@ -135,8 +128,7 @@ class TestAttributeArray < JabaTest
     check_fails('Prefix/postfix option can only be used with arrays of strings', trace: [__FILE__, '# tag1']) do
       jaba do
         define :test do
-          attr :a do
-            flags :array
+          attr_array :a do
           end
         end
         test :t do
@@ -149,11 +141,9 @@ class TestAttributeArray < JabaTest
   it 'supports excluding elements' do
     jaba do
       define :test do
-        attr :a do
-          flags :array
+        attr_array :a do
         end
-        attr :b do
-          flags :array
+        attr_array :b do
         end
       end
       test :t do
@@ -173,8 +163,8 @@ class TestAttributeArray < JabaTest
   it 'supports :prefix and :postfix in conjunction with :exclude' do
     jaba do
       define :test do
-        attr :a do
-          flags :array, :unordered
+        attr_array :a do
+          flags :unordered
         end
       end
       test :t do
@@ -190,8 +180,7 @@ class TestAttributeArray < JabaTest
   it 'supports excluding elements with regexes' do
     jaba do
       define :test do
-        attr :a do
-          flags :array
+        attr_array :a do
         end
       end
       test :t do
@@ -208,8 +197,7 @@ class TestAttributeArray < JabaTest
     check_fails('Exclude regex can only operate on strings', trace: [__FILE__, '# tag2']) do
       jaba do
         define :test do
-          attr :a do
-            flags :array
+          attr_array :a do
           end
         end
         test :t do
@@ -222,11 +210,9 @@ class TestAttributeArray < JabaTest
   it 'supports conditional excluding' do
     jaba do
       define :test do
-        attr :a do
-          flags :array
+        attr_array :a do
         end
-        attr :b do
-          flags :array
+        attr_array :b do
         end
       end
       test :t do
@@ -245,8 +231,7 @@ class TestAttributeArray < JabaTest
   it 'supports clearing arrays' do
     jaba do
       define :test do
-        attr :a do
-          flags :array
+        attr_array :a do
         end
         attr :b do
           default 1

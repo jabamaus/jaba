@@ -90,8 +90,7 @@ class TestAttributeDefinition < JabaTest
         attr :c do
           default {"#{b}_2"}
         end
-        attr :d do
-          flags :array
+        attr_array :d do
           default do [a, b, c] end
         end
       end

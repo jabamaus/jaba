@@ -27,9 +27,8 @@ class TestChoiceAttribute < JabaTest
     check_fails("Must be one of [1, 2, 3]", trace: [CoreTypesFile, "raise \"must be one of", __FILE__, '# tag3']) do
       jaba do
         define :test do
-          attr :a, type: :choice do # tag3
+          attr_array :a, type: :choice do # tag3
             items [1, 2, 3]
-            flags :array
             default [1, 2, 4]
           end
         end
@@ -53,8 +52,7 @@ class TestChoiceAttribute < JabaTest
     check_fails("Must be one of [:a, :b, :c]", trace: [CoreTypesFile, "raise \"must be one of", __FILE__, '# tag5']) do
       jaba do
         define :test do
-          attr :a, type: :choice do
-            flags :array
+          attr_array :a, type: :choice do
             items [:a, :b, :c]
           end
         end

@@ -12,8 +12,8 @@ define :test_project do
       default '.'
     end
 
-    attr :platforms, type: :reference do
-      flags :array, :unordered, :required
+    attr_array :platforms, type: :reference do
+      flags :unordered, :required
     end
   end
   
@@ -23,8 +23,8 @@ define :test_project do
     attr :platform do
     end
 
-    attr :hosts, type: :reference do
-      flags :array, :unordered, :required
+    attr_array :hosts, type: :reference do
+      flags :unordered, :required
     end
   end
   
@@ -41,14 +41,13 @@ define :test_project do
       flags :no_check_exist
     end
     
-    attr :src, type: :path do
+    attr_array :src, type: :path do
       help 'Source files. Evaluated once per project so this should be the union of all source files required for all target platforms.'
-      flags :array
     end
     
-    attr :targets do
+    attr_array :targets do
       help 'Targets'
-      flags :array, :required, :unordered
+      flags :required, :unordered
     end
   end
   

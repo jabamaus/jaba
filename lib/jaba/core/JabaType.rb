@@ -132,10 +132,11 @@ class AttributeDefinition < JabaAPIObject
   
   ##
   #
-  def initialize(services, id, type, jaba_type_obj, source_location)
+  def initialize(services, id, type, is_array, jaba_type_obj, source_location)
     super(services, services.attr_definition_api)
     @id = id
     @type = type
+    @is_array = is_array
     @jaba_type_obj = jaba_type_obj
     @source_location = source_location
 
@@ -156,6 +157,12 @@ class AttributeDefinition < JabaAPIObject
   
   ##
   #
+  def array?
+    @is_array
+  end
+  
+  ##
+  #
   def has_flag?(flag)
     @flags.index(flag) != nil
   end
@@ -171,6 +178,7 @@ class AttributeDefinition < JabaAPIObject
         @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}", callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: wrap up a bit nicer so join not required
       end
     end
+    
     if @default
       hook = @type_obj.validate_value_hook
       if hook
@@ -207,7 +215,7 @@ class JabaType < JabaAPIObject
   
   ##
   #
-  def define_attr(id, type: nil, &block)
+  def define_attr(id, type: nil, array: false, &block)
     if !id.is_a?(Symbol)
       @services.jaba_error("'#{id}' attribute id must be specified as a symbol")
     end
@@ -217,7 +225,7 @@ class JabaType < JabaAPIObject
     if get_attr_def(id, fail_if_not_found: false)
       @services.jaba_error("'#{id}' attribute multiply defined")
     end
-    ad = AttributeDefinition.new(@services, id, type, self, block.source_location)
+    ad = AttributeDefinition.new(@services, id, type, array, self, block.source_location)
     ad.api_eval(&block)
     @attribute_defs << ad
     @attribute_def_lookup[id] = ad

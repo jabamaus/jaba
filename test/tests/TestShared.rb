@@ -30,15 +30,12 @@ class TestShared < JabaTest
       end
      
       shared :attr_setup do
-        flags :array
+        flags :unordered
       end
       
       shared :attrs do
-        attr :a, type: :at do
+        attr_array :a, type: :at do
          include :attr_setup
-        end
-        attr :b, type: :at do
-          include :attr_setup
         end
       end
       define :test do
@@ -46,10 +43,8 @@ class TestShared < JabaTest
       end
       test :t do
         a [3, 3, 2, 2, 1, 1]
-        b [5, 5, 4, 4, 3, 3]
         generate do
-          a.must_equal [1, 1, 2, 2, 3, 3]
-          b.must_equal [3, 3, 4, 4, 5, 5]
+          a.must_equal [3, 3, 2, 2, 1, 1]
         end
       end
     end

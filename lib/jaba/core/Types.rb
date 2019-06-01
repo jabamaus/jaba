@@ -1,5 +1,4 @@
 # TODO: add help string to flags
-attr_flag :array
 attr_flag :allow_dupes
 attr_flag :no_check_exist
 attr_flag :read_only
@@ -145,9 +144,9 @@ define :text do
     help 'Directly set content of file as a string'
   end
   
-  attr :line do
+  attr_array :line do
     help 'Set content of file line by line'
-    flags :array, :allow_dupes, :unordered
+    flags :allow_dupes, :unordered
   end
   
   attr :eol, type: :choice do
@@ -191,8 +190,8 @@ define :project do
     default '.'
   end
 
-  attr :platforms, type: :reference do
-    flags :array, :unordered, :required
+  attr_array :platforms, type: :reference do
+    flags :unordered, :required
   end
   
   attr :platform do
@@ -212,14 +211,13 @@ define :project do
       flags :no_check_exist
     end
     
-    attr :src, type: :path do
+    attr_array :src, type: :path do
       help 'Source files. Evaluated once per project so this should be the union of all source files required for all target platforms.'
-      flags :array
     end
     
-    attr :targets do
+    attr_array :targets do
       help 'Targets'
-      flags :array, :required, :unordered
+      flags :required, :unordered
     end
   #end
   
