@@ -85,6 +85,20 @@ class TestExtensionSemantics < JabaTest
     # TODO: test something
   end
 
+  it 'supports a generate hook per-object' do
+    assert_output 'generate' do
+      jaba do
+        define :test do
+        end
+        test :t do
+          generate do
+            print 'generate'
+          end
+        end
+      end
+    end
+  end
+  
   it 'can build a tree of nodes' do
     jaba do
       define :test_project do

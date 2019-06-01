@@ -98,7 +98,7 @@ class JabaNodeAPI < APIBase
   ##
   #
   def generate(&block)
-    @obj.define_hook(:generate, &block)
+    @obj.define_hook(:generate, allow_multiple: true, &block)
   end
   
   ##
