@@ -1,0 +1,7 @@
+Metrics/LineLength:
+  Max: 120
+Layout/TrailingWhitespace:
+  Enabled: false
+Layout/EmptyLinesAroundBlockBody:
+  Enabled: false
+  

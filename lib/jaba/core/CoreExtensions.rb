@@ -8,7 +8,7 @@ refine Class do
   # Allow setting and getting a block as a member variable.
   #
   def attr_block(attr)
-    self.class_eval "def #{attr}(&block); block_given? ? @#{attr} = block : @#{attr} ; end"
+    class_eval("def #{attr}(&block); block_given? ? @#{attr} = block : @#{attr} ; end", __FILE__, __LINE__)
   end
   
   ##
@@ -90,7 +90,7 @@ refine Hash do
   # Existing key can be optionally cleared.
   #
   def push_value(key, value, clear: false)
-    v = self[key] = self.fetch(key, [])
+    v = self[key] = fetch(key, [])
     v.clear if clear
     value.is_a?(Array) ? v.concat(value) : v << value
     self
