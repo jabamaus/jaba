@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'CoreExtensions'
 require_relative 'Utils'
 require_relative 'JabaType'
@@ -369,7 +371,7 @@ private
     
     file = $1
     line = $2.to_i
-    m = ''
+    m = String.new
     
     if warn
       m << 'Warning'
