@@ -4,80 +4,80 @@ require_relative 'core/services'
 require_relative 'definition_api'
 
 module JABA
-using JABACoreExt
-
-##
-#
-def self.run
-  s = Services.new
-  yield s.input if block_given?
-  s.run
-end
-
-##
-# Input to pass to Jaba.
-#
-class Input
-  
-  ##
-  # One or more filenames and/or directories from which to load definitions.
-  #
-  attr_accessor :load_paths
-  
-  ##
-  #
-  attr_block :definitions
-  
-end
-
-##
-# Output from Jaba, returned by JABA.run.
-#
-class Output
+  using JABACoreExt
 
   ##
-  # Array of files newly created by this run of JABA.
   #
-  attr_reader :added_files
-  
-  ##
-  # Array of existing files that were modified by this run of JABA.
-  #
-  attr_reader :modified_files
-  
-  ##
-  # Array of any warnings that were generated.
-  #
-  attr_reader :warnings
-  
-end
+  def self.run
+    s = Services.new
+    yield s.input if block_given?
+    s.run
+  end
 
-##
-# Raised when there is an error raised from inside Jaba, either from the user definitions or from internal library
-# code.
-#
-class JabaError < StandardError
-  
   ##
+  # Input to pass to Jaba.
   #
-  attr_reader :raw_message
-  
+  class Input
+    
+    ##
+    # One or more filenames and/or directories from which to load definitions.
+    #
+    attr_accessor :load_paths
+    
+    ##
+    #
+    attr_block :definitions
+    
+  end
+
   ##
-  # True if error is an internal error as opposed to a user error in the definitions.
+  # Output from Jaba, returned by JABA.run.
   #
-  attr_reader :internal
-  
+  class Output
+
+    ##
+    # Array of files newly created by this run of JABA.
+    #
+    attr_reader :added_files
+    
+    ##
+    # Array of existing files that were modified by this run of JABA.
+    #
+    attr_reader :modified_files
+    
+    ##
+    # Array of any warnings that were generated.
+    #
+    attr_reader :warnings
+    
+  end
+
   ##
-  # The definition file the error occurred in. Not available if definitions were executed as a block.
+  # Raised when there is an error raised from inside Jaba, either from the user definitions or from internal library
+  # code.
   #
-  attr_reader :file
-  
-  ##
-  # The line in the definition file that the error occurred at. Not available if definitions were executed as a block.
-  #
-  attr_reader :line
-  
-end
+  class JabaError < StandardError
+    
+    ##
+    #
+    attr_reader :raw_message
+    
+    ##
+    # True if error is an internal error as opposed to a user error in the definitions.
+    #
+    attr_reader :internal
+    
+    ##
+    # The definition file the error occurred in. Not available if definitions were executed as a block.
+    #
+    attr_reader :file
+    
+    ##
+    # The line in the definition file that the error occurred at. Not available if definitions were executed as a block.
+    #
+    attr_reader :line
+    
+  end
 
 end
 
