@@ -151,7 +151,7 @@ define :text do
   
   attr :eol, type: :choice do
     help 'Newline style'
-    items [:native, :unix, :windows]
+    items [:lf, :crlf, :native]
     default :native
   end
   
