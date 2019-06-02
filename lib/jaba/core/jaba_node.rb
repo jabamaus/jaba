@@ -102,7 +102,7 @@ module JABA
     ##
     #
     def <=>(other)
-      if @value.respond_to?(:casecmp) # Subtlety here. Don't check if responds to to_s as would incorrectly sort numbers by string.
+      if @value.respond_to?(:casecmp)
         @value.to_s.casecmp(other.get.to_s)
       else
         @value <=> other.get
@@ -266,7 +266,8 @@ module JABA
     def post_create
       @attributes.each do |a|
         if (a.required? and !a.set?)
-          @services.jaba_error("'#{a.id}' attribute requires a value", callstack: [@source_location.join(':'), a.attr_def.source_location.join(':')]) # TODO: wrap up nicer
+          @services.jaba_error("'#{a.id}' attribute requires a value", 
+            callstack: [@source_location.join(':'), a.attr_def.source_location.join(':')]) # TODO: wrap up nicer
         end
         a.process_flags(warn: true)
       end
@@ -279,9 +280,9 @@ module JABA
     end
     
     ##
-    # If an attribute set operation is being performed, args contains the 'value' and then a list optional symbols which act as options.
-    # eg my_attr 'val', :export, :exclude would make args equal to ['val', :opt1, :opt2]. If however the value being passed in is
-    # an array it could be eg [['val1', 'val2'], :opt1, :opt2].
+    # If an attribute set operation is being performed, args contains the 'value' and then a list optional symbols
+    # which act as options. eg my_attr 'val', :export, :exclude would make args equal to ['val', :opt1, :opt2]. If
+    # however the value being passed in is an array it could be eg [['val1', 'val2'], :opt1, :opt2].
     #  
     def handle_attr(id, api_call_line, *args, **key_value_args, &block)
       # First determine if it is a set or a get operation
@@ -306,8 +307,8 @@ module JABA
 
         a = get_attr(id)
         
-        # Get the value by popping the first element from the front of the list. This could yield a single value or an array,
-        # depending on what the user passed in (see comment at top of this method.
+        # Get the value by popping the first element from the front of the list. This could yield a single value or an
+        # array, depending on what the user passed in (see comment at top of this method.
         #
         value = args.shift
         a.set(value, api_call_line, *args, **key_value_args, &block)

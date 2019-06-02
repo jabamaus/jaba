@@ -31,7 +31,8 @@ module JABA
           end
         end
       end
-      #op.warnings.must_equal(["Warning at TestAttributeArray.rb:6: 'a' array attribute contains duplicates"]) # TODO: turn into check_warn util
+      # TODO: turn into check_warn util
+      #op.warnings.must_equal(["Warning at TestAttributeArray.rb:6: 'a' array attribute contains duplicates"])
     end
     
     it 'allows flagging arrays with :allow_dupes' do

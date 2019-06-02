@@ -88,8 +88,8 @@ module JABACoreExt
   refine Hash do
 
     ##
-    # Appends value to array referenced by key, creating array if it does not exist. Value being passed in can be a single value or array.
-    # Existing key can be optionally cleared.
+    # Appends value to array referenced by key, creating array if it does not exist. Value being passed in can be a
+    # single value or array. Existing key can be optionally cleared.
     #
     def push_value(key, value, clear: false)
       v = self[key] = fetch(key, [])

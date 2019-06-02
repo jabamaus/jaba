@@ -42,11 +42,11 @@ module JABA
           @services.jaba_error("Shared definition '#{id}' not found")
         end
         
-        n_expected_args = df.block.arity
-        n_supplied_args = args ? Array(args).size : 0
+        n_expected = df.block.arity
+        n_actual = args ? Array(args).size : 0
         
-        if (n_supplied_args != n_expected_args)
-          @services.jaba_error("shared definition '#{id}' expects #{n_expected_args} arguments but #{n_supplied_args} were passed")
+        if (n_actual != n_expected)
+          @services.jaba_error("shared definition '#{id}' expects #{n_expected} arguments but #{n_actual} were passed")
         end
         
         api_eval(args, &df.block)
@@ -177,7 +177,8 @@ module JABA
         begin
           api_eval(&hook)
         rescue JabaError => e
-          @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}", callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: wrap up a bit nicer so join not required
+          @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
+            callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: wrap up a bit nicer so join not required
         end
       end
       
@@ -187,7 +188,8 @@ module JABA
           begin
             api_eval(@default, &hook)
           rescue JabaError => e
-            @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}", callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: wrap up a bit nicer so join not required
+            @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
+              callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: wrap up a bit nicer so join not required
           end
         end
       end
