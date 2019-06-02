@@ -19,7 +19,7 @@ module JABA
 
     it 'works when a definition contains an error when definitions in separate file' do
       fullpath = "#{temp_dir}/definitions.rb"
-      IO.write(fullpath, "\n\ncategory 'invalid id' do\nend\n")
+      IO.write(fullpath, "# frozen_string_literal: true\n\ncategory 'invalid id' do\nend\n")
       line = 3
       e = check_fails("Error at definitions.rb:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric " \
                       "string or symbol (underscore permitted), eg :my_id or 'my_id'",
@@ -43,7 +43,7 @@ module JABA
 
     it 'works when a there is a syntax error when definitions in a separate file' do
       fullpath = "#{temp_dir}/definitions.rb"
-      IO.write(fullpath, "\n\nBAD CODE\n")
+      IO.write(fullpath, "# frozen_string_literal: true\n\nBAD CODE\n")
       e = check_fails('Syntax error at definitions.rb:3', trace: [fullpath, 3]) do
         jaba(load_paths: fullpath)
       end

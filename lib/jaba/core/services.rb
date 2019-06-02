@@ -260,7 +260,7 @@ module JABA
       end
       # filename = filename.cleanpath
       # log "Saving #{filename}"
-      warning "Duplicate file '#{filename}' generated" if @all_generated_files.has_key?(filename)
+      warning "Duplicate file '#{filename}' generated" if @all_generated_files.key?(filename)
       
       # register_src_file(filename)
       @all_generated_files[filename] = nil
@@ -337,10 +337,10 @@ module JABA
       msg = msg.capitalize_first
       
       if callstack
-        if callstack.is_a?(Proc)
-          cs = callstack.source_location.join(':')
+        cs = if callstack.is_a?(Proc)
+          callstack.source_location.join(':')
         else
-          cs = callstack
+          callstack
         end
       else
         cs = caller
@@ -372,16 +372,16 @@ module JABA
         raise "Could not extract file and line number from '#{lines[0]}'"
       end
       
-      file = $1
-      line = $2.to_i
+      file = Regexp.last_match(1)
+      line = Regexp.last_match(2).to_i
       m = String.new
       
-      if warn
-        m << 'Warning'
+      m << if warn
+        'Warning'
       elsif syntax
-        m << 'Syntax error'
+        'Syntax error'
       else
-        m << 'Error'
+        'Error'
       end
       
       m << (callstack.is_a?(Proc) ? ' near' : ' at')

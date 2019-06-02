@@ -38,9 +38,13 @@ Style/EmptyMethod:
   Enabled: false
 Style/GuardClause:
   Enabled: false
+Style/IfUnlessModifier:
+  Enabled: false
 Style/MethodMissingSuper:
   Enabled: false
 Style/MissingRespondToMissing:
+  Enabled: false
+Style/NegatedIf:
   Enabled: false
 Style/SymbolArray:
   Enabled: false

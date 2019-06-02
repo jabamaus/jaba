@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # TODO: add help string to flags
 attr_flag :allow_dupes
 attr_flag :no_check_exist
