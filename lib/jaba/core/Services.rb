@@ -226,7 +226,7 @@ class Services
   end
   
   ##
-  #
+  # TODO: keep a cache of checksums
   def write_file(fn, str)
     equal = false
     exists = File.exist?(fn)
