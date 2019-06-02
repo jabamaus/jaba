@@ -2,7 +2,7 @@ require 'minitest/spec'
 require_relative '../lib/jaba/jaba'
 
 module JABA
-using JABACoreExtensions
+using JABACoreExt
 
 CoreTypesFile = "C:/projects/GitHub/jaba/lib/jaba/core/types.rb" # TODO: remove hard coded absolute path
 
@@ -80,7 +80,7 @@ end
 
 Dir.glob("#{__dir__}/tests/*.rb").each{|f| require f}
 
-using JABACoreExtensions
+using JABACoreExt
 
 profile(enabled: ARGV.delete('--profile'), context: 'tests') do
   Minitest.run(ARGV)

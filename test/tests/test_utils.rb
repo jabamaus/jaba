@@ -1,5 +1,5 @@
 module JABA
-using JABACoreExtensions
+using JABACoreExt
 
 class TestUtils < JabaTest
   

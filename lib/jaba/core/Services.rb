@@ -7,7 +7,7 @@ require_relative 'jaba_node'
 
 module JABA
 
-using JABACoreExtensions
+using JABACoreExt
 
 class Services
 

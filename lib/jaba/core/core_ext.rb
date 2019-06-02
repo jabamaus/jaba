@@ -1,4 +1,4 @@
-module JABACoreExtensions
+module JABACoreExt
 
 ##
 #

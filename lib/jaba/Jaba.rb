@@ -4,7 +4,7 @@ require_relative 'core/services'
 require_relative 'definition_api'
 
 module JABA
-using JABACoreExtensions
+using JABACoreExt
 
 ##
 #
