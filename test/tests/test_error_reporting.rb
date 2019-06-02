@@ -43,7 +43,7 @@ module JABA
       fullpath = "#{temp_dir}/definitions.rb"
       IO.write(fullpath, "\n\nBAD CODE\n")
       line = 3
-      e = check_fails("Syntax error at definitions.rb:3", trace: [fullpath, 3]) do
+      e = check_fails('Syntax error at definitions.rb:3', trace: [fullpath, 3]) do
         jaba(load_paths: fullpath)
       end
       e.cause.wont_be_nil

@@ -67,7 +67,7 @@ module JABA
     end
       
     it 'fails if property does not exist' do
-      check_fails("", trace: [__FILE__, '# tag4']) do
+      check_fails('', trace: [__FILE__, '# tag4']) do # TODO: msg
         jaba do
           define :test do
             attr :a do

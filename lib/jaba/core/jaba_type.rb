@@ -19,18 +19,16 @@ module JABA
     ##
     #
     def api_eval(args=nil, &block)
-      begin
-        @api.__set_obj(self)
-        if !args.nil?
-          @api.instance_exec(args, &block)
-        else
-          @api.instance_eval(&block)
-        end
-      rescue JabaError
-        raise
-      rescue Exception => e
-        @services.jaba_error(e.message, callstack: e.backtrace)
+      @api.__set_obj(self)
+      if !args.nil?
+        @api.instance_exec(args, &block)
+      else
+        @api.instance_eval(&block)
       end
+    rescue JabaError
+      raise
+    rescue Exception => e
+      @services.jaba_error(e.message, callstack: e.backtrace)
     end
     
     ##
@@ -178,7 +176,7 @@ module JABA
           api_eval(&hook)
         rescue JabaError => e
           @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
-            callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: wrap up a bit nicer so join not required
+                               callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: improve
         end
       end
       
@@ -189,7 +187,7 @@ module JABA
             api_eval(@default, &hook)
           rescue JabaError => e
             @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
-              callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: wrap up a bit nicer so join not required
+                                 callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: improve
           end
         end
       end

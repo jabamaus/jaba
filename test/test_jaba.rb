@@ -4,7 +4,7 @@ require_relative '../lib/jaba/jaba'
 module JABA
   using JABACoreExt
 
-  CoreTypesFile = "C:/projects/GitHub/jaba/lib/jaba/core/types.rb" # TODO: remove hard coded absolute path
+  CoreTypesFile = 'C:/projects/GitHub/jaba/lib/jaba/core/types.rb' # TODO: remove hard coded absolute path
 
   class JabaTest < Minitest::Spec
     

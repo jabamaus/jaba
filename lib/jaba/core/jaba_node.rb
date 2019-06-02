@@ -272,7 +272,7 @@ module JABA
       @attributes.each do |a|
         if (a.required? and !a.set?)
           @services.jaba_error("'#{a.id}' attribute requires a value", 
-            callstack: [@source_location.join(':'), a.attr_def.source_location.join(':')]) # TODO: wrap up nicer
+                               callstack: [@source_location.join(':'), a.attr_def.source_location.join(':')]) # TODO
         end
         a.process_flags(warn: true)
       end
