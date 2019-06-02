@@ -11,6 +11,12 @@ refine Class do
     self.class_eval "def #{attr}(&block); block_given? ? @#{attr} = block : @#{attr} ; end"
   end
   
+  ##
+  #
+  def name_no_namespace
+    to_s.split('::').last
+  end
+  
 end
 
 ##
@@ -21,6 +27,31 @@ refine Object do
   #
   def boolean?
     (is_a?(TrueClass) or is_a?(FalseClass))
+  end
+  
+  ##
+  #
+  def profile(enabled: true, context: nil)
+    raise 'block expected' if !block_given?
+
+    if !enabled
+      yield
+      return
+    end
+    
+    begin
+      puts 'Invoking ruby-prof...'
+      require 'ruby-prof'
+      RubyProf.start
+      yield
+    ensure
+      result = RubyProf.stop
+      puts 'Printing profiling results...'
+      [RubyProf::FlatPrinter, RubyProf::FlatPrinterWithLineNumbers].each do |p|
+        printer = p.new(result)
+        printer.print(File.new("profile_#{context}_#{p.name_no_namespace}", 'w'))
+      end
+    end
   end
   
 end
