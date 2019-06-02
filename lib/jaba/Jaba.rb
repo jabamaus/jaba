@@ -1,7 +1,7 @@
 # This file deals with invoking Jaba, whether running standalone or embedding in other code
 #
-require_relative 'core/Services'
-require_relative 'DefinitionAPI'
+require_relative 'core/services'
+require_relative 'definition_api'
 
 module JABA
 using JABACoreExtensions

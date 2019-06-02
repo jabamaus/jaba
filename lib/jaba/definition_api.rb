@@ -32,7 +32,7 @@ class APIBase < BasicObject
   
 end
 
-require_relative 'ExtensionAPI'
+require_relative 'extension_api'
 
 ##
 # API for creating instances of Jaba types.

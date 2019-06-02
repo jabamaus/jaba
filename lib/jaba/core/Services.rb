@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require_relative 'CoreExtensions'
-require_relative 'Utils'
-require_relative 'JabaType'
-require_relative 'JabaNode'
+require_relative 'core_ext'
+require_relative 'utils'
+require_relative 'jaba_type'
+require_relative 'jaba_node'
 
 module JABA
 
@@ -294,7 +294,7 @@ private
   ##
   #
   def load_definitions
-    @definition_src_files << "#{__dir__}/Types.rb" # Load core type definitions
+    @definition_src_files << "#{__dir__}/types.rb" # Load core type definitions
     Array(input.load_paths).each do |p|
       if !File.exist?(p)
         jaba_error("#{p} does not exist")

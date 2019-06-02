@@ -4,7 +4,7 @@ class TestErrorReporting < JabaTest
   
   it 'provides exception information when a definition contains an error when definitions supplied in a block' do
     line = find_line_number(__FILE__, 'tag1')
-    e = check_fails("Error at TestErrorReporting.rb:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'",
+    e = check_fails("Error at test_error_reporting.rb:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'",
                     trace: [__FILE__, line]) do
       jaba do
         category 'invalid id' do # tag1
@@ -27,7 +27,7 @@ class TestErrorReporting < JabaTest
   
   it 'provides exception information when a there is a syntax error when definitions supplied in a block' do
     line = find_line_number(__FILE__, '# tag2')
-    e = check_fails("Syntax error at TestErrorReporting.rb:#{line}", trace: [__FILE__, line]) do
+    e = check_fails("Syntax error at test_error_reporting.rb:#{line}", trace: [__FILE__, line]) do
       jaba do
         shared :a do
         end

@@ -1,3 +1,3 @@
 @echo off
-ruby %~dp0test\TestJaba.rb %*
+ruby %~dp0test\test_jaba.rb %*
 
