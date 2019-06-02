@@ -183,7 +183,7 @@ module JABA
       end
       t = @jaba_attr_types.find{|at| at.type == type}
       if !t
-        jaba_error("'#{type}' attribute type is undefined. Valid types: #{@jaba_attr_types.map{|at| at.type}}")
+        jaba_error("'#{type}' attribute type is undefined. Valid types: #{@jaba_attr_types.map(&:type)}")
       end
       t
     end
@@ -231,7 +231,6 @@ module JABA
     ##
     # TODO: keep a cache of checksums
     def write_file(fn, str)
-      equal = false
       exists = File.exist?(fn)
       existing_str = exists ? IO.binread(fn).force_encoding(str.encoding) : nil
       equal = (exists and str == existing_str)
@@ -257,13 +256,13 @@ module JABA
     #
     def save_file(filename, content, eol)
       if (eol == :windows or (eol == :native and OS.windows?))
-        content.gsub!("\n", "\r\n")
+        content = content.gsub("\n", "\r\n")
       end
-      #filename = filename.cleanpath
-      #log "Saving #{filename}"
+      # filename = filename.cleanpath
+      # log "Saving #{filename}"
       warning "Duplicate file '#{filename}' generated" if @all_generated_files.has_key?(filename)
       
-      #register_src_file(filename)
+      # register_src_file(filename)
       @all_generated_files[filename] = nil
       
       case write_file(filename, content)
@@ -274,7 +273,7 @@ module JABA
       end
     end
 
-  private
+    private
     
     ##
     #

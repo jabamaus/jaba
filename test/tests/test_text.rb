@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JABA
 
   class TestText < JabaTest
@@ -43,7 +45,7 @@ module JABA
 
     it 'fails if no filename specified' do
       check_fails("'filename' attribute requires a value",
-                  trace: [__FILE__, '# tag1', CoreTypesFile, 'attr :filename, type: :file do']) do
+                  trace: [__FILE__, '# tag1', CORE_TYPES_FILE, 'attr :filename, type: :file do']) do
         jaba do
           text :t do # tag1
           end

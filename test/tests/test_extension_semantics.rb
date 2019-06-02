@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JABA
 
   class TestExtensionSemantics < JabaTest
@@ -45,7 +47,7 @@ module JABA
       check_fails("'b' attribute failed validation: Invalid", trace: [__FILE__, '# tag2A', __FILE__, '# tag2B']) do 
         jaba do
           attr_type :a do
-            validate_value do |val|
+            validate_value do
               raise 'invalid' # tag2A'
             end
           end
@@ -192,7 +194,7 @@ module JABA
             case host
             when :vs2013
               platform.must_equal(:win32)
-              rtti.must_equal('on') if rtti # TODO: add assert_property(:rtti, 'on') ?
+              rtti&.must_equal('on') # TODO: add assert_property(:rtti, 'on') ?
               src.must_equal 'win32_vs2013_src'
               targets.must_equal [:debug, :release]
             when :vs2015
@@ -200,7 +202,7 @@ module JABA
               src.must_equal 'win32_vs2015_src'
               targets.must_equal [:dev, :check]
             when :vs2017
-              rtti.must_equal('off') if rtti
+              rtti&.must_equal('off')
               platform.must_equal(:x64)
               src.must_equal 'x64_vs2017_src'
               targets.must_equal [:debug, :release]

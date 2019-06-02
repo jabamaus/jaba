@@ -157,7 +157,7 @@ define :text do
   end
   
   generate do
-    str = content ? content : "#{line.join("\n")}\n"
+    str = content || "#{line.join("\n")}\n"
     save_file(filename, str, eol)
   end
   
@@ -167,8 +167,6 @@ end
 #
 define :project do
   
-  #dependencies [:platform, :host]
-
   attr :root, type: :dir do
     help 'Root of the project specified as a relative path to the file that contains the project definition. ' \
          'All paths are specified relative to this. Project files will be generated here unless the genroot ' \
@@ -189,28 +187,23 @@ define :project do
   attr :host do
   end
 
-  #group :project do
-    attr :genroot, type: :dir do
-      help 'Directory in which projects will be generated. Specified as a relative path from <root>. If not specified ' \
-       'projects will be generated in <root>'
-      default '.'
-      flags :no_check_exist
-    end
-    
-    attr_array :src, type: :path do
-      help 'Source files. Evaluated once per project so this should be the union of all source files required for ' \
-           'all target platforms.'
-    end
-    
-    attr_array :targets do
-      help 'Targets'
-      flags :required, :unordered
-    end
-  #end
+  attr :genroot, type: :dir do
+    help 'Directory in which projects will be generated. Specified as a relative path from <root>. If not specified ' \
+     'projects will be generated in <root>'
+    default '.'
+    flags :no_check_exist
+  end
   
-  #group :target do
-  #end
-    
+  attr_array :src, type: :path do
+    help 'Source files. Evaluated once per project so this should be the union of all source files required for ' \
+         'all target platforms.'
+  end
+  
+  attr_array :targets do
+    help 'Targets'
+    flags :required, :unordered
+  end
+  
 end
 
 ##

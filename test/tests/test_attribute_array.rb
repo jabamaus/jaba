@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JABA
 
   class TestAttributeArray < JabaTest
@@ -18,7 +20,7 @@ module JABA
     end
     
     it 'strips duplicates by default' do
-      op = jaba do
+      jaba do
         define :test do
           attr_array :a do
           end
@@ -32,7 +34,7 @@ module JABA
         end
       end
       # TODO: turn into check_warn util
-      #op.warnings.must_equal(["Warning at TestAttributeArray.rb:6: 'a' array attribute contains duplicates"])
+      # op.warnings.must_equal(["Warning at TestAttributeArray.rb:6: 'a' array attribute contains duplicates"])
     end
     
     it 'allows flagging arrays with :allow_dupes' do
@@ -218,9 +220,9 @@ module JABA
         end
         test :t do
           a [:a]
-          a [:b, :c], exclude: lambda {|e| e == :e}
-          a [:d, :e], exclude: lambda {|e| e == :d or e == :c}
-          b [1, 2, 3, 4], exclude: lambda {|e| e > 2}
+          a [:b, :c], exclude: ->(e) {e == :e}
+          a [:d, :e], exclude: ->(e) {e == :d or e == :c}
+          b [1, 2, 3, 4], exclude: ->(e) {e > 2}
           generate do
             a.must_equal [:a, :b]
             b.must_equal [1, 2]

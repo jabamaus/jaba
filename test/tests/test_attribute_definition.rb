@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JABA
 
   class TestAttributeDefinition < JabaTest
@@ -91,7 +93,7 @@ module JABA
             default {"#{b}_2"}
           end
           attr_array :d do
-            default do [a, b, c] end
+            default {[a, b, c]}
           end
         end
         test :t do

@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'minitest/spec'
 require_relative '../lib/jaba/jaba'
 
 module JABA
   using JABACoreExt
 
-  CoreTypesFile = 'C:/projects/GitHub/jaba/lib/jaba/core/types.rb' # TODO: remove hard coded absolute path
+  CORE_TYPES_FILE = 'C:/projects/GitHub/jaba/lib/jaba/core/types.rb' # TODO: remove hard coded absolute path
 
   class JabaTest < Minitest::Spec
     
@@ -26,7 +28,7 @@ module JABA
     ##
     #
     def temp_dir
-      dir = "#{JabaTest.temp_root}/#{self.class.name_no_namespace}/#{self.name.delete(':')}"
+      dir = "#{JabaTest.temp_root}/#{self.class.name_no_namespace}/#{name.delete(':')}"
       if !File.exist?(dir)
         FileUtils.makedirs(dir)
       end

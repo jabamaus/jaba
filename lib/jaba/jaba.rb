@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file deals with invoking Jaba, whether running standalone or embedding in other code
 #
 require_relative 'core/services'
@@ -81,7 +83,7 @@ module JABA
 
 end
 
-if __FILE__ == $0
+if $PROGRAM_NAME == __FILE__
   begin
     JABA.run do |j|
       j.load_paths = "#{__dir__}/../../examples/HelloWorld/HelloWorld.rb" # TODO: remove
@@ -89,6 +91,6 @@ if __FILE__ == $0
   rescue JABA::JabaError => e
     puts e.message
     puts 'Backtrace:'
-    puts e.backtrace.map{|line| "  #{line}"}
+    puts(e.backtrace.map{|line| "  #{line}"})
   end
 end

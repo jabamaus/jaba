@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JABA
 
   class TestShared < JabaTest
@@ -35,7 +37,7 @@ module JABA
         
         shared :attrs do
           attr_array :a, type: :at do
-           include :attr_setup
+            include :attr_setup
           end
         end
         define :test do

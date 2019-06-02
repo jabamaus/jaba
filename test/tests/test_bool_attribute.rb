@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JABA
 
   class TestBoolAttribute < JabaTest
@@ -17,7 +19,7 @@ module JABA
     it 'requires a default of true or false' do
       check_fails(':bool attributes only accept [true|false]',
                   trace: [
-                    CoreTypesFile, "raise ':bool attributes only accept [true|false]'",
+                    CORE_TYPES_FILE, "raise ':bool attributes only accept [true|false]'",
                     __FILE__, '# tag1' # evaluated later so exact call line is lost
                   ]) do
         jaba do
@@ -33,7 +35,7 @@ module JABA
     it 'only allows boolean values' do
       check_fails(':bool attributes only accept [true|false]',
                   trace: [
-                    CoreTypesFile, "raise ':bool attributes only accept [true|false]'",
+                    CORE_TYPES_FILE, "raise ':bool attributes only accept [true|false]'",
                     __FILE__, '# tag2'
                   ]) do
         jaba do

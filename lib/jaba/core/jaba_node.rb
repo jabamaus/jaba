@@ -117,6 +117,7 @@ module JABA
     ##
     #
     def process_flags(warn: true)
+      # Nothing
     end
     
   end
@@ -142,7 +143,7 @@ module JABA
       if (!set? and @default_is_proc)
         @node.api_eval(&@default)
       else
-        @elems.map{|e| e.get}
+        @elems.map(&:get)
       end
     end
     
@@ -213,7 +214,7 @@ module JABA
       if !@attr_def.has_flag?(:unordered)
         begin
           @elems.sort!
-        rescue
+        rescue StandardError
           @services.jaba_error("Failed to sort #{id}. Might be missing <=> operator", callstack: api_call_line)
         end
       end
@@ -240,10 +241,10 @@ module JABA
       
       @attributes = []
       @attribute_lookup = {}
-      @attr_def_mask = attrs_mask ? Array(attrs_mask).map{|id| @jaba_type.get_attr_def(id)} : nil
+      @attr_def_mask = attrs_mask ? Array(attrs_mask).map{|id_| @jaba_type.get_attr_def(id_)} : nil
       @generate_hooks = []
       
-      attr_defs = @attr_def_mask ? @attr_def_mask : @jaba_type.attribute_defs
+      attr_defs = @attr_def_mask || @jaba_type.attribute_defs
       attr_defs.each do |attr_def|
         a = attr_def.array? ? AttributeArray.new(services, attr_def, self) : Attribute.new(services, attr_def, nil, self)
         @attribute_lookup[attr_def.id] = a
@@ -306,7 +307,7 @@ module JABA
         
         return a.get
       else
-        if (@attr_def_mask and @attr_def_mask.none?{|ad| ad.id == id})
+        if (@attr_def_mask&.none?{|ad| ad.id == id})
           return nil
         end
 

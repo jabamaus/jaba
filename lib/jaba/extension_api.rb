@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JABA
 
   # The classes in this file are only needed by the user if extending the core functionality of Jaba.

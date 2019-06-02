@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JABA
 
   class TestErrorReporting < JabaTest
@@ -42,7 +44,6 @@ module JABA
     it 'works when a there is a syntax error when definitions in a separate file' do
       fullpath = "#{temp_dir}/definitions.rb"
       IO.write(fullpath, "\n\nBAD CODE\n")
-      line = 3
       e = check_fails('Syntax error at definitions.rb:3', trace: [fullpath, 3]) do
         jaba(load_paths: fullpath)
       end
