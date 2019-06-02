@@ -50,6 +50,8 @@ module JABA
     def initialize(services, attr_def, parent_array, node)
       super(services, attr_def, node)
       @value = nil
+      @args = nil
+      @key_value_args = nil
       
       # If its not an element of an attribute array, initialize with default value if it has a concrete one
       #
@@ -70,8 +72,11 @@ module JABA
     
     ##
     #
-    def set(value, api_call_line=nil, *args, **key_value_args, &block)
+    def set(value, api_call_line=nil, *args, **key_value_args)
       @api_call_line = api_call_line
+      @args = args
+      @key_value_args = key_value_args
+      
       if value.is_a?(Array)
         @services.jaba_error("'#{@attr_def.id}' attribute is not an array so cannot accept one")
       end
@@ -143,13 +148,13 @@ module JABA
     
     ##
     #
-    def set(values, api_call_line=nil, *args, prefix: nil, postfix: nil, exclude: nil, **key_value_args, &block)
+    def set(values, api_call_line=nil, *args, prefix: nil, postfix: nil, exclude: nil, **key_value_args)
       @api_call_line = api_call_line
       
       Array(values).each do |v|
         elem = Attribute.new(@services, @attr_def, self, @node)
         v = apply_pre_post_fix(prefix, postfix, v)
-        elem.set(v, api_call_line, *args, **key_value_args, &block)
+        elem.set(v, api_call_line, *args, **key_value_args)
         @elems << elem
         @set = true
       end
@@ -284,7 +289,7 @@ module JABA
     # which act as options. eg my_attr 'val', :export, :exclude would make args equal to ['val', :opt1, :opt2]. If
     # however the value being passed in is an array it could be eg [['val1', 'val2'], :opt1, :opt2].
     #  
-    def handle_attr(id, api_call_line, *args, **key_value_args, &block)
+    def handle_attr(id, api_call_line, *args, **key_value_args)
       # First determine if it is a set or a get operation
       #
       is_get = (args.empty? and key_value_args.empty?)
@@ -311,15 +316,15 @@ module JABA
         # array, depending on what the user passed in (see comment at top of this method.
         #
         value = args.shift
-        a.set(value, api_call_line, *args, **key_value_args, &block)
+        a.set(value, api_call_line, *args, **key_value_args)
         return nil
       end
     end
     
     ##
     #
-    def method_missing(attr_id, *args, **key_value_args, &block)
-      handle_attr(attr_id, nil, *args, **key_value_args, &block)
+    def method_missing(attr_id, *args, **key_value_args)
+      handle_attr(attr_id, nil, *args, **key_value_args)
     end
     
     ##
