@@ -55,7 +55,7 @@ module JABA
       
       # If its not an element of an attribute array, initialize with default value if it has a concrete one
       #
-      if (!parent_array and !@default.nil? and !@default_is_proc)
+      if !parent_array && !@default.nil? && !@default_is_proc
         set(@default)
       end
     end
@@ -63,7 +63,7 @@ module JABA
     ##
     #
     def get
-      if (!set? and @default_is_proc)
+      if !set? && @default_is_proc
         @node.api_eval(&@default)
       else
         @value
@@ -72,7 +72,7 @@ module JABA
     
     ##
     #
-    def set(value, api_call_line=nil, *args, **key_value_args)
+    def set(value, api_call_line = nil, *args, **key_value_args)
       @api_call_line = api_call_line
       @args = args
       @key_value_args = key_value_args
@@ -99,7 +99,7 @@ module JABA
     def clear
       @value = nil
       d = @attr_def.default
-      if (!d.nil? and !@default_is_proc)
+      if !d.nil? && !@default_is_proc
         @value = d
       end
     end
@@ -140,7 +140,7 @@ module JABA
     ##
     #
     def get
-      if (!set? and @default_is_proc)
+      if !set? && @default_is_proc
         @node.api_eval(&@default)
       else
         @elems.map(&:get)
@@ -149,7 +149,7 @@ module JABA
     
     ##
     #
-    def set(values, api_call_line=nil, *args, prefix: nil, postfix: nil, exclude: nil, **key_value_args)
+    def set(values, api_call_line = nil, *args, prefix: nil, postfix: nil, exclude: nil, **key_value_args)
       @api_call_line = api_call_line
       
       Array(values).each do |v|
@@ -170,7 +170,7 @@ module JABA
     ##
     #
     def apply_pre_post_fix(pre, post, val)
-      if (pre or post)
+      if pre || post
         if !val.is_a?(String)
           @services.jaba_error('prefix/postfix option can only be used with arrays of strings', callstack: api_call_line)
         end
@@ -207,7 +207,7 @@ module JABA
         end
       end
       if !@attr_def.has_flag?(:allow_dupes)
-        if (@elems.uniq!(&:get) and warn)
+        if @elems.uniq!(&:get) && warn
           @services.jaba_warning("'#{id}' array attribute contains duplicates", callstack: api_call_line)
         end
       end
@@ -241,7 +241,7 @@ module JABA
       
       @attributes = []
       @attribute_lookup = {}
-      @attr_def_mask = attrs_mask ? Array(attrs_mask).map{|id_| @jaba_type.get_attr_def(id_)} : nil
+      @attr_def_mask = attrs_mask ? Array(attrs_mask).map {|id_| @jaba_type.get_attr_def(id_)} : nil
       @generate_hooks = []
       
       attr_defs = @attr_def_mask || @jaba_type.attribute_defs
@@ -257,7 +257,7 @@ module JABA
     def get_attr(attr_id, fail_if_not_found: true, search_parents: false)
       a = @attribute_lookup[attr_id]
       if !a
-        if (search_parents and @parent)
+        if search_parents && @parent
           return @parent.get_attr(attr_id, fail_if_not_found: false, search_parents: true)
         end
         if fail_if_not_found
@@ -271,7 +271,7 @@ module JABA
     #
     def post_create
       @attributes.each do |a|
-        if (a.required? and !a.set?)
+        if a.required? && !a.set?
           @services.jaba_error("'#{a.id}' attribute requires a value", 
                                callstack: [@source_location.join(':'), a.attr_def.source_location.join(':')]) # TODO
         end
@@ -293,7 +293,7 @@ module JABA
     def handle_attr(id, api_call_line, *args, **key_value_args)
       # First determine if it is a set or a get operation
       #
-      is_get = (args.empty? and key_value_args.empty?)
+      is_get = (args.empty? && key_value_args.empty?)
 
       if is_get
         # If its a get operation, look for attribute in this node and all parent nodes
@@ -307,7 +307,7 @@ module JABA
         
         return a.get
       else
-        if (@attr_def_mask&.none?{|ad| ad.id == id})
+        if @attr_def_mask&.none? {|ad| ad.id == id}
           return nil
         end
 

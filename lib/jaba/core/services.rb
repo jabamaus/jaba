@@ -5,10 +5,14 @@ require_relative 'utils'
 require_relative 'jaba_type'
 require_relative 'jaba_node'
 
+##
+#
 module JABA
 
   using JABACoreExt
 
+  ##
+  #
   class Services
 
     attr_reader :input
@@ -85,7 +89,7 @@ module JABA
       def_data = Definition.new(type, id, block, options)
       
       if id
-        if (!(id.is_a?(Symbol) or id.is_a?(String)) or id !~ /^[a-zA-Z0-9_.]+$/)
+        if !(id.is_a?(Symbol) || id.is_a?(String)) || id !~ /^[a-zA-Z0-9_.]+$/
           jaba_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol " \
             "(underscore permitted), eg :my_id or 'my_id'")
         end
@@ -129,7 +133,7 @@ module JABA
       # Extend JabaTypes
       #
       @jaba_types_to_extend.each do |def_data|
-        jt = @jaba_types.find{|t| t.type == def_data.type}
+        jt = @jaba_types.find {|t| t.type == def_data.type}
         if !jt
           jaba_error("'#{def_data.type}' has not been defined", callstack: def_data.block)
         end
@@ -143,7 +147,7 @@ module JABA
       #
       @definition_registry.each do |type, defs|
         next if type == :shared
-        jt = @jaba_types.find{|t| t.type == type}
+        jt = @jaba_types.find {|t| t.type == type}
         defs.each do |def_data|
           if !jt
             jaba_error("'#{type}' type is not defined. Cannot instance.", callstack: def_data.block)
@@ -181,7 +185,7 @@ module JABA
       if type.nil?
         return @default_attr_type
       end
-      t = @jaba_attr_types.find{|at| at.type == type}
+      t = @jaba_attr_types.find {|at| at.type == type}
       if !t
         jaba_error("'#{type}' attribute type is undefined. Valid types: #{@jaba_attr_types.map(&:type)}")
       end
@@ -193,8 +197,8 @@ module JABA
     def get_definition(type, id, fail_if_not_found: true)
       defs = @definition_registry[type]
       return nil if !defs
-      d = defs.find{|dd| dd.id == id}
-      if (!d and fail_if_not_found)
+      d = defs.find {|dd| dd.id == id}
+      if !d && fail_if_not_found
         jaba_error("No '#{id}' definition found")
       end
       d
@@ -233,7 +237,7 @@ module JABA
     def write_file(fn, str)
       exists = File.exist?(fn)
       existing_str = exists ? IO.binread(fn).force_encoding(str.encoding) : nil
-      equal = (exists and str == existing_str)
+      equal = (exists && (str == existing_str))
       
       if !equal
         dir = File.dirname(fn)
@@ -255,7 +259,7 @@ module JABA
     ##
     #
     def save_file(filename, content, eol)
-      if (eol == :windows or (eol == :native and OS.windows?))
+      if (eol == :windows) || ((eol == :native) && OS.windows?)
         content = content.gsub("\n", "\r\n")
       end
       # filename = filename.cleanpath
@@ -277,7 +281,7 @@ module JABA
     
     ##
     #
-    def execute_definitions(file=nil, &block)
+    def execute_definitions(file = nil, &block)
       if file
         @top_level_api.instance_eval(IO.read(file), file)
       end
@@ -336,19 +340,19 @@ module JABA
     def make_jaba_error(msg, syntax: false, callstack: nil, warn: false)
       msg = msg.capitalize_first
       
-      if callstack
-        cs = if callstack.is_a?(Proc)
-          callstack.source_location.join(':')
-        else
-          callstack
-        end
-      else
-        cs = caller
-      end
+      cs = if callstack
+             if callstack.is_a?(Proc)
+               callstack.source_location.join(':')
+             else
+               callstack
+             end
+           else
+             caller
+           end
       
       # Extract any lines in the callstack that contain references to definition source files.
       #
-      lines = Array(cs).select{|c| @definition_src_files.any?{|sf| c.include?(sf)}}
+      lines = Array(cs).select {|c| @definition_src_files.any? {|sf| c.include?(sf)}}
       
       # TODO: include DefinitionAPI.rb/ExtensionAPI.rb info in syntax errors
       
@@ -364,7 +368,7 @@ module JABA
       # Clean up lines so they only contain file and line information and not the additional ':in ...' that ruby
       # includes. This is not useful in definition errors.
       #
-      lines.map!{|l| l.sub(/:in .*/, '')}
+      lines.map! {|l| l.sub(/:in .*/, '')}
       
       # Extract file and line information from the first callstack item, which is where the main error occurred.
       #
@@ -377,12 +381,12 @@ module JABA
       m = String.new
       
       m << if warn
-        'Warning'
-      elsif syntax
-        'Syntax error'
-      else
-        'Error'
-      end
+             'Warning'
+           elsif syntax
+             'Syntax error'
+           else
+             'Error'
+           end
       
       m << (callstack.is_a?(Proc) ? ' near' : ' at')
       m << " #{file.basename}:#{line}"

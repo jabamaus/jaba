@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+##
+#
 module JABACoreExt
 
   ##
@@ -28,7 +30,7 @@ module JABACoreExt
     ##
     #
     def boolean?
-      (is_a?(TrueClass) or is_a?(FalseClass))
+      (is_a?(TrueClass) || is_a?(FalseClass))
     end
     
     ##

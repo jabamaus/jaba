@@ -18,7 +18,7 @@ module JABA
     
     ##
     #
-    def api_eval(args=nil, &block)
+    def api_eval(args = nil, &block)
       @api.__set_obj(self)
       if !args.nil?
         @api.instance_exec(args, &block)
@@ -43,7 +43,7 @@ module JABA
         n_expected = df.block.arity
         n_actual = args ? Array(args).size : 0
         
-        if (n_actual != n_expected)
+        if n_actual != n_expected
           @services.jaba_error("shared definition '#{id}' expects #{n_expected} arguments but #{n_actual} were passed")
         end
         
@@ -53,7 +53,7 @@ module JABA
     
     ##
     #
-    def set_var(var_name, val=nil, &block)
+    def set_var(var_name, val = nil, &block)
       if block_given?
         if !val.nil?
           @services.jaba_error('Must provide a default value or a block but not both')
@@ -238,7 +238,7 @@ module JABA
     #
     def get_attr_def(id, fail_if_not_found: true)
       a = @attribute_def_lookup[id]
-      if (!a and fail_if_not_found)
+      if !a && fail_if_not_found
         @services.jaba_error("'#{id}' attribute definition not found in '#{type}'")
       end
       a
@@ -266,7 +266,7 @@ module JABA
       @current_def_data = def_data
       if @build_nodes_hook
         result = instance_eval(&@build_nodes_hook) # TODO: what api should build_nodes hook be targeting?
-        if (result.nil? or !result.is_a?(Array) or result.empty? or !result[0].is_a?(JabaNode))
+        if result.nil? || !result.is_a?(Array) || result.empty? || !result[0].is_a?(JabaNode)
           @services.jaba_error("'build_nodes' hook must return an array of nodes") # TODO: test this
         end
         return result

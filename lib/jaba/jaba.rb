@@ -5,7 +5,10 @@
 require_relative 'core/services'
 require_relative 'definition_api'
 
+##
+#
 module JABA
+
   using JABACoreExt
 
   ##
@@ -91,6 +94,6 @@ if $PROGRAM_NAME == __FILE__
   rescue JABA::JabaError => e
     puts e.message
     puts 'Backtrace:'
-    puts(e.backtrace.map{|line| "  #{line}"})
+    puts(e.backtrace.map {|line| "  #{line}"})
   end
 end

@@ -28,6 +28,8 @@ Metrics/ParameterLists:
   Enabled: false
 Metrics/PerceivedComplexity:
   Enabled: false
+Naming/PredicateName:
+  Enabled: false
 Naming/UncommunicativeMethodParamName:
   Enabled: false
 Style/Attr:

@@ -221,7 +221,7 @@ module JABA
         test :t do
           a [:a]
           a [:b, :c], exclude: ->(e) {e == :e}
-          a [:d, :e], exclude: ->(e) {e == :d or e == :c}
+          a [:d, :e], exclude: ->(e) {(e == :d) || (e == :c)}
           b [1, 2, 3, 4], exclude: ->(e) {e > 2}
           generate do
             a.must_equal [:a, :b]

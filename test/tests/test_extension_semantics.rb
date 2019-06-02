@@ -152,7 +152,7 @@ module JABA
                 project_node = make_node(parent: platform_hosts_node, attrs_mask: [:host, :src, :targets]) {|n| n.host h}
                 project_nodes << project_node
                 project_node.targets.each do |t|
-                  make_node(parent: project_node, attrs_mask: [:target, :rtti]){|n| n.target t}
+                  make_node(parent: project_node, attrs_mask: [:target, :rtti]) {|n| n.target t}
                 end
               end
             end

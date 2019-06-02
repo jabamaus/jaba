@@ -108,7 +108,7 @@ module JABA
     ##
     # Set help for the attribute. Required.
     #
-    def help(val=nil, &block)
+    def help(val = nil, &block)
       @obj.set_var(:help, val, &block)
     end
     
@@ -122,7 +122,7 @@ module JABA
     ##
     # Set attribute default value. Can be specified as a value or a block.
     #
-    def default(val=nil, &block)
+    def default(val = nil, &block)
       @obj.set_var(:default, val, &block)
     end
     
@@ -147,13 +147,13 @@ module JABA
     
     ##
     #
-    def add_property(id, val=nil)
+    def add_property(id, val = nil)
       @obj.set_var(id, val)
     end
     
     ##
     #
-    def method_missing(id, val=nil)
+    def method_missing(id, val = nil)
       @obj.handle_property(id, val)
     end
 
