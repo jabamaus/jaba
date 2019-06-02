@@ -47,7 +47,7 @@ refine Object do
     ensure
       result = RubyProf.stop
       puts 'Printing profiling results...'
-      [RubyProf::FlatPrinter, RubyProf::FlatPrinterWithLineNumbers].each do |p|
+      [RubyProf::FlatPrinterWithLineNumbers].each do |p|
         printer = p.new(result)
         printer.print(File.new("profile_#{context}_#{p.name_no_namespace}", 'w'))
       end

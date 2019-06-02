@@ -279,7 +279,7 @@ private
   #
   def execute_definitions(file=nil, &block)
     if file
-      @top_level_api.instance_eval(read_file(file), file)
+      @top_level_api.instance_eval(IO.read(file), file)
     end
     if block_given?
       @definition_src_files << block.source_location[0]
