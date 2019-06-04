@@ -194,6 +194,16 @@ module JABA
     
     ##
     #
+    def get_jaba_type(type, fail_if_not_found: true)
+      jt = @jaba_types.find{|t| t.type == type}
+      if !jt && fail_if_not_found
+        jaba_error("'#{type}' type not defined")
+      end
+      jt
+    end
+    
+    ##
+    #
     def get_definition(type, id, fail_if_not_found: true)
       defs = @definition_registry[type]
       return nil if !defs
