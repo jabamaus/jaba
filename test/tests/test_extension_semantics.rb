@@ -17,10 +17,10 @@ module JABA
       end
     end
 
-    it 'fails if try to extend undefined type' do
+    it 'fails if try to open undefined type' do
       check_fails("'undefined' has not been defined", trace: [__FILE__, '# tag1']) do
         jaba do
-          extend :undefined do # tag1
+          open :undefined do # tag1
           end
         end
       end
@@ -28,7 +28,7 @@ module JABA
     
     it 'supports adding an attribute to core types' do
       jaba do
-        extend :workspace do
+        open :workspace do
           attr :a do
           end
         end
@@ -76,7 +76,7 @@ module JABA
         attr_flag :foo
         attr_flag :bar
         
-        extend :category do
+        open :category do
           attr :a do
             flags :foo, :bar
           end

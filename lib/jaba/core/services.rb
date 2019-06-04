@@ -43,7 +43,7 @@ module JABA
       
       @jaba_attr_types = []
       @jaba_types = []
-      @jaba_types_to_extend = []
+      @jaba_types_to_open = []
       @definition_registry = {} # TODO: not a good name
       
       @file_read_cache = {}
@@ -79,8 +79,8 @@ module JABA
     
     ##
     #
-    def extend_type(type, **options, &block)
-      @jaba_types_to_extend << Definition.new(type, nil, block, options)
+    def open_type(type, **options, &block)
+      @jaba_types_to_open << Definition.new(type, nil, block, options)
     end
     
     ##
@@ -130,9 +130,9 @@ module JABA
         jt
       end
       
-      # Extend JabaTypes
+      # Open JabaTypes so more attributes can be added
       #
-      @jaba_types_to_extend.each do |def_data|
+      @jaba_types_to_open.each do |def_data|
         jt = @jaba_types.find {|t| t.type == def_data.type}
         if !jt
           jaba_error("'#{def_data.type}' has not been defined", callstack: def_data.block)

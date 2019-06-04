@@ -28,8 +28,8 @@ module JABA
     
     ##
     #
-    def extend(type, **options, &block)
-      @obj.extend_type(type, **options, &block)
+    def open(type, **options, &block)
+      @obj.open_type(type, **options, &block)
     end
     
   end
