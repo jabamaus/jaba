@@ -28,14 +28,12 @@ module JABA
     
     it 'supports adding an attribute to core types' do
       jaba do
-        extend :project do
+        extend :workspace do
           attr :a do
           end
         end
         
-        project :p do
-          platforms [:win32]
-          targets [:t]
+        workspace :w do
           a 'val'
           a.must_equal('val')
         end
@@ -73,12 +71,12 @@ module JABA
       end
     end
     
-    it 'supports definining new attribute flags' do
+    it 'supports defining new attribute flags' do
       jaba do
         attr_flag :foo
         attr_flag :bar
         
-        extend :project do
+        extend :category do
           attr :a do
             flags :foo, :bar
           end

@@ -42,18 +42,9 @@ module JABA
 
       check_fails("'b' multiply defined", trace: [__FILE__, '# tag4']) do
         jaba do
-          project :b do
+          text :b do
           end
-          project :b do # tag4
-          end
-        end
-      end
-      
-      check_fails("'c' multiply defined", trace: [__FILE__, '# tag5']) do
-        jaba do
-          category :c do
-          end
-          category :c do # tag5
+          text :b do # tag4
           end
         end
       end
@@ -62,10 +53,6 @@ module JABA
     it 'allows different types to have the same id' do
       jaba do
         shared :a do
-        end
-        project :a do
-          platforms [:win32]
-          targets [:t]
         end
         workspace :a do
         end
