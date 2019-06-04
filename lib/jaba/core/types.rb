@@ -176,6 +176,24 @@ define :project do
     default '.'
   end
 
+  attr :genroot, type: :dir do
+    help 'Directory in which projects will be generated. Specified as a relative path from <root>. If not specified ' \
+     'projects will be generated in <root>'
+    default '.'
+    flags :no_check_exist
+  end
+  
+  attr_array :src, type: :path do
+    help 'Source files. Evaluated once per project so this should be the union of all source files required for ' \
+         'all target platforms.'
+  end
+  
+end
+
+##
+#
+define :cpp, extend: :project do
+
   attr_array :platforms, type: :reference do
     flags :unordered, :required
   end
@@ -189,23 +207,16 @@ define :project do
   attr :host do
   end
 
-  attr :genroot, type: :dir do
-    help 'Directory in which projects will be generated. Specified as a relative path from <root>. If not specified ' \
-     'projects will be generated in <root>'
-    default '.'
-    flags :no_check_exist
-  end
-  
-  attr_array :src, type: :path do
-    help 'Source files. Evaluated once per project so this should be the union of all source files required for ' \
-         'all target platforms.'
-  end
-  
   attr_array :targets do
     help 'Targets'
     flags :required, :unordered
   end
   
+end
+
+##
+#
+define :vcxproj, extend: :project do
 end
 
 ##

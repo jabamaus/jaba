@@ -241,11 +241,10 @@ module JABA
       
       @attributes = []
       @attribute_lookup = {}
-      @attr_def_mask = attrs_mask ? Array(attrs_mask).map {|id_| @jaba_type.get_attr_def(id_)} : nil
+      @attr_def_mask = attrs_mask
       @generate_hooks = []
       
-      attr_defs = @attr_def_mask || @jaba_type.attribute_defs
-      attr_defs.each do |attr_def|
+      @jaba_type.iterate_attrs(attrs_mask) do |attr_def|
         a = attr_def.array? ? AttributeArray.new(services, attr_def, self) : Attribute.new(services, attr_def, nil, self)
         @attribute_lookup[attr_def.id] = a
         @attributes << a
@@ -307,7 +306,7 @@ module JABA
         
         return a.get
       else
-        if @attr_def_mask&.none? {|ad| ad.id == id}
+        if @attr_def_mask&.none? {|m| m == id}
           return nil
         end
 

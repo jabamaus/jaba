@@ -247,6 +247,17 @@ module JABA
     
     ##
     #
+    def iterate_attrs(mask, &block)
+      @attribute_defs.each do |ad|
+        if !mask || mask.index(ad.id) != nil
+          yield ad
+        end
+      end
+      @super_type.iterate_attrs(mask, &block) if @super_type
+    end
+    
+    ##
+    #
     def make_node(attrs_mask: nil, parent: nil)
       jn = JabaNode.new(@services, self, @current_def_data.id, attrs_mask, parent, @current_def_data.block.source_location)
       yield jn if block_given?
