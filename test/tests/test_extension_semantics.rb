@@ -26,7 +26,7 @@ module JABA
       end
     end
     
-    it 'supports adding an attribute to core types' do
+    it 'supports opening types' do
       jaba do
         open :workspace do
           attr :a do
@@ -40,6 +40,38 @@ module JABA
       end
     end
 
+    it 'supports extending types' do
+      jaba do
+        define :test do
+          attr :a do
+            default 1
+          end
+        end
+        define :subtest, extend: :test do
+          attr :b do
+            default 2
+          end
+        end
+        define :subtest2, extend: :subtest do
+          attr :c do
+            default 3
+          end
+        end
+        open :test do
+          attr :d do
+            default 4
+          end
+        end
+            
+        subtest2 :s do
+          a.must_equal(1)
+          b.must_equal(2)
+          c.must_equal(3)
+          d.must_equal(4)
+        end
+      end
+    end
+    
     # TODO: extend
     it 'supports defining new attribute types' do
       check_fails("'b' attribute failed validation: Invalid", trace: [__FILE__, '# tag2A', __FILE__, '# tag2B']) do 
