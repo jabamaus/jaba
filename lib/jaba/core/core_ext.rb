@@ -102,4 +102,16 @@ module JABACoreExt
     
   end
 
+  ##
+  #
+  refine Array do
+  
+    ##
+    #
+    def sort_topological!(children)
+      replace(JABA::TSorter.new(self, children).sort)
+    end
+  
+  end
+  
 end
