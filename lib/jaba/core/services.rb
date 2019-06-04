@@ -125,7 +125,7 @@ module JABA
       # Create a JabaType object for each defined type
       #
       @jaba_types.map! do |def_data|
-        jt = JabaType.new(self, def_data.type)
+        jt = JabaType.new(self, def_data.type, def_data.options[:extend])
         jt.api_eval(&def_data.block)
         jt
       end

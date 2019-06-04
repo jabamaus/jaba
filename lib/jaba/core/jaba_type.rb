@@ -206,9 +206,10 @@ module JABA
     
     ##
     #
-    def initialize(services, type_id)
+    def initialize(services, type_id, super_type_id)
       super(services, services.jaba_type_api)
       @type = type_id
+      @super_type = super_type_id
       @attribute_defs = []
       @attribute_def_lookup = {}
       @generate_hooks = []
@@ -257,6 +258,9 @@ module JABA
     ##
     #
     def init
+      # Convert super type id to object handle
+      #
+      @super_type = @services.get_jaba_type(@super_type) if @super_type
       @attribute_defs.each(&:init)
     end
     
