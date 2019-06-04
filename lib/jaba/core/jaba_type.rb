@@ -164,7 +164,7 @@ module JABA
     ##
     #
     def has_flag?(flag)
-      @flags.index(flag) != nil
+      @flags.include?(flag)
     end
     
     ##
@@ -202,7 +202,6 @@ module JABA
 
     attr_reader :type
     attr_reader :attribute_defs
-    attr_reader :generate_hooks
     
     ##
     #
@@ -212,7 +211,6 @@ module JABA
       @super_type = super_type_id
       @attribute_defs = []
       @attribute_def_lookup = {}
-      @generate_hooks = []
       @build_nodes_hook = nil
     end
     
@@ -249,11 +247,11 @@ module JABA
     #
     def iterate_attrs(mask, &block)
       @attribute_defs.each do |ad|
-        if !mask || mask.index(ad.id) != nil
+        if !mask || mask.include?(ad.id)
           yield ad
         end
       end
-      @super_type.iterate_attrs(mask, &block) if @super_type
+      @super_type&.iterate_attrs(mask, &block)
     end
     
     ##

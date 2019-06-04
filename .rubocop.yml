@@ -32,6 +32,8 @@ Naming/PredicateName:
   Enabled: false
 Naming/UncommunicativeMethodParamName:
   Enabled: false
+Security/Open:
+  Enabled: false
 Style/Attr:
   Enabled: false
 Style/BlockComments:

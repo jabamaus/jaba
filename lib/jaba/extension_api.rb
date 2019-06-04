@@ -32,6 +32,12 @@ module JABA
       @obj.open_type(type, **options, &block)
     end
     
+    ##
+    #
+    def generator(type, &block)
+      @obj.define_generator(type, &block)
+    end
+    
   end
 
   ##
@@ -91,12 +97,6 @@ module JABA
     #
     def build_nodes(&block)
       @obj.define_hook(:build_nodes, &block)
-    end
-    
-    ##
-    #
-    def generate(&block)
-      @obj.define_hook(:generate, allow_multiple: true, &block)
     end
     
   end

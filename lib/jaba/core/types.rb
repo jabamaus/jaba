@@ -158,11 +158,11 @@ define :text do
     default :native
   end
   
-  generate do
-    str = content || "#{line.join("\n")}\n"
-    save_file(filename, str, eol)
-  end
-  
+end
+
+generator :text do
+  str = content || "#{line.join("\n")}\n"
+  save_file(filename, str, eol)
 end
 
 ##
