@@ -191,6 +191,10 @@ module JABA
           end
         end
       end
+      
+      @default.freeze
+      @flags.freeze
+      freeze
     end
     
   end

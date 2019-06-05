@@ -13,7 +13,6 @@ module JABA
             end
           end
           test :t do
-            a [1, 2]
           end
         end
       end

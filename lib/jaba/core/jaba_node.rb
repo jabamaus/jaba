@@ -56,7 +56,9 @@ module JABA
       # If its not an element of an attribute array, initialize with default value if it has a concrete one
       #
       if !parent_array && !@default.nil? && !@default_is_proc
-        set(@default)
+        validate_value(@default, nil)
+        @value = @default # TODO: should this take a copy?
+        @set = true
       end
     end
     
@@ -77,20 +79,14 @@ module JABA
       @args = args
       @key_value_args = key_value_args
       
-      if value.is_a?(Array)
-        @services.jaba_error("'#{@attr_def.id}' attribute is not an array so cannot accept one")
+      validate_value(value, api_call_line)
+
+      # TODO: fix
+      if @attr_def.type == :keyvalue
+        @value = {value => args[0]}
+      else
+        @value = value
       end
-      if api_call_line
-        hook = @attr_def.type_obj.validate_value_hook
-        if hook
-          begin
-            @attr_def.api_eval(value, &hook)
-          rescue JabaError => e
-            @services.jaba_error("'#{@attr_def.id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
-          end
-        end
-      end
-      @value = value
       @set = true
     end
     
@@ -118,6 +114,26 @@ module JABA
     #
     def process_flags(warn: true)
       # Nothing
+    end
+    
+    private
+    
+    ##
+    #
+    def validate_value(value, api_call_line)
+      if value.is_a?(Array)
+        @services.jaba_error("'#{@attr_def.id}' attribute is not an array so cannot accept one")
+      end
+      if api_call_line
+        hook = @attr_def.type_obj.validate_value_hook
+        if hook
+          begin
+            @attr_def.api_eval(value, &hook)
+          rescue JabaError => e
+            @services.jaba_error("'#{@attr_def.id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
+          end
+        end
+      end
     end
     
   end

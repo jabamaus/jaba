@@ -63,6 +63,10 @@ end
 ##
 #
 attr_type :keyvalue do
+  init_attr_def do
+    default({})
+    flags :unordered # Cannot sort an array of hashes
+  end
 end
 
 ##
@@ -216,7 +220,12 @@ end
 
 ##
 #
-define :vcxproj, extend: :project do
+define :vsproj, extend: :project do
+end
+
+##
+#
+define :vcxproj, extend: :vsproj do
 end
 
 ##
