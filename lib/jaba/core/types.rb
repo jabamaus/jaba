@@ -187,6 +187,11 @@ define :project do
     flags :no_check_exist
   end
   
+  attr :name do
+    help 'The name of the project. Defaults to the definition id if not set.'
+    default { id.to_s }
+  end
+  
   attr_array :src, type: :path do
     help 'Source files. Evaluated once per project so this should be the union of all source files required for ' \
          'all target platforms.'
@@ -220,12 +225,25 @@ end
 
 ##
 #
-define :vsproj, extend: :project do
+define :vcxproj, extend: :project do
+  
+  attr :projname do
+    help 'Basename of project files. Defaults to <name><projsuffix>'
+    default { "#{name}#{projsuffix}" }
+  end
+
+  attr :projsuffix do
+    help 'Optional suffix to be applied to project filenames. Used by <projname> by default but will have no effect if <projname> is set explicitly'
+  end
+  
+  attr_array :vcglobal, type: :keyvalue do
+  end
+  
 end
 
 ##
 #
-define :vcxproj, extend: :vsproj do
+generator :vcxproj do
 end
 
 ##
