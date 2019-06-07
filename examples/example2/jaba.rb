@@ -1,0 +1,2 @@
+vcxproj :MyLib do
+end

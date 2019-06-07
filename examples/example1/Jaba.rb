@@ -1,0 +1,2 @@
+vcxproj :MyApp do
+end
