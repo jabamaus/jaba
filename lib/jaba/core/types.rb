@@ -233,17 +233,22 @@ define :vcxproj, extend: :project do
   end
 
   attr :projsuffix do
-    help 'Optional suffix to be applied to project filenames. Used by <projname> by default but will have no effect if <projname> is set explicitly'
+    help 'Optional suffix to be applied to project filenames. Used by <projname> by default but will have no effect ' \
+         'if <projname> is set explicitly'
   end
   
   attr_array :vcglobal, type: :keyvalue do
   end
   
+  build_nodes do
+    [Vcxproj.new(self)]
+  end
 end
 
 ##
 #
 generator :vcxproj do
+  # JABA::Vcxproj.new(self)
 end
 
 ##

@@ -14,4 +14,17 @@ module JABA
     
   end
 
+  ##
+  #
+  class Vcxproj < Project
+    
+    ##
+    #
+    def initialize(node)
+      super
+      
+    end
+    
+  end
+  
 end

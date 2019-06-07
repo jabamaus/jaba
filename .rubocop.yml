@@ -1,3 +1,7 @@
+AllCops:
+  Exclude:
+    - 'examples/**/*'
+    - 'test/tests/temp/**/*'
 Layout/EmptyLineAfterGuardClause:
   Enabled: false
 Layout/EmptyLinesAroundBlockBody:

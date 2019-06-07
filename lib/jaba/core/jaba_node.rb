@@ -83,11 +83,11 @@ module JABA
       validate_value(value, api_call_line)
 
       # TODO: fix
-      if @attr_def.type == :keyvalue
-        @value = {value => args[0]}
-      else
-        @value = value
-      end
+      @value = if @attr_def.type == :keyvalue
+                 { value => args[0] }
+               else
+                 value
+               end
       @set = true
     end
     

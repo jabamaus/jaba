@@ -10,8 +10,10 @@ module JABA
 
   class JabaTest < Minitest::Spec
     
+    # rubocop:disable Style/ClassVars
     @@enable_logging = ARGV.delete('--log') ? true : false
-
+    # rubocop:enable Style/ClassVars
+    
     ##
     #
     def jaba(load_paths: nil, &block)

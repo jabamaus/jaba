@@ -6,6 +6,7 @@ require_relative 'core_ext'
 require_relative 'utils'
 require_relative 'jaba_type'
 require_relative 'jaba_node'
+require_relative 'project'
 
 ##
 #
@@ -135,7 +136,7 @@ module JABA
       if input.enable_logging?
         FileUtils.remove('jaba.log', force: true)
         @logger = Logger.new('jaba.log')
-        @logger.formatter = proc do |severity, datetime, progname, msg|
+        @logger.formatter = proc do |severity, datetime, _, msg|
           "#{severity} #{datetime}: #{msg}\n"
         end
         @logger.level = Logger::INFO
@@ -217,14 +218,14 @@ module JABA
           end
         end
       end
+
+      @logger&.close
       
       op = Output.new
       op.instance_variable_set(:@added_files, @added_files)
       op.instance_variable_set(:@modified_files, @modified_files)
       op.instance_variable_set(:@warnings, @warnings)
       op
-      
-      @logger&.close
     end
     
     ##
