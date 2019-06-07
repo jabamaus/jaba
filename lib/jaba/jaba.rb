@@ -89,7 +89,7 @@ end
 if $PROGRAM_NAME == __FILE__
   begin
     JABA.run do |j|
-      j.load_paths = "#{__dir__}/../../examples/HelloWorld/HelloWorld.rb" # TODO: remove
+      j.load_paths = Dir.getwd
     end
   rescue JABA::JabaError => e
     puts e.message
