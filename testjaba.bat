@@ -1,3 +1,4 @@
 @echo off
-ruby %~dp0test\test_jaba.rb %*
-
+pushd %~dp0test
+ruby test_jaba.rb %*
+popd
