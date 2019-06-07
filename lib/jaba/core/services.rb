@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'fileutils'
+require 'logger'
 require_relative 'core_ext'
 require_relative 'utils'
 require_relative 'jaba_type'
@@ -29,6 +31,14 @@ module JABA
     ##
     #
     def initialize
+      FileUtils.remove('jaba.log', force: true) 
+      @logger = Logger.new('jaba.log')
+      @logger.formatter = proc do |severity, datetime, progname, msg|
+        "#{severity} #{datetime}: #{msg}\n"
+      end
+      @logger.level = Logger::INFO
+      log '===== Starting Jaba ====='
+
       @input = Input.new
       @input.instance_variable_set(:@definitions, nil)
       @input.instance_variable_set(:@load_paths, nil)
@@ -64,6 +74,18 @@ module JABA
 
     ##
     #
+    def log(msg, severity = Logger::INFO)
+      @logger.log(severity, msg)
+    end
+
+    ##
+    #
+    def log_debug(msg)
+      @logger.debug(msg)
+    end
+    
+    ##
+    #
     def define_attr_flag(id)
     end
     
@@ -94,6 +116,7 @@ module JABA
     ##
     #
     def define_instance(type, id, **options, &block)
+      log "Instancing #{type} [id=#{id}]"
       def_data = Definition.new(type, id, block, options)
       
       if id
@@ -193,6 +216,8 @@ module JABA
       op.instance_variable_set(:@modified_files, @modified_files)
       op.instance_variable_set(:@warnings, @warnings)
       op
+      
+      @logger.close
     end
     
     ##
@@ -239,12 +264,14 @@ module JABA
     ##
     #
     def jaba_warning(msg, **options)
+      log msg, Logger::WARN
       @warnings << make_jaba_error(msg, warn: true, **options).message
     end
     
     ##
     #
     def jaba_error(msg, **options)
+      log msg, Logger::ERROR
       raise make_jaba_error(msg, **options)
     end
     
@@ -288,8 +315,8 @@ module JABA
       if (eol == :windows) || ((eol == :native) && OS.windows?)
         content = content.gsub("\n", "\r\n")
       end
-      # filename = filename.cleanpath
-      # log "Saving #{filename}"
+      filename = filename.cleanpath
+      log "Saving #{filename}"
       warning "Duplicate file '#{filename}' generated" if @all_generated_files.key?(filename)
       
       # register_src_file(filename)
@@ -309,6 +336,7 @@ module JABA
     #
     def execute_definitions(file = nil, &block)
       if file
+        log "Executing #{file}"
         @top_level_api.instance_eval(IO.read(file), file)
       end
       if block_given?
@@ -330,7 +358,7 @@ module JABA
           jaba_error("#{p} does not exist")
         end
         if File.directory?(p)
-          @definition_src_files.concat(Dir.glob("#{p}/*.rb"))
+          @definition_src_files.concat(Dir.glob("#{p}/**/jaba.rb"))
         else
           @definition_src_files << p
         end
