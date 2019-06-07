@@ -33,6 +33,11 @@ module JABA
     #
     attr_block :definitions
     
+    ##
+    # Logging is disabled by default for performance.
+    #
+    attr_bool :enable_logging
+    
   end
 
   ##
@@ -90,6 +95,7 @@ if $PROGRAM_NAME == __FILE__
   begin
     JABA.run do |j|
       j.load_paths = Dir.getwd
+      j.enable_logging = ARGV.delete('--log') ? true : false
     end
   rescue JABA::JabaError => e
     puts e.message

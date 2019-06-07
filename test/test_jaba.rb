@@ -10,12 +10,15 @@ module JABA
 
   class JabaTest < Minitest::Spec
     
+    @@enable_logging = ARGV.delete('--log') ? true : false
+
     ##
     #
     def jaba(load_paths: nil, &block)
       JABA.run do |c|
         c.load_paths = load_paths
         c.definitions(&block) if block_given?
+        c.enable_logging = @@enable_logging
       end
     end
     

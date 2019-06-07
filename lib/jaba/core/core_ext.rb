@@ -13,9 +13,17 @@ module JABACoreExt
     # Allow setting and getting a block as a member variable.
     #
     def attr_block(attr)
-      class_eval("def #{attr}(&block); block_given? ? @#{attr} = block : @#{attr} ; end", __FILE__, __LINE__)
+      class_eval("def #{attr}(&block) ; block_given? ? @#{attr} = block : @#{attr} ; end", __FILE__, __LINE__)
     end
     
+    ##
+    # Member variable must be initialised.
+    #
+    def attr_bool(attr)
+      class_eval("def #{attr}? ; @#{attr} ; end", __FILE__, __LINE__)
+      class_eval("def #{attr}=(val) ; @#{attr} = val ; end", __FILE__, __LINE__)
+    end
+  
     ##
     #
     def name_no_namespace

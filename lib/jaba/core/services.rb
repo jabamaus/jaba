@@ -31,17 +31,12 @@ module JABA
     ##
     #
     def initialize
-      FileUtils.remove('jaba.log', force: true) 
-      @logger = Logger.new('jaba.log')
-      @logger.formatter = proc do |severity, datetime, progname, msg|
-        "#{severity} #{datetime}: #{msg}\n"
-      end
-      @logger.level = Logger::INFO
-      log '===== Starting Jaba ====='
-
       @input = Input.new
       @input.instance_variable_set(:@definitions, nil)
       @input.instance_variable_set(:@load_paths, nil)
+      @input.instance_variable_set(:@enable_logging, false)
+      
+      @logger = nil
       
       @warnings = []
       
@@ -75,13 +70,13 @@ module JABA
     ##
     #
     def log(msg, severity = Logger::INFO)
-      @logger.log(severity, msg)
+      @logger&.log(severity, msg)
     end
 
     ##
     #
     def log_debug(msg)
-      @logger.debug(msg)
+      @logger&.debug(msg)
     end
     
     ##
@@ -135,6 +130,18 @@ module JABA
     ##
     #
     def run
+      # Set up logger
+      #
+      if input.enable_logging?
+        FileUtils.remove('jaba.log', force: true)
+        @logger = Logger.new('jaba.log')
+        @logger.formatter = proc do |severity, datetime, progname, msg|
+          "#{severity} #{datetime}: #{msg}\n"
+        end
+        @logger.level = Logger::INFO
+        log '===== Starting Jaba ====='
+      end
+      
       # Load and execute any definition files specified in Input#load_paths
       #
       load_definitions
@@ -217,7 +224,7 @@ module JABA
       op.instance_variable_set(:@warnings, @warnings)
       op
       
-      @logger.close
+      @logger&.close
     end
     
     ##

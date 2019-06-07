@@ -75,6 +75,7 @@ module JABA
     ##
     #
     def set(value, api_call_line = nil, *args, **key_value_args)
+      @services.log_debug "setting '#{@node.id}##{id}' [value=#{value} args=#{args} key_value_args=#{key_value_args}]"
       @api_call_line = api_call_line
       @args = args
       @key_value_args = key_value_args
