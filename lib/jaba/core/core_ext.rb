@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'pathname'
 
 ##
 #
@@ -81,6 +82,12 @@ module JABACoreExt
     #
     def capitalize_first
       dup.capitalize_first!
+    end
+    
+    ##
+    #
+    def cleanpath
+      Pathname.new(self).cleanpath.to_s
     end
     
   end

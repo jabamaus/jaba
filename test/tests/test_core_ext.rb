@@ -21,6 +21,25 @@ module JABA
       
     end
     
+    describe 'String' do
+      
+      it 'can clean path' do
+        'a'.cleanpath.must_equal('a')
+        'a/b'.cleanpath.must_equal('a/b')
+        'a/b/'.cleanpath.must_equal('a/b')
+        '.'.cleanpath.must_equal('.')
+        './'.cleanpath.must_equal('.')
+        '/'.cleanpath.must_equal('/')
+        '..'.cleanpath.must_equal('..')
+        '../'.cleanpath.must_equal('..')
+        './a/../b/../'.cleanpath.must_equal('.')
+        '.\\a\\..\\b\\..\\'.cleanpath.must_equal('.')
+        'C:/a/b/..'.cleanpath.must_equal('C:/a')
+        'C:\\a\\b\\..'.cleanpath.must_equal('C:/a')
+      end
+      
+    end
+    
   end
   
 end
