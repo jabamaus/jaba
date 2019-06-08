@@ -9,18 +9,30 @@ module JABA
         define :a do
           attr :b, type: :reference do
           end
-        end
-        define :c do
-          attr :d do
+          attr_array :c, type: :reference do
           end
         end
-        c :c_id do
-          d 1
+        define :d do
+          attr :e do
+          end
+        end
+        d :d1 do
+          e 1
+        end
+        d :d2 do
+          e 2
+        end
+        d :d3 do
+          e 3
         end
         a :a_id do
-          b :c_id
+          b :d1
+          c [:d2, :d3]
           generate do
-            b.d.must_equal 1
+            b.e.must_equal 1
+            c.size.must_equal 2
+            c[0].e.must_equal 2
+            c[1].e.must_equal 3
           end
         end
       end
