@@ -72,7 +72,7 @@ module JABA
     
     ##
     #
-    def initialize(capacity: )
+    def initialize(capacity:)
       @buffers = []
       @str = String.new(capacity: capacity)
       @buffers << @str

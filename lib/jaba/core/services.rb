@@ -7,6 +7,7 @@ require_relative 'utils'
 require_relative 'jaba_type'
 require_relative 'jaba_node'
 require_relative 'project'
+require_relative 'vcxproj_writer'
 
 ##
 #
