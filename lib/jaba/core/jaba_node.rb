@@ -23,6 +23,12 @@ module JABA
     
     ##
     #
+    def type
+      @attr_def.type
+    end
+    
+    ##
+    #
     def id
       @attr_def.id
     end
@@ -109,6 +115,18 @@ module JABA
       else
         @value <=> other.get
       end
+    end
+    
+    ##
+    #
+    def each_value
+      yield @value
+    end
+    
+    ##
+    #
+    def map!
+      @value = yield(@value)
     end
     
     ##
@@ -205,6 +223,18 @@ module JABA
     
     ##
     #
+    def each_value(&block)
+      @elems.each_value(&block)
+    end
+    
+    ##
+    #
+    def map!(&block)
+      @elems.map!(&block)
+    end
+    
+    ##
+    #
     def process_flags(warn: true)
       if @excludes
         @elems.delete_if do |e|
@@ -243,16 +273,17 @@ module JABA
   #
   class JabaNode < JabaAPIObject
 
-    attr_reader :id
+    attr_reader :jaba_type
+    attr_reader :handle
     attr_reader :attributes
     attr_reader :generate_hooks
     
     ##
     #
-    def initialize(services, jaba_type, id, attrs_mask, parent, source_location)
+    def initialize(services, jaba_type, handle, attrs_mask, parent, source_location)
       super(services, services.jaba_node_api)
       @jaba_type = jaba_type
-      @id = id
+      @handle = handle
       @parent = parent
       @source_location = source_location
       

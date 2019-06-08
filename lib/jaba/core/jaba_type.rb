@@ -260,8 +260,8 @@ module JABA
     
     ##
     #
-    def make_node(attrs_mask: nil, parent: nil)
-      jn = JabaNode.new(@services, self, @current_def_data.id, attrs_mask, parent, @current_def_data.block.source_location)
+    def make_node(handle: @current_def_data.id, attrs_mask: nil, parent: nil)
+      jn = JabaNode.new(@services, self, handle, attrs_mask, parent, @current_def_data.block.source_location)
       yield jn if block_given?
       jn.api_eval(&@current_def_data.block)
       jn.post_create

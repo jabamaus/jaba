@@ -52,6 +52,8 @@ module JABA
       @jaba_types = []
       @jaba_types_to_open = []
       @definition_registry = {} # TODO: not a good name
+      @nodes = []
+      @node_lookup = {}
       
       @file_read_cache = {}
       
@@ -201,22 +203,34 @@ module JABA
             jaba_error("'#{type}' type is not defined. Cannot instance.", callstack: def_data.block)
           end
           nodes = jt.build_nodes(def_data)
-          
-          # Call generators defined per-type
-          #
-          @generators[jt.type]&.each do |block|
-            nodes.each do |n|
-              n.instance_eval(&block) # TODO: which api?
-            end
-          end
-          
-          # Call generators defined per-node
-          #
+          @nodes.concat(nodes)
           nodes.each do |n|
-            n.generate_hooks.each do |gh|
-              n.instance_eval(&gh) # TODO: which api?
-            end
+            @node_lookup[n.handle] = n
           end
+        end
+      end
+      
+      # Resolve references
+      #
+      @nodes.each do |n|
+        n.attributes.each do |a|
+          if a.type == :reference
+            a.map! {|ref| @node_lookup[ref]}
+          end
+        end
+      end
+      
+      @nodes.each do |n|
+        # Call generators defined per-type
+        #
+        @generators[n.jaba_type.type]&.each do |block|
+          n.instance_eval(&block) # TODO: which api?
+        end
+        
+        # Call generators defined per-node
+        #
+        n.generate_hooks.each do |gh|
+          n.instance_eval(&gh) # TODO: which api?
         end
       end
 
