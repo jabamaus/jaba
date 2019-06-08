@@ -64,4 +64,50 @@ module JABA
 
   end
 
+  ##
+  #
+  class StringWriter
+    
+    attr_reader :str
+    
+    ##
+    #
+    def initialize(capacity: )
+      @buffers = []
+      @str = String.new(capacity: capacity)
+      @buffers << @str
+    end
+    
+    ##
+    #
+    def write(str)
+      @str << str << "\n"
+    end
+    
+    ##
+    #
+    def write_raw(str)
+      @str << str
+    end
+  
+    ##
+    # `
+    def newline
+      @str << "\n"
+    end
+    
+    ##
+    #
+    def sub_buffer(capacity: 4096)
+      @str = String.new(capacity: capacity)
+      @buffers << str
+      yield
+      sb = @str
+      @buffers.pop
+      @str = @buffers.last
+      sb
+    end
+    
+  end
+  
 end
