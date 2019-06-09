@@ -214,11 +214,10 @@ module JABA
       #
       @nodes.each do |n|
         n.attributes.each do |a|
-          if a.type == :reference
-            a.map! do |ref|
-              obj = @node_lookup[ref]
-              obj
-            end
+          next if a.type != :reference
+          a.map! do |ref|
+            obj = @node_lookup[ref]
+            obj
           end
         end
       end

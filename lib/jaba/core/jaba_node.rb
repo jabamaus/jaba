@@ -224,13 +224,13 @@ module JABA
     ##
     #
     def each_value(&block)
-      @elems.each{|e| e.each_value(&block)}
+      @elems.each {|e| e.each_value(&block)}
     end
     
     ##
     #
     def map!(&block)
-      @elems.each{|e| e.map!(&block)}
+      @elems.each {|e| e.map!(&block)}
     end
     
     ##

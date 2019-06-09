@@ -72,6 +72,15 @@ end
 ##
 #
 attr_type :reference do
+  init_attr_def do
+    add_property :referenced_type, nil
+  end
+  
+  validate_attr_def do
+    if referenced_type.nil?
+      raise "'referenced_type' must be set"
+    end
+  end
 end
 
 ##
@@ -134,6 +143,7 @@ define :category do
   
   attr :parent, type: :reference do
     help 'Makes this category a child of the specified category.'
+    referenced_type :category
   end
   
 end
@@ -204,6 +214,7 @@ end
 define :cpp, extend: :project do
 
   attr_array :platforms, type: :reference do
+    referenced_type :platform
     flags :unordered, :required
   end
   
@@ -211,6 +222,7 @@ define :cpp, extend: :project do
   end
     
   attr :hosts, type: :reference do
+    referenced_type :host
   end
   
   attr :host do
