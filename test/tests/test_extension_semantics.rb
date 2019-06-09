@@ -18,7 +18,7 @@ module JABA
     end
 
     it 'fails if try to open undefined type' do
-      check_fails("'undefined' has not been defined", trace: [__FILE__, '# tag1']) do
+      check_fail "'undefined' has not been defined", trace: [__FILE__, '# tag1'] do
         jaba do
           open :undefined do # tag1
           end
@@ -74,7 +74,7 @@ module JABA
     
     # TODO: extend
     it 'supports defining new attribute types' do
-      check_fails("'b' attribute failed validation: Invalid", trace: [__FILE__, '# tag2A', __FILE__, '# tag2B']) do 
+      check_fail "'b' attribute failed validation: Invalid", trace: [__FILE__, '# tag2A', __FILE__, '# tag2B'] do 
         jaba do
           attr_type :a do
             validate_value do
@@ -93,7 +93,7 @@ module JABA
     end
     
     it 'detects usage of undefined attribute types' do
-      check_fails(/'undefined' attribute type is undefined. Valid types: \[.*?\]/, trace: [__FILE__, '# tag3']) do
+      check_fail(/'undefined' attribute type is undefined. Valid types: \[.*?\]/, trace: [__FILE__, '# tag3']) do
         jaba do
           define :a do
             attr :b, type: :undefined do # tag3

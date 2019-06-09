@@ -5,7 +5,7 @@ module JABA
   class TestAttribute < JabaTest
 
     it 'rejects passing array to single value attribute' do
-      check_fails("'a' attribute is not an array so cannot accept one", trace: [__FILE__, '# tag1']) do
+      check_fail "'a' attribute is not an array so cannot accept one", trace: [__FILE__, '# tag1'] do
         jaba do # tag1 # TODO: bad line reporting
           define :test do
             attr :a do
@@ -17,7 +17,7 @@ module JABA
         end
       end
       
-      check_fails("'a' attribute is not an array so cannot accept one", trace: [__FILE__, '# tag2']) do
+      check_fail "'a' attribute is not an array so cannot accept one", trace: [__FILE__, '# tag2'] do
         jaba do
           define :test do
             attr :a do

@@ -17,11 +17,11 @@ module JABA
     end
 
     it 'requires a default of true or false' do
-      check_fails(':bool attributes only accept [true|false]',
+      check_fail ':bool attributes only accept [true|false]',
                   trace: [
                     CORE_TYPES_FILE, "raise ':bool attributes only accept [true|false]'",
                     __FILE__, '# tag1' # evaluated later so exact call line is lost
-                  ]) do
+                  ] do
         jaba do
           define :test do
             attr :b, type: :bool do # tag1
@@ -33,11 +33,11 @@ module JABA
     end
 
     it 'only allows boolean values' do
-      check_fails(':bool attributes only accept [true|false]',
+      check_fail ':bool attributes only accept [true|false]',
                   trace: [
                     CORE_TYPES_FILE, "raise ':bool attributes only accept [true|false]'",
                     __FILE__, '# tag2'
-                  ]) do
+                  ] do
         jaba do
           define :test do
             attr :c, type: :bool do

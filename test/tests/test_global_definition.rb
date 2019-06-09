@@ -14,15 +14,15 @@ module JABA
         end
       end
       
-      check_fails("'Space invalid' is an invalid id. Must be an alphanumeric string or symbol " \
-                  "(underscore permitted), eg :my_id or 'my_id'", trace: [__FILE__, '# tag1']) do
+      check_fail "'Space invalid' is an invalid id. Must be an alphanumeric string or symbol " \
+                  "(underscore permitted), eg :my_id or 'my_id'", trace: [__FILE__, '# tag1'] do
         jaba do
           shared 'Space invalid' do # tag1
           end
         end
       end
       
-      check_fails("'1' is an invalid id", trace: [__FILE__, '# tag2']) do
+      check_fail "'1' is an invalid id", trace: [__FILE__, '# tag2'] do
         jaba do
           shared 1 do # tag2
           end
@@ -31,7 +31,7 @@ module JABA
     end
     
     it 'detects duplicate ids with definitions of the same type' do
-      check_fails("'a' multiply defined", trace: [__FILE__, '# tag3']) do
+      check_fail "'a' multiply defined", trace: [__FILE__, '# tag3'] do
         jaba do
           shared :a do
           end
@@ -40,7 +40,7 @@ module JABA
         end
       end
 
-      check_fails("'b' multiply defined", trace: [__FILE__, '# tag4']) do
+      check_fail "'b' multiply defined", trace: [__FILE__, '# tag4'] do
         jaba do
           text :b do
           end
@@ -60,7 +60,7 @@ module JABA
     end
     
     it 'rejects attempts to instance an unknown type' do
-      check_fails("'undefined' type is not defined. Cannot instance", trace: [__FILE__, '# tag6']) do
+      check_fail "'undefined' type is not defined. Cannot instance", trace: [__FILE__, '# tag6'] do
         jaba do
           undefined :a do # tag6
           end

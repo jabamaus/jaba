@@ -5,7 +5,7 @@ module JABA
   class TestChoiceAttribute < JabaTest
 
     it 'requires items to be set' do
-      check_fails("'items' must be set", trace: [CORE_TYPES_FILE, 'raise "\'items\' must be set"', __FILE__, '# tag1']) do
+      check_fail "'items' must be set", trace: [CORE_TYPES_FILE, 'raise "\'items\' must be set"', __FILE__, '# tag1'] do
         jaba do
           define :test do
             attr :a, type: :choice do # tag1
@@ -16,7 +16,7 @@ module JABA
     end
     
     it 'requires default to be in items' do
-      check_fails('Must be one of [1, 2, 3]', trace: [CORE_TYPES_FILE, 'raise "must be one of', __FILE__, '# tag2']) do
+      check_fail 'Must be one of [1, 2, 3]', trace: [CORE_TYPES_FILE, 'raise "must be one of', __FILE__, '# tag2'] do
         jaba do
           define :test do
             attr :a, type: :choice do # tag2
@@ -26,7 +26,7 @@ module JABA
           end
         end
       end
-      check_fails('Must be one of [1, 2, 3]', trace: [CORE_TYPES_FILE, 'raise "must be one of', __FILE__, '# tag3']) do
+      check_fail 'Must be one of [1, 2, 3]', trace: [CORE_TYPES_FILE, 'raise "must be one of', __FILE__, '# tag3'] do
         jaba do
           define :test do
             attr_array :a, type: :choice do # tag3
@@ -39,7 +39,7 @@ module JABA
     end
 
     it 'rejects invalid choices' do
-      check_fails('Must be one of [:a, :b, :c]', trace: [CORE_TYPES_FILE, 'raise "must be one of', __FILE__, '# tag4']) do
+      check_fail 'Must be one of [:a, :b, :c]', trace: [CORE_TYPES_FILE, 'raise "must be one of', __FILE__, '# tag4'] do
         jaba do
           define :test do
             attr :a, type: :choice do
@@ -51,7 +51,7 @@ module JABA
           end
         end
       end
-      check_fails('Must be one of [:a, :b, :c]', trace: [CORE_TYPES_FILE, 'raise "must be one of', __FILE__, '# tag5']) do
+      check_fail 'Must be one of [:a, :b, :c]', trace: [CORE_TYPES_FILE, 'raise "must be one of', __FILE__, '# tag5'] do
         jaba do
           define :test do
             attr_array :a, type: :choice do

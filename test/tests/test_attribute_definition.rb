@@ -5,7 +5,7 @@ module JABA
   class TestAttributeDefinition < JabaTest
 
     it 'requires attribute id to be a symbol' do
-      check_fails('\'attr\' attribute id must be specified as a symbol', trace: [__FILE__, '# tag1']) do
+      check_fail '\'attr\' attribute id must be specified as a symbol', trace: [__FILE__, '# tag1'] do
         jaba do
           define :test do
             attr 'attr' do # tag1
@@ -16,7 +16,7 @@ module JABA
     end
     
     it 'requires a block to be supplied' do
-      check_fails("'b' attribute requires a block", trace: [__FILE__, '# tag2']) do
+      check_fail "'b' attribute requires a block", trace: [__FILE__, '# tag2'] do
         jaba do
           define :test do
             attr :b # tag2
@@ -26,7 +26,7 @@ module JABA
     end
     
     it 'detects duplicate attribute ids' do
-      check_fails("'a' attribute multiply defined", trace: [__FILE__, '# tag3']) do
+      check_fail "'a' attribute multiply defined", trace: [__FILE__, '# tag3'] do
         jaba do
           define :test do
             attr :a do
@@ -69,7 +69,7 @@ module JABA
     end
       
     it 'fails if property does not exist' do
-      check_fails('', trace: [__FILE__, '# tag4']) do # TODO: msg
+      check_fail '', trace: [__FILE__, '# tag4'] do # TODO: msg
         jaba do
           define :test do
             attr :a do

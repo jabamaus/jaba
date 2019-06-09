@@ -8,7 +8,7 @@ module JABA
       # check that all types support include directive
       #
       [:text, :project, :workspace, :category, :attr_type, :define].each do |type|
-        check_fails('Included', trace: [__FILE__, "raise 'Included'", __FILE__, '# tag1']) do
+        check_fail 'Included', trace: [__FILE__, "raise 'Included'", __FILE__, '# tag1'] do
           jaba do
             shared :a do
               raise 'Included'
@@ -53,7 +53,7 @@ module JABA
     end
 
     it 'fails if shared definition does not exist' do
-      check_fails("Shared definition 'b' not found", trace: [__FILE__, '# tag2']) do
+      check_fail "Shared definition 'b' not found", trace: [__FILE__, '# tag2'] do
         jaba do
           shared :a do
           end
@@ -85,7 +85,7 @@ module JABA
     end
     
     it 'catches argument mismatches' do
-      check_fails("Shared definition 'd' expects 3 arguments but 0 were passed", trace: [__FILE__, '# tag3']) do
+      check_fail "Shared definition 'd' expects 3 arguments but 0 were passed", trace: [__FILE__, '# tag3'] do
         jaba do
           shared :d do |a1, a2, a3|
           end
@@ -94,7 +94,7 @@ module JABA
           end
         end
       end
-      check_fails("Shared definition 'e' expects 0 arguments but 1 were passed", trace: [__FILE__, '# tag4']) do
+      check_fail "Shared definition 'e' expects 0 arguments but 1 were passed", trace: [__FILE__, '# tag4'] do
         jaba do
           shared :e do
           end
@@ -103,7 +103,7 @@ module JABA
           end
         end
       end
-      check_fails("Shared definition 'f' expects 2 arguments but 3 were passed", trace: [__FILE__, '# tag5']) do
+      check_fail "Shared definition 'f' expects 2 arguments but 3 were passed", trace: [__FILE__, '# tag5'] do
         jaba do
           shared :f do |a1, a2|
           end

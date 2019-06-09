@@ -57,7 +57,7 @@ module JABA
 
     ##
     #
-    def check_fails(msg, trace:, internal: false)
+    def check_fail(msg, trace:, internal: false)
       e = assert_raises JabaError do
         yield
       end
