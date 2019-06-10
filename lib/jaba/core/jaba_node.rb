@@ -62,7 +62,7 @@ module JABA
       # If its not an element of an attribute array, initialize with default value if it has a concrete one
       #
       if !parent_array && !@default.nil? && !@default_is_proc
-        validate_value(@default, nil)
+        validate_value(@default, attr_def.api_call_line)
         @value = @default
         @set = true
       end
@@ -141,7 +141,7 @@ module JABA
     #
     def validate_value(value, api_call_line)
       if value.is_a?(Array)
-        @services.jaba_error("'#{@attr_def.id}' attribute is not an array so cannot accept one")
+        @services.jaba_error("'#{@attr_def.id}' attribute is not an array so cannot accept one", callstack: api_call_line)
       end
       if api_call_line
         hook = @attr_def.type_obj.validate_value_hook

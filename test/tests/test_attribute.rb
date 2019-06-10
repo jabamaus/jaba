@@ -6,9 +6,9 @@ module JABA
 
     it 'rejects passing array to single value attribute' do
       check_fail "'a' attribute is not an array so cannot accept one", trace: [__FILE__, '# tag1'] do
-        jaba do # tag1 # TODO: bad line reporting
+        jaba do
           define :test do
-            attr :a do
+            attr :a do # tag1 # TODO: should report on default line
               default [1, 2]
             end
           end
