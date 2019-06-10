@@ -7,8 +7,7 @@ module JABA
     it 'defaults to empty hash' do
       jaba do
         define :test do
-          attr :a, type: :keyvalue do
-          end
+          attr :a, type: :keyvalue
         end
         test :t do
           a.must_equal({})
@@ -32,8 +31,7 @@ module JABA
     it 'can be set' do
       jaba do
         define :test do
-          attr :a, type: :keyvalue do
-          end
+          attr :a, type: :keyvalue
         end
         test :t do
           # Test basic set
@@ -59,8 +57,7 @@ module JABA
     it 'works with array' do
       jaba do
         define :test do
-          attr_array :a, type: :keyvalue do
-          end
+          attr_array :a, type: :keyvalue
           attr_array :b, type: :keyvalue do
             default [{ a: :b }, { c: :d }]
           end

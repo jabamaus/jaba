@@ -55,10 +55,8 @@ module JABA
     it 'fails if shared definition does not exist' do
       check_fail "Shared definition 'b' not found", trace: [__FILE__, '# tag2'] do
         jaba do
-          shared :a do
-          end
-          define :test do
-          end
+          shared :a
+          define :test
           test :c do
             include :b # tag2
           end
@@ -72,8 +70,7 @@ module JABA
           c "#{s3}#{s1}#{n2}#{s2}#{n1}"
         end
         define :test do
-          attr :c do
-          end
+          attr :c
         end
         1.upto(10) do |n|
           test "t#{n}" do

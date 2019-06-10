@@ -63,7 +63,7 @@ module JABA
       #
       if !parent_array && !@default.nil? && !@default_is_proc
         validate_value(@default, nil)
-        @value = @default # TODO: should this take a copy?
+        @value = @default
         @set = true
       end
     end
@@ -280,12 +280,12 @@ module JABA
     
     ##
     #
-    def initialize(services, jaba_type, handle, attrs_mask, parent, source_location)
+    def initialize(services, jaba_type, handle, attrs_mask, parent, api_call_line)
       super(services, services.jaba_node_api)
       @jaba_type = jaba_type
       @handle = handle
       @parent = parent
-      @source_location = source_location
+      @api_call_line = api_call_line
       
       @attributes = []
       @attribute_lookup = {}
@@ -320,7 +320,7 @@ module JABA
       @attributes.each do |a|
         if a.required? && !a.set?
           @services.jaba_error("'#{a.id}' attribute requires a value", 
-                               callstack: [@source_location.join(':'), a.attr_def.source_location.join(':')]) # TODO
+                               callstack: [@api_call_line, a.attr_def.api_call_line])
         end
         a.process_flags(warn: true)
       end

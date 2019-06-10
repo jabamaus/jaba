@@ -12,16 +12,14 @@ module JABA
               default [1, 2]
             end
           end
-          test :t do
-          end
+          test :t
         end
       end
       
       check_fail "'a' attribute is not an array so cannot accept one", trace: [__FILE__, '# tag2'] do
         jaba do
           define :test do
-            attr :a do
-            end
+            attr :a
           end
           test :t do
             a [1, 2] # tag2

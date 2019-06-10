@@ -10,8 +10,7 @@ module JABA
                       "alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'",
                       trace: [__FILE__, line] do
         jaba do
-          category 'invalid id' do # tag1
-          end
+          category 'invalid id' # tag1
         end
       end
       e.cause.must_be_nil
@@ -33,8 +32,7 @@ module JABA
       line = find_line_number(__FILE__, '# tag2')
       e = check_fail "Syntax error at test_error_reporting.rb:#{line}", trace: [__FILE__, line] do
         jaba do
-          shared :a do
-          end
+          shared :a
           BAD CODE # tag2
         end
       end

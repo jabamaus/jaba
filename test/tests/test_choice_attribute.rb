@@ -8,8 +8,7 @@ module JABA
       check_fail "'items' must be set", trace: [CORE_TYPES_FILE, 'raise "\'items\' must be set"', __FILE__, '# tag1'] do
         jaba do
           define :test do
-            attr :a, type: :choice do # tag1
-            end
+            attr :a, type: :choice # tag1
           end
         end
       end

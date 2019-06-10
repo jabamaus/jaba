@@ -127,7 +127,7 @@ module JABA
     ##
     #
     def method_missing(attr_id, *args, **key_value_args)
-      @obj.handle_attr(attr_id, ::Kernel.caller(1, 1), *args, **key_value_args)
+      @obj.handle_attr(attr_id, ::Kernel.caller(1, 1)[0], *args, **key_value_args)
     end
     
   end

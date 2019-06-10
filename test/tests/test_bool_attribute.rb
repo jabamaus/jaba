@@ -7,8 +7,7 @@ module JABA
     it 'defaults to false' do
       jaba do
         define :test do
-          attr :a, type: :bool do
-          end
+          attr :a, type: :bool
         end
         test :t do
           a.must_equal(false)

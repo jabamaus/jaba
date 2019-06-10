@@ -19,6 +19,7 @@ module JABA
     ##
     #
     def api_eval(args = nil, &block)
+      return if !block_given?
       @api.__set_obj(self)
       if !args.nil?
         @api.instance_exec(args, &block)
@@ -128,17 +129,17 @@ module JABA
     attr_reader :type # eg :bool, :file, :path etc
     attr_reader :type_obj # AttributeType object
     attr_reader :default
-    attr_reader :source_location
+    attr_reader :api_call_line
     
     ##
     #
-    def initialize(services, id, type, is_array, jaba_type_obj, source_location)
+    def initialize(services, id, type, is_array, jaba_type_obj, api_call_line)
       super(services, services.attr_definition_api)
       @id = id
       @type = type
       @is_array = is_array
       @jaba_type_obj = jaba_type_obj
-      @source_location = source_location
+      @api_call_line = api_call_line
 
       @default = nil
       @flags = []
@@ -176,7 +177,7 @@ module JABA
           api_eval(&hook)
         rescue JabaError => e
           @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
-                               callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: improve
+                               callstack: [e.backtrace[0], @api_call_line])
         end
       end
       
@@ -187,7 +188,7 @@ module JABA
             api_eval(@default, &hook)
           rescue JabaError => e
             @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
-                                 callstack: [e.backtrace[0], @source_location.join(':')]) # TODO: improve
+                                 callstack: [e.backtrace[0], @api_call_line])
           end
         end
       end
@@ -224,13 +225,10 @@ module JABA
       if !id.is_a?(Symbol)
         @services.jaba_error("'#{id}' attribute id must be specified as a symbol")
       end
-      if !block_given?
-        @services.jaba_error("'#{id}' attribute requires a block")
-      end
       if get_attr_def(id, fail_if_not_found: false)
         @services.jaba_error("'#{id}' attribute multiply defined")
       end
-      ad = AttributeDefinition.new(@services, id, type, array, self, block.source_location)
+      ad = AttributeDefinition.new(@services, id, type, array, self, caller(2, 1)[0])
       ad.api_eval(&block)
       @attribute_defs << ad
       @attribute_def_lookup[id] = ad
@@ -261,7 +259,7 @@ module JABA
     ##
     #
     def make_node(handle: @current_def_data.id, attrs_mask: nil, parent: nil)
-      jn = JabaNode.new(@services, self, handle, attrs_mask, parent, @current_def_data.block.source_location)
+      jn = JabaNode.new(@services, self, handle, attrs_mask, parent, @current_def_data.api_call_line)
       yield jn if block_given?
       jn.api_eval(&@current_def_data.block)
       jn.post_create

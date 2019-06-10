@@ -47,8 +47,7 @@ module JABA
       check_fail "'filename' attribute requires a value",
                   trace: [__FILE__, '# tag1', CORE_TYPES_FILE, 'attr :filename, type: :file do'] do
         jaba do
-          text :t do # tag1
-          end
+          text :t # tag1
         end
       end
     end

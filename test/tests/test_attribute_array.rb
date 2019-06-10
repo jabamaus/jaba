@@ -22,8 +22,7 @@ module JABA
     it 'strips duplicates by default' do
       jaba do
         define :test do
-          attr_array :a do
-          end
+          attr_array :a
         end
         test :t do
           a [5, 5, 6, 6, 7, 7, 7]
@@ -56,14 +55,10 @@ module JABA
     it 'sorts by default' do
       jaba do
         define :test do
-          attr_array :a do
-          end
-          attr_array :b do
-          end
-          attr_array :c do
-          end
-          attr_array :d do
-          end
+          attr_array :a
+          attr_array :b
+          attr_array :c
+          attr_array :d
         end
         test :t do
           a [5, 4, 2, 1, 3]
@@ -83,8 +78,7 @@ module JABA
     it 'does not sort or strip duplicates from bool arrays' do
       jaba do
         define :test do
-          attr_array :a, type: :bool do
-          end
+          attr_array :a, type: :bool
         end
         test :t do
           a [true, false, false, true]
@@ -131,8 +125,7 @@ module JABA
       check_fail 'Prefix/postfix option can only be used with arrays of strings', trace: [__FILE__, '# tag1'] do
         jaba do
           define :test do
-            attr_array :a do
-            end
+            attr_array :a
           end
           test :t do
             a [1, 2, 3], prefix: 'a', postfix: 'b' # tag1
@@ -144,10 +137,8 @@ module JABA
     it 'supports excluding elements' do
       jaba do
         define :test do
-          attr_array :a do
-          end
-          attr_array :b do
-          end
+          attr_array :a
+          attr_array :b
         end
         test :t do
           a :a
@@ -183,8 +174,7 @@ module JABA
     it 'supports excluding elements with regexes' do
       jaba do
         define :test do
-          attr_array :a do
-          end
+          attr_array :a
         end
         test :t do
           a ['one', 'two', 'three', 'four']
@@ -200,8 +190,7 @@ module JABA
       check_fail 'Exclude regex can only operate on strings', trace: [__FILE__, '# tag2'] do
         jaba do
           define :test do
-            attr_array :a do
-            end
+            attr_array :a
           end
           test :t do
             a [1, 2, 3, 4, 43], exclude: [/3/] # tag2
@@ -213,10 +202,8 @@ module JABA
     it 'supports conditional excluding' do
       jaba do
         define :test do
-          attr_array :a do
-          end
-          attr_array :b do
-          end
+          attr_array :a
+          attr_array :b
         end
         test :t do
           a [:a]
@@ -234,8 +221,7 @@ module JABA
     it 'supports clearing arrays' do
       jaba do
         define :test do
-          attr_array :a do
-          end
+          attr_array :a
           attr :b do
             default 1
           end

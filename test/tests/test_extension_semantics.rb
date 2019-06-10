@@ -7,8 +7,7 @@ module JABA
     it 'supports creating new node types' do
       jaba do
         define :test do
-          attr :a do
-          end
+          attr :a
         end
         test :t do
           a 'b'
@@ -20,8 +19,7 @@ module JABA
     it 'fails if try to open undefined type' do
       check_fail "'undefined' has not been defined", trace: [__FILE__, '# tag1'] do
         jaba do
-          open :undefined do # tag1
-          end
+          open :undefined # tag1
         end
       end
     end
@@ -29,8 +27,7 @@ module JABA
     it 'supports opening types' do
       jaba do
         open :workspace do
-          attr :a do
-          end
+          attr :a
         end
         
         workspace :w do
@@ -96,8 +93,7 @@ module JABA
       check_fail(/'undefined' attribute type is undefined. Valid types: \[.*?\]/, trace: [__FILE__, '# tag3']) do
         jaba do
           define :a do
-            attr :b, type: :undefined do # tag3
-            end
+            attr :b, type: :undefined # tag3
           end
         end
       end
@@ -145,8 +141,7 @@ module JABA
     it 'supports a generate hook per-object' do
       assert_output 'generate' do
         jaba do
-          define :test do
-          end
+          define :test
           test :t do
             generate do
               print 'generate'
@@ -167,25 +162,20 @@ module JABA
             flags :unordered, :required
           end
           
-          attr :platform do
-          end
+          attr :platform
             
           attr_array :hosts do
             flags :unordered, :required
           end
           
-          attr :host do
-          end
-
-          attr :src do
-          end
+          attr :host
+          attr :src
           
           attr_array :targets do
             flags :required, :unordered
           end
           
-          attr :target do
-          end
+          attr :target
           
           attr :rtti do
             default do

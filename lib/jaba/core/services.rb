@@ -28,7 +28,7 @@ module JABA
     ##
     # Records information about each definition the user has made.
     #
-    Definition = Struct.new(:type, :id, :block, :options)
+    Definition = Struct.new(:type, :id, :block, :options, :api_call_line)
     
     ##
     #
@@ -91,19 +91,19 @@ module JABA
     ##
     #
     def define_attr_type(type, **options, &block)
-      @jaba_attr_types << Definition.new(type, nil, block, options)
+      @jaba_attr_types << Definition.new(type, nil, block, options, caller(2, 1)[0])
     end
     
     ##
     #
     def define_type(type, **options, &block)
-      @jaba_types << Definition.new(type, nil, block, options)
+      @jaba_types << Definition.new(type, nil, block, options, caller(2, 1)[0])
     end
     
     ##
     #
     def open_type(type, **options, &block)
-      @jaba_types_to_open << Definition.new(type, nil, block, options)
+      @jaba_types_to_open << Definition.new(type, nil, block, options, caller(2, 1)[0])
     end
     
     ##
@@ -116,7 +116,7 @@ module JABA
     #
     def define_instance(type, id, **options, &block)
       log "Instancing #{type} [id=#{id}]"
-      def_data = Definition.new(type, id, block, options)
+      def_data = Definition.new(type, id, block, options, caller(2, 1)[0])
       
       if id
         if !(id.is_a?(Symbol) || id.is_a?(String)) || id !~ /^[a-zA-Z0-9_.]+$/
@@ -185,7 +185,7 @@ module JABA
       @jaba_types_to_open.each do |def_data|
         jt = @jaba_types.find {|t| t.type == def_data.type}
         if !jt
-          jaba_error("'#{def_data.type}' has not been defined", callstack: def_data.block)
+          jaba_error("'#{def_data.type}' has not been defined", callstack: def_data.api_call_line)
         end
         jt.api_eval(&def_data.block)
       end
@@ -200,7 +200,7 @@ module JABA
         jt = @jaba_types.find {|t| t.type == type}
         defs.each do |def_data|
           if !jt
-            jaba_error("'#{type}' type is not defined. Cannot instance.", callstack: def_data.block)
+            jaba_error("'#{type}' type is not defined. Cannot instance.", callstack: def_data.api_call_line)
           end
           nodes = jt.build_nodes(def_data)
           @nodes.concat(nodes)
@@ -419,15 +419,7 @@ module JABA
     def make_jaba_error(msg, syntax: false, callstack: nil, warn: false)
       msg = msg.capitalize_first
       
-      cs = if callstack
-             if callstack.is_a?(Proc)
-               callstack.source_location.join(':')
-             else
-               callstack
-             end
-           else
-             caller
-           end
+      cs = callstack ? callstack : caller
       
       # Extract any lines in the callstack that contain references to definition source files.
       #

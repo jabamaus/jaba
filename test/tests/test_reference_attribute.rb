@@ -9,8 +9,7 @@ module JABA
                   trace: [CORE_TYPES_FILE, "raise \"'referenced_type' must be set\"", __FILE__, '# tag1'] do
         jaba do
           define :a do
-            attr :b, type: :reference do # tag1
-            end
+            attr :b, type: :reference # tag1
           end
         end
       end

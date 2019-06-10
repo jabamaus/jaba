@@ -8,19 +8,16 @@ module JABA
       check_fail '\'attr\' attribute id must be specified as a symbol', trace: [__FILE__, '# tag1'] do
         jaba do
           define :test do
-            attr 'attr' do # tag1
-            end
+            attr 'attr' # tag1
           end
         end
       end
     end
     
-    it 'requires a block to be supplied' do
-      check_fail "'b' attribute requires a block", trace: [__FILE__, '# tag2'] do
-        jaba do
-          define :test do
-            attr :b # tag2
-          end
+    it 'does not require a block to be supplied' do
+      jaba do
+        define :test do
+          attr :b
         end
       end
     end
@@ -29,10 +26,8 @@ module JABA
       check_fail "'a' attribute multiply defined", trace: [__FILE__, '# tag3'] do
         jaba do
           define :test do
-            attr :a do
-            end
-            attr :a do # tag3
-            end
+            attr :a
+            attr :a # tag3
           end
         end
       end
