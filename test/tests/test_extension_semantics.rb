@@ -117,6 +117,31 @@ module JABA
       # TODO: test something
     end
 
+    it 'evaluates in order of definition' do
+      assert_output 'def a;def b;def c;c;b;a;' do
+        jaba do
+          define :a do
+            print 'def a;'
+          end
+          define :b do
+            print 'def b;'
+          end
+          define :c do
+            print 'def c;'
+          end
+          c :c do
+            print 'c;'
+          end
+          b :b do
+            print 'b;'
+          end
+          a :a do
+            print 'a;'
+          end
+        end
+      end
+    end
+    
     it 'supports a generate hook per-object' do
       assert_output 'generate' do
         jaba do
