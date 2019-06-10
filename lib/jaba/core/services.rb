@@ -395,7 +395,7 @@ module JABA
     def make_jaba_error(msg, syntax: false, callstack: nil, warn: false)
       msg = msg.capitalize_first
       
-      cs = callstack ? callstack : caller
+      cs = callstack || caller
       
       # Extract any lines in the callstack that contain references to definition source files.
       #
