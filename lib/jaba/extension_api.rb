@@ -65,8 +65,6 @@ module JABA
   end
 
   ##
-  # TODO: consider driving attrs from types eg.
-  #
   # reference :platforms do
   # end
   #
