@@ -28,6 +28,12 @@ module JABA
     end
     
     ##
+    #
+    def print(str)
+      ::Kernel.print(str)
+    end
+    
+    ##
     # Internal use only.
     #
     def __set_obj(o)
