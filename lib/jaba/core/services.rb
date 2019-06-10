@@ -44,9 +44,8 @@ module JABA
       
       @definition_src_files = []
       
-      @all_generated_files = {}
-      @added_files = []
-      @modified_files = []
+      @generated_files_hash = {}
+      @generated_files = []
       
       @jaba_attr_types = []
       @jaba_types = []
@@ -239,8 +238,7 @@ module JABA
       @logger&.close
       
       op = Output.new
-      op.instance_variable_set(:@added_files, @added_files)
-      op.instance_variable_set(:@modified_files, @modified_files)
+      op.instance_variable_set(:@generated_files, @generated_files)
       op.instance_variable_set(:@warnings, @warnings)
       op
     end
@@ -311,30 +309,6 @@ module JABA
     end
     
     ##
-    # TODO: keep a cache of checksums
-    def write_file(fn, str)
-      exists = File.exist?(fn)
-      existing_str = exists ? IO.binread(fn).force_encoding(str.encoding) : nil
-      equal = (exists && (str == existing_str))
-      
-      if !equal
-        dir = File.dirname(fn)
-        if !File.exist?(dir)
-          FileUtils.makedirs(dir)
-        end
-        File.open(fn, 'wb') do |f|
-          f.write(str)
-        end
-      end
-      
-      if !exists
-        :added
-      elsif !equal
-        :modified
-      end
-    end
-    
-    ##
     #
     def save_file(filename, content, eol)
       if (eol == :windows) || ((eol == :native) && OS.windows?)
@@ -342,16 +316,18 @@ module JABA
       end
       filename = filename.cleanpath
       log "Saving #{filename}"
-      warning "Duplicate file '#{filename}' generated" if @all_generated_files.key?(filename)
+      warning "Duplicate file '#{filename}' generated" if @generated_files_hash.key?(filename)
       
       # register_src_file(filename)
-      @all_generated_files[filename] = nil
+      @generated_files_hash[filename] = nil
+      @generated_files << filename
       
-      case write_file(filename, content)
-      when :modified
-        @modified_files << filename
-      when :added
-        @added_files << filename
+      dir = File.dirname(filename)
+      if !File.exist?(dir)
+        FileUtils.makedirs(dir)
+      end
+      File.open(filename, 'wb') do |f|
+        f.write(content)
       end
     end
 
