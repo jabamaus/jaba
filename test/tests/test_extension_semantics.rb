@@ -113,26 +113,47 @@ module JABA
       # TODO: test something
     end
 
-    it 'evaluates in order of definition' do
-      assert_output 'def a;def b;def c;c;b;a;' do
+    it 'instances types in order of definition' do
+      assert_output 'a;1;2;3;' do
+        jaba do
+          a :a do
+            print '1;'
+          end
+          a :b do
+            print '2;'
+          end
+          a :c do
+            print '3;'
+          end
+          define :a do
+            print 'a;'
+          end
+        end
+      end
+    end
+    
+    it 'supports dependencies between types' do
+      assert_output 'def a;def b;def c;a;b;c;' do
         jaba do
           define :a do
             print 'def a;'
           end
           define :b do
             print 'def b;'
+            dependencies [:a]
           end
           define :c do
+            dependencies [:b]
             print 'def c;'
           end
           c :c do
-            print 'c;'
-          end
-          b :b do
-            print 'b;'
+            print 'c;' # evaluated third
           end
           a :a do
-            print 'a;'
+            print 'a;' # evaluated first
+          end
+          b :b do
+            print 'b;' # evaluated second
           end
         end
       end

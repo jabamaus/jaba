@@ -207,6 +207,7 @@ module JABA
 
     attr_reader :type
     attr_reader :attribute_defs
+    attr_reader :dependencies
     
     ##
     #
@@ -217,6 +218,7 @@ module JABA
       @attribute_defs = []
       @attribute_def_lookup = {}
       @build_nodes_hook = nil
+      @dependencies = []
     end
     
     ##
@@ -272,6 +274,10 @@ module JABA
       # Convert super type id to object handle
       #
       @super_type = @services.get_jaba_type(@super_type) if @super_type
+      
+      # Convert dependencies specified as ids to jaba type objects
+      #
+      @dependencies&.map! {|dep| @services.get_jaba_type(dep)}
       @attribute_defs.each(&:init)
     end
     

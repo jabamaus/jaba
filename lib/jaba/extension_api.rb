@@ -83,6 +83,12 @@ module JABA
     
     ##
     #
+    def dependencies(*deps)
+      @obj.set_var(:dependencies, deps.flatten)
+    end
+    
+    ##
+    #
     def build_nodes(&block)
       @obj.define_hook(:build_nodes, &block)
     end
@@ -104,7 +110,7 @@ module JABA
     # Set any number of flags to control the behaviour of the attribute.
     #
     def flags(*flags, &block)
-      @obj.set_var(:flags, flags, &block)
+      @obj.set_var(:flags, flags.flatten, &block)
     end
     
     ##

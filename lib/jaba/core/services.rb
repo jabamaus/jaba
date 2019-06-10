@@ -50,7 +50,8 @@ module JABA
       @jaba_attr_types = []
       @jaba_types = []
       @jaba_types_to_open = []
-      @definition_registry = {} # TODO: not a good name
+      @definition_registry = {}
+      @jaba_types_to_instance = []
       @nodes = []
       @node_lookup = {}
       
@@ -128,6 +129,10 @@ module JABA
       end
       
       @definition_registry.push_value(type, def_data)
+      
+      if type != :shared
+        @jaba_types_to_instance << def_data
+      end
     end
     
     ##
@@ -190,22 +195,27 @@ module JABA
       end
       
       @jaba_types.each(&:init)
+      @jaba_types.sort_topological!(:dependencies)
+      @jaba_types.each_with_index{|jt, i| jt.instance_variable_set(:@order_index, i)}
+      
+      @jaba_types_to_instance.each do |def_data|
+        jt = get_jaba_type(def_data.type, fail_if_not_found: false)
+        if !jt
+          jaba_error("'#{def_data.type}' type is not defined. Cannot instance.", callstack: def_data.api_call_line)
+        end
+        def_data.type = jt
+      end
+      
+      n = 0
+      @jaba_types_to_instance.sort_by!{|d| n += 1 ; [d.type.instance_variable_get(:@order_index), n]}
       
       # Create instances of types
-      # TODO: do in dependency order
       #
-      @definition_registry.each do |type, defs|
-        next if type == :shared
-        jt = @jaba_types.find {|t| t.type == type}
-        defs.each do |def_data|
-          if !jt
-            jaba_error("'#{type}' type is not defined. Cannot instance.", callstack: def_data.api_call_line)
-          end
-          nodes = jt.build_nodes(def_data)
-          @nodes.concat(nodes)
-          nodes.each do |n|
-            @node_lookup[n.handle] = n
-          end
+      @jaba_types_to_instance.each do |def_data|
+        nodes = def_data.type.build_nodes(def_data)
+        @nodes.concat(nodes)
+        nodes.each do |n|
+          @node_lookup[n.handle] = n
         end
       end
       
