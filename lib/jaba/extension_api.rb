@@ -65,16 +65,6 @@ module JABA
   end
 
   ##
-  # reference :platforms do
-  # end
-  #
-  # dir :root do
-  # end
-  #
-  # or maybe
-  #
-  # attr_dir :root do
-  # end
   #
   class JabaTypeAPI < APIBase
     
