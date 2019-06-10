@@ -14,8 +14,6 @@ Layout/SpaceInsideBlockBraces:
   Enabled: false
 Layout/TrailingWhitespace:
   Enabled: false
-Lint/RescueException:
-  Enabled: false
 Metrics/AbcSize:
   Enabled: false
 Metrics/BlockLength:

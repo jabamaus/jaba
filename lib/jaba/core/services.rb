@@ -196,7 +196,7 @@ module JABA
       
       @jaba_types.each(&:init)
       @jaba_types.sort_topological!(:dependencies)
-      @jaba_types.each_with_index{|jt, i| jt.instance_variable_set(:@order_index, i)}
+      @jaba_types.each_with_index {|jt, i| jt.instance_variable_set(:@order_index, i)}
       
       @jaba_types_to_instance.each do |def_data|
         jt = get_jaba_type(def_data.type, fail_if_not_found: false)
@@ -206,8 +206,11 @@ module JABA
         def_data.type = jt
       end
       
-      n = 0
-      @jaba_types_to_instance.sort_by!{|d| n += 1 ; [d.type.instance_variable_get(:@order_index), n]}
+      i = 0
+      @jaba_types_to_instance.sort_by! do |d|
+        i += 1
+        [d.type.instance_variable_get(:@order_index), i]
+      end
       
       # Create instances of types
       #
@@ -356,7 +359,7 @@ module JABA
       end
     rescue JabaError
       raise # Prevent fallthrough to next case
-    rescue Exception => e # Catch all errors, including SyntaxErrors, by rescuing Exception
+    rescue StandardError, ScriptError => e # Catches syntax errors
       jaba_error(e.message, syntax: true, callstack: e.backtrace)
     end
     

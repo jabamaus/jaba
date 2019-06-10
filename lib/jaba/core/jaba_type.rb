@@ -26,10 +26,6 @@ module JABA
       else
         @api.instance_eval(&block)
       end
-    rescue JabaError
-      raise
-    rescue Exception => e
-      @services.jaba_error(e.message, callstack: e.backtrace)
     end
     
     ##
