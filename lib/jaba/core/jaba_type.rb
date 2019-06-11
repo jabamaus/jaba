@@ -68,12 +68,18 @@ module JABA
     
     ##
     #
+    def get_var(var_name)
+      instance_variable_get("@#{var_name}")
+    end
+    
+    ##
+    #
     def handle_property(id, val, &block)
       if !instance_variable_defined?("@#{id}")
         @services.jaba_error("'#{id}' property not defined")
       end
       if val.nil?
-        return instance_variable_get("@#{id}")
+        return get_var(id)
       else
         set_var(id, val, &block)
       end
