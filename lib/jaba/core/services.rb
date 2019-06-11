@@ -206,11 +206,7 @@ module JABA
         def_data.type = jt
       end
       
-      i = 0
-      @jaba_types_to_instance.sort_by! do |d|
-        i += 1
-        [d.type.instance_variable_get(:@order_index), i]
-      end
+      @jaba_types_to_instance.stable_sort_by!{|d| d.type.instance_variable_get(:@order_index)}
       
       # Create instances of types
       #

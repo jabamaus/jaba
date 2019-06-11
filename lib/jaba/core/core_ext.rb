@@ -128,6 +128,12 @@ module JABACoreExt
       replace(JABA::TSorter.new(self, children).sort)
     end
   
+    ##
+    #
+    def stable_sort_by!
+      sort_by!.with_index {|x, i| [yield(x), i] }
+    end
+    
   end
   
 end
