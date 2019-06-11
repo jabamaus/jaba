@@ -211,11 +211,8 @@ module JABA
       # Create instances of types
       #
       @jaba_types_to_instance.each do |def_data|
-        nodes = def_data.type.build_nodes(def_data)
+        nodes = build_nodes(def_data)
         @nodes.concat(nodes)
-        nodes.each do |n|
-          @node_lookup[n.handle] = n
-        end
       end
       
       # Resolve references
@@ -224,7 +221,7 @@ module JABA
         n.attributes.each do |a|
           next if a.type != :reference
           a.map! do |ref|
-            obj = @node_lookup[ref]
+            obj = node_from_handle(ref)
             obj
           end
         end
@@ -250,6 +247,32 @@ module JABA
       op.instance_variable_set(:@generated_files, @generated_files)
       op.instance_variable_set(:@warnings, @warnings)
       op
+    end
+    
+    ##
+    #
+    def make_node(handle: @current_def_data.id, attrs_mask: nil, parent: nil)
+      jn = JabaNode.new(self, @current_def_data.type, handle, attrs_mask, parent, @current_def_data.api_call_line)
+      @node_lookup[jn.handle] = jn
+      yield jn if block_given?
+      jn.api_eval(&@current_def_data.block)
+      jn.post_create
+      jn
+    end
+    
+    ##
+    #
+    def build_nodes(def_data)
+      @current_def_data = def_data
+      if def_data.type.build_nodes_hook
+        result = instance_eval(&def_data.type.build_nodes_hook) # TODO: what api should build_nodes hook be targeting?
+        if result.nil? || !result.is_a?(Array) || result.empty? || !result[0].is_a?(JabaNode)
+          jaba_error("'build_nodes' hook must return an array of nodes") # TODO: test this
+        end
+        return result
+      else
+        return [make_node]
+      end 
     end
     
     ##
@@ -291,6 +314,12 @@ module JABA
     #
     def definition_defined?(type, id)
       get_definition(type, id, fail_if_not_found: false) != nil
+    end
+    
+    ##
+    #
+    def node_from_handle(h)
+      @node_lookup[h]
     end
     
     ##

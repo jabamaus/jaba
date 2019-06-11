@@ -204,6 +204,7 @@ module JABA
     attr_reader :type
     attr_reader :attribute_defs
     attr_reader :dependencies
+    attr_reader :build_nodes_hook
     
     ##
     #
@@ -256,16 +257,6 @@ module JABA
     
     ##
     #
-    def make_node(handle: @current_def_data.id, attrs_mask: nil, parent: nil)
-      jn = JabaNode.new(@services, self, handle, attrs_mask, parent, @current_def_data.api_call_line)
-      yield jn if block_given?
-      jn.api_eval(&@current_def_data.block)
-      jn.post_create
-      jn
-    end
-    
-    ##
-    #
     def init
       # Convert super type id to object handle
       #
@@ -275,21 +266,6 @@ module JABA
       #
       @dependencies&.map! {|dep| @services.get_jaba_type(dep)}
       @attribute_defs.each(&:init)
-    end
-    
-    ##
-    #
-    def build_nodes(def_data)
-      @current_def_data = def_data
-      if @build_nodes_hook
-        result = instance_eval(&@build_nodes_hook) # TODO: what api should build_nodes hook be targeting?
-        if result.nil? || !result.is_a?(Array) || result.empty? || !result[0].is_a?(JabaNode)
-          @services.jaba_error("'build_nodes' hook must return an array of nodes") # TODO: test this
-        end
-        return result
-      else
-        return [make_node]
-      end 
     end
     
   end
