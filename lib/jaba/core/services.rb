@@ -211,8 +211,16 @@ module JABA
       # Create instances of types
       #
       @jaba_types_to_instance.each do |def_data|
-        nodes = build_nodes(def_data)
-        @nodes.concat(nodes)
+        @current_def_data = def_data
+        if def_data.type.build_nodes_hook
+          result = instance_eval(&def_data.type.build_nodes_hook) # TODO: what api should build_nodes hook be targeting?
+          if result.nil? || !result.is_a?(Array) || result.empty? || !result[0].is_a?(JabaNode)
+            jaba_error("'build_nodes' hook must return an array of nodes") # TODO: test this
+          end
+          @nodes.concat(result)
+        else
+          @nodes << make_node
+        end 
       end
       
       # Resolve references
@@ -258,21 +266,6 @@ module JABA
       jn.api_eval(&@current_def_data.block)
       jn.post_create
       jn
-    end
-    
-    ##
-    #
-    def build_nodes(def_data)
-      @current_def_data = def_data
-      if def_data.type.build_nodes_hook
-        result = instance_eval(&def_data.type.build_nodes_hook) # TODO: what api should build_nodes hook be targeting?
-        if result.nil? || !result.is_a?(Array) || result.empty? || !result[0].is_a?(JabaNode)
-          jaba_error("'build_nodes' hook must return an array of nodes") # TODO: test this
-        end
-        return result
-      else
-        return [make_node]
-      end 
     end
     
     ##
