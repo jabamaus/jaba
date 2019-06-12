@@ -91,6 +91,8 @@ module JABA
       # TODO: fix
       @value = if @attr_def.type == :keyvalue
                  { value => args[0] }
+               elsif @attr_def.type == :reference && @attr_def.get_var(:referenced_type) != @node.type
+                 @services.node_from_handle(value)
                else
                  value
                end
@@ -274,15 +276,19 @@ module JABA
   class JabaNode < JabaAPIObject
 
     attr_reader :jaba_type
+    attr_reader :id
     attr_reader :handle
     attr_reader :attributes
     attr_reader :generate_hooks
     
     ##
     #
-    def initialize(services, jaba_type, handle, attrs_mask, parent, api_call_line)
+    def initialize(services, jaba_type, id, handle, attrs_mask, parent, api_call_line)
       super(services, services.jaba_node_api)
+      @services.log_debug("Making node [type=#{jaba_type.type} id=#{id} handle=#{handle}, parent=#{parent}, api_call_line=#{api_call_line}]")
+
       @jaba_type = jaba_type
+      @id = id
       @handle = handle
       @parent = parent
       @api_call_line = api_call_line
@@ -297,6 +303,12 @@ module JABA
         @attribute_lookup[attr_def.id] = a
         @attributes << a
       end
+    end
+    
+    ##
+    #
+    def <=>(other)
+      @id.casecmp(other.id)
     end
     
     ##

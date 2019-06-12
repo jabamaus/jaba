@@ -229,8 +229,11 @@ module JABA
         n.attributes.each do |a|
           next if a.type != :reference
           a.map! do |ref|
-            obj = node_from_handle(ref)
-            obj
+            if ref.is_a?(Symbol)
+              node_from_handle(ref)
+            else
+              ref
+            end
           end
         end
       end
@@ -260,7 +263,7 @@ module JABA
     ##
     #
     def make_node(handle: @current_def_data.id, attrs_mask: nil, parent: nil)
-      jn = JabaNode.new(self, @current_def_data.type, handle, attrs_mask, parent, @current_def_data.api_call_line)
+      jn = JabaNode.new(self, @current_def_data.type, @current_def_data.id, handle, attrs_mask, parent, @current_def_data.api_call_line)
       @node_lookup[jn.handle] = jn
       yield jn if block_given?
       jn.api_eval(&@current_def_data.block)
@@ -311,8 +314,12 @@ module JABA
     
     ##
     #
-    def node_from_handle(h)
-      @node_lookup[h]
+    def node_from_handle(handle, fail_if_not_found: true)
+      n = @node_lookup[handle]
+      if !n && fail_if_not_found
+        jaba_error("Node with handle '#{handle}' not found")
+      end
+      n
     end
     
     ##
