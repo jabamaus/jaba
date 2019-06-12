@@ -65,9 +65,9 @@ module JABA
       file = trace[0]
       line = find_line_number(file, trace[1])
       
+      e.message.must_match(msg)
       e.file.must_equal(file)
       e.line.must_equal(line)
-      e.message.must_match(msg)
       e.internal.must_equal(internal)
       
       backtrace = []
