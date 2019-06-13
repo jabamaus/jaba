@@ -179,13 +179,15 @@ module JABA
             default '.'
           end
 
-          attr_array :platforms do
+          attr_array :platforms, type: :reference do
+            referenced_type :platform
             flags :unordered, :required
           end
           
           attr :platform
             
-          attr_array :hosts do
+          attr_array :hosts, type: :reference do
+            referenced_type :host
             flags :unordered, :required
           end
           
@@ -228,6 +230,7 @@ module JABA
         
         test_project :t do
           platforms [:win32, :x64]
+          platforms.must_equal [:win32, :x64]
           root 'test'
           case platform
           when :win32
@@ -253,27 +256,26 @@ module JABA
           end
           
           generate do
-            platforms.must_equal [:win32, :x64]
-            [:win32, :x64].must_include(platform)
-            [:vs2013, :vs2015, :vs2017, :vs2019].must_include(host)
+            platforms[0].id.must_equal(:win32)
+            platforms[1].id.must_equal(:x64)
             
-            case host
+            case host.id
             when :vs2013
-              platform.must_equal(:win32)
+              platform.id.must_equal(:win32)
               rtti&.must_equal('on') # TODO: add assert_property(:rtti, 'on') ?
               src.must_equal 'win32_vs2013_src'
               targets.must_equal [:debug, :release]
             when :vs2015
-              platform.must_equal(:win32)
+              platform.id.must_equal(:win32)
               src.must_equal 'win32_vs2015_src'
               targets.must_equal [:dev, :check]
             when :vs2017
               rtti&.must_equal('off')
-              platform.must_equal(:x64)
+              platform.id.must_equal(:x64)
               src.must_equal 'x64_vs2017_src'
               targets.must_equal [:debug, :release]
             when :vs2019
-              platform.must_equal(:x64)
+              platform.id.must_equal(:x64)
               src.must_equal 'x64_vs2019_src'
               targets.must_equal [:dev, :check]
             end

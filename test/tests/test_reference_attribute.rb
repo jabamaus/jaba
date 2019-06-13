@@ -30,22 +30,25 @@ module JABA
       end
     end
     
+    # TODO: automatically add referenced_type to type dependencies
     it 'resolves references to dependent types immediately' do
       jaba do
         define :type_a do
           dependencies :host
-          attr :host_ref, type: :reference do
+          attr :host, type: :reference do
             referenced_type :host
           end
         end
         type_a :a do
-          host_ref :vs2017
-          host_ref.id.must_equal(:vs2017)
-          host_ref.visual_studio.must_equal(true)
+          host :vs2017
+          host.must_equal(:vs2017)
+          (host == :vs2017).must_equal(true)
+          vs2017?.must_equal(true)
         end
       end
     end
     
+    # TODO: test references with same id different types
     it 'resolves references' do
       jaba do
         define :a do
@@ -79,6 +82,38 @@ module JABA
             c[0].e.must_equal 2
             c[1].e.must_equal 3
           end
+        end
+      end
+    end
+    
+    # TODO: test read only
+    it 'automatically imports referenced node attributes read only' do
+      jaba do
+        define :test do
+          attr :platform, type: :reference do
+            referenced_type :platform
+          end
+          attr :host, type: :reference do
+            referenced_type :host
+          end
+        end
+        test :t do
+          platform :win32
+          host :vs2013
+          platform.must_equal(:win32)
+          host.must_equal(:vs2013)
+          win32?.must_equal(true)
+          windows?.must_equal(true)
+          x64?.must_equal(false)
+          iOS?.must_equal(false)
+          macOS?.must_equal(false)
+          apple?.must_equal(false)
+          visual_studio?.must_equal(true)
+          vs2013?.must_equal(true)
+          vs2015?.must_equal(false)
+          vs2017?.must_equal(false)
+          vs2019?.must_equal(false)
+          xcode?.must_equal(false)
         end
       end
     end

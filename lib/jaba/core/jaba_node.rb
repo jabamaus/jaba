@@ -70,9 +70,11 @@ module JABA
     
     ##
     #
-    def get
+    def get(api_call_line = nil)
       if !set? && @default_is_proc
         @node.api_eval(&@default)
+      elsif api_call_line && @value.is_a?(JabaNode)
+        @value.id
       else
         @value
       end
@@ -92,7 +94,9 @@ module JABA
       @value = if @attr_def.type == :keyvalue
                  { value => args[0] }
                elsif @attr_def.type == :reference && @attr_def.get_var(:referenced_type) != @node.type
-                 @services.node_from_handle(value)
+                 ref_node = @services.node_from_handle(value)
+                 @node.referenced_nodes << ref_node
+                 ref_node
                else
                  value
                end
@@ -176,11 +180,11 @@ module JABA
     
     ##
     #
-    def get
+    def get(api_call_line = nil)
       if !set? && @default_is_proc
         @node.api_eval(&@default)
       else
-        @elems.map(&:get)
+        @elems.map {|e| e.get(api_call_line)}
       end
     end
     
@@ -280,17 +284,20 @@ module JABA
     attr_reader :handle
     attr_reader :attributes
     attr_reader :generate_hooks
+    attr_reader :referenced_nodes
     
     ##
     #
     def initialize(services, jaba_type, id, handle, attrs_mask, parent, api_call_line)
       super(services, services.jaba_node_api)
-      @services.log_debug("Making node [type=#{jaba_type.type} id=#{id} handle=#{handle}, parent=#{parent}, api_call_line=#{api_call_line}]")
+      @services.log_debug("Making node [type=#{jaba_type.type} id=#{id} handle=#{handle}, " \
+                          "parent=#{parent}, api_call_line=#{api_call_line}]")
 
       @jaba_type = jaba_type
       @id = id
       @handle = handle
       @parent = parent
+      @referenced_nodes = []
       @api_call_line = api_call_line
       
       @attributes = []
@@ -312,12 +319,18 @@ module JABA
     end
     
     ##
-    # TODO: This needs testing
-    def get_attr(attr_id, fail_if_not_found: true, search_parents: false)
+    #
+    def get_attr(attr_id, fail_if_not_found: true, search: false)
       a = @attribute_lookup[attr_id]
       if !a
-        if search_parents && @parent
-          return @parent.get_attr(attr_id, fail_if_not_found: false, search_parents: true)
+        if search
+          @referenced_nodes.each do |ref_node|
+            a = ref_node.get_attr(attr_id, fail_if_not_found: false, search: false)
+            return a if a
+          end
+          if @parent
+            return @parent.get_attr(attr_id, fail_if_not_found: false, search: true)
+          end
         end
         if fail_if_not_found
           @services.jaba_error("'#{attr_id}' attribute not found")
@@ -357,14 +370,14 @@ module JABA
       if is_get
         # If its a get operation, look for attribute in this node and all parent nodes
         #
-        a = get_attr(id, search_parents: true, fail_if_not_found: false)
+        a = get_attr(id, search: true, fail_if_not_found: false)
         
         if !a
           # TODO: check if property is defined at all
           return nil
         end
         
-        return a.get
+        return a.get(api_call_line)
       else
         if @attr_def_mask&.none? {|m| m == id}
           return nil
