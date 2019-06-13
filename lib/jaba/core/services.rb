@@ -206,7 +206,7 @@ module JABA
         def_data.type = jt
       end
       
-      @jaba_types_to_instance.stable_sort_by!{|d| d.type.instance_variable_get(:@order_index)}
+      @jaba_types_to_instance.stable_sort_by! {|d| d.type.instance_variable_get(:@order_index)}
       
       # Create instances of types
       #
@@ -263,7 +263,8 @@ module JABA
     ##
     #
     def make_node(handle: @current_def_data.id, attrs_mask: nil, parent: nil)
-      jn = JabaNode.new(self, @current_def_data.type, @current_def_data.id, handle, attrs_mask, parent, @current_def_data.api_call_line)
+      jn = JabaNode.new(self, @current_def_data.type, @current_def_data.id, handle, attrs_mask,
+                        parent, @current_def_data.api_call_line)
       @node_lookup[jn.handle] = jn
       yield jn if block_given?
       jn.api_eval(&@current_def_data.block)
