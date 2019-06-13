@@ -100,6 +100,8 @@ end
 platform :macos do
 end
 
+SUPPORTED_VS_VERSIONS = [2010, 2013, 2015, 2017, 2019].freeze
+
 ##
 #
 define :host do
@@ -110,11 +112,15 @@ define :host do
   attr :xcode, type: :bool do
   end
   
+  SUPPORTED_VS_VERSIONS.each do |vs_year|
+    attr "vs#{vs_year}?", type: :bool
+  end
 end
 
-[2008, 2013, 2015, 2017, 2019].each do |vs_year|
+SUPPORTED_VS_VERSIONS.each do |vs_year|
   host "vs#{vs_year}".to_sym do
     visual_studio true
+    __send__("vs#{vs_year}?", true)
   end
 end
 
