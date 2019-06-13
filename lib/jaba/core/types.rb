@@ -83,21 +83,39 @@ attr_type :reference do
   end
 end
 
+SUPPORTED_PLATFORMS = [:win32, :x64, :iOS, :macOS]
+
 ##
 #
 define :platform do
+
+  SUPPORTED_PLATFORMS.each do |p|
+    attr "#{p}?", type: :bool
+  end
+  
+  attr :windows?, type: :bool
+  attr :apple?, type: :bool
+  
 end
 
 platform :win32 do
+  win32? true
+  windows? true
 end
 
 platform :x64 do
+  x64? true
+  windows? true
 end
 
-platform :ios do
+platform :iOS do
+  iOS? true
+  apple? true
 end
 
-platform :macos do
+platform :macOS do
+  macOS? true
+  apple? true
 end
 
 SUPPORTED_VS_VERSIONS = [2010, 2013, 2015, 2017, 2019].freeze
@@ -106,26 +124,24 @@ SUPPORTED_VS_VERSIONS = [2010, 2013, 2015, 2017, 2019].freeze
 #
 define :host do
 
-  attr :visual_studio, type: :bool do
-  end
-  
-  attr :xcode, type: :bool do
-  end
+  attr :visual_studio?, type: :bool
+  attr :xcode?, type: :bool
   
   SUPPORTED_VS_VERSIONS.each do |vs_year|
     attr "vs#{vs_year}?", type: :bool
   end
+  
 end
 
 SUPPORTED_VS_VERSIONS.each do |vs_year|
   host "vs#{vs_year}".to_sym do
-    visual_studio true
+    visual_studio? true
     __send__("vs#{vs_year}?", true)
   end
 end
 
 host :xcode do
-  xcode true
+  xcode? true
 end
 
 ##
