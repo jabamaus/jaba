@@ -227,9 +227,10 @@ module JABA
     ##
     #
     def define_attr(id, type: nil, array: false, &block)
-      if !id.is_a?(Symbol)
-        @services.jaba_error("'#{id}' attribute id must be specified as a symbol")
+      if !(id.is_a?(Symbol) || id.is_a?(String))
+        @services.jaba_error("'#{id}' attribute id must be specified as a symbol or string")
       end
+      id = id.to_sym
       if get_attr_def(id, fail_if_not_found: false)
         @services.jaba_error("'#{id}' attribute multiply defined")
       end

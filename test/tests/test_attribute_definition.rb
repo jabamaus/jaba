@@ -4,12 +4,26 @@ module JABA
 
   class TestAttributeDefinition < JabaTest
 
-    it 'requires attribute id to be a symbol' do
-      check_fail '\'attr\' attribute id must be specified as a symbol', trace: [__FILE__, '# tag1'] do
+    it 'accepts a string or a symbol' do
+      check_fail '\'123\' attribute id must be specified as a symbol or string', trace: [__FILE__, '# tag1'] do
         jaba do
           define :test do
-            attr 'attr' # tag1
+            attr 123 # tag1
           end
+        end
+      end
+      jaba do
+        define :test do
+          attr 'attr1' do
+            default 1
+          end
+          attr :attr2 do
+            default 2
+          end
+        end
+        test :t do
+          attr1.must_equal 1
+          attr2.must_equal 2
         end
       end
     end
