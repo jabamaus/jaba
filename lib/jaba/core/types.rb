@@ -83,7 +83,7 @@ attr_type :reference do
   end
 end
 
-SUPPORTED_PLATFORMS = [:win32, :x64, :iOS, :macOS]
+SUPPORTED_PLATFORMS = [:win32, :x64, :iOS, :macOS].freeze
 
 ##
 #
@@ -98,27 +98,35 @@ define :platform do
   
 end
 
+##
+#
 platform :win32 do
   win32? true
   windows? true
 end
 
+##
+#
 platform :x64 do
   x64? true
   windows? true
 end
 
+##
+#
 platform :iOS do
   iOS? true
   apple? true
 end
 
+##
+#
 platform :macOS do
   macOS? true
   apple? true
 end
 
-SUPPORTED_VS_VERSIONS = [2010, 2013, 2015, 2017, 2019].freeze
+SUPPORTED_VS_VERSIONS = [2010, 2012, 2013, 2015, 2017, 2019].freeze
 
 ##
 #
@@ -126,20 +134,81 @@ define :host do
 
   attr :visual_studio?, type: :bool
   attr :xcode?, type: :bool
-  
+  attr :host_major_version
+  attr :host_version
+  attr :host_version_year
   SUPPORTED_VS_VERSIONS.each do |vs_year|
     attr "vs#{vs_year}?", type: :bool
   end
   
 end
 
-SUPPORTED_VS_VERSIONS.each do |vs_year|
-  host "vs#{vs_year}".to_sym do
-    visual_studio? true
-    __send__("vs#{vs_year}?", true)
-  end
+shared :vscommon do
+  visual_studio? true
 end
 
+##
+#
+host :vs2010 do
+  include :vscommon
+  vs2010? true
+  host_major_version 10
+  host_version '10.0'
+  host_version_year 2010
+end
+
+##
+#
+host :vs2012 do
+  include :vscommon
+  vs2012? true
+  host_major_version 11
+  host_version '11.0'
+  host_version_year 2012
+end
+
+##
+#
+host :vs2013 do
+  include :vscommon
+  vs2013? true
+  host_major_version 12
+  host_version '12.0'
+  host_version_year 2013
+end
+
+##
+#
+host :vs2015 do
+  include :vscommon
+  vs2015? true
+  host_major_version 14
+  host_version '14.0'
+  host_version_year 2015
+end
+
+##
+#
+host :vs2017 do
+  include :vscommon
+  vs2017? true
+  host_major_version 15
+  host_version '15.0'
+  host_version_year 2017
+end
+
+##
+#
+host :vs2019 do
+  include :vscommon
+  vs2019? true
+  host_major_version 16
+  host_version '16.0'
+  host_version_year 2019
+end
+
+##
+#
 host :xcode do
   xcode? true
 end
