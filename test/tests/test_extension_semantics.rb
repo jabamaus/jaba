@@ -262,7 +262,7 @@ module JABA
             case host.id
             when :vs2013
               platform.id.must_equal(:win32)
-              rtti&.must_equal('on') # TODO: add assert_property(:rtti, 'on') ?
+              rtti&.must_equal('on')
               src.must_equal 'win32_vs2013_src'
               targets.must_equal [:debug, :release]
             when :vs2015
