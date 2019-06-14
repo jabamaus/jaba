@@ -56,7 +56,9 @@ module JABA
         if c.size == 1
           result << c.first
         else
-          raise "#{c.first} contains a cyclic dependency"
+          r = RuntimeError.new
+          r.instance_variable_set(:@err_obj, c.first)
+          raise r
         end
       end
       result

@@ -159,6 +159,22 @@ module JABA
       end
     end
     
+    it 'checks for cyclic dependencies' do
+      check_fail '\'a\' contains a cyclic dependency', trace: [__FILE__, '# tag cd'] do
+        jaba do # tag cd TODO: fix error location
+          define :a do
+            dependencies :c
+          end
+          define :b do
+            dependencies :a
+          end
+          define :c do
+            dependencies :b
+          end
+        end
+      end
+    end
+    
     it 'supports a generate hook per-object' do
       assert_output 'generate' do
         jaba do

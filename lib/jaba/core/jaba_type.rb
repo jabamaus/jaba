@@ -226,6 +226,12 @@ module JABA
     
     ##
     #
+    def to_s
+      @type
+    end
+    
+    ##
+    #
     def define_attr(id, type: nil, array: false, &block)
       if !(id.is_a?(Symbol) || id.is_a?(String))
         @services.jaba_error("'#{id}' attribute id must be specified as a symbol or string")

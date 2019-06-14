@@ -195,7 +195,17 @@ module JABA
       end
       
       @jaba_types.each(&:init)
-      @jaba_types.sort_topological!(:dependencies)
+      
+      begin
+        @jaba_types.sort_topological!(:dependencies)
+      rescue => e
+        err_type = e.instance_variable_get(:@err_obj)
+        # to_s shouldn't be necessary but for some reason the string interpolation is not working properly
+        # here in ruby 2.6.3. Weird...
+        #
+        jaba_error("'#{err_type.to_s}' contains a cyclic dependency") # TODO: error location
+      end
+      
       @jaba_types.each_with_index {|jt, i| jt.instance_variable_set(:@order_index, i)}
       
       @jaba_types_to_instance.each do |def_data|
