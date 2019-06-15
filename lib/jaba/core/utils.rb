@@ -26,6 +26,10 @@ module JABA
 
   ##
   #
+  class CyclicDependency < StandardError ; end
+  
+  ##
+  #
   class TSorter
     include TSort
     
@@ -56,9 +60,9 @@ module JABA
         if c.size == 1
           result << c.first
         else
-          r = RuntimeError.new
-          r.instance_variable_set(:@err_obj, c.first)
-          raise r
+          e = CyclicDependency.new
+          e.instance_variable_set(:@err_obj, c.first)
+          raise e
         end
       end
       result

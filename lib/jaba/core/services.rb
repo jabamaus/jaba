@@ -198,7 +198,7 @@ module JABA
       
       begin
         @jaba_types.sort_topological!(:dependencies)
-      rescue => e
+      rescue CyclicDependency => e
         err_type = e.instance_variable_get(:@err_obj)
         # to_s shouldn't be necessary but for some reason the string interpolation is not working properly
         # here in ruby 2.6.3. Weird...
