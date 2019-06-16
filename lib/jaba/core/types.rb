@@ -278,8 +278,6 @@ end
 #
 define :project do
   
-  dependencies :category
-  
   attr :root, type: :dir do
     help 'Root of the project specified as a relative path to the file that contains the project definition. ' \
          'All paths are specified relative to this. Project files will be generated here unless the genroot ' \
@@ -310,8 +308,6 @@ end
 #
 define :cpp, extend: :project do
 
-  dependencies :platform, :host
-  
   attr_array :platforms, type: :reference do
     referenced_type :platform
     flags :unordered, :required
