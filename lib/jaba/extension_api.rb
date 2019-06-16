@@ -69,6 +69,12 @@ module JABA
   class JabaTypeAPI < APIBase
     
     ##
+    #
+    def type
+      @obj.type
+    end
+    
+    ##
     # Define a new attribute. See AttributeDefinitionAPI class below.
     #
     def attr(id, **options, &block)
@@ -143,6 +149,12 @@ module JABA
     #
     def add_property(id, val = nil)
       @obj.set_var(id, val)
+    end
+    
+    ##
+    #
+    def jaba_type
+      @obj.jaba_type.api
     end
     
     ##

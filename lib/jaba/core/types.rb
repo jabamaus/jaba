@@ -77,8 +77,12 @@ attr_type :reference do
   end
   
   validate_attr_def do
-    if referenced_type.nil?
+    rt = referenced_type
+    if rt.nil?
       raise "'referenced_type' must be set"
+    end
+    if jaba_type.type != rt
+      jaba_type.dependencies rt
     end
   end
 end

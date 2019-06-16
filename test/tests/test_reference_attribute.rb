@@ -30,20 +30,26 @@ module JABA
       end
     end
     
-    # TODO: automatically add referenced_type to type dependencies
-    it 'resolves references to dependent types immediately' do
+    # Referencing a node of a different type automatically adds a dependency so that instances of the referenced
+    # type are created first.
+    #
+    it 'resolves references to different types immediately' do
       jaba do
         define :type_a do
-          dependencies :host
-          attr :host, type: :reference do
-            referenced_type :host
+          attr :type_b, type: :reference do
+            referenced_type :type_b
+          end
+        end
+        define :type_b do
+          attr :c do
+            default 1
           end
         end
         type_a :a do
-          host :vs2017
-          host.must_equal(:vs2017)
-          (host == :vs2017).must_equal(true)
-          vs2017?.must_equal(true)
+          type_b :b
+          c.must_equal 1
+        end
+        type_b :b do
         end
       end
     end

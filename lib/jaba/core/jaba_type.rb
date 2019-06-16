@@ -132,15 +132,16 @@ module JABA
     attr_reader :type_obj # AttributeType object
     attr_reader :default
     attr_reader :api_call_line
+    attr_reader :jaba_type
     
     ##
     #
-    def initialize(services, id, type, is_array, jaba_type_obj, api_call_line)
+    def initialize(services, id, type, is_array, jaba_type, api_call_line)
       super(services, services.attr_definition_api)
       @id = id
       @type = type
       @is_array = is_array
-      @jaba_type_obj = jaba_type_obj
+      @jaba_type = jaba_type
       @api_call_line = api_call_line
 
       @default = nil
@@ -227,7 +228,7 @@ module JABA
     ##
     #
     def to_s
-      @type
+      @type.to_s
     end
     
     ##
@@ -274,11 +275,17 @@ module JABA
       # Convert super type id to object handle
       #
       @super_type = @services.get_jaba_type(@super_type) if @super_type
-      
+
+      @attribute_defs.each(&:init)
+    end
+    
+    ##
+    #
+    def resolve_dependencies
       # Convert dependencies specified as ids to jaba type objects
       #
+      @dependencies&.uniq!
       @dependencies&.map! {|dep| @services.get_jaba_type(dep)}
-      @attribute_defs.each(&:init)
     end
     
   end
