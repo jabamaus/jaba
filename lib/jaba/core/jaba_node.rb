@@ -289,7 +289,7 @@ module JABA
     ##
     #
     def initialize(services, jaba_type, id, handle, attrs_mask, parent, api_call_line)
-      super(services, services.jaba_node_api)
+      super(services, JabaNodeAPI.new)
       @services.log_debug("Making node [type=#{jaba_type.type} id=#{id} handle=#{handle}, " \
                           "parent=#{parent}, api_call_line=#{api_call_line}]")
 

@@ -20,10 +20,6 @@ module JABA
   class Services
 
     attr_reader :input
-    attr_reader :attr_type_api
-    attr_reader :attr_definition_api
-    attr_reader :jaba_type_api
-    attr_reader :jaba_node_api
 
     ##
     # Records information about each definition the user has made.
@@ -58,17 +54,11 @@ module JABA
       @file_read_cache = {}
       
       @top_level_api = TopLevelAPI.new
-      @attr_type_api = AttributeTypeAPI.new
-      @jaba_type_api = JabaTypeAPI.new
-      @attr_definition_api = AttributeDefinitionAPI.new
-      @jaba_node_api = JabaNodeAPI.new
+      @top_level_api.__set_obj(self)
 
-      @default_attr_type = AttributeType.new(self, nil)
-      @default_attr_type.freeze
+      @default_attr_type = AttributeType.new(self, nil).freeze
       
       @generators = {}
-      
-      @top_level_api.__set_obj(self)
     end
 
     ##

@@ -14,13 +14,13 @@ module JABA
     def initialize(services, api)
       @services = services
       @api = api
+      @api.__set_obj(self)
     end
     
     ##
     #
     def api_eval(args = nil, &block)
       return if !block_given?
-      @api.__set_obj(self)
       if !args.nil?
         @api.instance_exec(args, &block)
       else
@@ -113,7 +113,7 @@ module JABA
     ##
     #
     def initialize(services, type_id)
-      super(services, services.attr_type_api)
+      super(services, AttributeTypeAPI.new)
       @type = type_id
       @init_attr_def_hook = nil
       @validate_attr_def_hook = nil
@@ -137,7 +137,7 @@ module JABA
     ##
     #
     def initialize(services, id, type, is_array, jaba_type, api_call_line)
-      super(services, services.attr_definition_api)
+      super(services, AttributeDefinitionAPI.new)
       @id = id
       @type = type
       @is_array = is_array
@@ -216,7 +216,7 @@ module JABA
     ##
     #
     def initialize(services, type_id, super_type_id)
-      super(services, services.jaba_type_api)
+      super(services, JabaTypeAPI.new)
       @type = type_id
       @super_type = super_type_id
       @attribute_defs = []
