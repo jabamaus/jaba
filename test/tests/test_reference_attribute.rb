@@ -54,19 +54,24 @@ module JABA
       end
     end
     
-    # TODO: test referencing same type
     it 'resolves references to same type later' do
       jaba do
         define :type_a do
           attr :ref, type: :reference do
             referenced_type :type_a
           end
+          attr_array :ref_array, type: :reference do
+            referenced_type :type_a
+          end
         end
         type_a :a1 do
           ref :a3
           ref.must_equal :a3
+          ref_array [:a2, :a3]
           generate do
             attrs.ref.id.must_equal(:a3)
+            attrs.ref_array[0].id.must_equal(:a2)
+            attrs.ref_array[1].id.must_equal(:a3)
           end
         end
         type_a :a2 do
@@ -82,44 +87,6 @@ module JABA
     end
     
     it 'works with :required flag' do
-    end
-    
-    # TODO: test references with same id different types
-    it 'resolves references' do
-      jaba do
-        define :a do
-          dependencies :d
-          attr :b, type: :reference do
-            referenced_type :d
-          end
-          attr_array :c, type: :reference do
-            referenced_type :d
-          end
-        end
-        define :d do
-          attr :e do
-          end
-        end
-        d :d1 do
-          e 1
-        end
-        d :d2 do
-          e 2
-        end
-        d :d3 do
-          e 3
-        end
-        a :a_id do
-          b :d1
-          c [:d2, :d3]
-          generate do
-            attrs.b.attrs.e.must_equal 1
-            attrs.c.size.must_equal 2
-            attrs.c[0].attrs.e.must_equal 2
-            attrs.c[1].attrs.e.must_equal 3
-          end
-        end
-      end
     end
     
     # TODO: test read only

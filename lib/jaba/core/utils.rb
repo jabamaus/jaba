@@ -26,7 +26,7 @@ module JABA
 
   ##
   #
-  class CyclicDependency < StandardError ; end
+  class CyclicDependency < StandardError; end
   
   ##
   #
