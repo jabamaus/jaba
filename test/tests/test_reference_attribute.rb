@@ -17,14 +17,14 @@ module JABA
     
     it 'validates reference' do
       check_fail 'Node with handle \'undefined\' not found', trace: [__FILE__, '# tag2'] do
-        jaba do
+        jaba do # tag2 TODO: fix error line
           define :a do
             attr :b, type: :reference do
               referenced_type :a
             end
           end
           a :t do
-            b :undefined # tag2
+            b :undefined
           end
         end
       end
@@ -52,6 +52,36 @@ module JABA
         type_b :b do
         end
       end
+    end
+    
+    # TODO: test referencing same type
+    it 'resolves references to same type later' do
+      jaba do
+        define :type_a do
+          attr :ref, type: :reference do
+            referenced_type :type_a
+          end
+        end
+        type_a :a1 do
+          ref :a3
+          ref.must_equal :a3
+          generate do
+            ref.id.must_equal(:a3)
+          end
+        end
+        type_a :a2 do
+          ref :a1
+          ref.must_equal :a1
+          generate do
+            ref.id.must_equal(:a1)
+          end
+        end
+        type_a :a3 do
+        end
+      end
+    end
+    
+    it 'works with :required flag' do
     end
     
     # TODO: test references with same id different types

@@ -93,7 +93,7 @@ module JABA
       # TODO: fix
       @value = if @attr_def.type == :keyvalue
                  { value => args[0] }
-               elsif @attr_def.type == :reference && @attr_def.get_var(:referenced_type) != @node.type
+               elsif @attr_def.type == :reference && @attr_def.get_var(:referenced_type) != @node.jaba_type.type
                  ref_node = @services.node_from_handle(value)
                  @node.referenced_nodes << ref_node
                  ref_node
