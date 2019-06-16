@@ -66,14 +66,14 @@ module JABA
           ref :a3
           ref.must_equal :a3
           generate do
-            ref.id.must_equal(:a3)
+            attrs.ref.id.must_equal(:a3)
           end
         end
         type_a :a2 do
           ref :a1
           ref.must_equal :a1
           generate do
-            ref.id.must_equal(:a1)
+            attrs.ref.id.must_equal(:a1)
           end
         end
         type_a :a3 do
@@ -113,10 +113,10 @@ module JABA
           b :d1
           c [:d2, :d3]
           generate do
-            b.e.must_equal 1
-            c.size.must_equal 2
-            c[0].e.must_equal 2
-            c[1].e.must_equal 3
+            attrs.b.attrs.e.must_equal 1
+            attrs.c.size.must_equal 2
+            attrs.c[0].attrs.e.must_equal 2
+            attrs.c[1].attrs.e.must_equal 3
           end
         end
       end

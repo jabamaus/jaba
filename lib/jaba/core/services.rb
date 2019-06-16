@@ -224,7 +224,7 @@ module JABA
       # Resolve references
       #
       @nodes.each do |n|
-        n.attributes.each do |a|
+        n.each_attr do |a|
           next if a.type != :reference
           a.map! do |ref|
             if ref.is_a?(Symbol)
@@ -240,13 +240,13 @@ module JABA
         # Call generators defined per-type
         #
         @generators[n.jaba_type.type]&.each do |block|
-          n.instance_eval(&block) # TODO: which api?
+          n.instance_eval(&block)
         end
         
         # Call generators defined per-node
         #
         n.generate_hooks.each do |gh|
-          n.instance_eval(&gh) # TODO: which api?
+          n.instance_eval(&gh)
         end
       end
 

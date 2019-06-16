@@ -277,12 +277,30 @@ module JABA
 
   ##
   #
+  class MethodMissingInterface < BasicObject
+    
+    ##
+    #
+    def initialize(obj)
+      @obj = obj
+    end
+    
+    ##
+    #
+    def method_missing(attr_id, *args, **key_value_args)
+      @obj.handle_attr(attr_id, nil, *args, **key_value_args)
+    end
+    
+  end
+  
+  ##
+  #
   class JabaNode < JabaAPIObject
 
     attr_reader :jaba_type
     attr_reader :id
     attr_reader :handle
-    attr_reader :attributes
+    attr_reader :attrs
     attr_reader :generate_hooks
     attr_reader :referenced_nodes
     
@@ -300,6 +318,7 @@ module JABA
       @referenced_nodes = []
       @api_call_line = api_call_line
       
+      @attrs = MethodMissingInterface.new(self)
       @attributes = []
       @attribute_lookup = {}
       @attr_def_mask = attrs_mask
@@ -337,6 +356,12 @@ module JABA
         end
       end
       a
+    end
+    
+    ##
+    #
+    def each_attr(&block)
+      @attributes.each(&block)
     end
     
     ##
@@ -392,12 +417,6 @@ module JABA
         a.set(value, api_call_line, *args, **key_value_args)
         return nil
       end
-    end
-    
-    ##
-    #
-    def method_missing(attr_id, *args, **key_value_args)
-      handle_attr(attr_id, nil, *args, **key_value_args)
     end
     
     ##

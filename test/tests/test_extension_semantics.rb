@@ -230,13 +230,13 @@ module JABA
           build_nodes do
             project_nodes = []
             root_node = make_node(attrs_mask: [:root, :platforms])
-            root_node.platforms.each do |p|
-              platform_hosts_node = make_node(parent: root_node, attrs_mask: [:platform, :hosts]) {|n| n.platform p}
-              platform_hosts_node.hosts.each do |h|
-                project_node = make_node(parent: platform_hosts_node, attrs_mask: [:host, :src, :targets]) {|n| n.host h}
+            root_node.attrs.platforms.each do |p|
+              platform_hosts_node = make_node(parent: root_node, attrs_mask: [:platform, :hosts]) {|n| n.attrs.platform p}
+              platform_hosts_node.attrs.hosts.each do |h|
+                project_node = make_node(parent: platform_hosts_node, attrs_mask: [:host, :src, :targets]) {|n| n.attrs.host h}
                 project_nodes << project_node
-                project_node.targets.each do |t|
-                  make_node(parent: project_node, attrs_mask: [:target, :rtti]) {|n| n.target t}
+                project_node.attrs.targets.each do |t|
+                  make_node(parent: project_node, attrs_mask: [:target, :rtti]) {|n| n.attrs.target t}
                 end
               end
             end
@@ -272,28 +272,28 @@ module JABA
           end
           
           generate do
-            platforms[0].id.must_equal(:win32)
-            platforms[1].id.must_equal(:x64)
+            attrs.platforms[0].id.must_equal(:win32)
+            attrs.platforms[1].id.must_equal(:x64)
             
-            case host.id
+            case attrs.host.id
             when :vs2013
-              platform.id.must_equal(:win32)
-              rtti&.must_equal('on')
-              src.must_equal 'win32_vs2013_src'
-              targets.must_equal [:debug, :release]
+              attrs.platform.id.must_equal(:win32)
+              attrs.rtti&.must_equal('on')
+              attrs.src.must_equal 'win32_vs2013_src'
+              attrs.targets.must_equal [:debug, :release]
             when :vs2015
-              platform.id.must_equal(:win32)
-              src.must_equal 'win32_vs2015_src'
-              targets.must_equal [:dev, :check]
+              attrs.platform.id.must_equal(:win32)
+              attrs.src.must_equal 'win32_vs2015_src'
+              attrs.targets.must_equal [:dev, :check]
             when :vs2017
-              rtti&.must_equal('off')
-              platform.id.must_equal(:x64)
-              src.must_equal 'x64_vs2017_src'
-              targets.must_equal [:debug, :release]
+              attrs.rtti&.must_equal('off')
+              attrs.platform.id.must_equal(:x64)
+              attrs.src.must_equal 'x64_vs2017_src'
+              attrs.targets.must_equal [:debug, :release]
             when :vs2019
-              platform.id.must_equal(:x64)
-              src.must_equal 'x64_vs2019_src'
-              targets.must_equal [:dev, :check]
+              attrs.platform.id.must_equal(:x64)
+              attrs.src.must_equal 'x64_vs2019_src'
+              attrs.targets.must_equal [:dev, :check]
             end
           end
         end

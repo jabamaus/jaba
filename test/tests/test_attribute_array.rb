@@ -13,7 +13,7 @@ module JABA
         end
         test :t do
           generate do
-            a.must_equal [1, 2, 3]
+            attrs.a.must_equal [1, 2, 3]
           end
         end
       end
@@ -28,7 +28,7 @@ module JABA
           a [5, 5, 6, 6, 7, 7, 7]
           a.must_equal [5, 5, 6, 6, 7, 7, 7]
           generate do
-            a.must_equal [5, 6, 7]
+            attrs.a.must_equal [5, 6, 7]
           end
         end
       end
@@ -46,7 +46,7 @@ module JABA
         test :t do
           a [5, 5, 6, 6, 7, 7, 7]
           generate do
-            a.must_equal [5, 5, 6, 6, 7, 7, 7]
+            attrs.a.must_equal [5, 5, 6, 6, 7, 7, 7]
           end
         end
       end
@@ -66,10 +66,10 @@ module JABA
           c [10.34, 3, 800.1, 0.01, -1]
           d [:e, :c, :a, :A, :C]
           generate do
-            a.must_equal [1, 2, 3, 4, 5]
-            b.must_equal ['a', 'A', 'c', 'C', 'e']
-            c.must_equal [-1, 0.01, 3, 10.34, 800.1]
-            d.must_equal [:a, :A, :c, :C, :e]
+            attrs.a.must_equal [1, 2, 3, 4, 5]
+            attrs.b.must_equal ['a', 'A', 'c', 'C', 'e']
+            attrs.c.must_equal [-1, 0.01, 3, 10.34, 800.1]
+            attrs.d.must_equal [:a, :A, :c, :C, :e]
           end
         end
       end
@@ -83,7 +83,7 @@ module JABA
         test :t do
           a [true, false, false, true]
           generate do
-            a.must_equal [true, false, false, true]
+            attrs.a.must_equal [true, false, false, true]
           end
         end
       end
@@ -99,7 +99,7 @@ module JABA
         test :t do
           a ['j', 'a', 'b', 'a']
           generate do
-            a.must_equal ['j', 'a', 'b', 'a']
+            attrs.a.must_equal ['j', 'a', 'b', 'a']
           end
         end
       end
@@ -115,7 +115,7 @@ module JABA
         test :t do
           a ['j', 'a', 'b', 'a'], prefix: '1', postfix: 'z'
           generate do
-            a.must_equal ['1jz', '1az', '1bz', '1az']
+            attrs.a.must_equal ['1jz', '1az', '1bz', '1az']
           end
         end
       end
@@ -147,8 +147,8 @@ module JABA
           b [1, 2, 3, 4]
           b exclude: [2, 3]
           generate do
-            a.must_equal [:a, :b]
-            b.must_equal [1, 4]
+            attrs.a.must_equal [:a, :b]
+            attrs.b.must_equal [1, 4]
           end
         end
       end
@@ -165,7 +165,7 @@ module JABA
           a ['abc', 'acc', 'adc', 'aec']
           a exclude: ['c', 'd'], prefix: 'a', postfix: 'c'
           generate do
-            a.must_equal ['abc', 'aec']
+            attrs.a.must_equal ['abc', 'aec']
           end
         end
       end
@@ -180,7 +180,7 @@ module JABA
           a ['one', 'two', 'three', 'four']
           a exclude: [/o/, 'three']
           generate do
-            a.must_equal []
+            attrs.a.must_equal []
           end
         end
       end
@@ -211,8 +211,8 @@ module JABA
           a [:d, :e], exclude: ->(e) {(e == :d) || (e == :c)}
           b [1, 2, 3, 4], exclude: ->(e) {e > 2}
           generate do
-            a.must_equal [:a, :b]
-            b.must_equal [1, 2]
+            attrs.a.must_equal [:a, :b]
+            attrs.b.must_equal [1, 2]
           end
         end
       end

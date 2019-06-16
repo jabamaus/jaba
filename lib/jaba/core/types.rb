@@ -270,8 +270,8 @@ define :text do
 end
 
 generator :text do
-  str = content || "#{line.join("\n")}\n"
-  save_file(filename, str, eol)
+  str = attrs.content || "#{attrs.line.join("\n")}\n"
+  save_file(attrs.filename, str, attrs.eol)
 end
 
 ##
