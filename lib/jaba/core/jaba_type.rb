@@ -114,12 +114,13 @@ module JABA
     
     ##
     #
-    def initialize(services, type_id)
+    def initialize(services, info)
       super(services, AttributeTypeAPI.new)
-      @type = type_id
+      @type = info.type
       @init_attr_def_hook = nil
       @validate_attr_def_hook = nil
       @validate_value_hook = nil
+      api_eval(&info.block) if info.block
     end
 
   end
@@ -218,10 +219,10 @@ module JABA
     
     ##
     #
-    def initialize(services, type_id, super_type_id)
+    def initialize(services, info)
       super(services, JabaTypeAPI.new)
-      @type = type_id
-      @super_type = super_type_id
+      @type = info.type
+      @super_type = info.options[:extend]
       @attribute_defs = []
       @attribute_def_lookup = {}
       @build_nodes_hook = nil
@@ -235,6 +236,8 @@ module JABA
         @generator = generator_class.new
         @generator.instance_variable_set(:@services, @services)
       end
+      
+      api_eval(&info.block)
     end
     
     ##

@@ -59,7 +59,7 @@ module JABA
       @top_level_api = TopLevelAPI.new
       @top_level_api.__set_obj(self)
 
-      @default_attr_type = AttributeType.new(self, nil).freeze
+      @default_attr_type = AttributeType.new(self, AttrTypeInfo.new).freeze
     end
 
     ##
@@ -147,28 +147,16 @@ module JABA
       
       # Create attribute types
       #
-      @jaba_attr_types.map! do |info|
-        # TODO: use api_call_line
-        at = AttributeType.new(self, info.type)
-        at.api_eval(&info.block)
-        at
-      end
+      @jaba_attr_types.map! {|info| AttributeType.new(self, info)}
       
       # Create a JabaType object for each defined type
       #
-      @jaba_types.map! do |info|
-        # TODO: use api_call_line
-        jt = JabaType.new(self, info.type, info.options[:extend])
-        jt.api_eval(&info.block)
-        jt
-      end
+      @jaba_types.map! {|info| JabaType.new(self, info)}
       
       # Open JabaTypes so more attributes can be added
       #
       @jaba_types_to_open.each do |info|
-        # TODO: use api_call_line
-        jt = get_jaba_type(info.type)
-        jt.api_eval(&info.block)
+        get_jaba_type(info.type).api_eval(&info.block) # TODO: use api_call_line
       end
       
       @jaba_types.each(&:init)
