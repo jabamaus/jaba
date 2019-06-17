@@ -8,6 +8,7 @@ require_relative 'jaba_type'
 require_relative 'jaba_node'
 require_relative 'project'
 require_relative 'vcxproj_writer'
+require_relative '../generators/text_generator'
 
 ##
 #
@@ -25,7 +26,7 @@ module JABA
     # Records information about each definition the user has made.
     #
     AttrTypeInfo = Struct.new(:type, :block, :api_call_line)
-    JabaTypeInfo = Struct.new(:type, :block, :options, :api_call_line)
+    JabaTypeInfo = Struct.new(:type, :block, :options, :api_call_line, :generator)
     JabaInstanceInfo = Struct.new(:type, :id, :block, :options, :api_call_line)
     
     ##
@@ -89,7 +90,14 @@ module JABA
     ##
     #
     def define_type(type, **options, &block)
-      @jaba_types << JabaTypeInfo.new(type, block, options, caller(2, 1)[0])
+      generator = nil
+      gen_classname = "JABA::#{type.to_s.capitalize_first}Generator"
+      if Object.const_defined?(gen_classname)
+        generator_class = Module.const_get(gen_classname)
+        log "Creating #{generator_class}"
+        generator = generator_class.new
+      end
+      @jaba_types << JabaTypeInfo.new(type, block, options, caller(2, 1)[0], generator)
     end
     
     ##
@@ -164,7 +172,7 @@ module JABA
       # Create a JabaType object for each defined type
       #
       @jaba_types.map! do |info|
-      # TODO: use api_call_line
+        # TODO: use api_call_line
         jt = JabaType.new(self, info.type, info.options[:extend])
         jt.api_eval(&info.block)
         jt
@@ -181,7 +189,7 @@ module JABA
       # Open JabaTypes so more attributes can be added
       #
       @jaba_types_to_open.each do |info|
-      # TODO: use api_call_line
+        # TODO: use api_call_line
         jt = get_jaba_type(info.type)
         jt.api_eval(&info.block)
       end
