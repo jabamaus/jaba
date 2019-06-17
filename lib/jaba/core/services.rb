@@ -9,7 +9,7 @@ require_relative 'jaba_node'
 require_relative 'project'
 require_relative 'generator'
 require_relative 'vcxproj_writer'
-require_relative '../generators/text_generator'
+Dir.glob("#{__dir__}/../generators/*_generator.rb").each {|f| require f}
 
 ##
 #
