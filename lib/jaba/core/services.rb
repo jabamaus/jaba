@@ -24,7 +24,9 @@ module JABA
     ##
     # Records information about each definition the user has made.
     #
-    Definition = Struct.new(:type, :id, :block, :options, :api_call_line)
+    AttrTypeInfo = Struct.new(:type, :block, :api_call_line)
+    JabaTypeInfo = Struct.new(:type, :block, :options, :api_call_line)
+    JabaInstanceInfo = Struct.new(:type, :id, :block, :options, :api_call_line)
     
     ##
     #
@@ -81,19 +83,19 @@ module JABA
     ##
     #
     def define_attr_type(type, &block)
-      @jaba_attr_types << Definition.new(type, nil, block, nil, caller(2, 1)[0])
+      @jaba_attr_types << AttrTypeInfo.new(type, block, caller(2, 1)[0])
     end
     
     ##
     #
     def define_type(type, **options, &block)
-      @jaba_types << Definition.new(type, nil, block, options, caller(2, 1)[0])
+      @jaba_types << JabaTypeInfo.new(type, block, options, caller(2, 1)[0])
     end
     
     ##
     #
     def open_type(type, &block)
-      @jaba_types_to_open << Definition.new(type, nil, block, nil, caller(2, 1)[0])
+      @jaba_types_to_open << JabaTypeInfo.new(type, block, nil, caller(2, 1)[0])
     end
     
     ##
@@ -106,7 +108,6 @@ module JABA
     #
     def define_instance(type, id, **options, &block)
       log "Instancing #{type} [id=#{id}]"
-      def_data = Definition.new(type, id, block, options, caller(2, 1)[0])
       
       if id
         if !(id.is_a?(Symbol) || id.is_a?(String)) || id !~ /^[a-zA-Z0-9_.]+$/
@@ -118,10 +119,11 @@ module JABA
         end
       end
       
-      @definition_registry.push_value(type, def_data)
+      info = JabaInstanceInfo.new(type, id, block, options, caller(2, 1)[0])
+      @definition_registry.push_value(type, info)
       
       if type != :shared
-        @jaba_types_to_instance << def_data
+        @jaba_types_to_instance << info
       end
     end
     
@@ -152,17 +154,17 @@ module JABA
       
       # Create attribute types
       #
-      @jaba_attr_types.map! do |def_data|
-        at = AttributeType.new(self, def_data.type)
-        at.api_eval(&def_data.block)
+      @jaba_attr_types.map! do |info|
+        at = AttributeType.new(self, info.type)
+        at.api_eval(&info.block)
         at
       end
       
       # Create a JabaType object for each defined type
       #
-      @jaba_types.map! do |def_data|
-        jt = JabaType.new(self, def_data.type, def_data.options[:extend])
-        jt.api_eval(&def_data.block)
+      @jaba_types.map! do |info|
+        jt = JabaType.new(self, info.type, info.options[:extend])
+        jt.api_eval(&info.block)
         jt
       end
       
@@ -176,12 +178,12 @@ module JABA
       
       # Open JabaTypes so more attributes can be added
       #
-      @jaba_types_to_open.each do |def_data|
-        jt = @jaba_types.find {|t| t.type == def_data.type}
+      @jaba_types_to_open.each do |info|
+        jt = @jaba_types.find {|t| t.type == info.type}
         if !jt
-          jaba_error("'#{def_data.type}' has not been defined", callstack: def_data.api_call_line)
+          jaba_error("'#{info.type}' has not been defined", callstack: info.api_call_line)
         end
-        jt.api_eval(&def_data.block)
+        jt.api_eval(&info.block)
       end
       
       @jaba_types.each(&:init)
@@ -196,22 +198,22 @@ module JABA
       
       @jaba_types.each_with_index {|jt, i| jt.instance_variable_set(:@order_index, i)}
       
-      @jaba_types_to_instance.each do |def_data|
-        jt = get_jaba_type(def_data.type, fail_if_not_found: false)
+      @jaba_types_to_instance.each do |info|
+        jt = get_jaba_type(info.type, fail_if_not_found: false)
         if !jt
-          jaba_error("'#{def_data.type}' type is not defined. Cannot instance.", callstack: def_data.api_call_line)
+          jaba_error("'#{info.type}' type is not defined. Cannot instance.", callstack: info.api_call_line)
         end
-        def_data.type = jt
+        info.type = jt
       end
       
       @jaba_types_to_instance.stable_sort_by! {|d| d.type.instance_variable_get(:@order_index)}
       
       # Create instances of types
       #
-      @jaba_types_to_instance.each do |def_data|
-        @current_def_data = def_data
-        if def_data.type.build_nodes_hook
-          result = instance_eval(&def_data.type.build_nodes_hook) # TODO: what api should build_nodes hook be targeting?
+      @jaba_types_to_instance.each do |info|
+        @current_info = info
+        if info.type.build_nodes_hook
+          result = instance_eval(&info.type.build_nodes_hook) # TODO: what api should build_nodes hook be targeting?
           if result.nil? || !result.is_a?(Array) || result.empty? || !result[0].is_a?(JabaNode)
             jaba_error("'build_nodes' hook must return an array of nodes") # TODO: test this
           end
@@ -260,12 +262,12 @@ module JABA
     
     ##
     #
-    def make_node(handle: @current_def_data.id, attrs_mask: nil, parent: nil)
-      jn = JabaNode.new(self, @current_def_data.type, @current_def_data.id, handle, attrs_mask,
-                        parent, @current_def_data.api_call_line)
+    def make_node(handle: @current_info.id, attrs_mask: nil, parent: nil)
+      jn = JabaNode.new(self, @current_info.type, @current_info.id, handle, attrs_mask,
+                        parent, @current_info.api_call_line)
       @node_lookup[jn.handle] = jn
       yield jn if block_given?
-      jn.api_eval(&@current_def_data.block)
+      jn.api_eval(&@current_info.block)
       jn.post_create
       jn
     end
