@@ -80,8 +80,8 @@ module JABA
     
     ##
     #
-    def define_attr_type(type, **options, &block)
-      @jaba_attr_types << Definition.new(type, nil, block, options, caller(2, 1)[0])
+    def define_attr_type(type, &block)
+      @jaba_attr_types << Definition.new(type, nil, block, nil, caller(2, 1)[0])
     end
     
     ##
@@ -92,8 +92,8 @@ module JABA
     
     ##
     #
-    def open_type(type, **options, &block)
-      @jaba_types_to_open << Definition.new(type, nil, block, options, caller(2, 1)[0])
+    def open_type(type, &block)
+      @jaba_types_to_open << Definition.new(type, nil, block, nil, caller(2, 1)[0])
     end
     
     ##

@@ -10,8 +10,8 @@ module JABA
 
     ##
     #
-    def attr_type(id, **options, &block)
-      @obj.define_attr_type(id, **options, &block)
+    def attr_type(id, &block)
+      @obj.define_attr_type(id, &block)
     end
     
     ##
@@ -28,8 +28,8 @@ module JABA
     
     ##
     #
-    def open(type, **options, &block)
-      @obj.open_type(type, **options, &block)
+    def open(type, &block)
+      @obj.open_type(type, &block)
     end
     
     ##
