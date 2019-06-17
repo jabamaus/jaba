@@ -49,7 +49,7 @@ module JABA
     end
     
     it 'rejects attempts to instance an unknown type' do
-      check_fail "'undefined' type is not defined. Cannot instance", trace: [__FILE__, '# tag6'] do
+      check_fail "'undefined' type not defined", trace: [__FILE__, '# tag6'] do
         jaba do
           undefined :a # tag6
         end

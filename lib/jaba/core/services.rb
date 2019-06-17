@@ -199,11 +199,7 @@ module JABA
       @jaba_types.each_with_index {|jt, i| jt.instance_variable_set(:@order_index, i)}
       
       @jaba_types_to_instance.each do |info|
-        jt = get_jaba_type(info.type, fail_if_not_found: false)
-        if !jt
-          jaba_error("'#{info.type}' type is not defined. Cannot instance.", callstack: info.api_call_line)
-        end
-        info.type = jt
+        info.type = get_jaba_type(info.type, callstack: info.api_call_line)
       end
       
       @jaba_types_to_instance.stable_sort_by! {|d| d.type.instance_variable_get(:@order_index)}
@@ -287,10 +283,10 @@ module JABA
     
     ##
     #
-    def get_jaba_type(type, fail_if_not_found: true)
+    def get_jaba_type(type, fail_if_not_found: true, callstack: nil)
       jt = @jaba_types.find {|t| t.type == type}
       if !jt && fail_if_not_found
-        jaba_error("'#{type}' type not defined")
+        jaba_error("'#{type}' type not defined", callstack: callstack)
       end
       jt
     end
