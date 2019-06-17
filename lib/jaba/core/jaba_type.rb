@@ -230,8 +230,12 @@ module JABA
       
       @generator = nil
       gen_classname = "JABA::#{type.to_s.capitalize_first}Generator"
+      
       if Object.const_defined?(gen_classname)
         generator_class = Module.const_get(gen_classname)
+        if generator_class.superclass != Generator
+          raise "#{generator_class} must inherit from Generator class"
+        end
         @services.log "Creating #{generator_class}"
         @generator = generator_class.new
         @generator.instance_variable_set(:@services, @services)
