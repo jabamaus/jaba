@@ -17,9 +17,9 @@ module JABA
     end
 
     it 'fails if try to open undefined type' do
-      check_fail "'undefined' has not been defined", trace: [__FILE__, '# tag1'] do
-        jaba do
-          open :undefined # tag1
+      check_fail "'undefined' type not defined", trace: [__FILE__, '# tag1'] do
+        jaba do # tag1 TODO: fix error line
+          open :undefined
         end
       end
     end

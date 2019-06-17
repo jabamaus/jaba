@@ -155,6 +155,7 @@ module JABA
       # Create attribute types
       #
       @jaba_attr_types.map! do |info|
+        # TODO: use api_call_line
         at = AttributeType.new(self, info.type)
         at.api_eval(&info.block)
         at
@@ -163,6 +164,7 @@ module JABA
       # Create a JabaType object for each defined type
       #
       @jaba_types.map! do |info|
+      # TODO: use api_call_line
         jt = JabaType.new(self, info.type, info.options[:extend])
         jt.api_eval(&info.block)
         jt
@@ -179,10 +181,8 @@ module JABA
       # Open JabaTypes so more attributes can be added
       #
       @jaba_types_to_open.each do |info|
-        jt = @jaba_types.find {|t| t.type == info.type}
-        if !jt
-          jaba_error("'#{info.type}' has not been defined", callstack: info.api_call_line)
-        end
+      # TODO: use api_call_line
+        jt = get_jaba_type(info.type)
         jt.api_eval(&info.block)
       end
       
