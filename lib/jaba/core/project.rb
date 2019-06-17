@@ -10,6 +10,7 @@ module JABA
     ##
     #
     def initialize(node)
+      @node = node
     end
     
   end
@@ -23,6 +24,12 @@ module JABA
     def initialize(node)
       super
       
+    end
+    
+    ##
+    #
+    def generate
+      puts "Generating #{@node.id}"
     end
     
   end
