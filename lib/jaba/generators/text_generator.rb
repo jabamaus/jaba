@@ -4,28 +4,16 @@ module JABA
 
   ##
   #
-  class Generator
-    
-    def build_nodes
-    end
-    
-    ##
-    #
-    def save_file(filename, content, eol)
-      @services.save_file(filename, content, eol)
-    end
-    
-  end
-  
-  ##
-  #
   class TextGenerator < Generator
     
     ##
     #
-    def generate(attrs)
-      str = attrs.content || "#{attrs.line.join("\n")}\n"
-      save_file(attrs.filename, str, attrs.eol)
+    def generate
+      @nodes.each do |n|
+        attrs = n.attrs
+        str = attrs.content || "#{attrs.line.join("\n")}\n"
+        save_file(attrs.filename, str, attrs.eol)
+      end
     end
     
   end

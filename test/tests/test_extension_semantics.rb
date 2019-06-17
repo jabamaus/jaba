@@ -226,22 +226,6 @@ module JABA
               end
             end
           end
-      
-          build_nodes do
-            project_nodes = []
-            root_node = make_node(attrs_mask: [:root, :platforms])
-            root_node.attrs.platforms.each do |p|
-              platform_hosts_node = make_node(parent: root_node, attrs_mask: [:platform, :hosts]) {|n| n.attrs.platform p}
-              platform_hosts_node.attrs.hosts.each do |h|
-                project_node = make_node(parent: platform_hosts_node, attrs_mask: [:host, :src, :targets]) {|n| n.attrs.host h}
-                project_nodes << project_node
-                project_node.attrs.targets.each do |t|
-                  make_node(parent: project_node, attrs_mask: [:target, :rtti]) {|n| n.attrs.target t}
-                end
-              end
-            end
-            project_nodes
-          end
         end
         
         test_project :t do
@@ -270,36 +254,54 @@ module JABA
           else
             targets [:dev, :check]
           end
-          
-          generate do
-            attrs.platforms[0].id.must_equal(:win32)
-            attrs.platforms[1].id.must_equal(:x64)
-            
-            case attrs.host.id
-            when :vs2013
-              attrs.platform.id.must_equal(:win32)
-              attrs.rtti&.must_equal('on')
-              attrs.src.must_equal 'win32_vs2013_src'
-              attrs.targets.must_equal [:debug, :release]
-            when :vs2015
-              attrs.platform.id.must_equal(:win32)
-              attrs.src.must_equal 'win32_vs2015_src'
-              attrs.targets.must_equal [:dev, :check]
-            when :vs2017
-              attrs.rtti&.must_equal('off')
-              attrs.platform.id.must_equal(:x64)
-              attrs.src.must_equal 'x64_vs2017_src'
-              attrs.targets.must_equal [:debug, :release]
-            when :vs2019
-              attrs.platform.id.must_equal(:x64)
-              attrs.src.must_equal 'x64_vs2019_src'
-              attrs.targets.must_equal [:dev, :check]
-            end
-          end
         end
       end
     end
 
   end
 
+  ##
+  #
+  class Test_projectGenerator < Generator
+    
+    ##
+    # TODO: targets are not tested
+    def generate
+      @projects.size.must_equal 4
+      @projects[0].platform.id.must_equal(:win32)
+      @projects[0].host.id.must_equal(:vs2013)
+      @projects[0].src.must_equal 'win32_vs2013_src'
+      
+      @projects[1].platform.id.must_equal(:win32)
+      @projects[1].host.id.must_equal(:vs2015)
+      @projects[1].src.must_equal 'win32_vs2015_src'
+      
+      @projects[2].platform.id.must_equal(:x64)
+      @projects[2].host.id.must_equal(:vs2017)
+      @projects[2].src.must_equal 'x64_vs2017_src'
+      
+      @projects[3].platform.id.must_equal(:x64)
+      @projects[3].host.id.must_equal(:vs2019)
+      @projects[3].src.must_equal 'x64_vs2019_src'
+    end
+    
+    ##
+    #
+    def make_nodes
+      @projects = []
+      root_node = make_node(attrs_mask: [:root, :platforms])
+      root_node.attrs.platforms.each do |p|
+        platform_hosts_node = make_node(parent: root_node, attrs_mask: [:platform, :hosts]) {|n| n.attrs.platform p}
+        platform_hosts_node.attrs.hosts.each do |h|
+          project = make_node(parent: platform_hosts_node, attrs_mask: [:host, :src, :targets]) {|n| n.attrs.host h}
+          @projects << project.attrs
+          project.attrs.targets.each do |t|
+            make_node(parent: project, attrs_mask: [:target, :rtti]) {|n| n.attrs.target t}
+          end
+        end
+      end
+    end
+    
+  end
+  
 end

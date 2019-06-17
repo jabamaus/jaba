@@ -214,7 +214,6 @@ module JABA
     attr_reader :type
     attr_reader :attribute_defs
     attr_reader :dependencies
-    attr_reader :build_nodes_hook
     attr_reader :generator
     
     ##
@@ -225,7 +224,6 @@ module JABA
       @super_type = info.options[:extend]
       @attribute_defs = []
       @attribute_def_lookup = {}
-      @build_nodes_hook = nil
       @dependencies = []
       
       @generator = nil

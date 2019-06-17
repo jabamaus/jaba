@@ -7,6 +7,7 @@ require_relative 'utils'
 require_relative 'jaba_type'
 require_relative 'jaba_node'
 require_relative 'project'
+require_relative 'generator'
 require_relative 'vcxproj_writer'
 require_relative '../generators/text_generator'
 
@@ -181,15 +182,11 @@ module JABA
       #
       @jaba_types_to_instance.each do |info|
         @current_info = info
-        if info.type.build_nodes_hook
-          result = instance_eval(&info.type.build_nodes_hook) # TODO: what api should build_nodes hook be targeting?
-          if result.nil? || !result.is_a?(Array) || result.empty? || !result[0].is_a?(JabaNode)
-            jaba_error("'build_nodes' hook must return an array of nodes") # TODO: test this
-          end
-          @nodes.concat(result)
+        if info.type.generator
+          info.type.generator.make_nodes
         else
-          @nodes << make_node
-        end 
+          make_node
+        end
       end
       
       # Resolve references
@@ -207,13 +204,11 @@ module JABA
         end
       end
       
+      @jaba_types.each {|jt| jt.generator&.generate}
+
+      # Call generators defined per-node
+      #
       @nodes.each do |n|
-        # Call generators defined per-type
-        #
-        n.jaba_type.generator&.generate(n.attrs)
-        
-        # Call generators defined per-node
-        #
         n.generate_hooks.each do |gh|
           n.instance_eval(&gh)
         end
@@ -232,6 +227,7 @@ module JABA
     def make_node(handle: @current_info.id, attrs_mask: nil, parent: nil)
       jn = JabaNode.new(self, @current_info.type, @current_info.id, handle, attrs_mask,
                         parent, @current_info.api_call_line)
+      @nodes << jn
       @node_lookup[jn.handle] = jn
       yield jn if block_given?
       jn.api_eval(&@current_info.block)
