@@ -233,6 +233,7 @@ module JABA
         generator_class = Module.const_get(gen_classname)
         @services.log "Creating #{generator_class}"
         @generator = generator_class.new
+        @generator.instance_variable_set(:@services, @services)
       end
     end
     

@@ -32,12 +32,6 @@ module JABA
       @obj.open_type(type, &block)
     end
     
-    ##
-    #
-    def generator(type, &block)
-      @obj.define_generator(type, &block)
-    end
-    
   end
 
   ##

@@ -60,8 +60,6 @@ module JABA
       @top_level_api.__set_obj(self)
 
       @default_attr_type = AttributeType.new(self, nil).freeze
-      
-      @generators = {}
     end
 
     ##
@@ -97,12 +95,6 @@ module JABA
     #
     def open_type(type, &block)
       @jaba_types_to_open << JabaTypeInfo.new(type, block, nil, caller(2, 1)[0])
-    end
-    
-    ##
-    #
-    def define_generator(type, &block)
-      @generators.push_value(type, block)
     end
     
     ##
@@ -171,14 +163,6 @@ module JABA
         jt
       end
       
-      # Verify generators refer to valid type
-      #
-      @generators.each_key do |type|
-        if !get_jaba_type(type, fail_if_not_found: false)
-          jaba_error("Cannot define generator for undefined type '#{type}'")
-        end
-      end
-      
       # Open JabaTypes so more attributes can be added
       #
       @jaba_types_to_open.each do |info|
@@ -238,9 +222,7 @@ module JABA
       @nodes.each do |n|
         # Call generators defined per-type
         #
-        @generators[n.jaba_type.type]&.each do |block|
-          n.instance_eval(&block)
-        end
+        n.jaba_type.generator&.generate(n.attrs)
         
         # Call generators defined per-node
         #

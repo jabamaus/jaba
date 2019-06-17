@@ -269,11 +269,6 @@ define :text do
   
 end
 
-generator :text do
-  str = attrs.content || "#{attrs.line.join("\n")}\n"
-  save_file(attrs.filename, str, attrs.eol)
-end
-
 ##
 #
 define :project do
@@ -346,16 +341,7 @@ define :vcxproj, extend: :project do
   
   attr_array :vcglobal, type: :keyvalue do
   end
-  
-  build_nodes do
-    [Vcxproj.new(self)]
-  end
-end
 
-##
-#
-generator :vcxproj do
-  # JABA::Vcxproj.new(self)
 end
 
 ##

@@ -379,12 +379,6 @@ module JABA
     end
     
     ##
-    #
-    def save_file(filename, content, eol)
-      @services.save_file(filename, content, eol)
-    end
-    
-    ##
     # If an attribute set operation is being performed, args contains the 'value' and then a list optional symbols
     # which act as options. eg my_attr 'val', :export, :exclude would make args equal to ['val', :opt1, :opt2]. If
     # however the value being passed in is an array it could be eg [['val1', 'val2'], :opt1, :opt2].
