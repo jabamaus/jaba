@@ -2,6 +2,8 @@
 
 module JABA
 
+  using JABACoreExt
+  
   ##
   #
   class AttributeBase

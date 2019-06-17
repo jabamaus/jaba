@@ -26,7 +26,7 @@ module JABA
     # Records information about each definition the user has made.
     #
     AttrTypeInfo = Struct.new(:type, :block, :api_call_line)
-    JabaTypeInfo = Struct.new(:type, :block, :options, :api_call_line, :generator)
+    JabaTypeInfo = Struct.new(:type, :block, :options, :api_call_line)
     JabaInstanceInfo = Struct.new(:type, :id, :block, :options, :api_call_line)
     
     ##
@@ -90,14 +90,7 @@ module JABA
     ##
     #
     def define_type(type, **options, &block)
-      generator = nil
-      gen_classname = "JABA::#{type.to_s.capitalize_first}Generator"
-      if Object.const_defined?(gen_classname)
-        generator_class = Module.const_get(gen_classname)
-        log "Creating #{generator_class}"
-        generator = generator_class.new
-      end
-      @jaba_types << JabaTypeInfo.new(type, block, options, caller(2, 1)[0], generator)
+      @jaba_types << JabaTypeInfo.new(type, block, options, caller(2, 1)[0])
     end
     
     ##

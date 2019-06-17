@@ -2,6 +2,8 @@
 
 module JABA
 
+  using JABACoreExt
+  
   ##
   #
   class JabaAPIObject
@@ -212,6 +214,7 @@ module JABA
     attr_reader :attribute_defs
     attr_reader :dependencies
     attr_reader :build_nodes_hook
+    attr_reader :generator
     
     ##
     #
@@ -223,6 +226,14 @@ module JABA
       @attribute_def_lookup = {}
       @build_nodes_hook = nil
       @dependencies = []
+      
+      @generator = nil
+      gen_classname = "JABA::#{type.to_s.capitalize_first}Generator"
+      if Object.const_defined?(gen_classname)
+        generator_class = Module.const_get(gen_classname)
+        @services.log "Creating #{generator_class}"
+        @generator = generator_class.new
+      end
     end
     
     ##
