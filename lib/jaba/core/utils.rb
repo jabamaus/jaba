@@ -86,6 +86,12 @@ module JABA
     
     ##
     #
+    def <<(str)
+      @str << str << "\n"
+    end
+    
+    ##
+    #
     def write(str)
       @str << str << "\n"
     end
@@ -100,6 +106,12 @@ module JABA
     # `
     def newline
       @str << "\n"
+    end
+    
+    ##
+    #
+    def chomp!
+      @str.chomp!
     end
     
     ##

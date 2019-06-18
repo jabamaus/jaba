@@ -2,6 +2,8 @@
 
 module JABA
 
+  using JABACoreExt
+  
   ##
   #
   class Generator
@@ -24,6 +26,15 @@ module JABA
     #
     def make_nodes
       make_node
+    end
+    
+    ##
+    #
+    def make_project(klass, node)
+      p = klass.new(node)
+      p.instance_variable_set(:@services, @services)
+      p.init
+      p
     end
     
     ##

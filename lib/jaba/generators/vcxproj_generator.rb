@@ -14,15 +14,13 @@ module JABA
     #
     def make_nodes
       node = make_node
-      @projects << Vcxproj.new(node)
+      @projects << make_project(Vcxproj, node)
     end
     
     ##
     #
     def generate
-      @projects.each do |p|
-        p.generate
-      end
+      @projects.each(&:generate)
     end
     
   end
