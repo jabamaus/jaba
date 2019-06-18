@@ -4,6 +4,8 @@ module JABA
 
   using JABACoreExt
   
+  KeyValue = Struct.new(:key, :value)
+  
   ##
   #
   class AttributeBase
@@ -58,8 +60,8 @@ module JABA
     def initialize(services, attr_def, parent_array, node)
       super(services, attr_def, node)
       @value = nil
-      @args = nil
-      @key_value_args = nil
+      @options = nil
+      @key_value_options = nil
       
       # If its not an element of an attribute array, initialize with default value if it has a concrete one
       #
@@ -87,14 +89,15 @@ module JABA
     def set(value, api_call_line = nil, *args, **key_value_args)
       @services.log_debug "setting '#{@node.id}##{id}' [value=#{value} args=#{args} key_value_args=#{key_value_args}]"
       @api_call_line = api_call_line
-      @args = args
-      @key_value_args = key_value_args
+      @options = args
+      @key_value_options = key_value_args
       
       validate_value(value, api_call_line)
 
       # TODO: fix
       @value = if @attr_def.type == :keyvalue
-                 { value => args[0] }
+                 KeyValue.new(value, args[0])
+                 # TODO: remove args[0] from options
                elsif @attr_def.type == :reference && @attr_def.get_var(:referenced_type) != @node.jaba_type.type
                  ref_node = @services.node_from_handle(value)
                  @node.referenced_nodes << ref_node
@@ -128,7 +131,7 @@ module JABA
     ##
     #
     def each_value
-      yield @value
+      yield @value, @options, @key_value_options
     end
     
     ##

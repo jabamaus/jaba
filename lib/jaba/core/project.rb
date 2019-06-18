@@ -9,6 +9,7 @@ module JABA
   #
   class Project
     
+    attr_reader :node
     attr_reader :attrs
     attr_reader :root
     attr_reader :genroot
@@ -16,6 +17,7 @@ module JABA
     ##
     #
     def initialize(node)
+      @node = node
       @attrs = node.attrs
       @root = @attrs.root
       @genroot = @attrs.genroot
@@ -43,10 +45,18 @@ module JABA
     
     ##
     #
+    def tools_version
+      'TODO'
+    end
+    
+    ##
+    #
     def generate
       write_vcxproj
       write_vcxproj_filters
     end
+    
+    private
     
     ##
     #
@@ -56,6 +66,16 @@ module JABA
       w << "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>"
       w << "<Project DefaultTargets=\"Build\" ToolsVersion=\"#{tools_version}\" " \
             'xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">'
+      w << '  <PropertyGroup Label="Globals">'
+      write_keyvalue_attr(w, :vcglobal)
+      w << '  </PropertyGroup>'
+      w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />'
+      
+      # TODO: configs
+      
+      w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />'
+      w << '  <ImportGroup Label="ExtensionSettings">'
+      w << '  </ImportGroup>'
       w << '</Project>'
       w.chomp!
       save_file(@vcxproj_file, w.str, :windows)
@@ -78,10 +98,19 @@ module JABA
     
     ##
     #
-    def tools_version
-      'TODO'
+    def write_keyvalue_attr(w, attr_id, depth: 2)
+      @node.get_attr(attr_id).each_value do |key_val, options, key_val_options|
+        key = key_val.key
+        val = key_val.value
+        condition = key_val_options[:condition]
+        w << if condition
+          "#{'  ' * depth}<#{key} Condition=\"#{condition}\">#{val}</#{key}>"
+        else
+          "#{'  ' * depth}<#{key}>#{val}</#{key}>"
+        end
+      end
     end
-    
+  
   end
   
 end
