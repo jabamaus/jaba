@@ -339,8 +339,25 @@ define :vcxproj, extend: :project do
   end
   
   attr_array :vcglobal, type: :keyvalue do
+    keyval_options :condition
   end
 
+  attr_array :configs do
+    flags :required, :unordered
+  end
+  
+  attr_array :vcproperty, type: :keyvalue do
+=begin
+    keyval_option :condition do
+      validate do |value|
+      end
+    end
+    keyval_option :group do
+      flags :required
+    end
+=end
+  end
+  
 end
 
 ##

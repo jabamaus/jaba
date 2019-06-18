@@ -96,14 +96,16 @@ module JABA
     
     ##
     #
-    def set(value, api_call_line = nil, *args, **key_value_args)
-      @services.log_debug "setting '#{@node.id}##{id}' [value=#{value} args=#{args} key_value_args=#{key_value_args}]"
-      @api_call_line = api_call_line
-      @options = args
-      @key_value_options = key_value_args
-      
+    def set(value, api_call_line = nil, *args, **keyvalue_args)
+      @services.log_debug "setting '#{@node.id}##{id}' [value=#{value} args=#{args} keyvalue_args=#{keyvalue_args}]"
+
+      validate_keyvalue_options(keyvalue_args, api_call_line)
       validate_value(value, api_call_line)
 
+      @api_call_line = api_call_line
+      @options = args
+      @key_value_options = keyvalue_args
+      
       # TODO: fix
       @value = if @attr_def.type == :keyvalue
                  KeyValue.new(value, args[0])
@@ -176,6 +178,16 @@ module JABA
       end
     end
     
+    ##
+    #
+    def validate_keyvalue_options(options, api_call_line)
+      options.each_key do |k|
+        if !@attr_def.keyval_options.include?(k)
+          @services.jaba_error("Invalid option '#{k}'", callstack: api_call_line)
+        end
+      end
+    end
+    
   end
 
   ##
@@ -205,13 +217,13 @@ module JABA
     
     ##
     #
-    def set(values, api_call_line = nil, *args, prefix: nil, postfix: nil, exclude: nil, **key_value_args)
+    def set(values, api_call_line = nil, *args, prefix: nil, postfix: nil, exclude: nil, **keyvalue_args)
       @api_call_line = api_call_line
       
       Array(values).each do |v|
         elem = Attribute.new(@services, @attr_def, self, @node)
         v = apply_pre_post_fix(prefix, postfix, v)
-        elem.set(v, api_call_line, *args, **key_value_args)
+        elem.set(v, api_call_line, *args, **keyvalue_args)
         @elems << elem
         @set = true
       end
@@ -302,8 +314,8 @@ module JABA
     
     ##
     #
-    def method_missing(attr_id, *args, **key_value_args)
-      @node.handle_attr(attr_id, nil, *args, **key_value_args)
+    def method_missing(attr_id, *args, **keyvalue_args)
+      @node.handle_attr(attr_id, nil, *args, **keyvalue_args)
     end
     
   end
@@ -396,10 +408,10 @@ module JABA
     # which act as options. eg my_attr 'val', :export, :exclude would make args equal to ['val', :opt1, :opt2]. If
     # however the value being passed in is an array it could be eg [['val1', 'val2'], :opt1, :opt2].
     #  
-    def handle_attr(id, api_call_line, *args, **key_value_args)
+    def handle_attr(id, api_call_line, *args, **keyvalue_args)
       # First determine if it is a set or a get operation
       #
-      is_get = (args.empty? && key_value_args.empty?)
+      is_get = (args.empty? && keyvalue_args.empty?)
 
       if is_get
         # If its a get operation, look for attribute in this node and all parent nodes
@@ -423,7 +435,7 @@ module JABA
         # array, depending on what the user passed in (see comment at top of this method.
         #
         value = args.shift
-        a.set(value, api_call_line, *args, **key_value_args)
+        a.set(value, api_call_line, *args, **keyvalue_args)
         return nil
       end
     end

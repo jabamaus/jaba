@@ -116,7 +116,33 @@ module JABA
         end
       end
     end
-      
+    
+    it 'supports specifying valid key value options' do
+      jaba do
+        define :test do
+          attr_array :a do
+            keyval_options :group, :condition
+          end
+        end
+        test :t do
+          a 1, group: :a
+          a 2, condition: :b
+        end
+      end
+      check_fail 'Invalid option \'undefined\'', trace: [__FILE__, '# tagA'] do
+        jaba do
+          define :test do
+            attr_array :a do
+              keyval_options :group, :condition
+            end
+          end
+          test :t do
+            a 1, undefined: :a # tagA
+          end
+        end
+      end
+    end
+    
   end
 
 end

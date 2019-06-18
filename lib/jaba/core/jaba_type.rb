@@ -136,6 +136,7 @@ module JABA
     attr_reader :default
     attr_reader :api_call_line
     attr_reader :jaba_type
+    attr_reader :keyval_options
     
     ##
     #
@@ -150,6 +151,7 @@ module JABA
       @default = nil
       @flags = []
       @help = nil
+      @keyval_options = []
       
       @validate_hook = nil
       @post_set_hook = nil

@@ -115,6 +115,12 @@ module JABA
     end
     
     ##
+    #
+    def keyval_options(*options, &block)
+     @obj.set_var(:keyval_options, options.flatten, &block)
+    end
+    
+    ##
     # Called for single value attributes and each element of array attributes.
     #
     def validate(&block)
