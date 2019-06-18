@@ -317,7 +317,7 @@ module JABA
       end
       filename = filename.cleanpath
       log "Saving #{filename}"
-      warning "Duplicate file '#{filename}' generated" if @generated_files_hash.key?(filename)
+      jaba_warning "Duplicate file '#{filename}' generated" if @generated_files_hash.key?(filename)
       
       # register_src_file(filename)
       @generated_files_hash[filename] = nil
