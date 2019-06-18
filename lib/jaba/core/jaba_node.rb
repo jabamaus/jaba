@@ -4,7 +4,17 @@ module JABA
 
   using JABACoreExt
   
-  KeyValue = Struct.new(:key, :value)
+  ##
+  #
+  KeyValue = Struct.new(:key, :value) do
+    def <=>(other)
+      if key.respond_to?(:casecmp)
+        key.to_s.casecmp(other.key.to_s)
+      else
+        key <=> other.key
+      end
+    end
+  end
   
   ##
   #
@@ -271,7 +281,7 @@ module JABA
       end
       if !@attr_def.has_flag?(:unordered)
         begin
-          @elems.sort!
+          @elems.stable_sort!
         rescue StandardError
           @services.jaba_error("Failed to sort #{id}. Might be missing <=> operator", callstack: api_call_line)
         end

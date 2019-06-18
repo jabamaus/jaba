@@ -127,7 +127,13 @@ module JABACoreExt
     def sort_topological!(children)
       replace(JABA::TSorter.new(self, children).sort)
     end
-  
+
+    ##
+    #
+    def stable_sort!
+      sort_by!.with_index {|x, i| [x, i] }
+    end
+    
     ##
     #
     def stable_sort_by!

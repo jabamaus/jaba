@@ -86,12 +86,42 @@ module JABA
       end
     end
     
+    it 'sorts unless :unordered specified' do
+      jaba do
+        define :test do
+          attr_array :a, type: :keyvalue
+          attr_array :b, type: :keyvalue do
+            flags :unordered
+          end
+        end
+        test :t do
+          a :x, :a
+          a :q, :b
+          a :b, :c
+          a :m, :o
+          generate do
+            attrs.a.size.must_equal 4
+            attrs.a[0].key.must_equal :b
+            attrs.a[0].value.must_equal :c
+            attrs.a[1].key.must_equal :m
+            attrs.a[1].value.must_equal :o
+            attrs.a[2].key.must_equal :q
+            attrs.a[2].value.must_equal :b
+            attrs.a[3].key.must_equal :x
+            attrs.a[3].value.must_equal :a
+           end
+        end
+      end
+    end
+    
     it 'strips duplicates unless :allow_dupes specified' do
        jaba do
          define :test do
-           attr_array :a, type: :keyvalue
+           attr_array :a, type: :keyvalue do
+             flags :unordered
+           end
            attr_array :b, type: :keyvalue do
-             flags :allow_dupes
+             flags :allow_dupes, :unordered
            end
          end
          test :t do

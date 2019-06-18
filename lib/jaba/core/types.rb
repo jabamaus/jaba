@@ -65,7 +65,6 @@ end
 attr_type :keyvalue do
   init_attr_def do
     default KeyValue.new
-    flags :unordered # Cannot sort an array of hashes
   end
 end
 
