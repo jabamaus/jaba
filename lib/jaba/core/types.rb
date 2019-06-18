@@ -288,7 +288,12 @@ define :project do
   
   attr :name do
     help 'The name of the project. Defaults to the definition id if not set.'
-    default { id.to_s }
+    default { "#{id}#{namesuffix}" }
+  end
+  
+  attr :namesuffix do
+    help 'Optional suffix to be applied to project name. Used by <name> by default but will have no effect ' \
+         'if <name> is set explicitly'
   end
   
   attr_array :src, type: :path do
@@ -310,7 +315,7 @@ define :cpp, extend: :project do
   attr :platform do
   end
     
-  attr :hosts, type: :reference do
+  attr_array :hosts, type: :reference do
     referenced_type :host
   end
   
@@ -322,21 +327,14 @@ define :cpp, extend: :project do
     flags :required, :unordered
   end
   
+  attr_array :vcglobal, type: :keyvalue do
+    keyval_options :condition
+  end
 end
 
 ##
 #
 define :vcxproj, extend: :project do
-  
-  attr :projname do
-    help 'Basename of project files. Defaults to <name><projsuffix>'
-    default { "#{name}#{projsuffix}" }
-  end
-
-  attr :projsuffix do
-    help 'Optional suffix to be applied to project filenames. Used by <projname> by default but will have no effect ' \
-         'if <projname> is set explicitly'
-  end
   
   attr_array :vcglobal, type: :keyvalue do
     keyval_options :condition

@@ -21,6 +21,7 @@ module JABA
       @attrs = node.attrs
       @root = @attrs.root
       @genroot = @attrs.genroot
+      @proj_root = "#{@root}/#{@genroot}/#{attrs.name}".cleanpath
     end
     
     ##
@@ -38,8 +39,7 @@ module JABA
     ##
     #
     def init
-      @vcx_root = "#{@root}/#{@genroot}/#{attrs.projname}".cleanpath
-      @vcxproj_file = "#{@vcx_root}.vcxproj"
+      @vcxproj_file = "#{@proj_root}.vcxproj"
       @vcxproj_filters_file = "#{@vcxproj_file}.filters"
     end
     
