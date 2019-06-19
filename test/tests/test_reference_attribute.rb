@@ -121,6 +121,7 @@ module JABA
       end
     end
     
+    # TODO: test attribute name clashes
   end
   
 end
