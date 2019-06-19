@@ -97,8 +97,6 @@ module JABA
     ##
     #
     def set(value, api_call_line = nil, *args, **keyvalue_args)
-      @services.log_debug "setting '#{@node.id}##{id}' [value=#{value} args=#{args} keyvalue_args=#{keyvalue_args}]"
-
       validate_keyvalue_options(keyvalue_args, api_call_line)
       validate_value(value, api_call_line)
 
