@@ -223,8 +223,8 @@ module JABA
     
     ##
     #
-    def make_node(handle: @current_info.id, attrs_mask: nil, parent: nil)
-      jn = JabaNode.new(self, @current_info.type, @current_info.id, handle, attrs_mask,
+    def make_node(handle: @current_info.id, attrs: nil, parent: nil)
+      jn = JabaNode.new(self, @current_info.type, @current_info.id, handle, attrs,
                         parent, @current_info.api_call_line)
       @nodes << jn
       @node_lookup[jn.handle] = jn
