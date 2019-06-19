@@ -25,10 +25,7 @@ module JABA
             n.attrs.host h
           end
           
-          project = make_project(Vcxproj, project_node)
-          @projects << project
-          project_node.attrs.targets.each do |t|
-          end
+          @projects << make_project(Vcxproj, project_node)
         end
       end
     end
