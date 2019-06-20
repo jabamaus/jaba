@@ -109,7 +109,7 @@ module JABA
                  KeyValue.new(value, args[0])
                  # TODO: remove args[0] from options
                elsif @attr_def.type == :reference && @attr_def.get_var(:referenced_type) != @node.jaba_type.type
-                 ref_node = @services.node_from_handle(value)
+                 ref_node = @services.node_from_handle("#{@attr_def.get_var(:referenced_type)}|#{value}")
                  @node.referenced_nodes << ref_node
                  ref_node
                else

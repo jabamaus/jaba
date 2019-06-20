@@ -195,7 +195,7 @@ module JABA
           next if a.type != :reference
           a.map! do |ref|
             if ref.is_a?(Symbol)
-              node_from_handle(ref)
+              node_from_handle("#{a.attr_def.get_var(:referenced_type)}|#{ref}")
             else
               ref
             end
@@ -223,11 +223,20 @@ module JABA
     
     ##
     #
-    def make_node(handle: @current_info.id, attrs: nil, parent: nil)
+    def make_node(handle: "#{@current_info.type}|#{@current_info.id}", attrs: nil, parent: nil)
       jn = JabaNode.new(self, @current_info.type, @current_info.id, handle, attrs,
                         parent, @current_info.api_call_line)
       @nodes << jn
-      @node_lookup[jn.handle] = jn
+      
+      # A node only needs a handle if it will be looked up.
+      #
+      if handle
+        if @node_lookup.key?(handle)
+          jaba_error("Duplicate node handle '#{handle}'")
+        end
+        @node_lookup[handle] = jn
+      end
+      
       yield jn if block_given?
       jn.api_eval(&@current_info.block)
       jn.post_create

@@ -239,6 +239,7 @@ module JABA
         @services.log "Creating #{generator_class}"
         @generator = generator_class.new
         @generator.instance_variable_set(:@services, @services)
+        @generator.instance_variable_set(:@jaba_type, self)
         @generator.init if @generator.respond_to?(:init)
       end
       

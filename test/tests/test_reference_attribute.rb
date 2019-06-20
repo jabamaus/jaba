@@ -16,7 +16,7 @@ module JABA
     end
     
     it 'validates reference' do
-      check_fail 'Node with handle \'undefined\' not found', trace: [__FILE__, '# tag2'] do
+      check_fail 'Node with handle \'a|undefined\' not found', trace: [__FILE__, '# tag2'] do
         jaba do # tag2 TODO: fix error line
           define :a do
             attr :b, type: :reference do
