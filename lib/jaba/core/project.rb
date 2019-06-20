@@ -67,11 +67,15 @@ module JABA
       w << "<Project DefaultTargets=\"Build\" ToolsVersion=\"#{tools_version}\" " \
             'xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">'
       w << '  <PropertyGroup Label="Globals">'
-      write_keyvalue_attr(w, :vcglobal)
+      write_keyvalue_attr(w, @node.get_attr(:vcglobal))
       w << '  </PropertyGroup>'
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />'
       
-      # TODO: configs
+      @node.children.each do |cfg|
+        w << "  <PropertyGroup Label=\"Configuration\" #{cfg.attrs.config}>"
+        write_keyvalue_attr(w, cfg.get_attr(:vcproperty), depth: 2)
+        w << '  </PropertyGroup>'
+      end
       
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />'
       w << '  <ImportGroup Label="ExtensionSettings">'
@@ -98,8 +102,8 @@ module JABA
     
     ##
     #
-    def write_keyvalue_attr(w, attr_id, depth: 2)
-      @node.get_attr(attr_id).each_value do |key_val, options, key_val_options|
+    def write_keyvalue_attr(w, attr, depth: 2)
+      attr.each_value do |key_val, options, key_val_options|
         key = key_val.key
         val = key_val.value
         condition = key_val_options[:condition]

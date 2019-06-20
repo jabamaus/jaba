@@ -344,7 +344,12 @@ define :vcxproj, extend: :project do
     flags :required, :unordered
   end
   
+  attr :config do
+    flags :read_only
+  end
+  
   attr_array :vcproperty, type: :keyvalue do
+    keyval_options :group
 =begin
     keyval_option :condition do
       validate do |value|
