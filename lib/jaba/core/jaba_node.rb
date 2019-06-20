@@ -328,6 +328,7 @@ module JABA
     attr_reader :attrs
     attr_reader :generate_hooks
     attr_reader :referenced_nodes
+    attr_reader :children
     
     ##
     #
@@ -339,7 +340,11 @@ module JABA
       @jaba_type = jaba_type
       @id = id
       @handle = handle
+      @children = []
       @parent = parent
+      if parent
+        parent.instance_variable_get(:@children) << self
+      end
       @referenced_nodes = []
       @api_call_line = api_call_line
       
