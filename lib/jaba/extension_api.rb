@@ -117,7 +117,7 @@ module JABA
     ##
     #
     def keyval_options(*options, &block)
-     @obj.set_var(:keyval_options, options.flatten, &block)
+      @obj.set_var(:keyval_options, options.flatten, &block)
     end
     
     ##

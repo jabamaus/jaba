@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+##
+#
 module JABA
 
   using JABACoreExt
@@ -81,16 +83,17 @@ module JABA
       
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />'
       w << '  <ImportGroup Label="ExtensionSettings">'
-      # TODO
+      # TODO: ExtensionSettings
       w << '  </ImportGroup>'
       
       @node.children.each do |cfg|
-        # TODO ExtensionSettings
+        # TODO: ExtensionSettings
       end
       
       @node.children.each do |cfg|
         w << "  <ImportGroup Label=\"PropertySheets\" #{cfg_condition(cfg)}>"
-        w << '    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists(\'$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props\')" Label="LocalAppDataPlatform" />'
+        w << '    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" ' \
+             'Condition="exists(\'$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props\')" Label="LocalAppDataPlatform" />'
         w << '  </ImportGroup>'
       end
     
@@ -144,17 +147,17 @@ module JABA
     
     ##
     #
-    def write_keyvalue_attr(w, attr, group=nil, depth: 2)
-      attr.each_value do |key_val, options, key_val_options|
+    def write_keyvalue_attr(w, attr, group = nil, depth: 2)
+      attr.each_value do |key_val, _options, key_val_options|
         if !group || group == key_val_options[:group]
           key = key_val.key
           val = key_val.value
           condition = key_val_options[:condition]
           w << if condition
-            "#{'  ' * depth}<#{key} Condition=\"#{condition}\">#{val}</#{key}>"
-          else
-            "#{'  ' * depth}<#{key}>#{val}</#{key}>"
-          end
+                 "#{'  ' * depth}<#{key} Condition=\"#{condition}\">#{val}</#{key}>"
+               else
+                 "#{'  ' * depth}<#{key}>#{val}</#{key}>"
+               end
         end
       end
     end

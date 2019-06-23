@@ -52,6 +52,8 @@ Style/MissingRespondToMissing:
   Enabled: false
 Style/NegatedIf:
   Enabled: false
+Style/Next:
+  Enabled: false
 Style/SymbolArray:
   Enabled: false
 Style/WordArray:
