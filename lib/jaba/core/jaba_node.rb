@@ -77,7 +77,7 @@ module JABA
       #
       if !parent_array && !@default.nil? && !@default_is_proc
         validate_value(@default, attr_def.api_call_line)
-        @value = @default
+        @value = resolve_reference(@default)
         @set = true
       end
     end
@@ -108,12 +108,8 @@ module JABA
       @value = if @attr_def.type == :keyvalue
                  KeyValue.new(value, args[0])
                  # TODO: remove args[0] from options
-               elsif @attr_def.type == :reference && @attr_def.get_var(:referenced_type) != @node.jaba_type.type
-                 ref_node = @services.node_from_handle("#{@attr_def.get_var(:referenced_type)}|#{value}")
-                 @node.referenced_nodes << ref_node
-                 ref_node
                else
-                 value
+                 resolve_reference(value)
                end
       @set = true
     end
@@ -183,6 +179,18 @@ module JABA
         if !@attr_def.keyval_options.include?(k)
           @services.jaba_error("Invalid option '#{k}'", callstack: api_call_line)
         end
+      end
+    end
+    
+    ##
+    #
+    def resolve_reference(value)
+      if @attr_def.type == :reference && @attr_def.get_var(:referenced_type) != @node.jaba_type.type
+        ref_node = @services.node_from_handle("#{@attr_def.get_var(:referenced_type)}|#{value}")
+        @node.referenced_nodes << ref_node
+        ref_node
+      else
+        value
       end
     end
     

@@ -86,6 +86,20 @@ module JABA
       end
     end
     
+    it 'works with a default' do
+      jaba do
+        define :type_a do
+          attr :host, type: :reference do
+            referenced_type :host
+            default :vs2017
+          end
+        end
+        type_a :a1 do
+          host_version_year.must_equal 2017
+        end
+      end
+    end
+    
     it 'works with :required flag' do
     end
     
