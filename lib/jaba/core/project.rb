@@ -21,7 +21,7 @@ module JABA
       @attrs = node.attrs
       @root = @attrs.root
       @genroot = @attrs.genroot
-      @proj_root = "#{@root}/#{@genroot}/#{attrs.name}".cleanpath
+      @proj_root = "#{@root}/#{@genroot}/#{@attrs.name}".cleanpath
     end
     
     ##
@@ -41,12 +41,14 @@ module JABA
     def init
       @vcxproj_file = "#{@proj_root}.vcxproj"
       @vcxproj_filters_file = "#{@vcxproj_file}.filters"
+      @platform = @attrs.platform
+      @host = @attrs.host
     end
     
     ##
     #
     def tools_version
-      'TODO'
+      @host.attrs.host_version_year < 2013 ? '4.0' : @host.attrs.host_version
     end
     
     ##
@@ -72,14 +74,54 @@ module JABA
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />'
       
       @node.children.each do |cfg|
-        w << "  <PropertyGroup Label=\"Configuration\" #{cfg.attrs.config}>"
-        write_keyvalue_attr(w, cfg.get_attr(:vcproperty), depth: 2)
+        w << "  <PropertyGroup Label=\"Configuration\" #{cfg_condition(cfg)}>"
+        write_keyvalue_attr(w, cfg.get_attr(:vcproperty), :pg1, depth: 2)
         w << '  </PropertyGroup>'
       end
       
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />'
       w << '  <ImportGroup Label="ExtensionSettings">'
+      # TODO
       w << '  </ImportGroup>'
+      
+      @node.children.each do |cfg|
+        # TODO ExtensionSettings
+      end
+      
+      @node.children.each do |cfg|
+        w << "  <ImportGroup Label=\"PropertySheets\" #{cfg_condition(cfg)}>"
+        w << '    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists(\'$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props\')" Label="LocalAppDataPlatform" />'
+        w << '  </ImportGroup>'
+      end
+    
+      w << '  <PropertyGroup Label="UserMacros" />'
+    
+      @node.children.each do |cfg|
+        w << "  <PropertyGroup Label=\"Configuration\" #{cfg_condition(cfg)}>"
+        write_keyvalue_attr(w, cfg.get_attr(:vcproperty), :pg2, depth: 2)
+        w << '  </PropertyGroup>'
+      end
+      
+      @node.children.each do |cfg|
+        w << "  <ItemDefinitionGroup #{cfg_condition(cfg)}>"
+        w << '  </ItemDefinitionGroup>'
+      end
+      
+      w << '  <ItemGroup>'
+      # TODO: src
+      w << '  </ItemGroup>'
+      
+      # TODO: references
+      
+      w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />'
+      w << '  <ImportGroup Label="ExtensionTargets">'
+      # TODO: extension targets
+      w << '  </ImportGroup>'
+      
+      @node.children.each do |cfg|
+        # TODO: extension targets
+      end
+      
       w << '</Project>'
       w.chomp!
       save_file(@vcxproj_file, w.str, :windows)
@@ -102,17 +144,25 @@ module JABA
     
     ##
     #
-    def write_keyvalue_attr(w, attr, depth: 2)
+    def write_keyvalue_attr(w, attr, group=nil, depth: 2)
       attr.each_value do |key_val, options, key_val_options|
-        key = key_val.key
-        val = key_val.value
-        condition = key_val_options[:condition]
-        w << if condition
-          "#{'  ' * depth}<#{key} Condition=\"#{condition}\">#{val}</#{key}>"
-        else
-          "#{'  ' * depth}<#{key}>#{val}</#{key}>"
+        if !group || group == key_val_options[:group]
+          key = key_val.key
+          val = key_val.value
+          condition = key_val_options[:condition]
+          w << if condition
+            "#{'  ' * depth}<#{key} Condition=\"#{condition}\">#{val}</#{key}>"
+          else
+            "#{'  ' * depth}<#{key}>#{val}</#{key}>"
+          end
         end
       end
+    end
+    
+    ##
+    #
+    def cfg_condition(cfg)
+      "Condition=\"'$(Configuration)|$(Platform)'=='#{cfg.attrs.config}|#{@platform.attrs.vsname}\""
     end
   
   end

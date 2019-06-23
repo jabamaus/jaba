@@ -25,7 +25,7 @@ module JABA
             n.attrs.host host
           end
           
-          @projects << make_project(Vcxproj, project_node)
+          #@projects << make_project(Vcxproj, project_node)
         end
       end
     end

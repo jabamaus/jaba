@@ -98,6 +98,7 @@ define :platform do
   
   attr :windows?, type: :bool
   attr :apple?, type: :bool
+  attr :vsname
   
 end
 
@@ -106,6 +107,7 @@ end
 platform :win32 do
   win32? true
   windows? true
+  vsname 'Win32'
 end
 
 ##
@@ -113,6 +115,7 @@ end
 platform :x64 do
   x64? true
   windows? true
+  vsname 'x64'
 end
 
 ##
@@ -335,6 +338,16 @@ end
 ##
 #
 define :vcxproj, extend: :project do
+  
+  attr :platform, type: :reference do
+    referenced_type :platform
+    default :win32
+  end
+  
+  attr :host, type: :reference do
+    referenced_type :host
+    default :vs2017
+  end
   
   attr_array :vcglobal, type: :keyvalue do
     keyval_options :condition
