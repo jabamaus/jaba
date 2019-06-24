@@ -339,6 +339,8 @@ module JABA
     attr_reader :generate_hooks
     attr_reader :referenced_nodes
     attr_reader :children
+    attr_reader :source_file
+    attr_reader :source_dir
     
     ##
     #
@@ -355,7 +357,10 @@ module JABA
         parent.instance_variable_get(:@children) << self
       end
       @referenced_nodes = []
+      
       @api_call_line = info.api_call_line
+      @source_file = @api_call_line[/^(.+):\d/, 1]
+      @source_dir = File.dirname(@source_file)
       
       @attrs = NodeAttributeInterface.new(self)
       @attributes = []
