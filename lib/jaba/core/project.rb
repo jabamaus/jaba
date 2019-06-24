@@ -70,6 +70,16 @@ module JABA
       w << "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>"
       w << "<Project DefaultTargets=\"Build\" ToolsVersion=\"#{tools_version}\" " \
             'xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">'
+            
+      w << '  <ItemGroup Label="ProjectConfigurations">'
+      @node.children.each do |cfg|
+        w << "    <ProjectConfiguration Include=\"#{cfg.attrs.config}|#{@platform.attrs.vsname}\">"
+        w << "      <Configuration>#{cfg.attrs.config}</Configuration>"
+        w << "      <Platform>#{@platform.attrs.vsname}</Platform>"
+        w << '    </ProjectConfiguration>'
+      end
+      w << '  </ItemGroup>'
+    
       w << '  <PropertyGroup Label="Globals">'
       write_keyvalue_attr(w, @node.get_attr(:vcglobal))
       w << '  </PropertyGroup>'
