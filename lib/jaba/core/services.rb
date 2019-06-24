@@ -224,8 +224,7 @@ module JABA
     ##
     #
     def make_node(handle: "#{@current_info.type}|#{@current_info.id}", attrs: nil, parent: nil)
-      jn = JabaNode.new(self, @current_info.type, @current_info.id, handle, attrs,
-                        parent, @current_info.api_call_line)
+      jn = JabaNode.new(self, @current_info, handle, attrs, parent)
       @nodes << jn
       
       # A node only needs a handle if it will be looked up.

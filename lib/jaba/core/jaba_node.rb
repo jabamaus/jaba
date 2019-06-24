@@ -342,13 +342,12 @@ module JABA
     
     ##
     #
-    def initialize(services, jaba_type, id, handle, attrs_mask, parent, api_call_line)
+    def initialize(services, info, handle, attrs_mask, parent)
       super(services, JabaNodeAPI.new)
-      @services.log_debug("Making node [type=#{jaba_type.type} id=#{id} handle=#{handle}, " \
-                          "parent=#{parent}, api_call_line=#{api_call_line}]")
 
-      @jaba_type = jaba_type
-      @id = id
+      @info = info
+      @jaba_type = info.type
+      @id = info.id
       @handle = handle
       @children = []
       @parent = parent
@@ -356,7 +355,7 @@ module JABA
         parent.instance_variable_get(:@children) << self
       end
       @referenced_nodes = []
-      @api_call_line = api_call_line
+      @api_call_line = info.api_call_line
       
       @attrs = NodeAttributeInterface.new(self)
       @attributes = []
@@ -369,6 +368,8 @@ module JABA
         @attribute_lookup[attr_def.id] = a
         @attributes << a
       end
+
+      @services.log_debug("Making node [type=#{@jaba_type} id=#{@id} handle=#{handle}, parent=#{parent}")
     end
     
     ##
