@@ -1,2 +1,2 @@
-vcxproj :MyLib do
+cpp :MyLib do
 end

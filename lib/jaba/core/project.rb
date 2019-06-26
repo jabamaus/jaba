@@ -50,6 +50,12 @@ module JABA
       @platform = @attrs.platform
       @host = @attrs.host
       @guid = nil
+      @configs = []
+      @attrs.configs.each do |cfg|
+        @configs << @generator.make_node(handle: nil, parent: @node, attrs: [:config, :vcproperty]) do |n|
+          n.attrs.config cfg
+        end
+      end
     end
     
     ##
@@ -93,7 +99,7 @@ module JABA
             'xmlns="http://schemas.microsoft.com/developer/msbuild/2003">'
             
       w << '  <ItemGroup Label="ProjectConfigurations">'
-      @node.children.each do |cfg|
+      @configs.each do |cfg|
         w << "    <ProjectConfiguration Include=\"#{cfg.attrs.config}|#{@platform.attrs.vsname}\">"
         w << "      <Configuration>#{cfg.attrs.config}</Configuration>"
         w << "      <Platform>#{@platform.attrs.vsname}</Platform>"
@@ -107,7 +113,7 @@ module JABA
       w << '  </PropertyGroup>'
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />'
       
-      @node.children.each do |cfg|
+      @configs.each do |cfg|
         w << "  <PropertyGroup Label=\"Configuration\" #{cfg_condition(cfg)}>"
         write_keyvalue_attr(w, cfg.get_attr(:vcproperty), :pg1, depth: 2)
         w << '  </PropertyGroup>'
@@ -118,11 +124,11 @@ module JABA
       # TODO: ExtensionSettings
       w << '  </ImportGroup>'
       
-      @node.children.each do |cfg|
+      @configs.each do |cfg|
         # TODO: ExtensionSettings
       end
       
-      @node.children.each do |cfg|
+      @configs.each do |cfg|
         w << "  <ImportGroup Label=\"PropertySheets\" #{cfg_condition(cfg)}>"
         w << '    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" ' \
              'Condition="exists(\'$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props\')" Label="LocalAppDataPlatform" />'
@@ -131,13 +137,13 @@ module JABA
     
       w << '  <PropertyGroup Label="UserMacros" />'
     
-      @node.children.each do |cfg|
+      @configs.each do |cfg|
         w << "  <PropertyGroup Label=\"Configuration\" #{cfg_condition(cfg)}>"
         write_keyvalue_attr(w, cfg.get_attr(:vcproperty), :pg2, depth: 2)
         w << '  </PropertyGroup>'
       end
       
-      @node.children.each do |cfg|
+      @configs.each do |cfg|
         w << "  <ItemDefinitionGroup #{cfg_condition(cfg)}>"
         w << '  </ItemDefinitionGroup>'
       end
@@ -164,7 +170,7 @@ module JABA
       # TODO: extension targets
       w << '  </ImportGroup>'
       
-      @node.children.each do |cfg|
+      @configs.each do |cfg|
         # TODO: extension targets
       end
       

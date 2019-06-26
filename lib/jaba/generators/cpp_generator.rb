@@ -25,12 +25,12 @@ module JABA
         end
         
         hosts_node.attrs.hosts.each do |host|
-          project_node = make_node(handle: "cpp|#{@jaba_type.type}|#{platform}|#{host}", 
-                                   parent: hosts_node, attrs: [:name, :namesuffix, :host, :src, :targets, :vcglobal]) do |n|
+          proj_node = make_node(handle: "#{@jaba_type.type}|#{root_node.id}|#{platform.id}|#{host.id}",
+                                   parent: hosts_node, attrs: [:name, :namesuffix, :host, :src, :configs, :deps, :vcglobal]) do |n|
             n.attrs.host host
           end
-          
-          # @projects << make_project(Vcxproj, project_node)
+          proj = make_project(Vcxproj, proj_node)
+          @projects << proj
         end
       end
     end

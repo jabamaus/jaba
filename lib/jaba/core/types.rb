@@ -310,53 +310,38 @@ define :cpp, extend: :project do
 
   attr_array :platforms, type: :reference do
     referenced_type :platform
-    flags :unordered, :required
+    flags :unordered
+    default [:win32]
   end
   
   attr :platform do
+    flags :read_only
   end
     
   attr_array :hosts, type: :reference do
     referenced_type :host
+    default [:vs2017]
   end
   
   attr :host do
-  end
-
-  attr_array :targets do
-    help 'Targets'
-    flags :required, :unordered
-  end
-  
-  attr_array :vcglobal, type: :keyvalue do
-    keyval_options :condition
-  end
-end
-
-##
-#
-define :vcxproj, extend: :project do
-  
-  attr :platform, type: :reference do
-    referenced_type :platform
-    default :win32
-  end
-  
-  attr :host, type: :reference do
-    referenced_type :host
-    default :vs2017
-  end
-  
-  attr_array :vcglobal, type: :keyvalue do
-    keyval_options :condition
+    flags :read_only
   end
 
   attr_array :configs do
-    flags :required, :unordered
+    flags :unordered
+    default [:debug, :release]
   end
   
   attr :config do
     flags :read_only
+  end
+  
+  attr_array :deps, type: :reference do
+    referenced_type :cpp
+  end
+  
+  attr_array :vcglobal, type: :keyvalue do
+    keyval_options :condition
   end
   
   attr_array :vcproperty, type: :keyvalue do
@@ -370,10 +355,6 @@ define :vcxproj, extend: :project do
       flags :required
     end
 =end
-  end
-  
-  attr_array :deps, type: :reference do
-    referenced_type :vcxproj
   end
   
 end

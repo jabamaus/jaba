@@ -1,2 +1,2 @@
-vcxproj :MyApp do
+cpp :MyApp do
 end
