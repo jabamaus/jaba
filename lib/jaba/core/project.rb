@@ -52,6 +52,9 @@ module JABA
       @guid = nil
       @configs = []
       
+      # TODO: check for clashes if already set by user
+      @attrs.vcglobal :WindowsTargetPlatformVersion, @attrs.winsdkver
+      
       config_type = case @attrs.type
       when :app
         'Application'

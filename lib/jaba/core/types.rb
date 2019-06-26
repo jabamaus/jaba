@@ -349,6 +349,13 @@ define :cpp, extend: :project do
     keyval_options :condition
   end
   
+  attr :winsdkver, type: :choice do
+    items ['10.0.16299.0', '10.0.17763.0']
+    default '10.0.17763.0'
+  end
+  
+  # Per-target attributes
+  
   attr_array :vcproperty, type: :keyvalue do
     keyval_options :group
 =begin
