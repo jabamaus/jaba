@@ -99,6 +99,25 @@ module JABACoreExt
       Pathname.new(self).cleanpath.to_s
     end
     
+    ##
+    #
+    def to_backslashes
+      dup.to_backslashes!
+    end
+    
+    ##
+    #
+    def to_backslashes!
+      tr!('/', '\\')
+      self
+    end
+    
+    ##
+    #
+    def relative_path_from(base)
+      Pathname.new(self).relative_path_from(base).to_s
+    end
+  
   end
 
   ##
