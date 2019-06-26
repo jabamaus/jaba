@@ -14,6 +14,7 @@ module JABA
     #
     def initialize
       @nodes = []
+      @node_to_project = {}
     end
     
     ##
@@ -33,9 +34,19 @@ module JABA
     ##
     #
     def make_project(klass, node)
-      p = klass.new(node)
-      p.instance_variable_set(:@services, @services)
+      p = klass.new(@services, self, node)
+      @node_to_project[node] = p
       p.init
+      p
+    end
+    
+    ##
+    #
+    def project_from_node(node, fail_if_not_found: true)
+      p = @node_to_project[node]
+      if !p && fail_if_not_found
+        raise "'#{node}' not found"
+      end
       p
     end
     
