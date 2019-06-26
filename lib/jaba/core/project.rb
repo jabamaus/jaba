@@ -90,7 +90,7 @@ module JABA
       w = StringWriter.new(capacity: 64 * 1024)
       w << "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>"
       w << "<Project DefaultTargets=\"Build\" ToolsVersion=\"#{tools_version}\" " \
-            'xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">'
+            'xmlns="http://schemas.microsoft.com/developer/msbuild/2003">'
             
       w << '  <ItemGroup Label="ProjectConfigurations">'
       @node.children.each do |cfg|
