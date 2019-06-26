@@ -12,7 +12,9 @@ module JABA
     
     ##
     #
-    def initialize
+    def initialize(services, jaba_type)
+      @services = services
+      @jaba_type = jaba_type
       @nodes = []
       @node_to_project = {}
     end

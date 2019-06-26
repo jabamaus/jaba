@@ -239,9 +239,7 @@ module JABA
           raise "#{generator_class} must inherit from Generator class"
         end
         @services.log "Creating #{generator_class}"
-        @generator = generator_class.new
-        @generator.instance_variable_set(:@services, @services)
-        @generator.instance_variable_set(:@jaba_type, self)
+        @generator = generator_class.new(@services, self)
         @generator.init if @generator.respond_to?(:init)
       end
       
