@@ -26,7 +26,7 @@ module JABA
         
         hosts_node.attrs.hosts.each do |host|
           proj_node = make_node(handle: "#{@jaba_type.type}|#{root_node.id}|#{platform.id}|#{host.id}",
-                                   parent: hosts_node, attrs: [:name, :namesuffix, :host, :src, :configs, :deps, :vcglobal]) do |n|
+                                   parent: hosts_node, attrs: [:name, :namesuffix, :host, :src, :configs, :deps, :type, :vcglobal]) do |n|
             n.attrs.host host
           end
           proj = make_project(Vcxproj, proj_node)

@@ -327,6 +327,11 @@ define :cpp, extend: :project do
     flags :read_only
   end
 
+  attr :type, type: :choice do
+    items [:app, :lib, :dll]
+    default :app
+  end
+  
   attr_array :configs do
     flags :unordered
     default [:debug, :release]

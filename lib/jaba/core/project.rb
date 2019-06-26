@@ -51,9 +51,22 @@ module JABA
       @host = @attrs.host
       @guid = nil
       @configs = []
+      
+      config_type = case @attrs.type
+      when :app
+        'Application'
+      when :lib
+        'StaticLibrary'
+      when :dll
+        'DynamicLibrary'
+      else
+        raise "'#{attrs.type}' unrecognised"
+      end
+      
       @attrs.configs.each do |cfg|
         @configs << @generator.make_node(handle: nil, parent: @node, attrs: [:config, :vcproperty]) do |n|
           n.attrs.config cfg
+          n.attrs.vcproperty :ConfigurationType, config_type, group: :pg1
         end
       end
     end
