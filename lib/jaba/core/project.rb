@@ -18,7 +18,9 @@ module JABA
     
     ##
     #
-    def initialize(node)
+    def initialize(services, generator, node)
+      @services = services
+      @generator = generator
       @node = node
       @attrs = node.attrs
       @root = "#{node.source_dir}/#{@attrs.root}"
@@ -38,6 +40,8 @@ module JABA
   #
   class Vcxproj < Project
     
+    attr_reader :vcxproj_file
+    
     ##
     #
     def init
@@ -45,12 +49,29 @@ module JABA
       @vcxproj_filters_file = "#{@vcxproj_file}.filters"
       @platform = @attrs.platform
       @host = @attrs.host
+      @guid = nil
     end
     
     ##
     #
     def tools_version
       @host.attrs.host_version_year < 2013 ? '4.0' : @host.attrs.host_version
+    end
+    
+    ##
+    #
+    def guid
+      if !@guid
+        if File.exist?(@vcxproj_file)
+          if @services.read_file(@vcxproj_file, encoding: 'UTF-8') !~ /<ProjectGuid>(.+)<\/ProjectGuid>/
+            raise "Failed to read GUID from #{@vcxproj_file}"
+          end
+          @guid = Regexp.last_match(1)
+        else
+          @guid = OS.generate_guid
+        end
+      end
+      @guid
     end
     
     ##
@@ -81,6 +102,7 @@ module JABA
       w << '  </ItemGroup>'
     
       w << '  <PropertyGroup Label="Globals">'
+      w << "    <ProjectGuid>#{guid}</ProjectGuid>"
       write_keyvalue_attr(w, @node.get_attr(:vcglobal))
       w << '  </PropertyGroup>'
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />'
@@ -124,8 +146,19 @@ module JABA
       # TODO: src
       w << '  </ItemGroup>'
       
-      # TODO: references
-      
+      deps = @attrs.deps
+      if !deps.empty?
+        w << '  <ItemGroup>'
+        deps.each do |dep|
+          proj_ref = @generator.project_from_node(dep)
+          w << "    <ProjectReference Include=\"#{proj_ref.vcxproj_file.relative_path_from(genroot).to_backslashes!}\">"
+          w << "      <Project>#{proj_ref.guid}</Project>"
+          # TODO: reference properties
+          w << '    </ProjectReference>'
+        end
+        w << '  </ItemGroup>'
+      end
+    
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />'
       w << '  <ImportGroup Label="ExtensionTargets">'
       # TODO: extension targets

@@ -300,8 +300,6 @@ define :project do
   end
   
   attr_array :src, type: :path do
-    help 'Source files. Evaluated once per project so this should be the union of all source files required for ' \
-         'all target platforms.'
   end
   
 end
@@ -372,6 +370,10 @@ define :vcxproj, extend: :project do
       flags :required
     end
 =end
+  end
+  
+  attr_array :deps, type: :reference do
+    referenced_type :vcxproj
   end
   
 end
