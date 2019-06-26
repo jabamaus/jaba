@@ -1,3 +1,5 @@
 /test/tests/temp
 profile_*
 jaba.log
+*.vcxproj.user
+.vs/
