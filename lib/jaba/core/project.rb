@@ -21,9 +21,9 @@ module JABA
     def initialize(node)
       @node = node
       @attrs = node.attrs
-      @root = @attrs.root
-      @genroot = @attrs.genroot
-      @proj_root = "#{@root}/#{@genroot}/#{@attrs.name}".cleanpath
+      @root = "#{node.source_dir}/#{@attrs.root}"
+      @genroot = "#{@root}/#{@attrs.genroot}"
+      @proj_root = "#{@genroot}/#{@attrs.name}".cleanpath
     end
     
     ##
