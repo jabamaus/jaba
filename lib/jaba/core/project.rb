@@ -208,7 +208,7 @@ module JABA
     ##
     #
     def cfg_condition(cfg)
-      "Condition=\"'$(Configuration)|$(Platform)'=='#{cfg.attrs.config}|#{@platform.attrs.vsname}\""
+      "Condition=\"'$(Configuration)|$(Platform)'=='#{cfg.attrs.config}|#{@platform.attrs.vsname}'\""
     end
   
   end
