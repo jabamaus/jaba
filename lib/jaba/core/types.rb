@@ -364,6 +364,10 @@ define :cpp, extend: :project do
   
   # Per-target attributes
   
+  attr :rtti, type: :bool do
+    default true
+  end
+  
   attr :toolset do
     default { host.toolset }
   end

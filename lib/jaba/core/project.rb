@@ -172,10 +172,11 @@ module JABA
       end
       
       @attrs.configs.each do |cfg|
-        @configs << @generator.make_node(handle: nil, parent: @node, attrs: [:config, :vcproperty]) do |n|
+        @configs << @generator.make_node(handle: nil, parent: @node, attrs: [:config, :rtti, :vcproperty]) do |n|
           n.attrs.config cfg
           n.attrs.vcproperty :ConfigurationType, config_type, group: :pg1
           n.attrs.vcproperty :PlatformToolset, n.attrs.toolset, group: :pg1
+          n.attrs.vcproperty :RuntimeTypeInfo, false, group: :ClCompile if !n.attrs.rtti
         end
       end
     end
@@ -245,6 +246,7 @@ module JABA
       
       @configs.each do |cfg|
         item_definition_group(w, condition: cfg_condition(cfg)) do |w|
+          
         end
       end
       
