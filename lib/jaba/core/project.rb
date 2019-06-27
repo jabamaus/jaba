@@ -38,41 +38,14 @@ module JABA
 
   ##
   #
-  class Vcxproj < Project
-    
-    attr_reader :vcxproj_file
-    
+  class VSProject < Project
+  
     ##
     #
     def init
-      @vcxproj_file = "#{@proj_root}.vcxproj"
-      @vcxproj_filters_file = "#{@vcxproj_file}.filters"
-      @platform = @attrs.platform
-      @host = @attrs.host
       @guid = nil
-      @configs = []
-      
-      # TODO: check for clashes if already set by user
-      @attrs.vcglobal :WindowsTargetPlatformVersion, @attrs.winsdkver
-      
-      config_type = case @attrs.type
-      when :app
-        'Application'
-      when :lib
-        'StaticLibrary'
-      when :dll
-        'DynamicLibrary'
-      else
-        raise "'#{attrs.type}' unrecognised"
-      end
-      
-      @attrs.configs.each do |cfg|
-        @configs << @generator.make_node(handle: nil, parent: @node, attrs: [:config, :vcproperty]) do |n|
-          n.attrs.config cfg
-          n.attrs.vcproperty :ConfigurationType, config_type, group: :pg1
-          n.attrs.vcproperty :PlatformToolset, n.attrs.toolset, group: :pg1
-        end
-      end
+      @host = @attrs.host
+      @platform = @attrs.platform
     end
     
     ##
@@ -99,121 +72,54 @@ module JABA
     
     ##
     #
-    def generate
-      write_vcxproj
-      write_vcxproj_filters
-    end
-    
-    private
-    
-    ##
-    #
-    def write_vcxproj
-      puts "Generating #{@vcxproj_file}"
-      w = StringWriter.new(capacity: 64 * 1024)
+    def write_xml_version(w)
       w << "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-      w << "<Project DefaultTargets=\"Build\" ToolsVersion=\"#{tools_version}\" " \
-            'xmlns="http://schemas.microsoft.com/developer/msbuild/2003">'
-            
-      w << '  <ItemGroup Label="ProjectConfigurations">'
-      @configs.each do |cfg|
-        w << "    <ProjectConfiguration Include=\"#{cfg.attrs.config}|#{@platform.attrs.vsname}\">"
-        w << "      <Configuration>#{cfg.attrs.config}</Configuration>"
-        w << "      <Platform>#{@platform.attrs.vsname}</Platform>"
-        w << '    </ProjectConfiguration>'
-      end
-      w << '  </ItemGroup>'
-    
-      w << '  <PropertyGroup Label="Globals">'
-      w << "    <ProjectGuid>#{guid}</ProjectGuid>"
-      write_keyvalue_attr(w, @node.get_attr(:vcglobal))
-      w << '  </PropertyGroup>'
-      w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />'
-      
-      @configs.each do |cfg|
-        w << "  <PropertyGroup Label=\"Configuration\" #{cfg_condition(cfg)}>"
-        write_keyvalue_attr(w, cfg.get_attr(:vcproperty), :pg1, depth: 2)
-        w << '  </PropertyGroup>'
-      end
-      
-      w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />'
-      w << '  <ImportGroup Label="ExtensionSettings">'
-      # TODO: ExtensionSettings
-      w << '  </ImportGroup>'
-      
-      @configs.each do |cfg|
-        # TODO: ExtensionSettings
-      end
-      
-      @configs.each do |cfg|
-        w << "  <ImportGroup Label=\"PropertySheets\" #{cfg_condition(cfg)}>"
-        w << '    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" ' \
-             'Condition="exists(\'$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props\')" Label="LocalAppDataPlatform" />'
-        w << '  </ImportGroup>'
-      end
-    
-      w << '  <PropertyGroup Label="UserMacros" />'
-    
-      @configs.each do |cfg|
-        w << "  <PropertyGroup Label=\"Configuration\" #{cfg_condition(cfg)}>"
-        write_keyvalue_attr(w, cfg.get_attr(:vcproperty), :pg2, depth: 2)
-        w << '  </PropertyGroup>'
-      end
-      
-      @configs.each do |cfg|
-        w << "  <ItemDefinitionGroup #{cfg_condition(cfg)}>"
-        w << '  </ItemDefinitionGroup>'
-      end
-      
-      w << '  <ItemGroup>'
-      # TODO: src
-      w << '  </ItemGroup>'
-      
-      deps = @attrs.deps
-      if !deps.empty?
-        w << '  <ItemGroup>'
-        deps.each do |dep|
-          proj_ref = @generator.project_from_node(dep)
-          w << "    <ProjectReference Include=\"#{proj_ref.vcxproj_file.relative_path_from(genroot).to_backslashes!}\">"
-          w << "      <Project>#{proj_ref.guid}</Project>"
-          # TODO: reference properties
-          w << '    </ProjectReference>'
-        end
-        w << '  </ItemGroup>'
-      end
-    
-      w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />'
-      w << '  <ImportGroup Label="ExtensionTargets">'
-      # TODO: extension targets
-      w << '  </ImportGroup>'
-      
-      @configs.each do |cfg|
-        # TODO: extension targets
-      end
-      
-      w << '</Project>'
-      w.chomp!
-      save_file(@vcxproj_file, w.str, :windows)
     end
     
     ##
     #
-    def write_vcxproj_filters
-      w = StringWriter.new(capacity: 16 * 1024)
-      w << "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-      w << '<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">'
-      w << '  <ItemGroup>'
-      w << '  </ItemGroup>'
-      w << '  <ItemGroup>'
-      w << '  </ItemGroup>'
-      w << '</Project>'
-      w.chomp!
-      save_file(@vcxproj_filters_file, w.str, :windows)
+    def xmlns
+      'http://schemas.microsoft.com/developer/msbuild/2003'
     end
     
     ##
     #
-    def write_keyvalue_attr(w, attr, group = nil, depth: 2)
+    def xml_group(w, tag, label: nil, condition: nil, depth: 1)
+      w.write_raw "#{'  ' * depth}<#{tag}"
+      w.write_raw " Label=\"#{label}\"" if label
+      w.write_raw " Condition=\"#{condition}\"" if condition
+      w << '>'
+      yield w
+      w << "#{'  ' * depth}</#{tag}>"
+    end
+
+    ##
+    #
+    def item_group(w, **options, &block)
+      xml_group(w, 'ItemGroup', **options, &block)
+    end
+    
+    ##
+    #
+    def property_group(w, **options, &block)
+      xml_group(w, 'PropertyGroup', **options, &block)
+    end
+    
+    ##
+    #
+    def import_group(w, **options, &block)
+      xml_group(w, 'ImportGroup', **options, &block)
+    end
+    
+    ##
+    #
+    def item_definition_group(w, **options, &block)
+      xml_group(w, 'ItemDefinitionGroup', **options, &block)
+    end
+    
+    ##
+    #
+    def write_keyvalue_attr(w, attr, group: nil, depth: 2)
       attr.each_value do |key_val, _options, key_val_options|
         if !group || group == key_val_options[:group]
           key = key_val.key
@@ -231,7 +137,164 @@ module JABA
     ##
     #
     def cfg_condition(cfg)
-      "Condition=\"'$(Configuration)|$(Platform)'=='#{cfg.attrs.config}|#{@platform.attrs.vsname}'\""
+      "'$(Configuration)|$(Platform)'=='#{cfg.attrs.config}|#{@platform.attrs.vsname}'"
+    end
+    
+  end
+  
+  ##
+  #
+  class Vcxproj < VSProject
+    
+    attr_reader :vcxproj_file
+    
+    ##
+    #
+    def init
+      super
+      @vcxproj_file = "#{@proj_root}.vcxproj"
+      @vcxproj_filters_file = "#{@vcxproj_file}.filters"
+      @configs = []
+      
+      # TODO: check for clashes if already set by user
+      @attrs.vcglobal :ProjectGuid, guid
+      @attrs.vcglobal :WindowsTargetPlatformVersion, @attrs.winsdkver
+      
+      config_type = case @attrs.type
+      when :app
+        'Application'
+      when :lib
+        'StaticLibrary'
+      when :dll
+        'DynamicLibrary'
+      else
+        raise "'#{attrs.type}' unrecognised"
+      end
+      
+      @attrs.configs.each do |cfg|
+        @configs << @generator.make_node(handle: nil, parent: @node, attrs: [:config, :vcproperty]) do |n|
+          n.attrs.config cfg
+          n.attrs.vcproperty :ConfigurationType, config_type, group: :pg1
+          n.attrs.vcproperty :PlatformToolset, n.attrs.toolset, group: :pg1
+        end
+      end
+    end
+    
+    ##
+    #
+    def generate
+      write_vcxproj
+      write_vcxproj_filters
+    end
+    
+    ##
+    #
+    def write_vcxproj
+      puts "Generating #{@vcxproj_file}"
+      w = StringWriter.new(capacity: 64 * 1024)
+      
+      write_xml_version(w)
+      
+      w << "<Project DefaultTargets=\"Build\" ToolsVersion=\"#{tools_version}\" xmlns=\"#{xmlns}\">"
+      
+      item_group(w, label: 'ProjectConfigurations') do |w|
+        @configs.each do |cfg|
+          w << "    <ProjectConfiguration Include=\"#{cfg.attrs.config}|#{@platform.attrs.vsname}\">"
+          w << "      <Configuration>#{cfg.attrs.config}</Configuration>"
+          w << "      <Platform>#{@platform.attrs.vsname}</Platform>"
+          w << '    </ProjectConfiguration>'
+        end
+      end
+    
+      property_group(w, label: 'Globals') do |w|
+        write_keyvalue_attr(w, @node.get_attr(:vcglobal))
+      end
+      
+      w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />'
+      
+      @configs.each do |cfg|
+        property_group(w, label: 'Configuration', condition: cfg_condition(cfg)) do |w|
+          write_keyvalue_attr(w, cfg.get_attr(:vcproperty), group: :pg1)
+        end
+      end
+      
+      w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />'
+      
+      import_group(w, label: 'ExtensionSettings') do |w|
+        # TODO: ExtensionSettings
+      end
+      
+      @configs.each do |cfg|
+        # TODO: ExtensionSettings
+      end
+      
+      @configs.each do |cfg|
+        import_group(w, label: 'PropertySheets', condition: cfg_condition(cfg)) do |w|
+          w << '    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" ' \
+               'Condition="exists(\'$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props\')" Label="LocalAppDataPlatform" />'
+        end
+      end
+    
+      w << '  <PropertyGroup Label="UserMacros" />'
+    
+      @configs.each do |cfg|
+        property_group(w, label: 'Configuration', condition: cfg_condition(cfg)) do
+          write_keyvalue_attr(w, cfg.get_attr(:vcproperty), group: :pg2)
+        end
+      end
+      
+      @configs.each do |cfg|
+        item_definition_group(w, condition: cfg_condition(cfg)) do |w|
+        end
+      end
+      
+      item_group(w) do |w|
+        # TODO: src
+      end
+      
+      deps = @attrs.deps
+      if !deps.empty?
+        item_group(w) do |w|
+          deps.each do |dep|
+            proj_ref = @generator.project_from_node(dep)
+            w << "    <ProjectReference Include=\"#{proj_ref.vcxproj_file.relative_path_from(genroot).to_backslashes!}\">"
+            w << "      <Project>#{proj_ref.guid}</Project>"
+            # TODO: reference properties
+            w << '    </ProjectReference>'
+          end
+        end
+      end
+    
+      w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />'
+      
+      import_group(w, label: 'ExtensionTargets') do |w|
+        # TODO: extension targets
+      end
+      
+      @configs.each do |cfg|
+        # TODO: extension targets
+      end
+      
+      w << '</Project>'
+      w.chomp!
+      
+      save_file(@vcxproj_file, w.str, :windows)
+    end
+    
+    ##
+    #
+    def write_vcxproj_filters
+      w = StringWriter.new(capacity: 16 * 1024)
+      
+      write_xml_version(w)
+      w << "<Project ToolsVersion=\"4.0\" xmlns=\"#{xmlns}\">"
+      item_group(w) do |w|
+      end
+      item_group(w) do |w|
+      end
+      w << '</Project>'
+      w.chomp!
+      save_file(@vcxproj_filters_file, w.str, :windows)
     end
   
   end
