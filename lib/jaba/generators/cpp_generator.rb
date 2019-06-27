@@ -31,7 +31,7 @@ module JABA
           end
           
           proj_node.attrs.configs.each do |cfg|
-            make_node(handle: nil, parent: proj_node, attrs: [:config, :rtti, :vcproperty]) do |n|
+            make_node(handle: nil, parent: proj_node, attrs: [:config, :rtti, :toolset, :vcproperty]) do |n|
               config cfg
             end
           end
