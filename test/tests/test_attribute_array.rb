@@ -243,6 +243,42 @@ module JABA
     it 'supports clearing excludes' do
     end
     
+    it 'gives a copy of options to each element' do
+      jaba do
+        opt = 'opt'
+        arg = 'arg'
+        define :test do
+          attr_array :a do
+            keyval_options :opt
+          end
+        end
+        test :t do
+          a 1, arg, opt: opt
+          a 2, arg, opt: opt
+          generate do
+            a = get_attr(:a)
+            
+            e0 = a.get_elem(0)
+            e0.get.must_equal(1)
+            opt0 = e0.key_value_options[:opt]
+            opt0.must_equal('opt')
+            arg0 = e0.options[0]
+            arg0.must_equal('arg')
+            
+            e1 = a.get_elem(1)
+            e1.get.must_equal(2)
+            opt1 = e1.key_value_options[:opt]
+            opt1.must_equal('opt')
+            arg1 = e1.options[0]
+            arg1.must_equal('arg')
+            
+            opt0.object_id.wont_equal(opt1.object_id)
+            arg0.object_id.wont_equal(arg1.object_id)
+          end
+        end
+      end
+    end
+    
   end
 
 end

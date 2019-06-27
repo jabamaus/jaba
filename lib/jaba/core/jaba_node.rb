@@ -67,6 +67,9 @@ module JABA
   #
   class Attribute < AttributeBase
 
+    attr_reader :options
+    attr_reader :key_value_options
+    
     ##
     #
     def initialize(services, attr_def, parent_array, node)
@@ -103,8 +106,11 @@ module JABA
       validate_value(value, api_call_line)
 
       @api_call_line = api_call_line
-      @options = args
-      @key_value_options = keyvalue_args
+      
+      # Take deep copies of options so they are private to this attribute
+      #
+      @options = Marshal.load(Marshal.dump(args))
+      @key_value_options = Marshal.load(Marshal.dump(keyvalue_args))
       
       # TODO: fix
       @value = if @attr_def.type == :keyvalue
@@ -260,6 +266,12 @@ module JABA
     #
     def clear
       @elems.clear
+    end
+    
+    ##
+    #
+    def get_elem(i)
+      @elems[i]
     end
     
     ##
