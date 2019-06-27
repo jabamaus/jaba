@@ -223,7 +223,7 @@ module JABA
     
     ##
     #
-    def make_node(handle: "#{@current_info.type}|#{@current_info.id}", attrs: nil, parent: nil)
+    def make_node(handle: "#{@current_info.type}|#{@current_info.id}", attrs: nil, parent: nil, &block)
       jn = JabaNode.new(self, @current_info, handle, attrs, parent)
       @nodes << jn
       
@@ -236,7 +236,7 @@ module JABA
         @node_lookup[handle] = jn
       end
       
-      yield jn if block_given?
+      jn.attrs.instance_eval(&block) if block_given?
       jn.api_eval(&@current_info.block)
       jn.post_create
       jn

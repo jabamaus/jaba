@@ -39,6 +39,7 @@ module JABA
       p = klass.new(@services, self, node)
       @node_to_project[node] = p
       p.init
+      setup_project(p) if respond_to?(:setup_project)
       p
     end
     

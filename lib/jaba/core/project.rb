@@ -147,6 +147,7 @@ module JABA
   class Vcxproj < VSProject
     
     attr_reader :vcxproj_file
+    attr_reader :configs
     
     ##
     #
@@ -154,31 +155,7 @@ module JABA
       super
       @vcxproj_file = "#{@proj_root}.vcxproj"
       @vcxproj_filters_file = "#{@vcxproj_file}.filters"
-      @configs = []
-      
-      # TODO: check for clashes if already set by user
-      @attrs.vcglobal :ProjectGuid, guid
-      @attrs.vcglobal :WindowsTargetPlatformVersion, @attrs.winsdkver
-      
-      config_type = case @attrs.type
-      when :app
-        'Application'
-      when :lib
-        'StaticLibrary'
-      when :dll
-        'DynamicLibrary'
-      else
-        raise "'#{attrs.type}' unrecognised"
-      end
-      
-      @attrs.configs.each do |cfg|
-        @configs << @generator.make_node(handle: nil, parent: @node, attrs: [:config, :rtti, :vcproperty]) do |n|
-          n.attrs.config cfg
-          n.attrs.vcproperty :ConfigurationType, config_type, group: :pg1
-          n.attrs.vcproperty :PlatformToolset, n.attrs.toolset, group: :pg1
-          n.attrs.vcproperty :RuntimeTypeInfo, false, group: :ClCompile if !n.attrs.rtti
-        end
-      end
+      @configs = @node.children
     end
     
     ##

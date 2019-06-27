@@ -291,12 +291,12 @@ module JABA
       @projects = []
       root_node = make_node(handle: nil, attrs: [:root, :platforms])
       root_node.attrs.platforms.each do |p|
-        hosts_node = make_node(handle: nil, parent: root_node, attrs: [:platform, :hosts]) {|n| n.attrs.platform p}
+        hosts_node = make_node(handle: nil, parent: root_node, attrs: [:platform, :hosts]) {|n| platform p}
         hosts_node.attrs.hosts.each do |h|
-          project = make_node(handle: nil, parent: hosts_node, attrs: [:host, :src, :targets]) {|n| n.attrs.host h}
+          project = make_node(handle: nil, parent: hosts_node, attrs: [:host, :src, :targets]) {|n| host h}
           @projects << project.attrs
           project.attrs.targets.each do |t|
-            make_node(handle: nil, parent: project, attrs: [:target, :rtti]) {|n| n.attrs.target t}
+            make_node(handle: nil, parent: project, attrs: [:target, :rtti]) {|n| target t}
           end
         end
       end
