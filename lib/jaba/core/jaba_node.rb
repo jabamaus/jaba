@@ -93,7 +93,7 @@ module JABA
       if !set? && @default_is_proc
         @node.api_eval(&@default)
       elsif api_call_line && @value.is_a?(JabaNode)
-        @value.id
+        @value.id # TODO: remove this and add === to Node?
       else
         @value
       end
