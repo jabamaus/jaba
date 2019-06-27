@@ -70,6 +70,7 @@ module JABA
         @configs << @generator.make_node(handle: nil, parent: @node, attrs: [:config, :vcproperty]) do |n|
           n.attrs.config cfg
           n.attrs.vcproperty :ConfigurationType, config_type, group: :pg1
+          n.attrs.vcproperty :PlatformToolset, n.attrs.toolset, group: :pg1
         end
       end
     end

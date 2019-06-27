@@ -143,6 +143,8 @@ define :host do
   attr :host_major_version
   attr :host_version
   attr :host_version_year
+  attr :toolset
+  
   SUPPORTED_VS_VERSIONS.each do |vs_year|
     attr "vs#{vs_year}?", type: :bool
   end
@@ -161,6 +163,7 @@ host :vs2010 do
   host_major_version 10
   host_version '10.0'
   host_version_year 2010
+  toolset 'v100'
 end
 
 ##
@@ -171,6 +174,7 @@ host :vs2012 do
   host_major_version 11
   host_version '11.0'
   host_version_year 2012
+  toolset 'v110'
 end
 
 ##
@@ -181,6 +185,7 @@ host :vs2013 do
   host_major_version 12
   host_version '12.0'
   host_version_year 2013
+  toolset 'v120'
 end
 
 ##
@@ -191,6 +196,7 @@ host :vs2015 do
   host_major_version 14
   host_version '14.0'
   host_version_year 2015
+  toolset 'v140'
 end
 
 ##
@@ -201,6 +207,7 @@ host :vs2017 do
   host_major_version 15
   host_version '15.0'
   host_version_year 2017
+  toolset 'v141'
 end
 
 ##
@@ -211,6 +218,7 @@ host :vs2019 do
   host_major_version 16
   host_version '16.0'
   host_version_year 2019
+  toolset 'v141'
 end
 
 ##
@@ -355,6 +363,10 @@ define :cpp, extend: :project do
   end
   
   # Per-target attributes
+  
+  attr :toolset do
+    default { host.toolset }
+  end
   
   attr_array :vcproperty, type: :keyvalue do
     keyval_options :group
