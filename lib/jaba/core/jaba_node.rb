@@ -61,6 +61,12 @@ module JABA
       @attr_def.has_flag?(:required)
     end
     
+    ##
+    #
+    def process_flags(warn: true)
+      # Nothing
+    end
+    
   end
 
   ##
@@ -152,12 +158,6 @@ module JABA
     #
     def map!
       @value = yield(@value)
-    end
-    
-    ##
-    #
-    def process_flags(warn: true)
-      # Nothing
     end
     
     private
@@ -381,7 +381,12 @@ module JABA
       @generate_hooks = []
       
       @jaba_type.iterate_attrs(attrs_mask) do |attr_def|
-        a = attr_def.array? ? AttributeArray.new(services, attr_def, self) : Attribute.new(services, attr_def, nil, self)
+        a = case attr_def.variant
+            when :single
+              Attribute.new(services, attr_def, nil, self)
+            when :array
+              AttributeArray.new(services, attr_def, self)
+            end
         @attribute_lookup[attr_def.id] = a
         @attributes << a
       end

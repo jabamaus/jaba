@@ -134,6 +134,7 @@ module JABA
 
     attr_reader :id
     attr_reader :type # eg :bool, :file, :path etc
+    attr_reader :variant # :single, :array, :hash
     attr_reader :type_obj # AttributeType object
     attr_reader :default
     attr_reader :api_call_line
@@ -142,11 +143,11 @@ module JABA
     
     ##
     #
-    def initialize(services, id, type, is_array, jaba_type, api_call_line)
+    def initialize(services, id, type, variant, jaba_type, api_call_line)
       super(services, AttributeDefinitionAPI.new)
       @id = id
       @type = type
-      @is_array = is_array
+      @variant = variant
       @jaba_type = jaba_type
       @api_call_line = api_call_line
 
@@ -164,12 +165,6 @@ module JABA
       if @type_obj.init_attr_def_hook
         api_eval(&@type_obj.init_attr_def_hook)
       end
-    end
-    
-    ##
-    #
-    def array?
-      @is_array
     end
     
     ##
@@ -254,7 +249,7 @@ module JABA
     
     ##
     #
-    def define_attr(id, type: nil, array: false, &block)
+    def define_attr(id, variant, type: nil, &block)
       if !(id.is_a?(Symbol) || id.is_a?(String))
         @services.jaba_error("'#{id}' attribute id must be specified as a symbol or string")
       end
@@ -262,7 +257,7 @@ module JABA
       if get_attr_def(id, fail_if_not_found: false)
         @services.jaba_error("'#{id}' attribute multiply defined")
       end
-      ad = AttributeDefinition.new(@services, id, type, array, self, caller(2, 1)[0])
+      ad = AttributeDefinition.new(@services, id, type, variant, self, caller(2, 1)[0])
       ad.api_eval(&block)
       @attribute_defs << ad
       @attribute_def_lookup[id] = ad

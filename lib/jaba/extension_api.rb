@@ -72,13 +72,13 @@ module JABA
     # Define a new attribute. See AttributeDefinitionAPI class below.
     #
     def attr(id, **options, &block)
-      @obj.define_attr(id, **options, &block)
+      @obj.define_attr(id, :single, **options, &block)
     end
     
     ##
     #
     def attr_array(id, **options, &block)
-      @obj.define_attr(id, array: true, **options, &block)
+      @obj.define_attr(id, :array, **options, &block)
     end
     
     ##
