@@ -106,28 +106,6 @@ module JABA
   end
 
   ##
-  #
-  class AttributeType < JabaAPIObject
-
-    attr_reader :type
-    attr_reader :init_attr_def_hook
-    attr_reader :validate_attr_def_hook
-    attr_reader :validate_value_hook
-    
-    ##
-    #
-    def initialize(services, info)
-      super(services, AttributeTypeAPI.new)
-      @type = info.type
-      @init_attr_def_hook = nil
-      @validate_attr_def_hook = nil
-      @validate_value_hook = nil
-      api_eval(&info.block) if info.block
-    end
-
-  end
-
-  ##
   # Manages shared data that is common to Attributes instanced from this definition.
   #
   class AttributeDefinition < JabaAPIObject
@@ -161,10 +139,7 @@ module JABA
       @make_handle_hook = nil
       
       @type_obj = @services.get_attribute_type(@type)
-      
-      if @type_obj.init_attr_def_hook
-        api_eval(&@type_obj.init_attr_def_hook)
-      end
+      @type_obj.init_attr_def(self)
     end
     
     ##
@@ -176,25 +151,19 @@ module JABA
     ##
     #
     def init
-      hook = @type_obj.validate_attr_def_hook
-      if hook
-        begin
-          api_eval(&hook)
-        rescue JabaError => e
-          @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
-                               callstack: [e.backtrace[0], @api_call_line])
-        end
+      begin
+        @type_obj.validate_attr_def(self)
+      rescue JabaError => e
+        @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
+                             callstack: [e.backtrace[0], @api_call_line])
       end
       
       if @default
-        hook = @type_obj.validate_value_hook
-        if hook
-          begin
-            api_eval(@default, &hook)
-          rescue JabaError => e
-            @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
-                                 callstack: [e.backtrace[0], @api_call_line])
-          end
+        begin
+          @type_obj.validate_value(self, @default)
+        rescue JabaError => e
+          @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
+                               callstack: [e.backtrace[0], @api_call_line])
         end
       end
       
