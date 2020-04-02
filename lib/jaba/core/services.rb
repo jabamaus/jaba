@@ -251,7 +251,7 @@ module JABA
     
     ##
     #
-    def get_attribute_handler(type)
+    def get_attribute_type(type)
       t = @jaba_attr_handlers[type]
       if !t
         jaba_error("'#{type}' attribute type is undefined. Valid types: #{@jaba_attr_handlers.keys}")

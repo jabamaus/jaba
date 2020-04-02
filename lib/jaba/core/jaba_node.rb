@@ -170,7 +170,7 @@ module JABA
       end
       if api_call_line
         begin
-          @attr_def.handler.validate_value(@attr_def, value)
+          @attr_def.type_obj.validate_value(@attr_def, value)
         rescue JabaError => e
           @services.jaba_error("'#{@attr_def.id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
         end

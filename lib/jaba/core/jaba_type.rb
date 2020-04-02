@@ -113,7 +113,7 @@ module JABA
     attr_reader :id
     attr_reader :type # eg :bool, :file, :path etc
     attr_reader :variant # :single, :array, :hash
-    attr_reader :handler # AttributeHandler object
+    attr_reader :type_obj # AttributeType object
     attr_reader :default
     attr_reader :api_call_line
     attr_reader :jaba_type
@@ -138,8 +138,8 @@ module JABA
       @post_set_hook = nil
       @make_handle_hook = nil
       
-      @handler = @services.get_attribute_handler(@type)
-      @handler.init_attr_def(self)
+      @type_obj = @services.get_attribute_type(@type)
+      @type_obj.init_attr_def(self)
     end
     
     ##
@@ -152,7 +152,7 @@ module JABA
     #
     def init
       begin
-        @handler.validate_attr_def(self)
+        @type_obj.validate_attr_def(self)
       rescue JabaError => e
         @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
                              callstack: [e.backtrace[0], @api_call_line])
@@ -160,7 +160,7 @@ module JABA
       
       if @default
         begin
-          @handler.validate_value(self, @default)
+          @type_obj.validate_value(self, @default)
         rescue JabaError => e
           @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
                                callstack: [e.backtrace[0], @api_call_line])
