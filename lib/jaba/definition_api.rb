@@ -47,9 +47,8 @@ module JABA
   ##
   # API for creating instances of Jaba types.
   #
-  class TopLevelAPI < APIBase
+  class TopLevelAPI < BasicObject
     
-    undef_method :include
     include TopLevelExtensionAPI
     
     ##
@@ -90,6 +89,13 @@ module JABA
     #
     def method_missing(type, id, **options, &block)
       @obj.define_instance(type, id, **options, &block)
+    end
+    
+    ##
+    # Internal use only.
+    #
+    def __set_obj(o)
+      @obj = o
     end
     
   end
