@@ -56,8 +56,7 @@ module JABA
       
       @file_read_cache = {}
       
-      @top_level_api = TopLevelAPI.new
-      @top_level_api.__set_obj(self)
+      @top_level_api = TopLevelAPI.new(self)
 
       @default_attr_type = AttributeTypeDefinition.new(self, AttrTypeInfo.new).freeze
     end
