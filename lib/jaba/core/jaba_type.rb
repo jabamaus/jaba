@@ -319,7 +319,6 @@ module JABA
 
     attr_reader :type
     attr_reader :attribute_defs
-    attr_reader :dependencies
     attr_reader :generator
     
     ##
