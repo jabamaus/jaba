@@ -34,6 +34,7 @@ module JABA
     
   end
 
+=begin
   ##
   #
   class AttributeTypeAPI < APIBase
@@ -158,5 +159,5 @@ module JABA
     end
 
   end
-
+=end
 end

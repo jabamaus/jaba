@@ -134,7 +134,7 @@ module JABA
     ##
     #
     def initialize(services, info)
-      super(services, AttributeTypeAPI.new)
+      super(services, self)
       @type = info.type
       @init_attr_def_hook = nil
       @validate_attr_def_hook = nil
@@ -142,6 +142,27 @@ module JABA
       api_eval(&info.block) if info.block
     end
 
+    ##
+    # DEFINITION API
+    #
+    def init_attr_def(&block)
+      define_hook(:init_attr_def, &block)
+    end
+    
+    ##
+    # DEFINITION API
+    #
+    def validate_attr_def(&block)
+      define_hook(:validate_attr_def, &block)
+    end
+    
+    ##
+    # DEFINITION API
+    #
+    def validate_value(&block)
+      define_hook(:validate_value, &block)
+    end
+    
   end
 
   ##
@@ -153,15 +174,14 @@ module JABA
     attr_reader :type # eg :bool, :file, :path etc
     attr_reader :variant # :single, :array, :hash
     attr_reader :type_obj # AttributeType object
-    attr_reader :default
     attr_reader :api_call_line
     attr_reader :jaba_type
-    attr_reader :keyval_options
+    attr_reader :keyval_opts
     
     ##
     #
     def initialize(services, id, type, variant, jaba_type, api_call_line)
-      super(services, AttributeDefinitionAPI.new)
+      super(services, self)
       @id = id
       @type = type
       @variant = variant
@@ -171,7 +191,7 @@ module JABA
       @default = nil
       @flags = []
       @help = nil
-      @keyval_options = []
+      @keyval_opts = []
       
       @validate_hook = nil
       @post_set_hook = nil
@@ -184,6 +204,82 @@ module JABA
       end
     end
     
+    ##
+    #
+    def get_default
+      @default
+    end
+    
+    ##
+    # DEFINITION API
+    #
+    # Set help for the attribute. Required.
+    #
+    def help(val = nil, &block)
+      set_var(:help, val, &block)
+    end
+    
+    ##
+    # DEFINITION API
+    #
+    # Set any number of flags to control the behaviour of the attribute.
+    #
+    def flags(*flags, &block)
+      set_var(:flags, flags.flatten, &block)
+    end
+    
+    ##
+    # DEFINITION API
+    #
+    # Set attribute default value. Can be specified as a value or a block.
+    #
+    def default(val = nil, &block)
+      set_var(:default, val, &block)
+    end
+    
+    ##
+    # DEFINITION API
+    #
+    def keyval_options(*options, &block)
+      set_var(:keyval_opts, options.flatten, &block)
+    end
+    
+    ##
+    # DEFINITION API
+    #
+    # Called for single value attributes and each element of array attributes.
+    #
+    def validate(&block)
+      define_hook(:validate, &block)
+    end
+    
+    ##
+    # DEFINITION API
+    #
+    def post_set(&block)
+      define_hook(:post_set, &block)
+    end
+    
+    ##
+    # DEFINITION API
+    #
+    def make_handle(&block)
+      define_hook(:make_handle, &block)
+    end
+    
+    ##
+    # DEFINITION API
+    #
+    def add_property(id, val = nil)
+      set_var(id, val)
+    end
+    
+    ##
+    #
+    def method_missing(id, val = nil)
+      handle_property(id, val)
+    end
+
     ##
     #
     def has_flag?(flag)
@@ -235,7 +331,7 @@ module JABA
     ##
     #
     def initialize(services, info)
-      super(services, JabaTypeAPI.new)
+      super(services, self)
       @type = info.type
       @super_type = info.options[:extend]
       @attribute_defs = []
@@ -256,6 +352,29 @@ module JABA
       end
       
       api_eval(&info.block)
+    end
+    
+    ##
+    # DEFINITION API
+    #
+    # Define a new attribute. See AttributeDefinitionAPI class below.
+    #
+    def attr(id, **options, &block)
+      define_attr(id, :single, **options, &block)
+    end
+    
+    ##
+    # DEFINITION API
+    #
+    def attr_array(id, **options, &block)
+      define_attr(id, :array, **options, &block)
+    end
+    
+    ##
+    # DEFINITION API
+    #
+    def dependencies(*deps)
+      set_var(:dependencies, deps.flatten)
     end
     
     ##

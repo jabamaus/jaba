@@ -33,7 +33,7 @@ module JABA
       @node = node
       @api_call_line = nil
       @set = false
-      @default = @attr_def.default
+      @default = @attr_def.get_default
       @default_is_proc = @default.is_a?(Proc)
     end
     
@@ -132,7 +132,7 @@ module JABA
     #
     def clear
       @value = nil
-      d = @attr_def.default
+      d = @attr_def.get_default
       if !d.nil? && !@default_is_proc
         @value = d
       end
@@ -184,7 +184,7 @@ module JABA
     #
     def validate_keyvalue_options(options, api_call_line)
       options.each_key do |k|
-        if !@attr_def.keyval_options.include?(k)
+        if !@attr_def.keyval_opts.include?(k)
           @services.jaba_error("Invalid option '#{k}'", callstack: api_call_line)
         end
       end
@@ -353,8 +353,6 @@ module JABA
     attr_reader :children
     attr_reader :source_file
     attr_reader :source_dir
-    
-    #def __set_obj(o) ; end
     
     ##
     #
