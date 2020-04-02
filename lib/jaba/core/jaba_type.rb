@@ -11,27 +11,21 @@ module JABA
   class JabaAPIObject
     
     attr_reader :services
-    attr_reader :api
     
     ##
     #
-    def initialize(services, api)
+    def initialize(services)
       @services = services
-      @api = api
-      @api.__set_obj(self)
     end
     
-    # TODO: REMOVE
-    def __set_obj(o) ; end
-
     ##
     #
     def api_eval(args = nil, &block)
       return if !block_given?
       if !args.nil?
-        @api.instance_exec(args, &block)
+        instance_exec(args, &block)
       else
-        @api.instance_eval(&block)
+        instance_eval(&block)
       end
     end
     
@@ -134,7 +128,7 @@ module JABA
     ##
     #
     def initialize(services, info)
-      super(services, self)
+      super(services)
       @type = info.type
       @init_attr_def_hook = nil
       @validate_attr_def_hook = nil
@@ -181,7 +175,7 @@ module JABA
     ##
     #
     def initialize(services, id, type, variant, jaba_type, api_call_line)
-      super(services, self)
+      super(services)
       @id = id
       @type = type
       @variant = variant
@@ -331,7 +325,7 @@ module JABA
     ##
     #
     def initialize(services, info)
-      super(services, self)
+      super(services)
       @type = info.type
       @super_type = info.options[:extend]
       @attribute_defs = []

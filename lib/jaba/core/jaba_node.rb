@@ -357,7 +357,7 @@ module JABA
     ##
     #
     def initialize(services, info, handle, attrs_mask, parent)
-      super(services, self)
+      super(services)
 
       @info = info
       @jaba_type = info.type
