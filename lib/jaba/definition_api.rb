@@ -6,44 +6,6 @@ module JABA
 
   ##
   #
-  class APIBase < BasicObject
-
-    ##
-    # Include one or more shared definitions in this one.
-    #
-    def include(*shared_definition_ids, args: nil)
-      @obj.include_shared(shared_definition_ids, args)
-    end
-    
-    ##
-    #
-    def raise(msg)
-      @obj.services.jaba_error(msg)
-    end
-
-    ##
-    #
-    def puts(str)
-      ::Kernel.puts(str)
-    end
-    
-    ##
-    #
-    def print(str)
-      ::Kernel.print(str)
-    end
-    
-    ##
-    # Internal use only.
-    #
-    def __set_obj(o)
-      @obj = o
-    end
-    
-  end
-
-  ##
-  #
   class TopLevelAPI < BasicObject
     
     ##
