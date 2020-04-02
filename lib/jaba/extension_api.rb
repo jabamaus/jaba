@@ -10,6 +10,12 @@ module JABA
 
     ##
     #
+    def attr_type(id, &block)
+      @obj.define_attr_type(id, &block)
+    end
+    
+    ##
+    #
     def attr_flag(id)
       @obj.define_attr_flag(id)
     end
@@ -24,6 +30,30 @@ module JABA
     #
     def open(type, &block)
       @obj.open_type(type, &block)
+    end
+    
+  end
+
+  ##
+  #
+  class AttributeTypeAPI < APIBase
+    
+    ##
+    #
+    def init_attr_def(&block)
+      @obj.define_hook(:init_attr_def, &block)
+    end
+    
+    ##
+    #
+    def validate_attr_def(&block)
+      @obj.define_hook(:validate_attr_def, &block)
+    end
+    
+    ##
+    #
+    def validate_value(&block)
+      @obj.define_hook(:validate_value, &block)
     end
     
   end

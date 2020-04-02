@@ -8,7 +8,6 @@ require_relative 'jaba_type'
 require_relative 'jaba_node'
 require_relative 'project'
 require_relative 'generator'
-require_relative 'attribute_handlers'
 Dir.glob("#{__dir__}/../generators/*_generator.rb").each {|f| require f}
 
 ##
@@ -26,6 +25,7 @@ module JABA
     ##
     # Records information about each definition the user has made.
     #
+    AttrTypeInfo = Struct.new(:type, :block, :api_call_line)
     JabaTypeInfo = Struct.new(:type, :block, :options, :api_call_line)
     JabaInstanceInfo = Struct.new(:type, :id, :block, :options, :api_call_line)
     
@@ -46,7 +46,7 @@ module JABA
       @generated_files_hash = {}
       @generated_files = []
       
-      @jaba_attr_handlers = {}
+      @jaba_attr_types = []
       @jaba_types = []
       @jaba_types_to_open = []
       @definition_registry = {}
@@ -58,6 +58,8 @@ module JABA
       
       @top_level_api = TopLevelAPI.new
       @top_level_api.__set_obj(self)
+
+      @default_attr_type = AttributeType.new(self, AttrTypeInfo.new).freeze
     end
 
     ##
@@ -75,6 +77,12 @@ module JABA
     ##
     #
     def define_attr_flag(id)
+    end
+    
+    ##
+    #
+    def define_attr_type(type, &block)
+      @jaba_attr_types << AttrTypeInfo.new(type, block, caller(2, 1)[0])
     end
     
     ##
@@ -137,17 +145,10 @@ module JABA
         execute_definitions(&input.definitions)
       end
       
-      # Create attribute handlers
+      # Create attribute types
       #
-      make_attr_handler(HandlerDefault, nil)
-      make_attr_handler(HandlerBool, :bool)
-      make_attr_handler(HandlerChoice, :choice)
-      make_attr_handler(HandlerDir, :dir)
-      make_attr_handler(HandlerFile, :file)
-      make_attr_handler(HandlerPath, :path)
-      make_attr_handler(HandlerKeyValue, :keyvalue)
-      make_attr_handler(HandlerReference, :reference)
-
+      @jaba_attr_types.map! {|info| AttributeType.new(self, info)}
+      
       # Create a JabaType object for each defined type
       #
       @jaba_types.map! {|info| JabaType.new(self, info)}
@@ -222,14 +223,6 @@ module JABA
     
     ##
     #
-    def make_attr_handler(klass, type)
-      h = klass.new
-      h.instance_variable_set(:@services, self)
-      @jaba_attr_handlers[type] = h
-    end
-    
-    ##
-    #
     def make_node(handle: "#{@current_info.type}|#{@current_info.id}", attrs: nil, parent: nil, &block)
       jn = JabaNode.new(self, @current_info, handle, attrs, parent)
       @nodes << jn
@@ -252,9 +245,12 @@ module JABA
     ##
     #
     def get_attribute_type(type)
-      t = @jaba_attr_handlers[type]
+      if type.nil?
+        return @default_attr_type
+      end
+      t = @jaba_attr_types.find {|at| at.type == type}
       if !t
-        jaba_error("'#{type}' attribute type is undefined. Valid types: #{@jaba_attr_handlers.keys}")
+        jaba_error("'#{type}' attribute type is undefined. Valid types: #{@jaba_attr_types.map(&:type)}")
       end
       t
     end

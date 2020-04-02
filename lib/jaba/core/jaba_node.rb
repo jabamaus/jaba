@@ -169,10 +169,13 @@ module JABA
         @services.jaba_error("'#{@attr_def.id}' attribute is not an array so cannot accept one", callstack: api_call_line)
       end
       if api_call_line
-        begin
-          @attr_def.type_obj.validate_value(@attr_def, value)
-        rescue JabaError => e
-          @services.jaba_error("'#{@attr_def.id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
+        hook = @attr_def.type_obj.validate_value_hook
+        if hook
+          begin
+            @attr_def.api_eval(value, &hook)
+          rescue JabaError => e
+            @services.jaba_error("'#{@attr_def.id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
+          end
         end
       end
     end
