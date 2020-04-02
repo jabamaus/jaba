@@ -342,7 +342,7 @@ module JABA
   
   ##
   #
-  class JabaNode < JabaAPIObject
+  class JabaNode < DefinitionObject
 
     attr_reader :jaba_type
     attr_reader :id

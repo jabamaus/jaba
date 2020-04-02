@@ -8,7 +8,7 @@ module JABA
   
   ##
   #
-  class JabaAPIObject
+  class DefinitionObject
     
     attr_reader :services
     
@@ -118,7 +118,7 @@ module JABA
 
   ##
   #
-  class AttributeType < JabaAPIObject
+  class AttributeTypeDefinition < DefinitionObject
 
     attr_reader :type
     attr_reader :init_attr_def_hook
@@ -162,7 +162,7 @@ module JABA
   ##
   # Manages shared data that is common to Attributes instanced from this definition.
   #
-  class AttributeDefinition < JabaAPIObject
+  class AttributeDefinition < DefinitionObject
 
     attr_reader :id
     attr_reader :type # eg :bool, :file, :path etc
@@ -315,7 +315,7 @@ module JABA
   ##
   # eg project/workspace/category etc.
   #
-  class JabaType < JabaAPIObject
+  class JabaTypeDefinition < DefinitionObject
 
     attr_reader :type
     attr_reader :attribute_defs
