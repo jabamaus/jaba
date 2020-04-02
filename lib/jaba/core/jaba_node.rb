@@ -354,10 +354,12 @@ module JABA
     attr_reader :source_file
     attr_reader :source_dir
     
+    #def __set_obj(o) ; end
+    
     ##
     #
     def initialize(services, info, handle, attrs_mask, parent)
-      super(services, JabaNodeAPI.new)
+      super(services, self)
 
       @info = info
       @jaba_type = info.type
@@ -440,6 +442,12 @@ module JABA
     end
     
     ##
+    #
+    def method_missing(attr_id, *args, **keyvalue_args)
+      handle_attr(attr_id, ::Kernel.caller(1, 1)[0], *args, **keyvalue_args)
+    end
+    
+    ##
     # If an attribute set operation is being performed, args contains the 'value' and then a list optional symbols
     # which act as options. eg my_attr 'val', :export, :exclude would make args equal to ['val', :opt1, :opt2]. If
     # however the value being passed in is an array it could be eg [['val1', 'val2'], :opt1, :opt2].
@@ -474,6 +482,22 @@ module JABA
         a.set(value, api_call_line, *args, **keyvalue_args)
         return nil
       end
+    end
+    
+    ##
+    # DEFINITION API
+    #
+    def generate(&block)
+      define_hook(:generate, allow_multiple: true, &block)
+    end
+    
+    ##
+    # DEFINITION API
+    #
+    # Clears any previously set values. Sets single attribute values to nil and clears array attributes.
+    #
+    def wipe(*attr_ids)
+      wipe_attrs(attr_ids)
     end
     
     ##

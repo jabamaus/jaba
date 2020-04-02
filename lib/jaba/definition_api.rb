@@ -100,42 +100,4 @@ module JABA
     
   end
 
-  ##
-  # TODO: make a list of reserved words that could come into use in the future and protect against usage
-  #
-  class JabaNodeAPI < APIBase
-
-    ##
-    #
-    def id
-      @obj.id
-    end
-    
-    ##
-    #
-    def generate(&block)
-      @obj.define_hook(:generate, allow_multiple: true, &block)
-    end
-    
-    ##
-    #
-    def lambda(&block)
-      ::Kernel.lambda(&block)
-    end
-    
-    ##
-    # Clears any previously set values. Sets single attribute values to nil and clears array attributes.
-    #
-    def wipe(*attr_ids)
-      @obj.wipe_attrs(attr_ids)
-    end
-    
-    ##
-    #
-    def method_missing(attr_id, *args, **keyvalue_args)
-      @obj.handle_attr(attr_id, ::Kernel.caller(1, 1)[0], *args, **keyvalue_args)
-    end
-    
-  end
-
 end

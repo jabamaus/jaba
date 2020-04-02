@@ -21,6 +21,9 @@ module JABA
       @api.__set_obj(self)
     end
     
+    # TODO: REMOVE
+    def __set_obj(o) ; end
+
     ##
     #
     def api_eval(args = nil, &block)
@@ -30,6 +33,20 @@ module JABA
       else
         @api.instance_eval(&block)
       end
+    end
+    
+    ##
+    # DEFINITION API
+    #
+    def raise(msg)
+      services.jaba_error(msg)
+    end
+    
+    ##
+    # DEFINITION API
+    #
+    def include(*shared_definition_ids, args: nil)
+      include_shared(shared_definition_ids, args)
     end
     
     ##
