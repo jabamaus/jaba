@@ -97,7 +97,7 @@ module JABA
     #
     def get(api_call_line = nil)
       if !set? && @default_is_proc
-        @node.api_eval(&@default)
+        @node.eval_definition(&@default)
       elsif api_call_line && @value.is_a?(JabaNode)
         @value.id
       else
@@ -172,7 +172,7 @@ module JABA
         hook = @attr_def.type_obj.validate_value_hook
         if hook
           begin
-            @attr_def.api_eval(value, &hook)
+            @attr_def.eval_definition(value, &hook)
           rescue JabaError => e
             @services.jaba_error("'#{@attr_def.id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
           end
@@ -223,7 +223,7 @@ module JABA
     #
     def get(api_call_line = nil)
       if !set? && @default_is_proc
-        @node.api_eval(&@default)
+        @node.eval_definition(&@default)
       else
         @elems.map {|e| e.get(api_call_line)}
       end

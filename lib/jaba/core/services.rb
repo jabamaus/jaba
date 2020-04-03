@@ -155,7 +155,7 @@ module JABA
       # Open JabaTypes so more attributes can be added
       #
       @jaba_types_to_open.each do |info|
-        get_jaba_type(info.type).api_eval(&info.block) # TODO: use api_call_line
+        get_jaba_type(info.type).eval_definition(&info.block) # TODO: use api_call_line
       end
       
       @jaba_types.each(&:init)
@@ -236,7 +236,7 @@ module JABA
       end
       
       jn.attrs.instance_eval(&block) if block_given?
-      jn.api_eval(&@current_info.block)
+      jn.eval_definition(&@current_info.block)
       jn.post_create
       jn
     end

@@ -20,7 +20,7 @@ module JABA
     
     ##
     #
-    def api_eval(args = nil, &block)
+    def eval_definition(args = nil, &block)
       return if !block_given?
       if !args.nil?
         instance_exec(args, &block)
@@ -59,7 +59,7 @@ module JABA
           @services.jaba_error("shared definition '#{id}' expects #{n_expected} arguments but #{n_actual} were passed")
         end
         
-        api_eval(args, &df.block)
+        eval_definition(args, &df.block)
       end
     end
     
@@ -133,7 +133,7 @@ module JABA
       @init_attr_def_hook = nil
       @validate_attr_def_hook = nil
       @validate_value_hook = nil
-      api_eval(&info.block) if info.block
+      eval_definition(&info.block) if info.block
     end
 
     ##
@@ -194,7 +194,7 @@ module JABA
       @type_obj = @services.get_attribute_type(@type)
       
       if @type_obj.init_attr_def_hook
-        api_eval(&@type_obj.init_attr_def_hook)
+        eval_definition(&@type_obj.init_attr_def_hook)
       end
     end
     
@@ -286,7 +286,7 @@ module JABA
       hook = @type_obj.validate_attr_def_hook
       if hook
         begin
-          api_eval(&hook)
+          eval_definition(&hook)
         rescue JabaError => e
           @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
                                callstack: [e.backtrace[0], @api_call_line])
@@ -297,7 +297,7 @@ module JABA
         hook = @type_obj.validate_value_hook
         if hook
           begin
-            api_eval(@default, &hook)
+            eval_definition(@default, &hook)
           rescue JabaError => e
             @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
                                  callstack: [e.backtrace[0], @api_call_line])
@@ -344,7 +344,7 @@ module JABA
         @generator.init if @generator.respond_to?(:init)
       end
       
-      api_eval(&info.block)
+      eval_definition(&info.block)
     end
     
     ##
@@ -387,7 +387,7 @@ module JABA
         @services.jaba_error("'#{id}' attribute multiply defined")
       end
       ad = AttributeDefinition.new(@services, id, type, variant, self, caller(2, 1)[0])
-      ad.api_eval(&block)
+      ad.eval_definition(&block)
       @attribute_defs << ad
       @attribute_def_lookup[id] = ad
       ad
