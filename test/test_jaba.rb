@@ -86,7 +86,7 @@ module JABA
   
 end
 
-Dir.glob("#{__dir__}/tests/*.rb").each {|f| require f}
+Dir.glob("#{__dir__}/tests/*.rb").sort.each {|f| require f}
 
 using JABACoreExt
 

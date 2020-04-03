@@ -10,10 +10,16 @@ Layout/EmptyLinesAroundClassBody:
   Enabled: false
 Layout/EmptyLinesAroundModuleBody:
   Enabled: false
+Layout/LineLength:
+  Max: 130
 Layout/SpaceInsideBlockBraces:
   Enabled: false
 Layout/TrailingWhitespace:
   Enabled: false
+Lint/RaiseException:
+  Enabled: true
+Lint/StructNewOverride:
+  Enabled: true
 Metrics/AbcSize:
   Enabled: false
 Metrics/BlockLength:
@@ -22,17 +28,19 @@ Metrics/ClassLength:
   Enabled: false
 Metrics/CyclomaticComplexity:
   Enabled: false
-Metrics/LineLength:
-  Max: 130
 Metrics/MethodLength:
   Enabled: false
 Metrics/ParameterLists:
   Enabled: false
 Metrics/PerceivedComplexity:
   Enabled: false
+Naming/AccessorMethodName:
+  Enabled: false
+Naming/ClassAndModuleCamelCase:
+  Enabled: false
 Naming/PredicateName:
   Enabled: false
-Naming/UncommunicativeMethodParamName:
+Naming/MethodParameterName:
   Enabled: false
 Security/Open:
   Enabled: false
@@ -42,8 +50,18 @@ Style/BlockComments:
   Enabled: false
 Style/EmptyMethod:
   Enabled: false
+Style/FormatString:
+  Enabled: false
+Style/FormatStringToken:
+  Enabled: false
 Style/GuardClause:
   Enabled: false
+Style/HashEachMethods:
+  Enabled: true
+Style/HashTransformKeys:
+  Enabled: true
+Style/HashTransformValues:
+  Enabled: true
 Style/IfUnlessModifier:
   Enabled: false
 Style/MethodMissingSuper:
@@ -53,6 +71,10 @@ Style/MissingRespondToMissing:
 Style/NegatedIf:
   Enabled: false
 Style/Next:
+  Enabled: false
+Style/RedundantReturn:
+  Enabled: false
+Style/RegexpLiteral:
   Enabled: false
 Style/SymbolArray:
   Enabled: false

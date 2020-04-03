@@ -89,7 +89,7 @@ module JABA
       w.write_raw " Label=\"#{label}\"" if label
       w.write_raw " Condition=\"#{condition}\"" if condition
       w << '>'
-      yield w
+      yield
       w << "#{'  ' * depth}</#{tag}>"
     end
 
@@ -175,7 +175,7 @@ module JABA
       
       w << "<Project DefaultTargets=\"Build\" ToolsVersion=\"#{tools_version}\" xmlns=\"#{xmlns}\">"
       
-      item_group(w, label: 'ProjectConfigurations') do |w|
+      item_group(w, label: 'ProjectConfigurations') do
         @configs.each do |cfg|
           w << "    <ProjectConfiguration Include=\"#{cfg.attrs.config}|#{@platform.attrs.vsname}\">"
           w << "      <Configuration>#{cfg.attrs.config}</Configuration>"
@@ -184,21 +184,21 @@ module JABA
         end
       end
     
-      property_group(w, label: 'Globals') do |w|
+      property_group(w, label: 'Globals') do
         write_keyvalue_attr(w, @node.get_attr(:vcglobal))
       end
       
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />'
       
       @configs.each do |cfg|
-        property_group(w, label: 'Configuration', condition: cfg_condition(cfg)) do |w|
+        property_group(w, label: 'Configuration', condition: cfg_condition(cfg)) do
           write_keyvalue_attr(w, cfg.get_attr(:vcproperty), group: :pg1)
         end
       end
       
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />'
       
-      import_group(w, label: 'ExtensionSettings') do |w|
+      import_group(w, label: 'ExtensionSettings') do
         # TODO: ExtensionSettings
       end
       
@@ -207,7 +207,7 @@ module JABA
       end
       
       @configs.each do |cfg|
-        import_group(w, label: 'PropertySheets', condition: cfg_condition(cfg)) do |w|
+        import_group(w, label: 'PropertySheets', condition: cfg_condition(cfg)) do
           w << '    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" ' \
                'Condition="exists(\'$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props\')" Label="LocalAppDataPlatform" />'
         end
@@ -222,18 +222,18 @@ module JABA
       end
       
       @configs.each do |cfg|
-        item_definition_group(w, condition: cfg_condition(cfg)) do |w|
+        item_definition_group(w, condition: cfg_condition(cfg)) do
           
         end
       end
       
-      item_group(w) do |w|
+      item_group(w) do
         # TODO: src
       end
       
       deps = @attrs.deps
       if !deps.empty?
-        item_group(w) do |w|
+        item_group(w) do
           deps.each do |dep|
             proj_ref = @generator.project_from_node(dep)
             w << "    <ProjectReference Include=\"#{proj_ref.vcxproj_file.relative_path_from(genroot).to_backslashes!}\">"
@@ -246,7 +246,7 @@ module JABA
     
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />'
       
-      import_group(w, label: 'ExtensionTargets') do |w|
+      import_group(w, label: 'ExtensionTargets') do
         # TODO: extension targets
       end
       
@@ -267,9 +267,9 @@ module JABA
       
       write_xml_version(w)
       w << "<Project ToolsVersion=\"4.0\" xmlns=\"#{xmlns}\">"
-      item_group(w) do |w|
+      item_group(w) do
       end
-      item_group(w) do |w|
+      item_group(w) do
       end
       w << '</Project>'
       w.chomp!

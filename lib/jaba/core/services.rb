@@ -8,7 +8,7 @@ require_relative 'jaba_type'
 require_relative 'jaba_node'
 require_relative 'project'
 require_relative 'generator'
-Dir.glob("#{__dir__}/../generators/*_generator.rb").each {|f| require f}
+Dir.glob("#{__dir__}/../generators/*_generator.rb").sort.each {|f| require f}
 
 ##
 #

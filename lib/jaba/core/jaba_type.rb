@@ -94,7 +94,7 @@ module JABA
         @services.jaba_error("'#{id}' property not defined")
       end
       if val.nil?
-        return get_var(id)
+        get_var(id)
       else
         set_var(id, val, &block)
       end

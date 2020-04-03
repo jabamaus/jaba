@@ -20,18 +20,19 @@ module JABA
       root_node = make_node(handle: nil, attrs: [:root, :platforms])
       
       root_node.attrs.platforms.each do |p|
-        hosts_node = make_node(handle: nil, parent: root_node, attrs: [:platform, :hosts]) do |n|
+        hosts_node = make_node(handle: nil, parent: root_node, attrs: [:platform, :hosts]) do
           platform p
         end
         
         hosts_node.attrs.hosts.each do |h|
           proj_node = make_node(handle: "#{@jaba_type.type}|#{root_node.id}|#{p.id}|#{h.id}",
-                                   parent: hosts_node, attrs: [:name, :namesuffix, :host, :src, :configs, :deps, :type, :vcglobal, :winsdkver]) do |n|
+                                parent: hosts_node,
+                                attrs: [:name, :namesuffix, :host, :src, :configs, :deps, :type, :vcglobal, :winsdkver]) do
             host h
           end
           
           proj_node.attrs.configs.each do |cfg|
-            make_node(handle: nil, parent: proj_node, attrs: [:config, :rtti, :toolset, :vcproperty]) do |n|
+            make_node(handle: nil, parent: proj_node, attrs: [:config, :rtti, :toolset, :vcproperty]) do
               config cfg
             end
           end
@@ -52,15 +53,15 @@ module JABA
       proj.configs.each do |cfg|
         cfg.attrs.instance_eval do
           config_type = case type
-          when :app
-            'Application'
-          when :lib
-            'StaticLibrary'
-          when :dll
-            'DynamicLibrary'
-          else
-            raise "'#{type}' unhandled"
-          end
+                        when :app
+                          'Application'
+                        when :lib
+                          'StaticLibrary'
+                        when :dll
+                          'DynamicLibrary'
+                        else
+                          raise "'#{type}' unhandled"
+                        end
           vcproperty :ConfigurationType, config_type, group: :pg1
           vcproperty :PlatformToolset, toolset, group: :pg1
           vcproperty :RuntimeTypeInfo, false, group: :ClCompile if !rtti
