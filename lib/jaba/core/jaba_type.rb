@@ -350,7 +350,7 @@ module JABA
     ##
     # DEFINITION API
     #
-    # Define a new attribute. See AttributeDefinitionAPI class below.
+    # Define a new attribute.
     #
     def attr(id, **options, &block)
       define_attr(id, :single, **options, &block)
