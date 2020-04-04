@@ -162,6 +162,13 @@ module JABA
       @services = services
     end
     
+    ##
+    # Workaround bug in vscode-ruby 0.27. https://github.com/rubyide/vscode-ruby/issues/600
+    #
+    def to_s
+      'TopLevelAPI'
+    end
+
   end
 
 end
