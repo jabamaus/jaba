@@ -72,12 +72,12 @@ module JABA
     attr_reader :internal
     
     ##
-    # The definition file the error occurred in. Not available if definitions were executed as a block.
+    # The definition file the error occurred in.
     #
     attr_reader :file
     
     ##
-    # The line in the definition file that the error occurred at. Not available if definitions were executed as a block.
+    # The line in the definition file that the error occurred at.
     #
     attr_reader :line
     
