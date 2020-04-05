@@ -43,7 +43,6 @@ module JABA
     def initialize(services, info, handle, attrs_mask, parent)
       super(services)
 
-      @info = info
       @jaba_type = info.type
       @id = info.id
       @handle = handle
