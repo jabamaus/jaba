@@ -21,7 +21,7 @@ module JABA
     def method_missing(attr_id, *args, **keyvalue_args)
       @node.handle_attr(attr_id, nil, *args, **keyvalue_args)
     end
-    
+   
   end
   
   ##
@@ -40,11 +40,12 @@ module JABA
     
     ##
     #
-    def initialize(services, info, handle, attrs_mask, parent)
+    def initialize(services, jaba_type, id, api_call_line, handle, attrs_mask, parent)
       super(services)
 
-      @jaba_type = info.type
-      @id = info.id
+      @jaba_type = jaba_type
+      @id = id
+      @api_call_line = api_call_line
       @handle = handle
       @children = []
       @parent = parent
@@ -53,7 +54,6 @@ module JABA
       end
       @referenced_nodes = []
       
-      @api_call_line = info.api_call_line
       @source_file = @api_call_line[/^(.+):\d/, 1]
       @source_dir = File.dirname(@source_file)
       

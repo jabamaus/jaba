@@ -345,10 +345,6 @@ define :cpp, extend: :project do
     default [:debug, :release]
   end
   
-  attr :config do
-    flags :read_only
-  end
-  
   attr_array :deps, type: :reference do
     referenced_type :cpp
   end
@@ -362,15 +358,29 @@ define :cpp, extend: :project do
     default '10.0.17763.0'
   end
   
-  # Per-target attributes
+end
+
+##
+#
+define :config do
   
+  attr :config do
+    flags :read_only
+  end
+
   attr :rtti, type: :bool do
     default true
   end
-  
+
   attr :toolset do
     default { host_toolset }
   end
+
+end
+
+##
+#
+define :vsconfig, extend: :config do
   
   attr_array :vcproperty, type: :keyvalue do
     keyval_options :group
@@ -384,7 +394,7 @@ define :cpp, extend: :project do
     end
 =end
   end
-  
+
 end
 
 ##
