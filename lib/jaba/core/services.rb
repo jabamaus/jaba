@@ -63,6 +63,13 @@ module JABA
     end
 
     ##
+    # This is absolutely CRITICAL if running jaba with ruby-debug-ide.
+    #
+    def inspect
+      nil
+    end
+
+    ##
     #
     def log(msg, severity = Logger::INFO)
       @logger&.log(severity, msg)
