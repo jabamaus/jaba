@@ -30,7 +30,7 @@ module JABA
     end
     
     ##
-    # DEFINITION API
+    # DEFINITION API. TODO: review
     #
     def raise(msg)
       services.jaba_error(msg)
