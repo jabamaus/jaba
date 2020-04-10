@@ -163,10 +163,10 @@ module JABA
     end
     
     ##
-    # Workaround bug in vscode-ruby 0.27. https://github.com/rubyide/vscode-ruby/issues/600
+    # Required when running with ruby-debug-ide.
     #
     def to_s
-      'TopLevelAPI'
+      "#<TopLevelAPI:0x#{__id__}>"
     end
 
   end
