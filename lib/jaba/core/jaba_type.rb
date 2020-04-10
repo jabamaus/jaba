@@ -20,12 +20,18 @@ module JABA
     
     ##
     #
+    def eval_obj
+      self
+    end
+    
+    ##
+    #
     def eval_definition(args = nil, &block)
       return if !block_given?
       if !args.nil?
-        instance_exec(args, &block)
+        eval_obj.instance_exec(args, &block)
       else
-        instance_eval(&block)
+        eval_obj.instance_eval(&block)
       end
     end
     
@@ -72,11 +78,15 @@ module JABA
         end
         instance_variable_set("@#{var_name}", block)
       else
-        var = instance_variable_get("@#{var_name}")
-        if var.is_a?(Array)
-          var.concat(Array(val))
-        else
+        if !instance_variable_defined?("@#{var_name}")
           instance_variable_set("@#{var_name}", val)
+        else
+          var = instance_variable_get("@#{var_name}")
+          if var.is_a?(Array)
+            var.concat(Array(val))
+          else
+            instance_variable_set("@#{var_name}", val)
+          end
         end
       end
     end
