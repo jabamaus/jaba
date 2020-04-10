@@ -9,7 +9,7 @@ module JABA
   ##
   #
   class NodeAttributeInterface < BasicObject
-    
+
     ##
     #
     def initialize(node)
@@ -18,8 +18,45 @@ module JABA
     
     ##
     #
+    def id
+      @node.id
+    end
+
+    ##
+    #
+    def raise(msg)
+      @node.services.jaba_error(msg)
+    end
+
+    ##
+    #
+    def print(msg)
+      ::Kernel.print(msg)
+    end
+
+    ##
+    #
+    def include(*shared_definition_ids, args: nil)
+      @node.include_shared(shared_definition_ids, args)
+    end
+
+    ##
+    # Clears any previously set values. Sets single attribute values to nil and clears array attributes.
+    #
+    def wipe(*attr_ids)
+      @node.wipe_attrs(attr_ids)
+    end
+
+    ##
+    #
+    def generate(&block)
+      @node.define_hook(:generate, allow_multiple: true, &block)
+    end
+
+    ##
+    #
     def method_missing(attr_id, *args, **keyvalue_args)
-      @node.handle_attr(attr_id, nil, *args, **keyvalue_args)
+      @node.handle_attr(attr_id, ::Kernel.caller(1, 1)[0], *args, **keyvalue_args)
     end
    
   end
@@ -79,6 +116,12 @@ module JABA
     
     ##
     #
+    def eval_obj
+      @attrs
+    end
+
+    ##
+    #
     def <=>(other)
       @id.casecmp(other.id)
     end
@@ -123,12 +166,6 @@ module JABA
     end
     
     ##
-    #
-    def method_missing(attr_id, *args, **keyvalue_args)
-      handle_attr(attr_id, ::Kernel.caller(1, 1)[0], *args, **keyvalue_args)
-    end
-    
-    ##
     # If an attribute set operation is being performed, args contains the 'value' and then a list optional symbols
     # which act as options. eg my_attr 'val', :export, :exclude would make args equal to ['val', :opt1, :opt2]. If
     # however the value being passed in is an array it could be eg [['val1', 'val2'], :opt1, :opt2].
@@ -163,22 +200,6 @@ module JABA
         a.set(value, api_call_line, *args, **keyvalue_args)
         return nil
       end
-    end
-    
-    ##
-    # DEFINITION API
-    #
-    def generate(&block)
-      define_hook(:generate, allow_multiple: true, &block)
-    end
-    
-    ##
-    # DEFINITION API
-    #
-    # Clears any previously set values. Sets single attribute values to nil and clears array attributes.
-    #
-    def wipe(*attr_ids)
-      wipe_attrs(attr_ids)
     end
     
     ##
