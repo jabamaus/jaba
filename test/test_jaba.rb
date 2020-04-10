@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'minitest'
 require 'minitest/spec'
 require_relative '../lib/jaba/jaba'
 
