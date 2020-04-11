@@ -30,9 +30,9 @@ module JABA
     ##
     # Records information about each definition the user has made.
     #
-    AttrTypeInfo = Struct.new(:type, :block, :api_call_line)
-    JabaTypeInfo = Struct.new(:type, :block, :options, :api_call_line)
-    JabaInstanceInfo = Struct.new(:type, :id, :block, :options, :api_call_line)
+    AttrTypeInfo = Struct.new(:type_id, :block, :api_call_line)
+    JabaTypeInfo = Struct.new(:type_id, :block, :options, :api_call_line)
+    JabaInstanceInfo = Struct.new(:type_id, :jaba_type, :id, :block, :options, :api_call_line)
     
     ##
     #
@@ -90,41 +90,41 @@ module JABA
     
     ##
     #
-    def define_attr_type(type, &block)
-      @jaba_attr_types << AttrTypeInfo.new(type, block, caller(2, 1)[0])
+    def define_attr_type(type_id, &block)
+      @jaba_attr_types << AttrTypeInfo.new(type_id, block, caller(2, 1)[0])
     end
     
     ##
     #
-    def define_type(type, **options, &block)
-      @jaba_types << JabaTypeInfo.new(type, block, options, caller(2, 1)[0])
+    def define_type(type_id, **options, &block)
+      @jaba_types << JabaTypeInfo.new(type_id, block, options, caller(2, 1)[0])
     end
     
     ##
     #
-    def open_type(type, &block)
-      @jaba_types_to_open << JabaTypeInfo.new(type, block, nil, caller(2, 1)[0])
+    def open_type(type_id, &block)
+      @jaba_types_to_open << JabaTypeInfo.new(type_id, block, nil, caller(2, 1)[0])
     end
     
     ##
     #
-    def define_instance(type, id, **options, &block)
-      log "Instancing #{type} [id=#{id}]"
+    def define_instance(type_id, id, **options, &block)
+      log "Instancing #{type_id} [id=#{id}]"
       
       if id
         if !(id.is_a?(Symbol) || id.is_a?(String)) || id !~ /^[a-zA-Z0-9_.]+$/
           jaba_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol " \
             "(underscore permitted), eg :my_id or 'my_id'")
         end
-        if definition_defined?(type, id)
+        if definition_defined?(type_id, id)
           jaba_error("'#{id}' multiply defined")
         end
       end
       
-      info = JabaInstanceInfo.new(type, id, block, options, caller(2, 1)[0])
-      @definition_registry.push_value(type, info)
+      info = JabaInstanceInfo.new(type_id, nil, id, block, options, caller(2, 1)[0])
+      @definition_registry.push_value(type_id, info)
       
-      if type != :shared
+      if type_id != :shared
         @jaba_types_to_instance << info
       end
     end
@@ -165,7 +165,7 @@ module JABA
       # Open JabaTypes so more attributes can be added
       #
       @jaba_types_to_open.each do |info|
-        get_jaba_type(info.type).eval_api_block(&info.block) # TODO: use api_call_line
+        get_jaba_type(info.type_id).eval_api_block(&info.block) # TODO: use api_call_line
       end
       
       @jaba_types.each(&:init)
@@ -181,17 +181,17 @@ module JABA
       @jaba_types.each_with_index {|jt, i| jt.instance_variable_set(:@order_index, i)}
       
       @jaba_types_to_instance.each do |info|
-        info.type = get_jaba_type(info.type, callstack: info.api_call_line)
+        info.jaba_type = get_jaba_type(info.type_id, callstack: info.api_call_line)
       end
       
-      @jaba_types_to_instance.stable_sort_by! {|d| d.type.instance_variable_get(:@order_index)}
+      @jaba_types_to_instance.stable_sort_by! {|d| d.jaba_type.instance_variable_get(:@order_index)}
       
       # Create instances of types
       #
       @jaba_types_to_instance.each do |info|
         @current_info = info
-        if info.type.generator
-          info.type.generator.make_nodes
+        if info.jaba_type.generator
+          info.jaba_type.generator.make_nodes
         else
           make_node
         end
@@ -201,7 +201,7 @@ module JABA
       #
       @nodes.each do |n|
         n.each_attr do |a|
-          if a.type == :reference
+          if a.type_id == :reference
             a.map! do |ref|
               if ref.is_a?(Symbol)
                 node_from_handle("#{a.attr_def.get_property(:referenced_type)}|#{ref}")
@@ -233,9 +233,9 @@ module JABA
     
     ##
     #
-    def make_node(type: nil, handle: "#{@current_info.type}|#{@current_info.id}", attrs: nil, parent: nil, &block)
-      type = type ? get_jaba_type(type) : @current_info.type
-      jn = JabaNode.new(self, type, @current_info.id, @current_info.api_call_line, handle, attrs, parent)
+    def make_node(type_id: nil, handle: "#{@current_info.type_id}|#{@current_info.id}", attrs: nil, parent: nil, &block)
+      jaba_type = type_id ? get_jaba_type(type_id) : @current_info.jaba_type
+      jn = JabaNode.new(self, jaba_type, @current_info.id, @current_info.api_call_line, handle, attrs, parent)
       @nodes << jn
       
       # A node only needs a handle if it will be looked up.
@@ -258,31 +258,31 @@ module JABA
     
     ##
     #
-    def get_attribute_type(type)
-      if type.nil?
+    def get_attribute_type(type_id)
+      if type_id.nil?
         return @default_attr_type
       end
-      t = @jaba_attr_types.find {|at| at.type == type}
+      t = @jaba_attr_types.find {|at| at.type_id == type_id}
       if !t
-        jaba_error("'#{type}' attribute type is undefined. Valid types: #{@jaba_attr_types.map(&:type)}")
+        jaba_error("'#{type_id}' attribute type is undefined. Valid types: #{@jaba_attr_types.map(&:type_id)}")
       end
       t
     end
     
     ##
     #
-    def get_jaba_type(type, fail_if_not_found: true, callstack: nil)
-      jt = @jaba_types.find {|t| t.type == type}
+    def get_jaba_type(type_id, fail_if_not_found: true, callstack: nil)
+      jt = @jaba_types.find {|t| t.type_id == type_id}
       if !jt && fail_if_not_found
-        jaba_error("'#{type}' type not defined", callstack: callstack)
+        jaba_error("'#{type_id}' type not defined", callstack: callstack)
       end
       jt
     end
     
     ##
     #
-    def get_definition(type, id, fail_if_not_found: true)
-      defs = @definition_registry[type]
+    def get_definition(type_id, id, fail_if_not_found: true)
+      defs = @definition_registry[type_id]
       return nil if !defs
       d = defs.find {|dd| dd.id == id}
       if !d && fail_if_not_found
@@ -293,8 +293,8 @@ module JABA
 
     ##
     #
-    def definition_defined?(type, id)
-      get_definition(type, id, fail_if_not_found: false) != nil
+    def definition_defined?(type_id, id)
+      get_definition(type_id, id, fail_if_not_found: false) != nil
     end
     
     ##
@@ -386,7 +386,7 @@ module JABA
         end
       end
       
-      @definition_src_files.map!{|f| f.cleanpath}
+      @definition_src_files.map!(&:cleanpath)
 
       @definition_src_files.each do |f|
         execute_definitions(f)

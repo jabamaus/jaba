@@ -12,7 +12,7 @@ module JABA
     include PropertyMethods
 
     attr_reader :id
-    attr_reader :type # eg :bool, :file, :path etc
+    attr_reader :type_id # eg :bool, :file, :path etc
     attr_reader :variant # :single, :array, :hash
     attr_reader :default
     attr_reader :jaba_attr_type # JabaAttributeType object
@@ -22,10 +22,10 @@ module JABA
     
     ##
     #
-    def initialize(services, id, type, variant, jaba_type, api_call_line)
+    def initialize(services, id, type_id, variant, jaba_type, api_call_line)
       super(services, JabaAttributeDefinitionAPI.new(self))
       @id = id
-      @type = type
+      @type_id = type_id
       @variant = variant
       @jaba_type = jaba_type
       @api_call_line = api_call_line
@@ -39,7 +39,7 @@ module JABA
       @post_set_hook = nil
       @make_handle_hook = nil
       
-      @jaba_attr_type = @services.get_attribute_type(@type)
+      @jaba_attr_type = @services.get_attribute_type(@type_id)
       
       eval_api_block(&@jaba_attr_type.init_attr_def_hook)
     end

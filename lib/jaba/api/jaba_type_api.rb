@@ -32,7 +32,7 @@ module JABA
     ##
     #
     def type
-      @jaba_type.type
+      @jaba_type.type_id
     end
 
     ##

@@ -25,14 +25,14 @@ module JABA
         end
         
         hosts_node.attrs.hosts.each do |h|
-          proj_node = make_node(handle: "#{@jaba_type.type}|#{root_node.id}|#{p.id}|#{h.id}",
+          proj_node = make_node(handle: "#{@jaba_type.type_id}|#{root_node.id}|#{p.id}|#{h.id}",
                                 parent: hosts_node,
                                 attrs: [:name, :namesuffix, :host, :src, :configs, :deps, :type, :vcglobal, :winsdkver]) do
             host h
           end
           
           proj_node.attrs.configs.each do |cfg|
-            make_node(type: :vsconfig, handle: nil, parent: proj_node, attrs: [:config, :rtti, :toolset, :vcproperty]) do
+            make_node(type_id: :vsconfig, handle: nil, parent: proj_node, attrs: [:config, :rtti, :toolset, :vcproperty]) do
               config cfg
             end
           end

@@ -13,7 +13,7 @@ module JABA
 
     include PropertyMethods
     
-    attr_reader :type  # eg :bool, :choice, :keyvalue
+    attr_reader :type_id  # eg :text, :cpp, :platform
     attr_reader :attribute_defs
     attr_reader :dependencies
     attr_reader :generator
@@ -22,13 +22,13 @@ module JABA
     #
     def initialize(services, info)
       super(services, JabaTypeAPI.new(self))
-      @type = info.type
+      @type_id = info.type_id
       @super_type = info.options[:extend]
       @attribute_defs = []
       @attribute_def_lookup = {}
       @dependencies = []
       @generator = nil
-      gen_classname = "JABA::#{type.to_s.capitalize_first}Generator"
+      gen_classname = "JABA::#{type_id.to_s.capitalize_first}Generator"
       
       if Object.const_defined?(gen_classname)
         generator_class = Module.const_get(gen_classname)
@@ -46,7 +46,7 @@ module JABA
     ##
     #
     def to_s
-      @type.to_s
+      @type_id.to_s
     end
     
     ##

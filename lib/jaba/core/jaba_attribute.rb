@@ -39,8 +39,8 @@ module JABA
     
     ##
     #
-    def type
-      @attr_def.type
+    def type_id
+      @attr_def.type_id
     end
     
     ##
@@ -119,7 +119,7 @@ module JABA
       @key_value_options = Marshal.load(Marshal.dump(keyvalue_args))
       
       # TODO: fix
-      @value = if @attr_def.type == :keyvalue
+      @value = if @attr_def.type_id == :keyvalue
                  KeyValue.new(value, args[0])
                  # TODO: remove args[0] from options
                else
@@ -193,9 +193,9 @@ module JABA
     ##
     #
     def resolve_reference(value)
-      if @attr_def.type == :reference
+      if @attr_def.type_id == :reference
         rt = @attr_def.get_property(:referenced_type)
-        if rt != @node.jaba_type.type
+        if rt != @node.jaba_type.type_id
           ref_node = @services.node_from_handle("#{rt}|#{value}")
           @node.referenced_nodes << ref_node
           ref_node

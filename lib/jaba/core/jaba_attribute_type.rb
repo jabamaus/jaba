@@ -8,7 +8,7 @@ module JABA
   #
   class JabaAttributeType < JabaObject
 
-    attr_reader :type # eg :bool, :choice, :keyvalue
+    attr_reader :type_id # eg :bool, :choice, :keyvalue
     attr_reader :init_attr_def_hook
     attr_reader :validate_attr_def_hook
     attr_reader :validate_value_hook
@@ -17,7 +17,7 @@ module JABA
     #
     def initialize(services, info)
       super(services, JabaAttributeTypeAPI.new(self))
-      @type = info.type
+      @type_id = info.type_id
       @init_attr_def_hook = nil
       @validate_attr_def_hook = nil
       @validate_value_hook = nil
