@@ -21,7 +21,7 @@ module JABA
       @init_attr_def_hook = nil
       @validate_attr_def_hook = nil
       @validate_value_hook = nil
-      eval_definition(&info.block) if info.block
+      eval_api_block(&info.block) if info.block
     end
 
   end

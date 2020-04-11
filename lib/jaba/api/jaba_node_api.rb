@@ -24,6 +24,7 @@ module JABA
     end
 
     ##
+    # Block runs in the context of an internal JabaNode object not the JabaNodeAPI.
     #
     def generate(&block)
       @jaba_node.define_hook(:generate, allow_multiple: true, &block)

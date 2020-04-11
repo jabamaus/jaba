@@ -167,7 +167,7 @@ module JABA
       # Open JabaTypes so more attributes can be added
       #
       @jaba_types_to_open.each do |info|
-        get_jaba_type(info.type).eval_definition(&info.block) # TODO: use api_call_line
+        get_jaba_type(info.type).eval_api_block(&info.block) # TODO: use api_call_line
       end
       
       @jaba_types.each(&:init)
@@ -217,7 +217,7 @@ module JABA
       
       @jaba_types.each {|jt| jt.generator&.generate}
 
-      # Call generators defined per-node
+      # Call generators defined per-node, in the context of the node itself, not its api
       #
       @nodes.each do |n|
         n.generate_hooks.each do |gh|
@@ -249,8 +249,8 @@ module JABA
         @node_lookup[handle] = jn
       end
       
-      jn.eval_definition(context: :internal, &block) if block_given?
-      jn.eval_definition(&@current_info.block)
+      jn.eval_api_block(context: :internal, &block) if block_given?
+      jn.eval_api_block(&@current_info.block)
       jn.post_create
       jn
     end

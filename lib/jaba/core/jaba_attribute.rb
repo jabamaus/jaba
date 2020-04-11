@@ -33,7 +33,7 @@ module JABA
       @node = node
       @api_call_line = nil
       @set = false
-      @default = @attr_def.get_default
+      @default = @attr_def.default
       @default_is_proc = @default.is_a?(Proc)
     end
     
@@ -97,7 +97,7 @@ module JABA
     #
     def get(api_call_line = nil)
       if !set? && @default_is_proc
-        @node.eval_definition(&@default)
+        @node.eval_api_block(&@default)
       elsif api_call_line && @value.is_a?(JabaNode)
         @value.id
       else
@@ -132,7 +132,7 @@ module JABA
     #
     def clear
       @value = nil
-      d = @attr_def.get_default
+      d = @attr_def.default
       if !d.nil? && !@default_is_proc
         @value = d
       end
@@ -169,10 +169,10 @@ module JABA
         @services.jaba_error("'#{@attr_def.id}' attribute is not an array so cannot accept one", callstack: api_call_line)
       end
       if api_call_line
-        hook = @attr_def.type_obj.validate_value_hook
+        hook = @attr_def.jaba_attr_type.validate_value_hook
         if hook
           begin
-            @attr_def.eval_definition(value, &hook)
+            @attr_def.eval_api_block(value, &hook)
           rescue JabaError => e
             @services.jaba_error("'#{@attr_def.id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
           end
@@ -228,7 +228,7 @@ module JABA
     #
     def get(api_call_line = nil)
       if !set? && @default_is_proc
-        @node.eval_definition(&@default)
+        @node.eval_api_block(&@default)
       else
         @elems.map {|e| e.get(api_call_line)}
       end

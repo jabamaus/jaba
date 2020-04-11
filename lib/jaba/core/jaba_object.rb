@@ -28,7 +28,7 @@ module JABA
     
     ##
     #
-    def eval_definition(args = nil, context: :definition, &block)
+    def eval_api_block(args = nil, &block)
       return if !block_given?
       if !args.nil?
         @api.instance_exec(args, &block)
@@ -53,7 +53,7 @@ module JABA
           @services.jaba_error("shared definition '#{id}' expects #{n_expected} arguments but #{n_actual} were passed")
         end
         
-        eval_definition(args, &df.block)
+        eval_api_block(args, &df.block)
       end
     end
     

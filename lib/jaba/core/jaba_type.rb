@@ -40,7 +40,7 @@ module JABA
         @generator.init if @generator.respond_to?(:init)
       end
       
-      eval_definition(&info.block)
+      eval_api_block(&info.block)
     end
 
     ##
@@ -60,7 +60,7 @@ module JABA
         @services.jaba_error("'#{id}' attribute multiply defined")
       end
       ad = JabaAttributeDefinition.new(@services, id, type, variant, self, caller(2, 1)[0])
-      ad.eval_definition(&block)
+      ad.eval_api_block(&block)
       @attribute_defs << ad
       @attribute_def_lookup[id] = ad
       ad

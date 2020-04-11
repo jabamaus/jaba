@@ -14,10 +14,11 @@ module JABA
     attr_reader :id
     attr_reader :type # eg :bool, :file, :path etc
     attr_reader :variant # :single, :array, :hash
-    attr_reader :type_obj # JabaAttributeType object
-    attr_reader :api_call_line
+    attr_reader :default
+    attr_reader :jaba_attr_type # JabaAttributeType object
     attr_reader :jaba_type
     attr_reader :keyval_opts
+    attr_reader :api_call_line
     
     ##
     #
@@ -38,17 +39,9 @@ module JABA
       @post_set_hook = nil
       @make_handle_hook = nil
       
-      @type_obj = @services.get_attribute_type(@type)
+      @jaba_attr_type = @services.get_attribute_type(@type)
       
-      if @type_obj.init_attr_def_hook
-        eval_definition(&@type_obj.init_attr_def_hook)
-      end
-    end
-    
-    ##
-    #
-    def get_default
-      @default
+      eval_api_block(&@jaba_attr_type.init_attr_def_hook)
     end
     
     ##
@@ -60,10 +53,10 @@ module JABA
     ##
     #
     def init
-      hook = @type_obj.validate_attr_def_hook
+      hook = @jaba_attr_type.validate_attr_def_hook
       if hook
         begin
-          eval_definition(&hook)
+          eval_api_block(&hook)
         rescue JabaError => e
           @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
                                callstack: [e.backtrace[0], @api_call_line])
@@ -71,10 +64,10 @@ module JABA
       end
       
       if @default
-        hook = @type_obj.validate_value_hook
+        hook = @jaba_attr_type.validate_value_hook
         if hook
           begin
-            eval_definition(@default, &hook)
+            eval_api_block(@default, &hook)
           rescue JabaError => e
             @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
                                  callstack: [e.backtrace[0], @api_call_line])
