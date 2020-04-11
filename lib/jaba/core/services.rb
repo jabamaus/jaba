@@ -249,7 +249,10 @@ module JABA
         @node_lookup[handle] = jn
       end
       
-      jn.eval_api_block(context: :internal, &block) if block_given?
+      # Give calling block a chance to initialise attributes. This block is in library code as opposed to user
+      # definitions so use instance_eval instead of eval_api_block.
+      #
+      jn.attrs.instance_eval(&block) if block_given?
       jn.eval_api_block(&@current_info.block)
       jn.post_create
       jn
