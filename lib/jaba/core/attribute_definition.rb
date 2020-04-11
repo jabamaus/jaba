@@ -157,6 +157,8 @@ module JABA
   #
   class AttributeDefinition < DefinitionObject
 
+    include PropertyMethods
+    
     attr_reader :id
     attr_reader :type # eg :bool, :file, :path etc
     attr_reader :variant # :single, :array, :hash
