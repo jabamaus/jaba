@@ -8,7 +8,7 @@ module JABA
   
   ##
   #
-  class DefinitionObject
+  class JabaObject
     
     attr_reader :services
     
@@ -79,7 +79,7 @@ module JABA
 
   ##
   #
-  class JabaTypeDefinitionInterface < BasicObject
+  class JabaTypeAPI < BasicObject
 
     include DefinitionCommon
 
@@ -120,7 +120,7 @@ module JABA
   ##
   # eg project/workspace/category etc.
   #
-  class JabaTypeDefinition < DefinitionObject
+  class JabaType < JabaObject
 
     include PropertyMethods
     
@@ -139,7 +139,7 @@ module JABA
       @attribute_def_lookup = {}
       @dependencies = []
       
-      @definition_interface = JabaTypeDefinitionInterface.new(self)
+      @definition_interface = JabaTypeAPI.new(self)
 
       @generator = nil
       gen_classname = "JABA::#{type.to_s.capitalize_first}Generator"

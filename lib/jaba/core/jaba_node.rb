@@ -8,7 +8,7 @@ module JABA
   
   ##
   #
-  class NodeAttributeInterface < BasicObject
+  class JabaNodeAttributeAPI < BasicObject
 
     ##
     #
@@ -28,7 +28,7 @@ module JABA
   
   ##
   #
-  class NodeDefinitionInterface < NodeAttributeInterface
+  class JabaNodeAPI < JabaNodeAttributeAPI
     
     include DefinitionCommon
 
@@ -62,7 +62,7 @@ module JABA
     
   ##
   #
-  class JabaNode < DefinitionObject
+  class JabaNode < JabaObject
 
     attr_reader :jaba_type
     attr_reader :id
@@ -93,8 +93,8 @@ module JABA
       @source_file = @api_call_line[/^(.+):\d/, 1]
       @source_dir = File.dirname(@source_file)
       
-      @attrs = NodeAttributeInterface.new(self, :internal)
-      @definition_interface = NodeDefinitionInterface.new(self)
+      @attrs = JabaNodeAttributeAPI.new(self, :internal)
+      @definition_interface = JabaNodeAPI.new(self)
 
       @attributes = []
       @attribute_lookup = {}

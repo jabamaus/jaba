@@ -62,7 +62,7 @@ module JABA
       
       @top_level_api = TopLevelAPI.new(self)
 
-      @default_attr_type = AttributeTypeDefinition.new(self, AttrTypeInfo.new).freeze
+      @default_attr_type = AttributeType.new(self, AttrTypeInfo.new).freeze
     end
 
     ##
@@ -157,11 +157,11 @@ module JABA
       
       # Create attribute types
       #
-      @jaba_attr_types.map! {|info| AttributeTypeDefinition.new(self, info)}
+      @jaba_attr_types.map! {|info| AttributeType.new(self, info)}
       
       # Create a JabaType object for each defined type
       #
-      @jaba_types.map! {|info| JabaTypeDefinition.new(self, info)}
+      @jaba_types.map! {|info| JabaType.new(self, info)}
       
       # Open JabaTypes so more attributes can be added
       #
