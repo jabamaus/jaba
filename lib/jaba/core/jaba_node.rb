@@ -12,14 +12,16 @@ module JABA
 
     ##
     #
-    def initialize(node)
+    def initialize(node, context)
       @node = node
+      @context = context
     end
     
     ##
     #
     def method_missing(attr_id, *args, **keyvalue_args)
-      @node.handle_attr(attr_id, ::Kernel.caller(1, 1)[0], *args, **keyvalue_args)
+      api_call_line = @context == :definition ? ::Kernel.caller(1, 1)[0] : nil
+      @node.handle_attr(attr_id, api_call_line, *args, **keyvalue_args)
     end
    
   end
@@ -33,7 +35,7 @@ module JABA
     ##
     #
     def initialize(node)
-      super(node)
+      super(node, :definition)
       @obj = node
     end
 
@@ -91,7 +93,7 @@ module JABA
       @source_file = @api_call_line[/^(.+):\d/, 1]
       @source_dir = File.dirname(@source_file)
       
-      @attrs = NodeAttributeInterface.new(self)
+      @attrs = NodeAttributeInterface.new(self, :internal)
       @definition_interface = NodeDefinitionInterface.new(self)
 
       @attributes = []
