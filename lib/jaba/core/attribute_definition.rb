@@ -61,14 +61,7 @@ module JABA
     ##
     #
     def eval_obj(context)
-      case context
-      when :definition
-        @definition_interface
-      when :internal
-        self
-      else
-        raise "invalid context #{context}"
-      end
+      @definition_interface
     end
 
   end
@@ -158,7 +151,7 @@ module JABA
   class AttributeDefinition < DefinitionObject
 
     include PropertyMethods
-    
+
     attr_reader :id
     attr_reader :type # eg :bool, :file, :path etc
     attr_reader :variant # :single, :array, :hash
@@ -198,14 +191,7 @@ module JABA
     ##
     #
     def eval_obj(context)
-      case context
-      when :definition
-        @definition_interface
-      when :internal
-        self
-      else
-        raise "invalid context #{context}"
-      end
+      @definition_interface
     end
 
     ##
