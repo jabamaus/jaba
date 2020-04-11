@@ -42,20 +42,6 @@ module JABA
     end
     
     ##
-    # DEFINITION API. TODO: review
-    #
-    def raise(msg)
-      services.jaba_error(msg)
-    end
-    
-    ##
-    # DEFINITION API
-    #
-    def include(*shared_definition_ids, args: nil)
-      include_shared(shared_definition_ids, args)
-    end
-    
-    ##
     #
     def include_shared(ids, args)
       ids.each do |id|
@@ -133,12 +119,53 @@ module JABA
   end
 
   ##
+  #
+  class JabaTypeDefinitionInterface < BasicObject
+
+    include DefinitionCommon
+
+    ##
+    # Define a new attribute.
+    #
+    def attr(id, **options, &block)
+      @jaba_type.define_attr(id, :single, **options, &block)
+    end
+    
+    ##
+    #
+    def attr_array(id, **options, &block)
+      @jaba_type.define_attr(id, :array, **options, &block)
+    end
+    
+    ##
+    #
+    def dependencies(*deps)
+      @jaba_type.set_var(:dependencies, deps.flatten)
+    end
+
+    ##
+    #
+    def type
+      @jaba_type.type
+    end
+
+    ##
+    #
+    def initialize(jaba_type)
+      @jaba_type = jaba_type
+      @obj = jaba_type
+    end
+
+  end
+
+  ##
   # eg project/workspace/category etc.
   #
   class JabaTypeDefinition < DefinitionObject
 
     attr_reader :type
     attr_reader :attribute_defs
+    attr_reader :dependencies
     attr_reader :generator
     
     ##
@@ -151,6 +178,8 @@ module JABA
       @attribute_def_lookup = {}
       @dependencies = []
       
+      @definition_interface = JabaTypeDefinitionInterface.new(self)
+
       @generator = nil
       gen_classname = "JABA::#{type.to_s.capitalize_first}Generator"
       
@@ -168,28 +197,18 @@ module JABA
     end
     
     ##
-    # DEFINITION API
     #
-    # Define a new attribute.
-    #
-    def attr(id, **options, &block)
-      define_attr(id, :single, **options, &block)
+    def eval_obj(context)
+      case context
+      when :definition
+        @definition_interface
+      when :internal
+        self
+      else
+        raise "invalid context #{context}"
+      end
     end
-    
-    ##
-    # DEFINITION API
-    #
-    def attr_array(id, **options, &block)
-      define_attr(id, :array, **options, &block)
-    end
-    
-    ##
-    # DEFINITION API
-    #
-    def dependencies(*deps)
-      set_var(:dependencies, deps.flatten)
-    end
-    
+
     ##
     #
     def to_s

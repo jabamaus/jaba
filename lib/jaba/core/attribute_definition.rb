@@ -133,6 +133,12 @@ module JABA
 
     ##
     #
+    def jaba_type
+      @attr_def.jaba_type.eval_obj(:definition)
+    end
+
+    ##
+    #
     def method_missing(id, val = nil)
       @attr_def.handle_property(id, val)
     end
