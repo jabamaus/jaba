@@ -59,8 +59,6 @@ module JABA
       @nodes = []
       @node_lookup = {}
       
-      @file_read_cache = {}
-      
       @top_level_api = TopLevelAPI.new(self)
 
       @default_attr_type = JabaAttributeType.new(self, AttrTypeInfo.new).freeze
@@ -326,11 +324,7 @@ module JABA
     ##
     #
     def read_file(file, encoding: nil)
-      cached = @file_read_cache[file]
-      return cached if cached
-      content = IO.read(file, encoding: encoding)
-      @file_read_cache[file] = content
-      content
+      IO.read(file, encoding: encoding)
     end
     
     ##
