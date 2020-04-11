@@ -21,15 +21,12 @@ module JABA
     ##
     #
     def initialize(services, info)
-      super(services)
+      super(services, JabaTypeAPI.new(self))
       @type = info.type
       @super_type = info.options[:extend]
       @attribute_defs = []
       @attribute_def_lookup = {}
       @dependencies = []
-      
-      @definition_interface = JabaTypeAPI.new(self)
-
       @generator = nil
       gen_classname = "JABA::#{type.to_s.capitalize_first}Generator"
       
@@ -44,19 +41,6 @@ module JABA
       end
       
       eval_definition(&info.block)
-    end
-    
-    ##
-    #
-    def eval_obj(context)
-      case context
-      when :definition
-        @definition_interface
-      when :internal
-        self
-      else
-        raise "invalid context #{context}"
-      end
     end
 
     ##

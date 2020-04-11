@@ -21,7 +21,7 @@ module JABA
     ##
     #
     def initialize(services, jaba_type, id, api_call_line, handle, attrs_mask, parent)
-      super(services)
+      super(services, JabaNodeAPI.new(self))
 
       @jaba_type = jaba_type
       @id = id
@@ -38,7 +38,6 @@ module JABA
       @source_dir = File.dirname(@source_file)
       
       @attrs = AttributeAccessor.new(self)
-      @definition_interface = JabaNodeAPI.new(self)
 
       @attributes = []
       @attribute_lookup = {}
@@ -57,19 +56,6 @@ module JABA
       end
 
       @services.log_debug("Making node [type=#{@jaba_type} id=#{@id} handle=#{handle}, parent=#{parent}")
-    end
-    
-    ##
-    #
-    def eval_obj(context)
-      case context
-      when :definition
-        @definition_interface
-      when :internal
-        @attrs
-      else
-        raise "invalid context #{context}"
-      end
     end
 
     ##

@@ -63,7 +63,7 @@ module JABA
     ##
     #
     def jaba_type
-      @attr_def.jaba_type.eval_obj(:definition)
+      @attr_def.jaba_type.api
     end
 
     ##

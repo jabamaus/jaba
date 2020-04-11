@@ -22,14 +22,12 @@ module JABA
     ##
     #
     def initialize(services, id, type, variant, jaba_type, api_call_line)
-      super(services)
+      super(services, JabaAttributeDefinitionAPI.new(self))
       @id = id
       @type = type
       @variant = variant
       @jaba_type = jaba_type
       @api_call_line = api_call_line
-
-      @definition_interface = JabaAttributeDefinitionAPI.new(self)
 
       @default = nil
       @flags = []
@@ -47,12 +45,6 @@ module JABA
       end
     end
     
-    ##
-    #
-    def eval_obj(context)
-      @definition_interface
-    end
-
     ##
     #
     def get_default

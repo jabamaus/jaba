@@ -11,17 +11,13 @@ module JABA
   class JabaObject
     
     attr_reader :services
+    attr_reader :api
     
     ##
     #
-    def initialize(services)
+    def initialize(services, api_object)
       @services = services
-    end
-    
-    ##
-    #
-    def eval_obj(context)
-      self
+      @api = api_object
     end
     
     ##
@@ -35,9 +31,9 @@ module JABA
     def eval_definition(args = nil, context: :definition, &block)
       return if !block_given?
       if !args.nil?
-        eval_obj(context).instance_exec(args, &block)
+        @api.instance_exec(args, &block)
       else
-        eval_obj(context).instance_eval(&block)
+        @api.instance_eval(&block)
       end
     end
     

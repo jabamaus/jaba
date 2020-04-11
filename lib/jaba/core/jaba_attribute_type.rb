@@ -16,19 +16,12 @@ module JABA
     ##
     #
     def initialize(services, info)
-      super(services)
+      super(services, JabaAttributeTypeAPI.new(self))
       @type = info.type
       @init_attr_def_hook = nil
       @validate_attr_def_hook = nil
       @validate_value_hook = nil
-      @definition_interface = JabaAttributeTypeAPI.new(self)
       eval_definition(&info.block) if info.block
-    end
-
-    ##
-    #
-    def eval_obj(context)
-      @definition_interface
     end
 
   end
