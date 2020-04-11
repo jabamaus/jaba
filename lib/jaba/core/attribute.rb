@@ -20,7 +20,7 @@ module JABA
   
   ##
   #
-  class AttributeBase
+  class JabaAttributeBase
 
     attr_reader :attr_def
     attr_reader :api_call_line
@@ -71,7 +71,7 @@ module JABA
 
   ##
   #
-  class Attribute < AttributeBase
+  class JabaAttribute < JabaAttributeBase
 
     attr_reader :options
     attr_reader :key_value_options
@@ -211,7 +211,7 @@ module JABA
 
   ##
   #
-  class AttributeArray < AttributeBase
+  class JabaAttributeArray < JabaAttributeBase
     
     ##
     #
@@ -240,7 +240,7 @@ module JABA
       @api_call_line = api_call_line
       
       Array(values).each do |v|
-        elem = Attribute.new(@services, @attr_def, self, @node)
+        elem = JabaAttribute.new(@services, @attr_def, self, @node)
         v = apply_pre_post_fix(prefix, postfix, v)
         elem.set(v, api_call_line, *args, **keyvalue_args)
         @elems << elem

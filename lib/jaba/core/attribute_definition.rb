@@ -6,7 +6,7 @@ module JABA
 
   ##
   #
-  class AttributeTypeAPI < BasicObject
+  class JabaAttributeTypeAPI < BasicObject
 
     include DefinitionCommon
 
@@ -39,7 +39,7 @@ module JABA
 
   ##
   #
-  class AttributeType < JabaObject
+  class JabaAttributeType < JabaObject
 
     attr_reader :type
     attr_reader :init_attr_def_hook
@@ -54,7 +54,7 @@ module JABA
       @init_attr_def_hook = nil
       @validate_attr_def_hook = nil
       @validate_value_hook = nil
-      @definition_interface = AttributeTypeAPI.new(self)
+      @definition_interface = JabaAttributeTypeAPI.new(self)
       eval_definition(&info.block) if info.block
     end
 
@@ -68,7 +68,7 @@ module JABA
   
   ##
   #
-  class AttributeDefinitionAPI < BasicObject
+  class JabaAttributeDefinitionAPI < BasicObject
 
     include DefinitionCommon
 
@@ -148,14 +148,14 @@ module JABA
   ##
   # Manages shared data that is common to Attributes instanced from this definition.
   #
-  class AttributeDefinition < JabaObject
+  class JabaAttributeDefinition < JabaObject
 
     include PropertyMethods
 
     attr_reader :id
     attr_reader :type # eg :bool, :file, :path etc
     attr_reader :variant # :single, :array, :hash
-    attr_reader :type_obj # AttributeType object
+    attr_reader :type_obj # JabaAttributeType object
     attr_reader :api_call_line
     attr_reader :jaba_type
     attr_reader :keyval_opts
@@ -170,7 +170,7 @@ module JABA
       @jaba_type = jaba_type
       @api_call_line = api_call_line
 
-      @definition_interface = AttributeDefinitionAPI.new(self)
+      @definition_interface = JabaAttributeDefinitionAPI.new(self)
 
       @default = nil
       @flags = []

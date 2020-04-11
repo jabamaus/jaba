@@ -186,7 +186,7 @@ module JABA
       if get_attr_def(id, fail_if_not_found: false)
         @services.jaba_error("'#{id}' attribute multiply defined")
       end
-      ad = AttributeDefinition.new(@services, id, type, variant, self, caller(2, 1)[0])
+      ad = JabaAttributeDefinition.new(@services, id, type, variant, self, caller(2, 1)[0])
       ad.eval_definition(&block)
       @attribute_defs << ad
       @attribute_def_lookup[id] = ad

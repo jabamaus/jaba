@@ -104,9 +104,9 @@ module JABA
       @jaba_type.iterate_attrs(attrs_mask) do |attr_def|
         a = case attr_def.variant
             when :single
-              Attribute.new(services, attr_def, nil, self)
+              JabaAttribute.new(services, attr_def, nil, self)
             when :array
-              AttributeArray.new(services, attr_def, self)
+              JabaAttributeArray.new(services, attr_def, self)
             end
         @attribute_lookup[attr_def.id] = a
         @attributes << a
