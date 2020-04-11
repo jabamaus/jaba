@@ -18,26 +18,29 @@ module JABA
     
     ##
     #
+    def method_missing(attr_id, *args, **keyvalue_args)
+      @node.handle_attr(attr_id, ::Kernel.caller(1, 1)[0], *args, **keyvalue_args)
+    end
+   
+  end
+  
+  ##
+  #
+  class NodeDefinitionInterface < NodeAttributeInterface
+    
+    include DefinitionCommon
+
+    ##
+    #
+    def initialize(node)
+      super(node)
+      @obj = node
+    end
+
+    ##
+    #
     def id
       @node.id
-    end
-
-    ##
-    #
-    def raise(msg)
-      @node.services.jaba_error(msg)
-    end
-
-    ##
-    #
-    def print(msg)
-      ::Kernel.print(msg)
-    end
-
-    ##
-    #
-    def include(*shared_definition_ids, args: nil)
-      @node.include_shared(shared_definition_ids, args)
     end
 
     ##
@@ -53,14 +56,8 @@ module JABA
       @node.define_hook(:generate, allow_multiple: true, &block)
     end
 
-    ##
-    #
-    def method_missing(attr_id, *args, **keyvalue_args)
-      @node.handle_attr(attr_id, ::Kernel.caller(1, 1)[0], *args, **keyvalue_args)
-    end
-   
   end
-  
+    
   ##
   #
   class JabaNode < DefinitionObject
@@ -95,6 +92,8 @@ module JABA
       @source_dir = File.dirname(@source_file)
       
       @attrs = NodeAttributeInterface.new(self)
+      @definition_interface = NodeDefinitionInterface.new(self)
+
       @attributes = []
       @attribute_lookup = {}
       @attr_def_mask = attrs_mask
@@ -116,8 +115,15 @@ module JABA
     
     ##
     #
-    def eval_obj
-      @attrs
+    def eval_obj(context)
+      case context
+      when :definition
+        @definition_interface
+      when :internal
+        @attrs
+      else
+        raise "invalid context #{context}"
+      end
     end
 
     ##

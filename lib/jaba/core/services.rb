@@ -4,6 +4,7 @@ require 'fileutils'
 require 'logger'
 require_relative 'core_ext'
 require_relative 'utils'
+require_relative 'definition_common'
 require_relative 'jaba_type'
 require_relative 'attribute_definition'
 require_relative 'attribute'
@@ -246,7 +247,7 @@ module JABA
         @node_lookup[handle] = jn
       end
       
-      jn.attrs.instance_eval(&block) if block_given?
+      jn.eval_definition(context: :internal, &block) if block_given?
       jn.eval_definition(&@current_info.block)
       jn.post_create
       jn

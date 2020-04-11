@@ -20,18 +20,24 @@ module JABA
     
     ##
     #
-    def eval_obj
+    def eval_obj(context)
       self
     end
     
     ##
     #
-    def eval_definition(args = nil, &block)
+    def jaba_error(msg, **options)
+      @services.jaba_error(msg, **options)
+    end
+    
+    ##
+    #
+    def eval_definition(args = nil, context: :definition, &block)
       return if !block_given?
       if !args.nil?
-        eval_obj.instance_exec(args, &block)
+        eval_obj(context).instance_exec(args, &block)
       else
-        eval_obj.instance_eval(&block)
+        eval_obj(context).instance_eval(&block)
       end
     end
     
