@@ -199,12 +199,13 @@ module JABA
       #
       @nodes.each do |n|
         n.each_attr do |a|
-          next if a.type != :reference
-          a.map! do |ref|
-            if ref.is_a?(Symbol)
-              node_from_handle("#{a.attr_def.get_var(:referenced_type)}|#{ref}")
-            else
-              ref
+          if a.type == :reference
+            a.map! do |ref|
+              if ref.is_a?(Symbol)
+                node_from_handle("#{a.attr_def.get_var(:referenced_type)}|#{ref}")
+              else
+                ref
+              end
             end
           end
         end

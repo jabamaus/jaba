@@ -193,10 +193,15 @@ module JABA
     ##
     #
     def resolve_reference(value)
-      if @attr_def.type == :reference && @attr_def.get_var(:referenced_type) != @node.jaba_type.type
-        ref_node = @services.node_from_handle("#{@attr_def.get_var(:referenced_type)}|#{value}")
-        @node.referenced_nodes << ref_node
-        ref_node
+      if @attr_def.type == :reference
+        rt = @attr_def.get_var(:referenced_type)
+        if rt != @node.jaba_type.type
+          ref_node = @services.node_from_handle("#{rt}|#{value}")
+          @node.referenced_nodes << ref_node
+          ref_node
+        else
+          value
+        end
       else
         value
       end
