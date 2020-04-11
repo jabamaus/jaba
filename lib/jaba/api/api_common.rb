@@ -2,12 +2,10 @@
 
 module  JABA
 
-  using JABACoreExt
-  
   ##
   # API that is common to all public facing definitions. Not accessible from internal objects.
   #
-  module DefinitionCommon
+  module APICommon
 
     ##
     #

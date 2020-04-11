@@ -4,14 +4,15 @@ require 'fileutils'
 require 'logger'
 require_relative 'core_ext'
 require_relative 'utils'
-require_relative 'property'
-require_relative 'definition_common'
+require_relative 'jaba_object'
+require_relative 'jaba_attribute_type'
+require_relative 'jaba_attribute_definition'
+require_relative 'jaba_attribute'
 require_relative 'jaba_type'
-require_relative 'attribute_definition'
-require_relative 'attribute'
 require_relative 'jaba_node'
 require_relative 'project'
 require_relative 'generator'
+
 Dir.glob("#{__dir__}/../generators/*_generator.rb").sort.each {|f| require f}
 
 ##
