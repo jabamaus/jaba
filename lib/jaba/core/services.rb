@@ -375,7 +375,9 @@ module JABA
     ##
     #
     def load_definitions
-      @definition_src_files << "#{__dir__}/types.rb" # Load core type definitions
+      # Load core type definitions
+      @definition_src_files.concat(Dir.glob("#{__dir__}/../types/*.rb").sort)
+      
       Array(input.load_paths).each do |p|
         if !File.exist?(p)
           jaba_error("#{p} does not exist")
@@ -386,6 +388,9 @@ module JABA
           @definition_src_files << p
         end
       end
+      
+      @definition_src_files.map!{|f| f.cleanpath}
+
       @definition_src_files.each do |f|
         execute_definitions(f)
       end
@@ -438,13 +443,13 @@ module JABA
       # includes. This is not useful in definition errors.
       #
       lines.map! {|l| l.sub(/:in .*/, '')}
-      
+
       # Extract file and line information from the first callstack item, which is where the main error occurred.
       #
       if lines[0] !~ /^(.+):(\d+)/
         raise "Could not extract file and line number from '#{lines[0]}'"
       end
-      
+
       file = Regexp.last_match(1)
       line = Regexp.last_match(2).to_i
       m = String.new

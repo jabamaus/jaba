@@ -6,7 +6,7 @@ module JABA
     
     it 'requires referent type to be specified' do
       check_fail "'b' attribute definition failed validation: 'referenced_type' must be set",
-                 trace: [CORE_TYPES_FILE, "raise \"'referenced_type' must be set\"", __FILE__, '# tag1'] do
+                 trace: [ATTR_TYPES_FILE, "raise \"'referenced_type' must be set\"", __FILE__, '# tag1'] do
         jaba do
           define :a do
             attr :b, type: :reference # tag1
