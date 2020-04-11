@@ -63,7 +63,7 @@ module JABA
     
     ##
     #
-    def set_var(var_name, val = nil, &block)
+    def set_property(var_name, val = nil, &block)
       if block_given?
         if !val.nil?
           @services.jaba_error('Must provide a default value or a block but not both')
@@ -85,7 +85,7 @@ module JABA
     
     ##
     #
-    def get_var(var_name)
+    def get_property(var_name)
       instance_variable_get("@#{var_name}")
     end
     
@@ -96,9 +96,9 @@ module JABA
         @services.jaba_error("'#{id}' property not defined")
       end
       if val.nil?
-        get_var(id)
+        get_property(id)
       else
-        set_var(id, val, &block)
+        set_property(id, val, &block)
       end
     end
     
@@ -140,7 +140,7 @@ module JABA
     ##
     #
     def dependencies(*deps)
-      @jaba_type.set_var(:dependencies, deps.flatten)
+      @jaba_type.set_property(:dependencies, deps.flatten)
     end
 
     ##

@@ -204,7 +204,7 @@ module JABA
           if a.type == :reference
             a.map! do |ref|
               if ref.is_a?(Symbol)
-                node_from_handle("#{a.attr_def.get_var(:referenced_type)}|#{ref}")
+                node_from_handle("#{a.attr_def.get_property(:referenced_type)}|#{ref}")
               else
                 ref
               end

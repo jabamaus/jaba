@@ -83,27 +83,27 @@ module JABA
     # Set help for the attribute. Required.
     #
     def help(val = nil, &block)
-      @attr_def.set_var(:help, val, &block)
+      @attr_def.set_property(:help, val, &block)
     end
     
     ##
     # Set any number of flags to control the behaviour of the attribute.
     #
     def flags(*flags, &block)
-      @attr_def.set_var(:flags, flags.flatten, &block)
+      @attr_def.set_property(:flags, flags.flatten, &block)
     end
     
     ##
     # Set attribute default value. Can be specified as a value or a block.
     #
     def default(val = nil, &block)
-      @attr_def.set_var(:default, val, &block)
+      @attr_def.set_property(:default, val, &block)
     end
     
     ##
     #
     def keyval_options(*options, &block)
-      @attr_def.set_var(:keyval_opts, options.flatten, &block)
+      @attr_def.set_property(:keyval_opts, options.flatten, &block)
     end
     
     ##
@@ -128,7 +128,7 @@ module JABA
     ##
     #
     def add_property(id, val = nil)
-      @attr_def.set_var(id, val)
+      @attr_def.set_property(id, val)
     end
 
     ##
