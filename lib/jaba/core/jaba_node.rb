@@ -37,7 +37,7 @@ module JABA
       @source_file = @api_call_line[/^(.+):\d/, 1]
       @source_dir = File.dirname(@source_file)
       
-      @attrs = JabaNodeAttributeAPI.new(self, :internal)
+      @attrs = AttributeAccessor.new(self)
       @definition_interface = JabaNodeAPI.new(self)
 
       @attributes = []
@@ -165,6 +165,24 @@ module JABA
       end
     end
     
+  end
+
+  ##
+  #
+  class AttributeAccessor < BasicObject
+
+    ##
+    #
+    def initialize(node)
+      @node = node
+    end
+    
+    ##
+    #
+    def method_missing(attr_id, *args, **keyvalue_args)
+      @node.handle_attr(attr_id, nil, *args, **keyvalue_args)
+    end
+   
   end
 
 end

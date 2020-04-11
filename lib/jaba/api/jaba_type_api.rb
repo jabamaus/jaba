@@ -38,8 +38,7 @@ module JABA
     ##
     #
     def initialize(jaba_type)
-      @jaba_type = jaba_type
-      @obj = jaba_type
+      @jaba_type = @obj = jaba_type
     end
 
   end

@@ -8,7 +8,7 @@ module JABA
   #
   class JabaAttributeType < JabaObject
 
-    attr_reader :type
+    attr_reader :type # eg :bool, :choice, :keyvalue
     attr_reader :init_attr_def_hook
     attr_reader :validate_attr_def_hook
     attr_reader :validate_value_hook

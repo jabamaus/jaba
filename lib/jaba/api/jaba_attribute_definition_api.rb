@@ -75,8 +75,7 @@ module JABA
     ##
     #
     def initialize(attr_def)
-      @attr_def = attr_def
-      @obj = attr_def
+      @attr_def = @obj = attr_def
     end
     
   end
