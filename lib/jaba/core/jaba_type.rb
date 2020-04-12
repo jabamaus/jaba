@@ -81,9 +81,15 @@ module JABA
     
     ##
     #
-    def iterate_attr_defs(mask=nil, &block)
+    def iterate_attr_defs(mask, &block)
       @attribute_defs.each do |ad|
-        if mask.nil? || mask.include?(ad.id)
+        if mask.nil?
+          yield ad
+        elsif mask == :all_unhandled
+          if !ad.handled?
+            yield ad
+          end
+        elsif mask.index(ad.id) != nil
           yield ad
         end
       end

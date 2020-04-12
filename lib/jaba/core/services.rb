@@ -205,10 +205,8 @@ module JABA
       #
       @jaba_types.each do |jt|
         if jt.refcount > 0 # if nodes have been instanced from this type
-          jt.iterate_attr_defs do |ad|
-            if !ad.handled?
-              jaba_error("'#{ad.id}'' attribute in '#{jt.type_id}' type has not been handled")
-            end
+          jt.iterate_attr_defs(:all_unhandled) do |ad|
+            jaba_error("'#{ad.id}'' attribute in '#{jt.type_id}' type has not been handled")
           end
         end
       end
