@@ -41,7 +41,7 @@ module JABA
 
       @attributes = []
       @attribute_lookup = {}
-      @attr_def_mask = attrs_mask
+      @attr_def_mask = attrs_mask ? attrs_mask : @jaba_type.attribute_defs.map{|ad| ad.id}
       @generate_hooks = []
       
       @jaba_type.iterate_attrs(attrs_mask) do |attr_def|
@@ -125,7 +125,7 @@ module JABA
         
         return a.get(api_call_line)
       else
-        if @attr_def_mask&.none? {|m| m == id}
+        if @attr_def_mask.none? {|m| m == id}
           return nil
         end
 
