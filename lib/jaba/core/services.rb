@@ -57,8 +57,8 @@ module JABA
       @jaba_attr_types = []
       @jaba_types = []
       @jaba_types_to_open = []
-      @definition_registry = {}
-      @jaba_types_to_instance = []
+      @instance_lookup = {}
+      @instances = []
       @nodes = []
       @node_lookup = {}
       
@@ -119,16 +119,16 @@ module JABA
           jaba_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol " \
             "(underscore permitted), eg :my_id or 'my_id'")
         end
-        if definition_defined?(type_id, id)
+        if instanced?(type_id, id)
           jaba_error("'#{id}' multiply defined")
         end
       end
       
       info = JabaInstanceInfo.new(type_id, nil, id, block, options, caller(2, 1)[0])
-      @definition_registry.push_value(type_id, info)
+      @instance_lookup.push_value(type_id, info)
       
       if type_id != :shared
-        @jaba_types_to_instance << info
+        @instances << info
       end
     end
     
@@ -183,15 +183,15 @@ module JABA
       
       @jaba_types.each_with_index {|jt, i| jt.instance_variable_set(:@order_index, i)}
       
-      @jaba_types_to_instance.each do |info|
+      @instances.each do |info|
         info.jaba_type = get_jaba_type(info.type_id, callstack: info.api_call_line)
       end
       
-      @jaba_types_to_instance.stable_sort_by! {|d| d.jaba_type.instance_variable_get(:@order_index)}
+      @instances.stable_sort_by! {|d| d.jaba_type.instance_variable_get(:@order_index)}
       
       # Create instances of types
       #
-      @jaba_types_to_instance.each do |info|
+      @instances.each do |info|
         @current_info = info
         if info.jaba_type.generator
           info.jaba_type.generator.make_nodes
@@ -284,8 +284,8 @@ module JABA
     
     ##
     #
-    def get_definition(type_id, id, fail_if_not_found: true)
-      defs = @definition_registry[type_id]
+    def get_instance_info(type_id, id, fail_if_not_found: true)
+      defs = @instance_lookup[type_id]
       return nil if !defs
       d = defs.find {|dd| dd.id == id}
       if !d && fail_if_not_found
@@ -296,8 +296,8 @@ module JABA
 
     ##
     #
-    def definition_defined?(type_id, id)
-      get_definition(type_id, id, fail_if_not_found: false) != nil
+    def instanced?(type_id, id)
+      get_instance_info(type_id, id, fail_if_not_found: false) != nil
     end
     
     ##

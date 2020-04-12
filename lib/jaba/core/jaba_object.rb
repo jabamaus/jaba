@@ -48,19 +48,19 @@ module JABA
     #
     def include_shared(ids, args)
       ids.each do |id|
-        df = @services.get_definition(:shared, id, fail_if_not_found: false)
-        if !df
+        info = @services.get_instance_info(:shared, id, fail_if_not_found: false)
+        if !info
           @services.jaba_error("Shared definition '#{id}' not found")
         end
         
-        n_expected = df.block.arity
+        n_expected = info.block.arity
         n_actual = args ? Array(args).size : 0
         
         if n_actual != n_expected
           @services.jaba_error("shared definition '#{id}' expects #{n_expected} arguments but #{n_actual} were passed")
         end
         
-        eval_api_block(args, &df.block)
+        eval_api_block(args, &info.block)
       end
     end
     
