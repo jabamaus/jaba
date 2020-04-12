@@ -21,6 +21,13 @@ module JABA
     end
     
     ##
+    # Seems to help vscode debugging stability...
+    #
+    def inspect
+      nil
+    end
+
+    ##
     #
     def jaba_error(msg, **options)
       @services.jaba_error(msg, **options)

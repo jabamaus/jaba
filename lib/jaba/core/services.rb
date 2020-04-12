@@ -68,7 +68,7 @@ module JABA
     end
 
     ##
-    # This is absolutely CRITICAL if running jaba with ruby-debug-ide.
+    # Seems to help vscode debugging stability...
     #
     def inspect
       nil

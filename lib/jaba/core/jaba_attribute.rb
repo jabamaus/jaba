@@ -38,6 +38,13 @@ module JABA
     end
     
     ##
+    # Seems to help vscode debugging stability...
+    #
+    def inspect
+      nil
+    end
+    
+    ##
     #
     def type_id
       @attr_def.type_id
