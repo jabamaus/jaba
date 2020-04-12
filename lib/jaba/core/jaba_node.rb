@@ -54,6 +54,7 @@ module JABA
         @attributes << a
         @attribute_lookup[attr_def.id] = a
         @attribute_mask << attr_def.id
+        attr_def.handled = true
       end
 
       @services.log_debug("Making node [type=#{@jaba_type} id=#{@id} handle=#{handle}, parent=#{parent}")

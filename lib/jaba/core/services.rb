@@ -200,6 +200,19 @@ module JABA
         end
       end
       
+      # Check that all attribute definitions have been 'handled' by library code
+      # TODO: add test for this
+      #
+      @jaba_types.each do |jt|
+        if jt.refcount > 0 # if nodes have been instanced from this type
+          jt.iterate_attr_defs do |ad|
+            if !ad.handled?
+              jaba_error("'#{ad.id}'' attribute in '#{jt.type_id}' type has not been handled")
+            end
+          end
+        end
+      end
+
       # Resolve references
       #
       @nodes.each do |n|
@@ -238,6 +251,8 @@ module JABA
     #
     def make_node(type_id: nil, handle: "#{@current_info.type_id}|#{@current_info.id}", attrs: nil, parent: nil, &block)
       jaba_type = type_id ? get_jaba_type(type_id) : @current_info.jaba_type
+      jaba_type.increment_ref_count
+
       jn = JabaNode.new(self, jaba_type, @current_info.id, @current_info.api_call_line, handle, attrs, parent)
       @nodes << jn
       

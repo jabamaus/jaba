@@ -19,6 +19,7 @@ module JABA
     attr_reader :jaba_type
     attr_reader :keyval_opts
     attr_reader :api_call_line
+    attr_bool :handled
     
     ##
     #
@@ -34,6 +35,7 @@ module JABA
       @flags = []
       @help = nil
       @keyval_opts = []
+      @handled = false
       
       @validate_hook = nil
       @post_set_hook = nil
@@ -77,9 +79,8 @@ module JABA
       
       @default.freeze
       @flags.freeze
-      freeze
     end
-    
+
   end
 
 end

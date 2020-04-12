@@ -15,7 +15,7 @@ module JABA
     end
       
     ##
-    # TODO: system for ensuring all attributes are 'handled'?
+    #
     def make_nodes
       root_node = make_node(handle: nil, attrs: [:root, :platforms])
       
@@ -27,7 +27,7 @@ module JABA
         hosts_node.attrs.hosts.each do |h|
           proj_node = make_node(handle: "#{@jaba_type.type_id}|#{root_node.id}|#{p.id}|#{h.id}",
                                 parent: hosts_node,
-                                attrs: [:name, :namesuffix, :host, :src, :configs, :deps, :type, :vcglobal, :winsdkver]) do
+                                attrs: [:name, :namesuffix, :genroot, :host, :src, :configs, :deps, :type, :vcglobal, :winsdkver]) do
             host h
           end
           
