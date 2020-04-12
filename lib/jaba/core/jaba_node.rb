@@ -20,7 +20,7 @@ module JABA
     
     ##
     #
-    def initialize(services, jaba_type, id, api_call_line, handle, attrs_mask, parent)
+    def initialize(services, jaba_type, id, api_call_line, handle, attribute_mask, parent)
       super(services, JabaNodeAPI.new(self))
 
       @jaba_type = jaba_type
@@ -41,18 +41,19 @@ module JABA
 
       @attributes = []
       @attribute_lookup = {}
-      @attr_def_mask = attrs_mask ? attrs_mask : @jaba_type.attribute_defs.map{|ad| ad.id}
+      @attribute_mask = []
       @generate_hooks = []
       
-      @jaba_type.iterate_attrs(attrs_mask) do |attr_def|
+      @jaba_type.iterate_attr_defs(attribute_mask) do |attr_def|
         a = case attr_def.variant
             when :single
               JabaAttribute.new(services, attr_def, nil, self)
             when :array
               JabaAttributeArray.new(services, attr_def, self)
             end
-        @attribute_lookup[attr_def.id] = a
         @attributes << a
+        @attribute_lookup[attr_def.id] = a
+        @attribute_mask << attr_def.id
       end
 
       @services.log_debug("Making node [type=#{@jaba_type} id=#{@id} handle=#{handle}, parent=#{parent}")
@@ -125,7 +126,7 @@ module JABA
         
         return a.get(api_call_line)
       else
-        if @attr_def_mask.none? {|m| m == id}
+        if @attribute_mask.none? {|m| m == id}
           return nil
         end
 

@@ -78,13 +78,13 @@ module JABA
     
     ##
     #
-    def iterate_attrs(mask, &block)
+    def iterate_attr_defs(mask, &block)
       @attribute_defs.each do |ad|
-        if !mask || mask.include?(ad.id)
+        if mask.nil? || mask.include?(ad.id)
           yield ad
         end
       end
-      @super_type&.iterate_attrs(mask, &block)
+      @super_type&.iterate_attr_defs(mask, &block)
     end
     
     ##
