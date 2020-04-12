@@ -23,6 +23,7 @@ module JABA
         c.load_paths = load_paths
         c.definitions(&block) if block_given?
         c.enable_logging = @@enable_logging
+        c.use_file_cache = true
       end
     end
     

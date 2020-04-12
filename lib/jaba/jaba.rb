@@ -43,6 +43,12 @@ module JABA
     # Logging is disabled by default for performance.
     #
     attr_bool :enable_logging
+
+    ##
+    # Causes definition file contents to be cached. Useful if Jaba will be executed more than once
+    # in one process, eg when during unit testing. Off by default.
+    #
+    attr_bool :use_file_cache
     
   end
 

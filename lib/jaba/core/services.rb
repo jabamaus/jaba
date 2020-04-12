@@ -33,7 +33,9 @@ module JABA
     AttrTypeInfo = Struct.new(:type_id, :block, :api_call_line)
     JabaTypeInfo = Struct.new(:type_id, :block, :options, :api_call_line)
     JabaInstanceInfo = Struct.new(:type_id, :jaba_type, :id, :block, :options, :api_call_line)
-    
+
+    @@file_cache = {}
+
     ##
     #
     def initialize
@@ -41,6 +43,7 @@ module JABA
       @input.instance_variable_set(:@definitions, nil)
       @input.instance_variable_set(:@load_paths, nil)
       @input.instance_variable_set(:@enable_logging, false)
+      @input.instance_variable_set(:@use_file_cache, false)
       
       @logger = nil
       
@@ -324,7 +327,17 @@ module JABA
     ##
     #
     def read_file(file, encoding: nil)
-      IO.read(file, encoding: encoding)
+      str = nil
+      if input.use_file_cache?
+        str = @@file_cache[file]
+      end
+      if str.nil?
+        str = IO.read(file, encoding: encoding)
+      end
+      if input.use_file_cache?
+        @@file_cache[file] = str
+      end
+      str
     end
     
     ##
@@ -357,7 +370,7 @@ module JABA
     def execute_definitions(file = nil, &block)
       if file
         log "Executing #{file}"
-        @top_level_api.instance_eval(IO.read(file), file)
+        @top_level_api.instance_eval(read_file(file), file)
       end
       if block_given?
         @definition_src_files << block.source_location[0]
