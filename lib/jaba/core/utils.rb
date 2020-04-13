@@ -260,6 +260,9 @@ module JABA
     #
     def use_attrs(attr_def_ids)
       if attr_def_ids
+        if @attr_defs.empty?
+          raise "All attributes have already been handled!"
+        end
         @attr_def_ids = attr_def_ids
         @attr_defs.clear
         @remaining.delete_if do |ad|
