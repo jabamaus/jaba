@@ -32,7 +32,7 @@ module JABA
           end
           
           proj_node.attrs.configs.each do |cfg|
-            make_node(type_id: :vsconfig, handle: nil, parent: proj_node) do
+            make_node(type_id: :vsconfig, id: cfg, handle: nil, parent: proj_node) do
               config cfg
             end
           end

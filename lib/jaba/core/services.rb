@@ -247,11 +247,11 @@ module JABA
     
     ##
     #
-    def make_node(type_id: nil, handle: "#{@current_info.type_id}|#{@current_info.id}", attrs: nil, parent: nil, &block)
+    def make_node(type_id: nil, id: @current_info.id, handle: "#{@current_info.type_id}|#{@current_info.id}", attrs: nil, parent: nil, &block)
       jaba_type = type_id ? get_jaba_type(type_id) : @current_info.jaba_type
       jaba_type.increment_ref_count
 
-      jn = JabaNode.new(self, jaba_type, @current_info.id, @current_info.api_call_line, handle, attrs, parent)
+      jn = JabaNode.new(self, jaba_type, id, @current_info.api_call_line, handle, attrs, parent)
       @nodes << jn
       
       # A node only needs a handle if it will be looked up.
