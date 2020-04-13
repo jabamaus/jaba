@@ -19,13 +19,6 @@ module JABA
       @services = services
       @api = api_object
     end
-    
-    ##
-    # Seems to help vscode debugging stability...
-    #
-    def inspect
-      nil
-    end
 
     ##
     #

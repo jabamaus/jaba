@@ -65,13 +65,10 @@ module JABA
       @top_level_api = TopLevelAPI.new(self)
 
       @default_attr_type = JabaAttributeType.new(self, AttrTypeInfo.new).freeze
-    end
 
-    ##
-    # Seems to help vscode debugging stability...
-    #
-    def inspect
-      nil
+      @single_node_attr_def_tracker = SingleNodeAttributeDefinitionTracker.new
+      @multi_node_attr_def_tracker = MultiNodeAttributeDefinitionTracker.new
+      @attr_def_tracker = @single_node_attr_def_tracker
     end
 
     ##
@@ -193,24 +190,18 @@ module JABA
       #
       @instances.each do |info|
         @current_info = info
-        if info.jaba_type.generator
-          info.jaba_type.generator.make_nodes
+        jt = info.jaba_type
+        
+        set_attr_tracker(jt, :single_node)
+
+        if jt.generator
+          jt.generator.make_nodes
         else
           make_node
         end
+        @attr_def_tracker.check_all_handled
       end
       
-      # Check that all attribute definitions have been 'handled' by library code
-      # TODO: add test for this
-      #
-      @jaba_types.each do |jt|
-        if jt.refcount > 0 # if nodes have been instanced from this type
-          jt.iterate_attr_defs(:all_unhandled) do |ad|
-            jaba_error("'#{ad.id}'' attribute in '#{jt.type_id}' type has not been handled")
-          end
-        end
-      end
-
       # Resolve references
       #
       @nodes.each do |n|
@@ -247,11 +238,28 @@ module JABA
     
     ##
     #
-    def make_node(type_id: nil, id: @current_info.id, handle: "#{@current_info.type_id}|#{@current_info.id}", attrs: nil, parent: nil, &block)
-      jaba_type = type_id ? get_jaba_type(type_id) : @current_info.jaba_type
-      jaba_type.increment_ref_count
+    def set_attr_tracker(jaba_type_or_id, tracker_type)
+      if @attr_def_tracker
+        @attr_def_tracker.check_all_handled
+      end
+      jt = jaba_type_or_id.is_a?(JabaType) ? jaba_type_or_id : get_jaba_type(jaba_type_or_id)
+      @attr_def_tracker = case tracker_type
+                          when :single_node
+                            @single_node_attr_def_tracker
+                          when :multi_node
+                            @multi_node_attr_def_tracker
+                          else
+                            raise "invalid tracker type"
+                          end
+      @attr_def_tracker.set_jaba_type(jt)
+    end
 
-      jn = JabaNode.new(self, jaba_type, id, @current_info.api_call_line, handle, attrs, parent)
+    ##
+    #
+    def make_node(id: @current_info.id, handle: "#{@current_info.type_id}|#{@current_info.id}", attrs: nil, parent: nil, &block)
+      @attr_def_tracker.use_attrs(attrs)
+
+      jn = JabaNode.new(self, id, @current_info.api_call_line, handle, @attr_def_tracker, parent)
       @nodes << jn
       
       # A node only needs a handle if it will be looked up.

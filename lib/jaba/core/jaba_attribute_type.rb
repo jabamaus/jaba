@@ -24,6 +24,13 @@ module JABA
       eval_api_block(&info.block) if info.block
     end
 
+    ##
+    # For ease of debugging.
+    #
+    def to_s
+      @type_id.to_s
+    end
+
   end
 
 end

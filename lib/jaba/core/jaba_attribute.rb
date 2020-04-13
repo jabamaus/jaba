@@ -36,14 +36,14 @@ module JABA
       @default = @attr_def.default
       @default_is_proc = @default.is_a?(Proc)
     end
-    
+
     ##
-    # Seems to help vscode debugging stability...
+    # For ease of debugging.
     #
-    def inspect
-      nil
+    def to_s
+      @attr_def.to_s
     end
-    
+
     ##
     #
     def type_id

@@ -19,7 +19,6 @@ module JABA
     attr_reader :jaba_type
     attr_reader :keyval_opts
     attr_reader :api_call_line
-    attr_bool :handled
     
     ##
     #
@@ -35,7 +34,6 @@ module JABA
       @flags = []
       @help = nil
       @keyval_opts = []
-      @handled = false
       
       @validate_hook = nil
       @post_set_hook = nil
@@ -46,6 +44,13 @@ module JABA
       eval_api_block(&@jaba_attr_type.init_attr_def_hook)
     end
     
+    ##
+    # For ease of debugging.
+    #
+    def to_s
+      "#{@id}#{@type_id ? "(#{@type_id})" : ''}"
+    end
+
     ##
     #
     def has_flag?(flag)

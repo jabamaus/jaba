@@ -289,6 +289,7 @@ module JABA
     #
     def make_nodes
       @projects = []
+      @services.set_attr_tracker(:test_project, :multi_node)
       root_node = make_node(handle: nil, attrs: [:root, :platforms])
       root_node.attrs.platforms.each do |p|
         hosts_node = make_node(handle: nil, parent: root_node, attrs: [:platform, :hosts]) {platform p}
@@ -296,7 +297,9 @@ module JABA
           project = make_node(handle: nil, parent: hosts_node, attrs: [:host, :src, :targets]) {host h}
           @projects << project.attrs
           project.attrs.targets.each do |t|
-            make_node(handle: nil, parent: project, attrs: [:target, :rtti]) {target t}
+            make_node(handle: nil, parent: project, attrs: [:target, :rtti]) do
+              target t
+            end
           end
         end
       end

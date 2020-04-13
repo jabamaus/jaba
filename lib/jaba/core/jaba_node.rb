@@ -20,13 +20,14 @@ module JABA
     
     ##
     #
-    def initialize(services, jaba_type, id, api_call_line, handle, attribute_mask, parent)
+    def initialize(services, id, api_call_line, handle, attr_def_tracker, parent)
       super(services, JabaNodeAPI.new(self))
 
-      @jaba_type = jaba_type
+      @jaba_type = attr_def_tracker.jaba_type
       @id = id
       @api_call_line = api_call_line
       @handle = handle
+      @attr_def_tracker = attr_def_tracker
       @children = []
       @parent = parent
       if parent
@@ -41,10 +42,9 @@ module JABA
 
       @attributes = []
       @attribute_lookup = {}
-      @attribute_mask = []
       @generate_hooks = []
       
-      @jaba_type.iterate_attr_defs(attribute_mask) do |attr_def|
+      @attr_def_tracker.iterate_attr_defs do |attr_def|
         a = case attr_def.variant
             when :single
               JabaAttribute.new(services, attr_def, nil, self)
@@ -53,13 +53,18 @@ module JABA
             end
         @attributes << a
         @attribute_lookup[attr_def.id] = a
-        @attribute_mask << attr_def.id
-        attr_def.handled = true
       end
 
       @services.log_debug("Making node [type=#{@jaba_type} id=#{@id} handle=#{handle}, parent=#{parent}")
     end
 
+    ##
+    # For ease of debugging.
+    #
+    def to_s
+      @id.to_s
+    end
+    
     ##
     #
     def <=>(other)
@@ -127,7 +132,7 @@ module JABA
         
         return a.get(api_call_line)
       else
-        if @attribute_mask.none? {|m| m == id}
+        if @attr_def_tracker.ignore?(id)
           return nil
         end
 

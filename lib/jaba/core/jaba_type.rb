@@ -17,7 +17,6 @@ module JABA
     attr_reader :attribute_defs
     attr_reader :dependencies
     attr_reader :generator
-    attr_reader :refcount # incremented each time a node is created
     
     ##
     #
@@ -29,7 +28,6 @@ module JABA
       @attribute_def_lookup = {}
       @dependencies = []
       @generator = nil
-      @refcount = 0
 
       gen_classname = "JABA::#{type_id.to_s.capitalize_first}Generator"
       
@@ -47,6 +45,7 @@ module JABA
     end
 
     ##
+    # For ease of debugging.
     #
     def to_s
       @type_id.to_s
@@ -81,19 +80,9 @@ module JABA
     
     ##
     #
-    def iterate_attr_defs(mask, &block)
-      @attribute_defs.each do |ad|
-        if mask.nil?
-          yield ad
-        elsif mask == :all_unhandled
-          if !ad.handled?
-            yield ad
-          end
-        elsif mask.index(ad.id) != nil
-          yield ad
-        end
-      end
-      @super_type&.iterate_attr_defs(mask, &block)
+    def iterate_attr_defs(&block)
+      @attribute_defs.each(&block)
+      @super_type&.iterate_attr_defs(&block)
     end
     
     ##
@@ -104,12 +93,6 @@ module JABA
       @super_type = @services.get_jaba_type(@super_type) if @super_type
 
       @attribute_defs.each(&:init)
-    end
-    
-    ##
-    #
-    def increment_ref_count
-      @refcount += 1
     end
 
     ##
