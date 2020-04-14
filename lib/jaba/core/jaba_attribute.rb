@@ -38,13 +38,6 @@ module JABA
     end
 
     ##
-    # For ease of debugging.
-    #
-    def to_s
-      @attr_def.to_s
-    end
-
-    ##
     #
     def type_id
       @attr_def.type_id
@@ -100,6 +93,13 @@ module JABA
       end
     end
     
+    ##
+    # For ease of debugging.
+    #
+    def to_s
+      @value.to_s
+    end
+
     ##
     #
     def get(api_call_line = nil)
@@ -231,6 +231,13 @@ module JABA
       end
     end
     
+    ##
+    # For ease of debugging.
+    #
+    def to_s
+      "#{@elems.size} elems"
+    end
+
     ##
     #
     def get(api_call_line = nil)
