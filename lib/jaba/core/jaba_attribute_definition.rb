@@ -65,7 +65,7 @@ module JABA
         begin
           eval_api_block(&hook)
         rescue JabaError => e
-          @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
+          jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
                                callstack: [e.backtrace[0], @api_call_line])
         end
       end
@@ -76,7 +76,7 @@ module JABA
           begin
             eval_api_block(@default, &hook)
           rescue JabaError => e
-            @services.jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
+            jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
                                  callstack: [e.backtrace[0], @api_call_line])
           end
         end

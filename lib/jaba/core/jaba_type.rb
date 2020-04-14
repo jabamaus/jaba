@@ -54,12 +54,12 @@ module JABA
     #
     def define_attr(id, variant, type: nil, &block)
       if !(id.is_a?(Symbol) || id.is_a?(String))
-        @services.jaba_error("'#{id}' attribute id must be specified as a symbol or string")
+        jaba_error("'#{id}' attribute id must be specified as a symbol or string")
       end
       id = id.to_sym
       
       if get_attr_def(id, fail_if_not_found: false)
-        @services.jaba_error("'#{id}' attribute multiply defined")
+        jaba_error("'#{id}' attribute multiply defined")
       end
       ad = JabaAttributeDefinition.new(@services, id, type, variant, self, caller(2, 1)[0])
       ad.eval_api_block(&block)
@@ -77,7 +77,7 @@ module JABA
           a = @super_type.get_attr_def(id, include_super: true, fail_if_not_found: fail_if_not_found)
         end
         if !a && fail_if_not_found
-          @services.jaba_error("'#{id}' attribute definition not found in '#{type_id}'")
+          jaba_error("'#{id}' attribute definition not found in '#{type_id}'")
         end
       end
       a

@@ -43,14 +43,14 @@ module JABA
       ids.each do |id|
         info = @services.get_instance_info(:shared, id, fail_if_not_found: false)
         if !info
-          @services.jaba_error("Shared definition '#{id}' not found")
+          jaba_error("Shared definition '#{id}' not found")
         end
         
         n_expected = info.block.arity
         n_actual = args ? Array(args).size : 0
         
         if n_actual != n_expected
-          @services.jaba_error("shared definition '#{id}' expects #{n_expected} arguments but #{n_actual} were passed")
+          jaba_error("shared definition '#{id}' expects #{n_expected} arguments but #{n_actual} were passed")
         end
         
         eval_api_block(args, &info.block)
@@ -65,7 +65,7 @@ module JABA
       else
         hook = "@#{id}_hook"
         if instance_variable_get(hook)
-          @services.jaba_error("'#{id}' hook already set")
+          jaba_error("'#{id}' hook already set")
         end
         instance_variable_set(hook, block)
       end

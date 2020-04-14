@@ -86,7 +86,7 @@ module JABA
           end
         end
         if fail_if_not_found
-          @services.jaba_error("'#{attr_id}' attribute not found")
+          jaba_error("'#{attr_id}' attribute not found")
         end
       end
       a
@@ -103,8 +103,8 @@ module JABA
     def post_create
       @attributes.each do |a|
         if a.required? && !a.set?
-          @services.jaba_error("'#{a.id}' attribute requires a value", 
-                               callstack: [@api_call_line, a.attr_def.api_call_line])
+          jaba_error("'#{a.id}' attribute requires a value", 
+                     callstack: [@api_call_line, a.attr_def.api_call_line])
         end
         a.process_flags(warn: true)
       end
@@ -127,6 +127,7 @@ module JABA
         
         if !a
           # TODO: check if property is defined at all
+          # TODO: this needs to consider all types used by a generator
           return nil
         end
         
@@ -152,7 +153,7 @@ module JABA
     def wipe_attrs(ids)
       ids.each do |id|
         if !id.is_a?(Symbol)
-          @services.jaba_error("'#{id}' must be specified as a symbol")
+          jaba_error("'#{id}' must be specified as a symbol")
         end
         get_attr(id).clear
       end
