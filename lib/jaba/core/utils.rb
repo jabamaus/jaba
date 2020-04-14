@@ -196,8 +196,8 @@ module JABA
 
     ##
     #
-    def set_jaba_type(jt)
-      @jaba_type = jt
+    def initialize
+      @jaba_type = nil
       @attr_defs = []
     end
 
@@ -222,8 +222,11 @@ module JABA
     ##
     #
     def set_jaba_type(jt)
-      super
-      jt.iterate_attr_defs {|ad| @attr_defs << ad} # TODO: put in a cache
+      if jt != @jaba_type
+        @attr_defs.clear
+        jt.iterate_attr_defs {|ad| @attr_defs << ad}
+      end
+      @jaba_type = jt
     end
 
     ##
@@ -251,7 +254,8 @@ module JABA
     ##
     #
     def set_jaba_type(jt)
-      super
+      @jaba_type = jt
+      @attr_defs.clear
       @remaining = []
       jt.iterate_attr_defs {|ad| @remaining << ad} # TODO: put in a cache?
     end
@@ -264,7 +268,6 @@ module JABA
           raise "All attributes have already been handled!"
         end
         @attr_def_ids = attr_def_ids
-        @attr_defs.clear
         @remaining.delete_if do |ad|
           if attr_def_ids.index(ad.id)
             @attr_defs << ad
