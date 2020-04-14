@@ -48,7 +48,7 @@ module JABA
     # For ease of debugging.
     #
     def to_s
-      "#{@id}#{@type_id ? "(#{@type_id})" : ''}"
+      "id=#{@id} type=#{@type_id}"
     end
 
     ##

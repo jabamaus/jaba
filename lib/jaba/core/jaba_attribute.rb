@@ -97,7 +97,7 @@ module JABA
     # For ease of debugging.
     #
     def to_s
-      @value.to_s
+      "value=#{@value} #{@attr_def}"
     end
 
     ##
@@ -235,7 +235,7 @@ module JABA
     # For ease of debugging.
     #
     def to_s
-      "#{@elems.size} elems"
+      "Array (#{@elems.size} elements) #{@attr_def}"
     end
 
     ##
