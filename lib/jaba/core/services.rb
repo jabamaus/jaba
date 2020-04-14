@@ -162,20 +162,21 @@ module JABA
       #
       @jaba_types.map! {|info| JabaType.new(self, info)}
       
+      @jaba_types.each(&:init)
+      
       # Open JabaTypes so more attributes can be added
       #
       @jaba_types_to_open.each do |info|
-        get_jaba_type(info.type_id).eval_api_block(&info.block) # TODO: use api_call_line
+        get_jaba_type(info.type_id).eval_api_block(&info.block)
       end
       
-      @jaba_types.each(&:init)
       @jaba_types.each(&:resolve_dependencies)
       
       begin
         @jaba_types.sort_topological!(:dependencies)
       rescue CyclicDependency => e
         err_type = e.instance_variable_get(:@err_obj)
-        jaba_error("'#{err_type}' contains a cyclic dependency") # TODO: error location
+        jaba_error("'#{err_type}' contains a cyclic dependency")
       end
       
       @jaba_types.each_with_index {|jt, i| jt.instance_variable_set(:@order_index, i)}

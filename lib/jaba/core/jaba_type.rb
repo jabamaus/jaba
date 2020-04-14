@@ -24,6 +24,7 @@ module JABA
       super(services, JabaTypeAPI.new(self))
       @type_id = info.type_id
       @super_type = info.options[:extend]
+      @block = info.block
       @attribute_defs = []
       @attribute_def_lookup = {}
       @dependencies = []
@@ -40,8 +41,6 @@ module JABA
         @generator = generator_class.new(@services, self)
         @generator.init if @generator.respond_to?(:init)
       end
-      
-      eval_api_block(&info.block)
     end
 
     ##
@@ -58,6 +57,7 @@ module JABA
         @services.jaba_error("'#{id}' attribute id must be specified as a symbol or string")
       end
       id = id.to_sym
+      
       if get_attr_def(id, fail_if_not_found: false)
         @services.jaba_error("'#{id}' attribute multiply defined")
       end
@@ -70,10 +70,15 @@ module JABA
     
     ##
     #
-    def get_attr_def(id, fail_if_not_found: true)
+    def get_attr_def(id, include_super: true, fail_if_not_found: true)
       a = @attribute_def_lookup[id]
-      if !a && fail_if_not_found
-        @services.jaba_error("'#{id}' attribute definition not found in '#{type}'")
+      if !a
+        if include_super && @super_type
+          a = @super_type.get_attr_def(id, include_super: true, fail_if_not_found: fail_if_not_found)
+        end
+        if !a && fail_if_not_found
+          @services.jaba_error("'#{id}' attribute definition not found in '#{type_id}'")
+        end
       end
       a
     end
@@ -91,6 +96,8 @@ module JABA
       # Convert super type id to object handle
       #
       @super_type = @services.get_jaba_type(@super_type) if @super_type
+
+      eval_api_block(&@block)
 
       @attribute_defs.each(&:init)
     end
