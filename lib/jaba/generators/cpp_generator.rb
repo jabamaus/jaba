@@ -20,7 +20,7 @@ module JABA
 
       # Allows multiple nodes to be created from :cpp type, each one handling a different subset of its attributes
       #
-      @services.set_attr_tracker(:cpp, :multi_node)
+      set_attr_tracker(:cpp, :multi_node)
 
       root_node = make_node(handle: nil, attrs: [:root, :platforms])
       
@@ -37,13 +37,15 @@ module JABA
             host h
           end
           
-          @services.set_attr_tracker(:vsconfig, :single_node)
+          set_attr_tracker(:vsconfig, :single_node)
 
           proj_node.attrs.configs.each do |cfg|
             make_node(id: cfg, handle: nil, parent: proj_node) do
               config cfg
             end
           end
+
+          set_attr_tracker(:cpp, :multi_node)
           
           @projects << make_project(Vcxproj, proj_node)
         end

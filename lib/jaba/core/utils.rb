@@ -190,53 +190,43 @@ module JABA
   
   ##
   #
-  class AttributeDefinitionTrackerBase
-
+  class SingleNodeAttributeDefinitionTracker
+  
     attr_reader :jaba_type
 
     ##
     #
     def initialize
       @jaba_type = nil
-      @attr_defs = []
+      @all_attr_defs = []
+    end
+
+    ##
+    #
+    def set_jaba_type(jt)
+      if jt != @jaba_type
+        @jaba_type = jt
+        @all_attr_defs.clear
+        jt.iterate_attr_defs {|ad| @all_attr_defs << ad}
+      end
+    end
+
+    ##
+    #
+    def use_attrs(attr_def_ids)
+      @attr_def_ids = attr_def_ids ? attr_def_ids : @all_attr_defs.map(&:id)
     end
 
     ##
     #
     def iterate_attr_defs(&block)
-      @attr_defs.each(&block)
+      @all_attr_defs.each(&block)
     end
 
     ##
     #
     def ignore?(attr_def_id)
       @attr_def_ids.index(attr_def_id) == nil
-    end
-
-  end
-
-  ##
-  #
-  class SingleNodeAttributeDefinitionTracker < AttributeDefinitionTrackerBase
-  
-    ##
-    #
-    def set_jaba_type(jt)
-      if jt != @jaba_type
-        @attr_defs.clear
-        jt.iterate_attr_defs {|ad| @attr_defs << ad}
-      end
-      @jaba_type = jt
-    end
-
-    ##
-    #
-    def use_attrs(attr_def_ids)
-      @attr_def_ids = if attr_def_ids
-        attr_def_ids
-      else
-        @attr_defs.map(&:id)
-      end
     end
 
     ##
@@ -249,46 +239,82 @@ module JABA
 
   ##
   #
-  class MultiNodeAttributeDefinitionTracker < AttributeDefinitionTrackerBase
+  class MultiNodeAttributeDefinitionTracker
+
+    attr_reader :jaba_type
+
+    ##
+    #
+    def initialize
+      @jaba_type = nil
+      @all_attr_defs = []
+      @current_attr_defs = []
+      @handled_tracker = {}
+      @id_to_def = {}
+    end
 
     ##
     #
     def set_jaba_type(jt)
-      @jaba_type = jt
-      @attr_defs.clear
-      @remaining = []
-      jt.iterate_attr_defs {|ad| @remaining << ad} # TODO: put in a cache?
+      @current_attr_defs.clear
+      @id_to_def.clear
+      @handled_tracker.clear
+      
+      if jt != @jaba_type
+        @jaba_type = jt
+        @all_attr_defs.clear
+        jt.iterate_attr_defs {|ad| @all_attr_defs << ad}
+      end
+
+      @all_attr_defs.each {|ad| @handled_tracker[ad] = false}
     end
 
     ##
     #
     def use_attrs(attr_def_ids)
+      #if @handled_tracker.size == @attr_defs.size
+      #  raise "All attributes have already been handled!"
+      #end
+      
+      @current_attr_defs.clear
+      @id_to_def.clear
+
       if attr_def_ids
-        if @attr_defs.empty?
-          raise "All attributes have already been handled!"
-        end
-        @attr_def_ids = attr_def_ids
-        @remaining.delete_if do |ad|
-          if attr_def_ids.index(ad.id)
-            @attr_defs << ad
-            true
-          else
-            false
-          end
+        attr_def_ids.each do |id|
+          ad = @jaba_type.get_attr_def(id)
+          @current_attr_defs << ad
+          @id_to_def[id] = ad
+          @handled_tracker[ad] = true
         end
       else
-        @attr_def_ids = @remaining.map(&:id)
-        @attr_defs = @remaining.dup
-        @remaining.clear
+        @handled_tracker.each do |ad, handled|
+          if !handled
+            @current_attr_defs << ad
+            @id_to_def[ad.id] = ad
+            @handled_tracker[ad] = true
+          end
+        end
       end
     end
 
     ##
     #
+    def iterate_attr_defs(&block)
+      @current_attr_defs.each(&block)
+    end
+
+    ##
+    #
+    def ignore?(attr_def_id)
+      !@id_to_def.has_key?(attr_def_id)
+    end
+
+    ##
+    #
     def check_all_handled
-      if !@remaining.empty?
-        @jaba_type.jaba_error("#{@remaining.map(&:id)} attribute(s) in '#{@jaba_type.type_id}' type not handled")
-      end
+      #if !@remaining.empty?
+      #  @jaba_type.jaba_error("#{@remaining.map(&:id)} attribute(s) in '#{@jaba_type.type_id}' type not handled")
+      #end
     end
 
   end

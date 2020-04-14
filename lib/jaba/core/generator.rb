@@ -21,6 +21,12 @@ module JABA
     
     ##
     #
+    def set_attr_tracker(*args)
+      @services.set_attr_tracker(*args)
+    end
+    
+    ##
+    #
     def make_node(**options, &block)
       node = @services.make_node(**options, &block)
       @nodes << node

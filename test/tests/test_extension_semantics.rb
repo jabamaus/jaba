@@ -194,65 +194,38 @@ module JABA
           attr :root do
             default '.'
           end
-
           attr_array :platforms, type: :reference do
             referenced_type :platform
             flags :unordered, :required
           end
-          
           attr :platform
-            
-          attr_array :hosts, type: :reference do
-            referenced_type :host
-            flags :unordered, :required
-          end
-          
-          attr :host
           attr :src
-          
           attr_array :targets do
             flags :required, :unordered
           end
-          
+        end
+
+        define :test_target do
           attr :target
-          
-          attr :rtti do
-            default do
-              case platform
-              when :win32
-                default 'on'
-              when :x64
-                default 'off'
-              end
-            end
-          end
+          attr :name
         end
         
         test_project :t do
           platforms [:win32, :x64]
           platforms.must_equal [:win32, :x64]
           root 'test'
+          targets [:debug, :release]
           case platform
           when :win32
-            hosts [:vs2013, :vs2015]
-            if host == :vs2013
-              src 'win32_vs2013_src'
-            else
-              src 'win32_vs2015_src'
-            end
+            src 'win32_src'
           when :x64
-            hosts [:vs2017, :vs2019]
-            if host == :vs2017
-              src 'x64_vs2017_src'
-            else
-              src 'x64_vs2019_src'
-            end
+            src 'x64_src'
           end
-          case host
-          when :vs2013, :vs2017
-            targets [:debug, :release]
-          else
-            targets [:dev, :check]
+          case target
+          when :debug
+            name "Debug"
+          when :release
+            name 'Release'
           end
         end
       end
@@ -265,43 +238,36 @@ module JABA
   class Test_projectGenerator < Generator
     
     ##
-    # TODO: targets are not tested
+    #
     def generate
-      @projects.size.must_equal 4
-      @projects[0].platform.id.must_equal(:win32)
-      @projects[0].host.id.must_equal(:vs2013)
-      @projects[0].src.must_equal 'win32_vs2013_src'
+      @projects.size.must_equal 2
+
+      proj1 = @projects[0]
+      proj1.attrs.platform.id.must_equal(:win32)
+      proj1.attrs.src.must_equal 'win32_src'
       
-      @projects[1].platform.id.must_equal(:win32)
-      @projects[1].host.id.must_equal(:vs2015)
-      @projects[1].src.must_equal 'win32_vs2015_src'
-      
-      @projects[2].platform.id.must_equal(:x64)
-      @projects[2].host.id.must_equal(:vs2017)
-      @projects[2].src.must_equal 'x64_vs2017_src'
-      
-      @projects[3].platform.id.must_equal(:x64)
-      @projects[3].host.id.must_equal(:vs2019)
-      @projects[3].src.must_equal 'x64_vs2019_src'
+      proj2 = @projects[1]
+      proj2.attrs.platform.id.must_equal(:x64)
+      proj2.attrs.src.must_equal 'x64_src'
     end
     
     ##
     #
     def make_nodes
       @projects = []
-      @services.set_attr_tracker(:test_project, :multi_node)
+      set_attr_tracker(:test_project, :multi_node)
+
       root_node = make_node(handle: nil, attrs: [:root, :platforms])
+      
       root_node.attrs.platforms.each do |p|
-        hosts_node = make_node(handle: nil, parent: root_node, attrs: [:platform, :hosts]) {platform p}
-        hosts_node.attrs.hosts.each do |h|
-          project = make_node(handle: nil, parent: hosts_node, attrs: [:host, :src, :targets]) {host h}
-          @projects << project.attrs
-          project.attrs.targets.each do |t|
-            make_node(handle: nil, parent: project, attrs: [:target, :rtti]) do
-              target t
-            end
-          end
+        project = make_node(handle: nil, parent: root_node) { platform p }
+        @projects << project
+        
+        set_attr_tracker(:test_target, :single_node)
+        project.attrs.targets.each do |t|
+          make_node(handle: nil, parent: project) { target t }
         end
+        set_attr_tracker(:test_project, :multi_node)
       end
     end
     
