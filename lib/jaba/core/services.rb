@@ -414,8 +414,16 @@ module JABA
         if !File.exist?(p)
           jaba_error("#{p} does not exist")
         end
+        
+        # If load path is a directory, if its called 'jaba' then load all files recursively,
+        # else search all files recursively and load any called jaba.rb.
+        # 
         if File.directory?(p)
-          @definition_src_files.concat(Dir.glob("#{p}/**/jaba.rb"))
+          if p.basename == 'jaba'
+            @definition_src_files.concat(Dir.glob("#{p}/**/*.rb"))
+          else
+            @definition_src_files.concat(Dir.glob("#{p}/**/jaba.rb"))
+          end
         else
           @definition_src_files << p
         end
