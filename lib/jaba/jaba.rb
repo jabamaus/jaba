@@ -99,12 +99,38 @@ module JABA
 end
 
 if $PROGRAM_NAME == __FILE__
+  require 'optparse'
+  require 'ostruct'
+
+  options = OpenStruct.new(
+    load_paths: nil,
+    enable_logging: nil
+  )
+
+  opts = OptionParser.new do |opts|
+    opts.banner = <<EOB
+  Welcome to JABA
+EOB
+    opts.separator ''
+    opts.separator 'Options:'
+  
+    opts.on('-l', '--load-path LP', "Load path") do |lp|
+      options[:load_paths] = lp
+    end
+    opts.on('--log', 'Enable logging') do |log|
+      options[:enable_logging] = log
+    end
+    opts.separator ''
+  end
+  
+  opts.parse!
+
   begin
     JABA.run do |j|
-      j.load_paths = Dir.getwd
-      j.enable_logging = ARGV.delete('--log') ? true : false
+      j.load_paths = options[:load_paths] if options[:load_paths]
+      j.enable_logging = options[:enable_logging] if options[:enable_logging]
     end
-  rescue JABA::JabaError => e
+  rescue StandardError => e
     puts e.message
     puts 'Backtrace:'
     puts(e.backtrace.map {|line| "  #{line}"})
