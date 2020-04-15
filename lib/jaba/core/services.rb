@@ -413,8 +413,8 @@ module JABA
       @definition_src_files.concat(Dir.glob("#{__dir__}/../types/*.rb").sort)
       
       Array(input.load_paths).each do |p|
-        p.to_forward_slashes!
-        
+        p = p.to_forward_slashes # take copy in case string frozen
+
         if !File.exist?(p)
           jaba_error("#{p} does not exist")
         end
