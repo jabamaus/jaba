@@ -214,19 +214,13 @@ module JABA
     ##
     #
     def use_attrs(attr_def_ids)
-      @attr_def_ids = attr_def_ids ? attr_def_ids : @all_attr_defs.map(&:id)
+      # nothing
     end
 
     ##
     #
     def iterate_attr_defs(&block)
       @all_attr_defs.each(&block)
-    end
-
-    ##
-    #
-    def ignore?(attr_def_id)
-      @attr_def_ids.index(attr_def_id) == nil
     end
 
     ##
@@ -250,14 +244,12 @@ module JABA
       @all_attr_defs = []
       @current_attr_defs = []
       @handled_tracker = {}
-      @id_to_def = {}
     end
 
     ##
     #
     def set_jaba_type(jt)
       @current_attr_defs.clear
-      @id_to_def.clear
       @handled_tracker.clear
       
       if jt != @jaba_type
@@ -277,20 +269,17 @@ module JABA
       #end
       
       @current_attr_defs.clear
-      @id_to_def.clear
 
       if attr_def_ids
         attr_def_ids.each do |id|
           ad = @jaba_type.get_attr_def(id)
           @current_attr_defs << ad
-          @id_to_def[id] = ad
           @handled_tracker[ad] = true
         end
       else
         @handled_tracker.each do |ad, handled|
           if !handled
             @current_attr_defs << ad
-            @id_to_def[ad.id] = ad
             @handled_tracker[ad] = true
           end
         end
@@ -301,12 +290,6 @@ module JABA
     #
     def iterate_attr_defs(&block)
       @current_attr_defs.each(&block)
-    end
-
-    ##
-    #
-    def ignore?(attr_def_id)
-      !@id_to_def.has_key?(attr_def_id)
     end
 
     ##
