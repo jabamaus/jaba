@@ -133,12 +133,14 @@ module JABA
         
         return a.get(api_call_line)
       else
-        if @attr_def_tracker.ignore?(id)
+        a = get_attr(id, fail_if_not_found: false)
+        
+        if !a
+          # TODO: check if property is defined at all
+          # TODO: this needs to consider all types used by a generator
           return nil
         end
 
-        a = get_attr(id)
-        
         # Get the value by popping the first element from the front of the list. This could yield a single value or an
         # array, depending on what the user passed in (see comment at top of this method.
         #
