@@ -26,3 +26,9 @@ define :category do
   
 end
 
+##
+#
+category :App do
+  name 'Apps'
+  guid '43F42D01-78C0-416E-8979-2807134DB488'
+end
