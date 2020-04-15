@@ -101,6 +101,19 @@ module JABACoreExt
     
     ##
     #
+    def to_forward_slashes
+      dup.to_forward_slashes!
+    end
+    
+    ##
+    #
+    def to_forward_slashes!
+      tr!('\\', '/')
+      self
+    end
+
+    ##
+    #
     def to_backslashes
       dup.to_backslashes!
     end
