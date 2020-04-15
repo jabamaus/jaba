@@ -41,7 +41,7 @@ module JABA
     def initialize
       @input = Input.new
       @input.instance_variable_set(:@definitions, nil)
-      @input.instance_variable_set(:@load_paths, nil)
+      @input.instance_variable_set(:@load_paths, Dir.getwd)
       @input.instance_variable_set(:@enable_logging, false)
       @input.instance_variable_set(:@use_file_cache, false)
       
@@ -231,6 +231,8 @@ module JABA
 
       @logger&.close
       
+      puts @warnings
+      
       op = Output.new
       op.instance_variable_set(:@generated_files, @generated_files)
       op.instance_variable_set(:@warnings, @warnings)
@@ -411,6 +413,8 @@ module JABA
       @definition_src_files.concat(Dir.glob("#{__dir__}/../types/*.rb").sort)
       
       Array(input.load_paths).each do |p|
+        p.to_forward_slashes!
+        
         if !File.exist?(p)
           jaba_error("#{p} does not exist")
         end
@@ -419,10 +423,16 @@ module JABA
         # else search all files recursively and load any called jaba.rb.
         # 
         if File.directory?(p)
-          if p.basename == 'jaba'
-            @definition_src_files.concat(Dir.glob("#{p}/**/*.rb"))
+          match = if p.basename == 'jaba'
+            "#{p}/**/*.rb"
           else
-            @definition_src_files.concat(Dir.glob("#{p}/**/jaba.rb"))
+            "#{p}/**/jaba.rb"
+          end
+          contents = Dir.glob(match)
+          if contents.empty?
+            jaba_warning("No definition files found in #{p}")
+          else
+            @definition_src_files.concat(contents)
           end
         else
           @definition_src_files << p
