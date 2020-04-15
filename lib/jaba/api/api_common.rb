@@ -9,7 +9,7 @@ module  JABA
 
     ##
     #
-    def raise(msg)
+    def fail(msg)
       @obj.jaba_error(msg)
     end
 

@@ -75,7 +75,7 @@ module JABA
         jaba do
           attr_type :a do
             validate_value do
-              raise 'invalid' # tag2A'
+              fail 'invalid' # tag2A'
             end
           end
           define :test do

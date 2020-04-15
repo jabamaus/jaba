@@ -20,7 +20,7 @@ attr_type :bool do
   
   validate_value do |value|
     if !value.boolean?
-      raise ':bool attributes only accept [true|false]'
+      fail ':bool attributes only accept [true|false]'
     end
   end
 end
@@ -34,13 +34,13 @@ attr_type :choice do
   
   validate_attr_def do
     if items.empty?
-      raise "'items' must be set"
+      fail "'items' must be set"
     end
   end
   
   validate_value do |value|
     if !items.include?(value)
-      raise "must be one of #{items}"
+      fail "must be one of #{items}"
     end
   end
 end
@@ -78,7 +78,7 @@ attr_type :reference do
   validate_attr_def do
     rt = referenced_type
     if rt.nil?
-      raise "'referenced_type' must be set"
+      fail "'referenced_type' must be set"
     end
     if jaba_type.type != rt
       jaba_type.dependencies rt

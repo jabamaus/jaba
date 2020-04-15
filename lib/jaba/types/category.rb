@@ -14,7 +14,7 @@ define :category do
     flags :required
     validate do |val|
       if val !~ /[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}/
-        raise 'Must be an all upper case GUID in the form 0376E589-F783-4B80-DA86-705F2E05304E'
+        fail 'Must be an all upper case GUID in the form 0376E589-F783-4B80-DA86-705F2E05304E'
       end
     end
   end
