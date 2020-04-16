@@ -419,7 +419,7 @@ module JABA
     #
     def load_definitions
       # Load core type definitions
-      @definition_src_files.concat(Dir.glob("#{__dir__}/../types/*.rb").sort)
+      @definition_src_files.concat(Dir.glob("#{__dir__}/../definitions/*.rb").sort)
       
       Array(input.load_paths).each do |p|
         p = p.to_forward_slashes # take copy in case string frozen
