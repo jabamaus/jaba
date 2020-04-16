@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module JABA
 
   ##
@@ -7,6 +5,13 @@ module JABA
   class JabaAttributeTypeAPI < BasicObject
 
     include APICommon
+
+    ##
+    # Set help for the attribute type. Required.
+    #
+    def help(val = nil, &block)
+      @attr_type.set_property(:help, val, &block)
+    end
 
     ##
     #

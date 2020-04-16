@@ -1,10 +1,8 @@
-# frozen_string_literal: true
-
 SUPPORTED_VS_VERSIONS = [2010, 2012, 2013, 2015, 2017, 2019].freeze
 
-##
-#
 define :host do
+
+  help 'TODO'
 
   attr :visual_studio?, type: :bool
   attr :xcode?, type: :bool
@@ -23,8 +21,6 @@ shared :vscommon do
   visual_studio? true
 end
 
-##
-#
 host :vs2010 do
   include :vscommon
   vs2010? true
@@ -34,8 +30,6 @@ host :vs2010 do
   host_toolset 'v100'
 end
 
-##
-#
 host :vs2012 do
   include :vscommon
   vs2012? true
@@ -45,8 +39,6 @@ host :vs2012 do
   host_toolset 'v110'
 end
 
-##
-#
 host :vs2013 do
   include :vscommon
   vs2013? true
@@ -56,8 +48,6 @@ host :vs2013 do
   host_toolset 'v120'
 end
 
-##
-#
 host :vs2015 do
   include :vscommon
   vs2015? true
@@ -67,8 +57,6 @@ host :vs2015 do
   host_toolset 'v140'
 end
 
-##
-#
 host :vs2017 do
   include :vscommon
   vs2017? true
@@ -78,8 +66,6 @@ host :vs2017 do
   host_toolset 'v141'
 end
 
-##
-#
 host :vs2019 do
   include :vscommon
   vs2019? true
@@ -89,8 +75,6 @@ host :vs2019 do
   host_toolset 'v141'
 end
 
-##
-#
 host :xcode do
   xcode? true
 end

@@ -8,6 +8,8 @@ module JABA
   #
   class JabaAttributeType < JabaObject
 
+    include PropertyMethods
+    
     attr_reader :type_id # eg :bool, :choice, :keyvalue
     attr_reader :init_attr_def_hook
     attr_reader :validate_attr_def_hook
@@ -21,6 +23,7 @@ module JABA
       @init_attr_def_hook = nil
       @validate_attr_def_hook = nil
       @validate_value_hook = nil
+      @help = nil
       eval_api_block(&info.block) if info.block
     end
 

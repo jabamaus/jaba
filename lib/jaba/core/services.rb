@@ -6,6 +6,7 @@ require_relative 'core_ext'
 require_relative 'utils'
 require_relative 'jaba_object'
 require_relative 'jaba_attribute_type'
+require_relative 'jaba_attribute_flag'
 require_relative 'jaba_attribute_definition'
 require_relative 'jaba_attribute'
 require_relative 'jaba_type'
@@ -31,6 +32,7 @@ module JABA
     # Records information about each definition the user has made.
     #
     AttrTypeInfo = Struct.new(:type_id, :block, :api_call_line)
+    AttrFlagInfo = Struct.new(:id, :block, :api_call_line)
     JabaTypeInfo = Struct.new(:type_id, :block, :options, :api_call_line)
     JabaInstanceInfo = Struct.new(:type_id, :jaba_type, :id, :block, :options, :api_call_line)
 
@@ -55,6 +57,7 @@ module JABA
       @generated_files = []
       
       @jaba_attr_types = []
+      @jaba_attr_flags = []
       @jaba_types = []
       @jaba_types_to_open = []
       @instance_lookup = {}
@@ -85,15 +88,17 @@ module JABA
     
     ##
     #
-    def define_attr_flag(id)
-    end
-    
-    ##
-    #
     def define_attr_type(type_id, &block)
+      # TODO: check for dupes/valid flag name
       @jaba_attr_types << AttrTypeInfo.new(type_id, block, caller(2, 1)[0])
     end
-    
+
+    ##
+    #
+    def define_attr_flag(id, &block)
+      @jaba_attr_flags << AttrFlagInfo.new(id, block, caller(2, 1)[0])
+    end
+
     ##
     #
     def define_type(type_id, **options, &block)
@@ -158,6 +163,10 @@ module JABA
       #
       @jaba_attr_types.map! {|info| JabaAttributeType.new(self, info)}
       
+      # Create attribute flags
+      #
+      @jaba_attr_flags.map! {|info| JabaAttributeFlag.new(self, info)}
+
       # Create a JabaType object for each defined type
       #
       @jaba_types.map! {|info| JabaType.new(self, info)}

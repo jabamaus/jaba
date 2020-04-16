@@ -1,9 +1,9 @@
-# frozen_string_literal: true
-
-##
-# TODO: make as abstract
 define :project do
   
+  help 'TODO'
+
+  # TODO: mark as abstract?
+
   attr :root, type: :dir do
     help 'Root of the project specified as a relative path to the file that contains the project definition. ' \
          'All paths are specified relative to this. Project files will be generated here unless the genroot ' \

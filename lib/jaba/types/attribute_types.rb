@@ -1,18 +1,10 @@
-# frozen_string_literal: true
-
-# TODO: add help string to flags
-attr_flag :allow_dupes
-attr_flag :no_check_exist
-attr_flag :read_only
-attr_flag :required
-attr_flag :unordered
-
 # TODO: think about compatibility of flags to attribute types, eg :no_make_rel_to_genroot only applies to
 # :path, :file and :dir attrs
 
-##
-#
 attr_type :bool do
+  
+  help 'TODO'
+
   init_attr_def do
     default false
     flags :unordered, :allow_dupes
@@ -23,13 +15,15 @@ attr_type :bool do
       fail ':bool attributes only accept [true|false]'
     end
   end
+
 end
 
-##
-#
 attr_type :choice do
+
+  help 'TODO'
+
   init_attr_def do
-    add_property :items, []
+    set_property :items, []
   end
   
   validate_attr_def do
@@ -43,36 +37,37 @@ attr_type :choice do
       fail "must be one of #{items}"
     end
   end
+
 end
 
-##
-#
 attr_type :dir do
+  help 'TODO'
 end
 
-##
-#
 attr_type :file do
+  help 'TODO'
 end
 
-##
-#
 attr_type :path do
+  help 'TODO'
 end
 
-##
-#
 attr_type :keyvalue do
+
+  help 'TODO'
+
   init_attr_def do
     default KeyValue.new
   end
+
 end
 
-##
-#
 attr_type :reference do
+
+  help 'TODO'
+
   init_attr_def do
-    add_property :referenced_type, nil
+    set_property :referenced_type, nil
   end
   
   validate_attr_def do
@@ -84,4 +79,5 @@ attr_type :reference do
       jaba_type.dependencies rt
     end
   end
+
 end

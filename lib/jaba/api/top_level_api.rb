@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module JABA
 
   ##
@@ -57,8 +55,8 @@ module JABA
     ##
     # EXTENSION API
     #
-    def attr_flag(id)
-      @services.define_attr_flag(id)
+    def attr_flag(id, &block)
+      @services.define_attr_flag(id, &block)
     end
     
     ##
@@ -79,13 +77,6 @@ module JABA
     #
     def initialize(services)
       @services = services
-    end
-    
-    ##
-    # Required when running with ruby-debug-ide.
-    #
-    def to_s
-      "#<TopLevelAPI:0x#{__id__}>"
     end
 
   end

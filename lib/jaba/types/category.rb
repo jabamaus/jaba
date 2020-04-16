@@ -1,9 +1,7 @@
-# frozen_string_literal: true
-
-##
-#
 define :category do
   
+  help 'TODO'
+
   attr :name do
     help 'Display name of category. Maps to name of solution folder in a Visual Studio solution'
     flags :required
@@ -26,8 +24,6 @@ define :category do
   
 end
 
-##
-#
 category :App do
   name 'Apps'
   guid '43F42D01-78C0-416E-8979-2807134DB488'

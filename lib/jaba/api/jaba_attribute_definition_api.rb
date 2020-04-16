@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module JABA
 
   ##
@@ -56,7 +54,7 @@ module JABA
     
     ##
     #
-    def add_property(id, val = nil)
+    def set_property(id, val = nil)
       @attr_def.set_property(id, val)
     end
 

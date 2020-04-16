@@ -66,11 +66,11 @@ module JABA
       jaba do
         define :test do
           attr :a do
-            add_property :b, 'b'
-            add_property :c, 1
-            add_property :d, []
-            add_property :e
-            add_property :f do
+            set_property :b, 'b'
+            set_property :c, 1
+            set_property :d, []
+            set_property :e
+            set_property :f do
             end
             b.must_equal('b')
             c.must_equal(1)

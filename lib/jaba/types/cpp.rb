@@ -1,8 +1,6 @@
-# frozen_string_literal: true
-
-##
-#
 define :cpp, extend: :project do
+
+  help 'TODO'
 
   attr_array :platforms, type: :reference do
     referenced_type :platform
@@ -48,10 +46,10 @@ define :cpp, extend: :project do
   
 end
 
-##
-#
 define :config do
   
+  help 'TODO'
+
   attr :config do
     flags :read_only
   end
@@ -66,9 +64,9 @@ define :config do
 
 end
 
-##
-#
 define :vsconfig, extend: :config do
+  
+  help 'TODO'
   
   attr_array :vcproperty, type: :keyvalue do
     keyval_options :group
