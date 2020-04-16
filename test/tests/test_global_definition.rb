@@ -55,7 +55,37 @@ module JABA
         end
       end
     end
-    
+
+    it 'supports per-type defaults' do
+      jaba do
+        define :test do
+          attr :a
+          attr_array :b do
+            default [1]
+          end
+        end
+        test_defaults do # automatically included by all 'test' definitions
+          a 1
+          b [2]
+        end
+        shared :test_common do
+          b [3]
+        end
+        test :t1 do
+          include :test_common # Defaults are applied before includes
+          a.must_equal 1
+          b.must_equal [1, 2, 3]
+        end
+        test :t2 do
+          include :test_common
+          a 4
+          b [4]
+          a.must_equal 4
+          b.must_equal [1, 2, 3, 4]
+        end
+      end
+    end
+
   end
 
 end
