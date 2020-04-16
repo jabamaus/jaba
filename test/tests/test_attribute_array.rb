@@ -218,7 +218,7 @@ module JABA
       end
     end
     
-    it 'supports clearing arrays' do
+    it 'supports wiping arrays' do
       jaba do
         define :test do
           attr_array :a
@@ -240,6 +240,27 @@ module JABA
       end
     end
     
+    it 'supports wiping default array' do
+      jaba do
+        define :test do
+          attr_array :a do
+            default [1, 2]
+          end
+          attr_array :b do
+            default [5, 6]
+          end
+        end
+        test :t do
+          wipe :a
+          a [3, 4]
+          b [7, 8]
+
+          a.must_equal [3, 4]
+          b.must_equal [5, 6, 7, 8]
+        end
+      end
+    end
+
     it 'supports clearing excludes' do
     end
     
