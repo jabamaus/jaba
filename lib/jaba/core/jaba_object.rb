@@ -30,10 +30,10 @@ module JABA
     #
     def eval_api_block(args = nil, &block)
       return if !block_given?
-      if !args.nil?
-        @api.instance_exec(args, &block)
-      else
+      if args.nil?
         @api.instance_eval(&block)
+      else
+        @api.instance_exec(args, &block)
       end
     end
     
