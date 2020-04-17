@@ -39,6 +39,12 @@ module JABA
     end
     
     ##
+    #
+    def defaults(type_id, &block)
+      @services.define_defaults(type_id, &block)
+    end
+    
+    ##
     # All undefined methods are treated as defining instances of jaba types.
     #
     def method_missing(type, id, **options, &block)

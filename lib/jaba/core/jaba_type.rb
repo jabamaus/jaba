@@ -17,6 +17,7 @@ module JABA
     attr_reader :attribute_defs
     attr_reader :dependencies
     attr_reader :generator
+    attr_reader :defaults_block
     
     ##
     #
@@ -25,6 +26,7 @@ module JABA
       @type_id = info.type_id
       @super_type = info.options[:extend]
       @block = info.block
+      @defaults_block = services.get_defaults_block(@type_id)
       @attribute_defs = []
       @attribute_def_lookup = {}
       @dependencies = []

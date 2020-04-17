@@ -64,7 +64,7 @@ module JABA
             default [1]
           end
         end
-        test_defaults do # automatically included by all 'test' definitions
+        defaults :test do # automatically included by all 'test' definitions
           a 1
           b [2]
         end
@@ -82,6 +82,16 @@ module JABA
           b [4]
           a.must_equal 4
           b.must_equal [1, 2, 3, 4]
+        end
+      end
+    end
+
+    it 'checks for multiply defined defaults' do
+      check_fail "'test' defaults multiply defined", trace: [__FILE__, '# tagI'] do
+        jaba do
+          define :test
+          defaults :test
+          defaults :test # tagI
         end
       end
     end

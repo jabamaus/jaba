@@ -35,6 +35,7 @@ module JABA
     AttrFlagInfo = Struct.new(:id, :block, :api_call_line)
     JabaTypeInfo = Struct.new(:type_id, :block, :options, :api_call_line)
     JabaInstanceInfo = Struct.new(:type_id, :jaba_type, :id, :block, :options, :api_call_line)
+    DefaultsInfo = Struct.new(:type_id, :block, :api_call_line)
 
     @@file_cache = {}
 
@@ -62,6 +63,8 @@ module JABA
       @jaba_types_to_open = []
       @instance_lookup = {}
       @instances = []
+      @defaults = []
+
       @nodes = []
       @node_lookup = {}
       
@@ -89,41 +92,49 @@ module JABA
     ##
     #
     def define_attr_type(type_id, &block)
-      # TODO: check for dupes/valid flag name
+      jaba_error("type_id is required") if type_id.nil?
+      validate_id(type_id)
+      # TODO: check for dupes
       @jaba_attr_types << AttrTypeInfo.new(type_id, block, caller(2, 1)[0])
     end
 
     ##
     #
     def define_attr_flag(id, &block)
+      jaba_error("id is required") if id.nil?
+      validate_id(id)
+      # TODO: check for dupes
       @jaba_attr_flags << AttrFlagInfo.new(id, block, caller(2, 1)[0])
     end
 
     ##
     #
     def define_type(type_id, **options, &block)
+      jaba_error("type_id is required") if type_id.nil?
+      validate_id(type_id)
+      # TODO: check for dupes
       @jaba_types << JabaTypeInfo.new(type_id, block, options, caller(2, 1)[0])
     end
     
     ##
     #
     def open_type(type_id, &block)
+      jaba_error("type_id is required") if type_id.nil?
       @jaba_types_to_open << JabaTypeInfo.new(type_id, block, nil, caller(2, 1)[0])
     end
     
     ##
     #
     def define_instance(type_id, id, **options, &block)
+      jaba_error("type_id is required") if type_id.nil?
+      jaba_error("id is required") if id.nil?
+
+      validate_id(id)
+
       log "Instancing #{type_id} [id=#{id}]"
-      
-      if id
-        if !(id.is_a?(Symbol) || id.is_a?(String)) || id !~ /^[a-zA-Z0-9_.]+$/
-          jaba_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol " \
-            "(underscore permitted), eg :my_id or 'my_id'")
-        end
-        if instanced?(type_id, id)
-          jaba_error("'#{id}' multiply defined")
-        end
+
+      if instanced?(type_id, id)
+        jaba_error("'#{id}' multiply defined")
       end
       
       info = JabaInstanceInfo.new(type_id, nil, id, block, options, caller(2, 1)[0])
@@ -134,6 +145,26 @@ module JABA
       end
     end
     
+    ##
+    #
+    def define_defaults(type_id, &block)
+      jaba_error("type_id is required") if type_id.nil?
+      existing = @defaults.find {|info| info.type_id == type_id}
+      if existing
+        jaba_error("'#{type_id}' defaults multiply defined")
+      end
+      @defaults << DefaultsInfo.new(type_id, block, caller(2, 1)[0])
+    end
+
+    ##
+    #
+    def validate_id(id)
+      if !(id.is_a?(Symbol) || id.is_a?(String)) || id !~ /^[a-zA-Z0-9_.]+$/
+        jaba_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol " \
+          "(underscore permitted), eg :my_id or 'my_id'")
+      end
+    end
+
     ##
     #
     def run
@@ -287,6 +318,14 @@ module JABA
       # definitions so use instance_eval instead of eval_api_block.
       #
       jn.attrs.instance_eval(&block) if block_given?
+      
+      # Next execute defaults block if there is one defined for this type
+      #
+      defaults = jn.jaba_type.defaults_block
+      if defaults
+        jn.eval_api_block(&defaults)
+      end
+
       jn.eval_api_block(&@current_info.block)
       jn.post_create
       jn
@@ -333,6 +372,17 @@ module JABA
       get_instance_info(type_id, id, fail_if_not_found: false) != nil
     end
     
+    ##
+    #
+    def get_defaults_block(type_id)
+      d = @defaults.find {|info| info.type_id == type_id}
+      if d
+        d.block
+      else
+        nil
+      end
+    end
+
     ##
     #
     def node_from_handle(handle, fail_if_not_found: true)
