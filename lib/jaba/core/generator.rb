@@ -10,6 +10,10 @@ module JABA
   #
   class Generator
     
+    # The id of the definition currently being processed
+    #
+    attr_reader :current_id
+
     ##
     #
     def initialize(services, jaba_type)
@@ -17,6 +21,7 @@ module JABA
       @jaba_type = jaba_type
       @nodes = []
       @node_to_project = {}
+      @current_id = nil
     end
     
     ##

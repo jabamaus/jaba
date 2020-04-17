@@ -23,10 +23,10 @@ module JABA
       #
       set_attr_tracker(:cpp, :multi_node)
 
-      root_node = make_node(handle: nil, attrs: [:root, :platforms])
+      root_node = make_node(id: "#{current_id}_root", handle: nil, attrs: [:root, :platforms])
       
       root_node.attrs.platforms.each do |p|
-        hosts_node = make_node(handle: nil, parent: root_node, attrs: [:platform, :hosts]) do
+        hosts_node = make_node(id: "#{current_id}_hosts", handle: nil, parent: root_node, attrs: [:platform, :hosts]) do
           platform p
         end
         
@@ -34,7 +34,7 @@ module JABA
 
           # No explicit attrs passed in so all the remaining unhandled attributes will be used.
           #
-          proj_node = make_node(handle: "#{@jaba_type.type_id}|#{root_node.id}|#{p.id}|#{h.id}", parent: hosts_node) do
+          proj_node = make_node(id: "#{current_id}_project", handle: "#{@jaba_type.type_id}|#{current_id}|#{p.id}|#{h.id}", parent: hosts_node) do
             host h
           end
 
@@ -43,7 +43,7 @@ module JABA
           set_attr_tracker(:vsconfig, :single_node)
 
           proj_node.attrs.configs.each do |cfg|
-            make_node(id: cfg, handle: nil, parent: proj_node) do
+            make_node(id: "#{current_id}_config_#{cfg}", handle: nil, parent: proj_node) do
               config cfg
             end
           end

@@ -235,8 +235,10 @@ module JABA
         
         set_attr_tracker(jt, :single_node)
 
-        if jt.generator
-          jt.generator.make_nodes
+        g = jt.generator
+        if g
+          g.instance_variable_set(:@current_id, info.id)
+          g.make_nodes
         else
           make_node
         end
@@ -300,6 +302,8 @@ module JABA
     ##
     #
     def make_node(id: @current_info.id, handle: "#{@current_info.type_id}|#{@current_info.id}", attrs: nil, parent: nil, &block)
+      validate_id(id)
+      
       @attr_def_tracker.use_attrs(attrs)
 
       jn = JabaNode.new(self, id, @current_info.api_call_line, handle, @attr_def_tracker, parent)
