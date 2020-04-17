@@ -11,6 +11,7 @@ module JABA
     ##
     #
     def init
+      @project_nodes = []
       @projects = []
     end
       
@@ -36,6 +37,8 @@ module JABA
           proj_node = make_node(handle: "#{@jaba_type.type_id}|#{root_node.id}|#{p.id}|#{h.id}", parent: hosts_node) do
             host h
           end
+
+          @project_nodes << proj_node
           
           set_attr_tracker(:vsconfig, :single_node)
 
@@ -46,8 +49,6 @@ module JABA
           end
 
           set_attr_tracker(:cpp, :multi_node)
-          
-          @projects << make_project(Vcxproj, proj_node)
         end
       end
     end
@@ -82,6 +83,9 @@ module JABA
     ##
     #
     def generate
+      @project_nodes.each do |pn|
+        @projects << make_project(Vcxproj, pn)
+      end
       @projects.each(&:generate)
     end
     
