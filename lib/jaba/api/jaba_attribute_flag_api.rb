@@ -13,6 +13,8 @@ module JABA
       @attr_flag.set_property(:help, val, &block)
     end
 
+  private
+
     ##
     #
     def initialize(attr_flag)

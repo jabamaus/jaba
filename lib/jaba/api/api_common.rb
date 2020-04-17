@@ -23,6 +23,13 @@ module  JABA
       @obj.include_shared(shared_definition_ids, args)
     end
 
+    ##
+    # For debugging.
+    #
+    def to_s
+      @obj.to_s
+    end
+
   end
 
 end

@@ -31,6 +31,8 @@ module JABA
       @attr_type.define_hook(:validate_value, &block)
     end
 
+  private
+  
     ##
     #
     def initialize(attr_type)

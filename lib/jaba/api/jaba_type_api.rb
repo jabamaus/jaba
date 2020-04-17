@@ -40,6 +40,8 @@ module JABA
       @jaba_type.type_id
     end
 
+  private
+  
     ##
     #
     def initialize(jaba_type)

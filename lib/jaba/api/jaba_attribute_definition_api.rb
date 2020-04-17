@@ -64,6 +64,8 @@ module JABA
       @attr_def.jaba_type.api
     end
 
+  private
+  
     ##
     #
     def method_missing(id, val = nil)

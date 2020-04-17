@@ -26,6 +26,8 @@ module JABA
       @jaba_node.define_hook(:generate, allow_multiple: true, &block)
     end
 
+  private
+  
     ##
     #
     def method_missing(attr_id, *args, **keyvalue_args)

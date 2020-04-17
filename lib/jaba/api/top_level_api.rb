@@ -79,10 +79,19 @@ module JABA
       @services.open_type(type, &block)
     end
     
+  private
+
     ##
     #
     def initialize(services)
       @services = services
+    end
+
+    ##
+    # For debugging
+    #
+    def to_s
+      @services.to_s
     end
 
   end
