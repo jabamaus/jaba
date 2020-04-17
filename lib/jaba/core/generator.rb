@@ -34,6 +34,7 @@ module JABA
     end
     
     ##
+    # Override this in sublcass if type needs to be split into more than one node.
     #
     def make_nodes
       make_node
@@ -45,10 +46,17 @@ module JABA
       p = klass.new(@services, self, node)
       @node_to_project[node] = p
       p.init
-      setup_project(p) if respond_to?(:setup_project)
+      setup_project(p)
       p
     end
     
+    ##
+    # Override this in subclass.
+    #
+    def setup_project(project)
+      # Nothing.
+    end
+
     ##
     #
     def project_from_node(node, fail_if_not_found: true)
