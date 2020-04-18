@@ -14,41 +14,51 @@ module JABA
       @project_nodes = []
       @projects = []
     end
-      
+    
+    ##
+    #
+    def sub_type(attr_id)
+      case attr_id
+      when :root, :platforms
+        :cpp_root
+      when :platform, :hosts
+        :cpp_hosts
+      end
+    end
+
     ##
     #
     def make_nodes
-
-      # Allows multiple nodes to be created from :cpp type, each one handling a different subset of its attributes
-      #
-      set_attr_tracker(:cpp, :multi_node)
-
-      root_node = make_node(id: "#{current_id}_root", handle: nil, attrs: [:root, :platforms])
+      root_node = make_node(type_id: :cpp_root,
+                            id: "#{current_id}_root",
+                            handle: nil)
       
       root_node.attrs.platforms.each do |p|
-        hosts_node = make_node(id: "#{current_id}_hosts", handle: nil, parent: root_node, attrs: [:platform, :hosts]) do
+        hosts_node = make_node(type_id: :cpp_hosts,
+                               id: "#{current_id}_hosts",
+                               handle: nil,
+                               parent: root_node) do
           platform p
         end
         
         hosts_node.attrs.hosts.each do |h|
-
-          # No explicit attrs passed in so all the remaining unhandled attributes will be used.
-          #
-          proj_node = make_node(id: "#{current_id}_project", handle: "#{@jaba_type.type_id}|#{current_id}|#{p.id}|#{h.id}", parent: hosts_node) do
+          proj_node = make_node(type_id: :cpp,
+                                id: "#{current_id}_project",
+                                handle: "cpp|#{current_id}|#{p.id}|#{h.id}",
+                                parent: hosts_node) do
             host h
           end
 
           @project_nodes << proj_node
           
-          set_attr_tracker(:vsconfig, :single_node)
-
           proj_node.attrs.configs.each do |cfg|
-            make_node(id: "#{current_id}_config_#{cfg}", handle: nil, parent: proj_node) do
+            make_node(type_id: :vsconfig,
+                      id: "cpp_#{current_id}_config_#{cfg}",
+                      handle: nil,
+                      parent: proj_node) do
               config cfg
             end
           end
-
-          set_attr_tracker(:cpp, :multi_node)
         end
       end
     end

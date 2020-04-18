@@ -21,28 +21,16 @@ module JABA
     
     ##
     #
-    def initialize(services, info)
+    def initialize(services, type_id, block, defaults_block, generator)
       super(services, JabaTypeAPI.new(self))
-      @type_id = info.type_id
-      @super_type = info.options[:extend]
-      @block = info.block
-      @defaults_block = services.get_defaults_block(@type_id)
+      @type_id = type_id
+      @block = block
+      @defaults_block = defaults_block
       @attribute_defs = []
       @attribute_def_lookup = {}
       @dependencies = []
-      @generator = nil
-
-      gen_classname = "JABA::#{type_id.to_s.capitalize_first}Generator"
-      
-      if Object.const_defined?(gen_classname)
-        generator_class = Module.const_get(gen_classname)
-        if generator_class.superclass != Generator
-          raise "#{generator_class} must inherit from Generator class"
-        end
-        @services.log "Creating #{generator_class}"
-        @generator = generator_class.new(@services, self)
-        @generator.init if @generator.respond_to?(:init)
-      end
+      @generator = generator
+      @services.register_jaba_type_lookup(self, type_id)
     end
 
     ##
@@ -55,6 +43,19 @@ module JABA
     ##
     #
     def define_attr(id, variant, type: nil, &block)
+      if @generator
+        st_id = @generator.sub_type(id)
+        if st_id
+          jt = @services.get_jaba_type(st_id, fail_if_not_found: false)
+          if jt.nil?
+            jt = JabaType.new(@services, st_id, nil, nil, nil)
+            @dependencies << st_id
+            @services.register_additional_jaba_type(jt)
+          end
+          return jt.define_attr(id, variant, type: type, &block)
+        end
+      end
+
       if !(id.is_a?(Symbol) || id.is_a?(String))
         jaba_error("'#{id}' attribute id must be specified as a symbol or string")
       end
@@ -63,6 +64,7 @@ module JABA
       if get_attr_def(id, fail_if_not_found: false)
         jaba_error("'#{id}' attribute multiply defined")
       end
+      # TODO: caller will be wrong in the case of custom type
       ad = JabaAttributeDefinition.new(@services, id, type, variant, self, caller(2, 1)[0])
       ad.eval_api_block(&block)
       @attribute_defs << ad
@@ -72,12 +74,9 @@ module JABA
     
     ##
     #
-    def get_attr_def(id, include_super: true, fail_if_not_found: true)
+    def get_attr_def(id, fail_if_not_found: true)
       a = @attribute_def_lookup[id]
       if !a
-        if include_super && @super_type
-          a = @super_type.get_attr_def(id, include_super: true, fail_if_not_found: fail_if_not_found)
-        end
         if !a && fail_if_not_found
           jaba_error("'#{id}' attribute definition not found in '#{type_id}'")
         end
@@ -87,20 +86,13 @@ module JABA
     
     ##
     #
-    def iterate_attr_defs(&block)
-      @attribute_defs.each(&block)
-      @super_type&.iterate_attr_defs(&block)
+    def init
+      eval_api_block(&@block)
     end
     
     ##
     #
-    def init
-      # Convert super type id to object handle
-      #
-      @super_type = @services.get_jaba_type(@super_type) if @super_type
-
-      eval_api_block(&@block)
-
+    def init_attrs
       @attribute_defs.each(&:init)
     end
 

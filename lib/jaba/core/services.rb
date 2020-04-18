@@ -57,13 +57,20 @@ module JABA
       @generated_files_hash = {}
       @generated_files = []
       
+      @jaba_type_infos = []
+
       @jaba_attr_types = []
       @jaba_attr_flags = []
       @jaba_types = []
+      @additional_jaba_types = []
       @jaba_types_to_open = []
-      @instance_lookup = {}
       @instances = []
       @defaults = []
+
+      @jaba_type_lookup = {}
+      @instance_lookup = {}
+
+      @generators = []
 
       @nodes = []
       @node_lookup = {}
@@ -71,10 +78,6 @@ module JABA
       @top_level_api = TopLevelAPI.new(self)
 
       @default_attr_type = JabaAttributeType.new(self, AttrTypeInfo.new).freeze
-
-      @single_node_attr_def_tracker = SingleNodeAttributeDefinitionTracker.new
-      @multi_node_attr_def_tracker = MultiNodeAttributeDefinitionTracker.new
-      @attr_def_tracker = @single_node_attr_def_tracker
     end
 
     ##
@@ -113,7 +116,7 @@ module JABA
       jaba_error("type_id is required") if type_id.nil?
       validate_id(type_id)
       # TODO: check for dupes
-      @jaba_types << JabaTypeInfo.new(type_id, block, options, caller(2, 1)[0])
+      @jaba_type_infos << JabaTypeInfo.new(type_id, block, options, caller(2, 1)[0])
     end
     
     ##
@@ -198,11 +201,25 @@ module JABA
       #
       @jaba_attr_flags.map! {|info| JabaAttributeFlag.new(self, info)}
 
-      # Create a JabaType object for each defined type
+      # Create JabaTypes and Generators
       #
-      @jaba_types.map! {|info| JabaType.new(self, info)}
-      
+      @jaba_type_infos.each do |info|
+        type_id = info.type_id
+        generator = make_generator(type_id)
+
+        # JabaTypes can have some of their attributes split of into separate JabaTypes to help with node
+        # creation in the case where a tree of nodes is created from a single definition. These JabaTypes
+        # are created on the fly as attributes are added to the types.
+        #
+        jt = JabaType.new(self, type_id, info.block, get_defaults_block(type_id), generator)
+        @jaba_types << jt
+      end
+
+      # Init JabaTypes. This can cause additional JabaTypes to be created
+      #
       @jaba_types.each(&:init)
+      @jaba_types.concat(@additional_jaba_types)
+      @jaba_types.each(&:init_attrs)
       
       # Open JabaTypes so more attributes can be added
       #
@@ -231,18 +248,13 @@ module JABA
       #
       @instances.each do |info|
         @current_info = info
-        jt = info.jaba_type
-        
-        set_attr_tracker(jt, :single_node)
-
-        g = jt.generator
+        g = info.jaba_type.generator
         if g
           g.instance_variable_set(:@current_id, info.id)
           g.make_nodes
         else
           make_node
         end
-        @attr_def_tracker.check_all_handled
       end
       
       # Resolve references
@@ -261,7 +273,9 @@ module JABA
         end
       end
       
-      @jaba_types.each {|jt| jt.generator&.generate}
+      # Call generators
+      #
+      @generators.each(&:generate)
 
       # Call generators defined per-node, in the context of the node itself, not its api
       #
@@ -283,30 +297,40 @@ module JABA
     
     ##
     #
-    def set_attr_tracker(jaba_type_or_id, tracker_type)
-      if @attr_def_tracker
-        @attr_def_tracker.check_all_handled
+    def make_generator(type_id)
+      g = nil
+      gen_classname = "JABA::#{type_id.to_s.capitalize_first}Generator"
+      
+      if Object.const_defined?(gen_classname)
+        generator_class = Module.const_get(gen_classname)
+
+        if generator_class.superclass != Generator
+          raise "#{generator_class} must inherit from Generator class"
+        end
+
+        log "Creating #{generator_class}"
+
+        g = generator_class.new(self)
+        g.init
+
+        @generators << g
       end
-      jt = jaba_type_or_id.is_a?(JabaType) ? jaba_type_or_id : get_jaba_type(jaba_type_or_id)
-      @attr_def_tracker = case tracker_type
-                          when :single_node
-                            @single_node_attr_def_tracker
-                          when :multi_node
-                            @multi_node_attr_def_tracker
-                          else
-                            raise "invalid tracker type"
-                          end
-      @attr_def_tracker.set_jaba_type(jt)
+      g
     end
 
     ##
     #
-    def make_node(id: @current_info.id, handle: "#{@current_info.type_id}|#{@current_info.id}", attrs: nil, parent: nil, &block)
+    def make_node(type_id: @current_info.type_id, 
+                  id: @current_info.id,
+                  handle: "#{@current_info.type_id}|#{@current_info.id}",
+                  parent: nil,
+                  &block)
+      
       validate_id(id)
       
-      @attr_def_tracker.use_attrs(attrs)
+      jt = get_jaba_type(type_id)
 
-      jn = JabaNode.new(self, id, @current_info.api_call_line, handle, @attr_def_tracker, parent)
+      jn = JabaNode.new(self, jt, id, @current_info.api_call_line, handle, parent)
       @nodes << jn
       
       # A node only needs a handle if it will be looked up.
@@ -337,6 +361,21 @@ module JABA
     
     ##
     #
+    def register_additional_jaba_type(jt)
+      @additional_jaba_types << jt
+    end
+
+    ##
+    #
+    def register_jaba_type_lookup(jt, type_id)
+      if @jaba_type_lookup.has_key?(type_id)
+        jaba_error("'#{type_id}' jaba type multiply defined")
+      end
+      @jaba_type_lookup[type_id] = jt
+    end
+
+    ##
+    #
     def get_attribute_type(type_id)
       if type_id.nil?
         return @default_attr_type
@@ -351,7 +390,7 @@ module JABA
     ##
     #
     def get_jaba_type(type_id, fail_if_not_found: true, callstack: nil)
-      jt = @jaba_types.find {|t| t.type_id == type_id}
+      jt = @jaba_type_lookup[type_id]
       if !jt && fail_if_not_found
         jaba_error("'#{type_id}' type not defined", callstack: callstack)
       end

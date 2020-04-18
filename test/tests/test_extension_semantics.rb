@@ -37,38 +37,6 @@ module JABA
       end
     end
 
-    it 'supports extending types' do
-      jaba do
-        define :test do
-          attr :a do
-            default 1
-          end
-        end
-        define :subtest, extend: :test do
-          attr :b do
-            default 2
-          end
-        end
-        define :subtest2, extend: :subtest do
-          attr :c do
-            default 3
-          end
-        end
-        open :test do
-          attr :d do
-            default 4
-          end
-        end
-            
-        subtest2 :s do
-          a.must_equal(1)
-          b.must_equal(2)
-          c.must_equal(3)
-          d.must_equal(4)
-        end
-      end
-    end
-    
     # TODO: extend
     it 'supports defining new attribute types' do
       check_fail "'b' attribute failed validation: Invalid", trace: [__FILE__, '# tag2A', __FILE__, '# tag2B'] do 
@@ -239,6 +207,15 @@ module JABA
     
     ##
     #
+    def sub_type(attr_id)
+      case attr_id
+      when :root, :platforms
+        :test_project_root
+      end
+    end
+
+    ##
+    #
     def generate
       @projects.size.must_equal 2
 
@@ -255,19 +232,16 @@ module JABA
     #
     def make_nodes
       @projects = []
-      set_attr_tracker(:test_project, :multi_node)
 
-      root_node = make_node(handle: nil, attrs: [:root, :platforms])
+      root_node = make_node(type_id: :test_project_root, handle: nil)
       
       root_node.attrs.platforms.each do |p|
-        project = make_node(handle: nil, parent: root_node) { platform p }
+        project = make_node(type_id: :test_project, handle: nil, parent: root_node) { platform p }
         @projects << project
         
-        set_attr_tracker(:test_target, :single_node)
         project.attrs.targets.each do |t|
           make_node(handle: nil, parent: project) { target t }
         end
-        set_attr_tracker(:test_project, :multi_node)
       end
     end
     

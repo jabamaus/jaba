@@ -1,4 +1,6 @@
-define :cpp, extend: :project do
+define :cpp do
+
+  include :project
 
   help 'TODO'
 
@@ -46,10 +48,8 @@ define :cpp, extend: :project do
   
 end
 
-define :config do
+shared :config do
   
-  help 'TODO'
-
   attr :config do
     flags :read_only
   end
@@ -64,8 +64,10 @@ define :config do
 
 end
 
-define :vsconfig, extend: :config do
+define :vsconfig do
   
+  include :config
+
   help 'TODO'
   
   attr_array :vcproperty, type: :keyvalue do

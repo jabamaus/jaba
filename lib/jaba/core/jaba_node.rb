@@ -20,14 +20,13 @@ module JABA
     
     ##
     #
-    def initialize(services, id, api_call_line, handle, attr_def_tracker, parent)
+    def initialize(services, jaba_type, id, api_call_line, handle, parent)
       super(services, JabaNodeAPI.new(self))
 
-      @jaba_type = attr_def_tracker.jaba_type
+      @jaba_type = jaba_type
       @id = id
       @api_call_line = api_call_line
       @handle = handle
-      @attr_def_tracker = attr_def_tracker
       @children = []
       @parent = parent
       if parent
@@ -44,7 +43,7 @@ module JABA
       @attribute_lookup = {}
       @generate_hooks = []
       
-      @attr_def_tracker.iterate_attr_defs do |attr_def|
+      @jaba_type.attribute_defs.each do |attr_def|
         a = case attr_def.variant
             when :single
               JabaAttribute.new(services, attr_def, nil, self)
@@ -171,6 +170,12 @@ module JABA
     #
     def initialize(node)
       @node = node
+    end
+    
+    ##
+    #
+    def to_s
+      @node.to_s
     end
     
     ##

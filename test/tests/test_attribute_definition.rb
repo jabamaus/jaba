@@ -47,21 +47,6 @@ module JABA
       end
     end
 
-    it 'detects duplicate attribute ids with extended types' do
-      check_fail "'a' attribute multiply defined", trace: [__FILE__, '# tagB'] do
-        jaba do
-          define :base1 do
-            attr :a
-          end
-          define :base2, extend: :base1 do
-          end
-          define :test, extend: :base2 do
-            attr :a # tagB
-          end
-        end
-      end
-    end
-    
     it 'supports adding properties' do
       jaba do
         define :test do

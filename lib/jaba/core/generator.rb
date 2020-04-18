@@ -16,18 +16,11 @@ module JABA
 
     ##
     #
-    def initialize(services, jaba_type)
+    def initialize(services)
       @services = services
-      @jaba_type = jaba_type
       @nodes = []
       @node_to_project = {}
       @current_id = nil
-    end
-    
-    ##
-    #
-    def set_attr_tracker(*args)
-      @services.set_attr_tracker(*args)
     end
     
     ##
@@ -38,6 +31,20 @@ module JABA
       node
     end
     
+    ##
+    # Override this in subclass.
+    #
+    def init
+      # nothing
+    end
+
+    ##
+    # Override this to split an attribute out into an anonyomous type. Use when splitting a definition into
+    # a tree of nodes.
+    #
+    def sub_type(attr_id)
+    end
+
     ##
     # Override this in sublcass if type needs to be split into more than one node.
     #
