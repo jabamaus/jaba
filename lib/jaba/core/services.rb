@@ -330,7 +330,7 @@ module JABA
       
       jt = get_jaba_type(type_id)
 
-      jn = JabaNode.new(self, jt, id, @current_info.api_call_line, handle, parent)
+      jn = JabaNode.new(self, jt, @current_info.id, id, @current_info.api_call_line, handle, parent)
       @nodes << jn
       
       # A node only needs a handle if it will be looked up.

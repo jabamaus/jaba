@@ -9,6 +9,7 @@ module JABA
   class JabaNode < JabaObject
 
     attr_reader :jaba_type
+    attr_reader :definition_id # As specified by user in definition files.
     attr_reader :id
     attr_reader :handle
     attr_reader :attrs
@@ -20,10 +21,11 @@ module JABA
     
     ##
     #
-    def initialize(services, jaba_type, id, api_call_line, handle, parent)
+    def initialize(services, jaba_type, definition_id, id, api_call_line, handle, parent)
       super(services, JabaNodeAPI.new(self))
 
       @jaba_type = jaba_type
+      @definition_id = definition_id
       @id = id
       @api_call_line = api_call_line
       @handle = handle

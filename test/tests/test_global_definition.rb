@@ -48,6 +48,15 @@ module JABA
       end
     end
     
+    it 'allows id to be accessed from definitions' do
+      jaba do
+        define :test
+        test :a do
+          id.must_equal(:a)
+        end
+      end
+    end
+
     it 'rejects attempts to instance an unknown type' do
       check_fail "'undefined' type not defined", trace: [__FILE__, '# tag6'] do
         jaba do

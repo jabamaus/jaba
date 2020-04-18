@@ -9,7 +9,7 @@ module JABA
     ##
     #
     def id
-      @jaba_node.id
+      @jaba_node.definition_id
     end
 
     ##
