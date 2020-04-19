@@ -56,9 +56,7 @@ module JABA
         end
       end
 
-      if !(id.is_a?(Symbol) || id.is_a?(String))
-        jaba_error("'#{id}' attribute id must be specified as a symbol or string")
-      end
+      validate_id(id)
       id = id.to_sym
       
       if get_attr_def(id, fail_if_not_found: false)
@@ -72,6 +70,15 @@ module JABA
       ad
     end
     
+    ##
+    #
+    def validate_id(id)
+      if !(id.is_a?(Symbol) || id.is_a?(String)) || id !~ /^[a-zA-Z0-9_\?]+$/
+        jaba_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol " \
+          "(underscore permitted), eg :my_id or 'my_id'")
+      end
+    end
+
     ##
     #
     def get_attr_def(id, fail_if_not_found: true)

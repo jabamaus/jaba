@@ -5,7 +5,7 @@ module JABA
   class TestAttributeDefinition < JabaTest
 
     it 'accepts a string or a symbol' do
-      check_fail '\'123\' attribute id must be specified as a symbol or string', trace: [__FILE__, '# tag1'] do
+      check_fail '\'123\' is an invalid id', trace: [__FILE__, '# tag1'] do
         jaba do
           define :test do
             attr 123 # tag1
