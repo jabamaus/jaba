@@ -45,7 +45,7 @@ module JABACoreExt
     
     ##
     #
-    def profile(enabled: true, context: nil)
+    def profile(enabled: true)
       raise 'block expected' if !block_given?
 
       if !enabled
@@ -63,7 +63,7 @@ module JABACoreExt
         puts 'Printing profiling results...'
         [RubyProf::FlatPrinter].each do |p|
           printer = p.new(result)
-          printer.print(File.new("profile_#{context}_#{p.name_no_namespace}", 'w'))
+          printer.print(File.new('jaba.profile', 'w'))
         end
       end
     end

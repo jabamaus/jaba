@@ -40,7 +40,7 @@ module JABA
     attr_block :definitions
     
     ##
-    # Logging is disabled by default for performance.
+    # Enable logging. 'jaba.log' will be written to cwd. Off by default.
     #
     attr_bool :enable_logging
 
@@ -110,7 +110,8 @@ if $PROGRAM_NAME == __FILE__
 
   options = OpenStruct.new(
     load_paths: nil,
-    enable_logging: nil
+    enable_logging: nil,
+    enable_profiling: nil
   )
 
   opts = OptionParser.new do |opts|
@@ -126,15 +127,21 @@ EOB
     opts.on('--log', 'Enable logging') do |log|
       options[:enable_logging] = log
     end
+    opts.on('--profile', 'Profile jaba run with ruby-prof') do |p|
+      options[:enable_profiling] = p
+    end
     opts.separator ''
   end
   
   opts.parse!
 
   begin
-    JABA.run do |j|
-      j.load_paths = options[:load_paths] if options[:load_paths]
-      j.enable_logging = options[:enable_logging] if options[:enable_logging]
+    using JABACoreExt
+    profile(enabled: options[:enable_profiling]) do
+      JABA.run do |j|
+        j.load_paths = options[:load_paths] if options[:load_paths]
+        j.enable_logging = options[:enable_logging] if options[:enable_logging]
+      end
     end
   rescue StandardError => e
     puts e.message

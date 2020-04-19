@@ -94,6 +94,6 @@ Dir.glob("#{__dir__}/tests/*.rb").sort.each {|f| require f}
 
 using JABACoreExt
 
-profile(enabled: ARGV.delete('--profile'), context: 'tests') do
+profile(enabled: ARGV.delete('--profile')) do
   Minitest.run(ARGV)
 end

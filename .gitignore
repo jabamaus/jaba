@@ -1,5 +1,5 @@
 /test/tests/temp
-profile_*
+*.profile
 *.exe
 *.ilk
 *.log
