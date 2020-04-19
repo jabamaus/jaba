@@ -60,10 +60,11 @@ module JABACoreExt
         yield
       ensure
         result = RubyProf.stop
-        puts 'Printing profiling results...'
+        file = File.expand_path('jaba.profile')
+        puts "Write profiling results to #{file}..."
         [RubyProf::FlatPrinter].each do |p|
           printer = p.new(result)
-          printer.print(File.new('jaba.profile', 'w'))
+          printer.print(File.new(file, 'w'))
         end
       end
     end
