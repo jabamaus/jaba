@@ -134,7 +134,7 @@ module JABA
         
         return a.get(api_call_line)
       else
-        a = get_attr(id, fail_if_not_found: false)
+        a = get_attr(id, search: false, fail_if_not_found: false)
         
         if !a
           # TODO: check if property is defined at all
