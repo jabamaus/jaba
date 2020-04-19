@@ -2,6 +2,7 @@
 
 require 'fileutils'
 require 'logger'
+require 'json'
 require_relative 'core_ext'
 require_relative 'utils'
 require_relative 'jaba_object'
@@ -76,6 +77,7 @@ module JABA
 
       @nodes = []
       @node_lookup = {}
+      @root_nodes = []
       
       @top_level_api = TopLevelAPI.new(self)
 
@@ -256,9 +258,9 @@ module JABA
         g = info.jaba_type.generator
         if g
           g.instance_variable_set(:@current_id, info.id)
-          g.make_nodes
+          @root_nodes << g.make_nodes
         else
-          make_node
+          @root_nodes << make_node
         end
       end
       
@@ -278,6 +280,21 @@ module JABA
         end
       end
       
+      # Output definition input data as a json file, before generation. This is raw data as generated from the definitions.
+      # Can be used for debugging and testing.
+      #
+      doc = {}
+      nodes_root = {}
+      doc[:nodes] = nodes_root
+      @root_nodes.each do |rn|
+        obj = {}
+        nodes_root[rn.handle] = obj
+        write_node_json(rn, obj)
+      end
+
+      json = JSON::pretty_generate(doc)
+      save_file('jaba.input.json', json, :unix)
+
       # Call generators
       #
       @generators.each(&:generate)
@@ -332,7 +349,7 @@ module JABA
                   &block)
       
       validate_id(id)
-      
+
       jt = get_jaba_type(type_id)
 
       jn = JabaNode.new(self, jt, @current_info.id, id, @current_info.api_call_line, handle, parent)
@@ -370,6 +387,21 @@ module JABA
     end
     
     ##
+    #
+    def write_node_json(node, obj)
+      node.each_attr do |attr|
+        obj[attr.id] = attr.get
+      end
+      children = {}
+      obj[:children] = children
+      node.children.each do |child|
+        child_obj = {}
+        children[child.handle] = child_obj
+        write_node_json(child, child_obj)
+      end
+    end
+
+    ## 
     #
     def register_additional_jaba_type(jt)
       @additional_jaba_types << jt

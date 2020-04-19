@@ -208,6 +208,12 @@ module JABA
     
     ##
     #
+    def init
+      @projects = []
+    end
+
+    ##
+    #
     def sub_type(attr_id)
       case attr_id
       when :root, :platforms
@@ -232,8 +238,6 @@ module JABA
     ##
     #
     def make_nodes
-      @projects = []
-
       root_node = make_node(type_id: :test_project_root, handle: nil)
       
       root_node.attrs.platforms.each do |p|
@@ -244,6 +248,7 @@ module JABA
           make_node(handle: nil, parent: project) { target t }
         end
       end
+      root_node
     end
     
   end
