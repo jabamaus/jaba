@@ -46,9 +46,15 @@ module JABA
 
     ##
     # Causes definition file contents to be cached. Useful if Jaba will be executed more than once
-    # in one process, eg when during unit testing. Off by default.
+    # in one process, and definition source files are NOT changing between runs (eg when during unit testing).
+    # No benefit for single run invocations. Off by default.
     #
     attr_bool :use_file_cache
+
+    ##
+    # Uses a cache when globbing definition files. Same conditions as use_file_cache apply. Off by default.
+    #
+    attr_bool :use_glob_cache
     
   end
 

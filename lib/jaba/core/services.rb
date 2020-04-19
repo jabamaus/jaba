@@ -38,6 +38,7 @@ module JABA
     DefaultsInfo = Struct.new(:type_id, :block, :api_call_line)
 
     @@file_cache = {}
+    @@glob_cache = {}
 
     ##
     #
@@ -47,6 +48,7 @@ module JABA
       @input.instance_variable_set(:@load_paths, Dir.getwd)
       @input.instance_variable_set(:@enable_logging, false)
       @input.instance_variable_set(:@use_file_cache, false)
+      @input.instance_variable_set(:@use_glob_cache, false)
       
       @logger = nil
       
@@ -489,6 +491,20 @@ module JABA
       end
     end
 
+    ##
+    #
+    def glob(spec)
+      files = nil
+      if input.use_glob_cache?
+        files = @@glob_cache[spec]
+      end
+      if files.nil?
+        files = Dir.glob(spec)
+        @@glob_cache[spec] = files.sort
+      end
+      files
+    end
+
     private
     
     ##
@@ -512,7 +528,7 @@ module JABA
     #
     def load_definitions
       # Load core type definitions
-      @definition_src_files.concat(Dir.glob("#{__dir__}/../definitions/*.rb").sort)
+      @definition_src_files.concat(glob("#{__dir__}/../definitions/*.rb"))
       
       Array(input.load_paths).each do |p|
         p = p.to_forward_slashes # take copy in case string frozen
@@ -530,11 +546,11 @@ module JABA
           else
             "#{p}/**/jaba.rb"
           end
-          contents = Dir.glob(match)
-          if contents.empty?
+          files = glob(match)
+          if files.empty?
             jaba_warning("No definition files found in #{p}")
           else
-            @definition_src_files.concat(contents)
+            @definition_src_files.concat(files)
           end
         else
           @definition_src_files << p

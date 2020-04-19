@@ -24,6 +24,7 @@ module JABA
         c.definitions(&block) if block_given?
         c.enable_logging = @@enable_logging
         c.use_file_cache = true
+        c.use_glob_cache = true
       end
     end
     
