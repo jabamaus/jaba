@@ -15,6 +15,7 @@ module JABA
     attr_reader :type_id # eg :bool, :file, :path etc
     attr_reader :variant # :single, :array, :hash
     attr_reader :default
+    attr_reader :default_is_proc
     attr_reader :jaba_attr_type # JabaAttributeType object
     attr_reader :jaba_type
     attr_reader :keyval_opts
@@ -41,7 +42,9 @@ module JABA
       
       @jaba_attr_type = @services.get_attribute_type(@type_id)
       
-      eval_api_block(&@jaba_attr_type.init_attr_def_hook)
+      if @jaba_attr_type.init_attr_def_hook
+        eval_api_block(&@jaba_attr_type.init_attr_def_hook)
+      end
     end
     
     ##
@@ -82,6 +85,7 @@ module JABA
         end
       end
       
+      @default_is_proc = @default.is_a?(Proc)
       @default.freeze
       @flags.freeze
     end

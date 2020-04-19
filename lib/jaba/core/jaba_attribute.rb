@@ -34,7 +34,7 @@ module JABA
       @api_call_line = nil
       @set = false
       @default = @attr_def.default
-      @default_is_proc = @default.is_a?(Proc)
+      @default_is_proc = @attr_def.default_is_proc
     end
 
     ##
@@ -103,7 +103,7 @@ module JABA
     ##
     #
     def get(api_call_line = nil)
-      if !set? && @default_is_proc
+      if @default_is_proc && !set?
         @node.eval_api_block(&@default)
       elsif api_call_line && @value.is_a?(JabaNode)
         @value.id
@@ -140,7 +140,7 @@ module JABA
     def clear
       @value = nil
       d = @attr_def.default
-      if !d.nil? && !@default_is_proc
+      if !@default_is_proc && !d.nil?
         @value = d
       end
     end
@@ -241,7 +241,7 @@ module JABA
     ##
     #
     def get(api_call_line = nil)
-      if !set? && @default_is_proc
+      if @default_is_proc && !set?
         @node.eval_api_block(&@default)
       else
         @elems.map {|e| e.get(api_call_line)}
