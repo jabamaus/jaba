@@ -32,7 +32,8 @@ module JABA
       line = find_line_number(__FILE__, '# tag2')
       e = check_fail "Syntax error at test_error_reporting.rb:#{line}", trace: [__FILE__, line] do
         jaba do
-          shared :a
+          shared :a do
+          end
           BAD CODE # tag2
         end
       end

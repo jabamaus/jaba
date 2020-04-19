@@ -29,7 +29,6 @@ module JABA
     ##
     #
     def eval_api_block(args = nil, &block)
-      return if !block_given?
       if args.nil?
         @api.instance_eval(&block)
       else

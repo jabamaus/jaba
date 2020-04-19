@@ -64,9 +64,13 @@ module JABA
       end
       # TODO: caller will be wrong in the case of custom type
       ad = JabaAttributeDefinition.new(@services, id, type, variant, self, caller(2, 1)[0])
-      ad.eval_api_block(&block)
       @attribute_defs << ad
       @attribute_def_lookup[id] = ad
+
+      if block_given?
+        ad.eval_api_block(&block)
+      end
+
       ad
     end
     
@@ -94,7 +98,9 @@ module JABA
     ##
     #
     def init
-      eval_api_block(&@block)
+      if @block
+        eval_api_block(&@block)
+      end
     end
     
     ##

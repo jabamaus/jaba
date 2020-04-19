@@ -52,10 +52,19 @@ module JABA
       end
     end
 
+    it 'fails if no block supplied' do
+      check_fail "A block is required", trace: [__FILE__, '# tagP'] do
+        jaba do
+          shared :a # tagP
+        end
+      end
+    end
+
     it 'fails if shared definition does not exist' do
       check_fail "Shared definition 'b' not found", trace: [__FILE__, '# tag2'] do
         jaba do
-          shared :a
+          shared :a do
+          end
           define :test
           test :c do
             include :b # tag2

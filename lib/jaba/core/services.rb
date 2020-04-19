@@ -125,6 +125,7 @@ module JABA
     #
     def open_type(type_id, &block)
       jaba_error("type_id is required") if type_id.nil?
+      jaba_error("a block is required") if !block_given?
       @jaba_types_to_open << JabaTypeInfo.new(type_id, block, nil, caller(2, 1)[0])
     end
     
@@ -145,7 +146,9 @@ module JABA
       info = JabaInstanceInfo.new(type_id, nil, id, block, options, caller(2, 1)[0])
       @instance_lookup.push_value(type_id, info)
       
-      if type_id != :shared
+      if type_id == :shared
+        jaba_error("a block is required") if !block_given?
+      else
         @instances << info
       end
     end
@@ -347,7 +350,9 @@ module JABA
       # Give calling block a chance to initialise attributes. This block is in library code as opposed to user
       # definitions so use instance_eval instead of eval_api_block.
       #
-      jn.attrs.instance_eval(&block) if block_given?
+      if block_given?
+        jn.attrs.instance_eval(&block)
+      end
       
       # Next execute defaults block if there is one defined for this type
       #
@@ -356,7 +361,10 @@ module JABA
         jn.eval_api_block(&defaults)
       end
 
-      jn.eval_api_block(&@current_info.block)
+      if @current_info.block
+        jn.eval_api_block(&@current_info.block)
+      end
+      
       jn.post_create
       jn
     end
