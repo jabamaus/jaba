@@ -148,20 +148,21 @@ module JABA
     ##
     #
     def set_property(var_name, val = nil, &block)
+      var = "@#{var_name}"
       if block_given?
         if !val.nil?
           @services.jaba_error('Must provide a default value or a block but not both')
         end
-        instance_variable_set("@#{var_name}", block)
+        instance_variable_set(var, block)
       else
-        if !instance_variable_defined?("@#{var_name}")
-          instance_variable_set("@#{var_name}", val)
+        if !instance_variable_defined?(var)
+          instance_variable_set(var, val)
         else
-          var = instance_variable_get("@#{var_name}")
-          if var.is_a?(Array)
-            var.concat(Array(val))
+          current_val = instance_variable_get(var)
+          if current_val.is_a?(Array)
+            current_val.concat(Array(val))
           else
-            instance_variable_set("@#{var_name}", val)
+            instance_variable_set(var, val)
           end
         end
       end

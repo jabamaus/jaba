@@ -122,8 +122,8 @@ module JABA
       
       # Take deep copies of options so they are private to this attribute
       #
-      @options = Marshal.load(Marshal.dump(args))
-      @key_value_options = Marshal.load(Marshal.dump(keyvalue_args))
+      @options = args.empty? ? [] : Marshal.load(Marshal.dump(args))
+      @key_value_options = keyvalue_args.empty? ? {} : Marshal.load(Marshal.dump(keyvalue_args))
       
       # TODO: fix
       @value = if @attr_def.type_id == :keyvalue
