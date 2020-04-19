@@ -45,6 +45,12 @@ module JABA
     end
     
     ##
+    #
+    def make_file(f)
+      IO.write("#{temp_dir}/#{f}", "test\n")
+    end
+    
+    ##
     # Helper for testing error reporting.
     #
     def find_line_number(file, line)
