@@ -61,7 +61,7 @@ module JABACoreExt
       ensure
         result = RubyProf.stop
         puts 'Printing profiling results...'
-        [RubyProf::FlatPrinterWithLineNumbers].each do |p|
+        [RubyProf::FlatPrinter].each do |p|
           printer = p.new(result)
           printer.print(File.new("profile_#{context}_#{p.name_no_namespace}", 'w'))
         end
