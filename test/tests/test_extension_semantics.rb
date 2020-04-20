@@ -238,14 +238,14 @@ module JABA
     ##
     #
     def make_nodes
-      root_node = make_node(type_id: :test_project_root, handle: "test_project|root")
+      root_node = make_node(type_id: :test_project_root)
       
       root_node.attrs.platforms.each do |p|
-        project = make_node(type_id: :test_project, handle: "test_project|root|#{p}", parent: root_node) { platform p }
+        project = make_node(type_id: :test_project, name: p, parent: root_node) { platform p }
         @projects << project
         
         project.attrs.targets.each do |t|
-          make_node(handle: "test_project|root|#{project.attrs.platform}|target|#{t}", parent: project) { target t }
+          make_node(name: t, parent: project) { target t }
         end
       end
       root_node

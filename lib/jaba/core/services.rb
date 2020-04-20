@@ -343,12 +343,21 @@ module JABA
     ##
     #
     def make_node(type_id: @current_info.type_id, 
-                  handle: "#{@current_info.type_id}|#{@current_info.id}",
+                  name: nil,
                   parent: nil,
                   &block)
       
-      raise "handle is required" if handle.nil?
-      
+      handle = if parent
+        raise 'name is required for child nodes' if !name
+        if name.is_a?(JabaNode)
+          name = name.definition_id
+        end
+        "#{parent.handle}|#{name}"
+      else
+        raise 'name not required for root nodes' if name
+        "#{@current_info.type_id}|#{@current_info.id}"
+      end
+
       jt = get_jaba_type(type_id)
 
       jn = JabaNode.new(self, jt, @current_info.id, @current_info.api_call_line, handle, parent)

@@ -29,29 +29,22 @@ module JABA
     ##
     #
     def make_nodes
-      root_node = make_node(type_id: :cpp_root,
-                            handle: "cpp|#{definition_id}|root")
+      root_node = make_node(type_id: :cpp_root)
       
       root_node.attrs.platforms.each do |p|
-        hosts_node = make_node(type_id: :cpp_hosts,
-                               handle: "cpp|#{definition_id}|hosts",
-                               parent: root_node) do
+        hosts_node = make_node(type_id: :cpp_hosts, name: p, parent: root_node) do
           platform p
         end
         
         hosts_node.attrs.hosts.each do |h|
-          proj_node = make_node(type_id: :cpp,
-                                handle: "cpp|#{definition_id}|#{p.definition_id}|#{h.definition_id}",
-                                parent: hosts_node) do
+          proj_node = make_node(type_id: :cpp, name: h, parent: hosts_node) do
             host h
           end
 
           @project_nodes << proj_node
           
           proj_node.attrs.configs.each do |cfg|
-            make_node(type_id: :vsconfig,
-                      handle: "cpp|#{definition_id}|vsconfig|#{cfg}",
-                      parent: proj_node) do
+            make_node(type_id: :vsconfig, name: cfg, parent: proj_node) do
               config cfg
             end
           end
