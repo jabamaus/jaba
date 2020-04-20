@@ -12,7 +12,7 @@ module JABA
     
     # The id of the definition currently being processed
     #
-    attr_reader :current_id
+    attr_reader :definition_id
 
     ##
     #
@@ -20,7 +20,7 @@ module JABA
       @services = services
       @nodes = []
       @node_to_project = {}
-      @current_id = nil
+      @definition_id = nil
     end
     
     ##

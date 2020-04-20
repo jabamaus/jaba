@@ -257,7 +257,7 @@ module JABA
         @current_info = info
         g = info.jaba_type.generator
         if g
-          g.instance_variable_set(:@current_id, info.id)
+          g.instance_variable_set(:@definition_id, info.id)
           @root_nodes << g.make_nodes
         else
           @root_nodes << make_node
