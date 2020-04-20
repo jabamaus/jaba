@@ -34,6 +34,7 @@ module JABA
       end
       @referenced_nodes = []
       
+      # TODO: move these somewhere better
       @source_file = @api_call_line[/^(.+):\d/, 1]
       @source_dir = File.dirname(@source_file)
       
@@ -58,7 +59,6 @@ module JABA
     end
 
     ##
-    # For ease of debugging.
     #
     def to_s
       @handle
@@ -67,7 +67,7 @@ module JABA
     ##
     #
     def <=>(other)
-      @id.casecmp(other.id)
+      @handle.casecmp(other.handle)
     end
     
     ##

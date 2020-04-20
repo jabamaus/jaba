@@ -255,7 +255,7 @@ module JABA
       #
       @instances.each do |info|
         @current_info = info
-        
+
         g = info.jaba_type.generator
         @root_nodes << if g
           g.make_nodes
@@ -342,10 +342,7 @@ module JABA
 
     ##
     #
-    def make_node(type_id: @current_info.type_id, 
-                  name: nil,
-                  parent: nil,
-                  &block)
+    def make_node(type_id: @current_info.type_id, name: nil, parent: nil, &block)
       
       handle = if parent
         raise 'name is required for child nodes' if !name
