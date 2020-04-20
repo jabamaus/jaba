@@ -255,12 +255,12 @@ module JABA
       #
       @instances.each do |info|
         @current_info = info
+        
         g = info.jaba_type.generator
-        if g
-          g.instance_variable_set(:@definition_id, info.id)
-          @root_nodes << g.make_nodes
+        @root_nodes << if g
+          g.make_nodes
         else
-          @root_nodes << make_node
+          make_node
         end
       end
       
