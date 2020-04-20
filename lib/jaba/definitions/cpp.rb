@@ -6,8 +6,7 @@ define :cpp do
 
   attr_array :platforms, type: :reference do
     referenced_type :platform
-    flags :unordered
-    default [:win32]
+    flags :required
   end
   
   attr :platform do
@@ -16,7 +15,7 @@ define :cpp do
     
   attr_array :hosts, type: :reference do
     referenced_type :host
-    default [:vs2017]
+    flags :required
   end
   
   attr :host do
