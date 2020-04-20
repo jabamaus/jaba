@@ -10,7 +10,6 @@ module JABA
 
     attr_reader :jaba_type
     attr_reader :definition_id # As specified by user in definition files.
-    attr_reader :id
     attr_reader :handle
     attr_reader :attrs
     attr_reader :generate_hooks
@@ -21,12 +20,11 @@ module JABA
     
     ##
     #
-    def initialize(services, jaba_type, definition_id, id, api_call_line, handle, parent)
+    def initialize(services, jaba_type, definition_id, api_call_line, handle, parent)
       super(services, JabaNodeAPI.new(self))
 
       @jaba_type = jaba_type
       @definition_id = definition_id
-      @id = id
       @api_call_line = api_call_line
       @handle = handle
       @children = []
@@ -56,14 +54,14 @@ module JABA
         @attribute_lookup[attr_def.id] = a
       end
 
-      @services.log_debug("Making node [type=#{@jaba_type} id=#{@id} handle=#{handle}, parent=#{parent}")
+      @services.log_debug("Making node [type=#{@jaba_type} handle=#{handle}, parent=#{parent}")
     end
 
     ##
     # For ease of debugging.
     #
     def to_s
-      @id.to_s
+      @handle
     end
     
     ##

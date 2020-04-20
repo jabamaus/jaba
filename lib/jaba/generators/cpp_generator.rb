@@ -30,12 +30,10 @@ module JABA
     #
     def make_nodes
       root_node = make_node(type_id: :cpp_root,
-                            id: "#{definition_id}_root",
                             handle: "cpp|#{definition_id}|root")
       
       root_node.attrs.platforms.each do |p|
         hosts_node = make_node(type_id: :cpp_hosts,
-                               id: "#{definition_id}_hosts",
                                handle: "cpp|#{definition_id}|hosts",
                                parent: root_node) do
           platform p
@@ -43,8 +41,7 @@ module JABA
         
         hosts_node.attrs.hosts.each do |h|
           proj_node = make_node(type_id: :cpp,
-                                id: "#{definition_id}_project",
-                                handle: "cpp|#{definition_id}|#{p.id}|#{h.id}",
+                                handle: "cpp|#{definition_id}|#{p.definition_id}|#{h.definition_id}",
                                 parent: hosts_node) do
             host h
           end
@@ -53,7 +50,6 @@ module JABA
           
           proj_node.attrs.configs.each do |cfg|
             make_node(type_id: :vsconfig,
-                      id: "cpp_#{definition_id}_config_#{cfg}",
                       handle: "cpp|#{definition_id}|vsconfig|#{cfg}",
                       parent: proj_node) do
               config cfg

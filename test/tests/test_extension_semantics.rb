@@ -227,25 +227,25 @@ module JABA
       @projects.size.must_equal 2
 
       proj1 = @projects[0]
-      proj1.attrs.platform.id.must_equal(:win32)
+      proj1.attrs.platform.definition_id.must_equal(:win32)
       proj1.attrs.src.must_equal 'win32_src'
       
       proj2 = @projects[1]
-      proj2.attrs.platform.id.must_equal(:x64)
+      proj2.attrs.platform.definition_id.must_equal(:x64)
       proj2.attrs.src.must_equal 'x64_src'
     end
     
     ##
     #
     def make_nodes
-      root_node = make_node(type_id: :test_project_root, handle: nil)
+      root_node = make_node(type_id: :test_project_root, handle: "test_project|root")
       
       root_node.attrs.platforms.each do |p|
-        project = make_node(type_id: :test_project, handle: nil, parent: root_node) { platform p }
+        project = make_node(type_id: :test_project, handle: "test_project|root|#{p}", parent: root_node) { platform p }
         @projects << project
         
         project.attrs.targets.each do |t|
-          make_node(handle: nil, parent: project) { target t }
+          make_node(handle: "test_project|root|#{project.attrs.platform}|target|#{t}", parent: project) { target t }
         end
       end
       root_node

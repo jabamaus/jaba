@@ -106,7 +106,7 @@ module JABA
       if @default_is_proc && !set?
         @node.eval_api_block(&@default)
       elsif api_call_line && @value.is_a?(JabaNode)
-        @value.id
+        @value.definition_id
       else
         @value
       end

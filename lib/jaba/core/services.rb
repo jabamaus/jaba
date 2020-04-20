@@ -343,26 +343,21 @@ module JABA
     ##
     #
     def make_node(type_id: @current_info.type_id, 
-                  id: @current_info.id,
                   handle: "#{@current_info.type_id}|#{@current_info.id}",
                   parent: nil,
                   &block)
       
-      validate_id(id)
-
+      raise "handle is required" if handle.nil?
+      
       jt = get_jaba_type(type_id)
 
-      jn = JabaNode.new(self, jt, @current_info.id, id, @current_info.api_call_line, handle, parent)
+      jn = JabaNode.new(self, jt, @current_info.id, @current_info.api_call_line, handle, parent)
       @nodes << jn
       
-      # A node only needs a handle if it will be looked up.
-      #
-      if handle
-        if @node_lookup.key?(handle)
-          jaba_error("Duplicate node handle '#{handle}'")
-        end
-        @node_lookup[handle] = jn
+      if @node_lookup.key?(handle)
+        jaba_error("Duplicate node handle '#{handle}'")
       end
+      @node_lookup[handle] = jn
       
       # Give calling block a chance to initialise attributes. This block is in library code as opposed to user
       # definitions so use instance_eval instead of eval_api_block.

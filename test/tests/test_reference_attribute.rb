@@ -69,16 +69,16 @@ module JABA
           ref.must_equal :a3
           ref_array [:a2, :a3]
           generate do
-            attrs.ref.id.must_equal(:a3)
-            attrs.ref_array[0].id.must_equal(:a2)
-            attrs.ref_array[1].id.must_equal(:a3)
+            attrs.ref.definition_id.must_equal(:a3)
+            attrs.ref_array[0].definition_id.must_equal(:a2)
+            attrs.ref_array[1].definition_id.must_equal(:a3)
           end
         end
         type_a :a2 do
           ref :a1
           ref.must_equal :a1
           generate do
-            attrs.ref.id.must_equal(:a1)
+            attrs.ref.definition_id.must_equal(:a1)
           end
         end
         type_a :a3 do
