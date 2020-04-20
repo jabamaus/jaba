@@ -1,7 +1,7 @@
 module  JABA
 
   ##
-  # API that is common to all public facing definitions. Not accessible from internal objects.
+  # API that is common to all public facing definitions.
   #
   module APICommon
 

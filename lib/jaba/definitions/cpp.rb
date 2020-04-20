@@ -63,6 +63,7 @@ shared :config do
 
 end
 
+# TODO: declare as not creatable from global namespace.
 define :vsconfig do
   
   include :config

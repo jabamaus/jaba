@@ -343,7 +343,6 @@ module JABA
     ##
     #
     def make_node(type_id: @current_info.type_id, name: nil, parent: nil, &block)
-      
       handle = if parent
         raise 'name is required for child nodes' if !name
         if name.is_a?(JabaNode)
