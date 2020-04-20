@@ -19,6 +19,12 @@ module  JABA
 
     ##
     #
+    def puts(msg)
+      ::Kernel.puts(msg)
+    end
+
+    ##
+    #
     def include(*shared_definition_ids, args: nil)
       @obj.include_shared(shared_definition_ids, args)
     end

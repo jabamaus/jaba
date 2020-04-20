@@ -8,10 +8,22 @@ module JABA
 
     ##
     #
-    def id
+    def _ID
       @jaba_node.definition_id
     end
 
+    ##
+    #
+    def _FILE
+      @jaba_node.source_file
+    end
+    
+    ##
+    #
+    def _DIR
+      @jaba_node.source_dir
+    end
+    
     ##
     # Clears any previously set values. Sets single attribute values to nil and clears array attributes.
     #

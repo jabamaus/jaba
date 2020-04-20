@@ -59,7 +59,7 @@ module JABA
       jaba do
         define :test
         test :a do
-          id.must_equal(:a)
+          _ID.must_equal(:a)
         end
       end
     end
