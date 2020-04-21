@@ -1,17 +1,24 @@
 {
+  "generated": [
+    "jaba.input.json",
+    "C:/projects/GitHub/jaba/examples/example1.vcxproj",
+    "C:/projects/GitHub/jaba/examples/example1.vcxproj.filters",
+    "C:/projects/GitHub/jaba/examples/example2.vcxproj",
+    "C:/projects/GitHub/jaba/examples/example2.vcxproj.filters"
+  ],
   "cpp": {
     "cpp|MyApp|win32|vs2017": {
       "genroot": "C:/projects/GitHub/jaba/examples/example1/./.",
       "platform": "platform|win32",
       "host": "host|vs2017",
-      "guid": "{20DC7D18-7F1E-46A9-1B8C-7CCE8E17F658}",
+      "guid": "{FD0A5464-C824-4734-4A86-CF89E1D9918B}",
       "vcxproj": "C:/projects/GitHub/jaba/examples/example1.vcxproj"
     },
     "cpp|MyLib|win32|vs2017": {
       "genroot": "C:/projects/GitHub/jaba/examples/example2/./.",
       "platform": "platform|win32",
       "host": "host|vs2017",
-      "guid": "{0B9C2A0E-862B-46AF-36A4-87976E46F659}",
+      "guid": "{8A2AE31D-3DD1-43AB-2C8E-AC6D757A475A}",
       "vcxproj": "C:/projects/GitHub/jaba/examples/example2.vcxproj"
     }
   },

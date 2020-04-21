@@ -41,12 +41,6 @@ module JABA
       p_root[:genroot] = @genroot
     end
 
-    ##
-    #
-    def save_file(filename, content, eol)
-      @services.save_file(filename, content, eol)
-    end
-    
   end
 
   ##
@@ -198,7 +192,7 @@ module JABA
     ##
     #
     def write_vcxproj
-      puts "Generating #{@vcxproj_file}"
+      @services.log "Generating #{@vcxproj_file}"
       w = StringWriter.new(capacity: 64 * 1024)
       
       write_xml_version(w)
@@ -287,7 +281,7 @@ module JABA
       w << '</Project>'
       w.chomp!
       
-      save_file(@vcxproj_file, w.str, :windows)
+      @services.save_file(@vcxproj_file, w.str, :windows)
     end
     
     ##
@@ -303,7 +297,7 @@ module JABA
       end
       w << '</Project>'
       w.chomp!
-      save_file(@vcxproj_filters_file, w.str, :windows)
+      @services.save_file(@vcxproj_filters_file, w.str, :windows)
     end
   
   end

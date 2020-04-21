@@ -12,17 +12,13 @@ module JABA
 
   class JabaTest < Minitest::Spec
     
-    # rubocop:disable Style/ClassVars
-    @@enable_logging = ARGV.delete('--log') ? true : false
-    # rubocop:enable Style/ClassVars
-    
     ##
     #
     def jaba(load_paths: nil, &block)
       JABA.run do |c|
         c.load_paths = load_paths
         c.definitions(&block) if block_given?
-        c.enable_logging = @@enable_logging
+        c.dump_output = false
         c.use_file_cache = true
         c.use_glob_cache = true
       end

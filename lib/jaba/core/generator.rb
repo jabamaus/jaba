@@ -81,12 +81,6 @@ module JABA
     end
     
     ##
-    #
-    def save_file(filename, content, eol)
-      @services.save_file(filename, content, eol)
-    end
-    
-    ##
     # Override this in subclass.
     #
     def dump_jaba_output(g_root)

@@ -47,9 +47,15 @@ module JABA
       @input = Input.new
       @input.instance_variable_set(:@definitions, nil)
       @input.instance_variable_set(:@load_paths, Dir.getwd)
+      @input.instance_variable_set(:@jaba_input_file, 'jaba.input.json')
+      @input.instance_variable_set(:@dump_input, false)
+      @input.instance_variable_set(:@jaba_output_file, 'jaba.output.json')
+      @input.instance_variable_set(:@dump_output, true)
       @input.instance_variable_set(:@enable_logging, false)
       @input.instance_variable_set(:@use_file_cache, false)
       @input.instance_variable_set(:@use_glob_cache, false)
+
+      @output = {}
       
       @logger = nil
       
@@ -57,8 +63,8 @@ module JABA
       
       @definition_src_files = []
       
-      @generated_files_hash = {}
       @generated_files = []
+      @generated_files_lookup = {}
       
       @jaba_type_infos = []
 
@@ -86,7 +92,8 @@ module JABA
 
     ##
     #
-    def log(msg, severity = Logger::INFO)
+    def log(msg, severity = Logger::INFO, echo: false)
+      puts msg if echo
       @logger&.log(severity, msg)
     end
 
@@ -292,7 +299,9 @@ module JABA
       # Output definition input data as a json file, before generation. This is raw data as generated from the definitions.
       # Can be used for debugging and testing.
       #
-      dump_jaba_input
+      if input.dump_input?
+        dump_jaba_input
+      end
 
       # Call generators
       #
@@ -312,10 +321,7 @@ module JABA
       
       puts @warnings
       
-      op = Output.new
-      op.instance_variable_set(:@generated_files, @generated_files)
-      op.instance_variable_set(:@warnings, @warnings)
-      op
+      @output
     end
     
     ##
@@ -398,7 +404,7 @@ module JABA
       end
 
       json = JSON::pretty_generate(root)
-      save_file('jaba.input.json', json, :unix)
+      save_file(input.jaba_input_file, json, :unix)
     end
 
     ##
@@ -420,14 +426,17 @@ module JABA
     #
     def dump_jaba_output
       root = {}
+      root[:generated] = @generated_files
       @generators.each do |g|
         g_root = {}
         root[g.type_id] = g_root # Namespace each generator
         g.dump_jaba_output(g_root)
       end
 
-      json = JSON::pretty_generate(root)
-      save_file('jaba.output.json', json, :unix)
+      if input.dump_output?
+        json = JSON::pretty_generate(root)
+        save_file(input.jaba_output_file, json, :unix)
+      end
     end
 
     ## 
@@ -439,7 +448,7 @@ module JABA
     ##
     #
     def register_jaba_type_lookup(jt, type_id)
-      if @jaba_type_lookup.has_key?(type_id)
+      if @jaba_type_lookup.key?(type_id)
         jaba_error("'#{type_id}' jaba type multiply defined")
       end
       @jaba_type_lookup[type_id] = jt
@@ -544,11 +553,15 @@ module JABA
         content = content.gsub("\n", "\r\n")
       end
       filename = filename.cleanpath
-      log "Saving #{filename}"
-      jaba_warning "Duplicate file '#{filename}' generated" if @generated_files_hash.key?(filename)
+      log "Saving #{filename}", echo: true
+
+      # TODO: in case of duplicate check if content matches and fail if it doesn't
+      if @generated_files_lookup.key?(filename)
+        jaba_warning "Duplicate file '#{filename}' generated"
+      end
       
-      # register_src_file(filename)
-      @generated_files_hash[filename] = nil
+      # TODO: register generated file for potential use?
+      @generated_files_lookup[filename] = nil
       @generated_files << filename
       
       dir = File.dirname(filename)
