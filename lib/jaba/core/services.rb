@@ -306,6 +306,8 @@ module JABA
         end
       end
 
+      dump_jaba_output
+
       @logger&.close
       
       puts @warnings
@@ -331,9 +333,7 @@ module JABA
 
         log "Creating #{generator_class}"
 
-        g = generator_class.new(self)
-        g.init
-
+        g = generator_class.new(self, type_id)
         @generators << g
       end
       g
@@ -388,16 +388,16 @@ module JABA
     ##
     #
     def dump_jaba_input
-      doc = {}
+      root = {}
       nodes_root = {}
-      doc[:nodes] = nodes_root
+      root[:nodes] = nodes_root
       @root_nodes.each do |rn|
         obj = {}
         nodes_root[rn.handle] = obj
         write_node_json(rn, obj)
       end
 
-      json = JSON::pretty_generate(doc)
+      json = JSON::pretty_generate(root)
       save_file('jaba.input.json', json, :unix)
     end
 
@@ -414,6 +414,20 @@ module JABA
         children[child.handle] = child_obj
         write_node_json(child, child_obj)
       end
+    end
+
+    ##
+    #
+    def dump_jaba_output
+      root = {}
+      @generators.each do |g|
+        g_root = {}
+        root[g.type_id] = g_root # Namespace each generator
+        g.dump_jaba_output(g_root)
+      end
+
+      json = JSON::pretty_generate(root)
+      save_file('jaba.output.json', json, :unix)
     end
 
     ## 

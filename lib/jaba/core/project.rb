@@ -30,6 +30,19 @@ module JABA
     
     ##
     #
+    def handle
+      @node.handle
+    end
+
+    ##
+    # Override this in subclass and call super
+    #
+    def dump_jaba_output(p_root)
+      p_root[:genroot] = @genroot
+    end
+
+    ##
+    #
     def save_file(filename, content, eol)
       @services.save_file(filename, content, eol)
     end
@@ -50,6 +63,15 @@ module JABA
     
     ##
     #
+    def dump_jaba_output(p_root)
+      super
+      p_root[:platform] = @platform
+      p_root[:host] = @host
+      p_root[:guid] = @guid
+    end
+
+    ##
+    #
     def tools_version
       @host.attrs.host_version_year < 2013 ? '4.0' : @host.attrs.host_version
     end
@@ -66,6 +88,7 @@ module JABA
         else
           @guid = OS.generate_guid
         end
+        @guid.freeze
       end
       @guid
     end
@@ -165,6 +188,13 @@ module JABA
       write_vcxproj_filters
     end
     
+    ##
+    #
+    def dump_jaba_output(p_root)
+      super
+      p_root[:vcxproj] = @vcxproj_file
+    end
+
     ##
     #
     def write_vcxproj

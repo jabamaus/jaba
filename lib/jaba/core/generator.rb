@@ -12,10 +12,16 @@ module JABA
     
     ##
     #
-    def initialize(services)
+    attr_reader :type_id # eg :cpp, :text
+
+    ##
+    #
+    def initialize(services, type_id)
       @services = services
+      @type_id = type_id
       @nodes = []
       @node_to_project = {}
+      init
     end
     
     ##
@@ -25,7 +31,7 @@ module JABA
       @nodes << node
       node
     end
-    
+
     ##
     # Override this in subclass.
     #
@@ -80,6 +86,12 @@ module JABA
       @services.save_file(filename, content, eol)
     end
     
+    ##
+    # Override this in subclass.
+    #
+    def dump_jaba_output(g_root)
+    end
+
   end
   
 end

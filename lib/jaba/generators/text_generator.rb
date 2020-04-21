@@ -19,6 +19,14 @@ module JABA
       end
     end
     
+    ##
+    #
+    def dump_jaba_output(g_root)
+      @nodes.each do |n|
+        g_root[:filename] = n.attrs.filename
+      end
+    end
+
   end
   
 end

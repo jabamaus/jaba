@@ -89,6 +89,16 @@ module JABA
       @projects.each(&:generate)
     end
     
+    ##
+    # 
+    def dump_jaba_output(g_root)
+      @projects.each do |p|
+        p_root = {}
+        g_root[p.handle] = p_root
+        p.dump_jaba_output(p_root)
+      end
+    end
+
   end
   
 end
