@@ -84,6 +84,27 @@ module JABA
       e
     end
     
+    ##
+    #
+    def check_warn(msg, expected_file, tag)
+      out, _ = capture_io do
+        yield
+      end
+      
+      out.must_match(msg)
+      expected_line = find_line_number(expected_file, tag)
+
+      if out !~ /Warning at (.+):(\d+)/
+        raise "couldn't extract file and line number from warning"
+      end
+      
+      actual_file = Regexp.last_match(1)
+      actual_line = Regexp.last_match(2).to_i
+
+      actual_file.must_equal(expected_file.basename)
+      actual_line.must_equal(expected_line)
+    end
+
   end
 
   if File.exist?(JabaTest.temp_root)

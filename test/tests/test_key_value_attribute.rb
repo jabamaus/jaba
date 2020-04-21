@@ -115,39 +115,41 @@ module JABA
     end
     
     it 'strips duplicates unless :allow_dupes specified' do
-      jaba do
-        define :test do
-          attr_array :a, type: :keyvalue do
-            flags :unordered
+      check_warn(/Warning.*'a' array attribute contains duplicates/, __FILE__, '# tagY') do
+        jaba do
+          define :test do
+            attr_array :a, type: :keyvalue do
+              flags :unordered
+            end
+            attr_array :b, type: :keyvalue do
+              flags :allow_dupes, :unordered
+            end
           end
-          attr_array :b, type: :keyvalue do
-            flags :allow_dupes, :unordered
-          end
-        end
-        test :t do
-          a :k, :v
-          a :k, :v
-          a :k, :v
-          a :k2, :v
-          a :k, :v2
-          b :k, :v
-          b :k, :v
-          b :k, :v
-          generate do
-            attrs.a.size.must_equal 3
-            attrs.a[0].key.must_equal :k
-            attrs.a[0].value.must_equal :v
-            attrs.a[1].key.must_equal :k2
-            attrs.a[1].value.must_equal :v
-            attrs.a[2].key.must_equal :k
-            attrs.a[2].value.must_equal :v2
-            attrs.b.size.must_equal 3
-            attrs.b[0].key.must_equal :k
-            attrs.b[0].value.must_equal :v
-            attrs.b[1].key.must_equal :k
-            attrs.b[1].value.must_equal :v
-            attrs.b[2].key.must_equal :k
-            attrs.b[2].value.must_equal :v
+          test :t do
+            a :k, :v
+            a :k, :v
+            a :k, :v
+            a :k2, :v
+            a :k, :v2 # tagY
+            b :k, :v
+            b :k, :v
+            b :k, :v
+            generate do
+              attrs.a.size.must_equal 3
+              attrs.a[0].key.must_equal :k
+              attrs.a[0].value.must_equal :v
+              attrs.a[1].key.must_equal :k2
+              attrs.a[1].value.must_equal :v
+              attrs.a[2].key.must_equal :k
+              attrs.a[2].value.must_equal :v2
+              attrs.b.size.must_equal 3
+              attrs.b[0].key.must_equal :k
+              attrs.b[0].value.must_equal :v
+              attrs.b[1].key.must_equal :k
+              attrs.b[1].value.must_equal :v
+              attrs.b[2].key.must_equal :k
+              attrs.b[2].value.must_equal :v
+            end
           end
         end
       end

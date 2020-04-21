@@ -20,20 +20,20 @@ module JABA
     end
     
     it 'strips duplicates by default' do
-      jaba do
-        define :test do
-          attr_array :a
-        end
-        test :t do
-          a [5, 5, 6, 6, 7, 7, 7]
-          a.must_equal [5, 5, 6, 6, 7, 7, 7]
-          generate do
-            attrs.a.must_equal [5, 6, 7]
+      check_warn(/Warning.*'a' array attribute contains duplicates/, __FILE__, '# tagU') do
+        jaba do
+          define :test do
+            attr_array :a
+          end
+          test :t do
+            a [5, 5, 6, 6, 7, 7, 7] # tagU
+            a.must_equal [5, 5, 6, 6, 7, 7, 7]
+            generate do
+              attrs.a.must_equal [5, 6, 7]
+            end
           end
         end
       end
-      # TODO: turn into check_warn util
-      # op.warnings.must_equal(["Warning at TestAttributeArray.rb:6: 'a' array attribute contains duplicates"])
     end
     
     it 'allows flagging arrays with :allow_dupes' do
