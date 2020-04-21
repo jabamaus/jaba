@@ -1,0 +1,285 @@
+{
+  "nodes": {
+    "category|App": {
+      "name": "Apps",
+      "guid": "43F42D01-78C0-416E-8979-2807134DB488",
+      "parent": null,
+      "children": {
+      }
+    },
+    "platform|win32": {
+      "win32?": true,
+      "x64?": false,
+      "iOS?": false,
+      "macOS?": false,
+      "windows?": true,
+      "apple?": false,
+      "vsname": "Win32",
+      "children": {
+      }
+    },
+    "platform|x64": {
+      "win32?": false,
+      "x64?": true,
+      "iOS?": false,
+      "macOS?": false,
+      "windows?": true,
+      "apple?": false,
+      "vsname": "x64",
+      "children": {
+      }
+    },
+    "platform|iOS": {
+      "win32?": false,
+      "x64?": false,
+      "iOS?": true,
+      "macOS?": false,
+      "windows?": false,
+      "apple?": true,
+      "vsname": null,
+      "children": {
+      }
+    },
+    "platform|macOS": {
+      "win32?": false,
+      "x64?": false,
+      "iOS?": false,
+      "macOS?": true,
+      "windows?": false,
+      "apple?": true,
+      "vsname": null,
+      "children": {
+      }
+    },
+    "host|vs2010": {
+      "visual_studio?": true,
+      "xcode?": false,
+      "host_major_version": 10,
+      "host_version": "10.0",
+      "host_version_year": 2010,
+      "host_toolset": "v100",
+      "vs2010?": true,
+      "vs2012?": false,
+      "vs2013?": false,
+      "vs2015?": false,
+      "vs2017?": false,
+      "vs2019?": false,
+      "children": {
+      }
+    },
+    "host|vs2012": {
+      "visual_studio?": true,
+      "xcode?": false,
+      "host_major_version": 11,
+      "host_version": "11.0",
+      "host_version_year": 2012,
+      "host_toolset": "v110",
+      "vs2010?": false,
+      "vs2012?": true,
+      "vs2013?": false,
+      "vs2015?": false,
+      "vs2017?": false,
+      "vs2019?": false,
+      "children": {
+      }
+    },
+    "host|vs2013": {
+      "visual_studio?": true,
+      "xcode?": false,
+      "host_major_version": 12,
+      "host_version": "12.0",
+      "host_version_year": 2013,
+      "host_toolset": "v120",
+      "vs2010?": false,
+      "vs2012?": false,
+      "vs2013?": true,
+      "vs2015?": false,
+      "vs2017?": false,
+      "vs2019?": false,
+      "children": {
+      }
+    },
+    "host|vs2015": {
+      "visual_studio?": true,
+      "xcode?": false,
+      "host_major_version": 14,
+      "host_version": "14.0",
+      "host_version_year": 2015,
+      "host_toolset": "v140",
+      "vs2010?": false,
+      "vs2012?": false,
+      "vs2013?": false,
+      "vs2015?": true,
+      "vs2017?": false,
+      "vs2019?": false,
+      "children": {
+      }
+    },
+    "host|vs2017": {
+      "visual_studio?": true,
+      "xcode?": false,
+      "host_major_version": 15,
+      "host_version": "15.0",
+      "host_version_year": 2017,
+      "host_toolset": "v141",
+      "vs2010?": false,
+      "vs2012?": false,
+      "vs2013?": false,
+      "vs2015?": false,
+      "vs2017?": true,
+      "vs2019?": false,
+      "children": {
+      }
+    },
+    "host|vs2019": {
+      "visual_studio?": true,
+      "xcode?": false,
+      "host_major_version": 16,
+      "host_version": "16.0",
+      "host_version_year": 2019,
+      "host_toolset": "v141",
+      "vs2010?": false,
+      "vs2012?": false,
+      "vs2013?": false,
+      "vs2015?": false,
+      "vs2017?": false,
+      "vs2019?": true,
+      "children": {
+      }
+    },
+    "host|xcode": {
+      "visual_studio?": false,
+      "xcode?": true,
+      "host_major_version": null,
+      "host_version": null,
+      "host_version_year": null,
+      "host_toolset": null,
+      "vs2010?": false,
+      "vs2012?": false,
+      "vs2013?": false,
+      "vs2015?": false,
+      "vs2017?": false,
+      "vs2019?": false,
+      "children": {
+      }
+    },
+    "cpp|MyApp": {
+      "root": ".",
+      "platforms": [
+        "platform|win32"
+      ],
+      "children": {
+        "cpp|MyApp|win32": {
+          "platform": "platform|win32",
+          "hosts": [
+            "host|vs2017"
+          ],
+          "children": {
+            "cpp|MyApp|win32|vs2017": {
+              "genroot": ".",
+              "name": "",
+              "namesuffix": null,
+              "src": [
+
+              ],
+              "host": "host|vs2017",
+              "type": "app",
+              "configs": [
+                "debug",
+                "release"
+              ],
+              "deps": [
+
+              ],
+              "vcglobal": [
+
+              ],
+              "winsdkver": "10.0.17763.0",
+              "children": {
+                "cpp|MyApp|win32|vs2017|debug": {
+                  "config": "debug",
+                  "rtti": true,
+                  "toolset": "v141",
+                  "vcproperty": [
+
+                  ],
+                  "children": {
+                  }
+                },
+                "cpp|MyApp|win32|vs2017|release": {
+                  "config": "release",
+                  "rtti": true,
+                  "toolset": "v141",
+                  "vcproperty": [
+
+                  ],
+                  "children": {
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "cpp|MyLib": {
+      "root": ".",
+      "platforms": [
+        "platform|win32"
+      ],
+      "children": {
+        "cpp|MyLib|win32": {
+          "platform": "platform|win32",
+          "hosts": [
+            "host|vs2017"
+          ],
+          "children": {
+            "cpp|MyLib|win32|vs2017": {
+              "genroot": ".",
+              "name": "",
+              "namesuffix": null,
+              "src": [
+
+              ],
+              "host": "host|vs2017",
+              "type": "lib",
+              "configs": [
+                "debug",
+                "release"
+              ],
+              "deps": [
+
+              ],
+              "vcglobal": [
+
+              ],
+              "winsdkver": "10.0.17763.0",
+              "children": {
+                "cpp|MyLib|win32|vs2017|debug": {
+                  "config": "debug",
+                  "rtti": true,
+                  "toolset": "v141",
+                  "vcproperty": [
+
+                  ],
+                  "children": {
+                  }
+                },
+                "cpp|MyLib|win32|vs2017|release": {
+                  "config": "release",
+                  "rtti": true,
+                  "toolset": "v141",
+                  "vcproperty": [
+
+                  ],
+                  "children": {
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

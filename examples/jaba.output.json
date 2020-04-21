@@ -1,0 +1,20 @@
+{
+  "cpp": {
+    "cpp|MyApp|win32|vs2017": {
+      "genroot": "C:/projects/GitHub/jaba/examples/example1/./.",
+      "platform": "platform|win32",
+      "host": "host|vs2017",
+      "guid": "{20DC7D18-7F1E-46A9-1B8C-7CCE8E17F658}",
+      "vcxproj": "C:/projects/GitHub/jaba/examples/example1.vcxproj"
+    },
+    "cpp|MyLib|win32|vs2017": {
+      "genroot": "C:/projects/GitHub/jaba/examples/example2/./.",
+      "platform": "platform|win32",
+      "host": "host|vs2017",
+      "guid": "{0B9C2A0E-862B-46AF-36A4-87976E46F659}",
+      "vcxproj": "C:/projects/GitHub/jaba/examples/example2.vcxproj"
+    }
+  },
+  "text": {
+  }
+}
