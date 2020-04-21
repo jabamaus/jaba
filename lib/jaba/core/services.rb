@@ -181,13 +181,7 @@ module JABA
       # Set up logger
       #
       if input.enable_logging?
-        FileUtils.remove('jaba.log', force: true)
-        @logger = Logger.new('jaba.log')
-        @logger.formatter = proc do |severity, datetime, _, msg|
-          "#{severity} #{datetime}: #{msg}\n"
-        end
-        @logger.level = Logger::INFO
-        log '===== Starting Jaba ====='
+        init_logger
       end
       
       # Load and execute any definition files specified in Input#load_paths
@@ -204,7 +198,7 @@ module JABA
       #
       @jaba_attr_types.map! {|info| JabaAttributeType.new(self, info)}
       
-      # Create attribute flags
+      # Create attribute flags, which are used in attribute definitions
       #
       @jaba_attr_flags.map! {|info| JabaAttributeFlag.new(self, info)}
 
@@ -212,13 +206,16 @@ module JABA
       #
       @jaba_type_infos.each do |info|
         type_id = info.type_id
-        generator = make_generator(type_id)
+
+        # Generator is only created if one exists for the type, otherwise it is nil
+        #
+        g = make_generator(type_id)
 
         # JabaTypes can have some of their attributes split of into separate JabaTypes to help with node
         # creation in the case where a tree of nodes is created from a single definition. These JabaTypes
         # are created on the fly as attributes are added to the types.
         #
-        jt = JabaType.new(self, type_id, info.block, get_defaults_block(type_id), generator)
+        jt = JabaType.new(self, type_id, info.block, get_defaults_block(type_id), g)
         @jaba_types << jt
       end
 
@@ -234,6 +231,10 @@ module JABA
         get_jaba_type(info.type_id).eval_api_block(&info.block)
       end
       
+      # When an attribute defined in a JabaType will reference a differernt JabaType a dependency on that
+      # type is added. JabaTypes are dependency order sorted to ensure that referenced JabaNodes are created
+      # before the JabaNode that are referencing it.
+      #
       @jaba_types.each(&:resolve_dependencies)
       
       begin
@@ -243,15 +244,23 @@ module JABA
         jaba_error("'#{err_type}' contains a cyclic dependency")
       end
       
+      # Now that the JabaTypes are dependency sorted, pass on the dependency ordering to the JabaNodes.
+      # This is achieved by giving each JabaType an index and then sorting nodes based on this index.
+      # The sort is stable so as to preserve the order that was specified in definition files.
+      #
       @jaba_types.each_with_index {|jt, i| jt.instance_variable_set(:@order_index, i)}
       
+      # Associate a JabaType with each instance of a type. This is only the definition info at this stage. JabaNodes
+      # will then be created from this.
+      #
       @instances.each do |info|
         info.jaba_type = get_jaba_type(info.type_id, callstack: info.api_call_line)
       end
       
       @instances.stable_sort_by! {|d| d.jaba_type.instance_variable_get(:@order_index)}
       
-      # Create instances of types
+      # Create instances of JabaNode from JabaTypes. This could be a single node or a tree of nodes.
+      # Track the root node that is returned in each case. The array of root nodes is used to dump definition data to json.
       #
       @instances.each do |info|
         @current_info = info
@@ -283,17 +292,7 @@ module JABA
       # Output definition input data as a json file, before generation. This is raw data as generated from the definitions.
       # Can be used for debugging and testing.
       #
-      doc = {}
-      nodes_root = {}
-      doc[:nodes] = nodes_root
-      @root_nodes.each do |rn|
-        obj = {}
-        nodes_root[rn.handle] = obj
-        write_node_json(rn, obj)
-      end
-
-      json = JSON::pretty_generate(doc)
-      save_file('jaba.input.json', json, :unix)
+      dump_jaba_input
 
       # Call generators
       #
@@ -386,6 +385,22 @@ module JABA
       jn
     end
     
+    ##
+    #
+    def dump_jaba_input
+      doc = {}
+      nodes_root = {}
+      doc[:nodes] = nodes_root
+      @root_nodes.each do |rn|
+        obj = {}
+        nodes_root[rn.handle] = obj
+        write_node_json(rn, obj)
+      end
+
+      json = JSON::pretty_generate(doc)
+      save_file('jaba.input.json', json, :unix)
+    end
+
     ##
     #
     def write_node_json(node, obj)
@@ -545,8 +560,6 @@ module JABA
       files
     end
 
-    private
-    
     ##
     #
     def execute_definitions(file = nil, &block)
@@ -602,6 +615,18 @@ module JABA
       @definition_src_files.each do |f|
         execute_definitions(f)
       end
+    end
+
+    ##
+    #
+    def init_logger 
+      FileUtils.remove('jaba.log', force: true)
+      @logger = Logger.new('jaba.log')
+      @logger.formatter = proc do |severity, datetime, _, msg|
+        "#{severity} #{datetime}: #{msg}\n"
+      end
+      @logger.level = Logger::INFO
+      log '===== Starting Jaba ====='
     end
 
     ##
