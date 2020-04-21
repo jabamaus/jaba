@@ -177,7 +177,7 @@
           "children": {
             "cpp|MyApp|win32|vs2017": {
               "genroot": ".",
-              "name": "",
+              "name": "MyApp",
               "namesuffix": null,
               "src": [
 
@@ -236,7 +236,7 @@
           "children": {
             "cpp|MyLib|win32|vs2017": {
               "genroot": ".",
-              "name": "",
+              "name": "MyLib",
               "namesuffix": null,
               "src": [
 

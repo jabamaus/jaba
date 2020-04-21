@@ -16,7 +16,7 @@ shared :project do
   
   attr :name do
     help 'The name of the project. Defaults to the definition id if not set.'
-    default { "#{id}#{namesuffix}" }
+    default { "#{_ID}#{namesuffix}" }
   end
   
   attr :namesuffix do
