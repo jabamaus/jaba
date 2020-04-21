@@ -425,16 +425,15 @@ module JABA
     ##
     #
     def dump_jaba_output
-      root = {}
-      root[:generated] = @generated_files
+      @output[:generated] = @generated_files
       @generators.each do |g|
         g_root = {}
-        root[g.type_id] = g_root # Namespace each generator
+        @output[g.type_id] = g_root # Namespace each generator
         g.dump_jaba_output(g_root)
       end
 
       if input.dump_output?
-        json = JSON::pretty_generate(root)
+        json = JSON::pretty_generate(@output)
         save_file(input.jaba_output_file, json, :unix)
       end
     end
