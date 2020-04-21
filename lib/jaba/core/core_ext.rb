@@ -132,6 +132,13 @@ module JABACoreExt
       Pathname.new(self).relative_path_from(base).to_s
     end
   
+    ##
+    # Returns true if string is a windows or unix style absolute path.
+    #
+    def absolute_path?
+      self =~ /^(\/)|([A-Za-z]:)/ ? true : false
+    end
+
   end
 
   ##

@@ -38,6 +38,14 @@ module JABA
         'C:\\a\\b\\..'.cleanpath.must_equal('C:/a')
       end
       
+      it 'supports absolute_path?' do
+        'C:/temp'.absolute_path?.must_equal(true)
+        'C:\\Program Files'.absolute_path?.must_equal(true)
+        '/usr/bin'.absolute_path?.must_equal(true)
+        '../'.absolute_path?.must_equal(false)
+        '.'.absolute_path?.must_equal(false)
+      end
+
     end
     
   end

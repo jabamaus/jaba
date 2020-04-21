@@ -23,7 +23,8 @@ module JABA
       @generator = generator
       @node = node
       @attrs = node.attrs
-      @root = "#{node.source_dir}/#{@attrs.root}"
+      r = @attrs.root
+      @root = r.absolute_path? ? r : "#{node.source_dir}/#{r}"
       @genroot = "#{@root}/#{@attrs.genroot}"
       @proj_root = "#{@genroot}/#{@attrs.name}".cleanpath
     end
