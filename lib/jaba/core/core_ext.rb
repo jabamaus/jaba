@@ -61,11 +61,13 @@ module JABACoreExt
       ensure
         result = RubyProf.stop
         file = File.expand_path('jaba.profile')
+        str = String.new
         puts "Write profiling results to #{file}..."
-        [RubyProf::FlatPrinter].each do |p|
+        [RubyProf::FlatPrinter, RubyProf::GraphPrinter].each do |p|
           printer = p.new(result)
-          printer.print(File.new(file, 'w'))
+          printer.print(str)
         end
+        IO.write(file, str)
       end
     end
     
