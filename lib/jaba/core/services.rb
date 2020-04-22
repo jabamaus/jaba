@@ -569,9 +569,7 @@ module JABA
       if !File.exist?(dir)
         FileUtils.makedirs(dir)
       end
-      File.open(filename, 'wb') do |f|
-        f.write(content)
-      end
+      IO.binwrite(filename, content)
     end
 
     ##
