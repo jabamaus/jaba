@@ -92,8 +92,7 @@ module JABA
 
     ##
     #
-    def log(msg, severity = Logger::INFO, echo: false)
-      puts msg if echo
+    def log(msg, severity = Logger::INFO)
       @logger&.log(severity, msg)
     end
 
@@ -555,7 +554,7 @@ module JABA
         content = content.gsub("\n", "\r\n")
       end
       filename = filename.cleanpath
-      log "Saving #{filename}", echo: true
+      log "Saving #{filename}"
 
       # TODO: in case of duplicate check if content matches and fail if it doesn't
       if @generated_files_lookup.key?(filename)
