@@ -5,10 +5,10 @@ module JABA
   class TestAttribute < JabaTest
 
     it 'rejects passing array to single value attribute' do
-      check_fail "'a' attribute is not an array so cannot accept one", trace: [__FILE__, '# tag1'] do
+      check_fail "'a' attribute is not an array so cannot accept one", trace: [__FILE__, 'tagX'] do
         jaba do
           define :test do
-            attr :a do # tag1 # TODO: should report on default line
+            attr :a do # tagX # TODO: should report on default line
               default [1, 2]
             end
           end
@@ -16,13 +16,13 @@ module JABA
         end
       end
       
-      check_fail "'a' attribute is not an array so cannot accept one", trace: [__FILE__, '# tag2'] do
+      check_fail "'a' attribute is not an array so cannot accept one", trace: [__FILE__, 'tagK'] do
         jaba do
           define :test do
             attr :a
           end
           test :t do
-            a [1, 2] # tag2
+            a [1, 2] # tagK
           end
         end
       end

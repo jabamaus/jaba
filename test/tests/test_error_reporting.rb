@@ -29,7 +29,7 @@ module JABA
     end
     
     it 'works when a there is a syntax error when definitions in a block' do
-      line = find_line_number(__FILE__, '# tag2')
+      line = find_line_number(__FILE__, 'tag2')
       e = check_fail "Syntax error at test_error_reporting.rb:#{line}", trace: [__FILE__, line] do
         jaba do
           shared :a do

@@ -8,13 +8,13 @@ module JABA
       # check that all types support include directive
       #
       [:text, :workspace, :category, :attr_type, :define].each do |type|
-        check_fail 'Included', trace: [__FILE__, "fail 'Included'", __FILE__, '# tag1'] do
+        check_fail 'Included', trace: [__FILE__, "fail 'Included'", __FILE__, 'tagG'] do
           jaba do
             shared :a do
               fail 'Included'
             end
             __send__(type, :t) do
-              include :a # tag1
+              include :a # tagG
             end
           end
         end
@@ -53,7 +53,7 @@ module JABA
     end
 
     it 'fails if no block supplied' do
-      check_fail "A block is required", trace: [__FILE__, '# tagP'] do
+      check_fail "A block is required", trace: [__FILE__, 'tagP'] do
         jaba do
           shared :a # tagP
         end
@@ -61,13 +61,13 @@ module JABA
     end
 
     it 'fails if shared definition does not exist' do
-      check_fail "Shared definition 'b' not found", trace: [__FILE__, '# tag2'] do
+      check_fail "Shared definition 'b' not found", trace: [__FILE__, 'tagT'] do
         jaba do
           shared :a do
           end
           define :test
           test :c do
-            include :b # tag2
+            include :b # tagT
           end
         end
       end
@@ -91,30 +91,30 @@ module JABA
     end
     
     it 'catches argument mismatches' do
-      check_fail "Shared definition 'd' expects 3 arguments but 0 were passed", trace: [__FILE__, '# tag3'] do
+      check_fail "Shared definition 'd' expects 3 arguments but 0 were passed", trace: [__FILE__, 'tagW'] do
         jaba do
           shared :d do |a1, a2, a3|
           end
           text :t do
-            include :d # tag3
+            include :d # tagW
           end
         end
       end
-      check_fail "Shared definition 'e' expects 0 arguments but 1 were passed", trace: [__FILE__, '# tag4'] do
+      check_fail "Shared definition 'e' expects 0 arguments but 1 were passed", trace: [__FILE__, 'tagU'] do
         jaba do
           shared :e do
           end
           text :t do
-            include :e, args: [1] # tag4
+            include :e, args: [1] # tagU
           end
         end
       end
-      check_fail "Shared definition 'f' expects 2 arguments but 3 were passed", trace: [__FILE__, '# tag5'] do
+      check_fail "Shared definition 'f' expects 2 arguments but 3 were passed", trace: [__FILE__, 'tagB'] do
         jaba do
           shared :f do |a1, a2|
           end
           text :t do
-            include :f, args: [1, 2, 3] # tag5
+            include :f, args: [1, 2, 3] # tagB
           end
         end
       end

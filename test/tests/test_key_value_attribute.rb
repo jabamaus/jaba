@@ -115,7 +115,7 @@ module JABA
     end
     
     it 'strips duplicates unless :allow_dupes specified' do
-      check_warn(/Warning.*'a' array attribute contains duplicates/, __FILE__, '# tagY') do
+      check_warn(/Warning.*'a' array attribute contains duplicates/, __FILE__, 'tagY') do
         jaba do
           define :test do
             attr_array :a, type: :keyvalue do

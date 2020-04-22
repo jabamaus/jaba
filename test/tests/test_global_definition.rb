@@ -15,34 +15,34 @@ module JABA
       end
       
       check_fail "'Space invalid' is an invalid id. Must be an alphanumeric string or symbol " \
-                  "(underscore permitted), eg :my_id or 'my_id'", trace: [__FILE__, '# tag1'] do
+                  "(underscore permitted), eg :my_id or 'my_id'", trace: [__FILE__, 'tagS'] do
         jaba do
-          shared 'Space invalid' do # tag1
+          shared 'Space invalid' do # tagS
           end
         end
       end
       
-      check_fail "'1' is an invalid id", trace: [__FILE__, '# tag2'] do
+      check_fail "'1' is an invalid id", trace: [__FILE__, 'tagZ'] do
         jaba do
-          shared 1 # tag2
+          shared 1 # tagZ
         end
       end
     end
     
     it 'detects duplicate ids with definitions of the same type' do
-      check_fail "'a' multiply defined", trace: [__FILE__, '# tag3'] do
+      check_fail "'a' multiply defined", trace: [__FILE__, 'tagI'] do
         jaba do
           shared :a do
           end
-          shared :a do # tag3
+          shared :a do # tagI
           end
         end
       end
 
-      check_fail "'b' multiply defined", trace: [__FILE__, '# tag4'] do
+      check_fail "'b' multiply defined", trace: [__FILE__, 'tagX'] do
         jaba do
           text :b
-          text :b # tag4
+          text :b # tagX
         end
       end
     end
@@ -65,9 +65,9 @@ module JABA
     end
 
     it 'rejects attempts to instance an unknown type' do
-      check_fail "'undefined' type not defined", trace: [__FILE__, '# tag6'] do
+      check_fail "'undefined' type not defined", trace: [__FILE__, 'tagJ'] do
         jaba do
-          undefined :a # tag6
+          undefined :a # tagJ
         end
       end
     end
@@ -103,11 +103,11 @@ module JABA
     end
 
     it 'checks for multiply defined defaults' do
-      check_fail "'test' defaults multiply defined", trace: [__FILE__, '# tagI'] do
+      check_fail "'test' defaults multiply defined", trace: [__FILE__, 'tagH'] do
         jaba do
           define :test
           defaults :test
-          defaults :test # tagI
+          defaults :test # tagH
         end
       end
     end

@@ -19,11 +19,11 @@ module JABA
       check_fail ':bool attributes only accept [true|false]',
                  trace: [
                    ATTR_TYPES_FILE, "fail ':bool attributes only accept [true|false]'",
-                   __FILE__, '# tag1' # evaluated later so exact call line is lost
+                   __FILE__, 'tagP' # evaluated later so exact call line is lost
                  ] do
         jaba do
           define :test do
-            attr :b, type: :bool do # tag1
+            attr :b, type: :bool do # tagP
               default 1
             end
           end
@@ -35,7 +35,7 @@ module JABA
       check_fail ':bool attributes only accept [true|false]',
                  trace: [
                   ATTR_TYPES_FILE, "fail ':bool attributes only accept [true|false]'",
-                   __FILE__, '# tag2'
+                   __FILE__, 'tagW'
                  ] do
         jaba do
           define :test do
@@ -44,7 +44,7 @@ module JABA
             end
           end
           test :b do
-            c 1 # tag2
+            c 1 # tagW
           end
         end
       end

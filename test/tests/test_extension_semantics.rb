@@ -17,8 +17,8 @@ module JABA
     end
 
     it 'fails if try to open undefined type' do
-      check_fail "'undefined' type not defined", trace: [__FILE__, '# tag1'] do
-        jaba do # tag1 TODO: fix error line
+      check_fail "'undefined' type not defined", trace: [__FILE__, 'tagL'] do
+        jaba do # tagL TODO: fix error line
           open :undefined do
           end
         end
@@ -40,11 +40,11 @@ module JABA
 
     # TODO: extend
     it 'supports defining new attribute types' do
-      check_fail "'b' attribute failed validation: Invalid", trace: [__FILE__, '# tag2A', __FILE__, '# tag2B'] do 
+      check_fail "'b' attribute failed validation: Invalid", trace: [__FILE__, 'tagD', __FILE__, 'tagO'] do 
         jaba do
           attr_type :a do
             validate_value do
-              fail 'invalid' # tag2A'
+              fail 'invalid' # tagD'
             end
           end
           define :test do
@@ -52,17 +52,17 @@ module JABA
             end
           end
           test :t do
-            b 'c' # tag2B
+            b 'c' # tagO
           end
         end
       end
     end
     
     it 'detects usage of undefined attribute types' do
-      check_fail(/'undefined' attribute type is undefined. Valid types: \[.*?\]/, trace: [__FILE__, '# tag3']) do
+      check_fail(/'undefined' attribute type is undefined. Valid types: \[.*?\]/, trace: [__FILE__, 'tagK']) do
         jaba do
           define :a do
-            attr :b, type: :undefined # tag3
+            attr :b, type: :undefined # tagK
           end
         end
       end
@@ -129,8 +129,8 @@ module JABA
     end
     
     it 'checks for cyclic dependencies' do
-      check_fail '\'a\' contains a cyclic dependency', trace: [__FILE__, '# tag cd'] do
-        jaba do # tag cd TODO: fix error location
+      check_fail '\'a\' contains a cyclic dependency', trace: [__FILE__, 'tagF'] do
+        jaba do # tagF TODO: fix error location
           define :a do
             dependencies :c
           end

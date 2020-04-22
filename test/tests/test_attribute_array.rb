@@ -20,7 +20,7 @@ module JABA
     end
     
     it 'strips duplicates by default' do
-      check_warn(/Warning.*'a' array attribute contains duplicates/, __FILE__, '# tagU') do
+      check_warn(/Warning.*'a' array attribute contains duplicates/, __FILE__, 'tagU') do
         jaba do
           define :test do
             attr_array :a
@@ -122,13 +122,13 @@ module JABA
     end
     
     it 'only allows prefix/postfix on string elements' do
-      check_fail 'Prefix/postfix option can only be used with arrays of strings', trace: [__FILE__, '# tag1'] do
+      check_fail 'Prefix/postfix option can only be used with arrays of strings', trace: [__FILE__, 'tagQ'] do
         jaba do
           define :test do
             attr_array :a
           end
           test :t do
-            a [1, 2, 3], prefix: 'a', postfix: 'b' # tag1
+            a [1, 2, 3], prefix: 'a', postfix: 'b' # tagQ
           end
         end
       end
@@ -187,13 +187,13 @@ module JABA
     end
     
     it 'fails if excluding with regex on non-strings' do
-      check_fail 'Exclude regex can only operate on strings', trace: [__FILE__, '# tag2'] do
+      check_fail 'Exclude regex can only operate on strings', trace: [__FILE__, 'tagR'] do
         jaba do
           define :test do
             attr_array :a
           end
           test :t do
-            a [1, 2, 3, 4, 43], exclude: [/3/] # tag2
+            a [1, 2, 3, 4, 43], exclude: [/3/] # tagR
           end
         end
       end

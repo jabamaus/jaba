@@ -6,18 +6,18 @@ module JABA
     
     it 'requires referent type to be specified' do
       check_fail "'b' attribute definition failed validation: 'referenced_type' must be set",
-                 trace: [ATTR_TYPES_FILE, "fail \"'referenced_type' must be set\"", __FILE__, '# tag1'] do
+                 trace: [ATTR_TYPES_FILE, "fail \"'referenced_type' must be set\"", __FILE__, 'tagP'] do
         jaba do
           define :a do
-            attr :b, type: :reference # tag1
+            attr :b, type: :reference # tagP
           end
         end
       end
     end
     
     it 'validates reference' do
-      check_fail 'Node with handle \'a|undefined\' not found', trace: [__FILE__, '# tag2'] do
-        jaba do # tag2 TODO: fix error line
+      check_fail 'Node with handle \'a|undefined\' not found', trace: [__FILE__, 'tagQ'] do
+        jaba do # tagQ TODO: fix error line
           define :a do
             attr :b, type: :reference do
               referenced_type :a

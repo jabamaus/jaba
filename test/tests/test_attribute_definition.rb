@@ -5,7 +5,7 @@ module JABA
   class TestAttributeDefinition < JabaTest
 
     it 'accepts a string or a symbol' do
-      check_fail '\'123\' is an invalid id', trace: [__FILE__, '# tagL'] do
+      check_fail '\'123\' is an invalid id', trace: [__FILE__, 'tagL'] do
         jaba do
           define :test do
             attr 123 # tagL
@@ -37,7 +37,7 @@ module JABA
     end
     
     it 'detects duplicate attribute ids' do
-      check_fail "'a' attribute multiply defined", trace: [__FILE__, '# tagQ'] do
+      check_fail "'a' attribute multiply defined", trace: [__FILE__, 'tagQ'] do
         jaba do
           define :test do
             attr :a
@@ -78,7 +78,7 @@ module JABA
     end
     
     it 'detects multiply defined properties' do
-      check_fail "'a' property multiply defined", trace: [__FILE__, '# tagR'] do
+      check_fail "'a' property multiply defined", trace: [__FILE__, 'tagR'] do
         jaba do
           define :test do
             attr :a do
@@ -91,7 +91,7 @@ module JABA
     end
 
     it 'fails if property does not exist' do
-      check_fail "'undefined' property not defined", trace: [__FILE__, '# tagZ'] do
+      check_fail "'undefined' property not defined", trace: [__FILE__, 'tagZ'] do
         jaba do
           define :test do
             attr :a do
@@ -142,7 +142,7 @@ module JABA
           a 2, condition: :b
         end
       end
-      check_fail 'Invalid option \'undefined\'', trace: [__FILE__, '# tagA'] do
+      check_fail 'Invalid option \'undefined\'', trace: [__FILE__, 'tagA'] do
         jaba do
           define :test do
             attr_array :a do
