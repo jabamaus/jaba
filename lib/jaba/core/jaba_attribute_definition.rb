@@ -36,15 +36,11 @@ module JABA
       define_array_property(:flags)
       define_array_property(:keyval_opts)
       
-      @validate_hook = nil
-      @post_set_hook = nil
-      @make_handle_hook = nil
+      define_hook(:validate)
+      define_hook(:post_set)
       
       @jaba_attr_type = @services.get_attribute_type(@type_id)
-      
-      if @jaba_attr_type.init_attr_def_hook
-        eval_api_block(&@jaba_attr_type.init_attr_def_hook)
-      end
+      @jaba_attr_type.call_hook(:init_attr_def, receiver: self)
     end
     
     ##
@@ -63,25 +59,19 @@ module JABA
     ##
     #
     def init
-      hook = @jaba_attr_type.validate_attr_def_hook
-      if hook
-        begin
-          eval_api_block(&hook)
-        rescue JabaError => e
-          jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
-                               callstack: [e.backtrace[0], @api_call_line])
-        end
+      begin
+        @jaba_attr_type.call_hook(:validate_attr_def, receiver: self)
+      rescue JabaError => e
+        jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
+                              callstack: [e.backtrace[0], @api_call_line])
       end
       
       if @default
-        hook = @jaba_attr_type.validate_value_hook
-        if hook
-          begin
-            eval_api_block(@default, &hook)
-          rescue JabaError => e
-            jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
-                                 callstack: [e.backtrace[0], @api_call_line])
-          end
+        begin
+          @jaba_attr_type.call_hook(:validate_value, @default, receiver: self)
+        rescue JabaError => e
+          jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
+                                callstack: [e.backtrace[0], @api_call_line])
         end
       end
       

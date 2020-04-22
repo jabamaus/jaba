@@ -37,19 +37,13 @@ module JABA
     # Called for single value attributes and each element of array attributes.
     #
     def validate(&block)
-      @attr_def.define_hook(:validate, &block)
+      @attr_def.set_hook(:validate, &block)
     end
     
     ##
     #
     def post_set(&block)
-      @attr_def.define_hook(:post_set, &block)
-    end
-    
-    ##
-    #
-    def make_handle(&block)
-      @attr_def.define_hook(:make_handle, &block)
+      @attr_def.set_hook(:post_set, &block)
     end
     
     ##

@@ -287,6 +287,7 @@ module JABA
           if a.type_id == :reference
             a.map! do |ref|
               if ref.is_a?(Symbol)
+                # TODO: remove use of get_property
                 node_from_handle("#{a.attr_def.get_property(:referenced_type)}|#{ref}")
               else
                 ref
@@ -310,7 +311,9 @@ module JABA
       # Call generators defined per-node, in the context of the node itself, not its api
       #
       @nodes.each do |n|
-        n.generate_hooks.each do |gh|
+        # TODO: improve
+        gh = n.generate_hook
+        if gh
           n.instance_eval(&gh)
         end
       end

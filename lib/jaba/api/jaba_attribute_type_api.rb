@@ -16,19 +16,19 @@ module JABA
     ##
     #
     def init_attr_def(&block)
-      @attr_type.define_hook(:init_attr_def, &block)
+      @attr_type.set_hook(:init_attr_def, &block)
     end
     
     ##
     #
     def validate_attr_def(&block)
-      @attr_type.define_hook(:validate_attr_def, &block)
+      @attr_type.set_hook(:validate_attr_def, &block)
     end
     
     ##
     #
     def validate_value(&block)
-      @attr_type.define_hook(:validate_value, &block)
+      @attr_type.set_hook(:validate_value, &block)
     end
 
   private

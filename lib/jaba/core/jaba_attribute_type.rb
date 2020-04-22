@@ -11,19 +11,17 @@ module JABA
     include PropertyMethods
     
     attr_reader :type_id # eg :bool, :choice, :keyvalue
-    attr_reader :init_attr_def_hook
-    attr_reader :validate_attr_def_hook
-    attr_reader :validate_value_hook
     
     ##
     #
     def initialize(services, info)
       super(services, JabaAttributeTypeAPI.new(self))
       @type_id = info.type_id
-      @init_attr_def_hook = nil
-      @validate_attr_def_hook = nil
-      @validate_value_hook = nil
-      @help = nil
+      
+      define_property(:help)
+      define_hook(:init_attr_def)
+      define_hook(:validate_attr_def)
+      define_hook(:validate_value)
 
       if info.block
         eval_api_block(&info.block)

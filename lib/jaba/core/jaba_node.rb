@@ -12,7 +12,7 @@ module JABA
     attr_reader :definition_id # As specified by user in definition files.
     attr_reader :handle
     attr_reader :attrs
-    attr_reader :generate_hooks
+    attr_reader :generate_hook # TODO: remove
     attr_reader :referenced_nodes
     attr_reader :children
     attr_reader :source_file
@@ -42,7 +42,8 @@ module JABA
 
       @attributes = []
       @attribute_lookup = {}
-      @generate_hooks = []
+      
+      define_hook(:generate)
       
       @jaba_type.attribute_defs.each do |attr_def|
         a = case attr_def.variant
