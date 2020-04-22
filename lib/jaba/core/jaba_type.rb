@@ -28,8 +28,11 @@ module JABA
       @defaults_block = defaults_block
       @attribute_defs = []
       @attribute_def_lookup = {}
-      @dependencies = []
       @generator = generator
+
+      define_property(:help)
+      define_array_property(:dependencies)
+
       @services.register_jaba_type_lookup(self, type_id)
     end
 

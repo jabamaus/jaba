@@ -23,6 +23,7 @@ module JABA
     end
     
     ##
+    # Define a new array attribute.
     #
     def attr_array(id, **options, &block)
       @jaba_type.define_attr(id, :array, **options, &block)

@@ -23,7 +23,7 @@ attr_type :choice do
   help 'TODO'
 
   init_attr_def do
-    set_property :items, []
+    define_array_property :items
   end
   
   validate_attr_def do
@@ -67,7 +67,7 @@ attr_type :reference do
   help 'TODO'
 
   init_attr_def do
-    set_property :referenced_type, nil
+    define_property :referenced_type
   end
   
   validate_attr_def do

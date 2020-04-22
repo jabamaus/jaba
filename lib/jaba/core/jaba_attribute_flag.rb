@@ -16,7 +16,7 @@ module JABA
       super(services, JabaAttributeFlagAPI.new(self))
 
       @id = info.id
-      @help = nil
+      define_property(:help)
 
       if info.block
         eval_api_block(&info.block)

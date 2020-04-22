@@ -31,10 +31,10 @@ module JABA
       @jaba_type = jaba_type
       @api_call_line = api_call_line
 
-      @default = nil
-      @flags = []
-      @help = nil
-      @keyval_opts = []
+      define_property(:help)
+      define_property(:default)
+      define_array_property(:flags)
+      define_array_property(:keyval_opts)
       
       @validate_hook = nil
       @post_set_hook = nil

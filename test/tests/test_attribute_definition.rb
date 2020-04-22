@@ -5,10 +5,10 @@ module JABA
   class TestAttributeDefinition < JabaTest
 
     it 'accepts a string or a symbol' do
-      check_fail '\'123\' is an invalid id', trace: [__FILE__, '# tag1'] do
+      check_fail '\'123\' is an invalid id', trace: [__FILE__, '# tagL'] do
         jaba do
           define :test do
-            attr 123 # tag1
+            attr 123 # tagL
           end
         end
       end
@@ -37,11 +37,11 @@ module JABA
     end
     
     it 'detects duplicate attribute ids' do
-      check_fail "'a' attribute multiply defined", trace: [__FILE__, '# tag3'] do
+      check_fail "'a' attribute multiply defined", trace: [__FILE__, '# tagQ'] do
         jaba do
           define :test do
             attr :a
-            attr :a # tag3
+            attr :a # tagQ
           end
         end
       end
@@ -51,11 +51,11 @@ module JABA
       jaba do
         define :test do
           attr :a do
-            set_property :b, 'b'
-            set_property :c, 1
-            set_property :d, []
-            set_property :e
-            set_property :f do
+            define_property :b, 'b'
+            define_property :c, 1
+            define_property :d, []
+            define_property :e
+            define_property :f do
             end
             b.must_equal('b')
             c.must_equal(1)
@@ -76,13 +76,26 @@ module JABA
         end
       end
     end
-      
-    it 'fails if property does not exist' do
-      check_fail '', trace: [__FILE__, '# tag4'] do # TODO: msg
+    
+    it 'detects multiply defined properties' do
+      check_fail "'a' property multiply defined", trace: [__FILE__, '# tagR'] do
         jaba do
           define :test do
             attr :a do
-              undefined 1 # tag4
+              define_property :a
+              define_property :a # tagR
+            end
+          end
+        end
+      end
+    end
+
+    it 'fails if property does not exist' do
+      check_fail "'undefined' property not defined", trace: [__FILE__, '# tagZ'] do
+        jaba do
+          define :test do
+            attr :a do
+              undefined 1 # tagZ
             end
           end
         end

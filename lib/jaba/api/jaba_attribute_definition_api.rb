@@ -54,8 +54,14 @@ module JABA
     
     ##
     #
-    def set_property(id, val = nil)
-      @attr_def.set_property(id, val)
+    def define_property(id, val = nil)
+      @attr_def.define_property(id, val)
+    end
+
+    ##
+    #
+    def define_array_property(id, val = [])
+      @attr_def.define_array_property(id, val)
     end
 
     ##
