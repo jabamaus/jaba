@@ -32,7 +32,7 @@ module JABA
     ##
     #
     def dependencies(*deps)
-      @jaba_type.set_property(:dependencies, deps.flatten)
+      @jaba_type.set_property(:dependencies, deps)
     end
 
     ##

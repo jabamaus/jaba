@@ -183,7 +183,11 @@ module JABA
       else
         current_val = instance_variable_get(var)
         if current_val.is_a?(Array)
-          current_val.concat(Array(val))
+          if val.is_a?(Array)
+            current_val.concat(val.flatten)
+          else
+            current_val << val
+          end
         else
           instance_variable_set(var, val)
         end

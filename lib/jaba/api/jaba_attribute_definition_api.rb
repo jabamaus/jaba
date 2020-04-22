@@ -17,7 +17,7 @@ module JABA
     # Set any number of flags to control the behaviour of the attribute.
     #
     def flags(*flags, &block)
-      @attr_def.set_property(:flags, flags.flatten, &block)
+      @attr_def.set_property(:flags, flags, &block)
     end
     
     ##
@@ -30,7 +30,7 @@ module JABA
     ##
     #
     def keyval_options(*options, &block)
-      @attr_def.set_property(:keyval_opts, options.flatten, &block)
+      @attr_def.set_property(:keyval_opts, options, &block)
     end
     
     ##

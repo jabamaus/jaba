@@ -153,7 +153,7 @@ module JABA
     ##
     #
     def wipe_attrs(ids)
-      ids.each do |id|
+      ids.flatten.each do |id|
         if !id.is_a?(Symbol)
           jaba_error("'#{id}' must be specified as a symbol")
         end

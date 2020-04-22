@@ -236,6 +236,13 @@ module JABA
           wipe :a, :b
           a.must_equal []
           b.must_equal 1
+          a [3, 4]
+          b 3
+          a.must_equal [3, 4]
+          b.must_equal 3
+          wipe [:a, :b]
+          a.must_equal []
+          b.must_equal 1
         end
       end
     end
