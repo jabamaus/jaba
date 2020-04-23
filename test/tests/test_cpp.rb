@@ -13,6 +13,7 @@ module JABA
       op = jaba do
         defaults :cpp do
           hosts [:vs2017]
+          configs [:debug, :release]
         end
         cpp :a do
           platforms [:x64]

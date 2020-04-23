@@ -55,8 +55,11 @@ define :cpp do
   
 end
 
-shared :config do
-  
+# TODO: declare as not creatable from global namespace.
+define :cpp_config do
+
+  help 'TODO'
+
   attr :config do
     flags :read_only
   end
@@ -74,15 +77,6 @@ shared :config do
     default { host_toolset }
   end
 
-end
-
-# TODO: declare as not creatable from global namespace.
-define :vsconfig do
-  
-  include :config
-
-  help 'TODO'
-  
   attr_array :vcproperty, type: :keyvalue do
     keyval_options :group
 =begin

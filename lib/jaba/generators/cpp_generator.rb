@@ -44,7 +44,7 @@ module JABA
           @project_nodes << proj_node
           
           proj_node.attrs.configs.each do |cfg|
-            make_node(type_id: :vsconfig, name: cfg, parent: proj_node) do
+            make_node(type_id: :cpp_config, name: cfg, parent: proj_node) do
               config cfg
             end
           end
