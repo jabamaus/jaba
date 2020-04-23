@@ -72,7 +72,7 @@ module JABA
 
     ##
     #
-    def check_fail(msg, trace:, internal: false)
+    def check_fail(msg, trace:)
       e = assert_raises JabaError do
         yield
       end
@@ -83,7 +83,6 @@ module JABA
       e.message.must_match(msg)
       e.file.must_equal(file)
       e.line.must_equal(line)
-      e.internal.must_equal(internal)
       
       backtrace = []
       trace.each_slice(2) do |elem|

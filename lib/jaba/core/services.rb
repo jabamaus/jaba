@@ -708,9 +708,7 @@ module JABA
       # so the exception will have the normal ruby backtrace.
       #
       if lines.empty?
-        e = JabaError.new(msg)
-        e.instance_variable_set(:@internal, true)
-        return e
+        return JabaError.new(msg)
       end
       
       # Clean up lines so they only contain file and line information and not the additional ':in ...' that ruby

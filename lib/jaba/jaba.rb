@@ -95,11 +95,6 @@ module JABA
     attr_reader :raw_message
     
     ##
-    # True if error is an internal error as opposed to a user error in the definitions.
-    #
-    attr_reader :internal
-    
-    ##
     # The definition file the error occurred in.
     #
     attr_reader :file
