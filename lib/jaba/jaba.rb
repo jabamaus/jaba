@@ -156,7 +156,11 @@ EOB
         j.dump_input = options[:dump_input] if options[:dump_input]
         j.enable_logging = options[:enable_logging] if options[:enable_logging]
       end
-      puts "Wrote #{op[:generated].size} files"
+      written = op[:generated]
+      puts "Wrote #{written.size} files:"
+      written.each do |w|
+        puts "  #{w}"
+      end
     end
   rescue StandardError => e
     puts e.message
