@@ -2,7 +2,7 @@
 
 module JABA
 
-  class TestProject < JabaTest
+  class TestCpp < JabaTest
 
     it 'is evaluated per-type, per-sku and per-target' do
       jaba do
