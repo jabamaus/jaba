@@ -5,10 +5,10 @@ module JABA
   class TopLevelAPI < BasicObject
     
     ##
-    # Define a project.
+    # Define a cpp project.
     #
-    def project(id, **options, &block)
-      @services.define_instance(:project, id, **options, &block)
+    def cpp(id, **options, &block)
+      @services.define_instance(:cpp, id, **options, &block)
     end
     
     ##
