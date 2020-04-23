@@ -161,6 +161,8 @@ EOB
       written.each do |w|
         puts "  #{w}"
       end
+      warnings = op[:warnings]
+      puts warnings if warnings
     end
   rescue StandardError => e
     puts e.message

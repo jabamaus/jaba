@@ -328,8 +328,6 @@ module JABA
 
       @logger&.close
       
-      puts @warnings
-      
       @output
     end
     
@@ -437,6 +435,7 @@ module JABA
     #
     def dump_jaba_output
       @output[:generated] = @generated_files
+      @output[:warnings] = @warnings
       @generators.each do |g|
         g_root = {}
         @output[g.type_id] = g_root # Namespace each generator

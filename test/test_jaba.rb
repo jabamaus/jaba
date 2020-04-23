@@ -17,13 +17,16 @@ module JABA
     ##
     #
     def jaba(load_paths: nil, &block)
-      JABA.run do |c|
+      op = JABA.run do |c|
         c.load_paths = load_paths
         c.definitions(&block) if block_given?
         c.dump_output = false
         c.use_file_cache = true
         c.use_glob_cache = true
       end
+      warnings = op[:warnings]
+      puts warnings if warnings
+      op
     end
     
     ##
