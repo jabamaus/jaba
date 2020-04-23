@@ -99,6 +99,7 @@ module JABACoreExt
     ##
     #
     def cleanpath
+      # TODO: SLOW. 
       Pathname.new(self).cleanpath.to_s
     end
     
@@ -131,6 +132,7 @@ module JABACoreExt
     ##
     #
     def relative_path_from(base)
+      # TODO: SLOW. 
       Pathname.new(self).relative_path_from(base).to_s
     end
   
