@@ -151,11 +151,12 @@ EOB
   begin
     using JABACoreExt
     profile(enabled: options[:enable_profiling]) do
-      JABA.run do |j|
+      op = JABA.run do |j|
         j.load_paths = options[:load_paths] if options[:load_paths]
         j.dump_input = options[:dump_input] if options[:dump_input]
         j.enable_logging = options[:enable_logging] if options[:enable_logging]
       end
+      puts "Wrote #{op[:generated].size} files"
     end
   rescue StandardError => e
     puts e.message
