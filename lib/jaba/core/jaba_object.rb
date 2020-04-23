@@ -40,6 +40,8 @@ module JABA
     #
     def include_shared(ids, args)
       ids.each do |id|
+        @services.log "  Including shared definition [id=#{id}]"
+
         info = @services.get_instance_info(:shared, id, fail_if_not_found: false)
         if !info
           jaba_error("Shared definition '#{id}' not found")

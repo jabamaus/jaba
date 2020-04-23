@@ -163,7 +163,7 @@ module JABA
     #
     def define_defaults(type_id, &block)
       jaba_error("type_id is required") if type_id.nil?
-      log "  Registering default [type_id=#{type_id}]"
+      log "  Registering defaults [type_id=#{type_id}]"
       existing = @defaults.find {|info| info.type_id == type_id}
       if existing
         jaba_error("'#{type_id}' defaults multiply defined")
@@ -389,6 +389,7 @@ module JABA
       #
       defaults = jn.jaba_type.defaults_block
       if defaults
+        log "  Including defaults"
         jn.eval_api_block(&defaults)
       end
 
