@@ -15,13 +15,8 @@ shared :project do
   end
   
   attr :name do
-    help 'The name of the project. Defaults to the definition id if not set.'
-    default { "#{_ID}#{namesuffix}" }
-  end
-  
-  attr :namesuffix do
-    help 'Optional suffix to be applied to project name. Used by <name> by default but will have no effect ' \
-         'if <name> is set explicitly'
+    help 'Seeds the name of the project. Defaults to the definition id if not set.'
+    default { _ID }
   end
   
   attr_array :src, type: :path do

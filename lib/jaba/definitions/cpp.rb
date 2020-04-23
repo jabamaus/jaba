@@ -4,6 +4,15 @@ define :cpp do
 
   help 'TODO'
 
+  attr :projname do
+    help 'Seeds file basename of project files. Defaults to <name><projsuffix>.'
+    default { "#{name}#{projname_suffix}" }
+  end
+
+  attr :projname_suffix do
+    help 'Optional suffix to be applied to <projname>. Has no effect if <projname> is set explicitly.'
+  end
+
   attr_array :platforms, type: :reference do
     referenced_type :platform
     flags :required
@@ -28,8 +37,7 @@ define :cpp do
   end
   
   attr_array :configs do
-    flags :unordered
-    default [:debug, :release]
+    flags :required, :unordered
   end
   
   attr_array :deps, type: :reference do
@@ -51,6 +59,11 @@ shared :config do
   
   attr :config do
     flags :read_only
+  end
+
+  attr :config_name do
+    help 'Display name of config in Visual Studio. Defaults to <config>.'
+    default { config }
   end
 
   attr :rtti, type: :bool do

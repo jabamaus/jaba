@@ -26,7 +26,7 @@ module JABA
       r = @attrs.root
       @root = r.absolute_path? ? r : "#{node.source_dir}/#{r}"
       @genroot = "#{@root}/#{@attrs.genroot}"
-      @proj_root = "#{@genroot}/#{@attrs.name}".cleanpath
+      @proj_root = "#{@genroot}/#{@attrs.projname}".cleanpath
     end
     
     ##
@@ -155,7 +155,7 @@ module JABA
     ##
     #
     def cfg_condition(cfg)
-      "'$(Configuration)|$(Platform)'=='#{cfg.attrs.config}|#{@platform.attrs.vsname}'"
+      "'$(Configuration)|$(Platform)'=='#{cfg.attrs.config_name}|#{@platform.attrs.vsname}'"
     end
     
   end
@@ -202,8 +202,8 @@ module JABA
       
       item_group(w, label: 'ProjectConfigurations') do
         @configs.each do |cfg|
-          w << "    <ProjectConfiguration Include=\"#{cfg.attrs.config}|#{@platform.attrs.vsname}\">"
-          w << "      <Configuration>#{cfg.attrs.config}</Configuration>"
+          w << "    <ProjectConfiguration Include=\"#{cfg.attrs.config_name}|#{@platform.attrs.vsname}\">"
+          w << "      <Configuration>#{cfg.attrs.config_name}</Configuration>"
           w << "      <Platform>#{@platform.attrs.vsname}</Platform>"
           w << '    </ProjectConfiguration>'
         end
