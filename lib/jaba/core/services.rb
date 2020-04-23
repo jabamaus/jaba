@@ -692,10 +692,15 @@ module JABA
       msg = msg.capitalize_first
       
       cs = callstack || caller
-      
+      cs = Array(cs)
+
       # Extract any lines in the callstack that contain references to definition source files.
       #
-      lines = Array(cs).select {|c| @definition_src_files.any? {|sf| c.include?(sf)}}
+      lines = if warn
+        cs
+      else
+        cs.select {|c| @definition_src_files.any? {|sf| c.include?(sf)}}
+      end
       
       # TODO: include DefinitionAPI.rb/ExtensionAPI.rb info in syntax errors
       
