@@ -51,7 +51,7 @@ module JABA
         if st_id
           jt = @services.get_jaba_type(st_id, fail_if_not_found: false)
           if jt.nil?
-            jt = JabaType.new(@services, st_id, nil, nil, nil)
+            jt = JabaType.new(@services, st_id, nil, @defaults_block, nil)
             @dependencies << st_id
             @services.register_additional_jaba_type(jt)
           end
