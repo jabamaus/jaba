@@ -55,8 +55,6 @@ module JABA
         @attributes << a
         @attribute_lookup[attr_def.id] = a
       end
-
-      @services.log_debug("Making node [type=#{@jaba_type} handle=#{handle}, parent=#{parent}")
     end
 
     ##

@@ -95,17 +95,12 @@ module JABA
     def log(msg, severity = Logger::INFO)
       @logger&.log(severity, msg)
     end
-
-    ##
-    #
-    def log_debug(msg)
-      @logger&.debug(msg)
-    end
     
     ##
     #
     def define_attr_type(type_id, &block)
       jaba_error("type_id is required") if type_id.nil?
+      log "Registering attr type [type_id=#{type_id}]"
       validate_id(type_id)
       # TODO: check for dupes
       @jaba_attr_types << AttrTypeInfo.new(type_id, block, caller(2, 1)[0])
@@ -115,6 +110,7 @@ module JABA
     #
     def define_attr_flag(id, &block)
       jaba_error("id is required") if id.nil?
+      log "  Registering attr flag [id=#{id}]"
       validate_id(id)
       # TODO: check for dupes
       @jaba_attr_flags << AttrFlagInfo.new(id, block, caller(2, 1)[0])
@@ -124,6 +120,7 @@ module JABA
     #
     def define_type(type_id, **options, &block)
       jaba_error("type_id is required") if type_id.nil?
+      log "  Registering type [type_id=#{type_id}]"
       validate_id(type_id)
       # TODO: check for dupes
       @jaba_type_infos << JabaTypeInfo.new(type_id, block, options, caller(2, 1)[0])
@@ -133,6 +130,7 @@ module JABA
     #
     def open_type(type_id, &block)
       jaba_error("type_id is required") if type_id.nil?
+      log "  Opening type [type_id=#{type_id}]"
       jaba_error("a block is required") if !block_given?
       @jaba_types_to_open << JabaTypeInfo.new(type_id, block, nil, caller(2, 1)[0])
     end
@@ -145,7 +143,7 @@ module JABA
 
       validate_id(id)
 
-      log "Instancing #{type_id} [id=#{id}]"
+      log "  Registering instance [id=#{id}, type=#{type_id}]"
 
       if instanced?(type_id, id)
         jaba_error("'#{id}' multiply defined")
@@ -165,6 +163,7 @@ module JABA
     #
     def define_defaults(type_id, &block)
       jaba_error("type_id is required") if type_id.nil?
+      log "  Registering default [type_id=#{type_id}]"
       existing = @defaults.find {|info| info.type_id == type_id}
       if existing
         jaba_error("'#{type_id}' defaults multiply defined")
@@ -213,9 +212,13 @@ module JABA
       @jaba_type_infos.each do |info|
         type_id = info.type_id
 
+        log "Making generator [type_id=#{type_id}]"
+
         # Generator is only created if one exists for the type, otherwise it is nil
         #
         g = make_generator(type_id)
+
+        log "Making JabaType [type_id=#{type_id}]"
 
         # JabaTypes can have some of their attributes split of into separate JabaTypes to help with node
         # creation in the case where a tree of nodes is created from a single definition. These JabaTypes
@@ -279,6 +282,8 @@ module JABA
         end
       end
       
+      log "Resolving references..."
+
       # Resolve references
       #
       @nodes.each do |n|
@@ -302,6 +307,8 @@ module JABA
       if input.dump_input?
         dump_jaba_input
       end
+
+      log "Calling generators..."
 
       # Call generators
       #
@@ -339,8 +346,6 @@ module JABA
           raise "#{generator_class} must inherit from Generator class"
         end
 
-        log "Creating #{generator_class}"
-
         g = generator_class.new(self, type_id)
         @generators << g
       end
@@ -360,6 +365,8 @@ module JABA
         raise 'name not required for root nodes' if name
         "#{@current_info.type_id}|#{@current_info.id}"
       end
+
+      log "Making node [type=#{type_id} handle=#{handle}, parent=#{parent}]"
 
       jt = get_jaba_type(type_id)
 
@@ -647,8 +654,10 @@ module JABA
     ##
     #
     def init_logger 
-      FileUtils.remove('jaba.log', force: true)
-      @logger = Logger.new('jaba.log')
+      log_file = File.expand_path('jaba.log')
+      puts "Logging to #{log_file}..."
+      FileUtils.remove(log_file, force: true)
+      @logger = Logger.new(log_file)
       @logger.formatter = proc do |severity, datetime, _, msg|
         "#{severity} #{datetime}: #{msg}\n"
       end
