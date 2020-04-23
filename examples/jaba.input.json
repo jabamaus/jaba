@@ -1,4 +1,17 @@
 {
+  "definition_src": [
+    "C:/projects/GitHub/jaba/lib/jaba/definitions/attribute_flags.rb",
+    "C:/projects/GitHub/jaba/lib/jaba/definitions/attribute_types.rb",
+    "C:/projects/GitHub/jaba/lib/jaba/definitions/category.rb",
+    "C:/projects/GitHub/jaba/lib/jaba/definitions/cpp.rb",
+    "C:/projects/GitHub/jaba/lib/jaba/definitions/hosts.rb",
+    "C:/projects/GitHub/jaba/lib/jaba/definitions/platforms.rb",
+    "C:/projects/GitHub/jaba/lib/jaba/definitions/project_base.rb",
+    "C:/projects/GitHub/jaba/lib/jaba/definitions/text.rb",
+    "C:/projects/GitHub/jaba/lib/jaba/definitions/workspace.rb",
+    "C:/projects/GitHub/jaba/examples/example1/jaba.rb",
+    "C:/projects/GitHub/jaba/examples/example2/jaba.rb"
+  ],
   "nodes": {
     "category|App": {
       "name": "Apps",

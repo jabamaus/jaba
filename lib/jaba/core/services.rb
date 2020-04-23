@@ -398,6 +398,7 @@ module JABA
     def dump_jaba_input
       root = {}
       nodes_root = {}
+      root[:definition_src] = @definition_src_files
       root[:nodes] = nodes_root
       @root_nodes.each do |rn|
         obj = {}
