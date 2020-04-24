@@ -72,12 +72,14 @@ module JABA
         open :test do
           _ID.must_equal(:test)
         end
-        # TODO
-        #shared :s do
-        #  _ID.must_equal(:s)
-        #end
+        defaults :test do
+          _ID.must_equal(:a) # :a not :test
+        end
+        shared :s do
+          _ID.must_equal(:a) # :a not :s
+        end
         test :a do
-          #include :s
+          include :s
           _ID.must_equal(:a)
         end
       end
