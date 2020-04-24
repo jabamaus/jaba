@@ -45,8 +45,8 @@ module JABA
     
     ##
     #
-    def id
-      @attr_def.id
+    def definition_id
+      @attr_def.definition_id
     end
     
     ##
@@ -173,13 +173,13 @@ module JABA
     #
     def validate_value(value, api_call_line)
       if value.is_a?(Array)
-        @services.jaba_error("'#{@attr_def.id}' attribute is not an array so cannot accept one", callstack: api_call_line)
+        @services.jaba_error("'#{@attr_def.definition_id}' attribute is not an array so cannot accept one", callstack: api_call_line)
       end
       if api_call_line
         begin
           @attr_def.jaba_attr_type.call_hook(:validate_value, value, receiver: @attr_def)
         rescue JabaError => e
-          @services.jaba_error("'#{@attr_def.id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
+          @services.jaba_error("'#{@attr_def.definition_id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
         end
       end
     end
@@ -199,7 +199,7 @@ module JABA
     def resolve_reference(value)
       if @attr_def.type_id == :reference
         rt = @attr_def.get_property(:referenced_type)
-        if rt != @node.jaba_type.type_id
+        if rt != @node.jaba_type.definition_id
           ref_node = @services.node_from_handle("#{rt}|#{value}")
           @node.referenced_nodes << ref_node
           ref_node
@@ -324,14 +324,14 @@ module JABA
       end
       if !@attr_def.has_flag?(:allow_dupes)
         if warn && @elems.uniq!(&:get)
-          @services.jaba_warning("'#{id}' array attribute contains duplicates", callstack: api_call_line)
+          @services.jaba_warning("'#{definition_id}' array attribute contains duplicates", callstack: api_call_line)
         end
       end
       if !@attr_def.has_flag?(:unordered)
         begin
           @elems.stable_sort!
         rescue StandardError
-          @services.jaba_error("Failed to sort #{id}. Might be missing <=> operator", callstack: api_call_line)
+          @services.jaba_error("Failed to sort #{definition_id}. Might be missing <=> operator", callstack: api_call_line)
         end
       end
     end

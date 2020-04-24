@@ -11,7 +11,6 @@ module JABA
 
     include PropertyMethods
 
-    attr_reader :id
     attr_reader :type_id # eg :bool, :file, :path etc
     attr_reader :variant # :single, :array, :hash
     attr_reader :default
@@ -23,9 +22,8 @@ module JABA
     
     ##
     #
-    def initialize(services, id, type_id, variant, jaba_type, api_call_line)
-      super(services, JabaAttributeDefinitionAPI.new(self))
-      @id = id
+    def initialize(services, definition_id, type_id, variant, jaba_type, api_call_line)
+      super(services, definition_id, JabaAttributeDefinitionAPI.new(self))
       @type_id = type_id
       @variant = variant
       @jaba_type = jaba_type
@@ -44,10 +42,9 @@ module JABA
     end
     
     ##
-    # For ease of debugging.
     #
     def to_s
-      "id=#{@id} type=#{@type_id}"
+      "id=#{@definition_id} type=#{@type_id}"
     end
 
     ##
@@ -62,7 +59,7 @@ module JABA
       begin
         @jaba_attr_type.call_hook(:validate_attr_def, receiver: self)
       rescue JabaError => e
-        jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
+        jaba_error("'#{definition_id}' attribute definition failed validation: #{e.raw_message}",
                               callstack: [e.backtrace[0], @api_call_line])
       end
       
@@ -70,7 +67,7 @@ module JABA
         begin
           @jaba_attr_type.call_hook(:validate_value, @default, receiver: self)
         rescue JabaError => e
-          jaba_error("'#{id}' attribute definition failed validation: #{e.raw_message}",
+          jaba_error("'#{definition_id}' attribute definition failed validation: #{e.raw_message}",
                                 callstack: [e.backtrace[0], @api_call_line])
         end
       end

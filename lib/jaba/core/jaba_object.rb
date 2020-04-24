@@ -11,12 +11,14 @@ module JABA
   class JabaObject
     
     attr_reader :services
+    attr_reader :definition_id # As specified by user in definition files.
     attr_reader :api
     
     ##
     #
-    def initialize(services, api_object)
+    def initialize(services, definition_id, api_object)
       @services = services
+      @definition_id = definition_id
       @api = api_object
     end
 

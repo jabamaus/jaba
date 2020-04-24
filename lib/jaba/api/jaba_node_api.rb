@@ -8,12 +8,6 @@ module JABA
 
     ##
     #
-    def _ID
-      @jaba_node.definition_id
-    end
-
-    ##
-    #
     def _FILE
       @jaba_node.source_file
     end

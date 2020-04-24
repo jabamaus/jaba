@@ -13,9 +13,8 @@ module JABA
     ##
     #
     def initialize(services, info)
-      super(services, JabaAttributeFlagAPI.new(self))
+      super(services, info.id, JabaAttributeFlagAPI.new(self))
 
-      @id = info.id
       define_property(:help)
 
       if info.block

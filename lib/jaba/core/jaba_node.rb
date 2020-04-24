@@ -9,7 +9,6 @@ module JABA
   class JabaNode < JabaObject
 
     attr_reader :jaba_type
-    attr_reader :definition_id # As specified by user in definition files.
     attr_reader :handle
     attr_reader :attrs
     attr_reader :generate_hook # TODO: remove
@@ -21,10 +20,9 @@ module JABA
     ##
     #
     def initialize(services, jaba_type, definition_id, api_call_line, handle, parent)
-      super(services, JabaNodeAPI.new(self))
+      super(services, definition_id, JabaNodeAPI.new(self))
 
       @jaba_type = jaba_type
-      @definition_id = definition_id
       @api_call_line = api_call_line
       @handle = handle
       @children = []
@@ -53,7 +51,7 @@ module JABA
               JabaAttributeArray.new(services, attr_def, self)
             end
         @attributes << a
-        @attribute_lookup[attr_def.id] = a
+        @attribute_lookup[attr_def.definition_id] = a
       end
     end
 
@@ -101,7 +99,7 @@ module JABA
     def post_create
       @attributes.each do |a|
         if a.required? && !a.set?
-          jaba_error("'#{a.id}' attribute requires a value", 
+          jaba_error("'#{a.definition_id}' attribute requires a value", 
                      callstack: [@api_call_line, a.attr_def.api_call_line])
         end
         a.process_flags(warn: true)

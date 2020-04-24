@@ -35,12 +35,6 @@ module JABA
       @jaba_type.set_property(:dependencies, deps)
     end
 
-    ##
-    #
-    def type
-      @jaba_type.type_id
-    end
-
   private
   
     ##

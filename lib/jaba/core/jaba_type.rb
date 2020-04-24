@@ -13,7 +13,6 @@ module JABA
 
     include PropertyMethods
     
-    attr_reader :type_id  # eg :text, :cpp, :platform
     attr_reader :attribute_defs
     attr_reader :dependencies
     attr_reader :generator
@@ -21,9 +20,8 @@ module JABA
     
     ##
     #
-    def initialize(services, type_id, block, defaults_block, generator)
-      super(services, JabaTypeAPI.new(self))
-      @type_id = type_id
+    def initialize(services, definition_id, block, defaults_block, generator)
+      super(services, definition_id, JabaTypeAPI.new(self))
       @block = block
       @defaults_block = defaults_block
       @attribute_defs = []
@@ -33,14 +31,13 @@ module JABA
       define_property(:help)
       define_array_property(:dependencies)
 
-      @services.register_jaba_type(self, type_id)
+      @services.register_jaba_type(self, definition_id)
     end
 
     ##
-    # For ease of debugging.
     #
     def to_s
-      @type_id.to_s
+      @definition_id.to_s
     end
     
     ##
@@ -92,7 +89,7 @@ module JABA
       a = @attribute_def_lookup[id]
       if !a
         if !a && fail_if_not_found
-          jaba_error("'#{id}' attribute definition not found in '#{type_id}'")
+          jaba_error("'#{id}' attribute definition not found in '#{definition_id}'")
         end
       end
       a

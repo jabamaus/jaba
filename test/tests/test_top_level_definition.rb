@@ -55,10 +55,29 @@ module JABA
       end
     end
     
-    it 'allows id to be accessed from definitions' do
+    it 'allows definition id to be accessed from all definitions' do
       jaba do
-        define :test
+        attr_type :v do
+          _ID.must_equal(:v)
+        end
+        attr_flag :f do
+          _ID.must_equal(:f)
+        end
+        define :test do
+          _ID.must_equal(:test)
+          attr :b do
+            _ID.must_equal(:b)
+          end
+        end
+        open :test do
+          _ID.must_equal(:test)
+        end
+        # TODO
+        #shared :s do
+        #  _ID.must_equal(:s)
+        #end
         test :a do
+          #include :s
           _ID.must_equal(:a)
         end
       end

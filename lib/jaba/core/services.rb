@@ -423,7 +423,7 @@ module JABA
     #
     def write_node_json(node, obj)
       node.each_attr do |attr|
-        obj[attr.id] = attr.get
+        obj[attr.definition_id] = attr.get
       end
       children = {}
       obj[:children] = children
@@ -472,9 +472,9 @@ module JABA
       if type_id.nil?
         return @default_attr_type
       end
-      t = @jaba_attr_types.find {|at| at.type_id == type_id}
+      t = @jaba_attr_types.find {|at| at.definition_id == type_id}
       if !t
-        jaba_error("'#{type_id}' attribute type is undefined. Valid types: #{@jaba_attr_types.map(&:type_id)}")
+        jaba_error("'#{type_id}' attribute type is undefined. Valid types: #{@jaba_attr_types.map(&:definition_id)}")
       end
       t
     end
