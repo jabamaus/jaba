@@ -7,35 +7,35 @@ module JABA
     ##
     # Define a cpp project.
     #
-    def cpp(id, **options, &block)
-      @services.define_instance(:cpp, id, **options, &block)
+    def cpp(id, &block)
+      @services.define_instance(:cpp, id, &block)
     end
     
     ##
     # Define a workspace.
     #
-    def workspace(id, **options, &block)
-      @services.define_instance(:workspace, id, **options, &block)
+    def workspace(id, &block)
+      @services.define_instance(:workspace, id, &block)
     end
     
     ##
     # Define a category.
     #
-    def category(id, **options, &block)
-      @services.define_instance(:category, id, **options, &block)
+    def category(id, &block)
+      @services.define_instance(:category, id, &block)
     end
     
     ##
     # Define definition to be included by other definitions.
     #
-    def shared(id, **options, &block)
-      @services.define_instance(:shared, id, **options, &block)
+    def shared(id, &block)
+      @services.define_instance(:shared, id, &block)
     end
     
     ##
     #
-    def text(id, **options, &block)
-      @services.define_instance(:text, id, **options, &block)
+    def text(id, &block)
+      @services.define_instance(:text, id, &block)
     end
     
     ##
@@ -47,8 +47,8 @@ module JABA
     ##
     # All undefined methods are treated as defining instances of jaba types.
     #
-    def method_missing(type, id, **options, &block)
-      @services.define_instance(type, id, **options, &block)
+    def method_missing(type, id, &block)
+      @services.define_instance(type, id, &block)
     end
     
     ##
@@ -68,8 +68,8 @@ module JABA
     ##
     # EXTENSION API
     #
-    def define(type, **options, &block)
-      @services.define_type(type, **options, &block)
+    def define(type, &block)
+      @services.define_type(type, &block)
     end
     
     ##

@@ -37,8 +37,8 @@ module JABA
     #
     AttrTypeInfo = Struct.new(:type_id, :block, :api_call_line)
     AttrFlagInfo = Struct.new(:id, :block, :api_call_line)
-    JabaTypeInfo = Struct.new(:type_id, :block, :options, :api_call_line)
-    JabaInstanceInfo = Struct.new(:id, :type_id, :jaba_type, :block, :options, :api_call_line)
+    JabaTypeInfo = Struct.new(:type_id, :block, :api_call_line)
+    JabaInstanceInfo = Struct.new(:id, :type_id, :jaba_type, :block, :api_call_line)
     DefaultsInfo = Struct.new(:type_id, :block, :api_call_line)
 
     @@file_cache = {}
@@ -121,12 +121,12 @@ module JABA
 
     ##
     #
-    def define_type(type_id, **options, &block)
+    def define_type(type_id, &block)
       jaba_error("type_id is required") if type_id.nil?
       log "  Registering type [type_id=#{type_id}]"
       validate_id(type_id)
       # TODO: check for dupes
-      @jaba_type_infos << JabaTypeInfo.new(type_id, block, options, caller(2, 1)[0])
+      @jaba_type_infos << JabaTypeInfo.new(type_id, block, caller(2, 1)[0])
     end
     
     ##
@@ -135,12 +135,12 @@ module JABA
       jaba_error("type_id is required") if type_id.nil?
       log "  Opening type [type_id=#{type_id}]"
       jaba_error("a block is required") if !block_given?
-      @jaba_types_to_open << JabaTypeInfo.new(type_id, block, nil, caller(2, 1)[0])
+      @jaba_types_to_open << JabaTypeInfo.new(type_id, block, caller(2, 1)[0])
     end
     
     ##
     #
-    def define_instance(type_id, id, **options, &block)
+    def define_instance(type_id, id, &block)
       jaba_error("type_id is required") if type_id.nil?
       jaba_error("id is required") if id.nil?
 
@@ -152,7 +152,7 @@ module JABA
         jaba_error("'#{id}' multiply defined")
       end
       
-      info = JabaInstanceInfo.new(id, type_id, nil, block, options, caller(2, 1)[0])
+      info = JabaInstanceInfo.new(id, type_id, nil, block, caller(2, 1)[0])
       @instance_lookup.push_value(type_id, info)
       
       if type_id == :shared
