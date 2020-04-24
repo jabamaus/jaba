@@ -2,7 +2,7 @@
 
 module JABA
 
-  class TestGlobalDefinition < JabaTest
+  class TestTopLevelDefinition < JabaTest
 
     it 'rejects invalid ids' do
       jaba do
