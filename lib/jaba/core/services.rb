@@ -32,11 +32,6 @@ module JABA
 
     attr_reader :input
 
-    ##
-    # Records information about each definition the user has made.
-    #
-    JabaInstanceInfo = Struct.new(:definition_id, :type_id, :jaba_type, :block, :api_call_line)
-
     @@file_cache = {}
     @@glob_cache = {}
 
@@ -70,15 +65,17 @@ module JABA
       @jaba_type_definition_blocks = []
       @jaba_open_definition_blocks = []
       @default_definition_blocks = []
+      @instance_definition_blocks = []
+      @instance_definition_block_lookup = {}
+      @shared_definition_block_lookup = {}
+
+      @current_dblock = nil
 
       @jaba_attr_types = []
       @jaba_attr_flags = []
       @jaba_types = []
       @additional_jaba_types = []
-      @instances = []
-
       @jaba_type_lookup = {}
-      @instance_lookup = {}
 
       @generators = []
 
@@ -138,6 +135,22 @@ module JABA
     
     ##
     #
+    def define_shared(id, &block)
+      jaba_error("id is required") if id.nil?
+      jaba_error("a block is required") if !block_given?
+
+      log "  Registering shared definition block [id=#{id}]"
+      validate_id(id)
+
+      if get_shared_definition_block(id, fail_if_not_found: false)
+        jaba_error("'#{id}' multiply defined")
+      end
+
+      @shared_definition_block_lookup[id] = JabaDefinitionBlock.new(id, block, caller(2, 1)[0])
+    end
+
+    ##
+    #
     def define_instance(type_id, id, &block)
       jaba_error("type_id is required") if type_id.nil?
       jaba_error("id is required") if id.nil?
@@ -150,14 +163,9 @@ module JABA
         jaba_error("'#{id}' multiply defined")
       end
       
-      info = JabaInstanceInfo.new(id, type_id, nil, block, caller(2, 1)[0])
-      @instance_lookup.push_value(type_id, info)
-      
-      if type_id == :shared
-        jaba_error("a block is required") if !block_given?
-      else
-        @instances << info
-      end
+      db = JabaInstanceDefinitionBlock.new(id, type_id, block, caller(2, 1)[0])
+      @instance_definition_block_lookup.push_value(type_id, db)
+      @instance_definition_blocks << db
     end
     
     ##
@@ -264,22 +272,21 @@ module JABA
       #
       @jaba_types.each_with_index {|jt, i| jt.instance_variable_set(:@order_index, i)}
       
-      # Associate a JabaType with each instance of a type. This is only the definition info at this stage. JabaNodes
-      # will then be created from this.
+      # Associate a JabaType with each instance of a type.
       #
-      @instances.each do |info|
-        info.jaba_type = get_jaba_type(info.type_id, callstack: info.api_call_line)
+      @instance_definition_blocks.each do |db|
+        db.instance_variable_set(:@jaba_type, get_jaba_type(db.jaba_type_id, callstack: db.api_call_line))
       end
       
-      @instances.stable_sort_by! {|d| d.jaba_type.instance_variable_get(:@order_index)}
+      @instance_definition_blocks.stable_sort_by! {|d| d.jaba_type.instance_variable_get(:@order_index)}
       
       # Create instances of JabaNode from JabaTypes. This could be a single node or a tree of nodes.
       # Track the root node that is returned in each case. The array of root nodes is used to dump definition data to json.
       #
-      @instances.each do |info|
-        @current_info = info
+      @instance_definition_blocks.each do |db|
+        @current_dblock = db
 
-        g = info.jaba_type.generator
+        g = db.jaba_type.generator
         @root_nodes << if g
           g.make_nodes
         else
@@ -357,7 +364,7 @@ module JABA
 
     ##
     #
-    def make_node(type_id: @current_info.type_id, name: nil, parent: nil, &block)
+    def make_node(type_id: @current_dblock.jaba_type_id, name: nil, parent: nil, &block)
       handle = if parent
         raise 'name is required for child nodes' if !name
         if name.is_a?(JabaNode)
@@ -366,14 +373,14 @@ module JABA
         "#{parent.handle}|#{name}"
       else
         raise 'name not required for root nodes' if name
-        "#{@current_info.type_id}|#{@current_info.definition_id}"
+        "#{@current_dblock.jaba_type_id}|#{@current_dblock.definition_id}"
       end
 
       log "Making node [type=#{type_id} handle=#{handle}, parent=#{parent}]"
 
       jt = get_jaba_type(type_id)
 
-      jn = JabaNode.new(self, jt, @current_info.definition_id, @current_info.api_call_line, handle, parent)
+      jn = JabaNode.new(self, jt, @current_dblock.definition_id, @current_dblock.api_call_line, handle, parent)
       @nodes << jn
       
       if @node_lookup.key?(handle)
@@ -396,8 +403,8 @@ module JABA
         jn.eval_api_block(&defaults)
       end
 
-      if @current_info.block
-        jn.eval_api_block(&@current_info.block)
+      if @current_dblock.block
+        jn.eval_api_block(&@current_dblock.block)
       end
       
       jn.post_create
@@ -453,12 +460,6 @@ module JABA
       end
     end
 
-    ## 
-    #
-    def register_additional_jaba_type(jt)
-      @additional_jaba_types << jt
-    end
-
     ##
     #
     def register_jaba_type(jt, id)
@@ -466,6 +467,12 @@ module JABA
         jaba_error("'#{id}' jaba type multiply defined")
       end
       @jaba_type_lookup[id] = jt
+    end
+
+    ## 
+    #
+    def register_additional_jaba_type(jt)
+      @additional_jaba_types << jt
     end
 
     ##
@@ -493,8 +500,8 @@ module JABA
     
     ##
     #
-    def get_instance_info(type_id, id, fail_if_not_found: true)
-      defs = @instance_lookup[type_id]
+    def get_instance_definition_block(type_id, id, fail_if_not_found: true)
+      defs = @instance_definition_block_lookup[type_id]
       return nil if !defs
       d = defs.find {|dd| dd.definition_id == id}
       if !d && fail_if_not_found
@@ -506,9 +513,19 @@ module JABA
     ##
     #
     def instanced?(type_id, id)
-      get_instance_info(type_id, id, fail_if_not_found: false) != nil
+      get_instance_definition_block(type_id, id, fail_if_not_found: false) != nil
     end
     
+    ##
+    #
+    def get_shared_definition_block(id, fail_if_not_found: true)
+      db = @shared_definition_block_lookup[id]
+      if !db && fail_if_not_found
+        jaba_error("Shared definition '#{id}' not found")
+      end
+      db
+    end
+
     ##
     #
     def get_defaults_block(id)

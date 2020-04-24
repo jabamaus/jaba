@@ -24,7 +24,8 @@ module JABA
       
       check_fail "'1' is an invalid id", trace: [__FILE__, 'tagZ'] do
         jaba do
-          shared 1 # tagZ
+          shared 1 do # tagZ
+          end
         end
       end
     end

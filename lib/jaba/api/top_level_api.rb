@@ -29,7 +29,7 @@ module JABA
     # Define definition to be included by other definitions.
     #
     def shared(id, &block)
-      @services.define_instance(:shared, id, &block)
+      @services.define_shared(id, &block)
     end
     
     ##

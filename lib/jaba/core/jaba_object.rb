@@ -44,19 +44,16 @@ module JABA
       ids.each do |id|
         @services.log "  Including shared definition [id=#{id}]"
 
-        info = @services.get_instance_info(:shared, id, fail_if_not_found: false)
-        if !info
-          jaba_error("Shared definition '#{id}' not found")
-        end
+        db = @services.get_shared_definition_block(id)
         
-        n_expected = info.block.arity
+        n_expected = db.block.arity
         n_actual = args ? Array(args).size : 0
         
         if n_actual != n_expected
           jaba_error("shared definition '#{id}' expects #{n_expected} arguments but #{n_actual} were passed")
         end
         
-        eval_api_block(args, &info.block)
+        eval_api_block(args, &db.block)
       end
     end
     

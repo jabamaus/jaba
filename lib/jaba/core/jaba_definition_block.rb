@@ -24,4 +24,23 @@ module JABA
 
   end
 
+  ##
+  #
+  class JabaInstanceDefinitionBlock < JabaDefinitionBlock
+    
+    attr_reader :jaba_type_id
+    attr_reader :jaba_type
+
+    ##
+    #
+    def initialize(id, jaba_type_id, block, api_call_line)
+      super(id, block, api_call_line)
+      
+      @jaba_type_id = jaba_type_id
+      @jaba_type = nil
+
+    end
+
+  end
+
 end
