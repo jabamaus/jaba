@@ -38,7 +38,7 @@ module JABA
     AttrTypeInfo = Struct.new(:type_id, :block, :api_call_line)
     AttrFlagInfo = Struct.new(:id, :block, :api_call_line)
     JabaTypeInfo = Struct.new(:type_id, :block, :options, :api_call_line)
-    JabaInstanceInfo = Struct.new(:type_id, :jaba_type, :id, :block, :options, :api_call_line)
+    JabaInstanceInfo = Struct.new(:id, :type_id, :jaba_type, :block, :options, :api_call_line)
     DefaultsInfo = Struct.new(:type_id, :block, :api_call_line)
 
     @@file_cache = {}
@@ -152,7 +152,7 @@ module JABA
         jaba_error("'#{id}' multiply defined")
       end
       
-      info = JabaInstanceInfo.new(type_id, nil, id, block, options, caller(2, 1)[0])
+      info = JabaInstanceInfo.new(id, type_id, nil, block, options, caller(2, 1)[0])
       @instance_lookup.push_value(type_id, info)
       
       if type_id == :shared
