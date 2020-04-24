@@ -22,8 +22,8 @@ module JABA
     #
     def dump_jaba_output(p_root)
       super
-      p_root[:platform] = @platform
-      p_root[:host] = @host
+      p_root[:platform] = @platform.definition_id
+      p_root[:host] = @host.definition_id
       p_root[:guid] = @guid
     end
 
