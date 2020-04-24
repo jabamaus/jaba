@@ -40,15 +40,15 @@ module JABA
     
     ##
     #
-    def defaults(type_id, &block)
-      @services.define_defaults(type_id, &block)
+    def defaults(id, &block)
+      @services.define_defaults(id, &block)
     end
     
     ##
     # All undefined methods are treated as defining instances of jaba types.
     #
-    def method_missing(type, id, &block)
-      @services.define_instance(type, id, &block)
+    def method_missing(type_id, id, &block)
+      @services.define_instance(type_id, id, &block)
     end
     
     ##
@@ -68,15 +68,15 @@ module JABA
     ##
     # EXTENSION API
     #
-    def define(type, &block)
-      @services.define_type(type, &block)
+    def define(id, &block)
+      @services.define_type(id, &block)
     end
     
     ##
     # EXTENSION API
     #
-    def open(type, &block)
-      @services.open_type(type, &block)
+    def open(id, &block)
+      @services.open_type(id, &block)
     end
     
   private

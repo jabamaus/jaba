@@ -35,11 +35,11 @@ module JABA
     ##
     # Records information about each definition the user has made.
     #
-    AttrTypeInfo = Struct.new(:type_id, :block, :api_call_line)
-    AttrFlagInfo = Struct.new(:id, :block, :api_call_line)
-    JabaTypeInfo = Struct.new(:type_id, :block, :api_call_line)
-    JabaInstanceInfo = Struct.new(:id, :type_id, :jaba_type, :block, :api_call_line)
-    DefaultsInfo = Struct.new(:type_id, :block, :api_call_line)
+    AttrTypeInfo = Struct.new(:definition_id, :block, :api_call_line)
+    AttrFlagInfo = Struct.new(:definition_id, :block, :api_call_line)
+    JabaTypeInfo = Struct.new(:definition_id, :block, :api_call_line)
+    JabaInstanceInfo = Struct.new(:definition_id, :type_id, :jaba_type, :block, :api_call_line)
+    DefaultsInfo = Struct.new(:definition_id, :block, :api_call_line)
 
     @@file_cache = {}
     @@glob_cache = {}
@@ -101,12 +101,12 @@ module JABA
     
     ##
     #
-    def define_attr_type(type_id, &block)
-      jaba_error("type_id is required") if type_id.nil?
-      log "Registering attr type [type_id=#{type_id}]"
-      validate_id(type_id)
+    def define_attr_type(id, &block)
+      jaba_error("id is required") if id.nil?
+      log "Registering attr type [id=#{id}]"
+      validate_id(id)
       # TODO: check for dupes
-      @jaba_attr_types << AttrTypeInfo.new(type_id, block, caller(2, 1)[0])
+      @jaba_attr_types << AttrTypeInfo.new(id, block, caller(2, 1)[0])
     end
 
     ##
@@ -121,21 +121,21 @@ module JABA
 
     ##
     #
-    def define_type(type_id, &block)
-      jaba_error("type_id is required") if type_id.nil?
-      log "  Registering type [type_id=#{type_id}]"
-      validate_id(type_id)
+    def define_type(id, &block)
+      jaba_error("id is required") if id.nil?
+      log "  Registering type [id=#{id}]"
+      validate_id(id)
       # TODO: check for dupes
-      @jaba_type_infos << JabaTypeInfo.new(type_id, block, caller(2, 1)[0])
+      @jaba_type_infos << JabaTypeInfo.new(id, block, caller(2, 1)[0])
     end
     
     ##
     #
-    def open_type(type_id, &block)
-      jaba_error("type_id is required") if type_id.nil?
-      log "  Opening type [type_id=#{type_id}]"
+    def open_type(id, &block)
+      jaba_error("id is required") if id.nil?
+      log "  Opening type [id=#{id}]"
       jaba_error("a block is required") if !block_given?
-      @jaba_types_to_open << JabaTypeInfo.new(type_id, block, caller(2, 1)[0])
+      @jaba_types_to_open << JabaTypeInfo.new(id, block, caller(2, 1)[0])
     end
     
     ##
@@ -164,14 +164,14 @@ module JABA
     
     ##
     #
-    def define_defaults(type_id, &block)
-      jaba_error("type_id is required") if type_id.nil?
-      log "  Registering defaults [type_id=#{type_id}]"
-      existing = @defaults.find {|info| info.type_id == type_id}
+    def define_defaults(id, &block)
+      jaba_error("id is required") if id.nil?
+      log "  Registering defaults [id=#{id}]"
+      existing = @defaults.find {|info| info.definition_id == id}
       if existing
-        jaba_error("'#{type_id}' defaults multiply defined")
+        jaba_error("'#{id}' defaults multiply defined")
       end
-      @defaults << DefaultsInfo.new(type_id, block, caller(2, 1)[0])
+      @defaults << DefaultsInfo.new(id, block, caller(2, 1)[0])
     end
 
     ##
@@ -213,21 +213,21 @@ module JABA
       # Create JabaTypes and Generators
       #
       @jaba_type_infos.each do |info|
-        type_id = info.type_id
+        id = info.definition_id
 
-        log "Making generator [type_id=#{type_id}]"
+        log "Making generator [id=#{id}]"
 
         # Generator is only created if one exists for the type, otherwise it is nil
         #
-        g = make_generator(type_id)
+        g = make_generator(id)
 
-        log "Making JabaType [type_id=#{type_id}]"
+        log "Making JabaType [id=#{id}]"
 
         # JabaTypes can have some of their attributes split of into separate JabaTypes to help with node
         # creation in the case where a tree of nodes is created from a single definition. These JabaTypes
         # are created on the fly as attributes are added to the types.
         #
-        jt = JabaType.new(self, type_id, info.block, get_defaults_block(type_id), g)
+        jt = JabaType.new(self, id, info.block, get_defaults_block(id), g)
         @jaba_types << jt
       end
 
@@ -240,7 +240,7 @@ module JABA
       # Open JabaTypes so more attributes can be added
       #
       @jaba_types_to_open.each do |info|
-        get_jaba_type(info.type_id).eval_api_block(&info.block)
+        get_jaba_type(info.definition_id).eval_api_block(&info.block)
       end
       
       # When an attribute defined in a JabaType will reference a differernt JabaType a dependency on that
@@ -364,14 +364,14 @@ module JABA
         "#{parent.handle}|#{name}"
       else
         raise 'name not required for root nodes' if name
-        "#{@current_info.type_id}|#{@current_info.id}"
+        "#{@current_info.type_id}|#{@current_info.definition_id}"
       end
 
       log "Making node [type=#{type_id} handle=#{handle}, parent=#{parent}]"
 
       jt = get_jaba_type(type_id)
 
-      jn = JabaNode.new(self, jt, @current_info.id, @current_info.api_call_line, handle, parent)
+      jn = JabaNode.new(self, jt, @current_info.definition_id, @current_info.api_call_line, handle, parent)
       @nodes << jn
       
       if @node_lookup.key?(handle)
@@ -459,32 +459,32 @@ module JABA
 
     ##
     #
-    def register_jaba_type(jt, type_id)
-      if @jaba_type_lookup.key?(type_id)
-        jaba_error("'#{type_id}' jaba type multiply defined")
+    def register_jaba_type(jt, id)
+      if @jaba_type_lookup.key?(id)
+        jaba_error("'#{id}' jaba type multiply defined")
       end
-      @jaba_type_lookup[type_id] = jt
+      @jaba_type_lookup[id] = jt
     end
 
     ##
     #
-    def get_attribute_type(type_id)
-      if type_id.nil?
+    def get_attribute_type(id)
+      if id.nil?
         return @default_attr_type
       end
-      t = @jaba_attr_types.find {|at| at.definition_id == type_id}
+      t = @jaba_attr_types.find {|at| at.definition_id == id}
       if !t
-        jaba_error("'#{type_id}' attribute type is undefined. Valid types: #{@jaba_attr_types.map(&:definition_id)}")
+        jaba_error("'#{id}' attribute type is undefined. Valid types: #{@jaba_attr_types.map(&:definition_id)}")
       end
       t
     end
     
     ##
     #
-    def get_jaba_type(type_id, fail_if_not_found: true, callstack: nil)
-      jt = @jaba_type_lookup[type_id]
+    def get_jaba_type(id, fail_if_not_found: true, callstack: nil)
+      jt = @jaba_type_lookup[id]
       if !jt && fail_if_not_found
-        jaba_error("'#{type_id}' type not defined", callstack: callstack)
+        jaba_error("'#{id}' type not defined", callstack: callstack)
       end
       jt
     end
@@ -494,7 +494,7 @@ module JABA
     def get_instance_info(type_id, id, fail_if_not_found: true)
       defs = @instance_lookup[type_id]
       return nil if !defs
-      d = defs.find {|dd| dd.id == id}
+      d = defs.find {|dd| dd.definition_id == id}
       if !d && fail_if_not_found
         jaba_error("No '#{id}' definition found")
       end
@@ -509,8 +509,8 @@ module JABA
     
     ##
     #
-    def get_defaults_block(type_id)
-      d = @defaults.find {|info| info.type_id == type_id}
+    def get_defaults_block(id)
+      d = @defaults.find {|info| info.definition_id == id}
       if d
         d.block
       else

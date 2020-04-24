@@ -13,7 +13,7 @@ module JABA
     ##
     #
     def initialize(services, info)
-      super(services, info.id, JabaAttributeFlagAPI.new(self))
+      super(services, info.definition_id, JabaAttributeFlagAPI.new(self))
 
       define_property(:help)
 
