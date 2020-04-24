@@ -1,5 +1,4 @@
-# TODO: think about compatibility of flags to attribute types, eg :no_make_rel_to_genroot only applies to
-# :path, :file and :dir attrs
+# TODO: think about compatibility of flags to attribute types
 
 attr_type :bool do
   

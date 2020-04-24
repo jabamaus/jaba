@@ -6,7 +6,7 @@ module JABA
 
   using JABACoreExt
 
-##
+  ##
   #
   class Vcxproj < VSProject
     
@@ -17,7 +17,7 @@ module JABA
     #
     def init
       super
-      @vcxproj_file = "#{@proj_root}.vcxproj"
+      @vcxproj_file = "#{@projroot}/#{@attrs.projname}.vcxproj"
       @vcxproj_filters_file = "#{@vcxproj_file}.filters"
       @configs = @node.children
     end
@@ -32,7 +32,10 @@ module JABA
     ##
     #
     def dump_jaba_output(p_root)
-      super
+      p_root[:projroot] = @projroot
+      p_root[:platform] = @platform.definition_id
+      p_root[:host] = @host.definition_id
+      p_root[:guid] = @guid
       p_root[:vcxproj] = @vcxproj_file
     end
 
@@ -56,7 +59,7 @@ module JABA
       end
     
       property_group(w, label: 'Globals') do
-        write_keyvalue_attr(w, @node.get_attr(:vcglobal))
+        write_keyvalue_attr(w, @node.get_attr(:vcglobal)) # Attribute object itself required here
       end
       
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />'
@@ -107,7 +110,7 @@ module JABA
         item_group(w) do
           deps.each do |dep|
             proj_ref = @generator.project_from_node(dep)
-            w << "    <ProjectReference Include=\"#{proj_ref.vcxproj_file.relative_path_from(genroot).to_backslashes!}\">"
+            w << "    <ProjectReference Include=\"#{proj_ref.vcxproj_file.relative_path_from(projroot).to_backslashes!}\">"
             w << "      <Project>#{proj_ref.guid}</Project>"
             # TODO: reference properties
             w << '    </ProjectReference>'

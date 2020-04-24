@@ -11,22 +11,19 @@ module JABA
   #
   class Project
     
-    attr_reader :node
     attr_reader :attrs
-    attr_reader :root
-    attr_reader :genroot
+    attr_reader :projroot
     
     ##
     #
     def initialize(services, generator, node)
       @services = services
-      @generator = generator
+      @generator = generator # required in order to look up other projects when resolving dependencies
       @node = node
       @attrs = node.attrs
       r = @attrs.root
-      @root = r.absolute_path? ? r : "#{node.source_dir}/#{r}"
-      @genroot = "#{@root}/#{@attrs.genroot}"
-      @proj_root = "#{@genroot}/#{@attrs.projname}".cleanpath
+      r = r.absolute_path? ? r : "#{node.source_dir}/#{r}"
+      @projroot = "#{r}/#{@attrs.projroot}"
     end
     
     ##
@@ -36,10 +33,10 @@ module JABA
     end
 
     ##
-    # Override this in subclass and call super
+    # Override this in subclass.
     #
     def dump_jaba_output(p_root)
-      p_root[:genroot] = @genroot
+      # nothing
     end
 
   end

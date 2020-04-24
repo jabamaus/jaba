@@ -1,17 +1,8 @@
 define :cpp do
 
-  include :project
+  include :project_common
 
   help 'TODO'
-
-  attr :projname do
-    help 'Seeds file basename of project files. Defaults to <name><projsuffix>.'
-    default { "#{name}#{projname_suffix}" }
-  end
-
-  attr :projname_suffix do
-    help 'Optional suffix to be applied to <projname>. Has no effect if <projname> is set explicitly.'
-  end
 
   attr_array :platforms, type: :reference do
     referenced_type :platform

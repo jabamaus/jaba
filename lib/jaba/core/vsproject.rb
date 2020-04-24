@@ -20,15 +20,6 @@ module JABA
     
     ##
     #
-    def dump_jaba_output(p_root)
-      super
-      p_root[:platform] = @platform.definition_id
-      p_root[:host] = @host.definition_id
-      p_root[:guid] = @guid
-    end
-
-    ##
-    #
     def tools_version
       @host.attrs.host_version_year < 2013 ? '4.0' : @host.attrs.host_version
     end
