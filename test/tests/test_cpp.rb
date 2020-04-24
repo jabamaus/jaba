@@ -22,6 +22,10 @@ module JABA
       op[:cpp]['cpp|a|x64|vs2017'].wont_be_nil
     end
 
+    it 'supports vcproperty' do
+      
+    end
+    
   end
 
 end
