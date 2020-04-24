@@ -145,10 +145,23 @@ module JABA
   
   module PropertyMethods
 
+    @@id_to_var = {}
+
+    ##
+    #
+    def get_var(id)
+      v = @@id_to_var[id]
+      if !v
+        v = "@#{id}"
+        @@id_to_var[id] = v
+      end
+      v
+    end
+
     ##
     #
     def define_property(p_id, val = nil)
-      var = "@#{p_id}" # TODO: use global cache for this?
+      var = get_var(p_id)
       if instance_variable_defined?(var)
         @services.jaba_error("'#{p_id}' property multiply defined")
       end
@@ -159,7 +172,7 @@ module JABA
     ##
     #
     def define_array_property(p_id, val = [])
-      var = "@#{p_id}" # TODO: use global cache for this?
+      var = get_var(p_id)
       if instance_variable_defined?(var)
         @services.jaba_error("'#{p_id}' property multiply defined")
       end
@@ -170,7 +183,7 @@ module JABA
     ##
     #
     def set_property(p_id, val = nil, &block)
-      var = "@#{p_id}" # TODO: use global cache for this?
+      var = get_var(p_id)
       if !instance_variable_defined?(var)
         @services.jaba_error("'#{p_id}' property not defined")
       end
@@ -197,7 +210,7 @@ module JABA
     ##
     #
     def get_property(p_id)
-      var = "@#{p_id}" # TODO: use global cache for this?
+      var = get_var(p_id)
       if !instance_variable_defined?(var)
         @services.jaba_error("'#{p_id}' property not defined")
       end
