@@ -33,7 +33,7 @@ module JABA
       define_property(:help)
       define_array_property(:dependencies)
 
-      @services.register_jaba_type_lookup(self, type_id)
+      @services.register_jaba_type(self, type_id)
     end
 
     ##

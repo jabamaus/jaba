@@ -459,7 +459,7 @@ module JABA
 
     ##
     #
-    def register_jaba_type_lookup(jt, type_id)
+    def register_jaba_type(jt, type_id)
       if @jaba_type_lookup.key?(type_id)
         jaba_error("'#{type_id}' jaba type multiply defined")
       end
