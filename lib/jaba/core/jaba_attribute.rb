@@ -11,7 +11,7 @@ module JABA
   KeyValue = Struct.new(:key, :value) do
     def <=>(other)
       if key.respond_to?(:casecmp)
-        key.to_s.casecmp(other.key.to_s)
+        key.casecmp(other.key)
       else
         key <=> other.key
       end
@@ -149,7 +149,7 @@ module JABA
     #
     def <=>(other)
       if @value.respond_to?(:casecmp)
-        @value.to_s.casecmp(other.get.to_s)
+        @value.casecmp(other.get)
       else
         @value <=> other.get
       end
