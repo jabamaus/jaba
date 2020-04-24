@@ -563,7 +563,7 @@ module JABA
       if (eol == :windows) || ((eol == :native) && OS.windows?)
         content = content.gsub("\n", "\r\n")
       end
-      filename = filename.cleanpath
+      filename = File.expand_path(filename.cleanpath)
       log "Saving #{filename}"
 
       # TODO: in case of duplicate check if content matches and fail if it doesn't
