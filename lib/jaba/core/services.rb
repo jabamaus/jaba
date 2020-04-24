@@ -5,7 +5,7 @@ require 'logger'
 require 'json'
 require_relative 'core_ext'
 require_relative 'utils'
-require_relative 'jaba_definition'
+require_relative 'jaba_definition_block'
 require_relative 'jaba_object'
 require_relative 'jaba_attribute_type'
 require_relative 'jaba_attribute_flag'
@@ -35,11 +35,7 @@ module JABA
     ##
     # Records information about each definition the user has made.
     #
-    AttrTypeInfo = Struct.new(:definition_id, :block, :api_call_line)
-    AttrFlagInfo = Struct.new(:definition_id, :block, :api_call_line)
-    JabaTypeInfo = Struct.new(:definition_id, :block, :api_call_line)
     JabaInstanceInfo = Struct.new(:definition_id, :type_id, :jaba_type, :block, :api_call_line)
-    DefaultsInfo = Struct.new(:definition_id, :block, :api_call_line)
 
     @@file_cache = {}
     @@glob_cache = {}
@@ -69,15 +65,17 @@ module JABA
       @generated_files = []
       @generated_files_lookup = {}
       
-      @jaba_type_infos = []
+      @jaba_attr_type_definition_blocks = []
+      @jaba_attr_flag_definition_blocks = []
+      @jaba_type_definition_blocks = []
+      @jaba_open_definition_blocks = []
+      @default_definition_blocks = []
 
       @jaba_attr_types = []
       @jaba_attr_flags = []
       @jaba_types = []
       @additional_jaba_types = []
-      @jaba_types_to_open = []
       @instances = []
-      @defaults = []
 
       @jaba_type_lookup = {}
       @instance_lookup = {}
@@ -90,7 +88,7 @@ module JABA
       
       @top_level_api = TopLevelAPI.new(self)
 
-      @default_attr_type = JabaAttributeType.new(self, AttrTypeInfo.new).freeze
+      @default_attr_type = JabaAttributeType.new(self, JabaDefinitionBlock.new(nil, nil, nil)).freeze
     end
 
     ##
@@ -106,7 +104,7 @@ module JABA
       log "Registering attr type [id=#{id}]"
       validate_id(id)
       # TODO: check for dupes
-      @jaba_attr_types << AttrTypeInfo.new(id, block, caller(2, 1)[0])
+      @jaba_attr_type_definition_blocks << JabaDefinitionBlock.new(id, block, caller(2, 1)[0])
     end
 
     ##
@@ -116,7 +114,7 @@ module JABA
       log "  Registering attr flag [id=#{id}]"
       validate_id(id)
       # TODO: check for dupes
-      @jaba_attr_flags << AttrFlagInfo.new(id, block, caller(2, 1)[0])
+      @jaba_attr_flag_definition_blocks << JabaDefinitionBlock.new(id, block, caller(2, 1)[0])
     end
 
     ##
@@ -126,7 +124,7 @@ module JABA
       log "  Registering type [id=#{id}]"
       validate_id(id)
       # TODO: check for dupes
-      @jaba_type_infos << JabaTypeInfo.new(id, block, caller(2, 1)[0])
+      @jaba_type_definition_blocks << JabaDefinitionBlock.new(id, block, caller(2, 1)[0])
     end
     
     ##
@@ -135,7 +133,7 @@ module JABA
       jaba_error("id is required") if id.nil?
       log "  Opening type [id=#{id}]"
       jaba_error("a block is required") if !block_given?
-      @jaba_types_to_open << JabaTypeInfo.new(id, block, caller(2, 1)[0])
+      @jaba_open_definition_blocks << JabaDefinitionBlock.new(id, block, caller(2, 1)[0])
     end
     
     ##
@@ -167,11 +165,11 @@ module JABA
     def define_defaults(id, &block)
       jaba_error("id is required") if id.nil?
       log "  Registering defaults [id=#{id}]"
-      existing = @defaults.find {|info| info.definition_id == id}
+      existing = @default_definition_blocks.find {|db| db.definition_id == id}
       if existing
         jaba_error("'#{id}' defaults multiply defined")
       end
-      @defaults << DefaultsInfo.new(id, block, caller(2, 1)[0])
+      @default_definition_blocks << JabaDefinitionBlock.new(id, block, caller(2, 1)[0])
     end
 
     ##
@@ -204,16 +202,20 @@ module JABA
       
       # Create attribute types
       #
-      @jaba_attr_types.map! {|info| JabaAttributeType.new(self, info)}
+      @jaba_attr_type_definition_blocks.each do |db|
+        @jaba_attr_types << JabaAttributeType.new(self, db)
+      end
       
       # Create attribute flags, which are used in attribute definitions
       #
-      @jaba_attr_flags.map! {|info| JabaAttributeFlag.new(self, info)}
+      @jaba_attr_flag_definition_blocks.each do |db|
+        @jaba_attr_flags << JabaAttributeFlag.new(self, db)
+      end
 
       # Create JabaTypes and Generators
       #
-      @jaba_type_infos.each do |info|
-        id = info.definition_id
+      @jaba_type_definition_blocks.each do |db|
+        id = db.definition_id
 
         log "Making generator [id=#{id}]"
 
@@ -227,7 +229,7 @@ module JABA
         # creation in the case where a tree of nodes is created from a single definition. These JabaTypes
         # are created on the fly as attributes are added to the types.
         #
-        jt = JabaType.new(self, id, info.block, get_defaults_block(id), g)
+        jt = JabaType.new(self, id, db.block, get_defaults_block(id), g)
         @jaba_types << jt
       end
 
@@ -239,8 +241,8 @@ module JABA
       
       # Open JabaTypes so more attributes can be added
       #
-      @jaba_types_to_open.each do |info|
-        get_jaba_type(info.definition_id).eval_api_block(&info.block)
+      @jaba_open_definition_blocks.each do |db|
+        get_jaba_type(db.definition_id).eval_api_block(&db.block)
       end
       
       # When an attribute defined in a JabaType will reference a differernt JabaType a dependency on that
@@ -510,7 +512,7 @@ module JABA
     ##
     #
     def get_defaults_block(id)
-      d = @defaults.find {|info| info.definition_id == id}
+      d = @default_definition_blocks.find {|db| db.definition_id == id}
       if d
         d.block
       else
