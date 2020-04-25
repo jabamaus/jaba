@@ -48,7 +48,7 @@ module JABA
         end
       end
 
-      @services.log "Adding '#{id}' to '#{@handle}'"
+      @services.log "  Adding '#{id}' to '#{@handle}'"
       
       validate_id(id)
       id = id.to_sym
@@ -97,14 +97,6 @@ module JABA
     ##
     #
     def init
-      if @definition.block
-        eval_api_block(&@definition.block)
-      end
-    end
-    
-    ##
-    #
-    def init_attrs
       @attribute_defs.each(&:init)
     end
 

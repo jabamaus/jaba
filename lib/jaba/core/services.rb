@@ -74,7 +74,6 @@ module JABA
       @jaba_attr_types = []
       @jaba_attr_flags = []
       @jaba_types = []
-      @jaba_sub_types = []
       @jaba_type_lookup = {}
 
       @generators = []
@@ -217,14 +216,11 @@ module JABA
       # Create JabaTypes and any associated Generators
       #
       @jaba_type_definitions.each do |d|
+        d.instance_variable_set(:@defaults_definition, get_defaults_definition(d.definition_id))
         make_type(d.definition_id, d)
       end
 
-      # Init JabaTypes. This can cause additional JabaTypes to be created
-      #
       @jaba_types.each(&:init)
-      @jaba_types.concat(@jaba_sub_types)
-      @jaba_types.each(&:init_attrs)
       
       # Open JabaTypes so more attributes can be added
       #
@@ -362,19 +358,17 @@ module JABA
         generator = make_generator(definition.definition_id)
       end
 
-      if !sub_type
-        definition.instance_variable_set(:@defaults_definition, get_defaults_definition(handle))
-      end
-
       jt = JabaType.new(self, definition, handle, generator)
 
-      if sub_type
-        @jaba_sub_types << jt
-      else
-        @jaba_types << jt
+      @jaba_types << jt
+      @jaba_type_lookup[handle] = jt
+
+      if !sub_type
+        if definition.block
+          jt.eval_api_block(&definition.block)
+        end
       end
 
-      @jaba_type_lookup[handle] = jt
       jt
     end
 
