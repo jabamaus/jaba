@@ -20,8 +20,8 @@ module JABA
     
     ##
     #
-    def initialize(services, def_block, handle, generator)
-      super(services, def_block, JabaTypeAPI.new(self))
+    def initialize(services, definition, handle, generator)
+      super(services, definition, JabaTypeAPI.new(self))
 
       @handle = handle
       @attribute_defs = []
@@ -40,7 +40,7 @@ module JABA
         if st_handle
           sub_type = @services.get_jaba_type(st_handle, fail_if_not_found: false)
           if sub_type.nil?
-            sub_type = @services.make_type(st_handle, @definition_block, sub_type: true)
+            sub_type = @services.make_type(st_handle, @definition, sub_type: true)
             @dependencies << st_handle
           end
           # TODO: remove recursion. use do_define_attr
@@ -58,7 +58,7 @@ module JABA
       end
 
       # TODO: caller will be wrong in the case of custom type
-      db = JabaDefinitionBlock.new(id, block, caller(2, 1)[0])
+      db = JabaDefinition.new(id, block, caller(2, 1)[0])
       ad = JabaAttributeDefinition.new(@services, db, type, variant, self)
       
       @attribute_defs << ad
@@ -97,8 +97,8 @@ module JABA
     ##
     #
     def init
-      if @definition_block.block
-        eval_api_block(&@definition_block.block)
+      if @definition.block
+        eval_api_block(&@definition.block)
       end
     end
     

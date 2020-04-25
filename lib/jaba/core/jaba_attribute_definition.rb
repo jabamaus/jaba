@@ -21,8 +21,8 @@ module JABA
     
     ##
     #
-    def initialize(services, def_block, type_id, variant, jaba_type)
-      super(services, def_block, JabaAttributeDefinitionAPI.new(self))
+    def initialize(services, definition, type_id, variant, jaba_type)
+      super(services, definition, JabaAttributeDefinitionAPI.new(self))
       
       @type_id = type_id
       @variant = variant
@@ -39,15 +39,15 @@ module JABA
       @jaba_attr_type = @services.get_attribute_type(@type_id)
       @jaba_attr_type.call_hook(:init_attr_def, receiver: self)
 
-      if @definition_block.block
-        eval_api_block(&@definition_block.block)
+      if @definition.block
+        eval_api_block(&@definition.block)
       end
     end
     
     ##
     #
     def to_s
-      "id=#{@definition_block.definition_id} type=#{@type_id}"
+      "id=#{@definition.definition_id} type=#{@type_id}"
     end
 
     ##

@@ -11,25 +11,25 @@ module JABA
   class JabaObject
     
     attr_reader :services
-    attr_reader :definition_block
+    attr_reader :definition
     attr_reader :definition_id # As specified by user in definition files.
     attr_reader :api
     attr_reader :api_call_line
 
     ##
     #
-    def initialize(services, def_block, api_object)
+    def initialize(services, definition, api_object)
       @services = services
-      @definition_block = def_block
-      @definition_id = def_block.definition_id
-      @api_call_line = def_block.api_call_line
+      @definition = definition
+      @definition_id = definition.definition_id
+      @api_call_line = definition.api_call_line
       @api = api_object
     end
 
     ##
     #
     def to_s
-      @definition_block.definition_id.to_s
+      @definition.definition_id.to_s
     end
 
     ##
@@ -54,7 +54,7 @@ module JABA
       ids.each do |id|
         @services.log "  Including shared definition [id=#{id}]"
 
-        db = @services.get_shared_definition_block(id)
+        db = @services.get_shared_definition(id)
         
         n_expected = db.block.arity
         n_actual = args ? Array(args).size : 0

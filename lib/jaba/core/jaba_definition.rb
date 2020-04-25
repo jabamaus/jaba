@@ -8,7 +8,7 @@ module JABA
 
   ##
   #
-  class JabaDefinitionBlock
+  class JabaDefinition
 
     attr_reader :definition_id
     attr_reader :block
@@ -26,16 +26,16 @@ module JABA
 
   ##
   #
-  class JabaTypeDefinitionBlock < JabaDefinitionBlock
+  class JabaTypeDefinition < JabaDefinition
 
-    attr_reader :defaults_block
+    attr_reader :defaults_definition
 
     ##
     #
     def initialize(id, block, api_call_line)
       super(id, block, api_call_line)
       
-      @defaults_block = nil
+      @defaults_definition = nil
 
     end
 
@@ -43,7 +43,7 @@ module JABA
 
   ##
   #
-  class JabaInstanceDefinitionBlock < JabaDefinitionBlock
+  class JabaInstanceDefinition < JabaDefinition
     
     attr_reader :jaba_type_id
     attr_reader :jaba_type

@@ -19,10 +19,10 @@ module JABA
     
     ##
     #
-    def initialize(services, def_block, jaba_type, handle, parent)
-      super(services, def_block, JabaNodeAPI.new(self))
+    def initialize(services, definition, jaba_type, handle, parent)
+      super(services, definition, JabaNodeAPI.new(self))
 
-      @jaba_type = jaba_type # Won't always be the same as the JabaType in def_block
+      @jaba_type = jaba_type # Won't always be the same as the JabaType in definition
       @handle = handle
       @children = []
       @parent = parent

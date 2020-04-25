@@ -60,16 +60,16 @@ module JABA
       @generated_files = []
       @generated_files_lookup = {}
       
-      @jaba_attr_type_definition_blocks = []
-      @jaba_attr_flag_definition_blocks = []
-      @jaba_type_definition_blocks = []
-      @jaba_open_definition_blocks = []
-      @default_definition_blocks = []
-      @instance_definition_blocks = []
-      @instance_definition_block_lookup = {}
-      @shared_definition_block_lookup = {}
+      @jaba_attr_type_definitions = []
+      @jaba_attr_flag_definitions = []
+      @jaba_type_definitions = []
+      @jaba_open_definitions = []
+      @default_definitions = []
+      @instance_definitions = []
+      @instance_definition_lookup = {}
+      @shared_definition_lookup = {}
 
-      @current_dblock = nil
+      @current_definition = nil
 
       @jaba_attr_types = []
       @jaba_attr_flags = []
@@ -85,7 +85,7 @@ module JABA
       
       @top_level_api = TopLevelAPI.new(self)
 
-      @default_attr_type = JabaAttributeType.new(self, JabaDefinitionBlock.new(nil, nil, nil)).freeze
+      @default_attr_type = JabaAttributeType.new(self, JabaDefinition.new(nil, nil, nil)).freeze
     end
 
     ##
@@ -95,7 +95,7 @@ module JABA
       log "Registering attr type [id=#{id}]"
       validate_id(id)
       # TODO: check for dupes
-      @jaba_attr_type_definition_blocks << JabaDefinitionBlock.new(id, block, caller(2, 1)[0])
+      @jaba_attr_type_definitions << JabaDefinition.new(id, block, caller(2, 1)[0])
     end
 
     ##
@@ -105,7 +105,7 @@ module JABA
       log "  Registering attr flag [id=#{id}]"
       validate_id(id)
       # TODO: check for dupes
-      @jaba_attr_flag_definition_blocks << JabaDefinitionBlock.new(id, block, caller(2, 1)[0])
+      @jaba_attr_flag_definitions << JabaDefinition.new(id, block, caller(2, 1)[0])
     end
 
     ##
@@ -115,7 +115,7 @@ module JABA
       log "  Registering type [id=#{id}]"
       validate_id(id)
       # TODO: check for dupes
-      @jaba_type_definition_blocks << JabaTypeDefinitionBlock.new(id, block, caller(2, 1)[0])
+      @jaba_type_definitions << JabaTypeDefinition.new(id, block, caller(2, 1)[0])
     end
     
     ##
@@ -124,7 +124,7 @@ module JABA
       jaba_error("id is required") if id.nil?
       log "  Opening type [id=#{id}]"
       jaba_error("a block is required") if !block_given?
-      @jaba_open_definition_blocks << JabaTypeDefinitionBlock.new(id, block, caller(2, 1)[0])
+      @jaba_open_definitions << JabaTypeDefinition.new(id, block, caller(2, 1)[0])
     end
     
     ##
@@ -136,11 +136,11 @@ module JABA
       log "  Registering shared definition block [id=#{id}]"
       validate_id(id)
 
-      if get_shared_definition_block(id, fail_if_not_found: false)
+      if get_shared_definition(id, fail_if_not_found: false)
         jaba_error("'#{id}' multiply defined")
       end
 
-      @shared_definition_block_lookup[id] = JabaDefinitionBlock.new(id, block, caller(2, 1)[0])
+      @shared_definition_lookup[id] = JabaDefinition.new(id, block, caller(2, 1)[0])
     end
 
     ##
@@ -157,9 +157,9 @@ module JABA
         jaba_error("'#{id}' multiply defined")
       end
       
-      db = JabaInstanceDefinitionBlock.new(id, type_id, block, caller(2, 1)[0])
-      @instance_definition_block_lookup.push_value(type_id, db)
-      @instance_definition_blocks << db
+      d = JabaInstanceDefinition.new(id, type_id, block, caller(2, 1)[0])
+      @instance_definition_lookup.push_value(type_id, d)
+      @instance_definitions << d
     end
     
     ##
@@ -167,11 +167,11 @@ module JABA
     def define_defaults(id, &block)
       jaba_error("id is required") if id.nil?
       log "  Registering defaults [id=#{id}]"
-      existing = @default_definition_blocks.find {|db| db.definition_id == id}
+      existing = @default_definitions.find {|d| d.definition_id == id}
       if existing
         jaba_error("'#{id}' defaults multiply defined")
       end
-      @default_definition_blocks << JabaDefinitionBlock.new(id, block, caller(2, 1)[0])
+      @default_definitions << JabaDefinition.new(id, block, caller(2, 1)[0])
     end
 
     ##
@@ -204,20 +204,20 @@ module JABA
       
       # Create attribute types
       #
-      @jaba_attr_type_definition_blocks.each do |db|
-        @jaba_attr_types << JabaAttributeType.new(self, db)
+      @jaba_attr_type_definitions.each do |d|
+        @jaba_attr_types << JabaAttributeType.new(self, d)
       end
       
       # Create attribute flags, which are used in attribute definitions
       #
-      @jaba_attr_flag_definition_blocks.each do |db|
-        @jaba_attr_flags << JabaAttributeFlag.new(self, db)
+      @jaba_attr_flag_definitions.each do |d|
+        @jaba_attr_flags << JabaAttributeFlag.new(self, d)
       end
 
       # Create JabaTypes and any associated Generators
       #
-      @jaba_type_definition_blocks.each do |db|
-        make_type(db.definition_id, db)
+      @jaba_type_definitions.each do |d|
+        make_type(d.definition_id, d)
       end
 
       # Init JabaTypes. This can cause additional JabaTypes to be created
@@ -228,8 +228,8 @@ module JABA
       
       # Open JabaTypes so more attributes can be added
       #
-      @jaba_open_definition_blocks.each do |db|
-        get_jaba_type(db.definition_id).eval_api_block(&db.block)
+      @jaba_open_definitions.each do |d|
+        get_jaba_type(d.definition_id).eval_api_block(&d.block)
       end
       
       # When an attribute defined in a JabaType will reference a differernt JabaType a dependency on that
@@ -255,19 +255,19 @@ module JABA
       
       # Associate a JabaType with each instance of a type.
       #
-      @instance_definition_blocks.each do |db|
-        db.instance_variable_set(:@jaba_type, get_jaba_type(db.jaba_type_id, callstack: db.api_call_line))
+      @instance_definitions.each do |d|
+        d.instance_variable_set(:@jaba_type, get_jaba_type(d.jaba_type_id, callstack: d.api_call_line))
       end
       
-      @instance_definition_blocks.stable_sort_by! {|d| d.jaba_type.instance_variable_get(:@order_index)}
+      @instance_definitions.stable_sort_by! {|d| d.jaba_type.instance_variable_get(:@order_index)}
       
       # Create instances of JabaNode from JabaTypes. This could be a single node or a tree of nodes.
       # Track the root node that is returned in each case. The array of root nodes is used to dump definition data to json.
       #
-      @instance_definition_blocks.each do |db|
-        @current_dblock = db
+      @instance_definitions.each do |d|
+        @current_definition = d
 
-        g = db.jaba_type.generator
+        g = d.jaba_type.generator
         @root_nodes << if g
           g.make_nodes
         else
@@ -348,7 +348,7 @@ module JABA
     # creation in the case where a tree of nodes is created from a single definition. These JabaTypes
     # are created on the fly as attributes are added to the types.
     #
-    def make_type(handle, def_block, sub_type: false)
+    def make_type(handle, definition, sub_type: false)
       log "Making JabaType [handle=#{handle}]"
 
       if @jaba_type_lookup.key?(handle)
@@ -359,14 +359,14 @@ module JABA
       #
       generator = nil
       if !sub_type
-        generator = make_generator(def_block.definition_id)
+        generator = make_generator(definition.definition_id)
       end
 
       if !sub_type
-        def_block.instance_variable_set(:@defaults_block, get_defaults_block(handle))
+        definition.instance_variable_set(:@defaults_definition, get_defaults_definition(handle))
       end
 
-      jt = JabaType.new(self, def_block, handle, generator)
+      jt = JabaType.new(self, definition, handle, generator)
 
       if sub_type
         @jaba_sub_types << jt
@@ -380,7 +380,7 @@ module JABA
 
     ##
     #
-    def make_node(type_id: @current_dblock.jaba_type_id, name: nil, parent: nil, &block)
+    def make_node(type_id: @current_definition.jaba_type_id, name: nil, parent: nil, &block)
       handle = if parent
         raise 'name is required for child nodes' if !name
         if name.is_a?(JabaNode)
@@ -389,7 +389,7 @@ module JABA
         "#{parent.handle}|#{name}"
       else
         raise 'name not required for root nodes' if name
-        "#{@current_dblock.jaba_type_id}|#{@current_dblock.definition_id}"
+        "#{@current_definition.jaba_type_id}|#{@current_definition.definition_id}"
       end
 
       log "Making node [type=#{type_id} handle=#{handle}, parent=#{parent}]"
@@ -400,7 +400,7 @@ module JABA
 
       jt = get_jaba_type(type_id)
 
-      jn = JabaNode.new(self, @current_dblock, jt, handle, parent)
+      jn = JabaNode.new(self, @current_definition, jt, handle, parent)
 
       @nodes << jn
       @node_lookup[handle] = jn
@@ -414,14 +414,14 @@ module JABA
       
       # Next execute defaults block if there is one defined for this type
       #
-      defaults = jt.definition_block.defaults_block
+      defaults = jt.definition.defaults_definition
       if defaults
         log "  Including defaults"
         jn.eval_api_block(&defaults.block)
       end
 
-      if @current_dblock.block
-        jn.eval_api_block(&@current_dblock.block)
+      if @current_definition.block
+        jn.eval_api_block(&@current_definition.block)
       end
       
       jn.post_create
@@ -502,8 +502,8 @@ module JABA
     
     ##
     #
-    def get_instance_definition_block(type_id, id, fail_if_not_found: true)
-      defs = @instance_definition_block_lookup[type_id]
+    def get_instance_definition(type_id, id, fail_if_not_found: true)
+      defs = @instance_definition_lookup[type_id]
       return nil if !defs
       d = defs.find {|dd| dd.definition_id == id}
       if !d && fail_if_not_found
@@ -515,23 +515,23 @@ module JABA
     ##
     #
     def instanced?(type_id, id)
-      get_instance_definition_block(type_id, id, fail_if_not_found: false) != nil
+      get_instance_definition(type_id, id, fail_if_not_found: false) != nil
     end
     
     ##
     #
-    def get_shared_definition_block(id, fail_if_not_found: true)
-      db = @shared_definition_block_lookup[id]
-      if !db && fail_if_not_found
+    def get_shared_definition(id, fail_if_not_found: true)
+      d = @shared_definition_lookup[id]
+      if !d && fail_if_not_found
         jaba_error("Shared definition '#{id}' not found")
       end
-      db
+      d
     end
 
     ##
     #
-    def get_defaults_block(id)
-      @default_definition_blocks.find {|db| db.definition_id == id}
+    def get_defaults_definition(id)
+      @default_definitions.find {|d| d.definition_id == id}
     end
 
     ##

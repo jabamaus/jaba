@@ -12,13 +12,13 @@ module JABA
 
     ##
     #
-    def initialize(services, def_block)
-      super(services, def_block, JabaAttributeFlagAPI.new(self))
+    def initialize(services, definition)
+      super(services, definition, JabaAttributeFlagAPI.new(self))
 
       define_property(:help)
 
-      if def_block.block
-        eval_api_block(&def_block.block)
+      if definition.block
+        eval_api_block(&definition.block)
       end
     end
 
