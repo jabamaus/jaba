@@ -26,6 +26,23 @@ module JABA
 
   ##
   #
+  class JabaTypeDefinitionBlock < JabaDefinitionBlock
+
+    attr_reader :defaults_block
+
+    ##
+    #
+    def initialize(id, block, api_call_line)
+      super(id, block, api_call_line)
+      
+      @defaults_block = nil
+
+    end
+
+  end
+
+  ##
+  #
   class JabaInstanceDefinitionBlock < JabaDefinitionBlock
     
     attr_reader :jaba_type_id

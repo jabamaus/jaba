@@ -11,6 +11,7 @@ module JABA
   class JabaObject
     
     attr_reader :services
+    attr_reader :definition_block
     attr_reader :definition_id # As specified by user in definition files.
     attr_reader :api
     attr_reader :api_call_line

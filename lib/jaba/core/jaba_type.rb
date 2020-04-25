@@ -17,15 +17,13 @@ module JABA
     attr_reader :attribute_defs
     attr_reader :dependencies
     attr_reader :generator
-    attr_reader :defaults_block
     
     ##
     #
-    def initialize(services, def_block, handle, defaults_block, generator)
+    def initialize(services, def_block, handle, generator)
       super(services, def_block, JabaTypeAPI.new(self))
 
       @handle = handle
-      @defaults_block = defaults_block
       @attribute_defs = []
       @attribute_def_lookup = {}
       @generator = generator

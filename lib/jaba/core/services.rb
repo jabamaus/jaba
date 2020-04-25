@@ -115,7 +115,7 @@ module JABA
       log "  Registering type [id=#{id}]"
       validate_id(id)
       # TODO: check for dupes
-      @jaba_type_definition_blocks << JabaDefinitionBlock.new(id, block, caller(2, 1)[0])
+      @jaba_type_definition_blocks << JabaTypeDefinitionBlock.new(id, block, caller(2, 1)[0])
     end
     
     ##
@@ -124,7 +124,7 @@ module JABA
       jaba_error("id is required") if id.nil?
       log "  Opening type [id=#{id}]"
       jaba_error("a block is required") if !block_given?
-      @jaba_open_definition_blocks << JabaDefinitionBlock.new(id, block, caller(2, 1)[0])
+      @jaba_open_definition_blocks << JabaTypeDefinitionBlock.new(id, block, caller(2, 1)[0])
     end
     
     ##
@@ -362,7 +362,11 @@ module JABA
         generator = make_generator(def_block.definition_id)
       end
 
-      jt = JabaType.new(self, def_block, handle, get_defaults_block(def_block.definition_id), generator)
+      if !sub_type
+        def_block.instance_variable_set(:@defaults_block, get_defaults_block(handle))
+      end
+
+      jt = JabaType.new(self, def_block, handle, generator)
 
       if sub_type
         @jaba_sub_types << jt
@@ -410,10 +414,10 @@ module JABA
       
       # Next execute defaults block if there is one defined for this type
       #
-      defaults = jn.jaba_type.defaults_block
+      defaults = jt.definition_block.defaults_block
       if defaults
         log "  Including defaults"
-        jn.eval_api_block(&defaults)
+        jn.eval_api_block(&defaults.block)
       end
 
       if @current_dblock.block
@@ -527,12 +531,7 @@ module JABA
     ##
     #
     def get_defaults_block(id)
-      d = @default_definition_blocks.find {|db| db.definition_id == id}
-      if d
-        d.block
-      else
-        nil
-      end
+      @default_definition_blocks.find {|db| db.definition_id == id}
     end
 
     ##
