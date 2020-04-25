@@ -6,7 +6,7 @@
     "C:/projects/GitHub/jaba/lib/jaba/definitions/cpp.rb",
     "C:/projects/GitHub/jaba/lib/jaba/definitions/hosts.rb",
     "C:/projects/GitHub/jaba/lib/jaba/definitions/platforms.rb",
-    "C:/projects/GitHub/jaba/lib/jaba/definitions/project_base.rb",
+    "C:/projects/GitHub/jaba/lib/jaba/definitions/project_common.rb",
     "C:/projects/GitHub/jaba/lib/jaba/definitions/text.rb",
     "C:/projects/GitHub/jaba/lib/jaba/definitions/workspace.rb",
     "C:/projects/GitHub/jaba/examples/example1/jaba.rb",
@@ -189,9 +189,10 @@
           ],
           "children": {
             "cpp|MyApp|win32|vs2017": {
-              "genroot": ".",
+              "projroot": ".",
               "name": "MyApp",
-              "namesuffix": null,
+              "projname": "MyApp",
+              "projname_suffix": null,
               "src": [
 
               ],
@@ -211,6 +212,7 @@
               "children": {
                 "cpp|MyApp|win32|vs2017|debug": {
                   "config": "debug",
+                  "config_name": "debug",
                   "rtti": true,
                   "toolset": "v141",
                   "vcproperty": [
@@ -221,6 +223,7 @@
                 },
                 "cpp|MyApp|win32|vs2017|release": {
                   "config": "release",
+                  "config_name": "release",
                   "rtti": true,
                   "toolset": "v141",
                   "vcproperty": [
@@ -248,9 +251,10 @@
           ],
           "children": {
             "cpp|MyLib|win32|vs2017": {
-              "genroot": ".",
+              "projroot": ".",
               "name": "MyLib",
-              "namesuffix": null,
+              "projname": "MyLib",
+              "projname_suffix": null,
               "src": [
 
               ],
@@ -270,6 +274,7 @@
               "children": {
                 "cpp|MyLib|win32|vs2017|debug": {
                   "config": "debug",
+                  "config_name": "debug",
                   "rtti": true,
                   "toolset": "v141",
                   "vcproperty": [
@@ -280,6 +285,7 @@
                 },
                 "cpp|MyLib|win32|vs2017|release": {
                   "config": "release",
+                  "config_name": "release",
                   "rtti": true,
                   "toolset": "v141",
                   "vcproperty": [
