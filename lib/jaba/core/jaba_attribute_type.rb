@@ -13,7 +13,7 @@ module JABA
     ##
     #
     def initialize(services, def_block)
-      super(services, def_block.definition_id, JabaAttributeTypeAPI.new(self))
+      super(services, def_block, JabaAttributeTypeAPI.new(self))
      
       define_property(:help)
       define_hook(:init_attr_def)
@@ -23,12 +23,6 @@ module JABA
       if def_block.block
         eval_api_block(&def_block.block)
       end
-    end
-
-    ##
-    #
-    def to_s
-      @definition_id.to_s
     end
 
   end

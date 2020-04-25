@@ -18,16 +18,15 @@ module JABA
     attr_reader :jaba_attr_type # JabaAttributeType object
     attr_reader :jaba_type
     attr_reader :keyval_opts
-    attr_reader :api_call_line
     
     ##
     #
-    def initialize(services, definition_id, type_id, variant, jaba_type, api_call_line)
-      super(services, definition_id, JabaAttributeDefinitionAPI.new(self))
+    def initialize(services, def_block, type_id, variant, jaba_type)
+      super(services, def_block, JabaAttributeDefinitionAPI.new(self))
+      
       @type_id = type_id
       @variant = variant
       @jaba_type = jaba_type
-      @api_call_line = api_call_line
 
       define_property(:help)
       define_property(:default)
@@ -39,12 +38,16 @@ module JABA
       
       @jaba_attr_type = @services.get_attribute_type(@type_id)
       @jaba_attr_type.call_hook(:init_attr_def, receiver: self)
+
+      if @definition_block.block
+        eval_api_block(&@definition_block.block)
+      end
     end
     
     ##
     #
     def to_s
-      "id=#{@definition_id} type=#{@type_id}"
+      "id=#{@definition_block.definition_id} type=#{@type_id}"
     end
 
     ##

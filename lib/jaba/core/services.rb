@@ -74,7 +74,7 @@ module JABA
       @jaba_attr_types = []
       @jaba_attr_flags = []
       @jaba_types = []
-      @additional_jaba_types = []
+      @jaba_sub_types = []
       @jaba_type_lookup = {}
 
       @generators = []
@@ -88,12 +88,6 @@ module JABA
       @default_attr_type = JabaAttributeType.new(self, JabaDefinitionBlock.new(nil, nil, nil)).freeze
     end
 
-    ##
-    #
-    def log(msg, severity = Logger::INFO)
-      @logger&.log(severity, msg)
-    end
-    
     ##
     #
     def define_attr_type(id, &block)
@@ -220,31 +214,16 @@ module JABA
         @jaba_attr_flags << JabaAttributeFlag.new(self, db)
       end
 
-      # Create JabaTypes and Generators
+      # Create JabaTypes and any associated Generators
       #
       @jaba_type_definition_blocks.each do |db|
-        id = db.definition_id
-
-        log "Making generator [id=#{id}]"
-
-        # Generator is only created if one exists for the type, otherwise it is nil
-        #
-        g = make_generator(id)
-
-        log "Making JabaType [id=#{id}]"
-
-        # JabaTypes can have some of their attributes split of into separate JabaTypes to help with node
-        # creation in the case where a tree of nodes is created from a single definition. These JabaTypes
-        # are created on the fly as attributes are added to the types.
-        #
-        jt = JabaType.new(self, id, db.block, get_defaults_block(id), g)
-        @jaba_types << jt
+        make_type(db.definition_id, db)
       end
 
       # Init JabaTypes. This can cause additional JabaTypes to be created
       #
       @jaba_types.each(&:init)
-      @jaba_types.concat(@additional_jaba_types)
+      @jaba_types.concat(@jaba_sub_types)
       @jaba_types.each(&:init_attrs)
       
       # Open JabaTypes so more attributes can be added
@@ -265,6 +244,8 @@ module JABA
         err_type = e.instance_variable_get(:@err_obj)
         jaba_error("'#{err_type}' contains a cyclic dependency")
       end
+      
+      log 'Initialisation of JabaTypes complete', section: true
       
       # Now that the JabaTypes are dependency sorted, pass on the dependency ordering to the JabaNodes.
       # This is achieved by giving each JabaType an index and then sorting nodes based on this index.
@@ -345,21 +326,52 @@ module JABA
     
     ##
     #
-    def make_generator(type_id)
-      g = nil
-      gen_classname = "JABA::#{type_id.to_s.capitalize_first}Generator"
+    def make_generator(id)
+      gen_classname = "JABA::#{id.to_s.capitalize_first}Generator"
       
-      if Object.const_defined?(gen_classname)
-        generator_class = Module.const_get(gen_classname)
+      return nil if !Object.const_defined?(gen_classname)
 
-        if generator_class.superclass != Generator
-          raise "#{generator_class} must inherit from Generator class"
-        end
+      log "Making generator [id=#{id}]"
+      generator_class = Module.const_get(gen_classname)
 
-        g = generator_class.new(self, type_id)
-        @generators << g
+      if generator_class.superclass != Generator
+        raise "#{generator_class} must inherit from Generator class"
       end
+
+      g = generator_class.new(self, id)
+      @generators << g
       g
+    end
+
+    ##
+    # JabaTypes can have some of their attributes split of into separate JabaTypes to help with node
+    # creation in the case where a tree of nodes is created from a single definition. These JabaTypes
+    # are created on the fly as attributes are added to the types.
+    #
+    def make_type(handle, def_block, sub_type: false)
+      log "Making JabaType [handle=#{handle}]"
+
+      if @jaba_type_lookup.key?(handle)
+        jaba_error("'#{handle}' jaba type multiply defined")
+      end
+
+      # Generator is only created if one exists for the type, otherwise it is nil
+      #
+      generator = nil
+      if !sub_type
+        generator = make_generator(def_block.definition_id)
+      end
+
+      jt = JabaType.new(self, def_block, handle, get_defaults_block(def_block.definition_id), generator)
+
+      if sub_type
+        @jaba_sub_types << jt
+      else
+        @jaba_types << jt
+      end
+
+      @jaba_type_lookup[handle] = jt
+      jt
     end
 
     ##
@@ -378,14 +390,15 @@ module JABA
 
       log "Making node [type=#{type_id} handle=#{handle}, parent=#{parent}]"
 
-      jt = get_jaba_type(type_id)
-
-      jn = JabaNode.new(self, jt, @current_dblock.definition_id, @current_dblock.api_call_line, handle, parent)
-      @nodes << jn
-      
       if @node_lookup.key?(handle)
         jaba_error("Duplicate node handle '#{handle}'")
       end
+
+      jt = get_jaba_type(type_id)
+
+      jn = JabaNode.new(self, @current_dblock, jt, handle, parent)
+
+      @nodes << jn
       @node_lookup[handle] = jn
       
       # Give calling block a chance to initialise attributes. This block is in library code as opposed to user
@@ -425,7 +438,7 @@ module JABA
       end
 
       json = JSON::pretty_generate(root)
-      save_file(input.jaba_input_file, json, :unix)
+      save_file(input.jaba_input_file, json, :unix, track: false)
     end
 
     ##
@@ -456,23 +469,8 @@ module JABA
 
       if input.dump_output?
         json = JSON::pretty_generate(@output)
-        save_file(input.jaba_output_file, json, :unix)
+        save_file(input.jaba_output_file, json, :unix, track: false)
       end
-    end
-
-    ##
-    #
-    def register_jaba_type(jt, id)
-      if @jaba_type_lookup.key?(id)
-        jaba_error("'#{id}' jaba type multiply defined")
-      end
-      @jaba_type_lookup[id] = jt
-    end
-
-    ## 
-    #
-    def register_additional_jaba_type(jt)
-      @additional_jaba_types << jt
     end
 
     ##
@@ -579,7 +577,7 @@ module JABA
     
     ##
     #
-    def save_file(filename, content, eol)
+    def save_file(filename, content, eol, track: true)
       if (eol == :windows) || ((eol == :native) && OS.windows?)
         content = content.gsub("\n", "\r\n")
       end
@@ -587,13 +585,15 @@ module JABA
       log "Saving #{filename}"
 
       # TODO: in case of duplicate check if content matches and fail if it doesn't
-      if @generated_files_lookup.key?(filename)
-        jaba_warning "Duplicate file '#{filename}' generated"
+      if track
+        if @generated_files_lookup.key?(filename)
+          jaba_warning "Duplicate file '#{filename}' generated"
+        end
+        
+        # TODO: register generated file for potential use?
+        @generated_files_lookup[filename] = nil
+        @generated_files << filename
       end
-      
-      # TODO: register generated file for potential use?
-      @generated_files_lookup[filename] = nil
-      @generated_files << filename
       
       dir = File.dirname(filename)
       if !File.exist?(dir)
@@ -684,7 +684,18 @@ module JABA
         "#{severity} #{datetime}: #{msg}\n"
       end
       @logger.level = Logger::INFO
-      log '===== Starting Jaba ====='
+      log 'Starting Jaba', section: true
+    end
+
+    ##
+    #
+    def log(msg, severity = Logger::INFO, section: false)
+      line = msg
+      if section
+        n = ((96 - msg.size)/2).round
+        line = "#{'=' * n} #{msg} #{'=' * n}"
+      end
+      @logger&.log(severity, line)
     end
 
     ##

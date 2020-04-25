@@ -13,6 +13,7 @@ module JABA
 
     include PropertyMethods
     
+    attr_reader :handle
     attr_reader :attribute_defs
     attr_reader :dependencies
     attr_reader :generator
@@ -20,60 +21,60 @@ module JABA
     
     ##
     #
-    def initialize(services, definition_id, block, defaults_block, generator)
-      super(services, definition_id, JabaTypeAPI.new(self))
-      @block = block
+    def initialize(services, def_block, handle, defaults_block, generator)
+      super(services, def_block, JabaTypeAPI.new(self))
+
+      @handle = handle
       @defaults_block = defaults_block
       @attribute_defs = []
       @attribute_def_lookup = {}
       @generator = generator
 
-      define_property(:help)
+      define_property(:help) # TODO: move into definition block?
       define_array_property(:dependencies)
-
-      @services.register_jaba_type(self, definition_id)
     end
 
-    ##
-    #
-    def to_s
-      @definition_id.to_s
-    end
-    
     ##
     #
     def define_attr(id, variant, type: nil, &block)
       if @generator
-        st_id = @generator.sub_type(id)
-        if st_id
-          jt = @services.get_jaba_type(st_id, fail_if_not_found: false)
-          if jt.nil?
-            jt = JabaType.new(@services, st_id, nil, @defaults_block, nil)
-            @dependencies << st_id
-            @services.register_additional_jaba_type(jt)
+        st_handle = @generator.sub_type(id)
+        if st_handle
+          sub_type = @services.get_jaba_type(st_handle, fail_if_not_found: false)
+          if sub_type.nil?
+            sub_type = @services.make_type(st_handle, @definition_block, sub_type: true)
+            @dependencies << st_handle
           end
-          return jt.define_attr(id, variant, type: type, &block)
+          # TODO: remove recursion. use do_define_attr
+          return sub_type.define_attr(id, variant, type: type, &block)
         end
       end
 
+      @services.log "Adding '#{id}' to '#{@handle}'"
+      
       validate_id(id)
       id = id.to_sym
       
       if get_attr_def(id, fail_if_not_found: false)
         jaba_error("'#{id}' attribute multiply defined")
       end
+
       # TODO: caller will be wrong in the case of custom type
-      ad = JabaAttributeDefinition.new(@services, id, type, variant, self, caller(2, 1)[0])
+      db = JabaDefinitionBlock.new(id, block, caller(2, 1)[0])
+      ad = JabaAttributeDefinition.new(@services, db, type, variant, self)
+      
       @attribute_defs << ad
       @attribute_def_lookup[id] = ad
-
-      if block_given?
-        ad.eval_api_block(&block)
-      end
 
       ad
     end
     
+    ##
+    #
+    def to_s
+      @handle.to_s
+    end
+
     ##
     #
     def validate_id(id)
@@ -98,8 +99,8 @@ module JABA
     ##
     #
     def init
-      if @block
-        eval_api_block(&@block)
+      if @definition_block.block
+        eval_api_block(&@definition_block.block)
       end
     end
     

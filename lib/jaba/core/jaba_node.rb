@@ -19,11 +19,10 @@ module JABA
     
     ##
     #
-    def initialize(services, jaba_type, definition_id, api_call_line, handle, parent)
-      super(services, definition_id, JabaNodeAPI.new(self))
+    def initialize(services, def_block, jaba_type, handle, parent)
+      super(services, def_block, JabaNodeAPI.new(self))
 
-      @jaba_type = jaba_type
-      @api_call_line = api_call_line
+      @jaba_type = jaba_type # Won't always be the same as the JabaType in def_block
       @handle = handle
       @children = []
       @parent = parent
@@ -43,7 +42,7 @@ module JABA
       
       define_hook(:generate)
       
-      @jaba_type.attribute_defs.each do |attr_def|
+      jaba_type.attribute_defs.each do |attr_def|
         a = case attr_def.variant
             when :single
               JabaAttribute.new(services, attr_def, nil, self)
