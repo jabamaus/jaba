@@ -166,7 +166,7 @@ module JABA
     def define_defaults(id, &block)
       jaba_error("id is required") if id.nil?
       log "  Registering defaults [id=#{id}]"
-      existing = @default_definitions.find {|d| d.definition_id == id}
+      existing = @default_definitions.find {|d| d.id == id}
       if existing
         jaba_error("'#{id}' defaults multiply defined")
       end
@@ -216,8 +216,8 @@ module JABA
       # Create JabaTypes and any associated Generators
       #
       @jaba_type_definitions.each do |d|
-        d.instance_variable_set(:@defaults_definition, get_defaults_definition(d.definition_id))
-        make_type(d.definition_id, d)
+        d.instance_variable_set(:@defaults_definition, get_defaults_definition(d.id))
+        make_type(d.id, d)
       end
 
       @jaba_types.each(&:init)
@@ -225,7 +225,7 @@ module JABA
       # Open JabaTypes so more attributes can be added
       #
       @jaba_open_definitions.each do |d|
-        get_jaba_type(d.definition_id).eval_api_block(&d.block)
+        get_jaba_type(d.id).eval_api_block(&d.block)
       end
       
       # When an attribute defined in a JabaType will reference a differernt JabaType a dependency on that
@@ -355,7 +355,7 @@ module JABA
       #
       generator = nil
       if !sub_type
-        generator = make_generator(definition.definition_id)
+        generator = make_generator(definition.id)
       end
 
       jt = JabaType.new(self, definition, handle, generator)
@@ -383,7 +383,7 @@ module JABA
         "#{parent.handle}|#{name}"
       else
         raise 'name not required for root nodes' if name
-        "#{@current_definition.jaba_type_id}|#{@current_definition.definition_id}"
+        "#{@current_definition.jaba_type_id}|#{@current_definition.id}"
       end
 
       log "Making node [type=#{type_id} handle=#{handle}, parent=#{parent}]"
@@ -499,7 +499,7 @@ module JABA
     def get_instance_definition(type_id, id, fail_if_not_found: true)
       defs = @instance_definition_lookup[type_id]
       return nil if !defs
-      d = defs.find {|dd| dd.definition_id == id}
+      d = defs.find {|dd| dd.id == id}
       if !d && fail_if_not_found
         jaba_error("No '#{id}' definition found")
       end
@@ -525,7 +525,7 @@ module JABA
     ##
     #
     def get_defaults_definition(id)
-      @default_definitions.find {|d| d.definition_id == id}
+      @default_definitions.find {|d| d.id == id}
     end
 
     ##

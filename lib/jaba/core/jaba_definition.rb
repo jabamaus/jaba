@@ -10,14 +10,14 @@ module JABA
   #
   class JabaDefinition
 
-    attr_reader :definition_id
+    attr_reader :id
     attr_reader :block
     attr_reader :api_call_line
     
     ##
     #
     def initialize(id, block, api_call_line)
-      @definition_id = id
+      @id = id
       @block = block
       @api_call_line = api_call_line
     end

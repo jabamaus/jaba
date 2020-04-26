@@ -46,7 +46,7 @@ module JABA
     ##
     #
     def definition_id
-      @attr_def.definition_id
+      @attr_def.definition.id
     end
     
     ##

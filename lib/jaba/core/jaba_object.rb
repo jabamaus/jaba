@@ -12,7 +12,6 @@ module JABA
     
     attr_reader :services
     attr_reader :definition
-    attr_reader :definition_id # As specified by user in definition files.
     attr_reader :api
     attr_reader :api_call_line
 
@@ -21,15 +20,21 @@ module JABA
     def initialize(services, definition, api_object)
       @services = services
       @definition = definition
-      @definition_id = definition.definition_id
       @api_call_line = definition.api_call_line
       @api = api_object
     end
 
     ##
+    # As specified by user in definition files.
+    #
+    def definition_id
+      @definition.id
+    end
+
+    ##
     #
     def to_s
-      @definition.definition_id.to_s
+      @definition.id.to_s
     end
 
     ##
