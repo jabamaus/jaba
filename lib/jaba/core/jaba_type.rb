@@ -116,8 +116,8 @@ module JABA
     def resolve_dependencies
       # Convert dependencies specified as ids to jaba type objects
       #
-      @dependencies&.uniq!
-      @dependencies&.map! {|dep| @services.get_jaba_type(dep)}
+      @dependencies.uniq!
+      @dependencies.map! {|dep| @services.get_jaba_type(dep)}
     end
     
   end
