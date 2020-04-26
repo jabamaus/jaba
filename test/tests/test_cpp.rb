@@ -12,14 +12,30 @@ module JABA
     it 'supports defaults' do
       op = jaba do
         defaults :cpp do
+          platforms [:x64]
           hosts [:vs2017]
           configs [:debug, :release]
+          rtti false
         end
         cpp :a do
-          platforms [:x64]
+          if config == :debug
+            rtti true
+          end
         end
       end
-      op[:cpp]['cpp|a|x64|vs2017'].wont_be_nil
+
+      proj = op[:cpp]['cpp|a|x64|vs2017']
+      proj.wont_be_nil
+
+      cfg_debug = proj[:configs][:debug]
+      cfg_debug.wont_be_nil
+      cfg_debug[:rtti].wont_be_nil
+      cfg_debug[:rtti].must_equal(true)
+
+      cfg_release = proj[:configs][:release]
+      cfg_release.wont_be_nil
+      cfg_release[:rtti].wont_be_nil
+      cfg_release[:rtti].must_equal(true)
     end
 
     it 'supports vcproperty' do

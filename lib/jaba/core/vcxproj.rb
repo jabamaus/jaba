@@ -37,6 +37,14 @@ module JABA
       p_root[:host] = @host.definition_id
       p_root[:guid] = @guid
       p_root[:vcxproj] = @vcxproj_file
+      cfg_root = {}
+      p_root[:configs] = cfg_root
+      @configs.each do |c|
+        cfg = {}
+        cfg_root[c.attrs.config] = cfg
+        cfg[:name] = c.attrs.config_name
+        cfg[:rtti] = c.attrs.rtti
+      end
     end
 
     ##
