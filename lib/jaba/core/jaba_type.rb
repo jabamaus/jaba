@@ -43,11 +43,15 @@ module JABA
             sub_type = @services.make_type(st_handle, @definition, sub_type: true)
             @dependencies << st_handle
           end
-          # TODO: remove recursion. use do_define_attr
-          return sub_type.define_attr(id, variant, type: type, &block)
+          return sub_type.make_attr_def(id, variant, type, &block)
         end
       end
+      make_attr_def(id, variant, type, &block)
+    end
 
+    ##
+    #
+    def make_attr_def(id, variant, type, &block)
       @services.log "  Adding '#{id}' to '#{@handle}'"
       
       validate_id(id)
@@ -57,8 +61,8 @@ module JABA
         jaba_error("'#{id}' attribute multiply defined")
       end
 
-      # TODO: caller will be wrong in the case of custom type
-      db = JabaDefinition.new(id, block, caller(2, 1)[0])
+      # TODO: caller will be wrong in the case of sub type
+      db = JabaDefinition.new(id, block, caller(3, 1)[0])
       ad = JabaAttributeDefinition.new(@services, db, type, variant, self)
       
       @attribute_defs << ad

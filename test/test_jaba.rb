@@ -9,6 +9,7 @@ module JABA
 
   ATTR_DEFINITION_FILE = "#{__dir__}/../lib/jaba/definitions/attribute_types.rb".cleanpath
   TEXT_DEFINITION_FILE = "#{__dir__}/../lib/jaba/definitions/text.rb".cleanpath
+  CPP_DEFINITION_FILE = "#{__dir__}/../lib/jaba/definitions/cpp.rb".cleanpath
 
   class JabaTest < Minitest::Spec
     
