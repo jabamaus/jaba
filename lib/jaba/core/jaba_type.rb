@@ -70,7 +70,14 @@ module JABA
 
       ad
     end
-    
+
+    ##
+    #
+    def define_sub_type(id, &block)
+      @services.make_type(id, @definition, sub_type: true, &block)
+      @dependencies << id
+    end
+
     ##
     #
     def to_s

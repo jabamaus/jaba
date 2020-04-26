@@ -30,6 +30,13 @@ module JABA
     end
     
     ##
+    # Define sub type. Useful for grouping attributes.
+    #
+    def define(id, &block)
+      @jaba_type.define_sub_type(id, &block)
+    end
+
+    ##
     #
     def dependencies(*deps)
       @jaba_type.set_property(:dependencies, deps)

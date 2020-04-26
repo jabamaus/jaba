@@ -44,41 +44,38 @@ define :cpp do
     default '10.0.17763.0'
   end
   
-end
+  define :cpp_config do
 
-# TODO: declare as not creatable from global namespace.
-define :cpp_config do
+    attr :config do
+      flags :read_only
+    end
 
-  help 'TODO'
+    attr :config_name do
+      help 'Display name of config in Visual Studio. Defaults to <config>.'
+      default { config }
+    end
 
-  attr :config do
-    flags :read_only
-  end
+    attr :rtti, type: :bool do
+      default true
+    end
 
-  attr :config_name do
-    help 'Display name of config in Visual Studio. Defaults to <config>.'
-    default { config }
-  end
+    attr :toolset do
+      default { host_toolset }
+    end
 
-  attr :rtti, type: :bool do
-    default true
-  end
-
-  attr :toolset do
-    default { host_toolset }
-  end
-
-  attr_array :vcproperty, type: :keyvalue do
-    keyval_options :group
+    attr_array :vcproperty, type: :keyvalue do
+      keyval_options :group
 =begin
-    keyval_option :condition do
-      validate do |value|
+      keyval_option :condition do
+        validate do |value|
+        end
       end
-    end
-    keyval_option :group do
-      flags :required
-    end
+      keyval_option :group do
+        flags :required
+      end
 =end
+    end
+
   end
 
 end

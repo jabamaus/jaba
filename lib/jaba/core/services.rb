@@ -344,7 +344,7 @@ module JABA
     # creation in the case where a tree of nodes is created from a single definition. These JabaTypes
     # are created on the fly as attributes are added to the types.
     #
-    def make_type(handle, definition, sub_type: false)
+    def make_type(handle, definition, sub_type: false, &block)
       log "Making JabaType [handle=#{handle}]"
 
       if @jaba_type_lookup.key?(handle)
@@ -363,7 +363,11 @@ module JABA
       @jaba_types << jt
       @jaba_type_lookup[handle] = jt
 
-      if !sub_type
+      if sub_type
+        if block_given?
+          jt.eval_api_block(&block)
+        end
+      else
         if definition.block
           jt.eval_api_block(&definition.block)
         end
