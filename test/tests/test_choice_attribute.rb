@@ -5,7 +5,7 @@ module JABA
   class TestChoiceAttribute < JabaTest
 
     it 'requires items to be set' do
-      check_fail "'items' must be set", trace: [ATTR_TYPES_FILE, 'fail "\'items\' must be set"', __FILE__, 'tagA'] do
+      check_fail "'items' must be set", trace: [ATTR_DEFINITION_FILE, 'fail "\'items\' must be set"', __FILE__, 'tagA'] do
         jaba do
           define :test do
             attr :a, type: :choice # tagA
@@ -15,7 +15,7 @@ module JABA
     end
     
     it 'requires default to be in items' do
-      check_fail 'Must be one of [1, 2, 3]', trace: [ATTR_TYPES_FILE, 'fail "must be one of', __FILE__, 'tagB'] do
+      check_fail 'Must be one of [1, 2, 3]', trace: [ATTR_DEFINITION_FILE, 'fail "must be one of', __FILE__, 'tagB'] do
         jaba do
           define :test do
             attr :a, type: :choice do # tagB
@@ -25,7 +25,7 @@ module JABA
           end
         end
       end
-      check_fail 'Must be one of [1, 2, 3]', trace: [ATTR_TYPES_FILE, 'fail "must be one of', __FILE__, 'tagC'] do
+      check_fail 'Must be one of [1, 2, 3]', trace: [ATTR_DEFINITION_FILE, 'fail "must be one of', __FILE__, 'tagC'] do
         jaba do
           define :test do
             attr_array :a, type: :choice do # tagC
@@ -38,7 +38,7 @@ module JABA
     end
 
     it 'rejects invalid choices' do
-      check_fail 'Must be one of [:a, :b, :c]', trace: [ATTR_TYPES_FILE, 'fail "must be one of', __FILE__, 'tagD'] do
+      check_fail 'Must be one of [:a, :b, :c]', trace: [ATTR_DEFINITION_FILE, 'fail "must be one of', __FILE__, 'tagD'] do
         jaba do
           define :test do
             attr :a, type: :choice do
@@ -50,7 +50,7 @@ module JABA
           end
         end
       end
-      check_fail 'Must be one of [:a, :b, :c]', trace: [ATTR_TYPES_FILE, 'fail "must be one of', __FILE__, 'tagE'] do
+      check_fail 'Must be one of [:a, :b, :c]', trace: [ATTR_DEFINITION_FILE, 'fail "must be one of', __FILE__, 'tagE'] do
         jaba do
           define :test do
             attr_array :a, type: :choice do
