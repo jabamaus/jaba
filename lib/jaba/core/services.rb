@@ -406,9 +406,9 @@ module JABA
         jn.attrs.instance_eval(&block)
       end
       
-      # Next execute defaults block if there is one defined for this type
+      # Next execute defaults block if there is one defined for this type.
       #
-      defaults = jt.definition.defaults_definition
+      defaults = @current_definition.jaba_type.definition.defaults_definition
       if defaults
         log "  Including defaults"
         jn.eval_api_block(&defaults.block)

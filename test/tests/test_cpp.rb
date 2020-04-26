@@ -35,7 +35,7 @@ module JABA
       cfg_release = proj[:configs][:release]
       cfg_release.wont_be_nil
       cfg_release[:rtti].wont_be_nil
-      cfg_release[:rtti].must_equal(true)
+      cfg_release[:rtti].must_equal(false)
     end
 
     it 'supports vcproperty' do
