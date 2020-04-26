@@ -28,7 +28,7 @@ module JABA
       @attribute_def_lookup = {}
       @generator = generator
 
-      define_property(:help) # TODO: move into definition block?
+      define_property(:help)
       define_array_property(:dependencies)
     end
 
