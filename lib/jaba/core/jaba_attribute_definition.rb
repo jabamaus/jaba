@@ -44,8 +44,16 @@ module JABA
       if @definition.block
         eval_api_block(&@definition.block)
       end
-      
+
+      @default_is_proc = @default.is_a?(Proc)
+
       validate
+
+      @help.freeze
+      @default.freeze
+      @flags.freeze
+      @flag_options.freeze
+      @keyval_options.freeze
     end
     
     ##
@@ -62,6 +70,19 @@ module JABA
     
     ##
     #
+    def on_property_set(id, var, val)
+      case id
+      when :flag_options
+        val.each do |f|
+          if !f.is_a?(Symbol)
+            jaba_error('Flag options must be specified as symbols, eg :option')
+          end
+        end
+      end
+    end
+
+    ##
+    #
     def validate
       begin
         @jaba_attr_type.call_hook(:validate_attr_def, receiver: self)
@@ -70,7 +91,7 @@ module JABA
                               callstack: [e.backtrace[0], @api_call_line])
       end
       
-      if @default
+      if @default && !@default_is_proc
         begin
           @jaba_attr_type.call_hook(:validate_value, @default, receiver: self)
         rescue JabaError => e
@@ -78,10 +99,6 @@ module JABA
                                 callstack: [e.backtrace[0], @api_call_line])
         end
       end
-      
-      @default_is_proc = @default.is_a?(Proc)
-      @default.freeze
-      @flags.freeze
     end
 
   end
