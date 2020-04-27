@@ -213,6 +213,7 @@
                 "cpp|MyApp|win32|vs2017|debug": {
                   "config": "debug",
                   "config_name": "debug",
+                  "exceptions": true,
                   "rtti": true,
                   "toolset": "v141",
                   "vcproperty": [
@@ -224,6 +225,7 @@
                 "cpp|MyApp|win32|vs2017|release": {
                   "config": "release",
                   "config_name": "release",
+                  "exceptions": true,
                   "rtti": true,
                   "toolset": "v141",
                   "vcproperty": [
@@ -275,6 +277,7 @@
                 "cpp|MyLib|win32|vs2017|debug": {
                   "config": "debug",
                   "config_name": "debug",
+                  "exceptions": true,
                   "rtti": true,
                   "toolset": "v141",
                   "vcproperty": [
@@ -286,6 +289,7 @@
                 "cpp|MyLib|win32|vs2017|release": {
                   "config": "release",
                   "config_name": "release",
+                  "exceptions": true,
                   "rtti": true,
                   "toolset": "v141",
                   "vcproperty": [

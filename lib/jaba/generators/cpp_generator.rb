@@ -75,6 +75,19 @@ module JABA
                           raise "'#{type}' unhandled"
                         end
           vcproperty :ConfigurationType, config_type, group: :pg1
+
+          attr = _attr(:exceptions)
+          prop_val = if attr.get
+            if attr.has_flag_option?(:structured)
+              :Async
+            else
+              :Sync
+            end
+          else
+            false
+          end
+          vcproperty :ExceptionHandling, prop_val, group: :ClCompile
+
           vcproperty :PlatformToolset, toolset, group: :pg1
           vcproperty :RuntimeTypeInfo, false, group: :ClCompile if !rtti
         end

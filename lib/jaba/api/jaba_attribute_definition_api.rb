@@ -29,8 +29,14 @@ module JABA
     
     ##
     #
+    def flag_options(*options, &block)
+      @attr_def.set_property(:flag_options, options, &block)
+    end
+
+    ##
+    #
     def keyval_options(*options, &block)
-      @attr_def.set_property(:keyval_opts, options, &block)
+      @attr_def.set_property(:keyval_options, options, &block)
     end
     
     ##

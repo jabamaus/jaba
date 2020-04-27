@@ -17,7 +17,8 @@ module JABA
     attr_reader :default_is_proc
     attr_reader :jaba_attr_type # JabaAttributeType object
     attr_reader :jaba_type
-    attr_reader :keyval_opts
+    attr_reader :flag_options
+    attr_reader :keyval_options
     
     ##
     #
@@ -31,7 +32,8 @@ module JABA
       define_property(:help)
       define_property(:default)
       define_array_property(:flags)
-      define_array_property(:keyval_opts)
+      define_array_property(:flag_options)
+      define_array_property(:keyval_options)
       
       define_hook(:validate)
       define_hook(:post_set)

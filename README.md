@@ -15,4 +15,3 @@ TODO:
 - Have a way of globally setting default for :platforms, :hosts and :configs (and for clearing)
 - consider moving JabaError into Object refinement
 - make file/dir attrs cleanpath
-- refactor sub types

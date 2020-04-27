@@ -155,6 +155,30 @@ module JABA
       end
     end
     
+    it 'can accept options' do
+      jaba do
+        define :test do
+          attr :a, type: :keyvalue do
+            keyval_options :kv1, :kv2
+          end
+        end
+        test :t do
+          a :k, :v, :flag_opt1, :flag_opt2, kv1: 'a', kv2: 'b'
+          generate do
+            a = get_attr(:a)
+            v = a.get
+            v.key.must_equal(:k)
+            v.value.must_equal(:v)
+            a.has_flag_option?(:flag_opt1).must_equal(true)
+            a.has_flag_option?(:flag_opt2).must_equal(true)
+            a.has_flag_option?(:flag_opt3).must_equal(false)
+            a.get_option_value(:kv1).must_equal('a')
+            a.get_option_value(:kv2).must_equal('b')
+          end
+        end
+      end
+    end
+
   end
 
 end

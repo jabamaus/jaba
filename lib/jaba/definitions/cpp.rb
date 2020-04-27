@@ -55,6 +55,12 @@ define :cpp do
       default { config }
     end
 
+    attr :exceptions, type: :bool do
+      help 'Enables C++ exceptions. On by default.'
+      flag_options :structured # Windows only
+      default true
+    end
+
     attr :rtti, type: :bool do
       default true
     end

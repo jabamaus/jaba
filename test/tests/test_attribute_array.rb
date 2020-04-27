@@ -271,37 +271,33 @@ module JABA
     it 'supports clearing excludes' do
     end
     
-    it 'gives a copy of options to each element' do
+    it 'gives a copy of keyval options to each element' do
       jaba do
-        opt = 'opt'
-        arg = 'arg'
+        opt1 = 'opt1'
+        opt2 = 'opt2'
         define :test do
           attr_array :a do
-            keyval_options :opt
+            keyval_options :opt1
+            keyval_options :opt2
           end
         end
         test :t do
-          a 1, arg, opt: opt
-          a 2, arg, opt: opt
+          a 1, opt1: opt1, opt2: opt2
+          a 2, opt1: opt1, opt2: opt2
           generate do
             a = get_attr(:a)
             
-            e0 = a.get_elem(0)
-            e0.get.must_equal(1)
-            opt0 = e0.key_value_options[:opt]
-            opt0.must_equal('opt')
-            arg0 = e0.options[0]
-            arg0.must_equal('arg')
-            
-            e1 = a.get_elem(1)
-            e1.get.must_equal(2)
-            opt1 = e1.key_value_options[:opt]
-            opt1.must_equal('opt')
-            arg1 = e1.options[0]
-            arg1.must_equal('arg')
-            
-            opt0.object_id.wont_equal(opt1.object_id)
-            arg0.object_id.wont_equal(arg1.object_id)
+            attr = a.get_elem(0)
+            attr.get.must_equal(1)
+            opt1val = attr.get_option_value(:opt1)
+            opt1val.wont_be_nil
+            opt1val.object_id.wont_equal(opt1.object_id)
+            opt1val.must_equal('opt1')
+            opt2val = attr.get_option_value(:opt2)
+            opt2val.wont_be_nil
+            opt2val.object_id.wont_equal(opt2.object_id)
+            opt2val.must_equal('opt2')
+
           end
         end
       end

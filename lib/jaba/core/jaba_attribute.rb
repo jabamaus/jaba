@@ -73,16 +73,13 @@ module JABA
   #
   class JabaAttribute < JabaAttributeBase
 
-    attr_reader :options
-    attr_reader :key_value_options
-    
     ##
     #
     def initialize(services, attr_def, parent_array, node)
       super(services, attr_def, node)
       @value = nil
-      @options = nil
-      @key_value_options = nil
+      @flag_options = nil
+      @keyval_options = nil
       
       # If its not an element of an attribute array, initialize with default value if it has a concrete one
       #
@@ -101,7 +98,7 @@ module JABA
     end
 
     ##
-    #
+    # TODO: rename to 'value'
     def get(api_call_line = nil)
       if @default_is_proc && !set?
         @node.eval_api_block(&@default)
@@ -114,16 +111,18 @@ module JABA
     
     ##
     #
-    def set(value, api_call_line = nil, *args, **keyvalue_args)
-      validate_keyvalue_options(keyvalue_args, api_call_line)
+    def set(value, api_call_line = nil, *args, **key_val_args)
+      validate_keyvalue_options(key_val_args, api_call_line)
       validate_value(value, api_call_line)
 
       @api_call_line = api_call_line
       
+      # TODO: validate options
+
       # Take deep copies of options so they are private to this attribute
       #
-      @options = args.empty? ? [] : Marshal.load(Marshal.dump(args))
-      @key_value_options = keyvalue_args.empty? ? {} : Marshal.load(Marshal.dump(keyvalue_args))
+      @flag_options = args.empty? ? [] : Marshal.load(Marshal.dump(args))
+      @keyval_options = key_val_args.empty? ? {} : Marshal.load(Marshal.dump(key_val_args))
       
       # TODO: fix
       @value = if @attr_def.type_id == :keyvalue
@@ -157,8 +156,21 @@ module JABA
     
     ##
     #
+    def has_flag_option?(o)
+      @flag_options&.include?(o)
+    end
+
+    ##
+    #
+    def get_option_value(key, fail_if_not_found: true)
+      raise "option key '#{key}' not found" if !@keyval_options.key?(key)
+      @keyval_options[key]
+    end
+
+    ##
+    #
     def each_value
-      yield @value, @options, @key_value_options
+      yield @value, @flag_options, @keyval_options
     end
     
     ##
@@ -188,7 +200,7 @@ module JABA
     #
     def validate_keyvalue_options(options, api_call_line)
       options.each_key do |k|
-        if !@attr_def.keyval_opts.include?(k)
+        if !@attr_def.keyval_options.include?(k)
           @services.jaba_error("Invalid option '#{k}'", callstack: api_call_line)
         end
       end
