@@ -78,6 +78,12 @@ module JABA
             jaba_error('Flag options must be specified as symbols, eg :option')
           end
         end
+      when :keyval_options
+        val.each do |f|
+          if !f.is_a?(Symbol)
+            jaba_error('Keyval options must be specified as symbols, eg :option')
+          end
+        end
       end
     end
 

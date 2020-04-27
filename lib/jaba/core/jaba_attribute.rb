@@ -73,6 +73,8 @@ module JABA
   #
   class JabaAttribute < JabaAttributeBase
 
+    attr_reader :flag_options
+
     ##
     #
     def initialize(services, attr_def, parent_array, node)
@@ -112,25 +114,33 @@ module JABA
     ##
     #
     def set(value, api_call_line = nil, *args, **key_val_args)
-      validate_keyvalue_options(key_val_args, api_call_line)
+      @api_call_line = api_call_line
+
+      if @attr_def.type_id == :keyvalue
+        value = KeyValue.new(value, args.shift)
+      end
+
+      @flag_options = args
+
+      @flag_options.each do |f|
+        if !@attr_def.flag_options.include?(f)
+          @services.jaba_error("Invalid flag option '#{f.inspect}'. Valid flags are #{@attr_def.flag_options}", callstack: api_call_line)
+        end
+      end
+
+      key_val_args.each_key do |k|
+        if !@attr_def.keyval_options.include?(k)
+          @services.jaba_error("Invalid keyval option '#{k}'. Valid keys are #{@attr_def.keyval_options}", callstack: api_call_line)
+        end
+      end
+
       validate_value(value, api_call_line)
 
-      @api_call_line = api_call_line
-      
-      # TODO: validate options
-
-      # Take deep copies of options so they are private to this attribute
+      # Take a deep copy of keyval_options so they are private to this attribute
       #
-      @flag_options = args.empty? ? [] : Marshal.load(Marshal.dump(args))
       @keyval_options = key_val_args.empty? ? {} : Marshal.load(Marshal.dump(key_val_args))
       
-      # TODO: fix
-      @value = if @attr_def.type_id == :keyvalue
-                 KeyValue.new(value, args[0])
-                 # TODO: remove args[0] from options
-               else
-                 resolve_reference(value)
-               end
+      @value = resolve_reference(value)
       @set = true
     end
     
@@ -192,16 +202,6 @@ module JABA
           @attr_def.jaba_attr_type.call_hook(:validate_value, value, receiver: @attr_def)
         rescue JabaError => e
           @services.jaba_error("'#{@attr_def.definition_id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
-        end
-      end
-    end
-    
-    ##
-    #
-    def validate_keyvalue_options(options, api_call_line)
-      options.each_key do |k|
-        if !@attr_def.keyval_options.include?(k)
-          @services.jaba_error("Invalid option '#{k}'", callstack: api_call_line)
         end
       end
     end

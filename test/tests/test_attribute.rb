@@ -28,6 +28,21 @@ module JABA
       end
     end
     
+    it 'validates flag options' do
+      check_fail "Invalid flag option ':d'. Valid flags are [:a, :b, :c]", trace: [__FILE__, 'tagD'] do
+        jaba do
+          define :test do
+            attr :a do
+              flag_options :a, :b, :c
+            end
+          end
+          test :t do
+            a 1, :a, :b, :d # tagD
+          end
+        end
+      end
+    end
+
     # TODO: check wiping down required values
     it 'supports wiping value back to default' do
       jaba do

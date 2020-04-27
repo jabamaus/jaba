@@ -130,6 +130,30 @@ module JABA
       end
     end
     
+    it 'ensures flag options are symbols' do
+      check_fail 'Flag options must be specified as symbols, eg :option', trace: [__FILE__, 'tagJ'] do
+        jaba do
+          define :test do
+            attr :a do
+              flag_options 'a' # tagJ
+            end
+          end
+        end
+      end
+    end
+
+    it 'ensures keyval options are symbols' do
+      check_fail 'Keyval options must be specified as symbols, eg :option', trace: [__FILE__, 'tagW'] do
+        jaba do
+          define :test do
+            attr :a do
+              keyval_options 'a' # tagW
+            end
+          end
+        end
+      end
+    end
+
     it 'supports specifying valid key value options' do
       jaba do
         define :test do
@@ -142,7 +166,7 @@ module JABA
           a 2, condition: :b
         end
       end
-      check_fail 'Invalid option \'undefined\'', trace: [__FILE__, 'tagA'] do
+      check_fail 'Invalid keyval option \'undefined\'. Valid keys are [:group, :condition]', trace: [__FILE__, 'tagA'] do
         jaba do
           define :test do
             attr_array :a do

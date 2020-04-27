@@ -155,11 +155,56 @@ module JABA
       end
     end
     
-    it 'can accept options' do
+    it 'can accept flag options' do
+      jaba do
+        define :test do
+          attr :a, type: :keyvalue do
+            flag_options :f1, :f2, :f3
+          end
+        end
+        test :t do
+          a :k, :v, :f1, :f2
+          generate do
+            a = get_attr(:a)
+            v = a.get
+            v.key.must_equal(:k)
+            v.value.must_equal(:v)
+            a.has_flag_option?(:f1).must_equal(true)
+            a.has_flag_option?(:f2).must_equal(true)
+            a.has_flag_option?(:f3).must_equal(false)
+            a.flag_options.must_equal [:f1, :f2]
+          end
+        end
+      end
+    end
+
+    it 'can accept keyval options' do
       jaba do
         define :test do
           attr :a, type: :keyvalue do
             keyval_options :kv1, :kv2
+          end
+        end
+        test :t do
+          a :k, :v, kv1: 'a', kv2: 'b'
+          generate do
+            a = get_attr(:a)
+            v = a.get
+            v.key.must_equal(:k)
+            v.value.must_equal(:v)
+            a.get_option_value(:kv1).must_equal('a')
+            a.get_option_value(:kv2).must_equal('b')
+          end
+        end
+      end
+    end
+
+    it 'can accept keyval and flag options' do
+      jaba do
+        define :test do
+          attr :a, type: :keyvalue do
+            keyval_options :kv1, :kv2
+            flag_options [:flag_opt1, :flag_opt2, :flag_opt3]
           end
         end
         test :t do
@@ -172,6 +217,7 @@ module JABA
             a.has_flag_option?(:flag_opt1).must_equal(true)
             a.has_flag_option?(:flag_opt2).must_equal(true)
             a.has_flag_option?(:flag_opt3).must_equal(false)
+            a.flag_options.must_equal [:flag_opt1, :flag_opt2]
             a.get_option_value(:kv1).must_equal('a')
             a.get_option_value(:kv2).must_equal('b')
           end
