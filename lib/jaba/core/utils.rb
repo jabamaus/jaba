@@ -197,8 +197,11 @@ module JABA
         current_val = instance_variable_get(var)
         if current_val.is_a?(Array)
           if val.is_a?(Array)
-            current_val.concat(val.flatten)
+            val.flatten!
+            on_property_set(p_id, var, val)
+            current_val.concat(val)
           else
+            on_property_set(p_id, var, val)
             current_val << val
           end
         else
@@ -207,6 +210,13 @@ module JABA
       end
     end
     
+    ##
+    # Override in subclass to validate value.
+    #
+    def on_property_set(id, var, new_val)
+      # nothing
+    end
+
     ##
     #
     def get_property(p_id)
