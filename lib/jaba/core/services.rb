@@ -220,8 +220,6 @@ module JABA
         make_type(d.id, d)
       end
 
-      @jaba_types.each(&:init)
-      
       # Open JabaTypes so more attributes can be added
       #
       @jaba_open_definitions.each do |d|

@@ -107,12 +107,6 @@ module JABA
     
     ##
     #
-    def init
-      @attribute_defs.each(&:init)
-    end
-
-    ##
-    #
     def resolve_dependencies
       # Convert dependencies specified as ids to jaba type objects
       #

@@ -44,6 +44,8 @@ module JABA
       if @definition.block
         eval_api_block(&@definition.block)
       end
+      
+      validate
     end
     
     ##
@@ -60,7 +62,7 @@ module JABA
     
     ##
     #
-    def init
+    def validate
       begin
         @jaba_attr_type.call_hook(:validate_attr_def, receiver: self)
       rescue JabaError => e
