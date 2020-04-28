@@ -9,7 +9,6 @@ TODO:
 - test readonly attrs
 - make paths in jaba.output.json relative to itself
 - test absolute root paths
-- introduce a Definition class?
 - Look at error handling again
 - Change to using caller_location
 - Have a way of globally setting default for :platforms, :hosts and :configs (and for clearing)
@@ -17,3 +16,4 @@ TODO:
 - make file/dir attrs cleanpath
 - move keyval and reference attr types into core
 - beef up specification of keyval options
+- validate that attr flags are valid

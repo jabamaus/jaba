@@ -56,44 +56,58 @@ module JABA
     ##
     #
     def setup_project(proj)
+      outer = self
+
       proj.attrs.instance_eval do
         vcglobal :ProjectName, name
         vcglobal :ProjectGuid, proj.guid
+        vcglobal :RootNamespace, name
         vcglobal :WindowsTargetPlatformVersion, winsdkver
       end
       
       proj.configs.each do |cfg|
         cfg.attrs.instance_eval do
-          config_type = case type
-                        when :app
-                          'Application'
-                        when :lib
-                          'StaticLibrary'
-                        when :dll
-                          'DynamicLibrary'
-                        else
-                          raise "'#{type}' unhandled"
-                        end
-          vcproperty :ConfigurationType, config_type, group: :pg1
-
-          attr = _attr(:exceptions)
-          prop_val = if attr.value
-            if attr.has_flag_option?(:structured)
-              :Async
-            else
-              :Sync
-            end
-          else
-            false
-          end
-          vcproperty :ExceptionHandling, prop_val, group: :ClCompile
-
+          vcproperty :CharacterSet, (unicode ? :Unicode : :NotSet), group: :pg1
+          vcproperty :ConfigurationType, outer.configuration_type(type), group: :pg1
           vcproperty :PlatformToolset, toolset, group: :pg1
-          vcproperty :RuntimeTypeInfo, false, group: :ClCompile if !rtti
+          vcproperty :UseDebugLibraries, debug, group: :pg1
+
+          # ClCompile
+          vcproperty :ExceptionHandling, outer.exception_handling(cfg.get_attr(:exceptions)), group: :ClCompile
+          vcproperty :RuntimeTypeInfo, rtti, group: :ClCompile
         end
       end
     end
     
+    ##
+    #
+    def configuration_type(type)
+      case type
+      when :app
+        'Application'
+      when :lib
+        'StaticLibrary'
+      when :dll
+        'DynamicLibrary'
+      else
+        raise "'#{type}' unhandled"
+      end
+    end
+
+    ##
+    #
+    def exception_handling(attr)
+      if attr.value
+        if attr.has_flag_option?(:structured)
+          :Async
+        else
+          :Sync
+        end
+      else
+        false
+      end
+    end
+
     ##
     #
     def generate

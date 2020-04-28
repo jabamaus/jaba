@@ -176,12 +176,6 @@ module JABA
     
     ##
     #
-    def _attr(attr_id)
-      @node.get_attr(attr_id, search: true, fail_if_not_found: true)
-    end
-
-    ##
-    #
     def method_missing(attr_id, *args, **keyvalue_args)
       @node.handle_attr(attr_id, nil, *args, **keyvalue_args)
     end

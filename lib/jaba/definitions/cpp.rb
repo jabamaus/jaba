@@ -55,6 +55,13 @@ define :cpp do
       default { config }
     end
 
+    attr :debug, type: :bool do
+      help 'Flags config as a debug build. Defaults to true if config id contains \'debug\''
+      default do
+        config =~ /debug/i ? true : false
+      end
+    end
+
     attr :exceptions, type: :bool do
       help 'Enables C++ exceptions. On by default.'
       flag_options :structured # Windows only
@@ -67,6 +74,11 @@ define :cpp do
 
     attr :toolset do
       default { host_toolset }
+    end
+
+    attr :unicode, type: :bool do
+      help 'Enables unicode. On by default.'
+      default true
     end
 
     attr_array :vcproperty, type: :keyvalue do
