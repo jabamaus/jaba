@@ -6,7 +6,6 @@ TODO:
 - Look again at if generator block should be called per node
 - check whether keyvalue attr is really what we want
 - Make all nodes readonly once definitions processed
-- test readonly attrs
 - make paths in jaba.output.json relative to itself
 - test absolute root paths
 - Look at error handling again

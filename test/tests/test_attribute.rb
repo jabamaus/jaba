@@ -81,6 +81,23 @@ module JABA
       end
     end
     
+    it 'rejects setting readonly attrs' do
+      check_fail "'a' attribute is read only", trace: [__FILE__, 'tagJ'] do
+        jaba do
+          define :test do
+            attr :a do
+              flags :read_only
+              default 1
+            end
+          end
+          test :t do
+            a.must_equal(1)
+            a 2 # tagJ
+          end
+        end
+      end
+    end
+
   end
 
 end

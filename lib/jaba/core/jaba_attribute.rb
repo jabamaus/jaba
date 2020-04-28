@@ -116,6 +116,12 @@ module JABA
     #
     def set(value, api_call_line = nil, *args, **key_val_args)
       @api_call_line = api_call_line
+      
+      if api_call_line
+        if @attr_def.has_flag?(:read_only)
+          @services.jaba_error("'#{@attr_def.definition_id}' attribute is read only")
+        end
+      end
 
       if @attr_def.type_id == :keyvalue
         value = KeyValue.new(value, args.shift)
