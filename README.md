@@ -16,4 +16,4 @@ TODO:
 - make file/dir attrs cleanpath
 - move keyval and reference attr types into core
 - beef up specification of keyval options
-- validate that attr flags are valid
+- introduce TopLevelDefinition?

@@ -72,6 +72,13 @@ module JABA
     #
     def on_property_set(id, current_val, new_val)
       case id
+      when :flags
+        new_val.each do |f|
+          if !f.is_a?(Symbol)
+            jaba_error('Flags must be specified as symbols, eg :flag')
+          end
+          @services.get_attribute_flag(f) # check flag exists
+        end
       when :flag_options
         new_val.each do |f|
           if !f.is_a?(Symbol)

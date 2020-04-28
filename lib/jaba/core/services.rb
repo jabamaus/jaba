@@ -488,6 +488,16 @@ module JABA
     
     ##
     #
+    def get_attribute_flag(id)
+      f = @jaba_attr_flags.find {|af| af.definition_id == id}
+      if !f
+        jaba_error("'#{id.inspect}' is an invalid flag. Valid flags: #{@jaba_attr_flags.map(&:definition_id)}")
+      end
+      f
+    end
+
+    ##
+    #
     def get_jaba_type(id, fail_if_not_found: true, callstack: nil)
       jt = @jaba_type_lookup[id]
       if !jt && fail_if_not_found
