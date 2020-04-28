@@ -70,16 +70,16 @@ module JABA
     
     ##
     #
-    def on_property_set(id, var, val)
+    def on_property_set(id, current_val, new_val)
       case id
       when :flag_options
-        val.each do |f|
+        new_val.each do |f|
           if !f.is_a?(Symbol)
             jaba_error('Flag options must be specified as symbols, eg :option')
           end
         end
       when :keyval_options
-        val.each do |f|
+        new_val.each do |f|
           if !f.is_a?(Symbol)
             jaba_error('Keyval options must be specified as symbols, eg :option')
           end

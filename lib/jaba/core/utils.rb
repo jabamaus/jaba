@@ -198,13 +198,14 @@ module JABA
         if current_val.is_a?(Array)
           if val.is_a?(Array)
             val.flatten!
-            on_property_set(p_id, var, val)
+            on_property_set(p_id, current_val, val)
             current_val.concat(val)
           else
-            on_property_set(p_id, var, val)
+            on_property_set(p_id, current_val, val)
             current_val << val
           end
         else
+          on_property_set(p_id, current_val, val)
           instance_variable_set(var, val)
         end
       end
