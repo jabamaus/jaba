@@ -288,7 +288,7 @@ module JABA
             a = get_attr(:a)
             
             attr = a.get_elem(0)
-            attr.get.must_equal(1)
+            attr.value.must_equal(1)
             opt1val = attr.get_option_value(:opt1)
             opt1val.wont_be_nil
             opt1val.object_id.wont_equal(opt1.object_id)
@@ -299,7 +299,7 @@ module JABA
             opt2val.must_equal('opt2')
 
             attr = a.get_elem(1)
-            attr.get.must_equal(2)
+            attr.value.must_equal(2)
             opt1val = attr.get_option_value(:opt1)
             opt1val.wont_be_nil
             opt1val.object_id.wont_equal(opt1.object_id)

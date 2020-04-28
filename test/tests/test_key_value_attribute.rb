@@ -166,7 +166,7 @@ module JABA
           a :k, :v, :f1, :f2
           generate do
             a = get_attr(:a)
-            v = a.get
+            v = a.value
             v.key.must_equal(:k)
             v.value.must_equal(:v)
             a.has_flag_option?(:f1).must_equal(true)
@@ -189,7 +189,7 @@ module JABA
           a :k, :v, kv1: 'a', kv2: 'b'
           generate do
             a = get_attr(:a)
-            v = a.get
+            v = a.value
             v.key.must_equal(:k)
             v.value.must_equal(:v)
             a.get_option_value(:kv1).must_equal('a')
@@ -211,7 +211,7 @@ module JABA
           a :k, :v, :flag_opt1, :flag_opt2, kv1: 'a', kv2: 'b'
           generate do
             a = get_attr(:a)
-            v = a.get
+            v = a.value
             v.key.must_equal(:k)
             v.value.must_equal(:v)
             a.has_flag_option?(:flag_opt1).must_equal(true)

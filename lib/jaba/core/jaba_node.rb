@@ -126,7 +126,7 @@ module JABA
           return nil
         end
         
-        return a.get(api_call_line)
+        return a.value(api_call_line)
       else
         a = get_attr(id, search: false, fail_if_not_found: false)
         

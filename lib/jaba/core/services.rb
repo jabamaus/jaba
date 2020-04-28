@@ -445,7 +445,7 @@ module JABA
     #
     def write_node_json(node, obj)
       node.each_attr do |attr|
-        obj[attr.definition_id] = attr.get
+        obj[attr.definition_id] = attr.value
       end
       children = {}
       obj[:children] = children

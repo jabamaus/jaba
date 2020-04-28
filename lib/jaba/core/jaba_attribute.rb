@@ -100,8 +100,9 @@ module JABA
     end
 
     ##
-    # TODO: rename to 'value'
-    def get(api_call_line = nil)
+    # Returns the value of the attribute.
+    #
+    def value(api_call_line = nil)
       if @default_is_proc && !set?
         @node.eval_api_block(&@default)
       elsif api_call_line && @value.is_a?(JabaNode)
@@ -158,9 +159,9 @@ module JABA
     #
     def <=>(other)
       if @value.respond_to?(:casecmp)
-        @value.casecmp(other.get)
+        @value.casecmp(other.value)
       else
-        @value <=> other.get
+        @value <=> other.value
       end
     end
     
@@ -249,11 +250,11 @@ module JABA
 
     ##
     #
-    def get(api_call_line = nil)
+    def value(api_call_line = nil)
       if @default_is_proc && !set?
         @node.eval_api_block(&@default)
       else
-        @elems.map {|e| e.get(api_call_line)}
+        @elems.map {|e| e.value(api_call_line)}
       end
     end
     
@@ -320,7 +321,7 @@ module JABA
       if @excludes
         @elems.delete_if do |e|
           @excludes.any? do |ex|
-            val = e.get
+            val = e.value
             if ex.is_a?(Proc)
               ex.call(val)
             elsif ex.is_a?(Regexp)
@@ -335,7 +336,7 @@ module JABA
         end
       end
       if !@attr_def.has_flag?(:allow_dupes)
-        if warn && @elems.uniq!(&:get)
+        if warn && @elems.uniq!(&:value)
           @services.jaba_warning("'#{definition_id}' array attribute contains duplicates", callstack: api_call_line)
         end
       end

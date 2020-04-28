@@ -77,7 +77,7 @@ module JABA
           vcproperty :ConfigurationType, config_type, group: :pg1
 
           attr = _attr(:exceptions)
-          prop_val = if attr.get
+          prop_val = if attr.value
             if attr.has_flag_option?(:structured)
               :Async
             else
