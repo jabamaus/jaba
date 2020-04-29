@@ -85,7 +85,7 @@ module JABA
       
       @top_level_api = TopLevelAPI.new(self)
 
-      @default_attr_type = JabaAttributeType.new(self, JabaDefinition.new(nil, nil, nil)).freeze
+      @default_attr_type = JabaAttributeType.new(self, JabaDefinition.new(nil, nil, caller(0, 1)[0])).freeze
     end
 
     ##

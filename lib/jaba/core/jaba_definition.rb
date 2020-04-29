@@ -13,6 +13,7 @@ module JABA
     attr_reader :id
     attr_reader :block
     attr_reader :api_call_line
+    attr_reader :source_file
     
     ##
     #
@@ -20,6 +21,7 @@ module JABA
       @id = id
       @block = block
       @api_call_line = api_call_line
+      @source_file = @api_call_line[/^(.+):\d/, 1]
     end
 
   end

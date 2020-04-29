@@ -14,7 +14,6 @@ module JABA
     attr_reader :generate_hook # TODO: remove
     attr_reader :referenced_nodes
     attr_reader :children
-    attr_reader :source_file
     attr_reader :source_dir
     
     ##
@@ -31,9 +30,7 @@ module JABA
       end
       @referenced_nodes = []
       
-      # TODO: move these somewhere better
-      @source_file = @api_call_line[/^(.+):\d/, 1]
-      @source_dir = File.dirname(@source_file)
+      @source_dir = File.dirname(definition.source_file)
       
       @attrs = AttributeAccessor.new(self)
 
