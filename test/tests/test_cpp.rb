@@ -10,7 +10,7 @@ module JABA
     end
 
     it 'supports defaults' do
-      op = jaba do
+      op = jaba(dry_run: true) do
         defaults :cpp do
           platforms [:x64]
           hosts [:vs2017]
