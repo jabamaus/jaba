@@ -47,6 +47,18 @@ module JABA
       end
     end
 
+    it 'checks for invalid flags' do
+      check_fail "':invalid' is an invalid flag", trace: [__FILE__, 'tagE'] do
+        jaba do
+          define :test do
+            attr :a do
+              flags :invalid # tagE
+            end
+          end
+        end
+      end  
+    end
+
     it 'supports adding properties' do
       jaba do
         define :test do
