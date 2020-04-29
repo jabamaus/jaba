@@ -785,7 +785,6 @@ module JABA
       
       e = JabaError.new(m)
       e.instance_variable_set(:@raw_message, msg)
-      e.instance_variable_set(:@internal, false)
       e.instance_variable_set(:@file, file)
       e.instance_variable_set(:@line, line)
       e.set_backtrace(lines)
