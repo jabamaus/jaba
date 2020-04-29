@@ -749,11 +749,10 @@ module JABA
         cs.select {|c| @definition_src_files.any? {|sf| c.include?(sf)}}
       end
       
-      # If no references to definition files assume the error came from internal library code. Do no further processing
-      # so the exception will have the normal ruby backtrace.
+      # If no references to definition files assume the error came from internal library code. Raise a RuntimeError.
       #
       if lines.empty?
-        return JabaError.new(msg)
+        raise msg, caller
       end
       
       # Clean up lines so they only contain file and line information and not the additional ':in ...' that ruby
