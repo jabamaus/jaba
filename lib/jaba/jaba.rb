@@ -81,6 +81,11 @@ module JABA
     # Uses a cache when globbing definition files. Same conditions as use_file_cache apply. Off by default.
     #
     attr_bool :use_glob_cache
+
+    ##
+    # Execute as normal but don't write any files.
+    #
+    attr_bool :dry_run
     
   end
 
@@ -116,6 +121,7 @@ if $PROGRAM_NAME == __FILE__
     load_paths: nil,
     dump_input: nil,
     enable_logging: nil,
+    dry_run: nil,
     enable_profiling: nil
   )
 
@@ -135,6 +141,9 @@ EOB
     opts.on('--log', 'Enable logging') do |log|
       options[:enable_logging] = log
     end
+    opts.on('--dry-run', 'Dry run') do |d|
+      options[:dry_run] = d
+    end
     opts.on('--profile', 'Profile jaba run with ruby-prof') do |p|
       options[:enable_profiling] = p
     end
@@ -149,10 +158,13 @@ EOB
       op = JABA.run do |j|
         j.load_paths = options[:load_paths] if options[:load_paths]
         j.dump_input = options[:dump_input] if options[:dump_input]
+        j.dry_run = options[:dry_run] if options[:dry_run]
         j.enable_logging = options[:enable_logging] if options[:enable_logging]
       end
       written = op[:generated]
-      puts "Wrote #{written.size} files:"
+      print "Wrote #{written.size} files:"
+      print " [dry run]" if options[:dry_run]
+      puts
       written.each do |w|
         puts "  #{w}"
       end

@@ -45,6 +45,7 @@ module JABA
       @input.instance_variable_set(:@dump_input, false)
       @input.instance_variable_set(:@jaba_output_file, 'jaba.output.json')
       @input.instance_variable_set(:@dump_output, true)
+      @input.instance_variable_set(:@dry_run, false)
       @input.instance_variable_set(:@enable_logging, false)
       @input.instance_variable_set(:@use_file_cache, false)
       @input.instance_variable_set(:@use_glob_cache, false)
@@ -583,11 +584,17 @@ module JABA
     ##
     #
     def save_file(filename, content, eol, track: true)
+      filename = File.expand_path(filename.cleanpath)
+
+      if input.dry_run?
+        log "Not saving #{filename} [dry run]"
+      else
+        log "Saving #{filename}"
+      end
+
       if (eol == :windows) || ((eol == :native) && OS.windows?)
         content = content.gsub("\n", "\r\n")
       end
-      filename = File.expand_path(filename.cleanpath)
-      log "Saving #{filename}"
 
       # TODO: in case of duplicate check if content matches and fail if it doesn't
       if track
@@ -600,11 +607,13 @@ module JABA
         @generated_files << filename
       end
       
-      dir = File.dirname(filename)
-      if !File.exist?(dir)
-        FileUtils.makedirs(dir)
+      if !input.dry_run?
+        dir = File.dirname(filename)
+        if !File.exist?(dir)
+          FileUtils.makedirs(dir)
+        end
+        IO.binwrite(filename, content)
       end
-      IO.binwrite(filename, content)
     end
 
     ##
