@@ -311,6 +311,12 @@ module JABA
     
     ##
     #
+    def each(&block)
+      @elems.each(&block)
+    end
+    
+    ##
+    #
     def each_value(&block)
       @elems.each {|e| e.each_value(&block)}
     end
