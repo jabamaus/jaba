@@ -131,13 +131,13 @@ module JABA
 
       @flag_options.each do |f|
         if !@attr_def.flag_options.include?(f)
-          @services.jaba_error("Invalid flag option '#{f.inspect}'. Valid flags are #{@attr_def.flag_options}", callstack: api_call_line)
+          @services.jaba_error("Invalid flag option '#{f.inspect}'. Valid flags are #{@attr_def.flag_options}")
         end
       end
 
       key_val_args.each_key do |k|
         if !@attr_def.keyval_options.include?(k)
-          @services.jaba_error("Invalid keyval option '#{k}'. Valid keys are #{@attr_def.keyval_options}", callstack: api_call_line)
+          @services.jaba_error("Invalid keyval option '#{k}'. Valid keys are #{@attr_def.keyval_options}")
         end
       end
 
@@ -289,7 +289,7 @@ module JABA
     def apply_pre_post_fix(pre, post, val)
       if pre || post
         if !val.is_a?(String)
-          @services.jaba_error('prefix/postfix option can only be used with arrays of strings', callstack: api_call_line)
+          @services.jaba_error('prefix/postfix option can only be used with arrays of strings')
         end
         "#{pre}#{val}#{post}"
       else
