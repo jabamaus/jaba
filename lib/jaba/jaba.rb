@@ -154,6 +154,7 @@ EOB
 
   begin
     using JABACoreExt
+    op = nil
     profile(enabled: options[:enable_profiling]) do
       op = JABA.run do |j|
         j.load_paths = options[:load_paths] if options[:load_paths]
@@ -161,16 +162,16 @@ EOB
         j.dry_run = options[:dry_run] if options[:dry_run]
         j.enable_logging = options[:enable_logging] if options[:enable_logging]
       end
-      written = op[:generated]
-      print "Wrote #{written.size} files:"
-      print " [dry run]" if options[:dry_run]
-      puts
-      written.each do |w|
-        puts "  #{w}"
-      end
-      warnings = op[:warnings]
-      puts warnings if warnings
     end
+    written = op[:generated]
+    print "Wrote #{written.size} files:"
+    print " [dry run]" if options[:dry_run]
+    puts
+    written.each do |w|
+      puts "  #{w}"
+    end
+    warnings = op[:warnings]
+    puts warnings if warnings
   rescue StandardError => e
     puts e.message
     puts 'Backtrace:'
