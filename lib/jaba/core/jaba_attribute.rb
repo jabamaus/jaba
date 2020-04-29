@@ -180,7 +180,7 @@ module JABA
     ##
     #
     def get_option_value(key, fail_if_not_found: true)
-      raise "option key '#{key}' not found" if !@keyval_options.key?(key)
+      @services.jaba_error("option key '#{key}' not found") if !@keyval_options.key?(key)
       @keyval_options[key]
     end
 
@@ -356,7 +356,7 @@ module JABA
         begin
           @elems.stable_sort!
         rescue StandardError
-          @services.jaba_error("Failed to sort #{definition_id}. Might be missing <=> operator", callstack: api_call_line)
+          @services.jaba_error("Failed to sort #{definition_id}. Might be missing <=> operator")
         end
       end
     end

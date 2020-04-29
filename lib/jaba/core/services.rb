@@ -330,7 +330,7 @@ module JABA
       generator_class = Module.const_get(gen_classname)
 
       if generator_class.superclass != Generator
-        raise "#{generator_class} must inherit from Generator class"
+        jaba_error "#{generator_class} must inherit from Generator class"
       end
 
       g = generator_class.new(self, id)
@@ -379,13 +379,13 @@ module JABA
     #
     def make_node(type_id: @current_definition.jaba_type_id, name: nil, parent: nil, &block)
       handle = if parent
-        raise 'name is required for child nodes' if !name
+        jaba_error('name is required for child nodes') if !name
         if name.is_a?(JabaNode)
           name = name.definition_id
         end
         "#{parent.handle}|#{name}"
       else
-        raise 'name not required for root nodes' if name
+        jaba_error('name not required for root nodes') if name
         "#{@current_definition.jaba_type_id}|#{@current_definition.id}"
       end
 

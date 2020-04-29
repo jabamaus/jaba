@@ -90,7 +90,7 @@ module JABA
       when :dll
         'DynamicLibrary'
       else
-        raise "'#{type}' unhandled"
+        @services.jaba_error("'#{type}' unhandled")
       end
     end
 

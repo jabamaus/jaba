@@ -75,7 +75,7 @@ module JABA
     def project_from_node(node, fail_if_not_found: true)
       p = @node_to_project[node]
       if !p && fail_if_not_found
-        raise "'#{node}' not found"
+        @services.jaba_error("'#{node}' not found")
       end
       p
     end

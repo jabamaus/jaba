@@ -5,12 +5,12 @@ module JABA
   class TestErrorReporting < JabaTest
     
     it 'works when a definition contains an error when definitions in a block' do
-      line = find_line_number(__FILE__, 'tag1')
+      line = find_line_number(__FILE__, 'tagR')
       e = check_fail "Error at test_error_reporting.rb:#{line}: 'invalid id' is an invalid id. Must be an " \
                      "alphanumeric string or symbol (underscore permitted), eg :my_id or 'my_id'",
                      trace: [__FILE__, line] do
         jaba do
-          category 'invalid id' # tag1
+          category 'invalid id' # tagR
         end
       end
       e.cause.must_be_nil
@@ -29,12 +29,12 @@ module JABA
     end
     
     it 'works when a there is a syntax error when definitions in a block' do
-      line = find_line_number(__FILE__, 'tag2')
+      line = find_line_number(__FILE__, 'tagL')
       e = check_fail "Syntax error at test_error_reporting.rb:#{line}", trace: [__FILE__, line] do
         jaba do
           shared :a do
           end
-          BAD CODE # tag2
+          BAD CODE # tagL
         end
       end
       e.cause.wont_be_nil
@@ -51,6 +51,16 @@ module JABA
     
     it 'reports lines correctly when using shared modules' do
       # TODO
+    end
+
+    it 'allows errors to be raised from definitions' do
+      check_fail 'Error msg', trace: [__FILE__, 'tagW'] do
+        jaba do
+          define :test do
+            fail "error msg" # tagW
+          end
+        end
+      end
     end
 
   end

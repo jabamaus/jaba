@@ -268,6 +268,20 @@ module JABA
       end
     end
 
+    it 'catches invalid args to wipe' do
+      check_fail "'b' attribute not found", trace: [__FILE__, 'tagS'] do
+        jaba do
+          define :test do
+            attr_array :a
+          end
+          test :t do
+            a [1, 2, 3, 4, 43]
+            wipe :b # tagS
+          end
+        end
+      end
+    end
+
     it 'supports clearing excludes' do
     end
     
