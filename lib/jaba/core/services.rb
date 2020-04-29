@@ -749,8 +749,6 @@ module JABA
         cs.select {|c| @definition_src_files.any? {|sf| c.include?(sf)}}
       end
       
-      # TODO: include DefinitionAPI.rb/ExtensionAPI.rb info in syntax errors
-      
       # If no references to definition files assume the error came from internal library code. Do no further processing
       # so the exception will have the normal ruby backtrace.
       #
