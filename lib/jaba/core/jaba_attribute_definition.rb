@@ -99,7 +99,7 @@ module JABA
     def validate
       begin
         @jaba_attr_type.call_hook(:validate_attr_def, receiver: self)
-      rescue JabaError => e
+      rescue JabaDefinitionError => e
         jaba_error("'#{definition_id}' attribute definition failed validation: #{e.raw_message}",
                               callstack: [e.backtrace[0], @api_call_line])
       end
@@ -107,7 +107,7 @@ module JABA
       if @default && !@default_is_proc
         begin
           @jaba_attr_type.call_hook(:validate_value, @default, receiver: self)
-        rescue JabaError => e
+        rescue JabaDefinitionError => e
           jaba_error("'#{definition_id}' attribute definition failed validation: #{e.raw_message}",
                                 callstack: [e.backtrace[0], @api_call_line])
         end

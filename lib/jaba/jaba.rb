@@ -90,10 +90,10 @@ module JABA
   end
 
   ##
-  # Raised when there is an error raised from inside Jaba, either from the user definitions or from internal library
-  # code.
+  # Raised when there is an error in a definition. These errors should be fixable by the user by modifying the definition
+  # file.
   #
-  class JabaError < StandardError
+  class JabaDefinitionError < StandardError
     
     ##
     #
@@ -152,6 +152,10 @@ EOB
   
   opts.parse!
 
+  module DidYouMean::Correctable
+    remove_method :to_s
+  end
+  
   begin
     using JABACoreExt
     op = nil
@@ -172,7 +176,13 @@ EOB
     end
     warnings = op[:warnings]
     puts warnings if warnings
-  rescue StandardError => e
+  rescue JABA::JabaDefinitionError => e
+    puts e.message
+    if !e.backtrace.empty?
+      puts 'Backtrace:'
+      puts(e.backtrace.map {|line| "  #{line}"})
+    end
+  rescue => e
     puts e.message
     puts 'Backtrace:'
     puts(e.backtrace.map {|line| "  #{line}"})

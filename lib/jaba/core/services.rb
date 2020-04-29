@@ -641,10 +641,12 @@ module JABA
         @definition_src_files << block.source_location[0]
         @top_level_api.instance_eval(&block)
       end
-    rescue JabaError
+    rescue JabaDefinitionError
       raise # Prevent fallthrough to next case
-    rescue StandardError, ScriptError => e # Catches syntax errors
-      jaba_error(e.message, syntax: true, callstack: e.backtrace)
+    rescue StandardError => e # Catches errors like invalid constants
+      jaba_error(e.message, callstack: e.backtrace)
+    rescue ScriptError => e # Catches syntax errors. In this case there is no backtrace.
+      jaba_error(e.message, syntax: true)
     end
     
     ##
@@ -713,57 +715,53 @@ module JABA
     end
 
     ##
-    # Errors can be raised in 4 contexts:
+    # Errors can be raised in 3 contexts:
     #
     # 1) Syntax errors/other ruby errors that are raised by the initial evaluation of the definition files or block in
-    #    execute_definitions. In this case no definition information will have been loaded. In this case the callstack
-    #    is passed in and will be the backtrace of the ruby exception.
-    # 2) Errors that are raised explicitly in the definitions themselves, or from in core code that is called directly
-    #    from the definitions. In this context the relevant definition lines will be in the callstack when the error was
-    #    raised. In this case no callstack needs to be passed in and the relevant callstack will be automatically
-    #    extracted from the current callstack by extracting all lines that contain a reference to any definition source
-    #    file.
-    # 3) Errors can be raised from core code that are about user definitions but are not in their context - eg after
-    #    they have finished executing in a validation phase. In this case there will be no definition-level callstack
-    #    and the closest possible source file location must be passed in.
-    # 4) Errors can be raised internally from core code. In this case the internal? method on the JabaError exception
-    #    will be true.
-    #
-    # If the callstack is passed in it can either take the format of a normal ruby callstack as returned by
-    # Exception#backtrace or by 'caller' method, or it can be a block (indicating that the error occurred somewhere in
-    # that block of code). In the case of a block the blocks source code location is used and the callstack will only
-    # have one item. A block will be passed when the error is raised from outside the context of definition execution
-    # - see case 3 above.
+    #    execute_definitions.
+    # 2) From user definitions using the 'fail' API.
+    # 3) From core library code. 
     #
     def make_jaba_error(msg, syntax: false, callstack: nil, warn: false)
       msg = msg.capitalize_first
       
-      cs = callstack || caller
-      cs = Array(cs)
+      lines = []
+      error_line = nil
 
-      # Extract any lines in the callstack that contain references to definition source files.
-      #
-      lines = if warn
-        cs
+      if syntax
+        # With ruby ScriptErrors there is no useful callstack. The error location is in the msg itself.
+        #
+        error_line = msg
+
+        # Delete ruby's way of reporting syntax errors in favour of our own
+        #
+        msg = msg.sub(/^.* syntax error, /, '')
       else
-        cs.select {|c| @definition_src_files.any? {|sf| c.include?(sf)}}
-      end
-      
-      # If no references to definition files assume the error came from internal library code. Raise a RuntimeError.
-      #
-      if lines.empty?
-        raise msg, caller
-      end
-      
-      # Clean up lines so they only contain file and line information and not the additional ':in ...' that ruby
-      # includes. This is not useful in definition errors.
-      #
-      lines.map! {|l| l.sub(/:in .*/, '')}
+        cs = Array(callstack || caller)
 
-      # Extract file and line information from the first callstack item, which is where the main error occurred.
+        # Extract any lines in the callstack that contain references to definition source files.
+        #
+        lines = cs.select {|c| @definition_src_files.any? {|sf| c.include?(sf)}}
+        
+        # If no references to definition files assume the error came from internal library code. Raise a RuntimeError.
+        #
+        if lines.empty?
+          e = RuntimeError.new(msg)
+          e.set_backtrace(cs)
+          return e
+        end
+        
+        # Clean up lines so they only contain file and line information and not the additional ':in ...' that ruby
+        # includes. This is not useful in definition errors.
+        #
+        lines.map! {|l| l.sub(/:in .*/, '')}
+        error_line = lines[0]
+      end
+
+      # Extract file and line information from the error line.
       #
-      if lines[0] !~ /^(.+):(\d+)/
-        raise "Could not extract file and line number from '#{lines[0]}'"
+      if error_line !~ /^(.+):(\d+)/
+        raise "Could not extract file and line number from '#{error_line}'"
       end
 
       file = Regexp.last_match(1)
@@ -778,11 +776,11 @@ module JABA
              'Error'
            end
       
-      m << (callstack.is_a?(Proc) ? ' near' : ' at')
+      m << ' at'
       m << " #{file.basename}:#{line}"
       m << ": #{msg}"
       
-      e = JabaError.new(m)
+      e = JabaDefinitionError.new(m)
       e.instance_variable_set(:@raw_message, msg)
       e.instance_variable_set(:@file, file)
       e.instance_variable_set(:@line, line)

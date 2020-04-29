@@ -74,23 +74,26 @@ module JABA
 
     ##
     #
-    def check_fail(msg, trace:)
-      e = assert_raises JabaError do
+    def check_fail(msg, trace: nil)
+      e = assert_raises JabaDefinitionError do
         yield
       end
       
-      file = trace[0]
-      line = find_line_number(file, trace[1])
-      
       e.message.must_match(msg)
-      e.file.must_equal(file)
-      e.line.must_equal(line)
-      
-      backtrace = []
-      trace.each_slice(2) do |elem|
-        backtrace << "#{elem[0]}:#{find_line_number(elem[0], elem[1])}"
+
+      if trace
+        file = trace[0]
+        line = find_line_number(file, trace[1])
+        
+        e.file.must_equal(file)
+        e.line.must_equal(line)
+        
+        backtrace = []
+        trace.each_slice(2) do |elem|
+          backtrace << "#{elem[0]}:#{find_line_number(elem[0], elem[1])}"
+        end
+        e.backtrace.slice(0, backtrace.size).must_equal(backtrace)
       end
-      e.backtrace.slice(0, backtrace.size).must_equal(backtrace)
       e
     end
     
@@ -141,6 +144,10 @@ Dir.glob("#{__dir__}/tests/*.rb").sort.each do |f|
 end
 
 using JABACoreExt
+
+module DidYouMean::Correctable
+  remove_method :to_s
+end
 
 profile(enabled: ARGV.delete('--profile')) do
   Minitest.run(ARGV)

@@ -30,7 +30,7 @@ module JABA
     
     it 'works when a there is a syntax error when definitions in a block' do
       line = find_line_number(__FILE__, 'tagL')
-      e = check_fail "Syntax error at test_error_reporting.rb:#{line}", trace: [__FILE__, line] do
+      e = check_fail "Error at test_error_reporting.rb:#{line}", trace: [__FILE__, line] do
         jaba do
           shared :a do
           end
@@ -42,8 +42,8 @@ module JABA
 
     it 'works when a there is a syntax error when definitions in a separate file' do
       fullpath = "#{temp_dir}/definitions.rb"
-      IO.write(fullpath, "\n\nBAD CODE\n")
-      e = check_fail 'Syntax error at definitions.rb:3', trace: [fullpath, 3] do
+      IO.write(fullpath, "\n\n&*^^\n")
+      e = check_fail 'Syntax error at definitions.rb:3: unexpected &' do
         jaba(load_paths: fullpath)
       end
       e.cause.wont_be_nil
