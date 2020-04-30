@@ -237,7 +237,7 @@ module JABA
         @jaba_types.sort_topological!(:dependencies)
       rescue CyclicDependency => e
         err_type = e.instance_variable_get(:@err_obj)
-        jaba_error("'#{err_type}' contains a cyclic dependency", callstack: err_type.api_call_line)
+        jaba_error("'#{err_type}' contains a cyclic dependency", callstack: err_type.definition.api_call_line)
       end
       
       log 'Initialisation of JabaTypes complete', section: true

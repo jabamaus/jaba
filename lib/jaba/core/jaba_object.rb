@@ -13,14 +13,12 @@ module JABA
     attr_reader :services
     attr_reader :definition
     attr_reader :api
-    attr_reader :api_call_line
 
     ##
     #
     def initialize(services, definition, api_object)
       @services = services
       @definition = definition
-      @api_call_line = definition.api_call_line
       @api = api_object
     end
 
