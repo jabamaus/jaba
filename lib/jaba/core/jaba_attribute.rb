@@ -116,7 +116,10 @@ module JABA
     def set(value, api_call_line = nil, *args, **key_val_args)
       @api_call_line = api_call_line
       
-      if api_call_line
+      # Check for read only if calling from definitions, or if not calling from definitions but from library code,
+      # allow setting read only attrs the first time, in order to initialise them.
+      #
+      if (api_call_line || set?)
         if @attr_def.has_flag?(:read_only)
           @services.jaba_error("'#{@attr_def.definition_id}' attribute is read only")
         end
@@ -140,7 +143,14 @@ module JABA
         end
       end
 
-      validate_value(value, api_call_line)
+      if value.is_a?(Array)
+        @services.jaba_error("'#{@attr_def.definition_id}' attribute is not an array so cannot accept one")
+      end
+      begin
+        @attr_def.jaba_attr_type.call_hook(:validate_value, value, receiver: @attr_def)
+      rescue JabaDefinitionError => e
+        @services.jaba_error("'#{@attr_def.definition_id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
+      end
 
       # Take a deep copy of keyval_options so they are private to this attribute
       #
@@ -196,22 +206,7 @@ module JABA
     end
     
     private
-    
-    ##
-    #
-    def validate_value(value, api_call_line)
-      if value.is_a?(Array)
-        @services.jaba_error("'#{@attr_def.definition_id}' attribute is not an array so cannot accept one")
-      end
-      if api_call_line
-        begin
-          @attr_def.jaba_attr_type.call_hook(:validate_value, value, receiver: @attr_def)
-        rescue JabaDefinitionError => e
-          @services.jaba_error("'#{@attr_def.definition_id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
-        end
-      end
-    end
-    
+ 
     ##
     #
     def resolve_reference(value)
