@@ -342,8 +342,12 @@ module JABA
         end
       end
       if !@attr_def.has_flag?(:allow_dupes)
-        if warn && @elems.uniq!(&:value)
-          @services.jaba_warning("'#{definition_id}' array attribute contains duplicates", callstack: api_call_line)
+        if warn
+          dupes = @elems.uniq!(&:value)
+          if dupes
+            # TODO: report dupes
+            @services.jaba_warning("'#{definition_id}' array attribute contains duplicates", callstack: api_call_line)
+          end
         end
       end
       if !@attr_def.has_flag?(:unordered)
