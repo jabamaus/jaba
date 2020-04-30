@@ -198,15 +198,15 @@ module JABA
         if current_val.is_a?(Array)
           if val.is_a?(Array)
             val.flatten!
-            on_property_set(p_id, current_val, val)
             current_val.concat(val)
+            on_property_set(p_id, val)
           else
-            on_property_set(p_id, current_val, val)
             current_val << val
+            on_property_set(p_id, val)
           end
         else
-          on_property_set(p_id, current_val, val)
           instance_variable_set(var, val)
+          on_property_set(p_id, val)
         end
       end
     end
@@ -214,7 +214,7 @@ module JABA
     ##
     # Override in subclass to validate value.
     #
-    def on_property_set(id, var, new_val)
+    def on_property_set(id, incoming_val)
       # nothing
     end
 

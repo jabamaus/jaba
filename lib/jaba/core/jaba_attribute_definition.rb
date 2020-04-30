@@ -70,7 +70,7 @@ module JABA
     
     ##
     #
-    def on_property_set(id, current_val, new_val)
+    def on_property_set(id, new_val)
       case id
       when :flags
         new_val.each do |f|
