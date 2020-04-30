@@ -8,4 +8,4 @@
 *.pdb
 *.vcxproj.user
 .vs/
-.vscode/
+.vscode*
