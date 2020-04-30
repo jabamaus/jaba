@@ -43,8 +43,8 @@ module JABA
     end
 
     it 'reports errors correctly with subtype attributes' do
-      check_fail "'platforms' attribute requires a value",
-                trace: [__FILE__, 'tagY', CPP_DEFINITION_FILE, 'attr_array :platforms'] do
+      # TODO: use error 'help' to link to attribute definition      
+      check_fail "'platforms' attribute requires a value", trace: [__FILE__, 'tagY'] do
         jaba do
           cpp :app do # tagY
           end

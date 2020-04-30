@@ -44,8 +44,8 @@ module JABA
     end
 
     it 'fails if no filename specified' do
-      check_fail "'filename' attribute requires a value",
-                 trace: [__FILE__, 'tagY', TEXT_DEFINITION_FILE, 'attr :filename, type: :file do'] do
+      # TODO: use error msg help system to link to attribute definition 
+      check_fail "'filename' attribute requires a value", trace: [__FILE__, 'tagY'] do
         jaba do
           text :t # tagY
         end
