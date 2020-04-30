@@ -14,7 +14,7 @@ module JABA
     attr_reader :type_id # eg :bool, :file, :path etc
     attr_reader :variant # :single, :array, :hash
     attr_reader :default
-    attr_reader :default_is_proc
+    attr_reader :default_is_block
     attr_reader :jaba_attr_type # JabaAttributeType object
     attr_reader :jaba_type
     attr_reader :flag_options
@@ -45,7 +45,7 @@ module JABA
         eval_api_block(&@definition.block)
       end
 
-      @default_is_proc = @default.is_a?(Proc)
+      @default_is_block = @default.is_a_block?
 
       validate
 
@@ -72,6 +72,12 @@ module JABA
     #
     def on_property_set(id, new_val)
       case id
+      when :default
+        if @variant == :single && !@default.is_a_block?
+          if new_val.is_a?(Array)
+            @services.jaba_error("'#{definition_id}' attribute is not an array so cannot accept one")
+          end
+        end
       when :flags
         new_val.each do |f|
           if !f.is_a?(Symbol)
@@ -104,7 +110,7 @@ module JABA
                               callstack: [e.backtrace[0], @api_call_line])
       end
       
-      if @default && !@default_is_proc
+      if @default && !@default_is_block
         begin
           @jaba_attr_type.call_hook(:validate_value, @default, receiver: self)
         rescue JabaDefinitionError => e

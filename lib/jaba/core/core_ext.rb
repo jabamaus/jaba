@@ -45,6 +45,12 @@ module JABACoreExt
     
     ##
     #
+    def is_a_block?
+      is_a?(Proc)
+    end
+
+    ##
+    #
     def profile(enabled: true)
       raise 'block expected' if !block_given?
 

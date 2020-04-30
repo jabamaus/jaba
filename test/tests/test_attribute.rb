@@ -8,8 +8,8 @@ module JABA
       check_fail "'a' attribute is not an array so cannot accept one", trace: [__FILE__, 'tagX'] do
         jaba do
           define :test do
-            attr :a do # tagX # TODO: should report on default line
-              default [1, 2]
+            attr :a do
+              default [1, 2] # tagX
             end
           end
           test :t

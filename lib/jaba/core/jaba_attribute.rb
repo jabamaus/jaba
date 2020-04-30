@@ -34,7 +34,7 @@ module JABA
       @api_call_line = nil
       @set = false
       @default = @attr_def.default
-      @default_is_proc = @attr_def.default_is_proc
+      @default_is_block = @attr_def.default_is_block
     end
 
     ##
@@ -85,7 +85,7 @@ module JABA
       
       # If its not an element of an attribute array, initialize with default value if it has a concrete one
       #
-      if !parent_array && !@default.nil? && !@default_is_proc
+      if !parent_array && !@default.nil? && !@default_is_block
         validate_value(@default, attr_def.api_call_line)
         @value = resolve_reference(@default)
         @set = true
@@ -103,7 +103,7 @@ module JABA
     # Returns the value of the attribute.
     #
     def value(api_call_line = nil)
-      if @default_is_proc && !set?
+      if @default_is_block && !set?
         @node.eval_api_block(&@default)
       elsif api_call_line && @value.is_a?(JabaNode)
         @value.definition_id
@@ -156,7 +156,7 @@ module JABA
     def clear
       @value = nil
       d = @attr_def.default
-      if !@default_is_proc && !d.nil?
+      if !@default_is_block && !d.nil?
         @value = d
       end
     end
@@ -257,7 +257,7 @@ module JABA
     ##
     #
     def value(api_call_line = nil)
-      if @default_is_proc && !set?
+      if @default_is_block && !set?
         @node.eval_api_block(&@default)
       else
         @elems.map {|e| e.value(api_call_line)}
@@ -334,7 +334,7 @@ module JABA
         @elems.delete_if do |e|
           @excludes.any? do |ex|
             val = e.value
-            if ex.is_a?(Proc)
+            if ex.is_a_block?
               ex.call(val)
             elsif ex.is_a?(Regexp)
               if !val.is_a?(String)
