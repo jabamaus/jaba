@@ -51,21 +51,6 @@ module JABA
         end
       end
     end
-=begin
-    it 'can add src files to a text file' do
-      make_file('a.cpp')
-      make_file('b.cpp')
-      fn = "#{temp_dir}/a"
-      jaba(default_src: false) do
-        text :a do
-          filename fn
-          line get_src_files('*')
-        end
-      end
-      File.exist?(fn).must_equal(true)
-      IO.read(fn).must_equal("a.cpp\nb.cpp\n")
-    end
-=end
 
   end
 
