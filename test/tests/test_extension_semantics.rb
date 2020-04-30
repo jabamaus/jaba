@@ -18,8 +18,8 @@ module JABA
 
     it 'fails if try to open undefined type' do
       check_fail "'undefined' type not defined", trace: [__FILE__, 'tagL'] do
-        jaba do # tagL TODO: fix error line
-          open :undefined do
+        jaba do
+          open :undefined do # tagL
           end
         end
       end
@@ -130,8 +130,8 @@ module JABA
     
     it 'checks for cyclic dependencies' do
       check_fail '\'a\' contains a cyclic dependency', trace: [__FILE__, 'tagF'] do
-        jaba do # tagF TODO: fix error location
-          define :a do
+        jaba do
+          define :a do # tagF
             dependencies :c
           end
           define :b do

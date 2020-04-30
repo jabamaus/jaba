@@ -224,7 +224,7 @@ module JABA
       # Open JabaTypes so more attributes can be added
       #
       @jaba_open_definitions.each do |d|
-        get_jaba_type(d.id).eval_api_block(&d.block)
+        get_jaba_type(d.id, callstack: d.api_call_line).eval_api_block(&d.block)
       end
       
       # When an attribute defined in a JabaType will reference a differernt JabaType a dependency on that
@@ -237,7 +237,7 @@ module JABA
         @jaba_types.sort_topological!(:dependencies)
       rescue CyclicDependency => e
         err_type = e.instance_variable_get(:@err_obj)
-        jaba_error("'#{err_type}' contains a cyclic dependency")
+        jaba_error("'#{err_type}' contains a cyclic dependency", callstack: err_type.api_call_line)
       end
       
       log 'Initialisation of JabaTypes complete', section: true
@@ -280,7 +280,7 @@ module JABA
             a.map! do |ref|
               if ref.is_a?(Symbol)
                 # TODO: remove use of get_property
-                node_from_handle("#{a.attr_def.get_property(:referenced_type)}|#{ref}")
+                node_from_handle("#{a.attr_def.get_property(:referenced_type)}|#{ref}", callstack: a.api_call_line)
               else
                 ref
               end
@@ -543,10 +543,10 @@ module JABA
 
     ##
     #
-    def node_from_handle(handle, fail_if_not_found: true)
+    def node_from_handle(handle, fail_if_not_found: true, callstack: nil)
       n = @node_lookup[handle]
       if !n && fail_if_not_found
-        jaba_error("Node with handle '#{handle}' not found")
+        jaba_error("Node with handle '#{handle}' not found", callstack: callstack)
       end
       n
     end

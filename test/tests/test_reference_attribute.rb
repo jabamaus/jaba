@@ -15,21 +15,6 @@ module JABA
       end
     end
     
-    it 'validates reference' do
-      check_fail 'Node with handle \'a|undefined\' not found', trace: [__FILE__, 'tagQ'] do
-        jaba do # tagQ TODO: fix error line
-          define :a do
-            attr :b, type: :reference do
-              referenced_type :a
-            end
-          end
-          a :t do
-            b :undefined
-          end
-        end
-      end
-    end
-    
     # Referencing a node of a different type automatically adds a dependency so that instances of the referenced
     # type are created first.
     #
@@ -54,6 +39,22 @@ module JABA
       end
     end
     
+    it 'catches invalid reference to different type' do
+      check_fail 'Node with handle \'type_b|undefined\' not found', trace: [__FILE__, 'tagW'] do
+        jaba do
+          define :type_a do
+            attr :ref, type: :reference do
+              referenced_type :type_b
+            end
+          end
+          define :type_b
+          type_a :a do
+            ref :undefined # tagW
+          end
+        end
+      end
+    end
+
     it 'resolves references to same type later' do
       jaba do
         define :type_a do
@@ -86,6 +87,21 @@ module JABA
       end
     end
     
+    it 'catches invalid reference to same type' do
+      check_fail 'Node with handle \'a|undefined\' not found', trace: [__FILE__, 'tagQ'] do
+        jaba do
+          define :a do
+            attr :b, type: :reference do
+              referenced_type :a
+            end
+          end
+          a :t do
+            b :undefined # tagQ
+          end
+        end
+      end
+    end
+
     it 'works with a default' do
       jaba do
         define :type_a do
