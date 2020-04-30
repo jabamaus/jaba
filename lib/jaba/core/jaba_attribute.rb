@@ -86,7 +86,6 @@ module JABA
       # If its not an element of an attribute array, initialize with default value if it has a concrete one
       #
       if !parent_array && !@default.nil? && !@default_is_block
-        validate_value(@default, attr_def.api_call_line)
         @value = resolve_reference(@default)
         @set = true
       end
