@@ -202,7 +202,7 @@ module JABA
     #
     def validate_value(value, api_call_line)
       if value.is_a?(Array)
-        @services.jaba_error("'#{@attr_def.definition_id}' attribute is not an array so cannot accept one", callstack: api_call_line)
+        @services.jaba_error("'#{@attr_def.definition_id}' attribute is not an array so cannot accept one")
       end
       if api_call_line
         begin
