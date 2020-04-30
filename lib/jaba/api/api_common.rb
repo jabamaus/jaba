@@ -26,7 +26,13 @@ module  JABA
     ##
     #
     def _ID
-      @obj.definition_id
+      @obj.definition.id
+    end
+
+    ##
+    #
+    def _FILE
+      @obj.definition.source_file
     end
 
     ##

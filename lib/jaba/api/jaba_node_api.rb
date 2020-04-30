@@ -7,18 +7,6 @@ module JABA
     include APICommon
 
     ##
-    #
-    def _FILE
-      @jaba_node.source_file
-    end
-    
-    ##
-    #
-    def _DIR
-      @jaba_node.source_dir
-    end
-    
-    ##
     # Clears any previously set values. Sets single attribute values to nil and clears array attributes.
     #
     def wipe(*attr_ids)

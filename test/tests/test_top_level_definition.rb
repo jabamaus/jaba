@@ -56,32 +56,40 @@ module JABA
       end
     end
     
-    it 'allows definition id to be accessed from all definitions' do
+    it 'allows definition id and source file to be accessed from all definitions' do
       jaba do
         attr_type :v do
           _ID.must_equal(:v)
+          _FILE.must_equal(__FILE__)
         end
         attr_flag :f do
           _ID.must_equal(:f)
+          _FILE.must_equal(__FILE__)
         end
         define :test do
           _ID.must_equal(:test)
+          _FILE.must_equal(__FILE__)
           attr :b do
             _ID.must_equal(:b)
+            _FILE.must_equal(__FILE__)
           end
         end
         open :test do
           _ID.must_equal(:test)
+          _FILE.must_equal(__FILE__)
         end
         defaults :test do
           _ID.must_equal(:a) # :a not :test
+          _FILE.must_equal(__FILE__)
         end
         shared :s do
           _ID.must_equal(:a) # :a not :s
+          _FILE.must_equal(__FILE__)
         end
         test :a do
           include :s
           _ID.must_equal(:a)
+          _FILE.must_equal(__FILE__)
         end
       end
     end
