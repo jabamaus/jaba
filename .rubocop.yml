@@ -76,6 +76,8 @@ Style/RedundantReturn:
   Enabled: false
 Style/RegexpLiteral:
   Enabled: false
+Style/SignalException:
+  Enabled: false
 Style/SymbolArray:
   Enabled: false
 Style/WordArray:

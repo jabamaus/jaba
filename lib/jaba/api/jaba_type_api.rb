@@ -42,7 +42,7 @@ module JABA
       @jaba_type.set_property(:dependencies, deps)
     end
 
-  private
+    private
   
     ##
     #

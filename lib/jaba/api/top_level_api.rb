@@ -79,7 +79,7 @@ module JABA
       @services.open_type(id, &block)
     end
     
-  private
+    private
 
     ##
     #

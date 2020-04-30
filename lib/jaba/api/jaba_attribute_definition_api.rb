@@ -70,14 +70,14 @@ module JABA
       @attr_def.jaba_type.api
     end
 
-  private
-  
     ##
     #
     def method_missing(id, val = nil)
       @attr_def.handle_property(id, val)
     end
-
+    
+    private
+  
     ##
     #
     def initialize(attr_def)

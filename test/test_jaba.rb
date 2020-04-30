@@ -98,7 +98,7 @@ module JABA
     ##
     #
     def check_warn(msg, expected_file, tag)
-      out, _ = capture_io do
+      out, = capture_io do
         yield
       end
       

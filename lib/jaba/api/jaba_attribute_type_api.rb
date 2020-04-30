@@ -31,7 +31,7 @@ module JABA
       @attr_type.set_hook(:validate_value, &block)
     end
 
-  private
+    private
   
     ##
     #

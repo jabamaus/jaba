@@ -379,15 +379,15 @@ module JABA
     #
     def make_node(type_id: @current_definition.jaba_type_id, name: nil, parent: nil, &block)
       handle = if parent
-        jaba_error('name is required for child nodes') if !name
-        if name.is_a?(JabaNode)
-          name = name.definition_id
-        end
-        "#{parent.handle}|#{name}"
-      else
-        jaba_error('name not required for root nodes') if name
-        "#{@current_definition.jaba_type_id}|#{@current_definition.id}"
-      end
+                 jaba_error('name is required for child nodes') if !name
+                 if name.is_a?(JabaNode)
+                   name = name.definition_id
+                 end
+                 "#{parent.handle}|#{name}"
+               else
+                 jaba_error('name not required for root nodes') if name
+                 "#{@current_definition.jaba_type_id}|#{@current_definition.id}"
+               end
 
       log "Making node [type=#{type_id} handle=#{handle}, parent=#{parent}]"
 
@@ -438,7 +438,7 @@ module JABA
         write_node_json(rn, obj)
       end
 
-      json = JSON::pretty_generate(root)
+      json = JSON.pretty_generate(root)
       save_file(input.jaba_input_file, json, :unix, track: false)
     end
 
@@ -469,7 +469,7 @@ module JABA
       end
 
       if input.dump_output?
-        json = JSON::pretty_generate(@output)
+        json = JSON.pretty_generate(@output)
         save_file(input.jaba_output_file, json, :unix, track: false)
       end
     end
@@ -667,10 +667,10 @@ module JABA
         # 
         if File.directory?(p)
           match = if p.basename == 'jaba'
-            "#{p}/**/*.rb"
-          else
-            "#{p}/**/jaba.rb"
-          end
+                    "#{p}/**/*.rb"
+                  else
+                    "#{p}/**/jaba.rb"
+                  end
           files = glob(match)
           if files.empty?
             jaba_warning("No definition files found in #{p}")

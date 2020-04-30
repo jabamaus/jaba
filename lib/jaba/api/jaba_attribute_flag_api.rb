@@ -13,7 +13,7 @@ module JABA
       @attr_flag.set_property(:help, val, &block)
     end
 
-  private
+    private
 
     ##
     #

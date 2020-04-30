@@ -143,6 +143,8 @@ module JABA
     
   end
   
+  ##
+  #
   module PropertyMethods
 
     @@id_to_var = {}
@@ -199,15 +201,13 @@ module JABA
           if val.is_a?(Array)
             val.flatten!
             current_val.concat(val)
-            on_property_set(p_id, val)
           else
             current_val << val
-            on_property_set(p_id, val)
           end
         else
           instance_variable_set(var, val)
-          on_property_set(p_id, val)
         end
+        on_property_set(p_id, val)
       end
     end
     
