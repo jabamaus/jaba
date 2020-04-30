@@ -50,7 +50,21 @@ module JABA
     end
     
     it 'reports lines correctly when using shared modules' do
-      # TODO
+      check_fail ':bool attributes only accept [true|false]', 
+                 trace: [ATTR_DEFINITION_FILE, "fail ':bool attributes only accept [true|false]'",
+                         __FILE__, 'tagH'] do
+        jaba do
+          define :test do
+            attr :a, type: :bool
+          end
+          shared :s do
+            a 'invalid' # tagH
+          end
+          test :t do
+            include :s
+          end
+        end
+      end
     end
 
     it 'allows errors to be raised from definitions' do
