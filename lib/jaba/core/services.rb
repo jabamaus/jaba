@@ -264,10 +264,10 @@ module JABA
 
         g = d.jaba_type.generator
         @root_nodes << if g
-          g.make_nodes
-        else
-          make_node
-        end
+                         g.make_nodes
+                       else
+                         make_node
+                       end
       end
       
       log "Resolving references..."
@@ -296,7 +296,7 @@ module JABA
         dump_jaba_input
       end
 
-      log "Calling generators..."
+      log 'Calling generators...'
 
       # Call generators
       #
