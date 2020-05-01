@@ -225,6 +225,19 @@ module JABA
       end
     end
 
+    it 'validates a value is given' do
+      check_fail("Keyvalue attribute requires a value", trace: [__FILE__, 'tagM']) do
+        jaba do
+          define :test do
+            attr :a, type: :keyvalue
+          end
+          test :t do
+            a :key # tagM
+          end
+        end
+      end
+    end
+
   end
 
 end

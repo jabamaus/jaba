@@ -63,10 +63,14 @@ module JABA
     
     ##
     #
-    def process_flags(warn: true)
-      # Nothing
+    def get_default
+      if @default_is_block
+        @node.eval_api_block(&@default)
+      else
+        @default
+      end
     end
-    
+
   end
 
   ##
@@ -102,8 +106,8 @@ module JABA
     # Returns the value of the attribute.
     #
     def value(api_call_line = nil)
-      if @default_is_block && !set?
-        @node.eval_api_block(&@default)
+      if !set?
+        get_default
       elsif api_call_line && @value.is_a?(JabaNode)
         @value.definition_id
       else
@@ -115,7 +119,7 @@ module JABA
     #
     def set(value, api_call_line = nil, *args, **key_val_args)
       @api_call_line = api_call_line
-      
+
       # Check for read only if calling from definitions, or if not calling from definitions but from library code,
       # allow setting read only attrs the first time, in order to initialise them.
       #
@@ -125,7 +129,14 @@ module JABA
         end
       end
 
+      @set = true
+
+      return if value.nil?
+
       if @attr_def.type_id == :keyvalue
+        if args.empty?
+          #@services.jaba_error("keyvalue attribute requires a value")
+        end
         value = KeyValue.new(value, args.shift)
       end
 
@@ -157,7 +168,6 @@ module JABA
       @keyval_options = key_val_args.empty? ? {} : Marshal.load(Marshal.dump(key_val_args))
       
       @value = resolve_reference(value)
-      @set = true
     end
     
     ##
@@ -205,6 +215,12 @@ module JABA
       @value = yield(@value)
     end
     
+    ##
+    #
+    def process_flags(warn: true)
+      # Nothing yet
+    end
+
     private
  
     ##

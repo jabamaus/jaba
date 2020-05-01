@@ -16,3 +16,4 @@ TODO:
 - move keyval and reference attr types into core
 - beef up specification of keyval options
 - introduce TopLevelDefinition?
+- test subtypes, eg opening

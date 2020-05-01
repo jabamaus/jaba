@@ -94,8 +94,12 @@ module JABA
     #
     def post_create
       @attributes.each do |a|
-        if a.required? && !a.set?
-          jaba_error("'#{a.definition_id}' attribute requires a value", callstack: @definition.api_call_line)
+        if !a.set?
+          if a.required?
+            jaba_error("'#{a.definition_id}' attribute requires a value", callstack: @definition.api_call_line)
+          end
+          # TODO: not working yet
+          #a.set(a.get_default)
         end
         a.process_flags(warn: true)
       end
