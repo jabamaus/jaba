@@ -163,11 +163,12 @@ module JABA
           attr :root do
             default '.'
           end
-          attr_array :platforms, type: :reference do
-            referenced_type :platform
+          attr_array :platforms do
             flags :unordered, :required
           end
-          attr :platform
+          attr :platform, type: :reference do
+            referenced_type :platform
+          end
           attr :src
           attr_array :targets do
             flags :required, :unordered
