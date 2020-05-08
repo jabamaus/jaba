@@ -81,7 +81,7 @@ define :cpp do
     end
 
     attr :toolset do
-      default { host_toolset }
+      default { host_ref.toolset }
     end
 
     attr :unicode, type: :bool do

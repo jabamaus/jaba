@@ -111,7 +111,7 @@ module JABA
           end
         end
         type_a :a1 do
-          host_version_year.must_equal 2017
+          host.version_year.must_equal 2017
         end
       end
     end

@@ -21,7 +21,7 @@ module JABA
     ##
     #
     def tools_version
-      @host.attrs.host_version_year < 2013 ? '4.0' : @host.attrs.host_version
+      @host.attrs.version_year < 2013 ? '4.0' : @host.attrs.version
     end
     
     ##

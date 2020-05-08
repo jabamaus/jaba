@@ -17,3 +17,4 @@ TODO:
 - beef up specification of keyval options
 - introduce TopLevelDefinition?
 - test subtypes, eg opening
+- add flag that controls whether an attribute is exposed to referent
