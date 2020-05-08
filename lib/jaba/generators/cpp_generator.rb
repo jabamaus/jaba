@@ -21,7 +21,7 @@ module JABA
       case attr_id
       when :root, :platforms
         :cpp_root
-      when :platform, :hosts
+      when :platform, :platform_ref, :hosts
         :cpp_hosts
       end
     end
@@ -34,11 +34,13 @@ module JABA
       root_node.attrs.platforms.each do |p|
         hosts_node = make_node(type_id: :cpp_hosts, name: p, parent: root_node) do
           platform p
+          platform_ref p
         end
         
         hosts_node.attrs.hosts.each do |h|
           proj_node = make_node(type_id: :cpp, name: h, parent: hosts_node) do
             host h
+            host_ref h
           end
 
           @project_nodes << proj_node

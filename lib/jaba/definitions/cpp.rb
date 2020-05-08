@@ -8,16 +8,24 @@ define :cpp do
     flags :required
   end
   
-  attr :platform, type: :reference do
-    referenced_type :platform
+  attr :platform do
     flags :read_only
   end
     
+  attr :platform_ref, type: :reference do
+    referenced_type :platform
+    flags :read_only
+  end
+
   attr_array :hosts do
     flags :required
   end
   
-  attr :host, type: :reference do
+  attr :host do
+    flags :read_only
+  end
+
+  attr :host_ref, type: :reference do
     referenced_type :host
     flags :read_only
   end

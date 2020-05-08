@@ -183,7 +183,8 @@
       ],
       "children": {
         "cpp|MyApp|win32": {
-          "platform": "platform|win32",
+          "platform": "win32",
+          "platform_ref": "platform|win32",
           "hosts": [
             "vs2017"
           ],
@@ -196,7 +197,8 @@
               "src": [
 
               ],
-              "host": "host|vs2017",
+              "host": "vs2017",
+              "host_ref": "host|vs2017",
               "type": "app",
               "configs": [
                 "debug",
@@ -251,7 +253,8 @@
       ],
       "children": {
         "cpp|MyLib|win32": {
-          "platform": "platform|win32",
+          "platform": "win32",
+          "platform_ref": "platform|win32",
           "hosts": [
             "vs2017"
           ],
@@ -264,7 +267,8 @@
               "src": [
 
               ],
-              "host": "host|vs2017",
+              "host": "vs2017",
+              "host_ref": "host|vs2017",
               "type": "lib",
               "configs": [
                 "debug",

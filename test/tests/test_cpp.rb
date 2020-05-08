@@ -52,6 +52,27 @@ module JABA
       end
     end
 
+    it 'prevents nil access' do
+      op = jaba(dry_run: true) do
+        cpp :app do
+          platforms [:win32, :x64]
+          projname "app_#{platform&.upcase}_#{host&.upcase}" # TODO: remove safe call
+          hosts [:vs2017]
+          if win32?
+            configs [:debug]
+          else
+            configs [:release]
+          end
+        end
+      end
+      proj = op[:cpp]['cpp|app|win32|vs2017']
+      proj.wont_be_nil
+      proj[:projname].must_equal('app_WIN32_VS2017')
+      proj[:configs][:debug].wont_be_nil
+      proj[:configs][:release].must_be_nil
+
+    end
+
   end
 
 end

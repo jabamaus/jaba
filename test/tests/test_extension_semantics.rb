@@ -166,8 +166,12 @@ module JABA
           attr_array :platforms do
             flags :unordered, :required
           end
-          attr :platform, type: :reference do
+          attr :platform do
+            flags :read_only
+          end
+          attr :platform_ref, type: :reference do
             referenced_type :platform
+            flags :read_only
           end
           attr :src
           attr_array :targets do
@@ -185,12 +189,7 @@ module JABA
           platforms.must_equal [:win32, :x64]
           root 'test'
           targets [:debug, :release]
-          case platform
-          when :win32
-            src 'win32_src'
-          when :x64
-            src 'x64_src'
-          end
+          src "#{platform_ref&.vsname}_src" # TODO: remove safe call
           case target
           when :debug
             name "Debug"
@@ -228,11 +227,11 @@ module JABA
       @projects.size.must_equal 2
 
       proj1 = @projects[0]
-      proj1.attrs.platform.definition_id.must_equal(:win32)
-      proj1.attrs.src.must_equal 'win32_src'
+      proj1.attrs.platform_ref.definition_id.must_equal(:win32)
+      proj1.attrs.src.must_equal 'Win32_src'
       
       proj2 = @projects[1]
-      proj2.attrs.platform.definition_id.must_equal(:x64)
+      proj2.attrs.platform_ref.definition_id.must_equal(:x64)
       proj2.attrs.src.must_equal 'x64_src'
     end
     
@@ -242,7 +241,10 @@ module JABA
       root_node = make_node(type_id: :test_project_root)
       
       root_node.attrs.platforms.each do |p|
-        project = make_node(type_id: :test_project, name: p, parent: root_node) { platform p }
+        project = make_node(type_id: :test_project, name: p, parent: root_node) do 
+          platform p
+          platform_ref p
+        end
         @projects << project
         
         project.attrs.targets.each do |t|

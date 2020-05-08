@@ -14,8 +14,8 @@ module JABA
     #
     def init
       @guid = nil
-      @host = @attrs.host
-      @platform = @attrs.platform
+      @host = @attrs.host_ref
+      @platform = @attrs.platform_ref
     end
     
     ##
