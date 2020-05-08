@@ -11,6 +11,7 @@
   "cpp": {
     "cpp|MyApp|win32|vs2017": {
       "projroot": "C:/projects/GitHub/jaba/examples/example1/./.",
+      "projname": "MyApp",
       "platform": "win32",
       "host": "vs2017",
       "guid": "{94B39F2E-598F-4977-32A2-3152F335DBBD}",
@@ -28,6 +29,7 @@
     },
     "cpp|MyLib|win32|vs2017": {
       "projroot": "C:/projects/GitHub/jaba/examples/example2/./.",
+      "projname": "MyLib",
       "platform": "win32",
       "host": "vs2017",
       "guid": "{BC1B8BAC-BF1A-46A6-8180-E02C42CA6FF0}",

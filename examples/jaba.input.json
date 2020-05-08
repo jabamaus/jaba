@@ -179,13 +179,13 @@
     "cpp|MyApp": {
       "root": ".",
       "platforms": [
-        "platform|win32"
+        "win32"
       ],
       "children": {
         "cpp|MyApp|win32": {
           "platform": "platform|win32",
           "hosts": [
-            "host|vs2017"
+            "vs2017"
           ],
           "children": {
             "cpp|MyApp|win32|vs2017": {
@@ -247,13 +247,13 @@
     "cpp|MyLib": {
       "root": ".",
       "platforms": [
-        "platform|win32"
+        "win32"
       ],
       "children": {
         "cpp|MyLib|win32": {
           "platform": "platform|win32",
           "hosts": [
-            "host|vs2017"
+            "vs2017"
           ],
           "children": {
             "cpp|MyLib|win32|vs2017": {
