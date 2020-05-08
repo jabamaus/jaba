@@ -4,21 +4,21 @@ define :cpp do
 
   help 'TODO'
 
-  attr_array :platforms, type: :reference do
-    referenced_type :platform
+  attr_array :platforms do
     flags :required
   end
   
-  attr :platform do
+  attr :platform, type: :reference do
+    referenced_type :platform
     flags :read_only
   end
     
-  attr_array :hosts, type: :reference do
-    referenced_type :host
+  attr_array :hosts do
     flags :required
   end
   
-  attr :host do
+  attr :host, type: :reference do
+    referenced_type :host
     flags :read_only
   end
 
