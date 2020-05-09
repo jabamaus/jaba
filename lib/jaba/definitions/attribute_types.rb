@@ -51,16 +51,6 @@ attr_type :path do
   help 'TODO'
 end
 
-attr_type :keyvalue do
-
-  help 'TODO'
-
-  init_attr_def do
-    default KeyValue.new
-  end
-
-end
-
 attr_type :reference do
 
   help 'TODO'

@@ -8,18 +8,6 @@ module JABA
   
   ##
   #
-  KeyValue = Struct.new(:key, :value) do
-    def <=>(other)
-      if key.respond_to?(:casecmp)
-        key.casecmp(other.key)
-      else
-        key <=> other.key
-      end
-    end
-  end
-  
-  ##
-  #
   class JabaAttributeBase
 
     attr_reader :attr_def
@@ -132,13 +120,6 @@ module JABA
       @set = true
 
       return if value.nil?
-
-      if @attr_def.type_id == :keyvalue
-        if args.empty?
-          #@services.jaba_error("keyvalue attribute requires a value")
-        end
-        value = KeyValue.new(value, args.shift)
-      end
 
       @flag_options = args
 
