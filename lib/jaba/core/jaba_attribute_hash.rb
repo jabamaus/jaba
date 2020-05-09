@@ -17,7 +17,7 @@ module JABA
       @hash = {}
       if @default.is_a?(Hash)
         @default.each do |k, v|
-          set(k, nil, v)
+          set(k, v)
         end
       end
     end
@@ -41,8 +41,7 @@ module JABA
     
     ##
     # TODO: handle overwriting
-    # TODO: make api_call_line a keyword param
-    def set(value, api_call_line = nil, *args, prefix: nil, postfix: nil, exclude: nil, **keyvalue_args)
+    def set(value, *args, api_call_line: nil, prefix: nil, postfix: nil, exclude: nil, **keyvalue_args)
       @api_call_line = api_call_line
       
       if args.empty?
@@ -54,7 +53,7 @@ module JABA
 
       elem = JabaAttribute.new(@services, @attr_def, self, @node)
       # v = apply_pre_post_fix(prefix, postfix, v)
-      elem.set(val, api_call_line, *args, **keyvalue_args)
+      elem.set(val, *args, api_call_line: api_call_line, **keyvalue_args)
       @hash[key] = elem
       @set = true
       

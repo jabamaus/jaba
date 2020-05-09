@@ -112,7 +112,7 @@ module JABA
     # which act as options. eg my_attr 'val', :export, :exclude would make args equal to ['val', :opt1, :opt2]. If
     # however the value being passed in is an array it could be eg [['val1', 'val2'], :opt1, :opt2].
     #  
-    def handle_attr(id, api_call_line, *args, **keyvalue_args)
+    def handle_attr(id, *args, api_call_line: nil, **keyvalue_args)
       # First determine if it is a set or a get operation
       #
       is_get = (args.empty? && keyvalue_args.empty?)
@@ -142,7 +142,7 @@ module JABA
         # array, depending on what the user passed in (see comment at top of this method.
         #
         value = args.shift
-        a.set(value, api_call_line, *args, **keyvalue_args)
+        a.set(value, *args, api_call_line: api_call_line, **keyvalue_args)
         return nil
       end
     end
@@ -179,7 +179,7 @@ module JABA
     ##
     #
     def method_missing(attr_id, *args, **keyvalue_args)
-      @node.handle_attr(attr_id, nil, *args, **keyvalue_args)
+      @node.handle_attr(attr_id, *args, **keyvalue_args)
     end
    
   end

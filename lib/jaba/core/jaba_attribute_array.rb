@@ -40,13 +40,13 @@ module JABA
     
     ##
     #
-    def set(values, api_call_line = nil, *args, prefix: nil, postfix: nil, exclude: nil, **keyvalue_args)
+    def set(values, *args, api_call_line: nil, prefix: nil, postfix: nil, exclude: nil, **keyvalue_args)
       @api_call_line = api_call_line
       
       Array(values).each do |v|
         elem = JabaAttribute.new(@services, @attr_def, self, @node)
         v = apply_pre_post_fix(prefix, postfix, v)
-        elem.set(v, api_call_line, *args, **keyvalue_args)
+        elem.set(v, *args, api_call_line: api_call_line, **keyvalue_args)
         @elems << elem
         @set = true
       end

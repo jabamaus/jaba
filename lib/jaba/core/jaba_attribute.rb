@@ -117,7 +117,7 @@ module JABA
     
     ##
     #
-    def set(value, api_call_line = nil, *args, **key_val_args)
+    def set(value, *args, api_call_line: nil, **key_val_args)
       @api_call_line = api_call_line
 
       # Check for read only if calling from definitions, or if not calling from definitions but from library code,

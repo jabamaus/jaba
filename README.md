@@ -9,7 +9,6 @@ TODO:
 - make paths in jaba.output.json relative to itself
 - test absolute root paths
 - Look at error handling again
-- Change to using caller_location
 - Have a way of globally setting default for :platforms, :hosts and :configs (and for clearing)
 - consider moving JabaError into Object refinement
 - make file/dir attrs cleanpath
