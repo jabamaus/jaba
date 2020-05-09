@@ -43,7 +43,7 @@ define :cpp do
     referenced_type :cpp
   end
   
-  attr_array :vcglobal, type: :keyvalue do
+  attr_hash :vcglobal do
     keyval_options :condition
   end
   
@@ -89,7 +89,7 @@ define :cpp do
       default true
     end
 
-    attr_array :vcproperty, type: :keyvalue do
+    attr_hash :vcproperty do
       keyval_options :group
 =begin
       keyval_option :condition do

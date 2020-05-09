@@ -91,20 +91,18 @@ module JABA
     
     ##
     #
-    def each(&block)
-      @elems.each(&block)
-    end
-    
-    ##
-    #
-    def each_value(&block)
-      @elems.each {|e| e.each_value(&block)}
+    def each_value
+      @hash.each do |key, attr|
+        attr.each_value do |val, flag_options, keyval_options|
+          yield key, val, flag_options, keyval_options
+        end
+      end
     end
     
     ##
     #
     def map!(&block)
-      @elems.each {|e| e.map!(&block)}
+      @hash.transform_values! {|e| e.map!(&block)}
     end
     
     ##

@@ -91,10 +91,8 @@ module JABA
     ##
     #
     def write_keyvalue_attr(w, attr, group: nil, depth: 2)
-      attr.each_value do |keyval, _options, keyval_options|
+      attr.each_value do |key, val, _flag_options, keyval_options|
         if !group || group == keyval_options[:group]
-          key = keyval.key
-          val = keyval.value
           condition = keyval_options[:condition]
           w << if condition
                  "#{'  ' * depth}<#{key} Condition=\"#{condition}\">#{val}</#{key}>"
