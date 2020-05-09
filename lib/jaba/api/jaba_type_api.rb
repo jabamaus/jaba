@@ -30,6 +30,13 @@ module JABA
     end
     
     ##
+    # Define a new hash attribute.
+    #
+    def attr_hash(id, **options, &block)
+      @jaba_type.define_attr(id, :hash, **options, &block)
+    end
+
+    ##
     # Define sub type. Useful for grouping attributes.
     #
     def define(id, &block)

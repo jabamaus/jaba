@@ -45,6 +45,8 @@ module JABA
               JabaAttribute.new(services, attr_def, nil, self)
             when :array
               JabaAttributeArray.new(services, attr_def, self)
+            when :hash
+              JabaAttributeHash.new(services, attr_def, self)
             end
         @attributes << a
         @attribute_lookup[attr_def.definition_id] = a
