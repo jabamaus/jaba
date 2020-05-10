@@ -37,6 +37,12 @@ module JABA
 
     ##
     #
+    def jaba_warning(msg, **options)
+      @services.jaba_warning(msg, **options)
+    end
+
+    ##
+    #
     def jaba_error(msg, **options)
       @services.jaba_error(msg, **options)
     end
