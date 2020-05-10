@@ -9,28 +9,16 @@ module JABA
   ##
   #
   module PropertyMethods
-    
-    ##
-    #
-    def initialize(*args)
-      super
-      @id_to_var = {}
-    end
+
+    @@id_to_var = {}
 
     ##
     #
-    def get_var(id, fail_if_defined: false, fail_if_not_defined: false)
-      v = @id_to_var[id]
-      if v
-        if fail_if_defined
-          @services.jaba_error("'#{id}' property multiply defined")
-        end
-      else
-        if fail_if_not_defined
-          @services.jaba_error("'#{id}' property not defined")
-        end
+    def get_var(id)
+      v = @@id_to_var[id]
+      if !v
         v = "@#{id}"
-        @id_to_var[id] = v
+        @@id_to_var[id] = v
       end
       v
     end
@@ -38,21 +26,32 @@ module JABA
     ##
     #
     def define_property(p_id, val = nil)
-      var = get_var(p_id, fail_if_defined: true)
+      var = get_var(p_id)
+      if instance_variable_defined?(var)
+        @services.jaba_error("'#{p_id}' property multiply defined")
+      end
+
       instance_variable_set(var, val)
     end
 
     ##
     #
     def define_array_property(p_id, val = [])
-      var = get_var(p_id, fail_if_defined: true)
+      var = get_var(p_id)
+      if instance_variable_defined?(var)
+        @services.jaba_error("'#{p_id}' property multiply defined")
+      end
+
       instance_variable_set(var, val)
     end
 
     ##
     #
     def set_property(p_id, val = nil, &block)
-      var = get_var(p_id, fail_if_not_defined: true)
+      var = get_var(p_id)
+      if !instance_variable_defined?(var)
+        @services.jaba_error("'#{p_id}' property not defined")
+      end
 
       if block_given?
         if !val.nil?
@@ -91,7 +90,10 @@ module JABA
     ##
     #
     def get_property(p_id)
-      var = get_var(p_id, fail_if_not_defined: true)
+      var = get_var(p_id)
+      if !instance_variable_defined?(var)
+        @services.jaba_error("'#{p_id}' property not defined")
+      end
       instance_variable_get(var)
     end
     
