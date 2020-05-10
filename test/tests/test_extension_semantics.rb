@@ -174,27 +174,27 @@ module JABA
             flags :read_only
           end
           attr :src
-          attr_array :targets do
+          attr_array :configs do
             flags :required, :unordered
+          end
+          
+          define :test_config do
+            attr :config
+            attr :config_name
           end
         end
 
-        define :test_target do
-          attr :target
-          attr :name
-        end
-        
         test_project :t do
           platforms [:win32, :x64]
           platforms.must_equal [:win32, :x64]
           root 'test'
-          targets [:debug, :release]
+          configs [:debug, :release]
           src "#{platform_ref&.vsname}_src" # TODO: remove safe call
-          case target
+          case config
           when :debug
-            name "Debug"
+            config_name "Debug"
           when :release
-            name 'Release'
+            config_name 'Release'
           end
         end
       end
@@ -247,8 +247,8 @@ module JABA
         end
         @projects << project
         
-        project.attrs.targets.each do |t|
-          make_node(name: t, parent: project) { target t }
+        project.attrs.configs.each do |c|
+          make_node(type_id: :test_config, name: c, parent: project) { config c }
         end
       end
       root_node

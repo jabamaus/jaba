@@ -2,6 +2,10 @@ attr_flag :allow_dupes do
   help 'TODO'
 end
 
+attr_flag :expose do
+  help 'TODO'
+end
+
 attr_flag :no_check_exist do
   help 'TODO'
 end

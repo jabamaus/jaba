@@ -25,7 +25,6 @@ module JABA
 
       @handle = handle
       @attribute_defs = []
-      @attribute_def_lookup = {}
       @generator = generator
 
       define_property(:help)
@@ -57,17 +56,13 @@ module JABA
       validate_id(id)
       id = id.to_sym
       
-      if get_attr_def(id, fail_if_not_found: false)
-        jaba_error("'#{id}' attribute multiply defined")
-      end
-
       # TODO: caller will be wrong in the case of sub type
       db = JabaDefinition.new(id, block, caller(3, 1)[0])
       ad = JabaAttributeDefinition.new(@services, db, type, variant, self)
       
       @attribute_defs << ad
-      @attribute_def_lookup[id] = ad
 
+      @definition.register_attr_def(id, ad)
       ad
     end
 
@@ -93,18 +88,6 @@ module JABA
       end
     end
 
-    ##
-    #
-    def get_attr_def(id, fail_if_not_found: true)
-      a = @attribute_def_lookup[id]
-      if !a
-        if !a && fail_if_not_found
-          jaba_error("'#{id}' attribute definition not found in '#{definition_id}'")
-        end
-      end
-      a
-    end
-    
     ##
     #
     def resolve_dependencies

@@ -8,11 +8,17 @@ define :platform do
   help 'TODO'
 
   SUPPORTED_PLATFORMS.each do |p|
-    attr "#{p}?", type: :bool
+    attr "#{p}?", type: :bool do
+      flags :expose
+    end
   end
   
-  attr :windows?, type: :bool
-  attr :apple?, type: :bool
+  attr :windows?, type: :bool do
+    flags :expose
+  end
+  attr :apple?, type: :bool do
+    flags :expose
+  end
   attr :vsname
   
 end

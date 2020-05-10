@@ -4,15 +4,21 @@ define :host do
 
   help 'TODO'
 
-  attr :visual_studio?, type: :bool
-  attr :xcode?, type: :bool
+  attr :visual_studio?, type: :bool do
+    flags :expose
+  end
+  attr :xcode?, type: :bool do
+    flags :expose
+  end
   attr :major_version
   attr :version
   attr :version_year
   attr :toolset
   
   SUPPORTED_VS_VERSIONS.each do |vs_year|
-    attr "vs#{vs_year}?", type: :bool
+    attr "vs#{vs_year}?", type: :bool do
+      flags :expose
+    end
   end
   
 end

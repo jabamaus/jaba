@@ -242,6 +242,8 @@ module JABA
         jaba_error("'#{err_type}' contains a cyclic dependency", callstack: err_type.definition.api_call_line)
       end
       
+      @jaba_type_definitions.each(&:register_referenced_attributes)
+
       log 'Initialisation of JabaTypes complete', section: true
       
       # Now that the JabaTypes are dependency sorted, pass on the dependency ordering to the JabaNodes.

@@ -73,7 +73,13 @@ module JABA
         if search
           @referenced_nodes.each do |ref_node|
             a = ref_node.get_attr(attr_id, fail_if_not_found: false, search: false)
-            return a if a
+            if a
+              if a.attr_def.has_flag?(:expose)
+                return a
+              else
+                return nil
+              end
+            end
           end
           if @parent
             return @parent.get_attr(attr_id, fail_if_not_found: false, search: true)
@@ -123,8 +129,9 @@ module JABA
         a = get_attr(id, search: true, fail_if_not_found: false)
         
         if !a
-          # TODO: check if property is defined at all
-          # TODO: this needs to consider all types used by a generator
+          if !@jaba_type.definition.attr_valid?(id)
+            jaba_error("'#{id}' attribute not defined")
+          end
           return nil
         end
         
@@ -133,8 +140,9 @@ module JABA
         a = get_attr(id, search: false, fail_if_not_found: false)
         
         if !a
-          # TODO: check if property is defined at all
-          # TODO: this needs to consider all types used by a generator
+          if !@jaba_type.definition.attr_valid?(id)
+            jaba_error("'#{id}' attribute not defined")
+          end
           return nil
         end
 
