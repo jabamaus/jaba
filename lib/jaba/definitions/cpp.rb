@@ -14,7 +14,6 @@ define :cpp do
     
   attr :platform_ref, type: :reference do
     referenced_type :platform
-    flags :read_only
   end
 
   attr_array :hosts do
@@ -27,7 +26,6 @@ define :cpp do
 
   attr :host_ref, type: :reference do
     referenced_type :host
-    flags :read_only
   end
 
   attr :type, type: :choice do

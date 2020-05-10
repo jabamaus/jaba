@@ -87,6 +87,9 @@ module JABA
             jaba_error('Flags must be specified as symbols, eg :flag')
           end
           @services.get_attribute_flag(f) # check flag exists
+          if f == :read_only && @type_id == :reference
+            jaba_warning("reference attribute does not need to be flagged with :read_only as they always are")
+          end
         end
       when :flag_options
         new_val.each do |f|

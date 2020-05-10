@@ -171,7 +171,6 @@ module JABA
           end
           attr :platform_ref, type: :reference do
             referenced_type :platform
-            flags :read_only
           end
           attr :src
           attr_array :configs do

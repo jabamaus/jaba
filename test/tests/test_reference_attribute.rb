@@ -200,9 +200,22 @@ module JABA
       end
     end
 
+    it 'warns on unnecessary use of :read_only flag' do
+      check_warn 'Reference attribute does not need to be flagged with :read_only as they always are', __FILE__, 'tagX' do
+        jaba do
+          define :test do
+            attr :platform, type: :reference do
+              referenced_type :platform
+              flags :read_only # tagX
+            end
+          end
+        end
+      end
+    end
     # TODO: test attribute name clashes
 
     # TODO: what about referencing sub types?
+
   end
   
 end
