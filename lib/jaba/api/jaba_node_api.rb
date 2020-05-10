@@ -16,7 +16,7 @@ module JABA
     ##
     #
     def generate(&block)
-      @jaba_node.set_hook(:generate, &block)
+      @jaba_node.definition.set_hook(:generate, &block)
     end
 
     ##

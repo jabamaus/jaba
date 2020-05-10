@@ -12,7 +12,6 @@ module JABA
     attr_reader :handle
     attr_reader :attrs
     attr_reader :attrs_read_only
-    attr_reader :generate_hook # TODO: remove
     attr_reader :referenced_nodes
     attr_reader :children
     
@@ -35,8 +34,6 @@ module JABA
 
       @attributes = []
       @attribute_lookup = {}
-      
-      define_hook(:generate)
       
       jaba_type.attribute_defs.each do |attr_def|
         a = case attr_def.variant

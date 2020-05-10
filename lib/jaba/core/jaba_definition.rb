@@ -80,10 +80,13 @@ module JABA
   #
   class JabaInstanceDefinition < JabaDefinition
     
+    include HookMethods
+
     attr_reader :jaba_type_id
     attr_reader :jaba_type
     attr_reader :source_file
     attr_reader :source_dir
+    attr_reader :generate_hook
 
     ##
     #
@@ -94,6 +97,8 @@ module JABA
       @jaba_type = nil
       @source_file = @api_call_line[/^(.+):\d/, 1]
       @source_dir = File.dirname(@source_file)
+
+      define_hook(:generate)
     end
 
   end

@@ -13,7 +13,7 @@ module JABA
     ##
     #
     def define_hook(id, &block)
-      var = "@#{id}_hook"
+      var = "@#{id}_hook" # TODO: improve
       if instance_variable_defined?(var)
         jaba_error("'#{id}' hook multiply defined")
       end
@@ -27,7 +27,7 @@ module JABA
     ##
     #
     def set_hook(id, &block)
-      var = "@#{id}_hook"
+      var = "@#{id}_hook" # TODO: improve
       if !instance_variable_defined?(var)
         jaba_error("'#{id}' hook not defined")
       end
@@ -37,7 +37,7 @@ module JABA
     ##
     #
     def call_hook(id, args = nil, receiver: self, fail_if_not_set: false)
-      var = "@#{id}_hook"
+      var = "@#{id}_hook" # TODO: improve
       if !instance_variable_defined?(var)
         jaba_error("'#{id}' hook not defined")
       end

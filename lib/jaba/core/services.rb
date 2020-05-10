@@ -316,13 +316,12 @@ module JABA
       #
       @generators.each(&:generate)
 
-      # Call generators defined per-node, in the context of the node itself, not its api
+      # Call generators defined per-node instance, in the context of the node itself, not its api
       #
-      @nodes.each do |n|
-        # TODO: improve
-        gh = n.generate_hook
+      @root_nodes.each do |n|
+        gh = n.definition.generate_hook
         if gh
-          n.instance_eval(&gh)
+          n.instance_eval(&gh) # TODO: review again. should it be api eval?
         end
       end
 
