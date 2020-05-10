@@ -6,7 +6,6 @@ TODO:
 - Make all nodes readonly once definitions processed
 - make paths in jaba.output.json relative to itself
 - test absolute root paths
-- Look at error handling again
 - Have a way of globally setting default for :platforms, :hosts and :configs (and for clearing)
 - make file/dir attrs cleanpath
 - beef up specification of keyval options

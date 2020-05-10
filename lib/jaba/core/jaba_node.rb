@@ -11,6 +11,7 @@ module JABA
     attr_reader :jaba_type
     attr_reader :handle
     attr_reader :attrs
+    attr_reader :attrs_read_only
     attr_reader :generate_hook # TODO: remove
     attr_reader :referenced_nodes
     attr_reader :children
@@ -30,6 +31,7 @@ module JABA
       @referenced_nodes = []
       
       @attrs = AttributeAccessor.new(self)
+      @attrs_read_only = AttributeAccessor.new(self, read_only: true)
 
       @attributes = []
       @attribute_lookup = {}
@@ -115,7 +117,7 @@ module JABA
     # which act as options. eg my_attr 'val', :export, :exclude would make args equal to ['val', :opt1, :opt2]. If
     # however the value being passed in is an array it could be eg [['val1', 'val2'], :opt1, :opt2].
     #  
-    def handle_attr(id, *args, api_call_line: nil, **keyvalue_args)
+    def handle_attr(id, *args, api_call_line: nil, _read_only_mode: false, **keyvalue_args)
       # First determine if it is a set or a get operation
       #
       is_get = (args.empty? && keyvalue_args.empty?)
@@ -137,14 +139,21 @@ module JABA
         a = get_attr(id, search: false, fail_if_not_found: false)
         
         if !a
-          if !@jaba_type.definition.attr_valid?(id)
+          attr_def = @jaba_type.definition.get_attr_def(id)
+          if !attr_def
             jaba_error("'#{id}' attribute not defined")
+          elsif attr_def.jaba_type.definition != @jaba_type.definition
+            jaba_error("cannot change referenced '#{id}' attribute")
           end
           return nil
         end
 
+        if _read_only_mode
+          jaba_error("'#{id}' attribute is read only")
+        end
+        
         # Get the value by popping the first element from the front of the list. This could yield a single value or an
-        # array, depending on what the user passed in (see comment at top of this method.
+        # array, depending on what the user passed in (see comment at top of this method).
         #
         value = args.shift
         a.set(value, *args, api_call_line: api_call_line, **keyvalue_args)
@@ -171,8 +180,9 @@ module JABA
 
     ##
     #
-    def initialize(node)
+    def initialize(node, read_only: false)
       @node = node
+      @read_only = read_only
     end
     
     ##
@@ -184,7 +194,7 @@ module JABA
     ##
     #
     def method_missing(attr_id, *args, **keyvalue_args)
-      @node.handle_attr(attr_id, *args, **keyvalue_args)
+      @node.handle_attr(attr_id, *args, _read_only_mode: @read_only, **keyvalue_args)
     end
    
   end

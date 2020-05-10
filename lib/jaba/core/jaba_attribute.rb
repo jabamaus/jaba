@@ -98,7 +98,7 @@ module JABA
       if !set?
         get_default
       elsif api_call_line && @value.is_a?(JabaNode)
-        @value.attrs
+        @value.attrs_read_only
       else
         @value
       end

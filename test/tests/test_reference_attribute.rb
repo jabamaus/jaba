@@ -125,61 +125,84 @@ module JABA
     end
     
     it 'imports exposed referenced attributes' do
-      check_fail "'vsname' attribute not defined", trace: [__FILE__, 'tagI'] do
+      check_fail "'height' attribute not defined", trace: [__FILE__, 'tagI'] do
         jaba do
-          define :test do
-            attr :platform, type: :reference do
-              referenced_type :platform
+          define :square do
+            attr :length do
+              flags :expose
+            end
+            attr :height
+          end
+          square :a do
+            length 1
+            height 2
+          end
+          define :has_square do
+            attr :square, type: :reference do
+              referenced_type :square
             end
           end
-          test :t do
-            platform :win32
-            win32?.must_equal(true)
-            x64?.must_equal(false)
-            windows?.must_equal(true)
-            apple?.must_equal(false)
+          has_square :t do
+            square :a
+            length.must_equal(1)
+            square.height.must_equal(2)
 
-            # vsname is defined in platform but has not been flagged with :expose, so should raise an error
-            vsname # tagI
+            # height has not been flagged with :expose, so should raise an error when used unqualified
+            height # tagI
           end
         end
       end
     end
 
-    # TODO: test read only
-    it 'automatically imports referenced node attributes read only' do
-      jaba do
-        define :test do
-          attr :platform, type: :reference do
-            referenced_type :platform
+    it 'treats references read only when imported' do
+      check_fail "Cannot change referenced 'length' attribute", trace: [__FILE__, 'tagF'] do
+        jaba do
+          define :line do
+            attr :length do
+              flags :expose
+            end
           end
-          attr :host, type: :reference do
-            referenced_type :host
+          line :a do
+            length 1
           end
-        end
-        test :t do
-          platform :win32
-          host :vs2013
-          # TODO
-          #platform._ID.must_equal(:win32)
-          #host._ID.must_equal(:vs2013)
-          win32?.must_equal(true)
-          windows?.must_equal(true)
-          x64?.must_equal(false)
-          iOS?.must_equal(false)
-          macOS?.must_equal(false)
-          apple?.must_equal(false)
-          visual_studio?.must_equal(true)
-          vs2013?.must_equal(true)
-          vs2015?.must_equal(false)
-          vs2017?.must_equal(false)
-          vs2019?.must_equal(false)
-          xcode?.must_equal(false)
+          define :has_line do
+            attr :line, type: :reference do
+              referenced_type :line
+            end
+          end
+          has_line :t do
+            line :a
+            length 3 # tagF
+          end
         end
       end
     end
     
+    it 'treats references read only when caled through object' do
+      check_fail "'length' attribute is read only", trace: [__FILE__, 'tagD'] do
+        jaba do
+          define :line do
+            attr :length
+          end
+          line :a do
+            length 1
+          end
+          define :has_line do
+            attr :line, type: :reference do
+              referenced_type :line
+            end
+          end
+          has_line :t do
+            line :a
+            line.length 3 # tagD
+          end
+        end
+      end
+    end
+
     # TODO: test attribute name clashes
+
+    # TODO: what about referencing sub types?
   end
   
 end
