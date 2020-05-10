@@ -28,12 +28,11 @@ module JABA
       pc.get_property(:b).must_equal [1, 2]
     end
 
-    it 'disallows passing array to non-array property' do
-      
-    end
-
     it 'can set single value properties' do
-      
+      pc = PropertyContainer.new
+      pc.define_property(:a)
+      pc.set_property(:a, 1)
+      pc.get_property(:a).must_equal(1)
     end
     
     it 'appends single values or arrays to array properties' do
@@ -44,6 +43,8 @@ module JABA
       pc.get_property(:a).must_equal [1]
       pc.set_property(:a, [2, 3])
       pc.get_property(:a).must_equal [1, 2, 3]
+      pc.set_property(:a, [[4, 5], [6, 7]]) # gets flattened
+      pc.get_property(:a).must_equal [1, 2, 3, 4, 5, 6, 7]
     end
 
     it 'fails if get undefined property' do
@@ -60,6 +61,27 @@ module JABA
         pc.set_property(:a)
       end
       e.message.must_equal("'a' property not defined")
+    end
+
+    it 'fails if property multiply defined' do
+      e = assert_raises RuntimeError do
+        pc = PropertyContainer.new
+        pc.define_property(:a)
+        pc.define_property(:a)
+      end
+      e.message.must_equal("'a' property multiply defined")
+      e = assert_raises RuntimeError do
+        pc = PropertyContainer.new
+        pc.define_array_property(:a)
+        pc.define_array_property(:a)
+      end
+      e.message.must_equal("'a' property multiply defined")
+      e = assert_raises RuntimeError do
+        pc = PropertyContainer.new
+        pc.define_property(:a)
+        pc.define_array_property(:a)
+      end
+      e.message.must_equal("'a' property multiply defined")
     end
 
   end
