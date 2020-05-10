@@ -14,7 +14,6 @@ module JABA
     attr_reader :generate_hook # TODO: remove
     attr_reader :referenced_nodes
     attr_reader :children
-    attr_reader :source_dir
     
     ##
     #
@@ -29,8 +28,6 @@ module JABA
         parent.instance_variable_get(:@children) << self
       end
       @referenced_nodes = []
-      
-      @source_dir = File.dirname(definition.source_file)
       
       @attrs = AttributeAccessor.new(self)
 
