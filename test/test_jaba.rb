@@ -13,8 +13,6 @@ module JABA
     
     @@file_cache = {}
 
-    parallelize_me!
-
     ##
     #
     def jaba(load_paths: nil, dry_run: false, &block)
