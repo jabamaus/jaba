@@ -56,7 +56,7 @@ module JABA
       to_register = []
       @attr_defs.each do |id, attr_def|
         if attr_def.type_id == :reference
-          rt_id = attr_def.get_property(:referenced_type)  # TODO: remove get_property
+          rt_id = attr_def.referenced_type
           if rt_id != @id
             jt = attr_def.services.get_jaba_type(rt_id)
             jt.attribute_defs.each do |d|

@@ -283,8 +283,7 @@ module JABA
           if a.type_id == :reference
             a.map! do |ref|
               if ref.is_a?(Symbol)
-                # TODO: remove use of get_property
-                node_from_handle("#{a.attr_def.get_property(:referenced_type)}|#{ref}", callstack: a.api_call_line)
+                node_from_handle("#{a.attr_def.referenced_type}|#{ref}", callstack: a.api_call_line)
               else
                 ref
               end

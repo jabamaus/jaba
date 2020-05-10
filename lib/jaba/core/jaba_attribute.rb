@@ -209,7 +209,7 @@ module JABA
     #
     def resolve_reference(value)
       if @attr_def.type_id == :reference
-        rt = @attr_def.get_property(:referenced_type)
+        rt = @attr_def.referenced_type
         if rt != @node.jaba_type.definition_id
           ref_node = @services.node_from_handle("#{rt}|#{value}")
           @node.referenced_nodes << ref_node

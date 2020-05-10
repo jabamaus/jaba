@@ -8,9 +8,7 @@ TODO:
 - test absolute root paths
 - Look at error handling again
 - Have a way of globally setting default for :platforms, :hosts and :configs (and for clearing)
-- consider moving JabaError into Object refinement
 - make file/dir attrs cleanpath
-- move keyval and reference attr types into core
 - beef up specification of keyval options
 - introduce TopLevelDefinition?
 - test subtypes, eg opening

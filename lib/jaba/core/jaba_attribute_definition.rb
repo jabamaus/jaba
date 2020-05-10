@@ -21,6 +21,7 @@ module JABA
     attr_reader :jaba_type
     attr_reader :flag_options
     attr_reader :keyval_options
+    attr_reader :referenced_type # Defined and used by reference attribute type but give access here for efficiency
     
     ##
     #
