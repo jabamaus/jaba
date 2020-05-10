@@ -84,6 +84,19 @@ module JABA
       e.message.must_equal("'a' property multiply defined")
     end
 
+    it 'stays as either a single value or array' do
+      pc = PropertyContainer.new
+      pc.define_property(:a, 1)
+      assert_raises RuntimeError do
+        pc.set_property(:a, [1])
+      end.message.must_equal("'a' property cannot accept an array")
+      pc.define_property(:b)
+      pc.set_property(:b, [1]) # allowed because b is nil
+      pc.get_property(:b).must_equal [1]
+      pc.set_property(:b, 2) # now appends because property has become an array
+      pc.get_property(:b).must_equal [1, 2]
+    end
+
   end
 
 end

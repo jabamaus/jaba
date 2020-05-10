@@ -141,6 +141,8 @@ module JABA
       end
     end
 
+    # TODO: test wipe
+    
   end
 
 end

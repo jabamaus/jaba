@@ -68,6 +68,12 @@ module JABA
             current_val << val
           end
         else
+          # Fail if setting a single value property as an array, unless its the first time. This is to allow
+          # a property to become either single value or array, depending on how it is first initialised.
+          #
+          if !current_val.nil? && val.is_a?(Array)
+            @services.jaba_error("'#{p_id}' property cannot accept an array")
+          end
           instance_variable_set(var, val)
         end
         on_property_set(p_id, val)
