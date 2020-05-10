@@ -6,6 +6,7 @@ module JABA
     include PropertyMethods
 
     def initialize
+      super
       @services = Services.new
     end
   end
