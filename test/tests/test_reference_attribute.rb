@@ -235,7 +235,7 @@ module JABA
           hosts [:vs2017]
           path "#{platform.vsname}/#{host.version_year}"
           generate do
-            attrs.path.must_equal("Win32/2017")
+            children[0].children[0].attrs.path.must_equal("Win32/2017")
           end
         end
 
