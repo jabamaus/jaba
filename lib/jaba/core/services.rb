@@ -334,12 +334,12 @@ module JABA
     ##
     #
     def make_generator(id)
-      gen_classname = "JABA::#{id.to_s.capitalize_first}Generator"
+      gen_classname = "#{id.to_s.capitalize_first}Generator"
       
-      return nil if !Object.const_defined?(gen_classname)
+      return nil if !JABA.const_defined?(gen_classname)
 
       log "Making generator [id=#{id}]"
-      generator_class = Module.const_get(gen_classname)
+      generator_class = JABA.const_get(gen_classname)
 
       if generator_class.superclass != Generator
         jaba_error "#{generator_class} must inherit from Generator class"
