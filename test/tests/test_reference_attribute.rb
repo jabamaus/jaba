@@ -216,6 +216,58 @@ module JABA
 
     # TODO: what about referencing sub types?
 
+    it 'prevents nil access when building tree of nodes' do
+      jaba do
+        define :testproj do
+          attr_array :platforms
+          attr :platform, type: :reference do
+            referenced_type :platform
+          end
+          attr_array :hosts
+          attr :host, type: :reference do
+            referenced_type :host
+          end
+          attr :path
+        end
+
+        testproj :t do
+          platforms [:win32]
+          hosts [:vs2017]
+          path "#{platform.vsname}/#{host.version_year}"
+          generate do
+            attrs.path.must_equal("Win32/2017")
+          end
+        end
+
+        class ::TestprojGenerator < Generator
+          
+          def sub_type(attr_id)
+            case attr_id
+            when :platforms
+              :platforms_node
+            when :hosts, :platform
+              :hosts_node
+            end
+          end
+          
+          def make_nodes
+            platforms_node = make_node(type_id: :platforms_node)
+            
+            platforms_node.attrs.platforms.each do |p|
+              hosts_node = make_node(type_id: :hosts_node, name: p, parent: platforms_node) do
+                platform p
+              end
+              hosts_node.attrs.hosts.each do |h|
+                make_node(type_id: :testproj, name: h, parent: hosts_node) do 
+                  host h
+                end
+              end
+            end
+            platforms_node
+          end
+        end
+      end
+    end
   end
-  
+ 
 end

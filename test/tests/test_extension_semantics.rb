@@ -188,7 +188,7 @@ module JABA
           platforms.must_equal [:win32, :x64]
           root 'test'
           configs [:debug, :release]
-          src "#{platform_ref&.vsname}_src" # TODO: remove safe call
+          src "#{platform_ref.vsname}_src"
           case config
           when :debug
             config_name "Debug"

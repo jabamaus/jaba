@@ -73,12 +73,6 @@ module JABA
     def get_attr_def(id)
       @attr_defs[id]
     end
-    
-    ##
-    #
-    def attr_valid?(id)
-      @attr_defs.key?(id)
-    end
 
   end
 

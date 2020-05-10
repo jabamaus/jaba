@@ -128,8 +128,12 @@ module JABA
         a = get_attr(id, search: true, fail_if_not_found: false)
         
         if !a
-          if !@jaba_type.definition.attr_valid?(id)
+          attr_def = @jaba_type.definition.get_attr_def(id)
+          if !attr_def
             jaba_error("'#{id}' attribute not defined")
+          elsif attr_def.type_id == :reference
+            null_node = @services.get_null_node(attr_def.referenced_type)
+            return null_node.attrs_read_only
           end
           return nil
         end

@@ -85,6 +85,7 @@ module JABA
       @nodes = []
       @node_lookup = {}
       @root_nodes = []
+      @null_nodes = {}
       
       @top_level_api = TopLevelAPI.new(self)
 
@@ -437,6 +438,18 @@ module JABA
       jn
     end
     
+    ##
+    #
+    def get_null_node(type_id)
+      nn = @null_nodes[type_id]
+      if !nn
+        jt = get_jaba_type(type_id)
+        nn = JabaNode.new(self, jt.definition, jt, "Null#{jt.definition_id}", nil)
+        @null_nodes[type_id] = nn
+      end
+      nn
+    end
+
     ##
     #
     def dump_jaba_input
