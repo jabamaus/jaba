@@ -112,10 +112,15 @@ module JABA
 
     ##
     #
-    def generate
+    def make_projects
       @project_nodes.each do |pn|
         @projects << make_project(Vcxproj, pn)
       end
+    end
+
+    ##
+    #
+    def generate
       @projects.each(&:generate)
     end
     

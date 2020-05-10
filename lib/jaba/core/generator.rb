@@ -54,6 +54,12 @@ module JABA
     end
     
     ##
+    # Override this in subclass
+    #
+    def make_projects
+    end
+
+    ##
     #
     def make_project(klass, node)
       p = klass.new(@services, self, node)
@@ -80,6 +86,12 @@ module JABA
       p
     end
     
+    ##
+    # Override this in subclass
+    #
+    def generate
+    end
+
     ##
     # Override this in subclass.
     #

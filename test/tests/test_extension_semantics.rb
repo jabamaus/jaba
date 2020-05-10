@@ -233,6 +233,14 @@ module JABA
       proj2 = @projects[1]
       proj2.attrs.platform_ref.definition_id.must_equal(:x64)
       proj2.attrs.src.must_equal 'x64_src'
+
+      begin
+        proj1.attrs.src 'invalid'
+      rescue JabaDefinitionError => e
+        e.raw_message.must_equal("'src' attribute is read only")
+      else
+        raise 'never get here'
+      end
     end
     
     ##

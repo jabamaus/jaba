@@ -172,6 +172,12 @@ module JABA
       end
     end
     
+    ##
+    #
+    def make_read_only
+      @attrs = @attrs_read_only
+    end
+
   end
 
   ##

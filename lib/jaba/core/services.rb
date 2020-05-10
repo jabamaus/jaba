@@ -302,7 +302,15 @@ module JABA
 
       log 'Calling generators...'
 
-      # Call generators
+      # Call generators to build project representations from nodes
+      #
+      @generators.each(&:make_projects)
+
+      # Make all nodes read only from this point, to help catch mistakes
+      #
+      @nodes.each(&:make_read_only)
+      
+      # Write final files
       #
       @generators.each(&:generate)
 
