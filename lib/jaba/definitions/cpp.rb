@@ -4,6 +4,7 @@ define :cpp do
 
   help 'TODO'
 
+  # TODO: should this be a reference as well as platform_ref, for validation
   attr_array :platforms do
     flags :required
   end
