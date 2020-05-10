@@ -13,7 +13,6 @@ module JABA
     attr_reader :id
     attr_reader :block
     attr_reader :api_call_line
-    attr_reader :source_file
     
     ##
     #
@@ -21,7 +20,6 @@ module JABA
       @id = id
       @block = block
       @api_call_line = api_call_line
-      @source_file = @api_call_line[/^(.+):\d/, 1]
     end
 
   end
@@ -84,6 +82,8 @@ module JABA
     
     attr_reader :jaba_type_id
     attr_reader :jaba_type
+    attr_reader :source_file
+    attr_reader :source_dir
 
     ##
     #
@@ -92,7 +92,8 @@ module JABA
       
       @jaba_type_id = jaba_type_id
       @jaba_type = nil
-
+      @source_file = @api_call_line[/^(.+):\d/, 1]
+      @source_dir = File.dirname(@source_file)
     end
 
   end

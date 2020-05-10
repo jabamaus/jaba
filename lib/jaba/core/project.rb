@@ -22,7 +22,7 @@ module JABA
       @node = node
       @attrs = node.attrs
       r = @attrs.root
-      r = r.absolute_path? ? r : "#{node.source_dir}/#{r}"
+      r = r.absolute_path? ? r : "#{node.definition.source_dir}/#{r}"
       @projroot = "#{r}/#{@attrs.projroot}"
     end
     
