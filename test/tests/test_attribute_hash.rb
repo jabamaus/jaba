@@ -129,7 +129,7 @@ module JABA
     end
 
     it 'validates a value is given' do
-      check_fail("Hash attribute requires a value", trace: [__FILE__, 'tagM']) do
+      check_fail("Hash attribute requires a key and a value", trace: [__FILE__, 'tagM']) do
         jaba do
           define :test do
             attr_hash :a

@@ -153,11 +153,7 @@ module JABA
           jaba_error("'#{id}' attribute is read only")
         end
         
-        # Get the value by popping the first element from the front of the list. This could yield a single value or an
-        # array, depending on what the user passed in (see comment at top of this method).
-        #
-        value = args.shift
-        a.set(value, *args, api_call_line: api_call_line, **keyvalue_args)
+        a.set(*args, api_call_line: api_call_line, **keyvalue_args)
         return nil
       end
     end

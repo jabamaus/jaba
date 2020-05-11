@@ -40,8 +40,10 @@ module JABA
     
     ##
     #
-    def set(values, *args, api_call_line: nil, prefix: nil, postfix: nil, exclude: nil, **keyvalue_args)
+    def set(*args, api_call_line: nil, prefix: nil, postfix: nil, exclude: nil, **keyvalue_args)
       @api_call_line = api_call_line
+      
+      values = args.shift
       
       Array(values).each do |v|
         elem = JabaAttribute.new(@services, @attr_def, self, @node)

@@ -4,7 +4,7 @@ module JABA
 
   class TestCpp < JabaTest
 
-    it 'is evaluated per-type, per-sku and per-target' do
+    it 'is evaluated per-type, per-sku and per-config' do
       jaba do
       end
     end
@@ -70,7 +70,6 @@ module JABA
       proj[:projname].must_equal('app_WIN32_VS2017')
       proj[:configs][:debug].wont_be_nil
       proj[:configs][:release].must_be_nil
-
     end
 
   end

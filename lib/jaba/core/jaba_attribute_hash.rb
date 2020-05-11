@@ -41,14 +41,14 @@ module JABA
     
     ##
     # TODO: handle overwriting
-    def set(value, *args, api_call_line: nil, prefix: nil, postfix: nil, exclude: nil, **keyvalue_args)
+    def set(*args, api_call_line: nil, prefix: nil, postfix: nil, exclude: nil, **keyvalue_args)
       @api_call_line = api_call_line
       
-      if args.empty?
-        @services.jaba_error('Hash attribute requires a value')
+      if args.size < 2
+        @services.jaba_error('Hash attribute requires a key and a value')
       end
       
-      key = value
+      key = args.shift
       val = args.shift
 
       elem = JabaAttribute.new(@services, @attr_def, self, @node)
