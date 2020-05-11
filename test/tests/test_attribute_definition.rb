@@ -118,7 +118,7 @@ module JABA
       jaba do
         define :test do
           attr :a do
-            default 1
+            default '1'
           end
           attr :b do
             default {"#{a}_1"}
@@ -131,13 +131,13 @@ module JABA
           end
         end
         test :t do
-          a.must_equal(1)
+          a.must_equal('1')
           b.must_equal('1_1')
           c.must_equal('1_1_2')
-          b 3
-          b.must_equal(3)
+          b '3'
+          b.must_equal('3')
           c.must_equal('3_2')
-          d.must_equal([1, 3, '3_2'])
+          d.must_equal(['1', '3', '3_2'])
         end
       end
     end
