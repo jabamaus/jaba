@@ -125,8 +125,7 @@ module JABA
         if warn
           dupes = @elems.uniq!(&:value)
           if dupes
-            # TODO: report dupes
-            @services.jaba_warning("'#{definition_id}' array attribute contains duplicates", callstack: api_call_line)
+            @services.jaba_warning("'#{definition_id}' array attribute contains duplicates: #{dupes.map(&:value).inspect}", callstack: api_call_line)
           end
         end
       end

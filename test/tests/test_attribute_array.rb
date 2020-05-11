@@ -20,7 +20,7 @@ module JABA
     end
     
     it 'strips duplicates by default' do
-      check_warn(/Warning.*'a' array attribute contains duplicates/, __FILE__, 'tagU') do
+      check_warn(/Warning.*'a' array attribute contains duplicates: \[5, 6, 7\]/, __FILE__, 'tagU') do
         jaba do
           define :test do
             attr_array :a
