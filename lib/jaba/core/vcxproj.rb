@@ -59,7 +59,6 @@ module JABA
       @pg2 = StringWriter.new(capacity: 2 * 1024)
 
       @configs.each do |cfg|
-        vcprop = cfg.get_attr(:vcproperty)
         @proj_configs.yield_self do |w|
           w << "    <ProjectConfiguration Include=\"#{cfg.attrs.config_name}|#{@platform.attrs.vsname}\">"
           w << "      <Configuration>#{cfg.attrs.config_name}</Configuration>"
@@ -70,7 +69,7 @@ module JABA
         property_group(@pg1, label: 'Configuration', condition: cfg_condition(cfg))
         property_group(@pg2, label: 'Configuration', condition: cfg_condition(cfg))
 
-        vcprop.each_value do |key, val, _flag_options, keyval_options|
+        cfg.get_attr(:vcproperty).each_value do |key, val, _flag_options, keyval_options|
           case keyval_options[:group]
           when :pg1
             write_keyvalue(@pg1, key, val, condition: keyval_options[:condition])
@@ -82,6 +81,10 @@ module JABA
         property_group(@pg1, label: 'Configuration', close: true)
         property_group(@pg2, label: 'Configuration', close: true)
       end
+
+      @proj_configs.chomp!
+      @pg1.chomp!
+      @pg2.chomp!
 
       write_xml_version(w)
       
@@ -154,7 +157,7 @@ module JABA
       w << '</Project>'
       w.chomp!
       
-      @services.save_file(@vcxproj_file, w.str, :windows)
+      @services.save_file(@vcxproj_file, w, :windows)
     end
     
     ##
@@ -170,7 +173,7 @@ module JABA
       end
       w << '</Project>'
       w.chomp!
-      @services.save_file(@vcxproj_filters_file, w.str, :windows)
+      @services.save_file(@vcxproj_filters_file, w, :windows)
     end
   
   end

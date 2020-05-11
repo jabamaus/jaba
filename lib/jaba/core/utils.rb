@@ -87,46 +87,26 @@ module JABA
 
   ##
   #
-  class StringWriter
+  class StringWriter < String
     
-    attr_reader :str
-    
-    ##
-    #
-    def initialize(capacity:)
-      @str = String.new(capacity: capacity)
-    end
-    
-    ##
-    #
-    def to_s
-      @str
-    end
-
     ##
     #
     def <<(str)
-      @str << str.to_s << "\n"
+      concat str, "\n"
     end
     
     ##
     #
     def write_raw(str)
-      @str << str
+      concat str
     end
   
     ##
     #
     def newline
-      @str << "\n"
+      concat "\n"
     end
     
-    ##
-    #
-    def chomp!
-      @str.chomp!
-    end
-
   end
   
 end
