@@ -55,13 +55,22 @@ module JABA
     
     ##
     #
-    def xml_group(w, tag, label: nil, condition: nil, depth: 1)
-      w.write_raw "#{'  ' * depth}<#{tag}"
-      w.write_raw " Label=\"#{label}\"" if label
-      w.write_raw " Condition=\"#{condition}\"" if condition
-      w << '>'
-      yield
-      w << "#{'  ' * depth}</#{tag}>"
+    def xml_group(w, tag, label: nil, condition: nil, close: false, depth: 1)
+      if !close
+        w.write_raw "#{'  ' * depth}<#{tag}"
+        w.write_raw " Label=\"#{label}\"" if label
+        w.write_raw " Condition=\"#{condition}\"" if condition
+        w << '>'
+      end
+      
+      if block_given?
+        yield
+        close = true
+      end
+
+      if close
+        w << "#{'  ' * depth}</#{tag}>"
+      end
     end
 
     ##
@@ -93,16 +102,21 @@ module JABA
     def write_keyvalue_attr(w, attr, group: nil, depth: 2)
       attr.each_value do |key, val, _flag_options, keyval_options|
         if !group || group == keyval_options[:group]
-          condition = keyval_options[:condition]
-          w << if condition
-                 "#{'  ' * depth}<#{key} Condition=\"#{condition}\">#{val}</#{key}>"
-               else
-                 "#{'  ' * depth}<#{key}>#{val}</#{key}>"
-               end
+          write_keyvalue(w, key, val, condition: keyval_options[:condition])
         end
       end
     end
     
+    ##
+    #
+    def write_keyvalue(w, key, val, condition: nil, depth: 2)
+      w << if condition
+              "#{'  ' * depth}<#{key} Condition=\"#{condition}\">#{val}</#{key}>"
+            else
+              "#{'  ' * depth}<#{key}>#{val}</#{key}>"
+            end
+    end
+
     ##
     #
     def cfg_condition(cfg)

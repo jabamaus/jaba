@@ -94,21 +94,19 @@ module JABA
     ##
     #
     def initialize(capacity:)
-      @buffers = []
       @str = String.new(capacity: capacity)
-      @buffers << @str
     end
     
+    ##
+    #
+    def to_s
+      @str
+    end
+
     ##
     #
     def <<(str)
-      @str << str << "\n"
-    end
-    
-    ##
-    #
-    def write(str)
-      @str << str << "\n"
+      @str << str.to_s << "\n"
     end
     
     ##
@@ -118,7 +116,7 @@ module JABA
     end
   
     ##
-    # `
+    #
     def newline
       @str << "\n"
     end
@@ -128,19 +126,7 @@ module JABA
     def chomp!
       @str.chomp!
     end
-    
-    ##
-    #
-    def sub_buffer(capacity: 4096)
-      @str = String.new(capacity: capacity)
-      @buffers << str
-      yield
-      sb = @str
-      @buffers.pop
-      @str = @buffers.last
-      sb
-    end
-    
+
   end
   
 end

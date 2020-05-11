@@ -52,33 +52,51 @@ module JABA
     #
     def write_vcxproj
       @services.log "Generating #{@vcxproj_file}"
+
       w = StringWriter.new(capacity: 64 * 1024)
-      
+      @proj_configs = StringWriter.new(capacity: 2 * 1024)
+      @pg1 = StringWriter.new(capacity: 2 * 1024)
+      @pg2 = StringWriter.new(capacity: 2 * 1024)
+
+      @configs.each do |cfg|
+        vcprop = cfg.get_attr(:vcproperty)
+        @proj_configs.yield_self do |w|
+          w << "    <ProjectConfiguration Include=\"#{cfg.attrs.config_name}|#{@platform.attrs.vsname}\">"
+          w << "      <Configuration>#{cfg.attrs.config_name}</Configuration>"
+          w << "      <Platform>#{@platform.attrs.vsname}</Platform>"
+          w << "    </ProjectConfiguration>"
+        end
+
+        property_group(@pg1, label: 'Configuration', condition: cfg_condition(cfg))
+        property_group(@pg2, label: 'Configuration', condition: cfg_condition(cfg))
+
+        vcprop.each_value do |key, val, _flag_options, keyval_options|
+          case keyval_options[:group]
+          when :pg1
+            write_keyvalue(@pg1, key, val, condition: keyval_options[:condition])
+          when :pg2
+            write_keyvalue(@pg2, key, val, condition: keyval_options[:condition])
+          end
+        end
+
+        property_group(@pg1, label: 'Configuration', close: true)
+        property_group(@pg2, label: 'Configuration', close: true)
+      end
+
       write_xml_version(w)
       
       w << "<Project DefaultTargets=\"Build\" ToolsVersion=\"#{tools_version}\" xmlns=\"#{xmlns}\">"
       
       item_group(w, label: 'ProjectConfigurations') do
-        @configs.each do |cfg|
-          w << "    <ProjectConfiguration Include=\"#{cfg.attrs.config_name}|#{@platform.attrs.vsname}\">"
-          w << "      <Configuration>#{cfg.attrs.config_name}</Configuration>"
-          w << "      <Platform>#{@platform.attrs.vsname}</Platform>"
-          w << '    </ProjectConfiguration>'
-        end
+        w << @proj_configs
       end
     
       property_group(w, label: 'Globals') do
-        write_keyvalue_attr(w, @node.get_attr(:vcglobal)) # Attribute object itself required here
+        write_keyvalue_attr(w, @node.get_attr(:vcglobal))
       end
       
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />'
-      
-      @configs.each do |cfg|
-        property_group(w, label: 'Configuration', condition: cfg_condition(cfg)) do
-          write_keyvalue_attr(w, cfg.get_attr(:vcproperty), group: :pg1)
-        end
-      end
-      
+      w << @pg1
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />'
       
       import_group(w, label: 'ExtensionSettings') do
@@ -98,11 +116,7 @@ module JABA
     
       w << '  <PropertyGroup Label="UserMacros" />'
     
-      @configs.each do |cfg|
-        property_group(w, label: 'Configuration', condition: cfg_condition(cfg)) do
-          write_keyvalue_attr(w, cfg.get_attr(:vcproperty), group: :pg2)
-        end
-      end
+      w << @pg2
       
       @configs.each do |cfg|
         item_definition_group(w, condition: cfg_condition(cfg)) do
