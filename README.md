@@ -10,3 +10,4 @@ TODO:
 - introduce TopLevelDefinition?
 - test subtypes, eg opening
 - add id as a read only attr to all types
+- sortable arrays must be of same type

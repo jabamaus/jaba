@@ -88,6 +88,21 @@ module JABA
         end
       end
     end
+
+    it 'validates element types are valid' do
+      check_fail ':bool attributes only accept [true|false]', 
+                 trace: [ATTR_TYPES_FILE, "fail ':bool attributes only accept [true|false]'", __FILE__, 'tagT'] do
+        jaba do
+          define :test do
+            attr_array :a, type: :bool
+          end
+          test :t do
+            a [true, false, false, true]
+            a 'true' # tagT
+          end
+        end
+      end
+    end
     
     it 'allows flagging arrays as unordered' do
       jaba do

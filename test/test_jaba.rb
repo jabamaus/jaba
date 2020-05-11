@@ -7,7 +7,7 @@ require_relative '../lib/jaba/jaba'
 module JABA
   using JABACoreExt
 
-  ATTR_DEFINITION_FILE = "#{__dir__}/../lib/jaba/definitions/attribute_types.rb".cleanpath
+  ATTR_TYPES_FILE = "#{__dir__}/../lib/jaba/definitions/attribute_types.rb".cleanpath
 
   class JabaTest < Minitest::Spec
     
