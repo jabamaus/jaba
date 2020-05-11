@@ -69,9 +69,10 @@ define :cpp do
       end
     end
 
-    attr :exceptions, type: :bool do
+    attr :exceptions, type: :choice do
       help 'Enables C++ exceptions. On by default.'
-      flag_options :structured # Windows only
+      items [true, false]
+      items [:structured] # Windows only
       default true
     end
 

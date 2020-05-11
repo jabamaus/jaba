@@ -28,6 +28,22 @@ module JABA
       end
     end
     
+    it 'allows setting value with block' do
+      jaba do
+        define :test do
+          attr :a
+          attr :b
+        end
+        test :t do
+          b 1
+          a do
+            b + 1
+          end
+          a.must_equal 2
+        end
+      end
+    end
+
     it 'validates flag options' do
       check_fail "Invalid flag option ':d'. Valid flags are [:a, :b, :c]", trace: [__FILE__, 'tagD'] do
         jaba do

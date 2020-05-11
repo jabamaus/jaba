@@ -19,6 +19,30 @@ module JABA
       end
     end
     
+    it 'allows setting value with block' do
+      jaba do
+        define :test do
+          attr_array :a
+          attr :b
+          attr :c
+          attr :d
+        end
+        test :t do
+          b 1
+          c 2
+          d 3
+          a do
+            val = []
+            val << b if b < 2
+            val << c if c > 3
+            val << d if d == 3
+            val
+          end
+          a.must_equal [1, 3]
+        end
+      end
+    end
+    
     it 'strips duplicates by default' do
       check_warn(/Warning.*'a' array attribute contains duplicates: \[5, 6, 7\]/, __FILE__, 'tagU') do
         jaba do

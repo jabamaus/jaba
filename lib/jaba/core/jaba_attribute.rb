@@ -106,7 +106,7 @@ module JABA
     
     ##
     #
-    def set(*args, api_call_line: nil, **key_val_args)
+    def set(*args, api_call_line: nil, **key_val_args, &block)
       @api_call_line = api_call_line
 
       # Check for read only if calling from definitions, or if not calling from definitions but from library code,
@@ -120,7 +120,7 @@ module JABA
 
       @set = true
 
-      value = args.shift
+      value = block_given? ? @node.eval_api_block(&block) : args.shift
       @flag_options = args
 
       @flag_options.each do |f|

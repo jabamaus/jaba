@@ -40,11 +40,11 @@ module JABA
     
     ##
     #
-    def set(*args, api_call_line: nil, prefix: nil, postfix: nil, exclude: nil, **keyvalue_args)
+    def set(*args, api_call_line: nil, prefix: nil, postfix: nil, exclude: nil, **keyvalue_args, &block)
       @api_call_line = api_call_line
       
-      values = args.shift
-      
+      values = block_given? ? @node.eval_api_block(&block) : args.shift
+
       Array(values).each do |v|
         elem = JabaAttribute.new(@services, @attr_def, self, @node)
         v = apply_pre_post_fix(prefix, postfix, v)

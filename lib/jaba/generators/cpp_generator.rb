@@ -58,7 +58,6 @@ module JABA
     ##
     #
     def setup_project(proj)
-      outer = self
 
       proj.attrs.instance_eval do
         vcglobal :ProjectName, name
@@ -70,43 +69,36 @@ module JABA
       proj.configs.each do |cfg|
         cfg.attrs.instance_eval do
           vcproperty :CharacterSet, (unicode ? :Unicode : :NotSet), group: :pg1
-          vcproperty :ConfigurationType, outer.configuration_type(type), group: :pg1
+          vcproperty :ConfigurationType, group: :pg1 do
+            case type
+            when :app
+              'Application'
+            when :lib
+              'StaticLibrary'
+            when :dll
+              'DynamicLibrary'
+            else
+              fail "'#{type}' unhandled"
+            end
+          end
           vcproperty :PlatformToolset, toolset, group: :pg1
           vcproperty :UseDebugLibraries, debug, group: :pg1
 
           # ClCompile
-          vcproperty :ExceptionHandling, outer.exception_handling(cfg.get_attr(:exceptions)), group: :ClCompile
+          vcproperty :ExceptionHandling, group: :ClCompile do
+            case exceptions
+            when true
+              :Sync
+            when false
+              false
+            when :structured
+              :Async
+            else
+              fail "'#{exceptions}' unhandled"
+            end
+          end
           vcproperty :RuntimeTypeInfo, rtti, group: :ClCompile
         end
-      end
-    end
-    
-    ##
-    #
-    def configuration_type(type)
-      case type
-      when :app
-        'Application'
-      when :lib
-        'StaticLibrary'
-      when :dll
-        'DynamicLibrary'
-      else
-        @services.jaba_error("'#{type}' unhandled")
-      end
-    end
-
-    ##
-    #
-    def exception_handling(attr)
-      if attr.value
-        if attr.has_flag_option?(:structured)
-          :Async
-        else
-          :Sync
-        end
-      else
-        false
       end
     end
 

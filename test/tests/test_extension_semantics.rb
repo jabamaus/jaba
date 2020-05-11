@@ -144,7 +144,7 @@ module JABA
       end
     end
     
-    it 'supports a generate hook per-object' do
+    it 'supports a generate hook per-definition' do
       assert_output 'generate' do
         jaba do
           define :test
@@ -158,42 +158,47 @@ module JABA
     end
     
     it 'can build a tree of nodes' do
-      jaba do
-        define :test_project do
-          attr :root do
-            default '.'
+      assert_output 'only called once' do
+        jaba do
+          define :test_project do
+            attr :root do
+              default '.'
+            end
+            attr_array :platforms do
+              flags :unordered, :required
+            end
+            attr :platform do
+              flags :read_only
+            end
+            attr :platform_ref, type: :reference do
+              referenced_type :platform
+            end
+            attr :src
+            attr_array :configs do
+              flags :required, :unordered
+            end
+            
+            define :test_config do
+              attr :config
+              attr :config_name
+            end
           end
-          attr_array :platforms do
-            flags :unordered, :required
-          end
-          attr :platform do
-            flags :read_only
-          end
-          attr :platform_ref, type: :reference do
-            referenced_type :platform
-          end
-          attr :src
-          attr_array :configs do
-            flags :required, :unordered
-          end
-          
-          define :test_config do
-            attr :config
-            attr :config_name
-          end
-        end
 
-        test_project :t do
-          platforms [:win32, :x64]
-          platforms.must_equal [:win32, :x64]
-          root 'test'
-          configs [:debug, :release]
-          src "#{platform_ref.vsname}_src"
-          case config
-          when :debug
-            config_name "Debug"
-          when :release
-            config_name 'Release'
+          test_project :t do
+            platforms [:win32, :x64]
+            platforms.must_equal [:win32, :x64]
+            root 'test'
+            configs [:debug, :release]
+            src "#{platform_ref.vsname}_src"
+            case config
+            when :debug
+              config_name "Debug"
+            when :release
+              config_name 'Release'
+            end
+            generate do
+              print 'only called once'
+            end
           end
         end
       end

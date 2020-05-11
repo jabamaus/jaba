@@ -53,6 +53,29 @@ module JABA
       end
     end
 
+    it 'allows setting value with block' do
+      jaba do
+        define :test do
+          attr_hash :a
+          attr :b, type: :choice do
+            items [1, 2, 3]
+          end
+        end
+        test :t do
+          b 1
+          a :key do
+            case b
+            when 1
+              :yes
+            else
+              :no
+            end
+          end
+          a[:key].must_equal :yes
+        end
+      end
+    end
+
     # TODO
     it 'disallows :unordered' do
     end
