@@ -546,6 +546,16 @@ module JABA
 
     ##
     #
+    def get_instance_ids(type_id)
+      defs = @instance_definition_lookup[type_id]
+      if !defs
+        jaba_error("No '#{type_id}' type defined")
+      end
+      defs.map(&:id)
+    end
+
+    ##
+    #
     def instanced?(type_id, id)
       get_instance_definition(type_id, id, fail_if_not_found: false) != nil
     end

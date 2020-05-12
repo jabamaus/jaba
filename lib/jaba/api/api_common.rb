@@ -36,6 +36,14 @@ module  JABA
     end
 
     ##
+    # Returns all the ids of all defined instances of the given type. Can be useful when populating choice attribute items.
+    # The type must be defined before this is called, which can be achieved by adding a dependency.
+    #
+    def all_instance_ids(jaba_type_id)
+      @obj.services.get_instance_ids(jaba_type_id)
+    end
+
+    ##
     # For debugging.
     #
     def to_s

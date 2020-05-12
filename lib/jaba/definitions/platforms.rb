@@ -1,6 +1,3 @@
-# TODO: change to something like
-# constant :supported_platforms, :win32, :x64, :iOS, :macOS
-#
 SUPPORTED_PLATFORMS = [:win32, :x64, :iOS, :macOS].freeze
 
 define :platform do

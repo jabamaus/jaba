@@ -5,7 +5,7 @@ define :cpp do
   help 'TODO'
 
   attr_array :platforms, type: :choice do
-    items SUPPORTED_PLATFORMS
+    items all_instance_ids(:platform)
     flags :required
   end
   
@@ -17,7 +17,8 @@ define :cpp do
     referenced_type :platform
   end
 
-  attr_array :hosts do
+  attr_array :hosts, type: :choice do
+    items all_instance_ids(:host)
     flags :required
   end
   
