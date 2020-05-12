@@ -37,6 +37,7 @@ define :cpp do
   
   attr_array :configs do
     flags :required, :unordered
+    flag_options :export
   end
   
   attr_array :deps, type: :reference do
@@ -45,6 +46,7 @@ define :cpp do
   
   attr_hash :vcglobal do
     keyval_options :condition
+    flag_options :export
   end
   
   attr :winsdkver, type: :choice do
@@ -56,6 +58,7 @@ define :cpp do
 
     attr_array :cflags do
       help 'Compiler command line arguments'
+      flag_options :export
     end
 
     attr :config do
@@ -76,6 +79,7 @@ define :cpp do
 
     attr_array :defines do
       help 'Preprocessor defines'
+      flag_options :export
     end
 
     attr :exceptions, type: :choice do
@@ -88,6 +92,7 @@ define :cpp do
     attr_array :inc, type: :dir do
       help 'Include paths'
       flags :unordered
+      flag_options :export
     end
 
     attr :rtti, type: :bool do
@@ -105,6 +110,7 @@ define :cpp do
 
     attr_hash :vcproperty do
       keyval_options :group, :idg
+      flag_options :export
 =begin
       keyval_option :condition do
         validate do |value|

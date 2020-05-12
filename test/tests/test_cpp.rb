@@ -71,7 +71,35 @@ module JABA
       proj[:configs][:debug].wont_be_nil
       proj[:configs][:release].must_be_nil
     end
-
+=begin
+    it 'supports exporting array attributes to dependents' do
+      op = jaba(dry_run: true) do
+        defaults :cpp do
+          platforms [:x64]
+          hosts [:vs2017]
+          configs [:debug, :release]
+        end
+        cpp :app do
+          deps :lib
+          defines ['F', 'A']
+        end
+        cpp :lib do
+          defines ['D']
+          defines ['C', 'B'], :export
+          defines ['R'], :export if config == :release
+          defines ['E']
+        end
+      end
+      app = op[:cpp]['cpp|app|x64|vs2017']
+      app.wont_be_nil
+      cfg_debug = proj[:configs][:debug]
+      cfg_debug.wont_be_nil
+      cfg_debug[:defines].must_equal ['A', 'B', 'C', 'F']
+      cfg_release = proj[:configs][:release]
+      cfg_release.wont_be_nil
+      cfg_release[:defines].must_equal ['A', 'B', 'C', 'F', 'R']
+    end
+=end
   end
 
 end
