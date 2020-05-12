@@ -4,8 +4,8 @@ define :cpp do
 
   help 'TODO'
 
-  # TODO: should this be a reference as well as platform_ref, for validation
-  attr_array :platforms do
+  attr_array :platforms, type: :choice do
+    items SUPPORTED_PLATFORMS
     flags :required
   end
   
@@ -53,6 +53,10 @@ define :cpp do
   
   define :cpp_config do
 
+    attr_array :cflags do
+      help 'Compiler command line arguments'
+    end
+
     attr :config do
       flags :read_only
     end
@@ -69,11 +73,20 @@ define :cpp do
       end
     end
 
+    attr_array :defines do
+      help 'Preprocessor defines'
+    end
+
     attr :exceptions, type: :choice do
       help 'Enables C++ exceptions. On by default.'
       items [true, false]
       items [:structured] # Windows only
       default true
+    end
+
+    attr_array :inc, type: :dir do
+      help 'Include paths'
+      flags :unordered
     end
 
     attr :rtti, type: :bool do
@@ -102,6 +115,9 @@ define :cpp do
 =end
     end
 
+    attr :warnerror, type: :bool do
+      help 'Enable warnings as errors. Off by default.'
+    end
   end
 
 end

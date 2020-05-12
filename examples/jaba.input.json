@@ -212,28 +212,48 @@
               "winsdkver": "10.0.17763.0",
               "children": {
                 "cpp|MyApp|win32|vs2017|debug": {
+                  "cflags": [
+
+                  ],
                   "config": "debug",
                   "config_name": "debug",
                   "debug": true,
+                  "defines": [
+
+                  ],
                   "exceptions": true,
+                  "inc": [
+
+                  ],
                   "rtti": true,
                   "toolset": "v141",
                   "unicode": true,
                   "vcproperty": {
                   },
+                  "warnerror": false,
                   "children": {
                   }
                 },
                 "cpp|MyApp|win32|vs2017|release": {
+                  "cflags": [
+
+                  ],
                   "config": "release",
                   "config_name": "release",
                   "debug": false,
+                  "defines": [
+
+                  ],
                   "exceptions": true,
+                  "inc": [
+
+                  ],
                   "rtti": true,
                   "toolset": "v141",
                   "unicode": true,
                   "vcproperty": {
                   },
+                  "warnerror": false,
                   "children": {
                   }
                 }
@@ -279,28 +299,48 @@
               "winsdkver": "10.0.17763.0",
               "children": {
                 "cpp|MyLib|win32|vs2017|debug": {
+                  "cflags": [
+
+                  ],
                   "config": "debug",
                   "config_name": "debug",
                   "debug": true,
+                  "defines": [
+
+                  ],
                   "exceptions": true,
+                  "inc": [
+
+                  ],
                   "rtti": true,
                   "toolset": "v141",
                   "unicode": true,
                   "vcproperty": {
                   },
+                  "warnerror": false,
                   "children": {
                   }
                 },
                 "cpp|MyLib|win32|vs2017|release": {
+                  "cflags": [
+
+                  ],
                   "config": "release",
                   "config_name": "release",
                   "debug": false,
+                  "defines": [
+
+                  ],
                   "exceptions": true,
+                  "inc": [
+
+                  ],
                   "rtti": true,
                   "toolset": "v141",
                   "unicode": true,
                   "vcproperty": {
                   },
+                  "warnerror": false,
                   "children": {
                   }
                 }

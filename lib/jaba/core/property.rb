@@ -62,7 +62,7 @@ module JABA
         current_val = instance_variable_get(var)
         if current_val.is_a?(Array)
           if val.is_a?(Array)
-            val.flatten!
+            val = val.flatten # don't flatten! as might be frozen
             current_val.concat(val)
           else
             current_val << val

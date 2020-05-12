@@ -4,6 +4,8 @@
 #
 module JABA
 
+  using JABACoreExt
+
   ##
   #
   class CppGenerator < Generator
@@ -85,6 +87,15 @@ module JABA
           vcproperty :UseDebugLibraries, debug, group: :pg1
 
           # ClCompile
+          #
+          vcproperty :AdditionalIncludeDirectories, idg: :ClCompile do
+            inc.vs_join_paths(inherit: '%(AdditionalIncludeDirectories)')
+          end
+
+          vcproperty :AdditionalOptions, idg: :ClCompile do
+            cflags.vs_join(separator: ' ', inherit: '%(AdditionalOptions)')
+          end
+
           vcproperty :ExceptionHandling, idg: :ClCompile do
             case exceptions
             when true
@@ -97,9 +108,17 @@ module JABA
               fail "'#{exceptions}' unhandled"
             end
           end
+
+          vcproperty :PreprocessorDefinitions, idg: :ClCompile do
+            defines.vs_join(inherit: '%(PreprocessorDefinitions)')
+          end
+
           vcproperty :RuntimeTypeInfo, rtti, idg: :ClCompile
 
+          vcproperty :TreatWarningAsError, warnerror, idg: :ClCompile
+
           # Link
+          #
           vcproperty :TargetMachine, idg: (type == :lib ? :Lib : :Link) do
             :MachineX64 if x64?
           end
