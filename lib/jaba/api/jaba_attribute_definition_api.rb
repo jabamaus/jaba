@@ -48,12 +48,6 @@ module JABA
     
     ##
     #
-    def post_set(&block)
-      @attr_def.set_hook(:post_set, &block)
-    end
-    
-    ##
-    #
     def define_property(id, val = nil)
       @attr_def.define_property(id, val)
     end

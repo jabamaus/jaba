@@ -39,7 +39,6 @@ module JABA
       define_array_property(:keyval_options)
       
       define_hook(:validate)
-      define_hook(:post_set)
       
       @jaba_attr_type = @services.get_attribute_type(@type_id)
       @jaba_attr_type.call_hook(:init_attr_def, receiver: self)
