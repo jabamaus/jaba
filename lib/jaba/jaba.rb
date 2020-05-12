@@ -183,7 +183,7 @@ EOB
       puts(e.backtrace.map {|line| "  #{line}"})
     end
   rescue => e
-    puts e.message
+    puts "Internal error: #{e.message}"
     puts 'Backtrace:'
     puts(e.backtrace.map {|line| "  #{line}"})
   end
