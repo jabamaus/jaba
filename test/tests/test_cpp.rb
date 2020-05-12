@@ -92,10 +92,10 @@ module JABA
       end
       app = op[:cpp]['cpp|app|x64|vs2017']
       app.wont_be_nil
-      cfg_debug = proj[:configs][:debug]
+      cfg_debug = app[:configs][:debug]
       cfg_debug.wont_be_nil
       cfg_debug[:defines].must_equal ['A', 'B', 'C', 'F']
-      cfg_release = proj[:configs][:release]
+      cfg_release = app[:configs][:release]
       cfg_release.wont_be_nil
       cfg_release[:defines].must_equal ['A', 'B', 'C', 'F', 'R']
     end
