@@ -16,6 +16,7 @@ module JABA
       @guid = nil
       @host = @attrs.host_ref
       @platform = @attrs.platform_ref
+      @platform_vsname = @platform.attrs.vsname
     end
     
     ##
@@ -110,6 +111,7 @@ module JABA
     ##
     #
     def write_keyvalue(w, key, val, condition: nil, depth: 2)
+      return if val.nil?
       w << if condition
               "#{'  ' * depth}<#{key} Condition=\"#{condition}\">#{val}</#{key}>"
             else
@@ -120,7 +122,7 @@ module JABA
     ##
     #
     def cfg_condition(cfg)
-      "'$(Configuration)|$(Platform)'=='#{cfg.attrs.config_name}|#{@platform.attrs.vsname}'"
+      "'$(Configuration)|$(Platform)'=='#{cfg.attrs.config_name}|#{@platform_vsname}'"
     end
     
   end

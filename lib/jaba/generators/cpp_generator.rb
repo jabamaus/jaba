@@ -85,7 +85,7 @@ module JABA
           vcproperty :UseDebugLibraries, debug, group: :pg1
 
           # ClCompile
-          vcproperty :ExceptionHandling, group: :ClCompile do
+          vcproperty :ExceptionHandling, idg: :ClCompile do
             case exceptions
             when true
               :Sync
@@ -97,7 +97,12 @@ module JABA
               fail "'#{exceptions}' unhandled"
             end
           end
-          vcproperty :RuntimeTypeInfo, rtti, group: :ClCompile
+          vcproperty :RuntimeTypeInfo, rtti, idg: :ClCompile
+
+          # Link
+          vcproperty :TargetMachine, idg: (type == :lib ? :Lib : :Link) do
+            :MachineX64 if x64?
+          end
         end
       end
     end

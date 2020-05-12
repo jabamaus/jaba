@@ -54,20 +54,31 @@ module JABA
       @services.log "Generating #{@vcxproj_file}"
 
       w = StringWriter.new(capacity: 64 * 1024)
-      @proj_configs = StringWriter.new(capacity: 2 * 1024)
+      @pc = StringWriter.new(capacity: 2 * 1024)
       @pg1 = StringWriter.new(capacity: 2 * 1024)
       @pg2 = StringWriter.new(capacity: 2 * 1024)
+      @ps = StringWriter.new(capacity: 2 * 1024)
+      @idg = StringWriter.new(capacity: 2 * 1024)
 
       @configs.each do |cfg|
-        @proj_configs.yield_self do |w|
+        @item_def_groups = {}
+        @pc.yield_self do |w|
           w << "    <ProjectConfiguration Include=\"#{cfg.attrs.config_name}|#{@platform.attrs.vsname}\">"
           w << "      <Configuration>#{cfg.attrs.config_name}</Configuration>"
           w << "      <Platform>#{@platform.attrs.vsname}</Platform>"
           w << "    </ProjectConfiguration>"
         end
 
-        property_group(@pg1, label: 'Configuration', condition: cfg_condition(cfg))
-        property_group(@pg2, label: 'Configuration', condition: cfg_condition(cfg))
+        @ps.yield_self do |w|
+          import_group(w, label: :PropertySheets, condition: cfg_condition(cfg)) do
+            w << '    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" ' \
+                'Condition="exists(\'$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props\')" Label="LocalAppDataPlatform" />'
+          end
+        end
+
+        property_group(@pg1, label: :Configuration, condition: cfg_condition(cfg))
+        property_group(@pg2, label: :Configuration, condition: cfg_condition(cfg))
+        item_definition_group(@idg, condition: cfg_condition(cfg))
 
         cfg.get_attr(:vcproperty).each_value do |key, val, _flag_options, keyval_options|
           case keyval_options[:group]
@@ -76,33 +87,45 @@ module JABA
           when :pg2
             write_keyvalue(@pg2, key, val, condition: keyval_options[:condition])
           end
+          idg = keyval_options[:idg]
+          if idg
+            idg_w = @item_def_groups[idg]
+            if !idg_w
+              idg_w = StringWriter.new(capacity: 2 * 1024)
+              @item_def_groups[idg] = idg_w
+              idg_w << "    <#{idg}>"
+            end
+            write_keyvalue(idg_w, key, val, condition: keyval_options[:condition], depth: 3)
+          end
         end
 
-        property_group(@pg1, label: 'Configuration', close: true)
-        property_group(@pg2, label: 'Configuration', close: true)
-      end
+        property_group(@pg1, label: :Configuration, close: true)
+        property_group(@pg2, label: :Configuration, close: true)
 
-      @proj_configs.chomp!
-      @pg1.chomp!
-      @pg2.chomp!
+        @item_def_groups.each do |idg, idg_w|
+          idg_w << "    </#{idg}>"
+          @idg.write_raw(idg_w)
+        end
+        item_definition_group(@idg, close: true)
+      end
 
       write_xml_version(w)
       
       w << "<Project DefaultTargets=\"Build\" ToolsVersion=\"#{tools_version}\" xmlns=\"#{xmlns}\">"
       
-      item_group(w, label: 'ProjectConfigurations') do
-        w << @proj_configs
+      item_group(w, label: :ProjectConfigurations) do
+        w.write_raw(@pc)
       end
     
-      property_group(w, label: 'Globals') do
+      property_group(w, label: :Globals) do
         write_keyvalue_attr(w, @node.get_attr(:vcglobal))
       end
       
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />'
-      w << @pg1
+      w.write_raw(@pg1)
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />'
       
-      import_group(w, label: 'ExtensionSettings') do
+      import_group(w, label: :ExtensionSettings) do
         # TODO: ExtensionSettings
       end
       
@@ -110,22 +133,10 @@ module JABA
         # TODO: ExtensionSettings
       end
       
-      @configs.each do |cfg|
-        import_group(w, label: 'PropertySheets', condition: cfg_condition(cfg)) do
-          w << '    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" ' \
-               'Condition="exists(\'$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props\')" Label="LocalAppDataPlatform" />'
-        end
-      end
-    
+      w.write_raw(@ps)
       w << '  <PropertyGroup Label="UserMacros" />'
-    
-      w << @pg2
-      
-      @configs.each do |cfg|
-        item_definition_group(w, condition: cfg_condition(cfg)) do
-          
-        end
-      end
+      w.write_raw(@pg2)
+      w.write_raw(@idg)
       
       item_group(w) do
         # TODO: src
@@ -146,7 +157,7 @@ module JABA
     
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />'
       
-      import_group(w, label: 'ExtensionTargets') do
+      import_group(w, label: :ExtensionTargets) do
         # TODO: extension targets
       end
       

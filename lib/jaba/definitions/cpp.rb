@@ -90,7 +90,7 @@ define :cpp do
     end
 
     attr_hash :vcproperty do
-      keyval_options :group
+      keyval_options :group, :idg
 =begin
       keyval_option :condition do
         validate do |value|
