@@ -72,8 +72,8 @@ module JABA
 
     ##
     #
-    def method_missing(id, val = nil)
-      @attr_def.handle_property(id, val)
+    def method_missing(id, val = nil, &block)
+      @attr_def.handle_property(id, val, &block)
     end
     
     private

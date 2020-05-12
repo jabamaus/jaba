@@ -100,7 +100,7 @@ module JABA
     ##
     #
     def handle_property(p_id, val, &block)
-      if val.nil?
+      if val.nil? && !block_given?
         get_property(p_id)
       else
         set_property(p_id, val, &block)

@@ -2,6 +2,8 @@
 
 module JABA
 
+  using JABACoreExt
+
   class PropertyContainer
     include PropertyMethods
 
@@ -95,6 +97,21 @@ module JABA
       pc.get_property(:b).must_equal [1]
       pc.set_property(:b, 2) # now appends because property has become an array
       pc.get_property(:b).must_equal [1, 2]
+    end
+
+    it 'supports blocks' do
+      pc = PropertyContainer.new
+      pc.define_property(:a)
+      pc.set_property(:a) do
+        print 'in block'
+      end
+      pc.get_property(:a).is_a_block?.must_equal(true)
+      pc.set_property(:a) do
+        print 'in different block'
+      end
+      assert_output 'in different block' do
+        pc.get_property(:a).call
+      end
     end
 
   end
