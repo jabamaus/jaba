@@ -16,7 +16,7 @@ require_relative 'jaba_attribute'
 require_relative 'jaba_attribute_array'
 require_relative 'jaba_attribute_hash'
 require_relative 'jaba_type'
-require_relative 'jaba_node'
+require_relative 'jaba_instance'
 require_relative 'generator'
 require_relative 'project'
 require_relative 'vsproject'
@@ -233,8 +233,8 @@ module JABA
       end
       
       # When an attribute defined in a JabaType will reference a differernt JabaType a dependency on that
-      # type is added. JabaTypes are dependency order sorted to ensure that referenced JabaNodes are created
-      # before the JabaNode that are referencing it.
+      # type is added. JabaTypes are dependency order sorted to ensure that referenced JabaInstances are created
+      # before the JabaInstance that are referencing it.
       #
       @jaba_types.each(&:resolve_dependencies)
       
@@ -249,7 +249,7 @@ module JABA
 
       log 'Initialisation of JabaTypes complete', section: true
       
-      # Now that the JabaTypes are dependency sorted, pass on the dependency ordering to the JabaNodes.
+      # Now that the JabaTypes are dependency sorted, pass on the dependency ordering to the JabaInstances.
       # This is achieved by giving each JabaType an index and then sorting nodes based on this index.
       # The sort is stable so as to preserve the order that was specified in definition files.
       #
@@ -263,7 +263,7 @@ module JABA
       
       @instance_definitions.stable_sort_by! {|d| d.jaba_type.instance_variable_get(:@order_index)}
       
-      # Create instances of JabaNode from JabaTypes. This could be a single node or a tree of nodes.
+      # Create JabaInstances from JabaTypes. This could be a single node or a tree of nodes.
       # Track the root node that is returned in each case. The array of root nodes is used to dump definition data to json.
       #
       @instance_definitions.each do |d|
@@ -393,7 +393,7 @@ module JABA
     def make_node(type_id: @current_definition.jaba_type_id, name: nil, parent: nil, &block)
       handle = if parent
                  jaba_error('name is required for child nodes') if !name
-                 if name.is_a?(JabaNode)
+                 if name.is_a?(JabaInstance)
                    name = name.definition_id
                  end
                  "#{parent.handle}|#{name}"
@@ -410,7 +410,7 @@ module JABA
 
       jt = get_jaba_type(type_id)
 
-      jn = JabaNode.new(self, @current_definition, jt, handle, parent)
+      jn = JabaInstance.new(self, @current_definition, jt, handle, parent)
 
       @nodes << jn
       @node_lookup[handle] = jn
@@ -444,7 +444,7 @@ module JABA
       nn = @null_nodes[type_id]
       if !nn
         jt = get_jaba_type(type_id)
-        nn = JabaNode.new(self, jt.definition, jt, "Null#{jt.definition_id}", nil)
+        nn = JabaInstance.new(self, jt.definition, jt, "Null#{jt.definition_id}", nil)
         @null_nodes[type_id] = nn
       end
       nn

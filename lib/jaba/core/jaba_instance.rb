@@ -6,7 +6,7 @@ module JABA
 
   ##
   #
-  class JabaNode < JabaObject
+  class JabaInstance < JabaObject
 
     attr_reader :jaba_type
     attr_reader :handle
@@ -18,7 +18,7 @@ module JABA
     ##
     #
     def initialize(services, definition, jaba_type, handle, parent)
-      super(services, definition, JabaNodeAPI.new(self))
+      super(services, definition, JabaInstanceAPI.new(self))
 
       @jaba_type = jaba_type # Won't always be the same as the JabaType in definition
       @handle = handle

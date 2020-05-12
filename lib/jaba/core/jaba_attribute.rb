@@ -91,13 +91,13 @@ module JABA
     end
 
     ##
-    # Returns the value of the attribute. If value is a reference to a JabaNode and the call to value() came from user
+    # Returns the value of the attribute. If value is a reference to a JabaInstance and the call to value() came from user
     # definitions then return the node's attributes rather than the node itself.
     #
     def value(api_call_line = nil)
       if !set?
         get_default
-      elsif api_call_line && @value.is_a?(JabaNode)
+      elsif api_call_line && @value.is_a?(JabaInstance)
         @value.attrs_read_only
       else
         @value

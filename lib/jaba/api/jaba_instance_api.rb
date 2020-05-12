@@ -2,7 +2,7 @@ module JABA
 
   ##
   #
-  class JabaNodeAPI < BasicObject
+  class JabaInstanceAPI < BasicObject
 
     include APICommon
 
