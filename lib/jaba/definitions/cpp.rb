@@ -42,6 +42,9 @@ define :cpp do
   
   attr_array :deps, type: :reference do
     referenced_type :cpp
+    make_handle do |id|
+      "cpp|#{id}|#{platform}|#{host}"
+    end
   end
   
   attr_hash :vcglobal do

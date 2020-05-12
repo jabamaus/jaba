@@ -286,7 +286,13 @@ module JABA
           if a.type_id == :reference
             a.map! do |ref|
               if ref.is_a?(Symbol)
-                node_from_handle("#{a.attr_def.referenced_type}|#{ref}", callstack: a.api_call_line)
+                make_handle_block = a.attr_def.get_property(:make_handle)
+                handle = if make_handle_block
+                  a.node.eval_api_block(ref, &make_handle_block)
+                else
+                  "#{a.attr_def.referenced_type}|#{ref}"
+                end
+                node_from_handle(handle, callstack: a.api_call_line)
               else
                 ref
               end

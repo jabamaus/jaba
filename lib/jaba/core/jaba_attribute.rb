@@ -10,6 +10,7 @@ module JABA
   #
   class JabaAttributeBase
 
+    attr_reader :node
     attr_reader :attr_def
     attr_reader :api_call_line
     
@@ -205,7 +206,7 @@ module JABA
     private
  
     ##
-    #
+    # TODO: pull out common code into services
     def resolve_reference(value)
       if @attr_def.type_id == :reference
         rt = @attr_def.referenced_type

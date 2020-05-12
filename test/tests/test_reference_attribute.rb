@@ -216,6 +216,8 @@ module JABA
 
     # TODO: what about referencing sub types?
 
+    # TODO: test referencing a node in a tree, using make_handle
+
     it 'prevents nil access when building tree of nodes' do
       jaba do
         define :testproj do

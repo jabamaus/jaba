@@ -57,6 +57,7 @@ attr_type :reference do
 
   init_attr_def do
     define_property :referenced_type
+    define_property :make_handle # TODO: flag as block or validate as such
   end
   
   validate_attr_def do
