@@ -42,8 +42,11 @@ module JABA
       p_root[:configs] = cfg_root
       @configs.each do |c|
         cfg = {}
-        cfg_root[c.attrs.config] = cfg
-        cfg[:name] = c.attrs.config_name
+        attrs = c.attrs
+        cfg_root[attrs.config] = cfg
+        cfg[:name] = attrs.config_name
+        cfg[:defines] = attrs.defines
+        cfg[:inc] = attrs.inc
         cfg[:rtti] = c.attrs.rtti
       end
     end

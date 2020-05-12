@@ -19,10 +19,22 @@
       "configs": {
         "debug": {
           "name": "debug",
+          "defines": [
+
+          ],
+          "inc": [
+
+          ],
           "rtti": true
         },
         "release": {
           "name": "release",
+          "defines": [
+
+          ],
+          "inc": [
+
+          ],
           "rtti": true
         }
       }
@@ -37,10 +49,22 @@
       "configs": {
         "debug": {
           "name": "debug",
+          "defines": [
+
+          ],
+          "inc": [
+
+          ],
           "rtti": true
         },
         "release": {
           "name": "release",
+          "defines": [
+
+          ],
+          "inc": [
+
+          ],
           "rtti": true
         }
       }
