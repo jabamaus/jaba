@@ -9,7 +9,7 @@ require_relative 'api/jaba_attribute_type_api'
 require_relative 'api/jaba_attribute_flag_api'
 require_relative 'api/jaba_attribute_definition_api'
 require_relative 'api/jaba_type_api'
-require_relative 'api/jaba_instance_api'
+require_relative 'api/jaba_node_api'
 
 ##
 #
