@@ -149,6 +149,26 @@ module JABACoreExt
       self =~ /^(\/)|([A-Za-z]:)/ ? true : false
     end
 
+    ##
+    #
+    def quote!(quote_char = '"')
+      if empty?
+        replace "#{quote_char}#{quote_char}"
+      elsif !(start_with?(quote_char) && end_with?(quote_char))
+        insert(0, quote_char)
+        self << quote_char
+      end
+      self
+    end
+
+    ##
+    # Quote if string contains a space or a macro.
+    #
+    def vs_quote!
+      quote! if self =~ / |\$\(/
+      self
+    end
+
   end
 
   ##
@@ -190,6 +210,34 @@ module JABACoreExt
       sort_by!.with_index {|x, i| [yield(x), i] }
     end
     
+    ##
+    # Joins array for use in msbuild files optionally adding an 'inherit' string. Returns nil if string is empty, unless forced.
+    #
+    def vs_join(separator: ';', inherit: nil, force: false)
+      str = if empty?
+        force ? inherit : nil
+      else
+        j = join(separator)
+        if inherit
+          j << separator << inherit
+        end
+        j
+      end
+      if !str || (str.empty? && !force)
+        return nil
+      else
+        str
+      end
+    end
+
+    ##
+    # Joins array elements (paths) into a separted string with all the necessary quoting applied and
+    # convert to backslashes. Returns nil if array is empty, unless forced.
+    #
+    def vs_join_paths(**args)
+      map(&:vs_quote!).vs_join(**args)&.to_backslashes!
+    end
+
   end
   
 end
