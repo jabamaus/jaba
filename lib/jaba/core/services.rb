@@ -285,14 +285,8 @@ module JABA
         n.each_attr do |a|
           if a.type_id == :reference
             a.map! do |ref|
-              if ref.is_a?(Symbol)
-                make_handle_block = a.attr_def.get_property(:make_handle)
-                handle = if make_handle_block
-                  a.node.eval_api_block(ref, &make_handle_block)
-                else
-                  "#{a.attr_def.referenced_type}|#{ref}"
-                end
-                node_from_handle(handle, callstack: a.api_call_line)
+              if ref && !ref.is_a?(JabaNode)
+                resolve_reference(a, ref)
               else
                 ref
               end
@@ -444,6 +438,20 @@ module JABA
       jn
     end
     
+    ##
+    # Given a reference attribute and the definition id it is pointing at, returns the node instance.
+    #
+    def resolve_reference(ref_attr, ref_node_id)
+      ad = ref_attr.attr_def
+      make_handle_block = ad.get_property(:make_handle)
+      handle = if make_handle_block
+        ref_attr.node.eval_api_block(ref, &make_handle_block)
+      else
+        "#{ad.referenced_type}|#{ref_node_id}"
+      end
+      node_from_handle(handle, callstack: ref_attr.api_call_line)
+    end
+
     ##
     #
     def get_null_node(type_id)

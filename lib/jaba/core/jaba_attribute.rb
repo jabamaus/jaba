@@ -206,20 +206,27 @@ module JABA
     private
  
     ##
-    # TODO: pull out common code into services
+    #
     def resolve_reference(value)
-      if @attr_def.type_id == :reference
-        rt = @attr_def.referenced_type
-        if rt != @node.jaba_type.definition_id
-          ref_node = @services.node_from_handle("#{rt}|#{value}")
-          @node.referenced_nodes << ref_node
-          ref_node
-        else
-          value
-        end
-      else
-        value
+      return value if @attr_def.type_id != :reference
+
+      # Get the type id of the referenced node
+      #
+      rt = @attr_def.referenced_type
+      
+      # Only resolve reference immediately if referencing a different type to this node's type. This is because not all nodes
+      # of the same type will have been created by this point whereas nodes of a different type will all have been created
+      # due to having been dependency sorted. References to the same type are resolved after all nodes have been created.
+      #
+      if rt != @node.jaba_type.definition_id
+        ref_node = @services.resolve_reference(self, value)
+
+        # Hang the referenced node of this one. It is used in JabaNode#get_attr when searching for readable attributes.
+        #
+        @node.referenced_nodes << ref_node
+        value = ref_node
       end
+      value
     end
     
   end
