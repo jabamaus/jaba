@@ -240,7 +240,7 @@ module JABA
       
       begin
         @jaba_types.sort_topological!(:dependencies)
-      rescue CyclicDependency => e
+      rescue TSort::Cyclic => e
         err_type = e.instance_variable_get(:@err_obj)
         jaba_error("'#{err_type}' contains a cyclic dependency", callstack: err_type.definition.api_call_line)
       end
@@ -445,7 +445,7 @@ module JABA
       ad = ref_attr.attr_def
       make_handle_block = ad.get_property(:make_handle)
       handle = if make_handle_block
-        ref_attr.node.eval_api_block(ref, &make_handle_block)
+        ref_attr.node.eval_api_block(ref_node_id, &make_handle_block)
       else
         "#{ad.referenced_type}|#{ref_node_id}"
       end

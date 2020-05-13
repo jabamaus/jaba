@@ -129,6 +129,10 @@ module JABA
     ##
     #
     def make_projects
+      @project_nodes.sort_topological! do |n, &b|
+        n.attrs.deps.each(&b)
+      end
+      
       @project_nodes.each do |pn|
         @projects << make_project(Vcxproj, pn)
       end

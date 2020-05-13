@@ -194,8 +194,24 @@ module JABACoreExt
   
     ##
     #
-    def sort_topological!(children)
-      replace(JABA::TSorter.new(self, children).sort)
+    def sort_topological!(by = nil, &each_child_block)
+      each_node = lambda {|&b| each(&b) }
+      each_child = if by
+        lambda {|n, &b| n.send(by).each(&b)}
+      else
+        lambda {|n, &b| each_child_block.call(n, &b)}
+      end
+      result = []
+      TSort.each_strongly_connected_component(each_node, each_child) do |c|
+        if c.size == 1
+          result << c.first
+        else
+          e = TSort::Cyclic.new
+          e.instance_variable_set(:@err_obj, c.first)
+          raise e
+        end
+      end
+      replace(result)
     end
 
     ##
