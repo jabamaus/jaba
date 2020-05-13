@@ -96,7 +96,7 @@ module JABA
     # definitions then return the node's attributes rather than the node itself.
     #
     def value(api_call_line = nil)
-      if !set?
+      if !@set
         get_default
       elsif api_call_line && @value.is_a?(JabaNode)
         @value.attrs_read_only
@@ -113,7 +113,7 @@ module JABA
       # Check for read only if calling from definitions, or if not calling from definitions but from library code,
       # allow setting read only attrs the first time, in order to initialise them.
       #
-      if (api_call_line || set?)
+      if (api_call_line || @set)
         if @attr_def.has_flag?(:read_only)
           @services.jaba_error("'#{@attr_def.definition_id}' attribute is read only")
         end
