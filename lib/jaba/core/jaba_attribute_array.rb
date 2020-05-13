@@ -80,17 +80,18 @@ module JABA
     end
     
     ##
+    # Returns attribute element at the given index.
     #
-    def get_elem(i)
-      @elems[i]
+    def at(index)
+      @elems[index]
     end
     
     ##
     #
-    def each(&block)
-      @elems.each(&block)
+    def visit_attr(&block)
+      @elems.each{|attr| attr.visit_attr(&block)}
     end
-    
+
     ##
     #
     def each_value(&block)
@@ -99,8 +100,8 @@ module JABA
     
     ##
     #
-    def map!(&block)
-      @elems.each {|e| e.map!(&block)}
+    def map_value!(&block)
+      @elems.each {|e| e.map_value!(&block)}
     end
     
     ##

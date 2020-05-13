@@ -96,6 +96,12 @@ module JABA
     
     ##
     #
+    def visit_attr(&block)
+      @attributes.each{|a| a.visit_attr(&block)}
+    end
+
+    ##
+    #
     def post_create
       @attributes.each do |a|
         if !a.set?

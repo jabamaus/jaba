@@ -95,6 +95,12 @@ module JABA
     
     ##
     #
+    def visit_attr(&block)
+      @hash.each_value{|attr| attr.visit_attr(&block)}
+    end
+
+    ##
+    #
     def each_value
       @hash.each do |key, attr|
         attr.each_value do |val, flag_options, keyval_options|
@@ -105,8 +111,8 @@ module JABA
     
     ##
     #
-    def map!(&block)
-      @hash.transform_values! {|e| e.map!(&block)}
+    def map_value!(&block)
+      @hash.transform_values! {|e| e.map_value!(&block)}
     end
     
     ##

@@ -133,6 +133,16 @@ module JABA
         n.attrs.deps.each(&b)
       end
       
+      @project_nodes.reverse_each do |n|
+        n.attrs.deps.each do |dep_node|
+          dep_node.visit_attr do |a|
+            if a.has_flag_option?(:export)
+              
+            end
+          end
+        end
+      end
+
       @project_nodes.each do |pn|
         @projects << make_project(Vcxproj, pn)
       end

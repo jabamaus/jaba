@@ -70,7 +70,7 @@ module JABA
 
     ##
     #
-    def initialize(services, attr_def, parent_array, node)
+    def initialize(services, attr_def, parent_container, node)
       super(services, attr_def, node)
       @value = nil
       @flag_options = nil
@@ -78,7 +78,7 @@ module JABA
       
       # If its not an element of an attribute array, initialize with default value if it has a concrete one
       #
-      if !parent_array && !@default.nil? && !@default_is_block
+      if !parent_container && !@default.nil? && !@default_is_block
         @value = resolve_reference(@default)
         @set = true
       end
@@ -187,13 +187,19 @@ module JABA
 
     ##
     #
+    def visit_attr(&block)
+      yield self
+    end
+
+    ##
+    #
     def each_value
       yield @value, @flag_options, @keyval_options
     end
     
     ##
     #
-    def map!
+    def map_value!
       @value = yield(@value)
     end
     
