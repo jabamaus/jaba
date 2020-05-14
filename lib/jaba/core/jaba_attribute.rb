@@ -184,7 +184,13 @@ module JABA
     ##
     #
     def get_option_value(key, fail_if_not_found: true)
-      @services.jaba_error("option key '#{key}' not found") if !@keyval_options.key?(key)
+      if !@keyval_options.key?(key)
+        if fail_if_not_found
+          @services.jaba_error("option key '#{key}' not found")
+        else
+          return nil
+        end
+      end
       @keyval_options[key]
     end
 
