@@ -199,7 +199,7 @@ module JABACoreExt
       each_child = if by
         lambda {|n, &b| n.send(by).each(&b)}
       else
-        lambda {|n, &b| each_child_block.call(n, &b)}
+        each_child_block
       end
       result = []
       TSort.each_strongly_connected_component(each_node, each_child) do |c|
