@@ -108,8 +108,7 @@ module JABA
           if a.required?
             jaba_error("'#{a.definition_id}' attribute requires a value", callstack: @definition.api_call_line)
           end
-          # TODO: not working yet
-          #a.set(a.get_default)
+          a.set_to_default
         end
         a.process_flags(warn: true)
       end
