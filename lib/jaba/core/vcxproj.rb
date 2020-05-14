@@ -85,14 +85,20 @@ module JABA
         property_group(@pg2, label: :Configuration, condition: cfg_condition(cfg))
         item_definition_group(@idg, condition: cfg_condition(cfg))
 
-        cfg.get_attr(:vcproperty).each_value do |key, val, _flag_options, keyval_options|
-          case keyval_options[:group]
+        cfg.get_attr(:vcproperty).visit_attr do |attr|
+          val = attr.raw_value
+          key = attr.get_option_value(:__key)
+          group = attr.get_option_value(:group, fail_if_not_found: false)
+          condition = attr.get_option_value(:condition, fail_if_not_found: false)
+
+          case group
           when :pg1
-            write_keyvalue(@pg1, key, val, condition: keyval_options[:condition])
+            write_keyvalue(@pg1, key, val, condition: condition)
           when :pg2
-            write_keyvalue(@pg2, key, val, condition: keyval_options[:condition])
+            write_keyvalue(@pg2, key, val, condition: condition)
           end
-          idg = keyval_options[:idg]
+
+          idg = attr.get_option_value(:idg, fail_if_not_found: false)
           if idg
             idg_w = @item_def_groups[idg]
             if !idg_w
@@ -100,7 +106,7 @@ module JABA
               @item_def_groups[idg] = idg_w
               idg_w << "    <#{idg}>"
             end
-            write_keyvalue(idg_w, key, val, condition: keyval_options[:condition], depth: 3)
+            write_keyvalue(idg_w, key, val, condition: condition, depth: 3)
           end
         end
 
