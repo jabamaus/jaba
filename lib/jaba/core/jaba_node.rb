@@ -38,7 +38,7 @@ module JABA
       jaba_type.attribute_defs.each do |attr_def|
         a = case attr_def.variant
             when :single
-              JabaAttribute.new(services, attr_def, nil, self)
+              JabaAttributeSingle.new(services, attr_def, self)
             when :array
               JabaAttributeArray.new(services, attr_def, self)
             when :hash

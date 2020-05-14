@@ -15,7 +15,7 @@ module JABA
     def initialize(services, attr_def, node)
       super
       @hash = {}
-      if @default.is_a?(Hash)
+      if @default && !@default_is_block
         @default.each do |k, v|
           set(k, v)
         end
@@ -55,7 +55,7 @@ module JABA
       #
       val = block_given? ? @node.eval_api_block(&block) : args.shift
 
-      elem = JabaAttribute.new(@services, @attr_def, self, @node)
+      elem = JabaAttribute.new(@services, @attr_def, @node)
       # v = apply_pre_post_fix(prefix, postfix, v)
       elem.set(val, *args, api_call_line: api_call_line, __key: key, **keyvalue_args)
       @hash[key] = elem
@@ -69,6 +69,17 @@ module JABA
     end
     
     ##
+    #
+    def set_to_default
+      default = get_default
+      if default
+        default.each do |k, v|
+          set(k, v)
+        end
+      end
+    end
+
+    ##
     # Clone other attribute and add into this hash. Other attribute has already been validated and had any reference resolved.
     # just clone raw value and options. Flags will be processed after, eg stripping duplicates.
     #
@@ -78,7 +89,7 @@ module JABA
       key = kv_options[:__key]
       val = Marshal.load(Marshal.dump(other.raw_value))
 
-      elem = JabaAttribute.new(@services, @attr_def, self, @node)
+      elem = JabaAttribute.new(@services, @attr_def, @node)
       elem.set(val, *f_options, api_call_line: nil, validate: false, resolve_ref: false, **kv_options)
       
       @hash[key] = elem

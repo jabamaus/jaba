@@ -60,6 +60,12 @@ module JABA
       end
     end
 
+    ##
+    #
+    def set_to_default
+      set(get_default)
+    end
+
   end
 
   ##
@@ -71,18 +77,11 @@ module JABA
 
     ##
     #
-    def initialize(services, attr_def, parent_container, node)
-      super(services, attr_def, node)
+    def initialize(services, attr_def, node)
+      super
       @value = nil
       @flag_options = nil
       @keyval_options = nil
-      
-      # If its not an element of an attribute array, initialize with default value if it has a concrete one
-      #
-      if !parent_container && !@default.nil? && !@default_is_block
-        @value = resolve_reference(@default)
-        @set = true
-      end
     end
     
     ##
@@ -248,6 +247,22 @@ module JABA
       value
     end
     
+  end
+
+  ##
+  #
+  class JabaAttributeSingle < JabaAttribute
+
+    ##
+    #
+    def initialize(services, attr_def, node)
+      super
+      
+      if !@default.nil? && !@default_is_block
+        set(@default)
+      end
+    end
+
   end
 
 end
