@@ -41,7 +41,7 @@ module JABA
     
     ##
     # TODO: handle overwriting
-    def set(*args, api_call_line: nil, prefix: nil, postfix: nil, exclude: nil, **keyvalue_args, &block)
+    def set(*args, api_call_line: nil, **keyvalue_args, &block)
       @api_call_line = api_call_line
       
       # TODO: validate only key passed if block given
@@ -56,16 +56,10 @@ module JABA
       val = block_given? ? @node.eval_api_block(&block) : args.shift
 
       elem = JabaAttribute.new(@services, @attr_def, @node)
-      # v = apply_pre_post_fix(prefix, postfix, v)
       elem.set(val, *args, api_call_line: api_call_line, __key: key, **keyvalue_args)
+
       @hash[key] = elem
       @set = true
-      
-      #if exclude
-      #  Array(exclude).each do |e|
-      #    @excludes << apply_pre_post_fix(prefix, postfix, e)
-      #  end
-      #end
     end
     
     ##
@@ -93,19 +87,6 @@ module JABA
       elem.set(val, *f_options, api_call_line: nil, validate: false, resolve_ref: false, **kv_options)
       
       @hash[key] = elem
-    end
-
-    ##
-    #
-    def apply_pre_post_fix(pre, post, val)
-      if pre || post
-        if !val.is_a?(String)
-          @services.jaba_error('prefix/postfix option can only be used with arrays of strings')
-        end
-        "#{pre}#{val}#{post}"
-      else
-        val
-      end
     end
     
     ##
