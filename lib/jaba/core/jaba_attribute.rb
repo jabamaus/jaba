@@ -210,13 +210,6 @@ module JABA
     ##
     # This can only be called after the value has had its final value set as it gives raw access to value.
     #
-    def each_value
-      yield @value, @flag_options, @keyval_options
-    end
-    
-    ##
-    # This can only be called after the value has had its final value set as it gives raw access to value.
-    #
     def map_value!
       @value = yield(@value)
     end

@@ -109,12 +109,6 @@ module JABA
 
     ##
     #
-    def each_value(&block)
-      @elems.each {|e| e.each_value(&block)}
-    end
-    
-    ##
-    #
     def map_value!(&block)
       @elems.each {|e| e.map_value!(&block)}
     end

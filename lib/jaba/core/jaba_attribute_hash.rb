@@ -106,16 +106,6 @@ module JABA
     def visit_attr(&block)
       @hash.each_value{|attr| attr.visit_attr(&block)}
     end
-
-    ##
-    #
-    def each_value
-      @hash.each do |key, attr|
-        attr.each_value do |val, flag_options, keyval_options|
-          yield key, val, flag_options, keyval_options
-        end
-      end
-    end
     
     ##
     #
