@@ -47,6 +47,14 @@ module JABA
         eval_api_block(&@definition.block)
       end
 
+      # Attributes that are stored as values in a hash have their corresponding key stored in their options. This is
+      # used when cloning attributes. Store as __key to indicate it is internal and to stop it clashing with any user
+      # defined option.
+      #
+      if @variant == :hash
+        @keyval_options << :__key
+      end
+
       @default_is_block = @default.is_a_block?
 
       validate

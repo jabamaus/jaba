@@ -71,7 +71,8 @@ module JABA
       proj[:configs][:debug].wont_be_nil
       proj[:configs][:release].must_be_nil
     end
-=begin
+
+    # TODO: explicitly test that flags are applied after exporting.
     it 'supports exporting array attributes to dependents' do
       op = jaba(dry_run: true) do
         defaults :cpp do
@@ -80,18 +81,32 @@ module JABA
           configs [:debug, :release]
         end
         cpp :app do
-          deps :lib
+          deps [:lib]
+          vcglobal :BoolAttr, true
+          src ['b', 'a']
           defines ['F', 'A']
         end
         cpp :lib do
+          vcglobal :StringAttr, 's'
+          vcglobal :StringAttr2, 's2', :export
+          vcglobal :StringAttr3, 's3', :export
+          # TODO: what happens if export :BoolAttr, false ? will it overwrite? Probably fail. Warn if same value.
+          src ['c']
+          src ['e', 'd', 'b'], :export
+          src ['f']
           defines ['D']
           defines ['C', 'B'], :export
           defines ['R'], :export if config == :release
           defines ['E']
+          # TODO: test vcproperty
         end
       end
       app = op[:cpp]['cpp|app|x64|vs2017']
       app.wont_be_nil
+      app[:vcglobal][:BoolAttr].must_equal(true)
+      app[:vcglobal][:StringAttr2].must_equal('s2')
+      app[:vcglobal][:StringAttr3].must_equal('s3')
+      app[:src].must_equal ['b', 'a', 'e', 'd']
       cfg_debug = app[:configs][:debug]
       cfg_debug.wont_be_nil
       cfg_debug[:defines].must_equal ['A', 'B', 'C', 'F']
@@ -99,7 +114,7 @@ module JABA
       cfg_release.wont_be_nil
       cfg_release[:defines].must_equal ['A', 'B', 'C', 'F', 'R']
     end
-=end
+
   end
 
 end

@@ -66,6 +66,7 @@ module JABA
   #
   class JabaAttribute < JabaAttributeBase
 
+    attr_reader :keyval_options
     attr_reader :flag_options
 
     ##
@@ -107,7 +108,7 @@ module JABA
     
     ##
     #
-    def set(*args, api_call_line: nil, **key_val_args, &block)
+    def set(*args, api_call_line: nil, validate: true, resolve_ref: true, **key_val_args, &block)
       @api_call_line = api_call_line
 
       # Check for read only if calling from definitions, or if not calling from definitions but from library code,
@@ -139,17 +140,20 @@ module JABA
       if value.is_a?(Array)
         @services.jaba_error("'#{@attr_def.definition_id}' attribute is not an array so cannot accept one")
       end
-      begin
-        @attr_def.jaba_attr_type.call_hook(:validate_value, value, receiver: @attr_def)
-      rescue JabaDefinitionError => e
-        @services.jaba_error("'#{@attr_def.definition_id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
+
+      if validate
+        begin
+          @attr_def.jaba_attr_type.call_hook(:validate_value, value, receiver: @attr_def)
+        rescue JabaDefinitionError => e
+          @services.jaba_error("'#{@attr_def.definition_id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
+        end
       end
 
       # Take a deep copy of keyval_options so they are private to this attribute
       #
       @keyval_options = key_val_args.empty? ? {} : Marshal.load(Marshal.dump(key_val_args))
       
-      @value = resolve_reference(value)
+      @value = resolve_ref ? resolve_reference(value) : value
     end
     
     ##
@@ -190,14 +194,23 @@ module JABA
     def visit_attr(&block)
       yield self
     end
+    
+    ##
+    # This can only be called after the value has had its final value set as it gives raw access to value.
+    #
+    def raw_value
+      @value
+    end
 
     ##
+    # This can only be called after the value has had its final value set as it gives raw access to value.
     #
     def each_value
       yield @value, @flag_options, @keyval_options
     end
     
     ##
+    # This can only be called after the value has had its final value set as it gives raw access to value.
     #
     def map_value!
       @value = yield(@value)

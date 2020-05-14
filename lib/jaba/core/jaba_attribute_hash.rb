@@ -57,7 +57,7 @@ module JABA
 
       elem = JabaAttribute.new(@services, @attr_def, self, @node)
       # v = apply_pre_post_fix(prefix, postfix, v)
-      elem.set(val, *args, api_call_line: api_call_line, **keyvalue_args)
+      elem.set(val, *args, api_call_line: api_call_line, __key: key, **keyvalue_args)
       @hash[key] = elem
       @set = true
       
@@ -68,6 +68,22 @@ module JABA
       #end
     end
     
+    ##
+    # Clone other attribute and add into this hash. Other attribute has already been validated and had any reference resolved.
+    # just clone raw value and options. Flags will be processed after, eg stripping duplicates.
+    #
+    def insert_clone(other)
+      kv_options = other.keyval_options
+      f_options = other.flag_options
+      key = kv_options[:__key]
+      val = Marshal.load(Marshal.dump(other.raw_value))
+
+      elem = JabaAttribute.new(@services, @attr_def, self, @node)
+      elem.set(val, *f_options, api_call_line: nil, validate: false, resolve_ref: false, **kv_options)
+      
+      @hash[key] = elem
+    end
+
     ##
     #
     def apply_pre_post_fix(pre, post, val)

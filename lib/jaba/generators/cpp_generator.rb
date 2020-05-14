@@ -133,11 +133,28 @@ module JABA
         n.attrs.deps.each(&b)
       end
       
-      @project_nodes.reverse_each do |n|
-        n.attrs.deps.each do |dep_node|
-          dep_node.visit_attr do |a|
-            if a.has_flag_option?(:export)
-              
+      @project_nodes.reverse_each do |node|
+        node.attrs.deps.each do |dep_node|
+          dep_node.each_attr do |dep_attr|
+
+            # Skip single value attributes as they cannot export. The reason for this is that exporting it would simply
+            # overwrite the destination attribute creating a conflict. Which node should control the value? For this
+            # reason disallow.
+            #
+            next if dep_attr.attr_def.variant == :single
+            n_attr = nil
+
+            # visit all attribute elements in array/hash
+            #
+            dep_attr.visit_attr do |elem|
+              if elem.has_flag_option?(:export)
+
+                # Get the corresponding attr in this project node. Only consider this node so don't set search: true.
+                # This will always be a hash or an array.
+                #
+                n_attr = node.get_attr(elem.definition_id) if !n_attr
+                n_attr.insert_clone(elem)
+              end
             end
           end
         end
