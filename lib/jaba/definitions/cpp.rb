@@ -59,6 +59,12 @@ define :cpp do
   
   define :cpp_config do
 
+    attr_array :build_action do
+      help 'Build actions'
+      flag_options :PreBuild, :PreLink, :PostBuild, :export
+      keyval_options :msg
+    end
+
     attr_array :cflags do
       help 'Compiler command line arguments'
       flag_options :export
