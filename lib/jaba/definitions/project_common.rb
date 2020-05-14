@@ -28,6 +28,9 @@ shared :project_common do
   end
 
   attr_array :src, type: :path do
+    help 'Source file specification'
+    flags :unordered # Final source will be sorted so no need to sort this
+    flag_options :export
   end
   
 end
