@@ -36,8 +36,9 @@ module JABA
       p_root[:projname] = @attrs.projname
       p_root[:platform] = @platform.definition_id
       p_root[:host] = @host.definition_id
-      p_root[:guid] = @guid
       p_root[:vcxproj] = @vcxproj_file
+      p_root[:src] = @attrs.src # TODO: output actual src not the spec
+      p_root[:vcglobal] = @attrs.vcglobal
       cfg_root = {}
       p_root[:configs] = cfg_root
       @configs.each do |c|
@@ -47,7 +48,8 @@ module JABA
         cfg[:name] = attrs.config_name
         cfg[:defines] = attrs.defines
         cfg[:inc] = attrs.inc
-        cfg[:rtti] = c.attrs.rtti
+        cfg[:rtti] = attrs.rtti
+        cfg[:vcproperty] = attrs.vcproperty
       end
     end
 
