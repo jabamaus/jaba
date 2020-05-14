@@ -284,11 +284,13 @@ module JABA
       @nodes.each do |n|
         n.each_attr do |a|
           if a.type_id == :reference
-            a.map_value! do |ref|
-              if ref && !ref.is_a?(JabaNode)
-                resolve_reference(a, ref)
-              else
-                ref
+            a.visit_attr do |elem|
+              elem.map_value! do |ref|
+                if ref && !ref.is_a?(JabaNode)
+                  resolve_reference(a, ref)
+                else
+                  ref
+                end
               end
             end
           end

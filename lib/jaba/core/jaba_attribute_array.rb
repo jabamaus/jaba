@@ -109,12 +109,6 @@ module JABA
 
     ##
     #
-    def map_value!(&block)
-      @elems.each {|e| e.map_value!(&block)}
-    end
-    
-    ##
-    #
     def process_flags(warn: true)
       if @excludes
         @elems.delete_if do |e|

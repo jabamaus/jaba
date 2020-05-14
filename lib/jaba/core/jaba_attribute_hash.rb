@@ -106,13 +106,7 @@ module JABA
     def visit_attr(&block)
       @hash.each_value{|attr| attr.visit_attr(&block)}
     end
-    
-    ##
-    #
-    def map_value!(&block)
-      @hash.transform_values! {|e| e.map_value!(&block)}
-    end
-    
+     
     ##
     #
     def process_flags(warn: true)
