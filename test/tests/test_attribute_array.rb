@@ -326,6 +326,8 @@ module JABA
     it 'supports clearing excludes' do
     end
     
+    # TODO: test flag option copies
+
     it 'gives a copy of keyval options to each element' do
       jaba do
         opt1 = 'opt1'
@@ -337,8 +339,8 @@ module JABA
           end
         end
         test :t do
-          a 1, opt1: opt1, opt2: opt2
-          a 2, opt1: opt1, opt2: opt2
+          a [1, 2], opt1: opt1, opt2: opt2
+          a 3, opt1: opt1, opt2: opt2
           generate do
             a = get_attr(:a)
             
@@ -355,6 +357,17 @@ module JABA
 
             attr = a.at(1)
             attr.value.must_equal(2)
+            opt1val = attr.get_option_value(:opt1)
+            opt1val.wont_be_nil
+            opt1val.object_id.wont_equal(opt1.object_id)
+            opt1val.must_equal('opt1')
+            opt2val = attr.get_option_value(:opt2)
+            opt2val.wont_be_nil
+            opt2val.object_id.wont_equal(opt2.object_id)
+            opt2val.must_equal('opt2')
+
+            attr = a.at(2)
+            attr.value.must_equal(3)
             opt1val = attr.get_option_value(:opt1)
             opt1val.wont_be_nil
             opt1val.object_id.wont_equal(opt1.object_id)
