@@ -197,7 +197,11 @@ module JABA
     ##
     #
     def visit_attr(&block)
-      yield self
+      if block.arity == 2
+        yield self, value
+      else
+        yield self
+      end
     end
     
     ##

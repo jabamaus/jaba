@@ -101,13 +101,12 @@ module JABA
     ##
     #
     def write_keyvalue_attr(w, attr, group: nil, depth: 2)
-      attr.visit_attr do |elem|
+      attr.visit_attr do |elem, val|
         if group
           group_option = elem.get_option_value(:group)
           next if group != group_option
         end
         key = elem.get_option_value(:__key)
-        val = elem.raw_value
         condition = elem.get_option_value(:condition, fail_if_not_found: false)
         write_keyvalue(w, key, val, condition: condition)
       end

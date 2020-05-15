@@ -96,8 +96,12 @@ module JABA
     
     ##
     #
-    def visit_attr(&block)
-      @attributes.each{|a| a.visit_attr(&block)}
+    def visit_attr(attr_id = nil, &block)
+      if attr_id
+        get_attr(attr_id).visit_attr(&block)
+      else
+        @attributes.each{|a| a.visit_attr(&block)}
+      end
     end
 
     ##

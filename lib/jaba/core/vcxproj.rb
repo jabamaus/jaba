@@ -85,8 +85,7 @@ module JABA
         property_group(@pg2, label: :Configuration, condition: cfg_condition(cfg))
         item_definition_group(@idg, condition: cfg_condition(cfg))
 
-        cfg.get_attr(:vcproperty).visit_attr do |attr|
-          val = attr.raw_value
+        cfg.visit_attr(:vcproperty) do |attr, val|
           key = attr.get_option_value(:__key)
           group = attr.get_option_value(:group, fail_if_not_found: false)
           condition = attr.get_option_value(:condition, fail_if_not_found: false)
