@@ -59,6 +59,30 @@ module JABA
       end
     end
 
+    it 'overwrites flag and keyval options on successive calls' do
+      jaba do
+        define :test do
+          attr :a do
+            flag_options :fo1, :fo2, :fo3
+            keyval_options :kv1, :kv2, :kv3
+          end
+        end
+        test :t do
+          a 1, :fo1, kv1: 2
+          a 2, :fo2, :fo3, kv2: 3, kv3: 4
+          generate do
+            a = get_attr(:a)
+            a.has_flag_option?(:fo1).must_equal(false)
+            a.has_flag_option?(:fo2).must_equal(true)
+            a.has_flag_option?(:fo3).must_equal(true)
+            a.get_option_value(:kv1, fail_if_not_found: false).must_be_nil
+            a.get_option_value(:kv2).must_equal(3)
+            a.get_option_value(:kv3).must_equal(4)
+          end
+        end
+      end
+    end
+
     # TODO: check wiping down required values
     it 'supports wiping value back to default' do
       jaba do
