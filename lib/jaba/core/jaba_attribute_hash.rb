@@ -96,8 +96,15 @@ module JABA
     end
     
     ##
-    # TODO: handle if key not there
-    def fetch(key)
+    #
+    def fetch(key, fail_if_not_found: true)
+      if !@hash.key?(key)
+        if fail_if_not_found
+          @services.jaba_error("'#{key}' key not found in #{@attr_def.definition_id}")
+        else
+          return nil
+        end
+      end
       @hash[key]
     end
     
