@@ -184,6 +184,9 @@ module JABA
     ##
     #
     def get_option_value(key, fail_if_not_found: true)
+      if !@attr_def.keyval_options.include?(key)
+        @services.jaba_error("'#{definition_id}' attribute does not support '#{key}' keyval option")
+      end
       if !@keyval_options.key?(key)
         if fail_if_not_found
           @services.jaba_error("option key '#{key}' not found")

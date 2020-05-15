@@ -118,7 +118,7 @@ define :cpp do
     end
 
     attr_hash :vcproperty do
-      keyval_options :group, :idg
+      keyval_options :group, :idg, :condition
       flag_options :export
 =begin
       keyval_option :condition do
