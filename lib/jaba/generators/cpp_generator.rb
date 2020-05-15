@@ -122,6 +122,19 @@ module JABA
           vcproperty :TargetMachine, idg: (type == :lib ? :Lib : :Link) do
             :MachineX64 if x64?
           end
+
+          # Build events
+          #
+          cfg.visit_attr(:build_action) do |a, value|
+            msg = a.get_option_value(:msg)
+            cmd = "#{msg}\n#{value}"
+            type = a.get_option_value(:type)
+            idg = case type
+            when :PreBuild, :PreLink, :PostBuild
+              "#{type}Event"
+            end
+            vcproperty :Command, cmd, idg: idg
+          end
         end
       end
     end

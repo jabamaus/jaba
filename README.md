@@ -13,3 +13,5 @@ TODO:
 - sortable arrays must be of same type
 - Do something with help strings
 - check that only arrays and hashes can be exported
+- beef up attribute option spec, eg option :PreBuild, type: :flag, regquired: true
+- test different default values and different validation for different platforms

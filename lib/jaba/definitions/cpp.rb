@@ -61,8 +61,8 @@ define :cpp do
 
     attr_array :build_action do
       help 'Build actions'
-      flag_options :PreBuild, :PreLink, :PostBuild, :export
-      keyval_options :msg
+      flag_options :export
+      keyval_options :msg, :type # :PreBuild, :PreLink, :PostBuild
     end
 
     attr_array :cflags do
