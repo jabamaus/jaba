@@ -143,6 +143,7 @@ module JABA
       if validate
         begin
           @attr_def.jaba_attr_type.call_hook(:validate_value, value, receiver: @attr_def)
+          @attr_def.call_hook(:validate, value)
         rescue JabaDefinitionError => e
           @services.jaba_error("'#{@attr_def.definition_id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
         end

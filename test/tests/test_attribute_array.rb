@@ -127,6 +127,8 @@ module JABA
         end
       end
     end
+
+    # TODO: test value/flag validation
     
     it 'allows flagging arrays as unordered' do
       jaba do

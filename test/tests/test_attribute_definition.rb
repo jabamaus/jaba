@@ -142,6 +142,24 @@ module JABA
       end
     end
     
+    it 'supports specifying a validator' do
+      check_fail "'a' attribute failed validation: Val must not be 2", trace: [__FILE__, 'tagT', __FILE__, 'tagS'] do
+        jaba do
+          define :test do
+            attr :a do
+              validate do |val|
+                fail "Val must not be 2" if val == 2 # tagT
+              end
+            end
+          end
+          test :t do
+            a 1
+            a 2 # tagS
+          end
+        end
+      end
+    end
+
     it 'ensures flag options are symbols' do
       check_fail 'Flag options must be specified as symbols, eg :option', trace: [__FILE__, 'tagJ'] do
         jaba do
