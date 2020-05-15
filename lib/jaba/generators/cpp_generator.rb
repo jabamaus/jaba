@@ -148,7 +148,7 @@ module JABA
       
       @project_nodes.reverse_each do |node|
         node.attrs.deps.each do |dep_node|
-          dep_node.each_attr do |dep_attr|
+          dep_node.visit_attr(top_level: true) do |dep_attr|
 
             # Skip single value attributes as they cannot export. The reason for this is that exporting it would simply
             # overwrite the destination attribute creating a conflict. Which node should control the value? For this

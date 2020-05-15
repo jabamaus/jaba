@@ -282,16 +282,12 @@ module JABA
       # Resolve references
       #
       @nodes.each do |n|
-        n.each_attr do |a|
-          if a.type_id == :reference
-            a.visit_attr do |elem|
-              elem.map_value! do |ref|
-                if ref && !ref.is_a?(JabaNode)
-                  resolve_reference(a, ref)
-                else
-                  ref
-                end
-              end
+        n.visit_attr(type: :reference) do |a|
+          a.map_value! do |ref|
+            if ref && !ref.is_a?(JabaNode)
+              resolve_reference(a, ref)
+            else
+              ref
             end
           end
         end
@@ -486,8 +482,8 @@ module JABA
     ##
     #
     def write_node_json(node, obj)
-      node.each_attr do |attr|
-        obj[attr.definition_id] = attr.value
+      node.visit_attr(top_level: true) do |attr, val|
+        obj[attr.definition_id] = val
       end
       children = {}
       obj[:children] = children

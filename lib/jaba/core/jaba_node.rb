@@ -90,17 +90,23 @@ module JABA
     
     ##
     #
-    def each_attr(&block)
-      @attributes.each(&block)
-    end
-    
-    ##
-    #
-    def visit_attr(attr_id = nil, &block)
-      if attr_id
+    def visit_attr(attr_id = nil, top_level: false, type: nil, &block)
+      if top_level
+        @attributes.each do |a|
+          next if type && type != a.attr_def.type_id
+          if block.arity == 2
+            yield a, a.value
+          else
+            yield a
+          end
+        end
+      elsif attr_id
         get_attr(attr_id).visit_attr(&block)
       else
-        @attributes.each{|a| a.visit_attr(&block)}
+        @attributes.each do |a|
+          next if type && type != a.attr_def.type_id
+          a.visit_attr(&block)
+        end
       end
     end
 
