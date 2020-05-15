@@ -121,8 +121,16 @@ module JABA
 
       @set = true
 
-      value = block_given? ? @node.eval_api_block(&block) : args.shift
+      new_value = block_given? ? @node.eval_api_block(&block) : args.shift
       @flag_options = args
+
+      # Take a deep copy of keyval_options so they are private to this attribute
+      #
+      @keyval_options = key_val_args.empty? ? {} : Marshal.load(Marshal.dump(key_val_args))
+
+      if new_value.is_a?(Array)
+        @services.jaba_error("'#{@attr_def.definition_id}' attribute is not an array so cannot accept one")
+      end
 
       @flag_options.each do |f|
         if !@attr_def.flag_options.include?(f)
@@ -130,30 +138,22 @@ module JABA
         end
       end
 
-      key_val_args.each_key do |k|
+      @keyval_options.each_key do |k|
         if !@attr_def.keyval_options.include?(k)
           @services.jaba_error("Invalid keyval option '#{k}'. Valid keys are #{@attr_def.keyval_options}")
         end
       end
 
-      if value.is_a?(Array)
-        @services.jaba_error("'#{@attr_def.definition_id}' attribute is not an array so cannot accept one")
-      end
-
       if validate
         begin
-          @attr_def.jaba_attr_type.call_hook(:validate_value, value, receiver: @attr_def)
-          @attr_def.call_hook(:validate, value)
+          @attr_def.jaba_attr_type.call_hook(:validate_value, new_value, receiver: @attr_def)
+          @attr_def.call_hook(:validate, new_value, @flag_options, **@keyval_options)
         rescue JabaDefinitionError => e
           @services.jaba_error("'#{@attr_def.definition_id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
         end
       end
 
-      # Take a deep copy of keyval_options so they are private to this attribute
-      #
-      @keyval_options = key_val_args.empty? ? {} : Marshal.load(Marshal.dump(key_val_args))
-      
-      @value = resolve_ref ? resolve_reference(value) : value
+      @value = resolve_ref ? resolve_reference(new_value) : new_value
     end
     
     ##

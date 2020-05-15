@@ -36,7 +36,7 @@ module JABA
 
     ##
     #
-    def call_hook(id, args = nil, receiver: self, fail_if_not_set: false)
+    def call_hook(id, *args, receiver: self, fail_if_not_set: false, **keyval_args)
       var = "@#{id}_hook" # TODO: improve
       if !instance_variable_defined?(var)
         jaba_error("'#{id}' hook not defined")
@@ -47,7 +47,7 @@ module JABA
           jaba_error("'#{id}' not set - cannot call'")
         end
       else
-        receiver.eval_api_block(args, &block)
+        receiver.eval_api_block(*args, **keyval_args, &block)
       end
     end
 

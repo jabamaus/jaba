@@ -51,11 +51,11 @@ module JABA
     
     ##
     #
-    def eval_api_block(args = nil, &block)
-      if args.nil?
+    def eval_api_block(*args, **keyval_args, &block)
+      if args.empty? && keyval_args.empty?
         @api.instance_eval(&block)
       else
-        @api.instance_exec(args, &block)
+        @api.instance_exec(*args, **keyval_args, &block)
       end
     end
     
