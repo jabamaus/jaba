@@ -95,26 +95,23 @@ module JABA
             write_keyvalue(@pg1, key, val, condition: condition)
           when :pg2
             write_keyvalue(@pg2, key, val, condition: condition)
-          end
-
-          idg = attr.get_option_value(:idg, fail_if_not_found: false)
-          if idg
-            idg_w = @item_def_groups[idg]
-            if !idg_w
-              idg_w = StringWriter.new(capacity: 2 * 1024)
-              @item_def_groups[idg] = idg_w
-              idg_w << "    <#{idg}>"
+          else
+            idg = @item_def_groups[group]
+            if !idg
+              idg = StringWriter.new(capacity: 2 * 1024)
+              @item_def_groups[group] = idg
+              idg << "    <#{group}>"
             end
-            write_keyvalue(idg_w, key, val, condition: condition, depth: 3)
+            write_keyvalue(idg, key, val, condition: condition, depth: 3)
           end
         end
 
         property_group(@pg1, label: :Configuration, close: true)
         property_group(@pg2, label: :Configuration, close: true)
 
-        @item_def_groups.each do |idg, idg_w|
-          idg_w << "    </#{idg}>"
-          @idg.write_raw(idg_w)
+        @item_def_groups.each do |group, idg|
+          idg << "    </#{group}>"
+          @idg.write_raw(idg)
         end
         item_definition_group(@idg, close: true)
       end

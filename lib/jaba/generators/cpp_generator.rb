@@ -88,15 +88,15 @@ module JABA
 
           # ClCompile
           #
-          vcproperty :AdditionalIncludeDirectories, idg: :ClCompile do
+          vcproperty :AdditionalIncludeDirectories, group: :ClCompile do
             inc.vs_join_paths(inherit: '%(AdditionalIncludeDirectories)')
           end
 
-          vcproperty :AdditionalOptions, idg: :ClCompile do
+          vcproperty :AdditionalOptions, group: :ClCompile do
             cflags.vs_join(separator: ' ', inherit: '%(AdditionalOptions)')
           end
 
-          vcproperty :ExceptionHandling, idg: :ClCompile do
+          vcproperty :ExceptionHandling, group: :ClCompile do
             case exceptions
             when true
               :Sync
@@ -109,17 +109,17 @@ module JABA
             end
           end
 
-          vcproperty :PreprocessorDefinitions, idg: :ClCompile do
+          vcproperty :PreprocessorDefinitions, group: :ClCompile do
             defines.vs_join(inherit: '%(PreprocessorDefinitions)')
           end
 
-          vcproperty :RuntimeTypeInfo, rtti, idg: :ClCompile
+          vcproperty :RuntimeTypeInfo, rtti, group: :ClCompile
 
-          vcproperty :TreatWarningAsError, warnerror, idg: :ClCompile
+          vcproperty :TreatWarningAsError, warnerror, group: :ClCompile
 
           # Link
           #
-          vcproperty :TargetMachine, idg: (type == :lib ? :Lib : :Link) do
+          vcproperty :TargetMachine, group: (type == :lib ? :Lib : :Link) do
             :MachineX64 if x64?
           end
 
@@ -129,11 +129,11 @@ module JABA
             msg = a.get_option_value(:msg)
             cmd = "#{msg}\n#{value}"
             type = a.get_option_value(:type)
-            idg = case type
+            group = case type
             when :PreBuild, :PreLink, :PostBuild
               "#{type}Event"
             end
-            vcproperty :Command, cmd, idg: idg
+            vcproperty :Command, cmd, group: group
           end
         end
       end
