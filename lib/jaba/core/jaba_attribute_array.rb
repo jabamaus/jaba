@@ -41,7 +41,7 @@ module JABA
     ##
     #
     def set(*args, api_call_line: nil, prefix: nil, postfix: nil, exclude: nil, **keyvalue_args, &block)
-      @api_call_line = api_call_line
+      @last_call_location = api_call_line
       
       values = block_given? ? @node.eval_api_block(&block) : args.shift
 
@@ -118,7 +118,7 @@ module JABA
               ex.call(val)
             elsif ex.is_a?(Regexp)
               if !val.is_a?(String)
-                @services.jaba_error('exclude regex can only operate on strings', callstack: e.api_call_line)
+                @services.jaba_error('exclude regex can only operate on strings', callstack: e.last_call_location)
               end
               val.match(ex)
             else
@@ -131,7 +131,7 @@ module JABA
         if warn
           dupes = @elems.uniq!(&:value)
           if dupes
-            @services.jaba_warning("'#{definition_id}' array attribute contains duplicates: #{dupes.map(&:value).inspect}", callstack: api_call_line)
+            @services.jaba_warning("'#{definition_id}' array attribute contains duplicates: #{dupes.map(&:value).inspect}", callstack: last_call_location)
           end
         end
       end

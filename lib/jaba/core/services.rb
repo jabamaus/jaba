@@ -229,7 +229,7 @@ module JABA
       # Open JabaTypes so more attributes can be added
       #
       @jaba_open_definitions.each do |d|
-        get_jaba_type(d.id, callstack: d.api_call_line).eval_api_block(&d.block)
+        get_jaba_type(d.id, callstack: d.source_location).eval_api_block(&d.block)
       end
       
       # When an attribute defined in a JabaType will reference a differernt JabaType a dependency on that
@@ -242,7 +242,7 @@ module JABA
         @jaba_types.sort_topological!(:dependencies)
       rescue TSort::Cyclic => e
         err_type = e.instance_variable_get(:@err_obj)
-        jaba_error("'#{err_type}' contains a cyclic dependency", callstack: err_type.definition.api_call_line)
+        jaba_error("'#{err_type}' contains a cyclic dependency", callstack: err_type.definition.source_location)
       end
       
       @jaba_type_definitions.each(&:register_referenced_attributes)
@@ -258,7 +258,7 @@ module JABA
       # Associate a JabaType with each instance of a type.
       #
       @instance_definitions.each do |d|
-        d.instance_variable_set(:@jaba_type, get_jaba_type(d.jaba_type_id, callstack: d.api_call_line))
+        d.instance_variable_set(:@jaba_type, get_jaba_type(d.jaba_type_id, callstack: d.source_location))
       end
       
       @instance_definitions.stable_sort_by! {|d| d.jaba_type.instance_variable_get(:@order_index)}
@@ -447,7 +447,7 @@ module JABA
       else
         "#{ad.referenced_type}|#{ref_node_id}"
       end
-      node_from_handle(handle, callstack: ref_attr.api_call_line)
+      node_from_handle(handle, callstack: ref_attr.last_call_location)
     end
 
     ##

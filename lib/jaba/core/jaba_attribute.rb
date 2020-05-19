@@ -12,7 +12,7 @@ module JABA
 
     attr_reader :node
     attr_reader :attr_def
-    attr_reader :api_call_line
+    attr_reader :last_call_location
     
     ##
     #
@@ -20,7 +20,7 @@ module JABA
       @services = services
       @attr_def = attr_def
       @node = node
-      @api_call_line = nil
+      @last_call_location = nil
       @set = false
       @default = @attr_def.default
       @default_is_block = @attr_def.default_is_block
@@ -108,7 +108,7 @@ module JABA
     ##
     #
     def set(*args, api_call_line: nil, validate: true, resolve_ref: true, **key_val_args, &block)
-      @api_call_line = api_call_line
+      @last_call_location = api_call_line
 
       # Check for read only if calling from definitions, or if not calling from definitions but from library code,
       # allow setting read only attrs the first time, in order to initialise them.

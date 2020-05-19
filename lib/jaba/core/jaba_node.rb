@@ -116,7 +116,7 @@ module JABA
       @attributes.each do |a|
         if !a.set?
           if a.required?
-            jaba_error("'#{a.definition_id}' attribute requires a value", callstack: @definition.api_call_line)
+            jaba_error("'#{a.definition_id}' attribute requires a value", callstack: @definition.source_location)
           end
           a.set_to_default
         end

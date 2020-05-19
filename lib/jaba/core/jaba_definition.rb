@@ -12,14 +12,14 @@ module JABA
 
     attr_reader :id
     attr_reader :block
-    attr_reader :api_call_line
+    attr_reader :source_location
     
     ##
     #
-    def initialize(id, block, api_call_line)
+    def initialize(id, block, source_location)
       @id = id
       @block = block
-      @api_call_line = api_call_line
+      @source_location = source_location
     end
 
   end
@@ -32,8 +32,8 @@ module JABA
 
     ##
     #
-    def initialize(id, block, api_call_line)
-      super(id, block, api_call_line)
+    def initialize(id, block, source_location)
+      super(id, block, source_location)
       
       @defaults_definition = nil
       @attr_defs = {}
@@ -89,12 +89,12 @@ module JABA
 
     ##
     #
-    def initialize(id, jaba_type_id, block, api_call_line)
-      super(id, block, api_call_line)
+    def initialize(id, jaba_type_id, block, source_location)
+      super(id, block, source_location)
       
       @jaba_type_id = jaba_type_id
       @jaba_type = nil
-      @source_file = @api_call_line[/^(.+):\d/, 1]
+      @source_file = @source_location[/^(.+):\d/, 1]
       @source_dir = File.dirname(@source_file)
 
       define_hook(:generate)
