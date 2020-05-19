@@ -42,7 +42,7 @@ module JABA
     ##
     # TODO: handle overwriting
     def set(*args, api_call_line: nil, **keyvalue_args, &block)
-      @api_call_line = api_call_line
+      @last_call_location = api_call_line
       
       # TODO: validate only key passed if block given
       if args.size < 2 && !block_given?
