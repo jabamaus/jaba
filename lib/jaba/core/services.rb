@@ -770,7 +770,7 @@ module JABA
     # 3) From core library code. 
     #
     def make_jaba_error(msg, syntax: false, callstack: nil, warn: false)
-      msg = msg.capitalize_first
+      msg = msg.capitalize_first if msg.split.first !~ /_/
       
       lines = []
       error_line = nil
