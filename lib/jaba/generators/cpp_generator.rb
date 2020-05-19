@@ -126,8 +126,10 @@ module JABA
           # Build events
           #
           cfg.visit_attr(:build_action) do |a, value|
-            msg = a.get_option_value(:msg)
-            cmd = "#{msg}\n#{value}"
+            cmd = String.new
+            msg = a.get_option_value(:msg, fail_if_not_found: false)
+            cmd << "#{msg}\n" if msg
+            cmd << value
             type = a.get_option_value(:type)
             group = case type
             when :PreBuild, :PreLink, :PostBuild
