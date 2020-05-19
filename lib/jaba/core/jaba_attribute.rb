@@ -72,7 +72,7 @@ module JABA
   #
   class JabaAttribute < JabaAttributeBase
 
-    attr_reader :keyval_options
+    attr_reader :value_options
     attr_reader :flag_options
 
     ##
@@ -81,7 +81,7 @@ module JABA
       super
       @value = nil
       @flag_options = nil
-      @keyval_options = nil
+      @value_options = nil
     end
     
     ##
@@ -124,9 +124,9 @@ module JABA
       new_value = block_given? ? @node.eval_api_block(&block) : args.shift
       @flag_options = args
 
-      # Take a deep copy of keyval_options so they are private to this attribute
+      # Take a deep copy of value_options so they are private to this attribute
       #
-      @keyval_options = key_val_args.empty? ? {} : Marshal.load(Marshal.dump(key_val_args))
+      @value_options = key_val_args.empty? ? {} : Marshal.load(Marshal.dump(key_val_args))
 
       if new_value.is_a?(Array)
         @services.jaba_error("'#{@attr_def.definition_id}' attribute is not an array so cannot accept one")
@@ -138,16 +138,14 @@ module JABA
         end
       end
 
-      @keyval_options.each_key do |k|
-        if !@attr_def.keyval_options.include?(k)
-          @services.jaba_error("Invalid keyval option '#{k}'. Valid keys are #{@attr_def.keyval_options}")
-        end
+      @value_options.each_key do |k|
+        @attr_def.get_value_option(k)
       end
 
       if validate
         begin
           @attr_def.jaba_attr_type.call_hook(:validate_value, new_value, receiver: @attr_def)
-          @attr_def.call_hook(:validate, new_value, @flag_options, **@keyval_options)
+          @attr_def.call_hook(:validate, new_value, @flag_options, **@value_options)
         rescue JabaDefinitionError => e
           @services.jaba_error("'#{@attr_def.definition_id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
         end
@@ -185,17 +183,15 @@ module JABA
     ##
     #
     def get_option_value(key, fail_if_not_found: true)
-      if !@attr_def.keyval_options.include?(key)
-        @services.jaba_error("'#{definition_id}' attribute does not support '#{key}' keyval option")
-      end
-      if !@keyval_options.key?(key)
+      @attr_def.get_value_option(key)
+      if !@value_options.key?(key)
         if fail_if_not_found
           @services.jaba_error("option key '#{key}' not found")
         else
           return nil
         end
       end
-      @keyval_options[key]
+      @value_options[key]
     end
 
     ##

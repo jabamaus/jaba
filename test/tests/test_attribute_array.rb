@@ -334,8 +334,8 @@ module JABA
         opt2 = 'opt2'
         define :test do
           attr_array :a do
-            keyval_options :opt1
-            keyval_options :opt2
+            value_option :opt1
+            value_option :opt2
           end
         end
         test :t do

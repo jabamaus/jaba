@@ -34,9 +34,20 @@ module JABA
     end
 
     ##
+    # Specify an option that takes a value.
     #
-    def keyval_options(*options, &block)
-      @attr_def.set_property(:keyval_options, options, &block)
+    # attr :myattr do
+    #   value_option :group, required: true, items [:a, :b, :c]
+    # end
+    # 
+    # would be called like this in definitions:
+    #
+    # myattr 'value', group: :a
+    #
+    # And the presence of the :group option and its value would be validated.
+    #
+    def value_option(id, required: false, items: [], &block)
+      @attr_def.add_value_option(id, required, items, &block)
     end
     
     ##

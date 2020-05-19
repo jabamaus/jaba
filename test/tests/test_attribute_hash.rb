@@ -110,7 +110,8 @@ module JABA
       jaba do
         define :test do
           attr_hash :a do
-            keyval_options :kv1, :kv2
+            value_option :kv1
+            value_option :kv2
           end
         end
         test :t do
@@ -130,7 +131,8 @@ module JABA
       jaba do
         define :test do
           attr_hash :a do
-            keyval_options :kv1, :kv2
+            value_option :kv1
+            value_option :kv2
             flag_options [:flag_opt1, :flag_opt2, :flag_opt3]
           end
         end

@@ -7,6 +7,10 @@ module JABA
   using JABACoreExt
 
   ##
+  #
+  ValueOption = Struct.new(:id, :required, :items)
+
+  ##
   # Manages shared data that is common to Attributes instanced from this definition.
   #
   class JabaAttributeDefinition < JabaObject
@@ -20,7 +24,6 @@ module JABA
     attr_reader :jaba_attr_type # JabaAttributeType object
     attr_reader :jaba_type
     attr_reader :flag_options
-    attr_reader :keyval_options
     attr_reader :referenced_type # Defined and used by reference attribute type but give access here for efficiency
     
     ##
@@ -36,8 +39,9 @@ module JABA
       define_property(:default)
       define_array_property(:flags)
       define_array_property(:flag_options)
-      define_array_property(:keyval_options)
       
+      @value_options = []
+
       define_hook(:validate)
       
       @jaba_attr_type = @services.get_attribute_type(@type_id)
@@ -52,7 +56,7 @@ module JABA
       # defined option.
       #
       if @variant == :hash
-        @keyval_options << :__key
+        add_value_option(:__key, false, [])
       end
 
       @default_is_block = @default.is_a_block?
@@ -63,13 +67,33 @@ module JABA
       @default.freeze
       @flags.freeze
       @flag_options.freeze
-      @keyval_options.freeze
+      @value_options.freeze
     end
     
     ##
     #
     def to_s
       "id=#{@definition.id} type=#{@type_id}"
+    end
+
+    ##
+    #
+    def add_value_option(id, required, items)
+      if !id.is_a?(Symbol)
+        jaba_error('value_option id must be specified as a symbol, eg :option')
+      end
+      @value_options << ValueOption.new(id, required, items).freeze
+    end
+
+    ##
+    #
+    def get_value_option(id)
+      vo = @value_options.find{|v| v.id == id}
+      if !vo
+        jaba_error("Invalid value option '#{id}'. Valid keys are #{@value_options.map{|v| v.id}}")
+        #jaba_error("'#{definition_id}' attribute does not support '#{id}' value option")
+      end
+      vo
     end
 
     ##
@@ -102,12 +126,6 @@ module JABA
         new_val.each do |f|
           if !f.is_a?(Symbol)
             jaba_error('Flag options must be specified as symbols, eg :option')
-          end
-        end
-      when :keyval_options
-        new_val.each do |f|
-          if !f.is_a?(Symbol)
-            jaba_error('Keyval options must be specified as symbols, eg :option')
           end
         end
       end

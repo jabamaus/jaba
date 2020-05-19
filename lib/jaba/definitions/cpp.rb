@@ -48,7 +48,7 @@ define :cpp do
   end
   
   attr_hash :vcglobal do
-    keyval_options :condition
+    value_option :condition
     flag_options :export
   end
   
@@ -62,7 +62,8 @@ define :cpp do
     attr_array :build_action do
       help 'Build actions'
       flag_options :export
-      keyval_options :msg, :type # :PreBuild, :PreLink, :PostBuild
+      value_option :msg
+      value_option :type, required: true, items: [:PreBuild, :PreLink, :PostBuild]
     end
 
     attr_array :cflags do
@@ -118,17 +119,9 @@ define :cpp do
     end
 
     attr_hash :vcproperty do
-      keyval_options :group, :condition
+      value_option :group, required: true
+      value_option :condition
       flag_options :export
-=begin
-      keyval_option :condition do
-        validate do |value|
-        end
-      end
-      keyval_option :group do
-        flags :required
-      end
-=end
     end
 
     attr :warnerror, type: :bool do

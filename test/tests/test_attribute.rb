@@ -64,7 +64,9 @@ module JABA
         define :test do
           attr :a do
             flag_options :fo1, :fo2, :fo3
-            keyval_options :kv1, :kv2, :kv3
+            value_option :kv1
+            value_option :kv2
+            value_option :kv3
           end
         end
         test :t do

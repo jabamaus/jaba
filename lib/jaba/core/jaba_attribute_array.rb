@@ -65,12 +65,12 @@ module JABA
     # just clone raw value and options. Flags will be processed after, eg stripping duplicates.
     #
     def insert_clone(other)
-      kv_options = other.keyval_options
+      value_options = other.value_options
       f_options = other.flag_options
       val = Marshal.load(Marshal.dump(other.raw_value))
 
       elem = JabaAttribute.new(@services, @attr_def, @node)
-      elem.set(val, *f_options, api_call_line: nil, validate: false, resolve_ref: false, **kv_options)
+      elem.set(val, *f_options, api_call_line: nil, validate: false, resolve_ref: false, **value_options)
       
       @elems << elem
     end
