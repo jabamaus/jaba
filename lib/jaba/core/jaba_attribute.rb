@@ -138,8 +138,29 @@ module JABA
         end
       end
 
-      @value_options.each_key do |k|
-        @attr_def.get_value_option(k)
+      # Validate that value options flagged as required have been supplied
+      #
+      @attr_def.each_value_option do |vo|
+        if vo.required
+          if !@value_options.key?(vo.id)
+            if !vo.items.empty?
+              @services.jaba_error("'#{vo.id}' option requires a value. Valid values are #{vo.items.inspect}")
+            else
+              @services.jaba_error("'#{vo.id}' option requires a value")
+            end
+          end
+        end
+      end
+
+      # Validate that all supplied value options exist and have valid values
+      #
+      @value_options.each do |k, v|
+        vo = @attr_def.get_value_option(k)
+        if !vo.items.empty?
+          if !vo.items.include?(v)
+            @services.jaba_error("'#{k}' option is invalid. Valid values are #{vo.items.inspect}")
+          end
+        end
       end
 
       if validate

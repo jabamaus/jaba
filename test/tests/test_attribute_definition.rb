@@ -172,7 +172,7 @@ module JABA
       end
     end
 
-    it 'ensures keyval options are symbols' do
+    it 'ensures value options are symbols' do
       check_fail 'value_option id must be specified as a symbol, eg :option', trace: [__FILE__, 'tagW'] do
         jaba do
           define :test do
@@ -184,7 +184,7 @@ module JABA
       end
     end
 
-    it 'supports specifying valid key value options' do
+    it 'supports specifying valid value options' do
       jaba do
         define :test do
           attr_array :a do
@@ -212,6 +212,51 @@ module JABA
       end
     end
     
+    it 'supports flagging value options as required' do
+      check_fail "'group' option requires a value", trace: [__FILE__, 'tagI'] do
+        jaba do
+          define :test do
+            attr_hash :a do
+              value_option :group, required: true
+            end
+          end
+          test :t do
+            a :k, :v # tagI
+          end      
+        end
+      end
+    end
+
+    it 'supports specifying a valid set of values for value option' do
+      check_fail "'group' option is invalid. Valid values are [:a, :b, :c]", trace: [__FILE__, 'tagX'] do
+        jaba do
+          define :test do
+            attr_hash :a do
+              value_option :group, items: [:a, :b, :c]
+            end
+          end
+          test :t do
+            a :k, :v, group: :d # tagX
+          end      
+        end
+      end
+    end
+
+    it 'supports specifying a valid set of values for required value option' do
+      check_fail "'group' option requires a value. Valid values are [:a, :b, :c]", trace: [__FILE__, 'tagO'] do
+        jaba do
+          define :test do
+            attr_hash :a do
+              value_option :group, required: true, items: [:a, :b, :c]
+            end
+          end
+          test :t do
+            a :k, :v # tagO
+          end      
+        end
+      end
+    end
+
   end
 
 end

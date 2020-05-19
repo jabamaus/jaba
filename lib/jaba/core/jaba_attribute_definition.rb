@@ -91,11 +91,16 @@ module JABA
       vo = @value_options.find{|v| v.id == id}
       if !vo
         jaba_error("Invalid value option '#{id}'. Valid keys are #{@value_options.map{|v| v.id}}")
-        #jaba_error("'#{definition_id}' attribute does not support '#{id}' value option")
       end
       vo
     end
 
+    ##
+    #
+    def each_value_option(&block)
+      @value_options.each(&block)
+    end
+    
     ##
     #
     def has_flag?(flag)
