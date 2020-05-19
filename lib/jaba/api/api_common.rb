@@ -13,6 +13,12 @@ module  JABA
 
     ##
     #
+    def warn(msg)
+      @obj.jaba_warning(msg)
+    end
+
+    ##
+    #
     def print(msg)
       ::Kernel.print(msg)
     end

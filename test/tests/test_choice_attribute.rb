@@ -13,6 +13,18 @@ module JABA
         end
       end
     end
+
+    it 'warns if items contains duplicates' do
+      check_warn "'items' contains duplicates", ATTR_TYPES_FILE, "warn \"'items' contains duplicates\"" do
+        jaba do
+          define :test do
+            attr :a, type: :choice do
+              items [:a, :a, :b, :b] # tagK
+            end
+          end
+        end
+      end
+    end
     
     it 'requires default to be in items' do
       check_fail 'Must be one of [1, 2, 3]', trace: [ATTR_TYPES_FILE, 'fail "must be one of', __FILE__, 'tagB'] do

@@ -106,7 +106,7 @@ module JABA
       end
     end
 
-    it 'can accept keyval options' do
+    it 'can accept value options' do
       jaba do
         define :test do
           attr_hash :a do
@@ -127,7 +127,7 @@ module JABA
       end
     end
 
-    it 'can accept keyval and flag options' do
+    it 'can accept value and flag options' do
       jaba do
         define :test do
           attr_hash :a do

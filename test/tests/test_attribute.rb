@@ -138,6 +138,21 @@ module JABA
           end
         end
       end
+
+      # Check not settable even if no default supplied
+      #
+      check_fail "'a' attribute is read only", trace: [__FILE__, 'tagC'] do
+        jaba do
+          define :test do
+            attr :a do
+              flags :read_only
+            end
+          end
+          test :t do
+            a 1 # tagC
+          end
+        end
+      end
     end
 
   end

@@ -2,7 +2,7 @@
 
 attr_type :string do
   
-  help 'Flag attribute as string. Only strings will be accepted. Symbols are not valid.'
+  help 'String attribute type. Only actual strings will be accepted. Symbols are not valid.'
 
   validate_value do |value|
     if !value.string?
@@ -14,7 +14,7 @@ end
 
 attr_type :bool do
   
-  help 'TODO'
+  help "Boolean attribute type. Accepts [true|false]. Defaults to false"
 
   init_attr_def do
     default false
@@ -31,7 +31,7 @@ end
 
 attr_type :choice do
 
-  help 'TODO'
+  help 'Choice attribute type. Can take exactly one of a set of unique values'
 
   init_attr_def do
     define_array_property :items
@@ -40,6 +40,8 @@ attr_type :choice do
   validate_attr_def do
     if items.empty?
       fail "'items' must be set"
+    elsif items.uniq!
+      warn "'items' contains duplicates"
     end
   end
   
@@ -52,20 +54,20 @@ attr_type :choice do
 end
 
 attr_type :dir do
-  help 'TODO'
+  help 'Directory attribute type. Validates that value is a string path representing a directory'
 end
 
 attr_type :file do
-  help 'TODO'
+  help 'File attribute type. Validates that value is a string path representing a file'
 end
 
 attr_type :path do
-  help 'TODO'
+  help 'Path attribute type. Validates that value is a string path representing either a file or a directory'
 end
 
 attr_type :reference do
 
-  help 'TODO'
+  help 'Reference attribute type'
 
   init_attr_def do
     define_property :referenced_type
