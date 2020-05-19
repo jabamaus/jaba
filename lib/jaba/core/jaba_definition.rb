@@ -19,7 +19,7 @@ module JABA
     def initialize(id, block, source_location)
       @id = id
       @block = block
-      @source_location = source_location
+      @source_location = source_location.sub(/:in .*/, '')
     end
 
   end
