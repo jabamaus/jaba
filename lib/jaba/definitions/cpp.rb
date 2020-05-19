@@ -59,7 +59,7 @@ define :cpp do
   
   define :cpp_config do
 
-    attr_array :build_action do
+    attr_array :build_action, type: :string do
       help 'Build actions'
       flag_options :export
       value_option :msg

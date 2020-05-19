@@ -45,6 +45,12 @@ module JABACoreExt
     
     ##
     #
+    def string?
+      is_a?(String)
+    end
+    
+    ##
+    #
     def is_a_block?
       is_a?(Proc)
     end

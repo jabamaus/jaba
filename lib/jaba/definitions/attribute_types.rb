@@ -1,5 +1,17 @@
 # TODO: think about compatibility of flags to attribute types
 
+attr_type :string do
+  
+  help 'Flag attribute as string. Only strings will be accepted. Symbols are not valid.'
+
+  validate_value do |value|
+    if !value.string?
+      fail 'Value must be a string'
+    end
+  end
+
+end
+
 attr_type :bool do
   
   help 'TODO'
