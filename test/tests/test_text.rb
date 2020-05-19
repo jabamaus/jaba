@@ -43,6 +43,20 @@ module JABA
       IO.read(fn).must_equal("1\n2\n3\n")
     end
 
+    it 'appends line items to content' do
+      fn = "#{temp_dir}/a"
+      jaba do
+        text :a do
+          filename fn
+          content "some\ncontent\n"
+          line 'line3'
+          line 'line4'
+        end
+      end
+      File.exist?(fn).must_equal(true)
+      IO.read(fn).must_equal("some\ncontent\nline3\nline4\n")
+    end
+
     it 'fails if no filename specified' do
       # TODO: use error msg help system to link to attribute definition 
       check_fail "'filename' attribute requires a value", trace: [__FILE__, 'tagY'] do

@@ -13,9 +13,14 @@ module JABA
     def generate
       @nodes.each do |n|
         attrs = n.attrs
-        # TODO: warn if both content and line are used
-        str = attrs.content || "#{attrs.line.join("\n")}\n"
-        @services.save_file(attrs.filename, str, attrs.eol)
+        s = String.new(capacity: 1024)
+        c = attrs.content
+        s << c if c
+        lines = attrs.line
+        if !lines.empty?
+          s << "#{lines.join("\n")}\n"
+        end
+        @services.save_file(attrs.filename, s, attrs.eol)
       end
     end
     
