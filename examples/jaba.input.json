@@ -212,6 +212,9 @@
               "winsdkver": "10.0.17763.0",
               "children": {
                 "cpp|MyApp|win32|vs2017|debug": {
+                  "build_action": [
+
+                  ],
                   "cflags": [
 
                   ],
@@ -235,6 +238,9 @@
                   }
                 },
                 "cpp|MyApp|win32|vs2017|release": {
+                  "build_action": [
+
+                  ],
                   "cflags": [
 
                   ],
@@ -299,6 +305,9 @@
               "winsdkver": "10.0.17763.0",
               "children": {
                 "cpp|MyLib|win32|vs2017|debug": {
+                  "build_action": [
+
+                  ],
                   "cflags": [
 
                   ],
@@ -322,6 +331,9 @@
                   }
                 },
                 "cpp|MyLib|win32|vs2017|release": {
+                  "build_action": [
+
+                  ],
                   "cflags": [
 
                   ],

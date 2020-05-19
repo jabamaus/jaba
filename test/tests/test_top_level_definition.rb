@@ -82,7 +82,6 @@ module JABA
         test :a do
           include :s
           _ID.must_equal(:a)
-          _FILE.must_equal(__FILE__) # instances can also access source file
         end
       end
     end

@@ -21,12 +21,6 @@ module JABA
 
     ##
     #
-    def _FILE
-      @jaba_node.definition.source_file
-    end
-
-    ##
-    #
     def method_missing(attr_id, *args, **keyvalue_args, &block)
       @jaba_node.handle_attr(attr_id, *args, api_call_line: ::Kernel.caller(1, 1)[0], **keyvalue_args, &block)
     end

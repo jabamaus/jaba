@@ -84,7 +84,6 @@ module JABA
 
     attr_reader :jaba_type_id
     attr_reader :jaba_type
-    attr_reader :source_file
     attr_reader :source_dir
     attr_reader :generate_hook
 
