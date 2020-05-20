@@ -79,7 +79,7 @@ module JABA
     #
     def apply_pre_post_fix(pre, post, val)
       if pre || post
-        if !val.is_a?(String)
+        if !val.string?
           @services.jaba_error('prefix/postfix option can only be used with arrays of strings')
         end
         "#{pre}#{val}#{post}"
@@ -117,7 +117,7 @@ module JABA
             if ex.is_a_block?
               ex.call(val)
             elsif ex.is_a?(Regexp)
-              if !val.is_a?(String)
+              if !val.string?
                 @services.jaba_error('exclude regex can only operate on strings', callstack: e.last_call_location)
               end
               val.match(ex)
