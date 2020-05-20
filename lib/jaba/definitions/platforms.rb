@@ -2,7 +2,7 @@ SUPPORTED_PLATFORMS = [:win32, :x64, :iOS, :macOS].freeze
 
 define :platform do
 
-  help 'TODO'
+  help 'Represents a target platform'
 
   SUPPORTED_PLATFORMS.each do |p|
     attr "#{p}?", type: :bool do

@@ -1,6 +1,6 @@
 define :category do
   
-  help 'TODO'
+  help 'Represents a project category, for categorisation in workspaces'
 
   attr :name do
     help 'Display name of category. Maps to name of solution folder in a Visual Studio solution'

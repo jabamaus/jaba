@@ -1,5 +1,5 @@
 define :workspace do
 
-  help 'TODO'
+  help 'Represents a workspace that holds a set of projects'
 
 end

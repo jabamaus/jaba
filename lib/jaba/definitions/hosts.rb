@@ -2,7 +2,7 @@ SUPPORTED_VS_VERSIONS = [2010, 2012, 2013, 2015, 2017, 2019].freeze
 
 define :host do
 
-  help 'TODO'
+  help 'Represents a host system, eg Visual Studio, Xcode'
 
   attr :visual_studio?, type: :bool do
     flags :expose

@@ -2,7 +2,7 @@ define :cpp do
 
   include :project_common
 
-  help 'TODO'
+  help 'Cross platform C++ project definition'
 
   attr_array :platforms, type: :choice do
     items all_instance_ids(:platform)
