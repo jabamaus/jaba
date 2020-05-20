@@ -4,6 +4,8 @@
 #
 module JABA
 
+  using JABACoreExt
+  
   ##
   #
   class TextGenerator < Generator

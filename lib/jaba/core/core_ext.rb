@@ -51,6 +51,12 @@ module JABACoreExt
     
     ##
     #
+    def symbol?
+      is_a?(Symbol)
+    end
+
+    ##
+    #
     def is_a_block?
       is_a?(Proc)
     end

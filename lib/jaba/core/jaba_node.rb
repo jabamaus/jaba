@@ -4,6 +4,8 @@
 #
 module JABA
 
+  using JABACoreExt
+  
   ##
   #
   class JabaNode < JabaObject
@@ -177,7 +179,7 @@ module JABA
     #
     def wipe_attrs(ids)
       ids.flatten.each do |id|
-        if !id.is_a?(Symbol)
+        if !id.symbol?
           jaba_error("'#{id}' must be specified as a symbol")
         end
         get_attr(id).clear

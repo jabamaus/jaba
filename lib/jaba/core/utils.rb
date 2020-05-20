@@ -7,6 +7,8 @@ require 'tsort'
 #
 module JABA
 
+  using JABACoreExt
+  
   ##
   #
   module OS

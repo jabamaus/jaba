@@ -182,7 +182,7 @@ module JABA
     ##
     #
     def validate_id(id)
-      if !(id.is_a?(Symbol) || id.string?) || id !~ /^[a-zA-Z0-9_.]+$/
+      if !(id.symbol? || id.string?) || id !~ /^[a-zA-Z0-9_.]+$/
         jaba_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol " \
           "(underscore permitted), eg :my_id or 'my_id'")
       end

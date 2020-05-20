@@ -13,8 +13,11 @@ define :host do
   attr :major_version
   attr :version
   attr :version_year
+  # TODO: if this is flagged as string attr validation fails as xcode does not have a toolset. Raises question of how nil
+  # value are handled. Should all attributes have an explicit value? Or better there should be a way of flagging that xcode does not
+  # support toolset
   attr :toolset
-  
+
   SUPPORTED_VS_VERSIONS.each do |vs_year|
     attr "vs#{vs_year}?", type: :bool do
       flags :expose
@@ -83,4 +86,5 @@ end
 
 host :xcode do
   xcode? true
+  toolset :unsupported
 end

@@ -2,11 +2,23 @@
 
 attr_type :string do
   
-  help 'String attribute type. Only actual strings will be accepted. Symbols are not valid.'
+  help 'String attribute type. Only explicit strings will be accepted. Symbols are not valid.'
 
   validate_value do |value|
     if !value.string?
       fail 'Value must be a string'
+    end
+  end
+
+end
+
+attr_type :symbol do
+  
+  help 'Symbol attribute type. Only explicit symbols will be accepted. Strings are not valid.'
+
+  validate_value do |value|
+    if !value.symbol?
+      fail 'Value must be a symbol'
     end
   end
 

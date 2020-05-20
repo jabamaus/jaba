@@ -14,3 +14,4 @@ TODO:
 - check that only arrays and hashes can be exported
 - test different default values and different validation for different platforms
 - jaba.input.json should include flags
+- Think more about project 'skus'. Also, platforms support specific hosts. Where is that info stored?

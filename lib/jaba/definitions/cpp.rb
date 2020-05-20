@@ -9,7 +9,7 @@ define :cpp do
     flags :required
   end
   
-  attr :platform do
+  attr :platform, type: :symbol do
     flags :read_only
   end
     
@@ -22,7 +22,7 @@ define :cpp do
     flags :required
   end
   
-  attr :host do
+  attr :host, type: :symbol do
     flags :read_only
   end
 
@@ -35,7 +35,7 @@ define :cpp do
     default :app
   end
   
-  attr_array :configs do
+  attr_array :configs, type: :symbol do
     flags :required, :unordered
     flag_options :export
   end
@@ -71,7 +71,7 @@ define :cpp do
       flag_options :export
     end
 
-    attr :config do
+    attr :config, type: :symbol do
       flags :read_only
     end
 
@@ -87,7 +87,7 @@ define :cpp do
       end
     end
 
-    attr_array :defines do
+    attr_array :defines, type: :string do
       help 'Preprocessor defines'
       flag_options :export
     end
@@ -109,7 +109,7 @@ define :cpp do
       default true
     end
 
-    attr :toolset do
+    attr :toolset, type: :string do
       default { host_ref.toolset }
     end
 

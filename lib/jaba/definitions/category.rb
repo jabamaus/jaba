@@ -7,7 +7,7 @@ define :category do
     flags :required
   end
   
-  attr :guid do
+  attr :guid, type: :string do
     help 'A Globally Unique ID in the form \'0376E589-F783-4B80-DA86-705F2E05304E\'. Required by Visual Studio .sln files'
     flags :required
     validate do |val|

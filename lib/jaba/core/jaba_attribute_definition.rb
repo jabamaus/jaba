@@ -79,7 +79,7 @@ module JABA
     ##
     #
     def add_value_option(id, required, items)
-      if !id.is_a?(Symbol)
+      if !id.symbol?
         jaba_error('value_option id must be specified as a symbol, eg :option')
       end
       @value_options << ValueOption.new(id, required, items).freeze
@@ -119,7 +119,7 @@ module JABA
         end
       when :flags
         new_val.each do |f|
-          if !f.is_a?(Symbol)
+          if !f.symbol?
             jaba_error('Flags must be specified as symbols, eg :flag')
           end
           @services.get_attribute_flag(f) # check flag exists
@@ -129,7 +129,7 @@ module JABA
         end
       when :flag_options
         new_val.each do |f|
-          if !f.is_a?(Symbol)
+          if !f.symbol?
             jaba_error('Flag options must be specified as symbols, eg :option')
           end
         end
