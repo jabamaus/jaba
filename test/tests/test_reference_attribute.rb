@@ -222,14 +222,18 @@ module JABA
       jaba do
         define :testproj do
           attr_array :platforms
-          attr :platform, type: :reference do
-            referenced_type :platform
+          define :testproj_platform do
+            attr :platform, type: :reference do
+              referenced_type :platform
+            end
+            attr_array :hosts
+            define :testproj_main do
+              attr :host, type: :reference do
+                referenced_type :host
+              end
+              attr :path
+            end
           end
-          attr_array :hosts
-          attr :host, type: :reference do
-            referenced_type :host
-          end
-          attr :path
         end
 
         testproj :t do
@@ -243,24 +247,15 @@ module JABA
 
         class ::TestprojGenerator < Generator
           
-          def sub_type(attr_id)
-            case attr_id
-            when :platforms
-              :platforms_node
-            when :hosts, :platform
-              :hosts_node
-            end
-          end
-          
           def make_nodes
-            platforms_node = make_node(type_id: :platforms_node)
+            platforms_node = make_node(type_id: :testproj)
             
             platforms_node.attrs.platforms.each do |p|
-              hosts_node = make_node(type_id: :hosts_node, name: p, parent: platforms_node) do
+              hosts_node = make_node(type_id: :testproj_platform, name: p, parent: platforms_node) do
                 platform p
               end
               hosts_node.attrs.hosts.each do |h|
-                make_node(type_id: :testproj, name: h, parent: hosts_node) do 
+                make_node(type_id: :testproj_main, name: h, parent: hosts_node) do 
                   host h
                 end
               end

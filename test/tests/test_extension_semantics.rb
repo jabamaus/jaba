@@ -167,20 +167,23 @@ module JABA
             attr_array :platforms do
               flags :unordered, :required
             end
-            attr :platform do
-              flags :read_only
-            end
-            attr :platform_ref, type: :reference do
-              referenced_type :platform
-            end
-            attr :src
-            attr_array :configs do
-              flags :required, :unordered
-            end
-            
-            define :test_config do
-              attr :config
-              attr :config_name
+
+            define :tproject do
+              attr :platform do
+                flags :read_only
+              end
+              attr :platform_ref, type: :reference do
+                referenced_type :platform
+              end
+              attr :src
+              attr_array :configs do
+                flags :required, :unordered
+              end
+              
+              define :test_config do
+                attr :config
+                attr :config_name
+              end
             end
           end
 
@@ -218,15 +221,6 @@ module JABA
 
     ##
     #
-    def sub_type(attr_id)
-      case attr_id
-      when :root, :platforms
-        :test_project_root
-      end
-    end
-
-    ##
-    #
     def generate
       @projects.size.must_equal 2
 
@@ -250,10 +244,10 @@ module JABA
     ##
     #
     def make_nodes
-      root_node = make_node(type_id: :test_project_root)
+      root_node = make_node(type_id: :test_project)
       
       root_node.attrs.platforms.each do |p|
-        project = make_node(type_id: :test_project, name: p, parent: root_node) do 
+        project = make_node(type_id: :tproject, name: p, parent: root_node) do 
           platform p
           platform_ref p
         end
