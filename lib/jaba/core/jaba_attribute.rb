@@ -88,7 +88,7 @@ module JABA
     # For ease of debugging.
     #
     def to_s
-      "value=#{@value} #{@attr_def}"
+      "#{@attr_def} value=#{@value}"
     end
 
     ##

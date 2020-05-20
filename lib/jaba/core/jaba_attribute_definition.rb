@@ -73,7 +73,7 @@ module JABA
     ##
     #
     def to_s
-      "id=#{@definition.id} type=#{@type_id}"
+      "#{@definition.id} type=#{@type_id}"
     end
 
     ##

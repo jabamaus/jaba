@@ -25,7 +25,7 @@ module JABA
     # For ease of debugging.
     #
     def to_s
-      "Array (#{@elems.size} elements) #{@attr_def}"
+      "#{@attr_def} [#{@elems.size} elems]"
     end
 
     ##

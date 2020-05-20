@@ -26,7 +26,7 @@ module JABA
     # For ease of debugging.
     #
     def to_s
-      "Hash (#{@hash.size} elements) #{@attr_def}"
+      "#{@attr_def} {#{@hash.size} elems}"
     end
 
     ##
