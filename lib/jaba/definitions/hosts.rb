@@ -86,5 +86,4 @@ end
 
 host :xcode do
   xcode? true
-  toolset :unsupported
 end
