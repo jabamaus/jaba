@@ -81,7 +81,7 @@ host :vs2019 do
   major_version 16
   version '16.0'
   version_year 2019
-  toolset 'v141'
+  toolset 'v142'
 end
 
 host :xcode do
