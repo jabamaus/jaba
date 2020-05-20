@@ -29,7 +29,7 @@ define :cpp do
     end
 
     define :project do
-      
+
       attr :projroot, type: :dir do
         help 'Directory in which projects will be generated. Specified as a relative path from <root>. If not specified ' \
         'projects will be generated in <root>'
@@ -37,14 +37,9 @@ define :cpp do
         flags :no_check_exist # May get created during generation
       end
       
-      attr :name do
-        help 'Seeds the name of the project. Defaults to the definition id if not set.'
-        default { _ID }
-      end
-      
       attr :projname do
         help 'Seeds file basename of project files. Defaults to <name><projsuffix>.'
-        default { "#{name}#{projname_suffix}" }
+        default { "#{_ID}#{projname_suffix}" }
       end
 
       attr :projname_suffix do

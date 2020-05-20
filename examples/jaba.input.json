@@ -190,7 +190,6 @@
           "children": {
             "cpp|MyApp|win32|vs2017": {
               "projroot": ".",
-              "name": "MyApp",
               "projname": "MyApp",
               "projname_suffix": null,
               "src": [
@@ -283,7 +282,6 @@
           "children": {
             "cpp|MyLib|win32|vs2017": {
               "projroot": ".",
-              "name": "MyLib",
               "projname": "MyLib",
               "projname_suffix": null,
               "src": [

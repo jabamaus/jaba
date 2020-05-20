@@ -53,9 +53,9 @@ module JABA
     def setup_project(proj)
 
       proj.attrs.instance_eval do
-        vcglobal :ProjectName, name
+        vcglobal :ProjectName, projname
         vcglobal :ProjectGuid, proj.guid
-        vcglobal :RootNamespace, name
+        vcglobal :RootNamespace, projname
         vcglobal :WindowsTargetPlatformVersion, winsdkver
       end
       
