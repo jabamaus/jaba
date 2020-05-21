@@ -119,16 +119,6 @@ module JABA
       end
     end
 
-    it 'checks for multiply defined defaults' do
-      check_fail "'test' defaults multiply defined", trace: [__FILE__, 'tagH'] do
-        jaba do
-          define :test
-          defaults :test
-          defaults :test # tagH
-        end
-      end
-    end
-
   end
 
 end
