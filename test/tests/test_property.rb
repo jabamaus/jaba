@@ -7,8 +7,19 @@ module JABA
   class PropertyContainer
     include PropertyMethods
 
-    def initialize
+    def initialize(on_prop_set: false)
+      super()
       @services = Services.new
+      @on_prop_set = on_prop_set
+    end
+
+    def on_property_set(id, new_val)
+      return if !@on_prop_set
+      if new_val.is_a_block?
+        puts "#{id} -> block"
+      else
+        puts "#{id} -> #{new_val}"
+      end
     end
   end
 
@@ -111,6 +122,20 @@ module JABA
       end
       assert_output 'in different block' do
         pc.get_property(:a).call
+      end
+    end
+
+    it 'calls on_property_set with incoming value' do
+      assert_output "a -> 1\nb -> [2]\nb -> [3, 4]\nc -> block\n" do
+        pc = PropertyContainer.new(on_prop_set: true)
+        pc.define_property(:a)
+        pc.set_property(:a, 1)
+        pc.define_array_property(:b)
+        pc.set_property(:b, 2)
+        pc.set_property(:b, [3, 4])
+        pc.define_property(:c)
+        pc.set_property(:c) do
+        end
       end
     end
 

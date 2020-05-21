@@ -19,10 +19,11 @@ module JABA
 
     attr_reader :type_id # eg :bool, :file, :path etc
     attr_reader :variant # :single, :array, :hash
-    attr_reader :default
-    attr_reader :default_is_block
     attr_reader :jaba_attr_type # JabaAttributeType object
     attr_reader :jaba_type
+
+    attr_reader :default
+    attr_reader :default_is_block
     attr_reader :flag_options
     attr_reader :referenced_type # Defined and used by reference attribute type but give access here for efficiency
     
@@ -37,6 +38,7 @@ module JABA
       @value_options = []
       @jaba_attr_flags = []
       @default_set = false
+      @default_is_block = false
 
       define_property(:help)
       define_property(:default)
@@ -60,10 +62,8 @@ module JABA
         add_value_option(:__key, false, [])
       end
 
-      @default_is_block = @default.is_a_block?
-
       validate
-
+      
       @help.freeze
       @default.freeze
       @flags.freeze
@@ -121,7 +121,8 @@ module JABA
       case id
       when :default
         @default_set = true
-        if @variant == :single && !@default.is_a_block?
+        @default_is_block = @default.is_a_block?
+        if @variant == :single && !@default_is_block
           if new_val.is_a?(Array)
             @services.jaba_error("'#{definition_id}' attribute is not an array so cannot accept one")
           end
@@ -147,7 +148,7 @@ module JABA
     def validate
       @jaba_attr_type.call_hook(:validate_attr_def, receiver: self)
  
-      if @default && !@default_is_block
+      if @default_set && !@default_is_block
         @jaba_attr_type.call_hook(:validate_value, @default, receiver: self)
       end
 

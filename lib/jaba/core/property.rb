@@ -10,11 +10,18 @@ module JABA
   #
   module PropertyMethods
 
+    ##
+    #
+    def initialize(...)
+      super
+      @properties = {}
+    end
+
     @@id_to_var = {}
 
     ##
     #
-    def get_var(id)
+    def self.get_var(id)
       v = @@id_to_var[id]
       if !v
         v = "@#{id}"
@@ -26,30 +33,23 @@ module JABA
     ##
     #
     def define_property(p_id, val = nil)
-      var = get_var(p_id)
-      if instance_variable_defined?(var)
+      if @properties.key?(p_id)
         @services.jaba_error("'#{p_id}' property multiply defined")
       end
-
-      instance_variable_set(var, val)
+      @properties[p_id] = nil
+      instance_variable_set(PropertyMethods.get_var(p_id), val)
     end
 
     ##
     #
     def define_array_property(p_id, val = [])
-      var = get_var(p_id)
-      if instance_variable_defined?(var)
-        @services.jaba_error("'#{p_id}' property multiply defined")
-      end
-
-      instance_variable_set(var, val)
+      define_property(p_id, val)
     end
 
     ##
     #
     def set_property(p_id, val = nil, &block)
-      var = get_var(p_id)
-      if !instance_variable_defined?(var)
+      if !@properties.key?(p_id)
         @services.jaba_error("'#{p_id}' property not defined")
       end
 
@@ -57,16 +57,17 @@ module JABA
         if !val.nil?
           @services.jaba_error('Must provide a default value or a block but not both')
         end
-        instance_variable_set(var, block)
+        val = block
+        instance_variable_set(PropertyMethods.get_var(p_id), val)
       else
-        current_val = instance_variable_get(var)
+        current_val = instance_variable_get(PropertyMethods.get_var(p_id))
         if current_val.is_a?(Array)
           if val.is_a?(Array)
             val = val.flatten # don't flatten! as might be frozen
-            current_val.concat(val)
           else
-            current_val << val
+            val = Array(val)
           end
+          current_val.concat(val)
         else
           # Fail if setting a single value property as an array, unless its the first time. This is to allow
           # a property to become either single value or array, depending on how it is first initialised.
@@ -74,10 +75,10 @@ module JABA
           if !current_val.nil? && val.is_a?(Array)
             @services.jaba_error("'#{p_id}' property cannot accept an array")
           end
-          instance_variable_set(var, val)
+          instance_variable_set(PropertyMethods.get_var(p_id), val)
         end
-        on_property_set(p_id, val)
       end
+      on_property_set(p_id, val)
     end
     
     ##
@@ -90,11 +91,10 @@ module JABA
     ##
     #
     def get_property(p_id)
-      var = get_var(p_id)
-      if !instance_variable_defined?(var)
+      if !@properties.key?(p_id)
         @services.jaba_error("'#{p_id}' property not defined")
       end
-      instance_variable_get(var)
+      instance_variable_get(PropertyMethods.get_var(p_id))
     end
     
     ##
