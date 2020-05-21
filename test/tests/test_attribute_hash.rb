@@ -76,12 +76,30 @@ module JABA
       end
     end
 
-    # TODO
     it 'disallows :unordered' do
+      check_fail "'a' attribute definition failed validation: :unordered flag is incompatible: :unordered is only allowed on array attributes",
+                trace: [__FILE__, 'tagQ'] do
+        jaba do
+          define :test do
+            attr_hash :a do # tagQ
+              flags :unordered
+            end
+          end
+        end
+      end
     end
     
-    # TODO
     it 'disallows :allow_dupes' do
+      check_fail "'a' attribute definition failed validation: :allow_dupes flag is incompatible: :allow_dupes is only allowed on array attributes",
+                 trace: [__FILE__, 'tagP'] do
+        jaba do
+          define :test do
+            attr_hash :a do # tagP
+              flags :allow_dupes
+            end
+          end
+        end
+      end
     end
     
     it 'can accept flag options' do

@@ -204,9 +204,9 @@ module JABA
       check_warn 'Reference attribute does not need to be flagged with :read_only as they always are', __FILE__, 'tagX' do
         jaba do
           define :test do
-            attr :platform, type: :reference do
+            attr :platform, type: :reference do # tagX
               referenced_type :platform
-              flags :read_only # tagX
+              flags :read_only
             end
           end
         end

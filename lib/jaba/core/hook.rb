@@ -46,6 +46,7 @@ module JABA
         if fail_if_not_set
           jaba_error("'#{id}' not set - cannot call'")
         end
+        return nil
       else
         receiver.eval_api_block(*args, **keyval_args, &block)
       end

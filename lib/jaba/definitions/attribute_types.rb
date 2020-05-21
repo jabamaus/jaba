@@ -1,5 +1,3 @@
-# TODO: think about compatibility of flags to attribute types
-
 attr_type :string do
   
   help 'String attribute type. Only explicit strings will be accepted. Symbols are not valid.'
@@ -30,7 +28,7 @@ attr_type :bool do
 
   init_attr_def do
     default false
-    flags :unordered, :allow_dupes
+    flags :unordered, :allow_dupes if variant == :array
   end
   
   validate_value do |value|

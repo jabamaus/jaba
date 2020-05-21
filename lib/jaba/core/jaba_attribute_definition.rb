@@ -34,14 +34,15 @@ module JABA
       @type_id = type_id
       @variant = variant
       @jaba_type = jaba_type
+      @value_options = []
+      @jaba_attr_flags = []
+      @default_set = false
 
       define_property(:help)
       define_property(:default)
       define_array_property(:flags)
       define_array_property(:flag_options)
       
-      @value_options = []
-
       define_hook(:validate)
       
       @jaba_attr_type = @services.get_attribute_type(@type_id)
@@ -68,6 +69,7 @@ module JABA
       @flags.freeze
       @flag_options.freeze
       @value_options.freeze
+      @jaba_attr_flags.freeze
     end
     
     ##
@@ -109,9 +111,16 @@ module JABA
     
     ##
     #
+    def default_set?
+      @default_set
+    end
+
+    ##
+    #
     def on_property_set(id, new_val)
       case id
       when :default
+        @default_set = true
         if @variant == :single && !@default.is_a_block?
           if new_val.is_a?(Array)
             @services.jaba_error("'#{definition_id}' attribute is not an array so cannot accept one")
@@ -122,10 +131,7 @@ module JABA
           if !f.symbol?
             jaba_error('Flags must be specified as symbols, eg :flag')
           end
-          @services.get_attribute_flag(f) # check flag exists
-          if f == :read_only && @type_id == :reference
-            jaba_warning("reference attribute does not need to be flagged with :read_only as they always are")
-          end
+          @jaba_attr_flags << @services.get_attribute_flag(f) # check flag exists
         end
       when :flag_options
         new_val.each do |f|
@@ -140,10 +146,21 @@ module JABA
     #
     def validate
       @jaba_attr_type.call_hook(:validate_attr_def, receiver: self)
-      
+ 
       if @default && !@default_is_block
         @jaba_attr_type.call_hook(:validate_value, @default, receiver: self)
       end
+
+      @jaba_attr_flags.each do |jaf|
+        begin
+          @services.set_warn_object(self) do
+            jaf.call_hook(:compatibility, receiver: self)
+          end
+        rescue JabaDefinitionError => e
+          jaba_error("#{jaf.definition_id.inspect} flag is incompatible: #{e.raw_message}")
+        end
+      end
+      
     rescue JabaDefinitionError => e
       jaba_error("'#{definition_id}' attribute definition failed validation: #{e.raw_message}", callstack: e.backtrace)
     end

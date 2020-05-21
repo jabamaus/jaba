@@ -59,6 +59,7 @@ module JABA
       @logger = nil
       
       @warnings = []
+      @warn_object = nil
       
       @definition_src_files = []
       
@@ -605,9 +606,23 @@ module JABA
     
     ##
     #
+    def set_warn_object(wo)
+      @warn_object = wo
+      if block_given?
+        yield
+        @warn_object = nil
+      end
+    end
+
+    ##
+    #
     def jaba_warning(msg, **options)
       log msg, Logger::WARN
+      if @warn_object
+        options[:callstack] = @warn_object.definition.source_location
+      end
       @warnings << make_jaba_error(msg, warn: true, **options).message
+      nil
     end
     
     ##

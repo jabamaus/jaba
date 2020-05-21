@@ -13,6 +13,12 @@ module JABA
       @attr_flag.set_property(:help, val, &block)
     end
 
+    ##
+    #
+    def compatibility(&block)
+      @attr_flag.set_hook(:compatibility, &block)
+    end
+
     private
 
     ##

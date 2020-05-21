@@ -26,6 +26,12 @@ module JABA
     def default(val = nil, &block)
       @attr_def.set_property(:default, val, &block)
     end
+
+    ##
+    #
+    def default_set?
+      @attr_def.default_set?
+    end
     
     ##
     #
@@ -73,6 +79,20 @@ module JABA
     #
     def jaba_type
       @attr_def.jaba_type.api
+    end
+
+    ##
+    # Returns attribute type id, eg :bool, :choice, :reference, :file, :path etc
+    #
+    def type
+      @attr_def.type_id
+    end
+
+    ##
+    # Returns :single, :array or :hash
+    #
+    def variant
+      @attr_def.variant
     end
 
     ##
