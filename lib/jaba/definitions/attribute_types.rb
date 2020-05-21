@@ -33,7 +33,7 @@ attr_type :bool do
   
   validate_value do |value|
     if !value.boolean?
-      fail ':bool attributes only accept [true|false]'
+      fail ":bool attributes only accept [true|false] but got '#{value}'"
     end
   end
 

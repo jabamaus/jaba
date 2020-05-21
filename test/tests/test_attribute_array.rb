@@ -115,7 +115,7 @@ module JABA
 
     it 'validates element types are valid' do
       check_fail ':bool attributes only accept [true|false]', 
-                 trace: [ATTR_TYPES_FILE, "fail ':bool attributes only accept [true|false]'", __FILE__, 'tagT'] do
+                 trace: [ATTR_TYPES_FILE, 'fail ":bool attributes only accept', __FILE__, 'tagT'] do
         jaba do
           define :test do
             attr_array :a, type: :bool
