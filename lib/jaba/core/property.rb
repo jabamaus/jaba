@@ -10,14 +10,14 @@ module JABA
   #
   module PropertyMethods
 
+    @@id_to_var = {}
+
     ##
     #
     def initialize(...)
       super
       @properties = {}
     end
-
-    @@id_to_var = {}
 
     ##
     #
