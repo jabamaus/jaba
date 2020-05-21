@@ -66,7 +66,7 @@ module JABA
         end
         str.each_line.find_index {|l| l =~ / #{Regexp.escape(spec)}/}
       end
-      raise "#{spec} not found" if ln.nil?
+      raise "\"#{spec}\" not found in #{file}" if ln.nil?
       ln + 1
     end
 
