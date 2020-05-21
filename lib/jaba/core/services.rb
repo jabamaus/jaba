@@ -99,7 +99,9 @@ module JABA
       jaba_error("id is required") if id.nil?
       log "Registering attr type [id=#{id}]"
       validate_id(id)
-      # TODO: check for dupes
+      if @jaba_attr_type_definitions.find{|d| d.id == id}
+        jaba_error("'#{id}' multiply defined")
+      end
       @jaba_attr_type_definitions << JabaDefinition.new(id, block, caller(2, 1)[0])
     end
 
@@ -109,7 +111,9 @@ module JABA
       jaba_error("id is required") if id.nil?
       log "  Registering attr flag [id=#{id}]"
       validate_id(id)
-      # TODO: check for dupes
+      if @jaba_attr_flag_definitions.find{|d| d.id == id}
+        jaba_error("'#{id}' multiply defined")
+      end
       @jaba_attr_flag_definitions << JabaDefinition.new(id, block, caller(2, 1)[0])
     end
 
@@ -119,7 +123,9 @@ module JABA
       jaba_error("id is required") if id.nil?
       log "  Registering type [id=#{id}]"
       validate_id(id)
-      # TODO: check for dupes
+      if @jaba_type_definitions.find{|d| d.id == id}
+        jaba_error("'#{id}' multiply defined")
+      end
       @jaba_type_definitions << JabaTypeDefinition.new(id, block, caller(2, 1)[0])
     end
     
@@ -172,9 +178,8 @@ module JABA
     def define_defaults(id, &block)
       jaba_error("id is required") if id.nil?
       log "  Registering defaults [id=#{id}]"
-      existing = @default_definitions.find {|d| d.id == id}
-      if existing
-        jaba_error("'#{id}' defaults multiply defined")
+      if @default_definitions.find {|d| d.id == id}
+        jaba_error("'#{id}' multiply defined")
       end
       @default_definitions << JabaDefinition.new(id, block, caller(2, 1)[0])
     end

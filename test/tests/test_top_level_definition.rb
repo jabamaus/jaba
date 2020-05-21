@@ -31,19 +31,14 @@ module JABA
     end
     
     it 'detects duplicate ids with definitions of the same type' do
-      check_fail "'a' multiply defined", trace: [__FILE__, 'tagI'] do
-        jaba do
-          shared :a do
+      [:attr_flag, :attr_type, :cpp, :defaults, :define, :shared, :text, :workspace].each do |type|
+        check_fail "'a' multiply defined", trace: [__FILE__, 'tagI'] do
+          jaba do
+            __send__(type, :a) do
+            end
+            __send__(type, :a) do # tagI
+            end
           end
-          shared :a do # tagI
-          end
-        end
-      end
-
-      check_fail "'b' multiply defined", trace: [__FILE__, 'tagX'] do
-        jaba do
-          text :b
-          text :b # tagX
         end
       end
     end

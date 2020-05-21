@@ -1,6 +1,6 @@
 # jaba
 
-TODO:
+To do:
 
 - make paths in jaba.output.json relative to itself
 - test absolute root paths
