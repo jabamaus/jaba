@@ -19,7 +19,8 @@ module JABA
     def initialize(id, block, source_location)
       @id = id
       @block = block
-      @source_location = source_location.sub(/:in .*/, '')
+      @source_location = source_location
+      @source_location.sub!(/:in .*/, '')
     end
 
   end
@@ -85,7 +86,6 @@ module JABA
     attr_reader :jaba_type_id
     attr_reader :jaba_type
     attr_reader :source_dir
-    attr_reader :generate_hook
 
     ##
     #
