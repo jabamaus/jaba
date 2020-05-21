@@ -12,37 +12,37 @@ module JABA
     
     ##
     #
+    def initialize(...)
+      super
+      @hooks = {}
+    end
+
+    ##
+    #
     def define_hook(id, &block)
-      var = "@#{id}_hook" # TODO: improve
-      if instance_variable_defined?(var)
+      if @hooks.key?(id)
         jaba_error("'#{id}' hook multiply defined")
       end
-      if block_given?
-        instance_variable_set(var, block)
-      else
-        instance_variable_set(var, nil)
-      end
+      hook = block_given? ? block : :not_set
+      @hooks[id] = hook
     end
 
     ##
     #
     def set_hook(id, &block)
-      var = "@#{id}_hook" # TODO: improve
-      if !instance_variable_defined?(var)
+      if !@hooks.key?(id)
         jaba_error("'#{id}' hook not defined")
       end
-      instance_variable_set(var, block)
+      @hooks[id] = block
     end
 
     ##
     #
     def call_hook(id, *args, receiver: self, fail_if_not_set: false, **keyval_args)
-      var = "@#{id}_hook" # TODO: improve
-      if !instance_variable_defined?(var)
+      block = @hooks[id]
+      if !block
         jaba_error("'#{id}' hook not defined")
-      end
-      block = instance_variable_get(var)
-      if block.nil?
+      elsif block == :not_set
         if fail_if_not_set
           jaba_error("'#{id}' not set - cannot call'")
         end

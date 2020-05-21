@@ -19,6 +19,7 @@ module JABA
     ##
     #
     def initialize(services, definition, api_object)
+      super()
       @services = services
       @definition = definition
       @api = api_object
@@ -51,11 +52,12 @@ module JABA
     
     ##
     #
-    def eval_api_block(*args, **keyval_args, &block)
+    def eval_api_block(*args, use_api: true, **keyval_args, &block)
+      receiver = use_api ? @api : self
       if args.empty? && keyval_args.empty?
-        @api.instance_eval(&block)
+        receiver.instance_eval(&block)
       else
-        @api.instance_exec(*args, **keyval_args, &block)
+        receiver.instance_exec(*args, **keyval_args, &block)
       end
     end
     
