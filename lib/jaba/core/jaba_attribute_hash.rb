@@ -65,11 +65,8 @@ module JABA
     ##
     #
     def set_to_default
-      default = get_default
-      if default
-        default.each do |k, v|
-          set(k, v)
-        end
+      get_default&.each do |k, v|
+        set(k, v)
       end
     end
 
