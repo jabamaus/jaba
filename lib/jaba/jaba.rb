@@ -122,7 +122,8 @@ if $PROGRAM_NAME == __FILE__
     dump_input: nil,
     enable_logging: nil,
     dry_run: nil,
-    enable_profiling: nil
+    enable_profiling: nil,
+    run_tests: nil
   )
 
   opts = OptionParser.new do |opts|
@@ -147,6 +148,9 @@ EOB
     opts.on('--profile', 'Profile jaba run with ruby-prof') do |p|
       options[:enable_profiling] = p
     end
+    opts.on('--test', 'Run tests') do |d|
+      options[:run_tests] = d
+    end
     opts.separator ''
   end
   
@@ -157,6 +161,9 @@ EOB
   end
   
   begin
+    if options[:run_tests]
+      require_relative "../../test/test_jaba"
+    end
     using JABACoreExt
     op = nil
     profile(enabled: options[:enable_profiling]) do

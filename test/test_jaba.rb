@@ -2,7 +2,6 @@
 
 require 'minitest'
 require 'minitest/spec'
-require_relative '../lib/jaba/jaba'
 
 module JABA
   using JABACoreExt
@@ -143,10 +142,8 @@ end
 
 using JABACoreExt
 
-module DidYouMean::Correctable
-  remove_method :to_s
-end
-
 profile(enabled: ARGV.delete('--profile')) do
   Minitest.run(ARGV)
 end
+
+exit
