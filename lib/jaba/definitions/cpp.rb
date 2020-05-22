@@ -83,8 +83,14 @@ define :cpp do
       end
       
       attr :winsdkver, type: :choice do
-        items ['10.0.16299.0', '10.0.17763.0']
-        default '10.0.17763.0'
+        items [
+          '10.0.16299.0',  # Included in VS2017 ver.15.4
+          '10.0.17134.0',  # Included in VS2017 ver.15.7
+          '10.0.17763.0',  # Included in VS2017 ver.15.8
+          '10.0.18362.0',  # Included in VS2019
+          nil
+        ]
+        default nil
       end
       
       define :config do
