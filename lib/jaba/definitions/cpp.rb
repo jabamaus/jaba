@@ -65,7 +65,7 @@ define :cpp do
         default :app
       end
       
-      attr_array :configs, type: :symbol do
+      attr_array :configs, type: :symbol_or_string do
         flags :required, :unordered
         flag_options :export
       end
@@ -107,7 +107,8 @@ define :cpp do
           flag_options :export
         end
 
-        attr :config, type: :symbol do
+        attr :config, type: :symbol_or_string do
+          help 'Returns current config being processed.'
           flags :read_only
         end
 

@@ -22,6 +22,18 @@ attr_type :symbol do
 
 end
 
+attr_type :symbol_or_string do
+  
+  help 'Symbol or string attribute type. Only explicit strings or symbols will be accepted.'
+
+  validate_value do |value|
+    if !value.symbol? && !value.string?
+      fail 'Value must be a symbol or a string'
+    end
+  end
+
+end
+
 attr_type :bool do
   
   help "Boolean attribute type. Accepts [true|false]. Defaults to false"
