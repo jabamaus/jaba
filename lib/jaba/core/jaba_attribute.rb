@@ -62,8 +62,8 @@ module JABA
 
     ##
     #
-    def set_to_default(**options)
-      set(get_default, **options)
+    def set_to_default
+      set(get_default)
     end
 
   end
