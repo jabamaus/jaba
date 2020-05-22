@@ -61,7 +61,6 @@ module JABA
       
       proj.configs.each do |cfg|
         cfg.attrs.instance_eval do
-          vcproperty :CharacterSet, (unicode ? :Unicode : :NotSet), group: :pg1
           vcproperty :ConfigurationType, group: :pg1 do
             case type
             when :app
@@ -74,8 +73,16 @@ module JABA
               fail "'#{type}' unhandled"
             end
           end
-          vcproperty :PlatformToolset, toolset, group: :pg1
           vcproperty :UseDebugLibraries, debug, group: :pg1
+          vcproperty :CharacterSet, group: :pg1 do
+            case character_set
+            when :mbcs
+              :MultiByte
+            when :unicode
+              :Unicode
+            end
+          end
+          vcproperty :PlatformToolset, toolset, group: :pg1
 
           # ClCompile
           #

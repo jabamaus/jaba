@@ -123,6 +123,16 @@ define :cpp do
           end
         end
 
+        attr :character_set, type: :choice do
+          help 'Character set. Defaults to nil'
+          items [
+            :mbcs,    # Visual Studio only
+            :unicode,
+            nil
+          ]
+          default nil
+        end
+
         attr_array :defines, type: :string do
           help 'Preprocessor defines'
           flag_options :export
@@ -147,11 +157,6 @@ define :cpp do
 
         attr :toolset, type: :string do
           default { host_ref.toolset }
-        end
-
-        attr :unicode, type: :bool do
-          help 'Enables unicode. On by default.'
-          default true
         end
 
         attr_hash :vcproperty do
