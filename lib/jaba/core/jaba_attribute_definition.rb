@@ -90,9 +90,12 @@ module JABA
     ##
     #
     def get_value_option(id)
+      if @value_options.empty?
+        jaba_error("Invalid value option '#{id.inspect}' - no options defined.")
+      end
       vo = @value_options.find{|v| v.id == id}
       if !vo
-        jaba_error("Invalid value option '#{id}'. Valid keys are #{@value_options.map{|v| v.id}}")
+        jaba_error("Invalid value option '#{id.inspect}'. Valid options: #{@value_options.map{|v| v.id}}")
       end
       vo
     end

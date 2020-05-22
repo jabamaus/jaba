@@ -197,7 +197,7 @@ module JABA
           a 2, condition: :b
         end
       end
-      check_fail 'Invalid value option \'undefined\'. Valid keys are [:group, :condition]', trace: [__FILE__, 'tagA'] do
+      check_fail 'Invalid value option \':undefined\'. Valid options: [:group, :condition]', trace: [__FILE__, 'tagA'] do
         jaba do
           define :test do
             attr_array :a do
@@ -207,6 +207,16 @@ module JABA
           end
           test :t do
             a 1, undefined: :a # tagA
+          end
+        end
+      end
+      check_fail 'Invalid value option \':undefined\' - no options defined', trace: [__FILE__, 'tagB'] do
+        jaba do
+          define :test do
+            attr_array :a
+          end
+          test :t do
+            a 1, undefined: :a # tagB
           end
         end
       end
