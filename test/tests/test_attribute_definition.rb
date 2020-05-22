@@ -238,7 +238,7 @@ module JABA
     end
 
     it 'supports specifying a valid set of values for value option' do
-      check_fail "'group' option is invalid. Valid values are [:a, :b, :c]", trace: [__FILE__, 'tagX'] do
+      check_fail "Invalid value ':d' passed to ':group' option. Valid values: [:a, :b, :c]", trace: [__FILE__, 'tagX'] do
         jaba do
           define :test do
             attr_hash :a do

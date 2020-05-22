@@ -158,7 +158,7 @@ module JABA
         vo = @attr_def.get_value_option(k)
         if !vo.items.empty?
           if !vo.items.include?(v)
-            @services.jaba_error("'#{k}' option is invalid. Valid values are #{vo.items.inspect}")
+            @services.jaba_error("Invalid value '#{v.inspect}' passed to '#{k.inspect}' option. Valid values: #{vo.items.inspect}")
           end
         end
       end
