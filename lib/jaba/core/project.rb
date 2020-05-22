@@ -21,9 +21,18 @@ module JABA
       @generator = generator # required in order to look up other projects when resolving dependencies
       @node = node
       @attrs = node.attrs
-      r = @attrs.root
-      r = r.absolute_path? ? r : "#{node.definition.source_dir}/#{r}"
-      @projroot = "#{r}/#{@attrs.projroot}"
+      pr = @attrs.projroot
+
+      # If projroot is specified as an absolute path, use it directly, else prepend 'root', which itself
+      # could either be an absolute or relative to the definition source file.
+      #
+      if pr.absolute_path?
+        @projroot = pr
+      else
+        r = @attrs.root
+        r = r.absolute_path? ? r : "#{node.definition.source_dir}/#{r}"
+        @projroot = "#{r}/#{pr}"
+      end
     end
     
     ##

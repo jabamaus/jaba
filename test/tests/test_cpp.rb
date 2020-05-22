@@ -38,6 +38,7 @@ module JABA
       cfg_release[:rtti].must_equal(false)
     end
 
+    # TODO: test different approaches to root/projroot
     it 'supports vcproperty' do
       
     end
