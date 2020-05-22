@@ -16,3 +16,4 @@ To do:
 - jaba.input.json should include flags
 - Think more about project 'skus'. Also, platforms support specific hosts. Where is that info stored?
 - test :required flag compatibility
+- Revisit set_to_default and wipe. Have way of clearing to default and clearing fully, but don't count that as set=true

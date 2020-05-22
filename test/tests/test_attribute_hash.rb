@@ -184,8 +184,6 @@ module JABA
       end
     end
 
-    # TODO: test value/flag validation
-
     # TODO: test wipe
     
   end
