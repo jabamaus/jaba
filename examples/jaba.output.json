@@ -12,7 +12,6 @@
     "cpp|MyApp|win32|vs2017": {
       "projroot": "C:/projects/GitHub/jaba/examples/example1/./.",
       "projname": "MyApp",
-      "platform": "win32",
       "host": "vs2017",
       "vcxproj": "C:/projects/GitHub/jaba/examples/example1/././MyApp.vcxproj",
       "src": [
@@ -22,10 +21,11 @@
         "ProjectName": "MyApp",
         "ProjectGuid": "{94B39F2E-598F-4977-32A2-3152F335DBBD}",
         "RootNamespace": "MyApp",
-        "WindowsTargetPlatformVersion": "10.0.17763.0"
+        "WindowsTargetPlatformVersion": null
       },
       "configs": {
         "debug": {
+          "platform": "win32",
           "name": "debug",
           "defines": [
 
@@ -35,10 +35,10 @@
           ],
           "rtti": true,
           "vcproperty": {
-            "CharacterSet": "Unicode",
             "ConfigurationType": "Application",
-            "PlatformToolset": "v141",
             "UseDebugLibraries": true,
+            "CharacterSet": null,
+            "PlatformToolset": "v141",
             "AdditionalIncludeDirectories": null,
             "AdditionalOptions": null,
             "ExceptionHandling": "Sync",
@@ -49,6 +49,7 @@
           }
         },
         "release": {
+          "platform": "win32",
           "name": "release",
           "defines": [
 
@@ -58,10 +59,10 @@
           ],
           "rtti": true,
           "vcproperty": {
-            "CharacterSet": "Unicode",
             "ConfigurationType": "Application",
-            "PlatformToolset": "v141",
             "UseDebugLibraries": false,
+            "CharacterSet": null,
+            "PlatformToolset": "v141",
             "AdditionalIncludeDirectories": null,
             "AdditionalOptions": null,
             "ExceptionHandling": "Sync",
@@ -76,7 +77,6 @@
     "cpp|MyLib|win32|vs2017": {
       "projroot": "C:/projects/GitHub/jaba/examples/example2/./.",
       "projname": "MyLib",
-      "platform": "win32",
       "host": "vs2017",
       "vcxproj": "C:/projects/GitHub/jaba/examples/example2/././MyLib.vcxproj",
       "src": [
@@ -86,10 +86,11 @@
         "ProjectName": "MyLib",
         "ProjectGuid": "{BC1B8BAC-BF1A-46A6-8180-E02C42CA6FF0}",
         "RootNamespace": "MyLib",
-        "WindowsTargetPlatformVersion": "10.0.17763.0"
+        "WindowsTargetPlatformVersion": null
       },
       "configs": {
         "debug": {
+          "platform": "win32",
           "name": "debug",
           "defines": [
 
@@ -99,10 +100,10 @@
           ],
           "rtti": true,
           "vcproperty": {
-            "CharacterSet": "Unicode",
             "ConfigurationType": "StaticLibrary",
-            "PlatformToolset": "v141",
             "UseDebugLibraries": true,
+            "CharacterSet": null,
+            "PlatformToolset": "v141",
             "AdditionalIncludeDirectories": null,
             "AdditionalOptions": null,
             "ExceptionHandling": "Sync",
@@ -113,6 +114,7 @@
           }
         },
         "release": {
+          "platform": "win32",
           "name": "release",
           "defines": [
 
@@ -122,10 +124,10 @@
           ],
           "rtti": true,
           "vcproperty": {
-            "CharacterSet": "Unicode",
             "ConfigurationType": "StaticLibrary",
-            "PlatformToolset": "v141",
             "UseDebugLibraries": false,
+            "CharacterSet": null,
+            "PlatformToolset": "v141",
             "AdditionalIncludeDirectories": null,
             "AdditionalOptions": null,
             "ExceptionHandling": "Sync",

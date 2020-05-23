@@ -207,7 +207,7 @@
               ],
               "vcglobal": {
               },
-              "winsdkver": "10.0.17763.0",
+              "winsdkver": null,
               "children": {
                 "cpp|MyApp|win32|vs2017|debug": {
                   "build_action": [
@@ -219,6 +219,7 @@
                   "config": "debug",
                   "config_name": "debug",
                   "debug": true,
+                  "character_set": null,
                   "defines": [
 
                   ],
@@ -228,7 +229,6 @@
                   ],
                   "rtti": true,
                   "toolset": "v141",
-                  "unicode": true,
                   "vcproperty": {
                   },
                   "warnerror": false,
@@ -245,6 +245,7 @@
                   "config": "release",
                   "config_name": "release",
                   "debug": false,
+                  "character_set": null,
                   "defines": [
 
                   ],
@@ -254,7 +255,6 @@
                   ],
                   "rtti": true,
                   "toolset": "v141",
-                  "unicode": true,
                   "vcproperty": {
                   },
                   "warnerror": false,
@@ -299,7 +299,7 @@
               ],
               "vcglobal": {
               },
-              "winsdkver": "10.0.17763.0",
+              "winsdkver": null,
               "children": {
                 "cpp|MyLib|win32|vs2017|debug": {
                   "build_action": [
@@ -311,6 +311,7 @@
                   "config": "debug",
                   "config_name": "debug",
                   "debug": true,
+                  "character_set": null,
                   "defines": [
 
                   ],
@@ -320,7 +321,6 @@
                   ],
                   "rtti": true,
                   "toolset": "v141",
-                  "unicode": true,
                   "vcproperty": {
                   },
                   "warnerror": false,
@@ -337,6 +337,7 @@
                   "config": "release",
                   "config_name": "release",
                   "debug": false,
+                  "character_set": null,
                   "defines": [
 
                   ],
@@ -346,7 +347,6 @@
                   ],
                   "rtti": true,
                   "toolset": "v141",
-                  "unicode": true,
                   "vcproperty": {
                   },
                   "warnerror": false,
