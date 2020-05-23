@@ -92,6 +92,15 @@ module JABA
     
     ##
     #
+    def visit_node(visit_self: false, type_id: nil, &block)
+      yield self if (visit_self and (!type_id || type_id == @jaba_type.definition_id))
+      @children.each do |c|
+        c.visit_node(visit_self: true, &block)
+      end
+    end
+
+    ##
+    #
     def visit_attr(attr_id = nil, top_level: false, type: nil, &block)
       if top_level
         @attributes.each do |a|

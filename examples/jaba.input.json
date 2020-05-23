@@ -19,50 +19,6 @@
       "children": {
       }
     },
-    "platform|win32": {
-      "win32?": true,
-      "x64?": false,
-      "iOS?": false,
-      "macOS?": false,
-      "windows?": true,
-      "apple?": false,
-      "vsname": "Win32",
-      "children": {
-      }
-    },
-    "platform|x64": {
-      "win32?": false,
-      "x64?": true,
-      "iOS?": false,
-      "macOS?": false,
-      "windows?": true,
-      "apple?": false,
-      "vsname": "x64",
-      "children": {
-      }
-    },
-    "platform|iOS": {
-      "win32?": false,
-      "x64?": false,
-      "iOS?": true,
-      "macOS?": false,
-      "windows?": false,
-      "apple?": true,
-      "vsname": null,
-      "children": {
-      }
-    },
-    "platform|macOS": {
-      "win32?": false,
-      "x64?": false,
-      "iOS?": false,
-      "macOS?": true,
-      "windows?": false,
-      "apple?": true,
-      "vsname": null,
-      "children": {
-      }
-    },
     "host|vs2010": {
       "visual_studio?": true,
       "xcode?": false,
@@ -175,28 +131,72 @@
       "children": {
       }
     },
+    "platform|win32": {
+      "win32?": true,
+      "x64?": false,
+      "iOS?": false,
+      "macOS?": false,
+      "windows?": true,
+      "apple?": false,
+      "vsname": "Win32",
+      "children": {
+      }
+    },
+    "platform|x64": {
+      "win32?": false,
+      "x64?": true,
+      "iOS?": false,
+      "macOS?": false,
+      "windows?": true,
+      "apple?": false,
+      "vsname": "x64",
+      "children": {
+      }
+    },
+    "platform|iOS": {
+      "win32?": false,
+      "x64?": false,
+      "iOS?": true,
+      "macOS?": false,
+      "windows?": false,
+      "apple?": true,
+      "vsname": null,
+      "children": {
+      }
+    },
+    "platform|macOS": {
+      "win32?": false,
+      "x64?": false,
+      "iOS?": false,
+      "macOS?": true,
+      "windows?": false,
+      "apple?": true,
+      "vsname": null,
+      "children": {
+      }
+    },
     "cpp|MyApp": {
       "root": ".",
-      "platforms": [
-        "win32"
+      "hosts": [
+        "vs2017"
       ],
       "children": {
-        "cpp|MyApp|win32": {
-          "platform": "win32",
-          "platform_ref": "platform|win32",
-          "hosts": [
-            "vs2017"
+        "cpp|MyApp|vs2017": {
+          "host": "vs2017",
+          "host_ref": "host|vs2017",
+          "platforms": [
+            "win32"
           ],
           "children": {
-            "cpp|MyApp|win32|vs2017": {
+            "cpp|MyApp|vs2017|win32": {
+              "platform": "win32",
+              "platform_ref": "platform|win32",
               "projroot": ".",
               "projname": "MyApp",
               "projname_suffix": null,
               "src": [
 
               ],
-              "host": "vs2017",
-              "host_ref": "host|vs2017",
               "type": "app",
               "configs": [
                 "debug",
@@ -209,7 +209,7 @@
               },
               "winsdkver": null,
               "children": {
-                "cpp|MyApp|win32|vs2017|debug": {
+                "cpp|MyApp|vs2017|win32|debug": {
                   "build_action": [
 
                   ],
@@ -235,7 +235,7 @@
                   "children": {
                   }
                 },
-                "cpp|MyApp|win32|vs2017|release": {
+                "cpp|MyApp|vs2017|win32|release": {
                   "build_action": [
 
                   ],
@@ -269,26 +269,26 @@
     },
     "cpp|MyLib": {
       "root": ".",
-      "platforms": [
-        "win32"
+      "hosts": [
+        "vs2017"
       ],
       "children": {
-        "cpp|MyLib|win32": {
-          "platform": "win32",
-          "platform_ref": "platform|win32",
-          "hosts": [
-            "vs2017"
+        "cpp|MyLib|vs2017": {
+          "host": "vs2017",
+          "host_ref": "host|vs2017",
+          "platforms": [
+            "win32"
           ],
           "children": {
-            "cpp|MyLib|win32|vs2017": {
+            "cpp|MyLib|vs2017|win32": {
+              "platform": "win32",
+              "platform_ref": "platform|win32",
               "projroot": ".",
               "projname": "MyLib",
               "projname_suffix": null,
               "src": [
 
               ],
-              "host": "vs2017",
-              "host_ref": "host|vs2017",
               "type": "lib",
               "configs": [
                 "debug",
@@ -301,7 +301,7 @@
               },
               "winsdkver": null,
               "children": {
-                "cpp|MyLib|win32|vs2017|debug": {
+                "cpp|MyLib|vs2017|win32|debug": {
                   "build_action": [
 
                   ],
@@ -327,7 +327,7 @@
                   "children": {
                   }
                 },
-                "cpp|MyLib|win32|vs2017|release": {
+                "cpp|MyLib|vs2017|win32|release": {
                   "build_action": [
 
                   ],

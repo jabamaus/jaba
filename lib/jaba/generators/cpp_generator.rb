@@ -22,24 +22,32 @@ module JABA
     def make_nodes
       root_node = make_node(type_id: :cpp)
       
+      combine = false
+
       # TODO: namespacing of sub type ids
 
-      root_node.attrs.platforms.each do |p|
-        hosts_node = make_node(type_id: :target_platform, name: p, parent: root_node) do
-          platform p
-          platform_ref p
+      root_node.attrs.hosts.each do |h|
+        host_node = make_node(type_id: :per_host, name: h, parent: root_node) do
+          host h
+          host_ref h
         end
         
-        hosts_node.attrs.hosts.each do |h|
-          proj_node = make_node(type_id: :project, name: h, parent: hosts_node) do
-            host h
-            host_ref h
+        if combine
+          @project_nodes << host_node
+        end
+
+        host_node.attrs.platforms.each do |p|
+          platform_node = make_node(type_id: :per_platform, name: p, parent: host_node) do
+            platform p
+            platform_ref p
           end
 
-          @project_nodes << proj_node
+          if !combine
+            @project_nodes << platform_node
+          end
           
-          proj_node.attrs.configs.each do |cfg|
-            make_node(type_id: :config, name: cfg, parent: proj_node) do
+          platform_node.attrs.configs.each do |cfg|
+            make_node(type_id: :config, name: cfg, parent: platform_node) do
               config cfg
             end
           end
@@ -59,7 +67,7 @@ module JABA
         vcglobal :WindowsTargetPlatformVersion, winsdkver
       end
       
-      proj.configs.each do |cfg|
+      proj.each_config do |cfg|
         cfg.attrs.instance_eval do
           vcproperty :ConfigurationType, group: :pg1 do
             case type

@@ -11,7 +11,6 @@ module JABA
   class Vcxproj < VSProject
     
     attr_reader :vcxproj_file
-    attr_reader :configs
     
     ##
     #
@@ -19,9 +18,14 @@ module JABA
       super
       @vcxproj_file = "#{@projroot}/#{@attrs.projname}.vcxproj"
       @vcxproj_filters_file = "#{@vcxproj_file}.filters"
-      @configs = @node.children
     end
     
+    ##
+    #
+    def each_config(&block)
+      @node.visit_node(type_id: :config, &block)
+    end
+
     ##
     #
     def generate
@@ -40,7 +44,7 @@ module JABA
       p_root[:vcglobal] = @attrs.vcglobal
       cfg_root = {}
       p_root[:configs] = cfg_root
-      @configs.each do |c|
+      each_config do |c|
         cfg = {}
         attrs = c.attrs
         cfg_root[attrs.config] = cfg
@@ -65,7 +69,7 @@ module JABA
       @ps = StringWriter.new(capacity: 2 * 1024)
       @idg = StringWriter.new(capacity: 2 * 1024)
 
-      @configs.each do |cfg|
+      each_config do |cfg|
         platform = cfg.attrs.platform_ref.attrs.vsname
         cfg_name = cfg.attrs.config_name
         @item_def_groups = {}
@@ -139,7 +143,7 @@ module JABA
         # TODO: ExtensionSettings
       end
       
-      @configs.each do |cfg|
+      each_config do |cfg|
         # TODO: ExtensionSettings
       end
       
@@ -171,7 +175,7 @@ module JABA
         # TODO: extension targets
       end
       
-      @configs.each do |cfg|
+      each_config do |cfg|
         # TODO: extension targets
       end
       

@@ -9,7 +9,7 @@
 
   ],
   "cpp": {
-    "cpp|MyApp|win32|vs2017": {
+    "cpp|MyApp|vs2017|win32": {
       "projroot": "C:/projects/GitHub/jaba/examples/example1/./.",
       "projname": "MyApp",
       "host": "vs2017",
@@ -74,7 +74,7 @@
         }
       }
     },
-    "cpp|MyLib|win32|vs2017": {
+    "cpp|MyLib|vs2017|win32": {
       "projroot": "C:/projects/GitHub/jaba/examples/example2/./.",
       "projname": "MyLib",
       "host": "vs2017",

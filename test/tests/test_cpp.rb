@@ -24,7 +24,7 @@ module JABA
         end
       end
 
-      proj = op[:cpp]['cpp|a|x64|vs2017']
+      proj = op[:cpp]['cpp|a|vs2017|x64']
       proj.wont_be_nil
 
       cfg_debug = proj[:configs][:debug]
@@ -44,7 +44,7 @@ module JABA
     end
 
     it 'reports errors correctly with subtype attributes' do
-      check_fail "'platforms' attribute requires a value", trace: [__FILE__, 'tagY'] do
+      check_fail "'hosts' attribute requires a value", trace: [__FILE__, 'tagY'] do
         jaba do
           cpp :app do # tagY
           end
@@ -56,7 +56,7 @@ module JABA
       op = jaba(dry_run: true) do
         cpp :app do
           platforms [:win32, :x64]
-          projname "app_#{platform&.upcase}_#{host&.upcase}" # TODO: remove safe call
+          projname "app_#{host&.upcase}_#{platform&.upcase}" # TODO: remove safe call
           hosts [:vs2017]
           if win32?
             configs [:debug]
@@ -65,9 +65,9 @@ module JABA
           end
         end
       end
-      proj = op[:cpp]['cpp|app|win32|vs2017']
+      proj = op[:cpp]['cpp|app|vs2017|win32']
       proj.wont_be_nil
-      proj[:projname].must_equal('app_WIN32_VS2017')
+      proj[:projname].must_equal('app_VS2017_WIN32')
       proj[:configs][:debug].wont_be_nil
       proj[:configs][:release].must_be_nil
     end
@@ -101,7 +101,7 @@ module JABA
           # TODO: test vcproperty
         end
       end
-      app = op[:cpp]['cpp|app|x64|vs2017']
+      app = op[:cpp]['cpp|app|vs2017|x64']
       app.wont_be_nil
       app[:vcglobal][:BoolAttr].must_equal(true)
       app[:vcglobal][:StringAttr2].must_equal('s2')
