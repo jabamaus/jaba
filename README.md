@@ -22,3 +22,4 @@ To do:
 - Consider something like  base: :__dir__ option on :dir attribute types to force a path to be relative to source definition file and not root
 - Test __dir__
 - Allow 'axes' of configs
+- add checking to fix Error at services.rb:25: Uninitialized constant #<Class:#<JABA::TopLevelAPI:0x00000000069da6b0>>::Dir when cwd is wrong

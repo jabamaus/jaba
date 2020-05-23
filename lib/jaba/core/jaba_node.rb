@@ -93,9 +93,12 @@ module JABA
     ##
     #
     def visit_node(visit_self: false, type_id: nil, &block)
-      yield self if (visit_self and (!type_id || type_id == @jaba_type.definition_id))
+      jaba_type_id = @jaba_type.handle
+      if (visit_self && (!type_id || type_id == jaba_type_id))
+        yield self
+      end
       @children.each do |c|
-        c.visit_node(visit_self: true, &block)
+        c.visit_node(visit_self: true, type_id: type_id, &block)
       end
     end
 
@@ -118,6 +121,34 @@ module JABA
           next if type && type != a.attr_def.type_id
           a.visit_attr(&block)
         end
+      end
+    end
+
+    ##
+    # Removes attribute and returns it.
+    #
+    def remove_attr(attr_id)
+      if @attribute_lookup.delete(attr_id).nil?
+        jaba_error("Could not remove '#{attr_id}' attribute from '#{handle}' node")
+      end
+      index = @attributes.index{|a| a.definition_id == attr_id}
+      if index.nil?
+        jaba_error("Could not remove '#{attr_id}' attribute from '#{handle}' node")
+      end
+      @attributes.delete_at(index)
+    end
+
+    ##
+    # TODO: improve
+    def pull_up(*attr_ids)
+      attr_ids.each do |attr_id|
+        attr = nil
+        # TODO: check commonality
+        @children.each do |child|
+          attr = child.remove_attr(attr_id)
+        end
+        @attributes << attr
+        @attribute_lookup[attr_id] = attr
       end
     end
 

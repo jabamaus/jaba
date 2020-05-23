@@ -62,11 +62,6 @@ define :cpp do
       flag_options :export
     end
     
-    attr :type, type: :choice do
-      items [:app, :lib, :dll]
-      default :app
-    end
-    
     attr_array :configs, type: :symbol_or_string do
       flags :required, :unordered
       flag_options :export
@@ -161,6 +156,11 @@ define :cpp do
 
     attr :toolset, type: :string do
       default { host_ref.toolset }
+    end
+
+    attr :type, type: :choice do # TODO: rename?
+      items [:app, :lib, :dll]
+      default :app
     end
 
     attr_hash :vcproperty do

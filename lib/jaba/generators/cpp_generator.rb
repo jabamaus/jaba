@@ -13,7 +13,8 @@ module JABA
     ##
     #
     def init
-      @project_nodes = []
+      @platform_nodes = []
+      @host_nodes = []
       @projects = []
     end
 
@@ -21,8 +22,6 @@ module JABA
     #
     def make_nodes
       root_node = make_node(type_id: :cpp)
-      
-      combine = false
 
       # TODO: namespacing of sub type ids
 
@@ -32,9 +31,7 @@ module JABA
           host_ref h
         end
         
-        if combine
-          @project_nodes << host_node
-        end
+        @host_nodes << host_node
 
         host_node.attrs.platforms.each do |p|
           platform_node = make_node(type_id: :per_platform, name: p, parent: host_node) do
@@ -42,9 +39,7 @@ module JABA
             platform_ref p
           end
 
-          if !combine
-            @project_nodes << platform_node
-          end
+          @platform_nodes << platform_node
           
           platform_node.attrs.configs.each do |cfg|
             make_node(type_id: :config, name: cfg, parent: platform_node) do
@@ -150,11 +145,11 @@ module JABA
     ##
     #
     def make_projects
-      @project_nodes.sort_topological! do |n, &b|
+      @platform_nodes.sort_topological! do |n, &b|
         n.attrs.deps.each(&b)
       end
       
-      @project_nodes.reverse_each do |node|
+      @platform_nodes.reverse_each do |node|
         node.attrs.deps.each do |dep_node|
           dep_node.visit_attr(top_level: true) do |dep_attr|
 
@@ -181,8 +176,18 @@ module JABA
         end
       end
 
-      @project_nodes.each do |pn|
-        @projects << make_project(Vcxproj, pn)
+      combine = true
+
+      # TODO: run code in setup_project before pulling up?
+      if combine
+        @host_nodes.each do |hn|
+          hn.pull_up(:projname, :projroot, :deps, :src, :vcglobal) # TODO: src should not be pulled up
+          @projects << make_project(Vcxproj, hn)
+        end
+      else
+        @platform_nodes.each do |pn|
+          @projects << make_project(Vcxproj, pn)
+        end
       end
     end
 

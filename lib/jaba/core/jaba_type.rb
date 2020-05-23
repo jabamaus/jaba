@@ -13,6 +13,10 @@ module JABA
 
     include PropertyMethods
     
+    # The type id given to the jaba type in define() method, whether a top level type or a subtype.
+    # Contrast this with definition_id which will return the top level type's id even if it is called
+    # on a subtype.
+    #
     attr_reader :handle
     attr_reader :attribute_defs
     attr_reader :dependencies

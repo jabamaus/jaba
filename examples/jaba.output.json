@@ -9,7 +9,7 @@
 
   ],
   "cpp": {
-    "cpp|MyApp|vs2017|win32": {
+    "cpp|MyApp|vs2017": {
       "projroot": "C:/projects/GitHub/jaba/examples/example1/./.",
       "projname": "MyApp",
       "host": "vs2017",
@@ -25,7 +25,7 @@
       },
       "configs": {
         "debug": {
-          "platform": "win32",
+          "platform": "x64",
           "name": "debug",
           "defines": [
 
@@ -45,11 +45,11 @@
             "PreprocessorDefinitions": null,
             "RuntimeTypeInfo": true,
             "TreatWarningAsError": false,
-            "TargetMachine": null
+            "TargetMachine": "MachineX64"
           }
         },
         "release": {
-          "platform": "win32",
+          "platform": "x64",
           "name": "release",
           "defines": [
 
@@ -69,12 +69,12 @@
             "PreprocessorDefinitions": null,
             "RuntimeTypeInfo": true,
             "TreatWarningAsError": false,
-            "TargetMachine": null
+            "TargetMachine": "MachineX64"
           }
         }
       }
     },
-    "cpp|MyLib|vs2017|win32": {
+    "cpp|MyLib|vs2017": {
       "projroot": "C:/projects/GitHub/jaba/examples/example2/./.",
       "projname": "MyLib",
       "host": "vs2017",
@@ -90,7 +90,7 @@
       },
       "configs": {
         "debug": {
-          "platform": "win32",
+          "platform": "x64",
           "name": "debug",
           "defines": [
 
@@ -110,11 +110,11 @@
             "PreprocessorDefinitions": null,
             "RuntimeTypeInfo": true,
             "TreatWarningAsError": false,
-            "TargetMachine": null
+            "TargetMachine": "MachineX64"
           }
         },
         "release": {
-          "platform": "win32",
+          "platform": "x64",
           "name": "release",
           "defines": [
 
@@ -134,7 +134,7 @@
             "PreprocessorDefinitions": null,
             "RuntimeTypeInfo": true,
             "TreatWarningAsError": false,
-            "TargetMachine": null
+            "TargetMachine": "MachineX64"
           }
         }
       }
