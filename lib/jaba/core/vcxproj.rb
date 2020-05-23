@@ -34,7 +34,6 @@ module JABA
     def dump_jaba_output(p_root)
       p_root[:projroot] = @projroot
       p_root[:projname] = @attrs.projname
-      p_root[:platform] = @platform.definition_id
       p_root[:host] = @host.definition_id
       p_root[:vcxproj] = @vcxproj_file
       p_root[:src] = @attrs.src # TODO: output actual src not the spec
@@ -45,6 +44,7 @@ module JABA
         cfg = {}
         attrs = c.attrs
         cfg_root[attrs.config] = cfg
+        cfg[:platform] = attrs.platform_ref.definition_id
         cfg[:name] = attrs.config_name
         cfg[:defines] = attrs.defines
         cfg[:inc] = attrs.inc
@@ -66,24 +66,27 @@ module JABA
       @idg = StringWriter.new(capacity: 2 * 1024)
 
       @configs.each do |cfg|
+        platform = cfg.attrs.platform_ref.attrs.vsname
+        cfg_name = cfg.attrs.config_name
         @item_def_groups = {}
+
         @pc.yield_self do |w|
-          w << "    <ProjectConfiguration Include=\"#{cfg.attrs.config_name}|#{@platform.attrs.vsname}\">"
-          w << "      <Configuration>#{cfg.attrs.config_name}</Configuration>"
-          w << "      <Platform>#{@platform.attrs.vsname}</Platform>"
+          w << "    <ProjectConfiguration Include=\"#{cfg_name}|#{platform}\">"
+          w << "      <Configuration>#{cfg_name}</Configuration>"
+          w << "      <Platform>#{platform}</Platform>"
           w << "    </ProjectConfiguration>"
         end
 
         @ps.yield_self do |w|
-          import_group(w, label: :PropertySheets, condition: cfg_condition(cfg)) do
+          import_group(w, label: :PropertySheets, condition: cfg_condition(cfg_name, platform)) do
             w << '    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" ' \
                 'Condition="exists(\'$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props\')" Label="LocalAppDataPlatform" />'
           end
         end
 
-        property_group(@pg1, label: :Configuration, condition: cfg_condition(cfg))
-        property_group(@pg2, label: :Configuration, condition: cfg_condition(cfg))
-        item_definition_group(@idg, condition: cfg_condition(cfg))
+        property_group(@pg1, label: :Configuration, condition: cfg_condition(cfg_name, platform))
+        property_group(@pg2, label: :Configuration, condition: cfg_condition(cfg_name, platform))
+        item_definition_group(@idg, condition: cfg_condition(cfg_name, platform))
 
         cfg.visit_attr(:vcproperty) do |attr, val|
           key = attr.get_option_value(:__key)

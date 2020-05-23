@@ -15,8 +15,6 @@ module JABA
     def init
       @guid = nil
       @host = @attrs.host_ref
-      @platform = @attrs.platform_ref
-      @platform_vsname = @platform.attrs.vsname
     end
     
     ##
@@ -125,8 +123,8 @@ module JABA
 
     ##
     #
-    def cfg_condition(cfg)
-      "'$(Configuration)|$(Platform)'=='#{cfg.attrs.config_name}|#{@platform_vsname}'"
+    def cfg_condition(cfg_name, platform)
+      "'$(Configuration)|$(Platform)'=='#{cfg_name}|#{platform}'"
     end
     
   end
