@@ -64,16 +64,17 @@ module JABA
       
       proj.each_config do |cfg|
         cfg.attrs.instance_eval do
+          cfg_type = type
           vcproperty :ConfigurationType, group: :pg1 do
-            case type
-            when :app
+            case cfg_type
+            when :app, :console
               'Application'
             when :lib
               'StaticLibrary'
             when :dll
               'DynamicLibrary'
             else
-              fail "'#{type}' unhandled"
+              fail "'#{cfg_type}' unhandled"
             end
           end
           vcproperty :UseDebugLibraries, debug, group: :pg1
@@ -120,7 +121,20 @@ module JABA
 
           # Link
           #
-          vcproperty :TargetMachine, group: (type == :lib ? :Lib : :Link) do
+          if cfg_type != :lib
+            vcproperty :SubSystem, group: :Link do
+              case cfg_type
+              when :console
+                :Console
+              when :app, :dll
+                :Windows
+              else
+                raise "'#{type}' unhandled"
+              end
+            end
+          end
+
+          vcproperty :TargetMachine, group: (cfg_type == :lib ? :Lib : :Link) do
             :MachineX64 if x64?
           end
 
@@ -176,7 +190,7 @@ module JABA
         end
       end
 
-      combine = true
+      combine = false#true
 
       # TODO: run code in setup_project before pulling up?
       if combine

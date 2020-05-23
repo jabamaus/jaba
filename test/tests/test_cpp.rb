@@ -18,6 +18,7 @@ module JABA
           rtti false
         end
         cpp :a do
+          type :app
           if config == :debug
             rtti true
           end
@@ -55,6 +56,7 @@ module JABA
     it 'prevents nil access' do
       op = jaba(dry_run: true) do
         cpp :app do
+          type :app
           platforms [:win32, :x64]
           projname "app_#{host&.upcase}_#{platform&.upcase}" # TODO: remove safe call
           hosts [:vs2017]
@@ -81,12 +83,14 @@ module JABA
           configs [:debug, :release]
         end
         cpp :app do
+          type :app
           deps [:lib]
           vcglobal :BoolAttr, true
           src ['b', 'a']
           defines ['F', 'A']
         end
         cpp :lib do
+          type :lib
           vcglobal :StringAttr, 's'
           vcglobal :StringAttr2, 's2', :export
           vcglobal :StringAttr3, 's3', :export

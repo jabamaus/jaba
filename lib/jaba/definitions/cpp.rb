@@ -159,8 +159,8 @@ define :cpp do
     end
 
     attr :type, type: :choice do # TODO: rename?
-      items [:app, :lib, :dll]
-      default :app
+      items [:app, :console, :lib, :dll]
+      flags :required
     end
 
     attr_hash :vcproperty do
