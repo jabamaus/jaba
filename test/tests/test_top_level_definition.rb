@@ -12,10 +12,11 @@ module JABA
         end
         shared 'this.is.valid' do
         end
+        shared 'this-is-valid' do
+        end
       end
       
-      check_fail "'Space invalid' is an invalid id. Must be an alphanumeric string or symbol " \
-                  "(underscore permitted), eg :my_id or 'my_id'", trace: [__FILE__, 'tagS'] do
+      check_fail "'Space invalid' is an invalid id. Must be an alphanumeric string or symbol", trace: [__FILE__, 'tagS'] do
         jaba do
           shared 'Space invalid' do # tagS
           end
