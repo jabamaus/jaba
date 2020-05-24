@@ -2,6 +2,8 @@ define :cpp do
 
   help 'Cross platform C++ project definition'
 
+  # Required attributes. Attributes that the user must provide a value for.
+  #
   attr :root, type: :dir do
     help 'Root of the project specified as a relative path to the file that contains the project definition. ' \
          'All paths are specified relative to this. Project files will be generated here unless <projroot> is set.'
@@ -32,6 +34,11 @@ define :cpp do
 
   define :per_platform do
 
+    attr_array :configs, type: :symbol_or_string do
+      flags :required, :unordered
+      flag_options :export
+    end
+
     attr :platform, type: :symbol do
       flags :read_only
     end
@@ -47,12 +54,12 @@ define :cpp do
       flags :no_check_exist # May get created during generation
     end
     
-    attr :projname do
+    attr :projname, type: :symbol_or_string do
       help 'Seeds file basename of project files. Defaults to <name><projsuffix>.'
       default { "#{_ID}#{projname_suffix}" }
     end
 
-    attr :projname_suffix do
+    attr :projname_suffix, type: :symbol_or_string do
       help 'Optional suffix to be applied to <projname>. Has no effect if <projname> is set explicitly.'
     end
 
@@ -62,12 +69,8 @@ define :cpp do
       flag_options :export
     end
     
-    attr_array :configs, type: :symbol_or_string do
-      flags :required, :unordered
-      flag_options :export
-    end
-    
     attr_array :deps, type: :reference do
+      help 'Specify project dependencies. List of ids of other cpp definitions.'
       referenced_type :cpp
       make_handle do |id|
         "cpp|#{id}|#{host}|#{platform}"
@@ -75,11 +78,13 @@ define :cpp do
     end
     
     attr_hash :vcglobal do
+      help 'Directly address the Globals property group in a vcxproj'
       value_option :condition
       flag_options :export
     end
     
     attr :winsdkver, type: :choice do
+      help 'Windows SDK version. Defaults to nil.'
       items [
         '10.0.16299.0',  # Included in VS2017 ver.15.4
         '10.0.17134.0',  # Included in VS2017 ver.15.7
@@ -91,27 +96,38 @@ define :cpp do
     end
   end
 
+  # Sub-grouping of attributes that pertain to a build configuration
+  #
   define :config do
 
+    # Required attributes. Attributes that the user must provide a value for.
+    #
+    attr :type, type: :choice do # TODO: rename?
+      items [:app, :console, :lib, :dll]
+      flags :required
+    end
+
+    attr :config, type: :symbol_or_string do
+      help 'Returns current config being processed. Use to define control flow to set config-specific atttributes'
+      flags :read_only
+    end
+
+    # Common attributes. These are the attributes that most definitions will set/use.
+    #
     attr_array :build_action, type: :string do
-      help 'Build actions'
+      help 'Build action, eg a prebuild step'
       flag_options :export
       value_option :msg
       value_option :type, required: true, items: [:PreBuild, :PreLink, :PostBuild]
     end
 
     attr_array :cflags do
-      help 'Compiler command line arguments'
+      help 'Raw compiler command line switches'
       flag_options :export
     end
 
-    attr :config, type: :symbol_or_string do
-      help 'Returns current config being processed.'
-      flags :read_only
-    end
-
     attr :config_name do
-      help 'Display name of config in Visual Studio. Defaults to <config>.'
+      help 'Display name of config in Visual Studio. Defaults to <config>'
       default { config }
     end
 
@@ -121,20 +137,32 @@ define :cpp do
         config =~ /debug/i ? true : false
       end
     end
+    
+    attr_array :defines, type: :string do
+      help 'Preprocessor defines'
+      flag_options :export
+    end
 
+    attr_array :inc, type: :dir do
+      help 'Include paths'
+      flags :unordered
+      flag_options :export
+    end
+
+    attr :warnerror, type: :bool do
+      help 'Enable warnings as errors. Off by default.'
+    end
+
+    # Not so common attributes. Often used but not fundamental.
+    #
     attr :character_set, type: :choice do
-      help 'Character set. Defaults to nil'
+      help 'Character set. Defaults to :unicode'
       items [
         :mbcs,    # Visual Studio only
         :unicode,
         nil
       ]
-      default nil
-    end
-
-    attr_array :defines, type: :string do
-      help 'Preprocessor defines'
-      flag_options :export
+      default :unicode
     end
 
     attr :exceptions, type: :choice do
@@ -144,13 +172,8 @@ define :cpp do
       default true
     end
 
-    attr_array :inc, type: :dir do
-      help 'Include paths'
-      flags :unordered
-      flag_options :export
-    end
-
     attr :rtti, type: :bool do
+      help 'Enable runtime type information. On by default.'
       default true
     end
 
@@ -158,19 +181,11 @@ define :cpp do
       default { host_ref.toolset }
     end
 
-    attr :type, type: :choice do # TODO: rename?
-      items [:app, :console, :lib, :dll]
-      flags :required
-    end
-
     attr_hash :vcproperty do
+      help 'Address config section of a vcxproj directly'
       value_option :group, required: true
       value_option :condition
       flag_options :export
-    end
-
-    attr :warnerror, type: :bool do
-      help 'Enable warnings as errors. Off by default.'
     end
 
   end
