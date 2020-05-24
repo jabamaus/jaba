@@ -163,7 +163,7 @@ module JABA
         end
       end
 
-      if validate
+      if validate && !new_value.nil?
         begin
           @attr_def.jaba_attr_type.call_hook(:validate_value, new_value, receiver: @attr_def)
           @attr_def.call_hook(:validate, new_value, @flag_options, **@value_options)
