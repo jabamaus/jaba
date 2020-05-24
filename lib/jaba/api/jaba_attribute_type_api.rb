@@ -21,8 +21,8 @@ module JABA
     
     ##
     #
-    def validate_attr_def(&block)
-      @attr_type.set_hook(:validate_attr_def, &block)
+    def post_init_attr_def(&block)
+      @attr_type.set_hook(:post_init_attr_def, &block)
     end
     
     ##

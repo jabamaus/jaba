@@ -59,7 +59,7 @@ attr_type :choice do
     define_array_property :items
   end
   
-  validate_attr_def do
+  post_init_attr_def do
     if items.empty?
       fail "'items' must be set"
     elsif items.uniq!
@@ -96,7 +96,7 @@ attr_type :reference do
     define_property :make_handle # TODO: flag as block or validate as such
   end
   
-  validate_attr_def do
+  post_init_attr_def do
     rt = referenced_type
     if rt.nil?
       fail "'referenced_type' must be set"

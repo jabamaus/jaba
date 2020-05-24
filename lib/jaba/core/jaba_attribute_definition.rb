@@ -149,12 +149,13 @@ module JABA
     ##
     #
     def validate
-      @jaba_attr_type.call_hook(:validate_attr_def, receiver: self)
+      @jaba_attr_type.call_hook(:post_init_attr_def, receiver: self)
  
       if @default_set && !@default_is_block
         @jaba_attr_type.call_hook(:validate_value, @default, receiver: self)
       end
 
+      # TODO: check for duplicate attr flags
       @jaba_attr_flags.each do |jaf|
         begin
           @services.set_warn_object(self) do
