@@ -44,7 +44,6 @@ module JABA
     def initialize
       @input = Input.new
       @input.instance_variable_set(:@definitions, nil)
-      @input.instance_variable_set(:@load_paths, Dir.getwd)
       @input.instance_variable_set(:@jaba_input_file, 'jaba.input.json')
       @input.instance_variable_set(:@dump_input, false)
       @input.instance_variable_set(:@jaba_output_file, 'jaba.output.json')
@@ -53,6 +52,15 @@ module JABA
       @input.instance_variable_set(:@enable_logging, false)
       @input.instance_variable_set(:@use_file_cache, false)
       @input.instance_variable_set(:@use_glob_cache, false)
+
+      # Add cwd to load_paths, unless in the root of jaba itself (ie when developing)
+      #
+      cwd = Dir.getwd
+      load_paths = []
+      if !File.exist?("#{cwd}/jaba_root")
+        load_paths << cwd
+      end
+      @input.instance_variable_set(:@load_paths, load_paths)
 
       @output = {}
       
