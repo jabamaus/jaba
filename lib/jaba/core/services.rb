@@ -808,7 +808,7 @@ module JABA
     # 2) From user definitions using the 'fail' API.
     # 3) From core library code. 
     #
-    def make_jaba_error(msg, syntax: false, callstack: nil, warn: false, user_error: true)
+    def make_jaba_error(msg, syntax: false, callstack: nil, warn: false, user_error: false)
       msg = msg.capitalize_first if msg.split.first !~ /_/
       
       lines = []
