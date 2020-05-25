@@ -97,6 +97,12 @@ module JABA
 
     ##
     #
+    def has_flag?(flag)
+      @attr_def.has_flag?(flag)
+    end
+
+    ##
+    #
     def method_missing(id, val = nil, &block)
       @attr_def.handle_property(id, val, &block)
     end
