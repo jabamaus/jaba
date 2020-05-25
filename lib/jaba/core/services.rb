@@ -716,6 +716,15 @@ module JABA
     
     ##
     #
+    def path_inside_jaba_lib?(p)
+      Pathname.new(p).ascend do |c|
+        return true if File.exist?("#{c}/jaba_root")
+      end
+      false
+    end
+
+    ##
+    #
     def load_definitions
       # Load core type definitions
       @definition_src_files.concat(glob("#{__dir__}/../definitions/*.rb"))
@@ -725,6 +734,10 @@ module JABA
 
         if !File.exist?(p)
           jaba_error("#{p} does not exist")
+        end
+
+        if path_inside_jaba_lib?(p)
+          jaba_error("Load path '#{p}' cannot be inside jaba lib! Check cwd?", user_error: true)
         end
         
         # If load path is a directory, if its called 'jaba' then load all files recursively,
@@ -787,7 +800,7 @@ module JABA
     # 2) From user definitions using the 'fail' API.
     # 3) From core library code. 
     #
-    def make_jaba_error(msg, syntax: false, callstack: nil, warn: false)
+    def make_jaba_error(msg, syntax: false, callstack: nil, warn: false, user_error: true)
       msg = msg.capitalize_first if msg.split.first !~ /_/
       
       lines = []
@@ -808,10 +821,20 @@ module JABA
         #
         lines = cs.select {|c| @definition_src_files.any? {|sf| c.include?(sf)}}
         
-        # If no references to definition files assume the error came from internal library code. Raise a RuntimeError.
+        # If no references to definition files assume the error came from internal library code and raise a RuntimeError,
+        # unless its specifically flagged as a user error, which can happen when validating jaba input, before any
+        # definitions are executed.
         #
         if lines.empty?
-          e = RuntimeError.new(msg)
+          e = if user_error
+                e = JabaDefinitionError.new(msg)
+                e.instance_variable_set(:@raw_message, msg)
+                e.instance_variable_set(:@file, nil)
+                e.instance_variable_set(:@line, nil)
+                e
+              else
+                RuntimeError.new(msg)
+              end
           e.set_backtrace(cs)
           return e
         end

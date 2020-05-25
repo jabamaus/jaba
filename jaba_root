@@ -1,0 +1,1 @@
+This file exists so that jaba can check if a load path is inside itself, which is an error.

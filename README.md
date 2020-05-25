@@ -22,4 +22,15 @@ To do:
 - Consider something like  base: :__dir__ option on :dir attribute types to force a path to be relative to source definition file and not root
 - Test __dir__
 - Allow 'axes' of configs
-- add checking to fix Error at services.rb:25: Uninitialized constant #<Class:#<JABA::TopLevelAPI:0x00000000069da6b0>>::Dir when cwd is wrong
+- Have some kind of spec for flag_options, eg
+
+flag_option :export do
+  help 'do exporting'
+  compatibility do
+    'only works on array and hash' if !array? && !hash?
+    end
+  end
+end
+
+- Rename attr_flags to attr_def_flags
+- look at requiring bool attrs to be set. Currently not possible as default set to false
