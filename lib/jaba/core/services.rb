@@ -724,15 +724,6 @@ module JABA
     
     ##
     #
-    def path_inside_jaba_lib?(p)
-      Pathname.new(p).ascend do |c|
-        return true if File.exist?("#{c}/jaba_root")
-      end
-      false
-    end
-
-    ##
-    #
     def load_definitions
       # Load core type definitions
       @definition_src_files.concat(glob("#{__dir__}/../definitions/*.rb"))
@@ -744,10 +735,6 @@ module JABA
           jaba_error("#{p} does not exist")
         end
 
-        if !$jaba_running_tests && path_inside_jaba_lib?(p)
-          jaba_error("Load path '#{p}' cannot be inside jaba lib! Check cwd?", user_error: true)
-        end
-        
         # If load path is a directory, if its called 'jaba' then load all files recursively,
         # else search all files recursively and load any called jaba.rb.
         # 

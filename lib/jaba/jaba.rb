@@ -159,13 +159,9 @@ EOB
   module DidYouMean::Correctable
     remove_method :to_s
   end
-  
-  # TODO: improve
-  $jaba_running_tests = false
 
   begin
     if options[:run_tests]
-      $jaba_running_tests = true
       require_relative "../../test/test_jaba"
     end
     using JABACoreExt
