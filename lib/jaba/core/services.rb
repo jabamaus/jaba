@@ -744,7 +744,7 @@ module JABA
           jaba_error("#{p} does not exist")
         end
 
-        if path_inside_jaba_lib?(p)
+        if !$jaba_running_tests && path_inside_jaba_lib?(p)
           jaba_error("Load path '#{p}' cannot be inside jaba lib! Check cwd?", user_error: true)
         end
         
