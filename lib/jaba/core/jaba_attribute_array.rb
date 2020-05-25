@@ -42,6 +42,7 @@ module JABA
     #
     def set(*args, api_call_line: nil, prefix: nil, postfix: nil, exclude: nil, **keyvalue_args, &block)
       @last_call_location = api_call_line
+      @set = true
       
       values = block_given? ? @node.eval_api_block(&block) : args.shift
 
@@ -50,7 +51,6 @@ module JABA
         v = apply_pre_post_fix(prefix, postfix, v)
         elem.set(v, *args, api_call_line: api_call_line, **keyvalue_args)
         @elems << elem
-        @set = true
       end
       
       if exclude
