@@ -69,7 +69,7 @@ attr_type :choice do
   
   validate_value do |value|
     if !items.include?(value)
-      fail "must be one of #{items}"
+      fail "must be one of #{items} but was '#{value}''"
     end
   end
 
