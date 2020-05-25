@@ -188,11 +188,11 @@ module JABA
           end
 
           test_project :t do
-            platforms [:win32, :x64]
-            platforms.must_equal [:win32, :x64]
+            platforms [:windows]
+            platforms.must_equal [:windows]
             root 'test'
             configs [:debug, :release]
-            src "#{platform_ref.vsname}_src"
+            src "#{platform}_src"
             case config
             when :debug
               config_name "Debug"
@@ -222,18 +222,14 @@ module JABA
     ##
     #
     def generate
-      @projects.size.must_equal 2
+      @projects.size.must_equal 1
 
-      proj1 = @projects[0]
-      proj1.attrs.platform_ref.definition_id.must_equal(:win32)
-      proj1.attrs.src.must_equal 'Win32_src'
-      
-      proj2 = @projects[1]
-      proj2.attrs.platform_ref.definition_id.must_equal(:x64)
-      proj2.attrs.src.must_equal 'x64_src'
+      proj = @projects[0]
+      proj.attrs.platform_ref.definition_id.must_equal(:windows)
+      proj.attrs.src.must_equal 'windows_src'
 
       begin
-        proj1.attrs.src 'invalid'
+        proj.attrs.src 'invalid'
       rescue JabaDefinitionError => e
         e.raw_message.must_equal("'src' attribute is read only")
       else

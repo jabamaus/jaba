@@ -9,14 +9,13 @@
 
   ],
   "cpp": {
-    "cpp|MyApp|vs2017": {
+    "cpp|MyApp|vs2017|windows": {
       "projroot": "C:/projects/GitHub/jaba/examples/example1/./.",
       "projname": "MyApp",
       "host": "vs2017",
+      "platform": "windows",
       "vcxproj": "C:/projects/GitHub/jaba/examples/example1/././MyApp.vcxproj",
-      "src": [
-
-      ],
+      "src": null,
       "vcglobal": {
         "ProjectName": "MyApp",
         "ProjectGuid": "{94B39F2E-598F-4977-32A2-3152F335DBBD}",
@@ -24,9 +23,9 @@
         "WindowsTargetPlatformVersion": null
       },
       "configs": {
-        "debug": {
-          "platform": "x64",
-          "name": "debug",
+        "Debug": {
+          "arch": "x86_64",
+          "name": "Debug",
           "defines": [
 
           ],
@@ -45,12 +44,13 @@
             "PreprocessorDefinitions": null,
             "RuntimeTypeInfo": true,
             "TreatWarningAsError": false,
+            "SubSystem": "Windows",
             "TargetMachine": "MachineX64"
           }
         },
-        "release": {
-          "platform": "x64",
-          "name": "release",
+        "Release": {
+          "arch": "x86_64",
+          "name": "Release",
           "defines": [
 
           ],
@@ -69,19 +69,19 @@
             "PreprocessorDefinitions": null,
             "RuntimeTypeInfo": true,
             "TreatWarningAsError": false,
+            "SubSystem": "Windows",
             "TargetMachine": "MachineX64"
           }
         }
       }
     },
-    "cpp|MyLib|vs2017": {
+    "cpp|MyLib|vs2017|windows": {
       "projroot": "C:/projects/GitHub/jaba/examples/example2/./.",
       "projname": "MyLib",
       "host": "vs2017",
+      "platform": "windows",
       "vcxproj": "C:/projects/GitHub/jaba/examples/example2/././MyLib.vcxproj",
-      "src": [
-
-      ],
+      "src": null,
       "vcglobal": {
         "ProjectName": "MyLib",
         "ProjectGuid": "{BC1B8BAC-BF1A-46A6-8180-E02C42CA6FF0}",
@@ -89,9 +89,9 @@
         "WindowsTargetPlatformVersion": null
       },
       "configs": {
-        "debug": {
-          "platform": "x64",
-          "name": "debug",
+        "Debug": {
+          "arch": "x86_64",
+          "name": "Debug",
           "defines": [
 
           ],
@@ -113,9 +113,9 @@
             "TargetMachine": "MachineX64"
           }
         },
-        "release": {
-          "platform": "x64",
-          "name": "release",
+        "Release": {
+          "arch": "x86_64",
+          "name": "Release",
           "defines": [
 
           ],

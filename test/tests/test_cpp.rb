@@ -12,8 +12,9 @@ module JABA
     it 'supports defaults' do
       op = jaba(dry_run: true) do
         defaults :cpp do
-          platforms [:x64]
           hosts [:vs2017]
+          platforms [:windows]
+          archs [:x86]
           configs [:debug, :release]
           rtti false
         end
@@ -25,7 +26,7 @@ module JABA
         end
       end
 
-      proj = op[:cpp]['cpp|a|vs2017|x64']
+      proj = op[:cpp]['cpp|a|vs2017|windows']
       proj.wont_be_nil
 
       cfg_debug = proj[:configs][:debug]
@@ -53,33 +54,42 @@ module JABA
       end
     end
 
-    it 'prevents nil access' do
+    it 'prevents nil access when attributes not set up yet' do
       op = jaba(dry_run: true) do
         cpp :app do
           type :app
-          platforms [:win32, :x64]
-          projname "app_#{host&.upcase}_#{platform&.upcase}" # TODO: remove safe call
-          hosts [:vs2017]
-          if win32?
-            configs [:debug]
-          else
-            configs [:release]
-          end
+          platforms [:windows]
+          archs [:x86]
+          projname "app_#{host&.upcase}" # TODO: remove safe call
+          hosts [:vs2017] # Doesn't actually matter whether this is called before or after projname
+          configs [:debug]
         end
       end
-      proj = op[:cpp]['cpp|app|vs2017|win32']
+      proj = op[:cpp]['cpp|app|vs2017|windows']
       proj.wont_be_nil
-      proj[:projname].must_equal('app_VS2017_WIN32')
-      proj[:configs][:debug].wont_be_nil
-      proj[:configs][:release].must_be_nil
+      proj[:projname].must_equal('app_VS2017')
+    end
+
+    # TODO. Test that can control whether multiple platforms can be combined into one project or not
+    it 'has a flexible approach to platforms' do
+      jaba(dry_run: true) do
+        cpp :app do
+          hosts :vs2017
+          platforms [:windows]
+          archs [:x86]
+          configs [:debug, :release]
+          type :app
+        end
+      end
     end
 
     # TODO: explicitly test that flags are applied after exporting.
     it 'supports exporting array attributes to dependents' do
       op = jaba(dry_run: true) do
         defaults :cpp do
-          platforms [:x64]
           hosts [:vs2017]
+          platforms [:windows]
+          archs [:x86]
           configs [:debug, :release]
         end
         cpp :app do
@@ -105,7 +115,7 @@ module JABA
           # TODO: test vcproperty
         end
       end
-      app = op[:cpp]['cpp|app|vs2017|x64']
+      app = op[:cpp]['cpp|app|vs2017|windows']
       app.wont_be_nil
       app[:vcglobal][:BoolAttr].must_equal(true)
       app[:vcglobal][:StringAttr2].must_equal('s2')
@@ -117,6 +127,10 @@ module JABA
       cfg_release = app[:configs][:release]
       cfg_release.wont_be_nil
       cfg_release[:defines].must_equal ['A', 'B', 'C', 'F', 'R']
+    end
+
+    it 'only allows :export on array and hash properties' do
+      # TODO
     end
 
   end

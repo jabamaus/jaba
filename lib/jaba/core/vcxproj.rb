@@ -39,6 +39,7 @@ module JABA
       p_root[:projroot] = @projroot
       p_root[:projname] = @attrs.projname
       p_root[:host] = @host.definition_id
+      p_root[:platform] = @attrs.platform_ref.definition_id
       p_root[:vcxproj] = @vcxproj_file
       p_root[:src] = @attrs.src # TODO: output actual src not the spec
       p_root[:vcglobal] = @attrs.vcglobal
@@ -48,7 +49,7 @@ module JABA
         cfg = {}
         attrs = c.attrs
         cfg_root[attrs.config] = cfg
-        cfg[:platform] = attrs.platform_ref.definition_id
+        cfg[:arch] = attrs.arch_ref.definition_id
         cfg[:name] = attrs.config_name
         cfg[:defines] = attrs.defines
         cfg[:inc] = attrs.inc
@@ -70,7 +71,7 @@ module JABA
       @idg = StringWriter.new(capacity: 2 * 1024)
 
       each_config do |cfg|
-        platform = cfg.attrs.platform_ref.attrs.vsname
+        platform = cfg.attrs.arch_ref.attrs.vsname
         cfg_name = cfg.attrs.config_name
         @item_def_groups = {}
 

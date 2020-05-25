@@ -2,21 +2,28 @@ define :cpp do
 
   help 'Cross platform C++ project definition'
 
-  # Required attributes. Attributes that the user must provide a value for.
-  #
+   attr_array :hosts, type: :choice do
+    items all_instance_ids(:host)
+    flags :required
+  end
+  
   attr :root, type: :dir do
     help 'Root of the project specified as a relative path to the file that contains the project definition. ' \
          'All paths are specified relative to this. Project files will be generated here unless <projroot> is set.'
     default '.'
   end
 
-  attr_array :hosts, type: :choice do
-    items all_instance_ids(:host)
-    flags :required
-  end
-
   define :per_host do
 
+    # Required attributes that the user must provide a value for.
+    #
+    attr_array :platforms, type: :choice do
+      items all_instance_ids(:platform) # TODO: should only allow platforms supported by this host
+      flags :required
+    end
+    
+    # Control flow attributes
+    #
     attr :host, type: :symbol do
       flags :read_only
     end
@@ -25,20 +32,24 @@ define :cpp do
       referenced_type :host
     end
 
-    attr_array :platforms, type: :choice do
-      items all_instance_ids(:platform)
-      flags :required
-    end
-
   end
 
   define :per_platform do
+
+    # Required attributes that the user must provide a value for.
+    #
+    attr_array :archs, type: :choice  do
+      items all_instance_ids(:arch) # TODO: should be valid_archs for current platform
+      flags :required
+    end
 
     attr_array :configs, type: :symbol_or_string do
       flags :required, :unordered
       flag_options :export
     end
 
+    # Control flow attributes
+    #
     attr :platform, type: :symbol do
       flags :read_only
     end
@@ -47,6 +58,16 @@ define :cpp do
       referenced_type :platform
     end
   
+    # Common attributes
+    #
+    attr_array :deps, type: :reference do
+      help 'Specify project dependencies. List of ids of other cpp definitions.'
+      referenced_type :cpp
+      make_handle do |id|
+        "cpp|#{id}|#{host}|#{platform}"
+      end
+    end
+
     attr :projroot, type: :dir do
       help 'Directory in which projects will be generated. Specified as a relative path from <root>. If not specified ' \
       'projects will be generated in <root>'
@@ -63,26 +84,6 @@ define :cpp do
       help 'Optional suffix to be applied to <projname>. Has no effect if <projname> is set explicitly.'
     end
 
-    attr_array :src, type: :path do
-      help 'Source file specification'
-      flags :unordered # Final source will be sorted so no need to sort this
-      flag_options :export
-    end
-    
-    attr_array :deps, type: :reference do
-      help 'Specify project dependencies. List of ids of other cpp definitions.'
-      referenced_type :cpp
-      make_handle do |id|
-        "cpp|#{id}|#{host}|#{platform}"
-      end
-    end
-    
-    attr_hash :vcglobal do
-      help 'Directly address the Globals property group in a vcxproj'
-      value_option :condition
-      flag_options :export
-    end
-    
     attr :winsdkver, type: :choice do
       help 'Windows SDK version. Defaults to nil.'
       items [
@@ -94,19 +95,47 @@ define :cpp do
       ]
       default nil
     end
+
+    attr_hash :vcglobal do
+      help 'Directly address the Globals property group in a vcxproj'
+      value_option :condition
+      flag_options :export
+    end
+
+  end
+
+  define :per_arch do
+
+    attr :arch, type: :symbol_or_string do
+      help 'Returns current arch being processed. Use to define control flow to set config-specific atttributes'
+      flags :read_only
+    end
+
+    attr :arch_ref, type: :reference do
+      referenced_type :arch
+    end
+
+    attr_array :src, type: :path do
+      help 'Source file specification'
+      flags :unordered # Final source will be sorted so no need to sort this
+      flag_options :export
+    end
+    
   end
 
   # Sub-grouping of attributes that pertain to a build configuration
   #
   define :config do
 
-    # Required attributes. Attributes that the user must provide a value for.
+    # Required attributes that the user must provide a value for.
     #
     attr :type, type: :choice do # TODO: rename?
       items [:app, :console, :lib, :dll]
       flags :required
     end
 
+    # Control flow attributes
+    #
     attr :config, type: :symbol_or_string do
       help 'Returns current config being processed. Use to define control flow to set config-specific atttributes'
       flags :read_only
@@ -162,7 +191,7 @@ define :cpp do
         :unicode,
         nil
       ]
-      default :unicode
+      default nil
     end
 
     attr :exceptions, type: :choice do

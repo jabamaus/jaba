@@ -1,6 +1,7 @@
 cpp :MyLib do
-  hosts [:vs2017]
-  platforms [:win32, :x64]
   type :lib
-  configs [:debug, :release]
+  hosts [:vs2017]
+  platforms [:windows]
+  archs [:x86, :x86_64]
+  configs [:Debug, :Release]
 end

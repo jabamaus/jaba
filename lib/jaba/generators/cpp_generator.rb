@@ -14,7 +14,6 @@ module JABA
     #
     def init
       @platform_nodes = []
-      @host_nodes = []
       @projects = []
     end
 
@@ -31,8 +30,6 @@ module JABA
           host_ref h
         end
         
-        @host_nodes << host_node
-
         host_node.attrs.platforms.each do |p|
           platform_node = make_node(type_id: :per_platform, name: p, parent: host_node) do
             platform p
@@ -40,10 +37,17 @@ module JABA
           end
 
           @platform_nodes << platform_node
+
+          platform_node.attrs.archs.each do |a|
+            arch_node = make_node(type_id: :per_arch, name: a, parent: platform_node) do
+              arch a
+              arch_ref a
+            end
           
-          platform_node.attrs.configs.each do |cfg|
-            make_node(type_id: :config, name: cfg, parent: platform_node) do
-              config cfg
+            arch_node.attrs.configs.each do |cfg|
+              make_node(type_id: :config, name: cfg, parent: arch_node) do
+                config cfg
+              end
             end
           end
         end
@@ -135,7 +139,7 @@ module JABA
           end
 
           vcproperty :TargetMachine, group: (cfg_type == :lib ? :Lib : :Link) do
-            :MachineX64 if x64?
+            :MachineX64 if x86_64?
           end
 
           # Build events
@@ -190,18 +194,8 @@ module JABA
         end
       end
 
-      combine = false#true
-
-      # TODO: run code in setup_project before pulling up?
-      if combine
-        @host_nodes.each do |hn|
-          hn.pull_up(:projname, :projroot, :deps, :src, :vcglobal) # TODO: src should not be pulled up
-          @projects << make_project(Vcxproj, hn)
-        end
-      else
-        @platform_nodes.each do |pn|
-          @projects << make_project(Vcxproj, pn)
-        end
+      @platform_nodes.each do |pn|
+        @projects << make_project(Vcxproj, pn)
       end
     end
 

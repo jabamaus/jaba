@@ -33,4 +33,4 @@ flag_option :export do
 end
 
 - Rename attr_flags to attr_def_flags
-- look at requiring bool attrs to be set. Currently not possible as default set to false
+- Rename :unordered to :nosort

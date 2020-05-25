@@ -16,7 +16,7 @@ end
 
 attr_flag :expose do
   help 'Attributes flagged with :expose that are in a type that is then referenced by another type will have their attribute ' \
-       'name automatically imported as a read only property. An example of this is the win32? attribute in :platform type'
+       'name automatically imported as a read only property. An example of this is the windows? attribute in :platform type'
 end
 
 # Array attribute flags

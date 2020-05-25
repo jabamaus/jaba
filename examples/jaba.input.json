@@ -131,212 +131,242 @@
       "children": {
       }
     },
-    "platform|win32": {
-      "win32?": true,
-      "x64?": false,
+    "platform|windows": {
+      "windows?": true,
       "iOS?": false,
       "macOS?": false,
-      "windows?": true,
+      "microsoft?": true,
       "apple?": false,
-      "vsname": "Win32",
-      "children": {
-      }
-    },
-    "platform|x64": {
-      "win32?": false,
-      "x64?": true,
-      "iOS?": false,
-      "macOS?": false,
-      "windows?": true,
-      "apple?": false,
-      "vsname": "x64",
+      "valid_archs": [
+        "x86",
+        "x86_64",
+        "ARM64"
+      ],
+      "default_archs": [
+        "x86",
+        "x86_64"
+      ],
       "children": {
       }
     },
     "platform|iOS": {
-      "win32?": false,
-      "x64?": false,
+      "windows?": false,
       "iOS?": true,
       "macOS?": false,
-      "windows?": false,
+      "microsoft?": false,
       "apple?": true,
-      "vsname": null,
+      "valid_archs": [
+
+      ],
+      "default_archs": [
+
+      ],
       "children": {
       }
     },
     "platform|macOS": {
-      "win32?": false,
-      "x64?": false,
+      "windows?": false,
       "iOS?": false,
       "macOS?": true,
-      "windows?": false,
+      "microsoft?": false,
       "apple?": true,
-      "vsname": null,
+      "valid_archs": [
+
+      ],
+      "default_archs": [
+
+      ],
+      "children": {
+      }
+    },
+    "arch|x86": {
+      "x86?": true,
+      "x86_64?": false,
+      "arm64?": false,
+      "little_endian?": true,
+      "big_endian?": false,
+      "vsname": "Win32",
+      "children": {
+      }
+    },
+    "arch|x86_64": {
+      "x86?": false,
+      "x86_64?": true,
+      "arm64?": false,
+      "little_endian?": true,
+      "big_endian?": false,
+      "vsname": "x64",
+      "children": {
+      }
+    },
+    "arch|arm64": {
+      "x86?": false,
+      "x86_64?": false,
+      "arm64?": true,
+      "little_endian?": true,
+      "big_endian?": false,
+      "vsname": "ARM64",
       "children": {
       }
     },
     "cpp|MyApp": {
-      "root": ".",
       "hosts": [
         "vs2017"
       ],
+      "root": ".",
       "children": {
         "cpp|MyApp|vs2017": {
+          "platforms": [
+            "windows"
+          ],
           "host": "vs2017",
           "host_ref": "host|vs2017",
-          "platforms": [
-            "win32",
-            "x64"
-          ],
           "children": {
-            "cpp|MyApp|vs2017|win32": {
-              "platform": "win32",
-              "platform_ref": "platform|win32",
-              "projroot": ".",
-              "projname": "MyApp",
-              "projname_suffix": null,
-              "src": [
-
+            "cpp|MyApp|vs2017|windows": {
+              "archs": [
+                "x86",
+                "x86_64"
               ],
               "configs": [
-                "debug",
-                "release"
+                "Debug",
+                "Release"
               ],
+              "platform": "windows",
+              "platform_ref": "platform|windows",
               "deps": [
 
               ],
-              "vcglobal": {
-              },
-              "winsdkver": null,
-              "children": {
-                "cpp|MyApp|vs2017|win32|debug": {
-                  "build_action": [
-
-                  ],
-                  "cflags": [
-
-                  ],
-                  "config": "debug",
-                  "config_name": "debug",
-                  "debug": true,
-                  "character_set": null,
-                  "defines": [
-
-                  ],
-                  "exceptions": true,
-                  "inc": [
-
-                  ],
-                  "rtti": true,
-                  "toolset": "v141",
-                  "type": "app",
-                  "vcproperty": {
-                  },
-                  "warnerror": false,
-                  "children": {
-                  }
-                },
-                "cpp|MyApp|vs2017|win32|release": {
-                  "build_action": [
-
-                  ],
-                  "cflags": [
-
-                  ],
-                  "config": "release",
-                  "config_name": "release",
-                  "debug": false,
-                  "character_set": null,
-                  "defines": [
-
-                  ],
-                  "exceptions": true,
-                  "inc": [
-
-                  ],
-                  "rtti": true,
-                  "toolset": "v141",
-                  "type": "app",
-                  "vcproperty": {
-                  },
-                  "warnerror": false,
-                  "children": {
-                  }
-                }
-              }
-            },
-            "cpp|MyApp|vs2017|x64": {
-              "platform": "x64",
-              "platform_ref": "platform|x64",
               "projroot": ".",
               "projname": "MyApp",
               "projname_suffix": null,
-              "src": [
-
-              ],
-              "configs": [
-                "debug",
-                "release"
-              ],
-              "deps": [
-
-              ],
+              "winsdkver": null,
               "vcglobal": {
               },
-              "winsdkver": null,
               "children": {
-                "cpp|MyApp|vs2017|x64|debug": {
-                  "build_action": [
+                "cpp|MyApp|vs2017|windows|x86": {
+                  "arch": "x86",
+                  "arch_ref": "arch|x86",
+                  "src": [
 
                   ],
-                  "cflags": [
-
-                  ],
-                  "config": "debug",
-                  "config_name": "debug",
-                  "debug": true,
-                  "character_set": null,
-                  "defines": [
-
-                  ],
-                  "exceptions": true,
-                  "inc": [
-
-                  ],
-                  "rtti": true,
-                  "toolset": "v141",
-                  "type": "app",
-                  "vcproperty": {
-                  },
-                  "warnerror": false,
                   "children": {
+                    "cpp|MyApp|vs2017|windows|x86|Debug": {
+                      "type": "app",
+                      "config": "Debug",
+                      "build_action": [
+
+                      ],
+                      "cflags": [
+
+                      ],
+                      "config_name": "Debug",
+                      "debug": true,
+                      "defines": [
+
+                      ],
+                      "inc": [
+
+                      ],
+                      "warnerror": false,
+                      "character_set": null,
+                      "exceptions": true,
+                      "rtti": true,
+                      "toolset": "v141",
+                      "vcproperty": {
+                      },
+                      "children": {
+                      }
+                    },
+                    "cpp|MyApp|vs2017|windows|x86|Release": {
+                      "type": "app",
+                      "config": "Release",
+                      "build_action": [
+
+                      ],
+                      "cflags": [
+
+                      ],
+                      "config_name": "Release",
+                      "debug": false,
+                      "defines": [
+
+                      ],
+                      "inc": [
+
+                      ],
+                      "warnerror": false,
+                      "character_set": null,
+                      "exceptions": true,
+                      "rtti": true,
+                      "toolset": "v141",
+                      "vcproperty": {
+                      },
+                      "children": {
+                      }
+                    }
                   }
                 },
-                "cpp|MyApp|vs2017|x64|release": {
-                  "build_action": [
+                "cpp|MyApp|vs2017|windows|x86_64": {
+                  "arch": "x86_64",
+                  "arch_ref": "arch|x86_64",
+                  "src": [
 
                   ],
-                  "cflags": [
-
-                  ],
-                  "config": "release",
-                  "config_name": "release",
-                  "debug": false,
-                  "character_set": null,
-                  "defines": [
-
-                  ],
-                  "exceptions": true,
-                  "inc": [
-
-                  ],
-                  "rtti": true,
-                  "toolset": "v141",
-                  "type": "app",
-                  "vcproperty": {
-                  },
-                  "warnerror": false,
                   "children": {
+                    "cpp|MyApp|vs2017|windows|x86_64|Debug": {
+                      "type": "app",
+                      "config": "Debug",
+                      "build_action": [
+
+                      ],
+                      "cflags": [
+
+                      ],
+                      "config_name": "Debug",
+                      "debug": true,
+                      "defines": [
+
+                      ],
+                      "inc": [
+
+                      ],
+                      "warnerror": false,
+                      "character_set": null,
+                      "exceptions": true,
+                      "rtti": true,
+                      "toolset": "v141",
+                      "vcproperty": {
+                      },
+                      "children": {
+                      }
+                    },
+                    "cpp|MyApp|vs2017|windows|x86_64|Release": {
+                      "type": "app",
+                      "config": "Release",
+                      "build_action": [
+
+                      ],
+                      "cflags": [
+
+                      ],
+                      "config_name": "Release",
+                      "debug": false,
+                      "defines": [
+
+                      ],
+                      "inc": [
+
+                      ],
+                      "warnerror": false,
+                      "character_set": null,
+                      "exceptions": true,
+                      "rtti": true,
+                      "toolset": "v141",
+                      "vcproperty": {
+                      },
+                      "children": {
+                      }
+                    }
                   }
                 }
               }
@@ -346,167 +376,163 @@
       }
     },
     "cpp|MyLib": {
-      "root": ".",
       "hosts": [
         "vs2017"
       ],
+      "root": ".",
       "children": {
         "cpp|MyLib|vs2017": {
+          "platforms": [
+            "windows"
+          ],
           "host": "vs2017",
           "host_ref": "host|vs2017",
-          "platforms": [
-            "win32",
-            "x64"
-          ],
           "children": {
-            "cpp|MyLib|vs2017|win32": {
-              "platform": "win32",
-              "platform_ref": "platform|win32",
-              "projroot": ".",
-              "projname": "MyLib",
-              "projname_suffix": null,
-              "src": [
-
+            "cpp|MyLib|vs2017|windows": {
+              "archs": [
+                "x86",
+                "x86_64"
               ],
               "configs": [
-                "debug",
-                "release"
+                "Debug",
+                "Release"
               ],
+              "platform": "windows",
+              "platform_ref": "platform|windows",
               "deps": [
 
               ],
-              "vcglobal": {
-              },
-              "winsdkver": null,
-              "children": {
-                "cpp|MyLib|vs2017|win32|debug": {
-                  "build_action": [
-
-                  ],
-                  "cflags": [
-
-                  ],
-                  "config": "debug",
-                  "config_name": "debug",
-                  "debug": true,
-                  "character_set": null,
-                  "defines": [
-
-                  ],
-                  "exceptions": true,
-                  "inc": [
-
-                  ],
-                  "rtti": true,
-                  "toolset": "v141",
-                  "type": "lib",
-                  "vcproperty": {
-                  },
-                  "warnerror": false,
-                  "children": {
-                  }
-                },
-                "cpp|MyLib|vs2017|win32|release": {
-                  "build_action": [
-
-                  ],
-                  "cflags": [
-
-                  ],
-                  "config": "release",
-                  "config_name": "release",
-                  "debug": false,
-                  "character_set": null,
-                  "defines": [
-
-                  ],
-                  "exceptions": true,
-                  "inc": [
-
-                  ],
-                  "rtti": true,
-                  "toolset": "v141",
-                  "type": "lib",
-                  "vcproperty": {
-                  },
-                  "warnerror": false,
-                  "children": {
-                  }
-                }
-              }
-            },
-            "cpp|MyLib|vs2017|x64": {
-              "platform": "x64",
-              "platform_ref": "platform|x64",
               "projroot": ".",
               "projname": "MyLib",
               "projname_suffix": null,
-              "src": [
-
-              ],
-              "configs": [
-                "debug",
-                "release"
-              ],
-              "deps": [
-
-              ],
+              "winsdkver": null,
               "vcglobal": {
               },
-              "winsdkver": null,
               "children": {
-                "cpp|MyLib|vs2017|x64|debug": {
-                  "build_action": [
+                "cpp|MyLib|vs2017|windows|x86": {
+                  "arch": "x86",
+                  "arch_ref": "arch|x86",
+                  "src": [
 
                   ],
-                  "cflags": [
-
-                  ],
-                  "config": "debug",
-                  "config_name": "debug",
-                  "debug": true,
-                  "character_set": null,
-                  "defines": [
-
-                  ],
-                  "exceptions": true,
-                  "inc": [
-
-                  ],
-                  "rtti": true,
-                  "toolset": "v141",
-                  "type": "lib",
-                  "vcproperty": {
-                  },
-                  "warnerror": false,
                   "children": {
+                    "cpp|MyLib|vs2017|windows|x86|Debug": {
+                      "type": "lib",
+                      "config": "Debug",
+                      "build_action": [
+
+                      ],
+                      "cflags": [
+
+                      ],
+                      "config_name": "Debug",
+                      "debug": true,
+                      "defines": [
+
+                      ],
+                      "inc": [
+
+                      ],
+                      "warnerror": false,
+                      "character_set": null,
+                      "exceptions": true,
+                      "rtti": true,
+                      "toolset": "v141",
+                      "vcproperty": {
+                      },
+                      "children": {
+                      }
+                    },
+                    "cpp|MyLib|vs2017|windows|x86|Release": {
+                      "type": "lib",
+                      "config": "Release",
+                      "build_action": [
+
+                      ],
+                      "cflags": [
+
+                      ],
+                      "config_name": "Release",
+                      "debug": false,
+                      "defines": [
+
+                      ],
+                      "inc": [
+
+                      ],
+                      "warnerror": false,
+                      "character_set": null,
+                      "exceptions": true,
+                      "rtti": true,
+                      "toolset": "v141",
+                      "vcproperty": {
+                      },
+                      "children": {
+                      }
+                    }
                   }
                 },
-                "cpp|MyLib|vs2017|x64|release": {
-                  "build_action": [
+                "cpp|MyLib|vs2017|windows|x86_64": {
+                  "arch": "x86_64",
+                  "arch_ref": "arch|x86_64",
+                  "src": [
 
                   ],
-                  "cflags": [
-
-                  ],
-                  "config": "release",
-                  "config_name": "release",
-                  "debug": false,
-                  "character_set": null,
-                  "defines": [
-
-                  ],
-                  "exceptions": true,
-                  "inc": [
-
-                  ],
-                  "rtti": true,
-                  "toolset": "v141",
-                  "type": "lib",
-                  "vcproperty": {
-                  },
-                  "warnerror": false,
                   "children": {
+                    "cpp|MyLib|vs2017|windows|x86_64|Debug": {
+                      "type": "lib",
+                      "config": "Debug",
+                      "build_action": [
+
+                      ],
+                      "cflags": [
+
+                      ],
+                      "config_name": "Debug",
+                      "debug": true,
+                      "defines": [
+
+                      ],
+                      "inc": [
+
+                      ],
+                      "warnerror": false,
+                      "character_set": null,
+                      "exceptions": true,
+                      "rtti": true,
+                      "toolset": "v141",
+                      "vcproperty": {
+                      },
+                      "children": {
+                      }
+                    },
+                    "cpp|MyLib|vs2017|windows|x86_64|Release": {
+                      "type": "lib",
+                      "config": "Release",
+                      "build_action": [
+
+                      ],
+                      "cflags": [
+
+                      ],
+                      "config_name": "Release",
+                      "debug": false,
+                      "defines": [
+
+                      ],
+                      "inc": [
+
+                      ],
+                      "warnerror": false,
+                      "character_set": null,
+                      "exceptions": true,
+                      "rtti": true,
+                      "toolset": "v141",
+                      "vcproperty": {
+                      },
+                      "children": {
+                      }
+                    }
                   }
                 }
               }

@@ -237,11 +237,11 @@ module JABA
         end
 
         testproj :t do
-          platforms [:win32]
+          platforms [:windows]
           hosts [:vs2017]
-          path "#{platform.vsname}/#{host.version_year}"
+          path "#{platform.valid_archs[0]}/#{host.version_year}"
           generate do
-            children[0].children[0].attrs.path.must_equal("Win32/2017")
+            children[0].children[0].attrs.path.must_equal("x86/2017")
           end
         end
 
