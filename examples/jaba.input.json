@@ -131,6 +131,36 @@
       "children": {
       }
     },
+    "arch|x86": {
+      "x86?": true,
+      "x86_64?": false,
+      "arm64?": false,
+      "little_endian?": true,
+      "big_endian?": false,
+      "vsname": "Win32",
+      "children": {
+      }
+    },
+    "arch|x86_64": {
+      "x86?": false,
+      "x86_64?": true,
+      "arm64?": false,
+      "little_endian?": true,
+      "big_endian?": false,
+      "vsname": "x64",
+      "children": {
+      }
+    },
+    "arch|arm64": {
+      "x86?": false,
+      "x86_64?": false,
+      "arm64?": true,
+      "little_endian?": true,
+      "big_endian?": false,
+      "vsname": "ARM64",
+      "children": {
+      }
+    },
     "platform|windows": {
       "windows?": true,
       "iOS?": false,
@@ -138,13 +168,13 @@
       "microsoft?": true,
       "apple?": false,
       "valid_archs": [
-        "x86",
-        "x86_64",
-        "ARM64"
+        "arch|x86",
+        "arch|x86_64",
+        "arch|arm64"
       ],
       "default_archs": [
-        "x86",
-        "x86_64"
+        "arch|x86",
+        "arch|x86_64"
       ],
       "children": {
       }
@@ -176,36 +206,6 @@
       "default_archs": [
 
       ],
-      "children": {
-      }
-    },
-    "arch|x86": {
-      "x86?": true,
-      "x86_64?": false,
-      "arm64?": false,
-      "little_endian?": true,
-      "big_endian?": false,
-      "vsname": "Win32",
-      "children": {
-      }
-    },
-    "arch|x86_64": {
-      "x86?": false,
-      "x86_64?": true,
-      "arm64?": false,
-      "little_endian?": true,
-      "big_endian?": false,
-      "vsname": "x64",
-      "children": {
-      }
-    },
-    "arch|arm64": {
-      "x86?": false,
-      "x86_64?": false,
-      "arm64?": true,
-      "little_endian?": true,
-      "big_endian?": false,
-      "vsname": "ARM64",
       "children": {
       }
     },

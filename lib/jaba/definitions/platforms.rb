@@ -21,13 +21,15 @@ define :platform do
     flags :expose
   end
   
-  attr_array :valid_archs do
+  attr_array :valid_archs, type: :choice do
     help 'List of architectures supported by this platform'
+    items all_instance_ids(:arch)
     flags :required, :unordered
   end
 
-  attr_array :default_archs do
+  attr_array :default_archs, type: :choice do
     help 'List of default target architectures for this platform'
+    items all_instance_ids(:arch)
     flags :required, :unordered
   end
 
@@ -36,7 +38,7 @@ end
 platform :windows do
   windows? true
   microsoft? true
-  valid_archs [:x86, :x86_64, :ARM64]
+  valid_archs [:x86, :x86_64, :arm64]
   default_archs [:x86, :x86_64]
 end
 

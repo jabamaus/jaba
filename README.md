@@ -34,3 +34,18 @@ end
 
 - Rename attr_flags to attr_def_flags
 - Rename :unordered to :nosort
+- Having two arrays that reference the same type causes problems with :expose. Need to resolve this.
+Need to make it so that don't expose if attribute is not single value. Also need to prevent exposing
+if there are multiple attrs, with a warning.
+
+  attr_array :valid_archs, type: :reference do
+    help 'List of architectures supported by this platform'
+    referenced_type :arch
+    flags :required, :unordered
+  end
+
+  attr_array :default_archs, type: :reference do
+    help 'List of default target architectures for this platform'
+    referenced_type :arch
+    flags :required, :unordered
+  end
