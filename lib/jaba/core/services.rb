@@ -94,7 +94,7 @@ module JABA
       @root_nodes = []
       @null_nodes = {}
       
-      @top_level_api = TopLevelAPI.new(self)
+      @top_level_api = JabaTopLevelAPI.new(self)
 
       @default_attr_type = JabaAttributeType.new(self, JabaDefinition.new(nil, nil, caller(0, 1)[0])).freeze
       @file_manager = FileManager.new(self)
