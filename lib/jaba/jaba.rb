@@ -174,11 +174,12 @@ EOB
     print "Generated #{generated.size} files, #{added.size} added, #{modified.size} modified"
     print " [dry run]" if options[:dry_run]
     puts
+    cwd = Dir.getwd
     added.each do |f|
-      puts "  #{f} [A]"
+      puts "  #{f.relative_path_from(cwd)} [A]"
     end
     modified.each do |f|
-      puts "  #{f} [M]"
+      puts "  #{f.relative_path_from(cwd)} [M]"
     end
     warnings = op[:warnings]
     puts warnings if warnings
