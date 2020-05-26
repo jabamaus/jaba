@@ -43,26 +43,50 @@ module JABA
 
   ##
   #
-  class StringWriter < String
+  class StringWriter
+    
+    ##
+    #
+    def initialize(...)
+      @str = String.new(...)
+    end
+
+    ##
+    #
+    def str
+      @str
+    end
+
+    ##
+    #
+    def to_s
+      @str
+    end
     
     ##
     #
     def <<(str)
-      concat str, "\n"
+      @str.concat str, "\n"
     end
     
     ##
     #
     def write_raw(str)
-      concat str
+      @str.concat str.to_s
     end
   
     ##
     #
     def newline
-      concat "\n"
+      @str.concat "\n"
     end
     
+    ##
+    #
+    def chomp!
+      @str.chomp!
+    end
+
   end
   
 end
