@@ -129,7 +129,7 @@ define :cpp do
 
     # Required attributes that the user must provide a value for.
     #
-    attr :type, type: :choice do # TODO: rename?
+    attr :type, type: :choice do
       items [:app, :console, :lib, :dll]
       flags :required
     end
