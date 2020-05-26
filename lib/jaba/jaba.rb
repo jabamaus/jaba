@@ -71,14 +71,8 @@ module JABA
     attr_bool :enable_logging
 
     ##
-    # Causes definition file contents to be cached. Useful if Jaba will be executed more than once
-    # in one process, and definition source files are NOT changing between runs (eg when during unit testing).
-    # No benefit for single run invocations. Off by default.
-    #
-    attr_bool :use_file_cache
-
-    ##
-    # Uses a cache when globbing definition files. Same conditions as use_file_cache apply. Off by default.
+    # Uses a cache when globbing definition files. Useful if calling jaba multiple times and definition files
+    # are not changing (eg during unit testing). No benefit for single run invocations. Off by default.
     #
     attr_bool :use_glob_cache
 
@@ -174,12 +168,17 @@ EOB
         j.enable_logging = options[:enable_logging] if options[:enable_logging]
       end
     end
-    written = op[:generated]
-    print "Wrote #{written.size} files:"
+    generated = op[:generated]
+    added = op[:added_files]
+    modified = op[:modified_files]
+    print "Generated #{generated.size} files, #{added.size} added, #{modified.size} modified"
     print " [dry run]" if options[:dry_run]
     puts
-    written.each do |w|
-      puts "  #{w}"
+    added.each do |f|
+      puts "  #{f} [A]"
+    end
+    modified.each do |f|
+      puts "  #{f} [M]"
     end
     warnings = op[:warnings]
     puts warnings if warnings

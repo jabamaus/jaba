@@ -62,7 +62,7 @@ module JABA
     #
     def write_vcxproj
       @services.log "Generating #{@vcxproj_file}"
-
+      
       w = StringWriter.new(capacity: 64 * 1024)
       @pc = StringWriter.new(capacity: 2 * 1024)
       @pg1 = StringWriter.new(capacity: 2 * 1024)
@@ -183,7 +183,7 @@ module JABA
       w << '</Project>'
       w.chomp!
       
-      @services.save_file(@vcxproj_file, w, :windows)
+      @services.save_file(@vcxproj_file, w.str, :windows, encoding: 'UTF-8')
     end
     
     ##
@@ -199,7 +199,7 @@ module JABA
       end
       w << '</Project>'
       w.chomp!
-      @services.save_file(@vcxproj_filters_file, w, :windows)
+      @services.save_file(@vcxproj_filters_file, w.str, :windows, encoding: 'UTF-8')
     end
   
   end

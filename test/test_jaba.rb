@@ -20,7 +20,6 @@ module JABA
         c.definitions(&block) if block_given?
         c.dump_output = false
         c.dry_run = dry_run
-        c.use_file_cache = true
         c.use_glob_cache = true
       end
       warnings = op[:warnings]

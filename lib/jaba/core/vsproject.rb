@@ -27,9 +27,10 @@ module JABA
     #
     def guid
       if !@guid
-        if File.exist?(@vcxproj_file)
-          if @services.read_file(@vcxproj_file, encoding: 'UTF-8') !~ /<ProjectGuid>(.+)<\/ProjectGuid>/
-            @services.jaba_error("Failed to read GUID from #{@vcxproj_file}")
+        content = @services.read_file(@vcxproj_file, encoding: 'UTF-8')
+        if content
+          if content !~ /<ProjectGuid>(.+)<\/ProjectGuid>/
+            @services.jaba_error("Failed to extract GUID from #{@vcxproj_file}")
           end
           @guid = Regexp.last_match(1)
         else

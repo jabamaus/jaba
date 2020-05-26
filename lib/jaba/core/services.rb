@@ -50,7 +50,6 @@ module JABA
       @input.instance_variable_set(:@dump_output, true)
       @input.instance_variable_set(:@dry_run, false)
       @input.instance_variable_set(:@enable_logging, false)
-      @input.instance_variable_set(:@use_file_cache, false)
       @input.instance_variable_set(:@use_glob_cache, false)
 
       # Add cwd to load_paths, unless in the root of jaba itself (ie when developing)
@@ -73,6 +72,8 @@ module JABA
       
       @generated_files = []
       @generated_files_lookup = {}
+      @added_files = []
+      @modified_files = []
       
       @jaba_attr_type_definitions = []
       @jaba_attr_flag_definitions = []
@@ -521,6 +522,8 @@ module JABA
         json = JSON.pretty_generate(@output)
         save_file(input.jaba_output_file, json, :unix, track: false)
       end
+      @output[:added_files] = @added_files
+      @output[:modified_files] = @modified_files
     end
 
     ##
@@ -640,37 +643,43 @@ module JABA
     
     ##
     #
-    def read_file(file, encoding: nil)
-      str = nil
-      if input.use_file_cache?
-        str = @@file_cache[file]
-      end
+    def read_file(file, encoding: nil, fail_if_not_found: false)
+      file = file.cleanpath
+      str = @@file_cache[file]
       if str.nil?
-        str = IO.read(file, encoding: encoding)
-      end
-      if input.use_file_cache?
-        @@file_cache[file] = str
+        if !File.exist?(file)
+          if fail_if_not_found
+            jaba_error("'#{file}' does not exist - cannot read")
+          else
+            return nil
+          end
+        else
+          str = IO.binread(file)
+          str.force_encoding(encoding) if encoding
+          @@file_cache[file] = str
+        end
       end
       str
     end
     
     ##
     #
-    def save_file(filename, content, eol, track: true)
-      filename = File.expand_path(filename.cleanpath)
-
-      if input.dry_run?
-        log "Not saving #{filename} [dry run]"
-      else
-        log "Saving #{filename}"
-      end
-
+    def save_file(filename, content, eol, encoding: nil, track: true)
       if (eol == :windows) || ((eol == :native) && OS.windows?)
         content = content.gsub("\n", "\r\n")
       end
+      
+      filename = File.expand_path(filename.cleanpath)
 
-      # TODO: in case of duplicate check if content matches and fail if it doesn't
       if track
+        existing_content = read_file(filename, encoding: encoding)
+        if existing_content.nil?
+          @added_files << filename
+        elsif existing_content != content
+          @modified_files << filename
+        end
+        
+        # TODO: in case of duplicate check if content matches and fail if it doesn't
         if @generated_files_lookup.key?(filename)
           jaba_warning "Duplicate file '#{filename}' generated"
         end
@@ -680,11 +689,15 @@ module JABA
         @generated_files << filename
       end
       
-      if !input.dry_run?
+      if input.dry_run?
+        log "Not saving #{filename} [dry run]"
+      else
+        log "Saving #{filename}"
         dir = File.dirname(filename)
         if !File.exist?(dir)
           FileUtils.makedirs(dir)
         end
+
         IO.binwrite(filename, content)
       end
     end
