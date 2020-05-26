@@ -63,12 +63,15 @@ module JABA
     def write_vcxproj
       @services.log "Generating #{@vcxproj_file}"
       
-      w = StringWriter.new(capacity: 64 * 1024)
-      @pc = StringWriter.new(capacity: 2 * 1024)
-      @pg1 = StringWriter.new(capacity: 2 * 1024)
-      @pg2 = StringWriter.new(capacity: 2 * 1024)
-      @ps = StringWriter.new(capacity: 2 * 1024)
-      @idg = StringWriter.new(capacity: 2 * 1024)
+      # TODO: check capacities
+      file = @services.file_manager.new_file(@vcxproj_file, eol: :windows, encoding: 'UTF-8', capacity: 64 * 1024)
+      
+      w = file.writer
+      @pc = file.work_area(capacity: 2 * 1024)
+      @pg1 = file.work_area(capacity: 2 * 1024)
+      @pg2 = file.work_area(capacity: 2 * 1024)
+      @ps = file.work_area(capacity: 2 * 1024)
+      @idg = file.work_area(capacity: 2 * 1024)
 
       each_config do |cfg|
         platform = cfg.attrs.arch_ref.attrs.vsname
@@ -183,14 +186,15 @@ module JABA
       w << '</Project>'
       w.chomp!
       
-      @services.save_file(@vcxproj_file, w.str, :windows, encoding: 'UTF-8')
+      file.save
     end
     
     ##
     #
     def write_vcxproj_filters
-      w = StringWriter.new(capacity: 16 * 1024)
-      
+      file = @services.file_manager.new_file(@vcxproj_filters_file, eol: :windows, encoding: 'UTF-8', capacity: 16 * 1024)
+      w = file.writer
+
       write_xml_version(w)
       w << "<Project ToolsVersion=\"4.0\" xmlns=\"#{xmlns}\">"
       item_group(w) do
@@ -199,7 +203,7 @@ module JABA
       end
       w << '</Project>'
       w.chomp!
-      @services.save_file(@vcxproj_filters_file, w.str, :windows, encoding: 'UTF-8')
+      file.save
     end
   
   end

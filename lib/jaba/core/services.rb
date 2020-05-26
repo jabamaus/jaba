@@ -5,6 +5,7 @@ require 'logger'
 require 'json'
 require_relative 'core_ext'
 require_relative 'utils'
+require_relative 'file_manager'
 require_relative 'property'
 require_relative 'hook'
 require_relative 'jaba_definition'
@@ -35,8 +36,8 @@ module JABA
   class Services
 
     attr_reader :input
+    attr_reader :file_manager
 
-    @@file_cache = {}
     @@glob_cache = {}
 
     ##
@@ -70,11 +71,6 @@ module JABA
       
       @definition_src_files = []
       
-      @generated_files = []
-      @generated_files_lookup = {}
-      @added_files = []
-      @modified_files = []
-      
       @jaba_attr_type_definitions = []
       @jaba_attr_flag_definitions = []
       @jaba_type_definitions = []
@@ -101,6 +97,7 @@ module JABA
       @top_level_api = TopLevelAPI.new(self)
 
       @default_attr_type = JabaAttributeType.new(self, JabaDefinition.new(nil, nil, caller(0, 1)[0])).freeze
+      @file_manager = FileManager.new(self)
     end
 
     ##
@@ -489,7 +486,10 @@ module JABA
       end
 
       json = JSON.pretty_generate(root)
-      save_file(input.jaba_input_file, json, :unix, track: false)
+      file = @file_manager.new_file(input.jaba_input_file, eol: :unix)
+      w = file.writer
+      w.write_raw(json)
+      file.save(track: false)
     end
 
     ##
@@ -510,7 +510,7 @@ module JABA
     ##
     #
     def dump_jaba_output
-      @output[:generated] = @generated_files
+      @output[:generated] = @file_manager.written
       @output[:warnings] = @warnings
       @generators.each do |g|
         g_root = {}
@@ -520,10 +520,13 @@ module JABA
 
       if input.dump_output?
         json = JSON.pretty_generate(@output)
-        save_file(input.jaba_output_file, json, :unix, track: false)
+        file = @file_manager.new_file(input.jaba_output_file, eol: :unix)
+        w = file.writer
+        w.write_raw(json)
+        file.save(track: false)
       end
-      @output[:added_files] = @added_files
-      @output[:modified_files] = @modified_files
+      @output[:added_files] = @file_manager.added
+      @output[:modified_files] = @file_manager.modified
     end
 
     ##
@@ -640,70 +643,9 @@ module JABA
       log msg, Logger::ERROR
       raise make_jaba_error(msg, **options)
     end
-    
-    ##
-    #
-    def read_file(file, encoding: nil, fail_if_not_found: false)
-      file = file.cleanpath
-      str = @@file_cache[file]
-      if str.nil?
-        if !File.exist?(file)
-          if fail_if_not_found
-            jaba_error("'#{file}' does not exist - cannot read")
-          else
-            return nil
-          end
-        else
-          str = IO.binread(file)
-          str.force_encoding(encoding) if encoding
-          @@file_cache[file] = str
-        end
-      end
-      str
-    end
-    
-    ##
-    #
-    def save_file(filename, content, eol, encoding: nil, track: true)
-      if (eol == :windows) || ((eol == :native) && OS.windows?)
-        content = content.gsub("\n", "\r\n")
-      end
-      
-      filename = File.expand_path(filename.cleanpath)
-
-      if track
-        existing_content = read_file(filename, encoding: encoding)
-        if existing_content.nil?
-          @added_files << filename
-        elsif existing_content != content
-          @modified_files << filename
-        end
-        
-        # TODO: in case of duplicate check if content matches and fail if it doesn't
-        if @generated_files_lookup.key?(filename)
-          jaba_warning "Duplicate file '#{filename}' generated"
-        end
-        
-        # TODO: register generated file for potential use?
-        @generated_files_lookup[filename] = nil
-        @generated_files << filename
-      end
-      
-      if input.dry_run?
-        log "Not saving #{filename} [dry run]"
-      else
-        log "Saving #{filename}"
-        dir = File.dirname(filename)
-        if !File.exist?(dir)
-          FileUtils.makedirs(dir)
-        end
-
-        IO.binwrite(filename, content)
-      end
-    end
 
     ##
-    #
+    # TODO: move into FileManager
     def glob(spec)
       files = nil
       if input.use_glob_cache?
@@ -721,7 +663,7 @@ module JABA
     def execute_definitions(file = nil, &block)
       if file
         log "Executing #{file}"
-        @top_level_api.instance_eval(read_file(file), file)
+        @top_level_api.instance_eval(@file_manager.read_file(file), file)
       end
       if block_given?
         @definition_src_files << block.source_location[0]

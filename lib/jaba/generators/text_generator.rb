@@ -15,14 +15,15 @@ module JABA
     def generate
       @nodes.each do |n|
         attrs = n.attrs
-        s = String.new(capacity: 1024)
+        file = @services.file_manager.new_file(attrs.filename, eol: attrs.eol, capacity: 1024)
+        w = file.writer
         c = attrs.content
-        s << c if c
+        w.write_raw(c) if c
         lines = attrs.line
         if !lines.empty?
-          s << "#{lines.join("\n")}\n"
+          w << "#{lines.join("\n")}"
         end
-        @services.save_file(attrs.filename, s, attrs.eol)
+        file.save
       end
     end
     

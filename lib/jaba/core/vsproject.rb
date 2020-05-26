@@ -27,7 +27,7 @@ module JABA
     #
     def guid
       if !@guid
-        content = @services.read_file(@vcxproj_file, encoding: 'UTF-8')
+        content = @services.file_manager.read_file(@vcxproj_file, encoding: 'UTF-8')
         if content
           if content !~ /<ProjectGuid>(.+)<\/ProjectGuid>/
             @services.jaba_error("Failed to extract GUID from #{@vcxproj_file}")
