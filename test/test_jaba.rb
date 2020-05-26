@@ -4,7 +4,21 @@ require 'minitest'
 require 'minitest/spec'
 
 module JABA
+
   using JABACoreExt
+
+  ##
+  #
+  def self.run_tests
+    ::Minitest.run(ARGV)
+  end
+
+  ##
+  def self.init_tests
+    if File.exist?(JabaTest.temp_root)
+      FileUtils.remove_dir(JabaTest.temp_root)
+    end
+  end
 
   ATTR_TYPES_FILE = "#{__dir__}/../lib/jaba/definitions/attribute_types.rb".cleanpath
 
@@ -115,10 +129,6 @@ module JABA
     end
 
   end
-
-  if File.exist?(JabaTest.temp_root)
-    FileUtils.remove_dir(JabaTest.temp_root)
-  end
   
 end
 
@@ -138,11 +148,3 @@ Dir.glob("#{__dir__}/tests/*.rb").sort.each do |f|
   end
   eval(str, nil, f)
 end
-
-using JABACoreExt
-
-profile(enabled: ARGV.delete('--profile')) do
-  Minitest.run(ARGV)
-end
-
-exit

@@ -25,6 +25,10 @@ require_relative 'vcxproj'
 
 Dir.glob("#{__dir__}/../generators/*_generator.rb").sort.each {|f| require f}
 
+module DidYouMean::Correctable
+  remove_method :to_s
+end
+
 ##
 #
 module JABA

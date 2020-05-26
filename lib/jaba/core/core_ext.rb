@@ -60,34 +60,6 @@ module JABACoreExt
     def is_a_block?
       is_a?(Proc)
     end
-
-    ##
-    #
-    def profile(enabled: true)
-      raise 'block expected' if !block_given?
-
-      if !enabled
-        yield
-        return
-      end
-      
-      begin
-        puts 'Invoking ruby-prof...'
-        require 'ruby-prof'
-        RubyProf.start
-        yield
-      ensure
-        result = RubyProf.stop
-        file = File.expand_path('jaba.profile')
-        str = String.new
-        puts "Write profiling results to #{file}..."
-        [RubyProf::FlatPrinter, RubyProf::GraphPrinter].each do |p|
-          printer = p.new(result)
-          printer.print(str)
-        end
-        IO.write(file, str)
-      end
-    end
     
   end
 
