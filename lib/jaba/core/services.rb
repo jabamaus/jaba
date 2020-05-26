@@ -510,7 +510,7 @@ module JABA
     ##
     #
     def dump_jaba_output
-      @output[:generated] = @file_manager.written
+      @output[:generated] = @file_manager.generated
       @output[:warnings] = @warnings
       @generators.each do |g|
         g_root = {}

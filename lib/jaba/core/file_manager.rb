@@ -6,6 +6,56 @@ module JABA
 
   using JABACoreExt
 
+  ##
+  #
+  class StringWriter
+    
+    ##
+    #
+    def initialize(...)
+      @str = String.new(...)
+    end
+
+    ##
+    #
+    def str
+      @str
+    end
+
+    ##
+    #
+    def to_s
+      @str
+    end
+
+    ##
+    #
+    def <<(str)
+      @str.concat(str, "\n")
+    end
+    
+    ##
+    #
+    def write_raw(str)
+      @str.concat(str.to_s)
+    end
+  
+    ##
+    #
+    def newline
+      @str.concat("\n")
+    end
+    
+    ##
+    #
+    def chomp!
+      @str.chomp!
+    end
+
+  end
+
+  ##
+  #
   class JabaFile
 
     attr_reader :filename
@@ -45,19 +95,22 @@ module JABA
 
   end
 
+  ##
+  #
   class FileManager
     
-    @@file_cache = {}
+    @@file_read_cache = {}
 
     attr_reader :added
     attr_reader :modified
-    attr_reader :written
+    attr_reader :generated
 
     ##
     #
     def initialize(services)
       @services = services
-      @written = []
+      @generated = []
+      @generated_tracker = {}
       @added = []
       @modified = []
     end
@@ -66,12 +119,7 @@ module JABA
     #
     def new_file(filename, eol: nil, encoding: nil, capacity: nil)
       filename = File.expand_path(filename.cleanpath)
-      file = JabaFile.new(self, filename, encoding, eol, capacity)
-      if @@file_cache.key?(filename)
-        @services.jaba_error("Duplicate filename '#{filename}' detected")
-      end
-      @@file_cache[filename] = file.str
-      file
+      JabaFile.new(self, filename, encoding, eol, capacity)
     end
 
     ##
@@ -86,13 +134,20 @@ module JABA
         elsif existing != file.str
           @modified << fn
         end
-        @written << fn
+
+        if @generated_tracker.key?(fn)
+          @services.jaba_error("Duplicate filename '#{fn}' detected")
+        end
+        @generated << fn
+        @generated_tracker[fn] = nil
       end
 
       if @services.input.dry_run?
         @services.log "Not saving #{fn} [dry run]"
       else
         @services.log "Saving #{fn}"
+
+        # TODO: optimise
         dir = File.dirname(fn)
         if !File.exist?(dir)
           FileUtils.makedirs(dir)
@@ -106,7 +161,7 @@ module JABA
     #
     def read_file(filename, encoding: nil, fail_if_not_found: false)
       fn = File.expand_path(filename.cleanpath)
-      str = @@file_cache[fn]
+      str = @@file_read_cache[fn]
       if str.nil?
         if !File.exist?(fn)
           if fail_if_not_found
@@ -117,7 +172,7 @@ module JABA
         else
           str = IO.binread(fn)
           str.force_encoding(encoding) if encoding
-          @@file_cache[fn] = str
+          @@file_read_cache[fn] = str
         end
       end
       str
