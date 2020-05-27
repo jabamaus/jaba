@@ -42,8 +42,6 @@ module JABA
     attr_reader :input
     attr_reader :file_manager
 
-    @@glob_cache = {}
-
     ##
     #
     def initialize
@@ -215,7 +213,11 @@ module JABA
       
       # Load and execute any definition files specified in Input#load_paths
       #
-      load_definitions
+      gather_definition_src_files
+
+      @definition_src_files.each do |f|
+        execute_definitions(f)
+      end
 
       # Execute any definitions supplied inline in a block
       #
@@ -649,20 +651,6 @@ module JABA
     end
 
     ##
-    # TODO: move into FileManager
-    def glob(spec)
-      files = nil
-      if input.use_glob_cache?
-        files = @@glob_cache[spec]
-      end
-      if files.nil?
-        files = Dir.glob(spec)
-        @@glob_cache[spec] = files.sort
-      end
-      files
-    end
-
-    ##
     #
     def execute_definitions(file = nil, &block)
       if file
@@ -683,9 +671,9 @@ module JABA
     
     ##
     #
-    def load_definitions
-      # Load core type definitions
-      @definition_src_files.concat(glob("#{__dir__}/../definitions/*.rb"))
+    def gather_definition_src_files
+      # Load core type definitions 
+      @definition_src_files.concat(@file_manager.glob("#{__dir__}/../definitions/*.rb"))
       
       Array(input.load_paths).each do |p|
         p = p.to_forward_slashes # take copy in case string frozen
@@ -703,7 +691,7 @@ module JABA
                   else
                     "#{p}/**/jaba.rb"
                   end
-          files = glob(match)
+          files = @file_manager.glob(match)
           if files.empty?
             jaba_warning("No definition files found in #{p}")
           else
@@ -715,10 +703,6 @@ module JABA
       end
       
       @definition_src_files.map!(&:cleanpath)
-
-      @definition_src_files.each do |f|
-        execute_definitions(f)
-      end
     end
 
     ##

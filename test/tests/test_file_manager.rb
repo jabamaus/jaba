@@ -60,7 +60,7 @@ module JABA
       IO.binread(fn).must_equal("test\r\n")
     end
 
-    it 'can write a file with unix line endings' do
+    it 'can write a file with unix eol' do
       fn = "#{temp_dir}/f"
       fm = Services.new.file_manager
       f = fm.new_file(fn, eol: :unix)
@@ -119,7 +119,56 @@ module JABA
     end
 
     # TODO: test encoding
-    # TODO: test modified/added/generated
+
+    it 'maintains a list of generated files' do
+      fns = ['a', 'b', 'c', 'd'].map{|f| "#{temp_dir}/#{f}"}
+      s = Services.new
+      fm = s.file_manager
+      fns.each do |fn|
+        f = fm.new_file(fn)
+        f.save
+      end
+      fm.generated.must_equal fns
+    end
+
+    it 'detects when a file is newly created' do
+      fn = "#{temp_dir}/f"
+      File.exist?(fn).must_equal(false)
+      s = Services.new
+      fm = s.file_manager
+      f = fm.new_file(fn)
+      f.save
+      File.exist?(fn).must_equal(true)
+      fm.added.must_equal [fn]
+    end
+
+    it 'detects when a file is modified' do
+      fn = "#{temp_dir}/f"
+      File.exist?(fn).must_equal(false)
+      IO.binwrite(fn, "test\r\n")
+      s = Services.new
+      fm = s.file_manager
+      f = fm.new_file(fn, eol: :windows)
+      w = f.writer
+      w << "test2"
+      f.save
+      IO.binread(fn).must_equal("test2\r\n")
+      fm.modified.must_equal [fn]
+    end
+
+    it 'detects when a file is modified by just eol' do
+      fn = "#{temp_dir}/f"
+      File.exist?(fn).must_equal(false)
+      IO.binwrite(fn, "test\r\n")
+      s = Services.new
+      fm = s.file_manager
+      f = fm.new_file(fn, eol: :unix)
+      w = f.writer
+      w << "test"
+      f.save
+      IO.binread(fn).must_equal("test\n")
+      fm.modified.must_equal [fn]
+    end
   end
 
 end

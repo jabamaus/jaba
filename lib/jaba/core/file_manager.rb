@@ -100,6 +100,7 @@ module JABA
   class FileManager
     
     @@file_read_cache = {}
+    @@glob_cache = {}
 
     attr_reader :added
     attr_reader :modified
@@ -185,6 +186,20 @@ module JABA
         end
       end
       str
+    end
+
+    ##
+    #
+    def glob(spec)
+      files = nil
+      if @services.input.use_glob_cache?
+        files = @@glob_cache[spec]
+      end
+      if files.nil?
+        files = Dir.glob(spec)
+        @@glob_cache[spec] = files.sort
+      end
+      files
     end
 
   end
