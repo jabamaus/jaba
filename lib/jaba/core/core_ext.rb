@@ -92,7 +92,19 @@ module JABACoreExt
       # TODO: SLOW. 
       Pathname.new(self).cleanpath.to_s
     end
-    
+
+    ##
+    #
+    def split_path
+      abs_unix = start_with?('/') || start_with?('\\')
+      parts = split(/[\/\\]/)
+      parts.delete('.')
+      parts.delete('')
+      parts.insert(0, '/') if abs_unix
+      parts.push('.') if parts.empty?
+      parts
+    end
+
     ##
     #
     def to_forward_slashes

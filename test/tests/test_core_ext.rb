@@ -21,6 +21,33 @@ module JABA
     
     describe 'String' do
       
+      it 'bench' do
+      end
+      
+      it 'supports split_path' do
+        '.'.split_path.must_equal ['.']
+        'a'.split_path.must_equal ['a']
+        '/'.split_path.must_equal ['/']
+        'a/b/c/d'.split_path.must_equal ['a', 'b', 'c', 'd']
+        'aaa/bbb/ccc/ddd'.split_path.must_equal ['aaa', 'bbb', 'ccc', 'ddd']
+        'a\\b\\c\\d'.split_path.must_equal ['a', 'b', 'c', 'd']
+        '/a/b/c'.split_path.must_equal ['/', 'a', 'b', 'c']
+        'a//b//c//d'.split_path.must_equal ['a', 'b', 'c', 'd']        
+        'a////b///////c\\\\\\d'.split_path.must_equal ['a', 'b', 'c', 'd']
+        '///'.split_path.must_equal ['/']
+        '\\'.split_path.must_equal ['/']
+        'C:'.split_path.must_equal ['C:']
+        'C:/'.split_path.must_equal ['C:']
+        'C:/a/bb/'.split_path.must_equal ['C:', 'a', 'bb']
+        '../../../'.split_path.must_equal ['..', '..', '..']
+        '/../../../'.split_path.must_equal ['/', '..', '..', '..']
+        '.aa/./bb'.split_path.must_equal ['.aa', 'bb']
+        './'.split_path.must_equal ['.']
+        './././'.split_path.must_equal ['.']
+        './/.\\.\\.\\'.split_path.must_equal ['.']
+        'a.b.c'.split_path.must_equal ['a.b.c']
+       end
+
       it 'can clean path' do
         'a'.cleanpath.must_equal('a')
         'a/b'.cleanpath.must_equal('a/b')
