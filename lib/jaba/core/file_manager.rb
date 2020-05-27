@@ -105,6 +105,8 @@ module JABA
     attr_reader :modified
     attr_reader :generated
 
+    ValidEols = [:unix, :windows, :native].freeze
+
     ##
     #
     def initialize(services)
@@ -117,7 +119,10 @@ module JABA
 
     ##
     #
-    def new_file(filename, eol: nil, encoding: nil, capacity: nil)
+    def new_file(filename, eol: :unix, encoding: nil, capacity: nil)
+      if !ValidEols.include?(eol)
+        raise "'#{eol.inspect}' is an invalid eol style. Valid values: #{ValidEols.inspect}"
+      end
       filename = File.expand_path(filename.cleanpath)
       JabaFile.new(self, filename, encoding, eol, capacity)
     end
@@ -126,6 +131,10 @@ module JABA
     #
     def save(file, track: true)
       fn = file.filename
+
+      if file.str.empty?
+        @services.jaba_warning("'#{fn}' is empty")
+      end
 
       if track
         existing = read_file(fn, encoding: file.encoding)

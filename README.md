@@ -49,3 +49,5 @@ if there are multiple attrs, with a warning.
     referenced_type :arch
     flags :required, :unordered
   end
+
+  - check for duplicate filenames at generator level, with proper error reporting
