@@ -44,7 +44,7 @@ define :cpp do
     end
 
     attr_array :configs, type: :symbol_or_string do
-      flags :required, :unordered
+      flags :required, :nosort
       flag_options :export
     end
 
@@ -117,7 +117,7 @@ define :cpp do
 
     attr_array :src, type: :path do
       help 'Source file specification'
-      flags :unordered # Final source will be sorted so no need to sort this
+      flags :nosort # Final source will be sorted so no need to sort this
       flag_options :export
     end
     
@@ -174,7 +174,7 @@ define :cpp do
 
     attr_array :inc, type: :dir do
       help 'Include paths'
-      flags :unordered
+      flags :nosort
       flag_options :export
     end
 

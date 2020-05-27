@@ -40,7 +40,7 @@ attr_type :bool do
 
   post_init_attr_def do
     default false if !default_set? && !has_flag?(:required)
-    flags :unordered, :allow_dupes if variant == :array
+    flags :nosort, :allow_dupes if variant == :array
   end
   
   validate_value do |value|

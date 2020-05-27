@@ -28,10 +28,10 @@ attr_flag :allow_dupes do
   end
 end
 
-attr_flag :unordered do
+attr_flag :nosort do
   help 'Allows array attributes to remain in the order they are set in. If not specified arrays are sorted'
   compatibility do
-    fail ':unordered is only allowed on array attributes' if variant != :array
+    fail ':nosort is only allowed on array attributes' if variant != :array
   end
 end
 

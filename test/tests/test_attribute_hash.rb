@@ -76,13 +76,13 @@ module JABA
       end
     end
 
-    it 'disallows :unordered' do
-      check_fail "'a' attribute definition failed validation: :unordered flag is incompatible: :unordered is only allowed on array attributes",
+    it 'disallows :nosort' do
+      check_fail "'a' attribute definition failed validation: :nosort flag is incompatible: :nosort is only allowed on array attributes",
                 trace: [__FILE__, 'tagQ'] do
         jaba do
           define :test do
             attr_hash :a do # tagQ
-              flags :unordered
+              flags :nosort
             end
           end
         end

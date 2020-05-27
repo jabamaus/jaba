@@ -24,13 +24,13 @@ define :platform do
   attr_array :valid_archs, type: :choice do
     help 'List of architectures supported by this platform'
     items all_instance_ids(:arch)
-    flags :required, :unordered
+    flags :required, :nosort
   end
 
   attr_array :default_archs, type: :choice do
     help 'List of default target architectures for this platform'
     items all_instance_ids(:arch)
-    flags :required, :unordered
+    flags :required, :nosort
   end
 
 end

@@ -124,7 +124,7 @@ module JABA
       case id
       when :default
         @default_set = true
-        @default_is_block = @default.is_a_block?
+        @default_is_block = @default.proc?
         if @variant == :single && !@default_is_block
           if new_val.is_a?(Array)
             @services.jaba_error("'#{definition_id}' attribute is not an array so cannot accept one")

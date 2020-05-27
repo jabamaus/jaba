@@ -165,7 +165,7 @@ module JABA
               default '.'
             end
             attr_array :platforms do
-              flags :unordered, :required
+              flags :nosort, :required
             end
 
             define :tproject do
@@ -177,7 +177,7 @@ module JABA
               end
               attr :src
               attr_array :configs do
-                flags :required, :unordered
+                flags :required, :nosort
               end
               
               define :test_config do

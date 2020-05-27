@@ -15,7 +15,7 @@ module JABA
 
     def on_property_set(id, new_val)
       return if !@on_prop_set
-      if new_val.is_a_block?
+      if new_val.proc?
         puts "#{id} -> block"
       else
         puts "#{id} -> #{new_val}"
@@ -116,7 +116,7 @@ module JABA
       pc.set_property(:a) do
         print 'in block'
       end
-      pc.get_property(:a).is_a_block?.must_equal(true)
+      pc.get_property(:a).proc?.must_equal(true)
       pc.set_property(:a) do
         print 'in different block'
       end

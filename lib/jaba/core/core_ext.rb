@@ -57,7 +57,7 @@ module JABACoreExt
 
     ##
     #
-    def is_a_block?
+    def proc?
       is_a?(Proc)
     end
     

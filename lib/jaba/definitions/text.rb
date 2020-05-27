@@ -13,7 +13,7 @@ define :text do
   
   attr_array :line do
     help 'Adds a line of content to file'
-    flags :allow_dupes, :unordered
+    flags :allow_dupes, :nosort
   end
   
   attr :eol, type: :choice do

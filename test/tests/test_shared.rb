@@ -32,7 +32,7 @@ module JABA
         end
        
         shared :attr_setup do
-          flags :unordered
+          flags :nosort
         end
         
         shared :attrs do

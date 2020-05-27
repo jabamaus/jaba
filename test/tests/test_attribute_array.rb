@@ -141,11 +141,11 @@ module JABA
       end
     end
     
-    it 'allows flagging arrays as unordered' do
+    it 'allows flagging arrays with nosort' do
       jaba do
         define :test do
           attr_array :a do
-            flags :unordered, :allow_dupes
+            flags :nosort, :allow_dupes
           end
         end
         test :t do
@@ -161,7 +161,7 @@ module JABA
       jaba do
         define :test do
           attr_array :a do
-            flags :unordered, :allow_dupes
+            flags :nosort, :allow_dupes
           end
         end
         test :t do
@@ -210,7 +210,7 @@ module JABA
       jaba do
         define :test do
           attr_array :a do
-            flags :unordered
+            flags :nosort
           end
         end
         test :t do

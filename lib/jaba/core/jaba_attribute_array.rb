@@ -114,7 +114,7 @@ module JABA
         @elems.delete_if do |e|
           @excludes.any? do |ex|
             val = e.value
-            if ex.is_a_block?
+            if ex.proc?
               ex.call(val)
             elsif ex.is_a?(Regexp)
               if !val.string?
@@ -135,7 +135,7 @@ module JABA
           end
         end
       end
-      if !@attr_def.has_flag?(:unordered)
+      if !@attr_def.has_flag?(:nosort)
         begin
           @elems.stable_sort!
         rescue StandardError
