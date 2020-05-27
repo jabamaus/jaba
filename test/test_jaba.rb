@@ -84,8 +84,8 @@ module JABA
 
     ##
     #
-    def check_fail(msg, trace: nil)
-      e = assert_raises JabaDefinitionError do
+    def check_fail(msg, exception: JabaDefinitionError, trace: nil)
+      e = assert_raises exception do
         yield
       end
       
@@ -109,23 +109,26 @@ module JABA
     
     ##
     #
-    def check_warn(msg, expected_file, tag)
+    def check_warn(msg, expected_file = nil, tag = nil)
       out, = capture_io do
         yield
       end
       
       out.must_match(msg)
-      expected_line = find_line_number(expected_file, tag)
-
-      if out !~ /Warning at (.+):(\d+)/
-        raise "couldn't extract file and line number from warning"
-      end
       
-      actual_file = Regexp.last_match(1)
-      actual_line = Regexp.last_match(2).to_i
+      if expected_file
+        expected_line = find_line_number(expected_file, tag)
 
-      actual_file.must_equal(expected_file.basename)
-      actual_line.must_equal(expected_line)
+        if out !~ /Warning at (.+):(\d+)/
+          raise "couldn't extract file and line number from warning"
+        end
+        
+        actual_file = Regexp.last_match(1)
+        actual_line = Regexp.last_match(2).to_i
+
+        actual_file.must_equal(expected_file.basename)
+        actual_line.must_equal(expected_line)
+      end
     end
 
   end
