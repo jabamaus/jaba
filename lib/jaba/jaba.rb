@@ -21,7 +21,7 @@ OptionParser.new do |op|
   op.on('--dump-input', 'Dumps Jaba input') { opts.dump_input = true }
   op.on('--log', 'Enable logging') { opts.enable_logging = true}
   op.on('--dry-run', 'Dry run') { opts.dry_run = true }
-  op.on('--profile', 'Profile jaba run with ruby-prof') { opts.enable_profiling = true }
+  op.on('--profile', 'Profile jaba with ruby-prof gem') { opts.enable_profiling = true }
   op.on('--test', 'Run tests') { opts.run_tests = true }
   op.separator ''
 end.parse!
@@ -33,9 +33,15 @@ def profile(enabled)
     yield
     return
   end
-  
+
+  begin
+    require 'ruby-prof'
+  rescue LoadError
+    puts "'gem install ruby-prof' is required to run with --profile"
+    exit 1
+  end
+
   puts 'Invoking ruby-prof...'
-  require 'ruby-prof'
   RubyProf.start
   yield
   result = RubyProf.stop
@@ -92,8 +98,10 @@ rescue JABA::JabaDefinitionError => e
     puts 'Backtrace:'
     puts(e.backtrace.map {|line| "  #{line}"})
   end
+  exit 1
 rescue => e
   puts "Internal error: #{e.message}"
   puts 'Backtrace:'
   puts(e.backtrace.map {|line| "  #{line}"})
+  exit 1
 end
