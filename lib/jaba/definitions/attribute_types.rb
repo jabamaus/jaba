@@ -76,15 +76,39 @@ attr_type :choice do
 end
 
 attr_type :dir do
+
   help 'Directory attribute type. Validates that value is a string path representing a directory'
+
+  validate_value do |dir|
+    dir.cleanpath(validate: true) do |clean|
+      warn "Directory '#{dir}' not specified cleanly. Should be '#{clean}'."
+    end
+  end
+
 end
 
 attr_type :file do
+  
   help 'File attribute type. Validates that value is a string path representing a file'
+
+  validate_value do |file|
+    file.cleanpath(validate: true) do |clean|
+      warn "File '#{dir}' not specified cleanly. Should be '#{clean}'."
+    end
+  end
+
 end
 
 attr_type :path do
+  
   help 'Path attribute type. Validates that value is a string path representing either a file or a directory'
+
+  validate_value do |path|
+    path.cleanpath(validate: true) do |clean|
+      warn "Path '#{dir}' not specified cleanly. Should be '#{clean}'."
+    end
+  end
+
 end
 
 attr_type :reference do
