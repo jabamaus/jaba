@@ -177,7 +177,7 @@ module JABACoreExt
     # Returns true if string is a windows or unix style absolute path.
     #
     def absolute_path?
-      self =~ /^(\/)|([A-Za-z]:)/ ? true : false
+      self[0].chr == '/' || self[0].chr == '\\' || (size > 1 && self[1].chr == ':')
     end
 
     ##
