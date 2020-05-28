@@ -114,9 +114,7 @@ module JABACoreExt
         path.insert(0, '//')
       elsif start_with?('/')
         path.insert(0, '/')
-      end
-      
-      if path.empty?
+      elsif path.empty?
         path = '.'
       elsif path[1] == ':'
         path[0] = path[0].chr.upcase # Capitalise drive letter
@@ -130,7 +128,7 @@ module JABACoreExt
     def cleanpath!
       replace(cleanpath)
     end
-    
+
     ##
     # Helper method that splits string on forward or backslashes, deleting any resulting blanks and uneeded '.'.
     # Does not preserve absolute UNIX paths or UNC paths, which the calling method is expected to handle.
