@@ -7,42 +7,66 @@ module JABA
     describe 'String' do
       
       it 'supports split_path' do
-        '.'.split_path.must_equal ['.']
+        '.'.split_path.must_equal []
         'a'.split_path.must_equal ['a']
-        '/'.split_path.must_equal ['/']
+        '/'.split_path.must_equal []
         'a/b/c/d'.split_path.must_equal ['a', 'b', 'c', 'd']
         'aaa/bbb/ccc/ddd'.split_path.must_equal ['aaa', 'bbb', 'ccc', 'ddd']
         'a\\b\\c\\d'.split_path.must_equal ['a', 'b', 'c', 'd']
-        '/a/b/c'.split_path.must_equal ['/', 'a', 'b', 'c']
+        'a/b/c'.split_path.must_equal ['a', 'b', 'c']
         'a//b//c//d'.split_path.must_equal ['a', 'b', 'c', 'd']        
         'a////b///////c\\\\\\d'.split_path.must_equal ['a', 'b', 'c', 'd']
-        '///'.split_path.must_equal ['/']
-        '\\'.split_path.must_equal ['/']
+        '///'.split_path.must_equal []
+        '\\'.split_path.must_equal []
         'C:'.split_path.must_equal ['C:']
         'C:/'.split_path.must_equal ['C:']
         'C:/a/bb/'.split_path.must_equal ['C:', 'a', 'bb']
         '../../../'.split_path.must_equal ['..', '..', '..']
-        '/../../../'.split_path.must_equal ['/', '..', '..', '..']
+        '/../../../'.split_path.must_equal ['..', '..', '..']
         '.aa/./bb'.split_path.must_equal ['.aa', 'bb']
-        './'.split_path.must_equal ['.']
-        './././'.split_path.must_equal ['.']
-        './/.\\.\\.\\'.split_path.must_equal ['.']
+        './'.split_path.must_equal []
+        './././'.split_path.must_equal []
+        './/.\\.\\.\\'.split_path.must_equal []
         'a.b.c'.split_path.must_equal ['a.b.c']
+        '..'.split_path.must_equal ['..']
        end
 
-      it 'can clean path' do
-        'a'.cleanpath.must_equal('a')
-        'a/b'.cleanpath.must_equal('a/b')
-        'a/b/'.cleanpath.must_equal('a/b')
+      it 'supports clean_path' do
+        ''.cleanpath.must_equal('.')
         '.'.cleanpath.must_equal('.')
         './'.cleanpath.must_equal('.')
         '/'.cleanpath.must_equal('/')
+        '/.'.cleanpath.must_equal('/')
+        '/./'.cleanpath.must_equal('/')
         '..'.cleanpath.must_equal('..')
         '../'.cleanpath.must_equal('..')
+        'a'.cleanpath.must_equal('a')
+        'aaaa'.cleanpath.must_equal('aaaa')
+        'a/b'.cleanpath.must_equal('a/b')
+        'aaaa/bbbb'.cleanpath.must_equal('aaaa/bbbb')
+        'a/b/'.cleanpath.must_equal('a/b')
+        'aaaa/bbbb/'.cleanpath.must_equal('aaaa/bbbb')
+        'a/b/c/d'.cleanpath.must_equal('a/b/c/d')
+        'a/b/c/d.e'.cleanpath.must_equal('a/b/c/d.e')
+        '.a'.cleanpath.must_equal('.a')
+        'a/.'.cleanpath.must_equal('a')
+        '/a/b'.must_equal('/a/b')
         './a/../b/../'.cleanpath.must_equal('.')
         '.\\a\\..\\b\\..\\'.cleanpath.must_equal('.')
+        'C:'.cleanpath.must_equal('C:')
+        'c:'.cleanpath.must_equal('C:')
         'C:/a/b/..'.cleanpath.must_equal('C:/a')
         'C:\\a\\b\\..'.cleanpath.must_equal('C:/a')
+        '/a/**/b.*'.cleanpath.must_equal('/a/**/b.*')
+        'a/b/..'.cleanpath.must_equal('a')
+        'a/../b/c/../../'.cleanpath.must_equal('.')
+        'a/../b/c/../**/'.cleanpath.must_equal('b/**')
+        "a\\..\\b\\c\\..\\**\\".cleanpath.must_equal('b/**')
+        "a\\../b\\c\\../**\\".cleanpath.must_equal('b/**')
+        '$(ENV_VAR)'.cleanpath.must_equal('$(ENV_VAR)')
+        '//'.cleanpath.must_equal('//') # UNC, albeit invalid
+        '//a////b//'.cleanpath.must_equal('//a/b') # UNC
+        'a'.cleanpath!.must_equal('a')
       end
       
       it 'supports absolute_path?' do

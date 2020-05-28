@@ -87,21 +87,58 @@ module JABACoreExt
     end
     
     ##
+    # Cleans path by removing all extraneous ., .. and slashes. Supports windows and UNIX style absolute paths
+    # and UNC paths.
     #
     def cleanpath
-      # TODO: SLOW. 
-      Pathname.new(self).cleanpath.to_s
+      result = []
+      
+      split_path.each do |part|
+        if part == '..'
+          case result.last
+          when '..', nil
+            result.push('..')
+          else
+            result.pop
+          end
+        else
+          result.push(part)
+        end
+      end
+      
+      path = result.join('/')
+
+      # Preserve leading slash(es) if its a UNC path or UNIX style absolute path
+      #
+      if start_with?('//')
+        path.insert(0, '//')
+      elsif start_with?('/')
+        path.insert(0, '/')
+      end
+      
+      if path.empty?
+        path = '.'
+      elsif path[1] == ':'
+        path[0] = path[0].chr.upcase # Capitalise drive letter
+      end
+      
+      path
     end
 
     ##
     #
+    def cleanpath!
+      replace(cleanpath)
+    end
+    
+    ##
+    # Helper method that splits string on forward or backslashes, deleting any resulting blanks and uneeded '.'.
+    # Does not preserve absolute UNIX paths or UNC paths, which the calling method is expected to handle.
+    #
     def split_path
-      abs_unix = start_with?('/') || start_with?('\\')
       parts = split(/[\/\\]/)
       parts.delete('.')
       parts.delete('')
-      parts.insert(0, '/') if abs_unix
-      parts.push('.') if parts.empty?
       parts
     end
 
@@ -165,23 +202,6 @@ module JABACoreExt
       self
     end
 
-  end
-
-  ##
-  #
-  refine Hash do
-
-    ##
-    # Appends value to array referenced by key, creating array if it does not exist. Value being passed in can be a
-    # single value or array. Existing key can be optionally cleared.
-    #
-    def push_value(key, value, clear: false)
-      v = self[key] = fetch(key, [])
-      v.clear if clear
-      value.is_a?(Array) ? v.concat(value) : v << value
-      self
-    end
-    
   end
 
   ##
@@ -251,5 +271,22 @@ module JABACoreExt
     end
 
   end
-  
+
+  ##
+  #
+  refine Hash do
+
+    ##
+    # Appends value to array referenced by key, creating array if it does not exist. Value being passed in can be a
+    # single value or array. Existing key can be optionally cleared.
+    #
+    def push_value(key, value, clear: false)
+      v = self[key] = fetch(key, [])
+      v.clear if clear
+      value.is_a?(Array) ? v.concat(value) : v << value
+      self
+    end
+    
+  end
+
 end
