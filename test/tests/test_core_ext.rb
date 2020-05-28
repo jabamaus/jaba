@@ -67,6 +67,9 @@ module JABA
         '//'.cleanpath.must_equal('//') # UNC, albeit invalid
         '//a////b//'.cleanpath.must_equal('//a/b') # UNC
         'a'.cleanpath!.must_equal('a')
+        'a//b'.cleanpath(validate: true) do |clean|
+          clean.must_equal('a/b')
+        end
       end
       
       it 'supports absolute_path?' do

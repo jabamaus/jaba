@@ -90,7 +90,7 @@ module JABACoreExt
     # Cleans path by removing all extraneous ., .. and slashes. Supports windows and UNIX style absolute paths
     # and UNC paths.
     #
-    def cleanpath
+    def cleanpath(validate: false)
       result = []
       
       split_path.each do |part|
@@ -119,8 +119,13 @@ module JABACoreExt
       elsif path[1] == ':'
         path[0] = path[0].chr.upcase # Capitalise drive letter
       end
-      
-      path
+
+      if validate
+        raise 'block expected' if !block_given?
+        yield path if path != self
+      else
+        path
+      end
     end
 
     ##
