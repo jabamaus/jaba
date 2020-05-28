@@ -1,28 +1,10 @@
 module JABA
+
   using JABACoreExt
 
-  class TestUtils < JabaTest
-    
-    describe 'Hash' do
-    
-      it 'supports push_value' do
-        {}.push_value(:a, :b).must_equal(a: [:b])
-        {}.push_value(:a, [:b]).must_equal(a: [:b])
-        {}.push_value(:a, [:b, :c]).must_equal(a: [:b, :c])
-        { a: [] }.push_value(:a, :b).must_equal(a: [:b])
-        { a: [:b] }.push_value(:a, :c).must_equal(a: [:b, :c])
-        { a: [:b] }.push_value(:a, [:c]).must_equal(a: [:b, :c])
-        { a: [:b, :c] }.push_value(:a, [:d]).must_equal(a: [:b, :c, :d])
-        { a: [:b, :c] }.push_value(:a, :d, clear: true).must_equal(a: [:d])
-        { a: [:b, :c] }.push_value(:a, [:d], clear: true).must_equal(a: [:d])
-      end
-      
-    end
+  class TestCoreExt < JabaTest
     
     describe 'String' do
-      
-      it 'bench' do
-      end
       
       it 'supports split_path' do
         '.'.split_path.must_equal ['.']
@@ -88,6 +70,10 @@ module JABA
         '$(Var)'.vs_quote!.must_equal('"$(Var)"')   # macro, quote
       end
 
+    end
+
+    describe 'Array' do
+
       it 'supports vs_join' do
         [].vs_join.must_be_nil
         [].vs_join(inherit: '%(var)').must_be_nil
@@ -115,6 +101,22 @@ module JABA
 
     end
     
+    describe 'Hash' do
+    
+      it 'supports push_value' do
+        {}.push_value(:a, :b).must_equal(a: [:b])
+        {}.push_value(:a, [:b]).must_equal(a: [:b])
+        {}.push_value(:a, [:b, :c]).must_equal(a: [:b, :c])
+        { a: [] }.push_value(:a, :b).must_equal(a: [:b])
+        { a: [:b] }.push_value(:a, :c).must_equal(a: [:b, :c])
+        { a: [:b] }.push_value(:a, [:c]).must_equal(a: [:b, :c])
+        { a: [:b, :c] }.push_value(:a, [:d]).must_equal(a: [:b, :c, :d])
+        { a: [:b, :c] }.push_value(:a, :d, clear: true).must_equal(a: [:d])
+        { a: [:b, :c] }.push_value(:a, [:d], clear: true).must_equal(a: [:d])
+      end
+      
+    end
+
   end
   
 end
