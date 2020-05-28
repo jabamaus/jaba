@@ -115,7 +115,7 @@ module JABACoreExt
       elsif start_with?('/')
         path.insert(0, '/')
       elsif path.empty?
-        path = '.'
+        path.concat('.')
       elsif path[1] == ':'
         path[0] = path[0].chr.upcase # Capitalise drive letter
       end
