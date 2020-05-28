@@ -15,11 +15,11 @@ module JABA
     end
 
     it 'warns if items contains duplicates' do
-      check_warn "'items' contains duplicates", ATTR_TYPES_FILE, "warn \"'items' contains duplicates\"" do
+      check_warn "'items' contains duplicates", __FILE__, 'tagK' do
         jaba do
           define :test do
-            attr :a, type: :choice do
-              items [:a, :a, :b, :b] # tagK
+            attr :a, type: :choice do # tagK
+              items [:a, :a, :b, :b]
             end
           end
         end

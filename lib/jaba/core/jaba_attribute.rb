@@ -165,8 +165,10 @@ module JABA
 
       if validate && !new_value.nil?
         begin
-          @attr_def.jaba_attr_type.call_hook(:validate_value, new_value, receiver: @attr_def)
-          @attr_def.call_hook(:validate, new_value, @flag_options, **@value_options)
+          @services.set_warn_object(@last_call_location) do
+            @attr_def.jaba_attr_type.call_hook(:validate_value, new_value, receiver: @attr_def)
+            @attr_def.call_hook(:validate, new_value, @flag_options, **@value_options)
+          end
         rescue JabaDefinitionError => e
           @services.jaba_error("'#{@attr_def.definition_id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
         end

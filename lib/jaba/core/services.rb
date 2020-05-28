@@ -637,7 +637,7 @@ module JABA
     def jaba_warning(msg, **options)
       log msg, Logger::WARN
       if @warn_object
-        options[:callstack] = @warn_object.definition.source_location
+        options[:callstack] = @warn_object.is_a?(JabaObject) ? @warn_object.definition.source_location : @warn_object
       end
       @warnings << make_jaba_error(msg, warn: true, **options).message
       nil

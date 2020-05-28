@@ -48,7 +48,10 @@ module JABA
       define_hook(:validate)
       
       @jaba_attr_type = @services.get_attribute_type(@type_id)
-      @jaba_attr_type.call_hook(:init_attr_def, receiver: self)
+      
+      @services.set_warn_object(self) do
+        @jaba_attr_type.call_hook(:init_attr_def, receiver: self)
+      end
 
       if @definition.block
         eval_api_block(&@definition.block)
@@ -149,10 +152,14 @@ module JABA
     ##
     #
     def validate
-      @jaba_attr_type.call_hook(:post_init_attr_def, receiver: self)
+      @services.set_warn_object(self) do
+        @jaba_attr_type.call_hook(:post_init_attr_def, receiver: self)
+      end
  
       if @default_set && !@default_is_block
-        @jaba_attr_type.call_hook(:validate_value, @default, receiver: self)
+        @services.set_warn_object(self) do
+          @jaba_attr_type.call_hook(:validate_value, @default, receiver: self)
+        end
       end
 
       # TODO: check for duplicate attr flags
