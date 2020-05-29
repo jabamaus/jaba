@@ -50,3 +50,4 @@ if there are multiple attrs, with a warning.
   end
 
   - check for duplicate filenames at generator level, with proper error reporting
+  - put version number into output file

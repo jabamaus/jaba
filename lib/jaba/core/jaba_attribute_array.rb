@@ -109,7 +109,7 @@ module JABA
 
     ##
     #
-    def process_flags(warn: true)
+    def process_flags
       if @excludes
         @elems.delete_if do |e|
           @excludes.any? do |ex|
@@ -128,11 +128,9 @@ module JABA
         end
       end
       if !@attr_def.has_flag?(:allow_dupes)
-        if warn
-          dupes = @elems.uniq!(&:value)
-          if dupes
-            @services.jaba_warning("'#{definition_id}' array attribute contains duplicates: #{dupes.map(&:value).inspect}", callstack: last_call_location)
-          end
+        dupes = @elems.remove_and_return_dupes(by: :value)
+        if dupes
+          @services.jaba_warning("'#{definition_id}' array attribute contains duplicates: #{dupes.inspect}", callstack: last_call_location)
         end
       end
       if !@attr_def.has_flag?(:nosort)

@@ -324,6 +324,12 @@ module JABA
       #
       @generators.each(&:make_projects)
 
+      @nodes.each do |n|
+        n.each_attr do |a|
+          a.process_flags
+        end
+      end
+
       # Make all nodes read only from this point, to help catch mistakes
       #
       @nodes.each(&:make_read_only)

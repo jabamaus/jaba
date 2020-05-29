@@ -104,6 +104,12 @@ module JABA
 
     ##
     #
+    def each_attr(&block)
+      @attributes.each(&block)
+    end
+
+    ##
+    #
     def visit_attr(attr_id = nil, top_level: false, type: nil, &block)
       if top_level
         @attributes.each do |a|
@@ -153,7 +159,7 @@ module JABA
     end
 
     ##
-    #
+    # 
     def post_create
       @attributes.each do |a|
         if !a.set?
@@ -162,7 +168,6 @@ module JABA
           end
           a.set_to_default
         end
-        a.process_flags(warn: true)
       end
     end
     

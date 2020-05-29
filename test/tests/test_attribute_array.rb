@@ -63,10 +63,10 @@ module JABA
             attr_array :a
           end
           test :t do
-            a [5, 5, 6, 6, 7, 7, 7] # tagU
-            a.must_equal [5, 5, 6, 6, 7, 7, 7]
+            a [4, 5, 5, 6, 6, 7, 7, 7, 8] # tagU
+            a.must_equal [4, 5, 5, 6, 6, 7, 7, 7, 8]
             generate do
-              attrs.a.must_equal [5, 6, 7]
+              attrs.a.must_equal [4, 5, 6, 7, 8]
             end
           end
         end

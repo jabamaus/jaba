@@ -84,6 +84,12 @@ define :cpp do
       help 'Optional suffix to be applied to <projname>. Has no effect if <projname> is set explicitly.'
     end
 
+    attr_array :src, type: :path do
+      help 'Source file specification'
+      flags :nosort # Final source will be sorted so no need to sort this
+      flag_options :export
+    end
+    
     attr :winsdkver, type: :choice do
       help 'Windows SDK version. Defaults to nil.'
       items [
@@ -115,12 +121,6 @@ define :cpp do
       referenced_type :arch
     end
 
-    attr_array :src, type: :path do
-      help 'Source file specification'
-      flags :nosort # Final source will be sorted so no need to sort this
-      flag_options :export
-    end
-    
   end
 
   # Sub-grouping of attributes that pertain to a build configuration

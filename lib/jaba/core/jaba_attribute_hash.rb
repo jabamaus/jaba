@@ -113,7 +113,7 @@ module JABA
      
     ##
     #
-    def process_flags(warn: true)
+    def process_flags
       # nothing
     end
 
