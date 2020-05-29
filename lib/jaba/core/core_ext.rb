@@ -66,29 +66,10 @@ module JABACoreExt
   refine String do
 
     ##
-    #
-    def basename
-      File.basename(self)
-    end
-    
-    ##
-    #
-    def capitalize_first!
-      self[0] = self[0].chr.upcase
-      self
-    end
-
-    ##
-    #
-    def capitalize_first
-      dup.capitalize_first!
-    end
-
-    ##
     # Cleans path by removing all extraneous ., .. and slashes. Supports windows and UNIX style absolute paths
     # and UNC paths.
     #
-    def cleanpath(validate: false)
+    def cleanpath(validate: false, expand: false)
       path = split_path.join('/')
 
       # Preserve leading slash(es) if its a UNC path or UNIX style absolute path
@@ -103,6 +84,8 @@ module JABACoreExt
         path[0] = path[0].chr.upcase # Capitalise drive letter
       end
 
+      path = path.expand_path if expand
+      
       if validate
         raise 'block expected' if !block_given?
         yield path if path != self
@@ -172,6 +155,18 @@ module JABACoreExt
 
     ##
     #
+    def basename
+      File.basename(self)
+    end
+
+    ##
+    #
+    def expand_path
+      File.expand_path(self)
+    end
+
+    ##
+    #
     def to_backslashes
       dup.to_backslashes!
     end
@@ -183,6 +178,20 @@ module JABACoreExt
       self
     end
     
+    ##
+    #
+    def capitalize_first!
+      raise "Cannot capitalze empty string" if empty?
+      self[0] = self[0].chr.upcase
+      self
+    end
+
+    ##
+    #
+    def capitalize_first
+      dup.capitalize_first!
+    end
+
     ##
     #
     def quote!(quote_char = '"')

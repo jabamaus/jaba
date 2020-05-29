@@ -706,7 +706,7 @@ module JABA
     ##
     #
     def init_logger 
-      log_file = File.expand_path('jaba.log')
+      log_file = 'jaba.log'.expand_path
       puts "Logging to #{log_file}..."
       FileUtils.remove(log_file, force: true)
       @logger = Logger.new(log_file)

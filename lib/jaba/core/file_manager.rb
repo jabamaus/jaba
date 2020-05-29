@@ -124,7 +124,7 @@ module JABA
       if !ValidEols.include?(eol)
         raise "'#{eol.inspect}' is an invalid eol style. Valid values: #{ValidEols.inspect}"
       end
-      filename = File.expand_path(filename.cleanpath)
+      filename = filename.cleanpath(expand: true)
       JabaFile.new(self, filename, encoding, eol, capacity)
     end
 
@@ -170,7 +170,7 @@ module JABA
     ##
     #
     def read_file(filename, encoding: nil, fail_if_not_found: false)
-      fn = File.expand_path(filename.cleanpath)
+      fn = filename.cleanpath(expand: true)
       str = @@file_read_cache[fn]
       if str.nil?
         if !File.exist?(fn)
