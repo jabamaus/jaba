@@ -46,7 +46,7 @@ module JABA
     #
     def initialize
       @input = Input.new
-      @input.instance_variable_set(:@definitions, nil)
+      @input.instance_variable_set(:@definitions, [])
       @input.instance_variable_set(:@jaba_input_file, 'jaba.input.json')
       @input.instance_variable_set(:@dump_input, false)
       @input.instance_variable_set(:@jaba_output_file, 'jaba.output.json')
