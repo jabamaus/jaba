@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'pathname'
-
 ##
 #
 module JABACoreExt
@@ -115,15 +113,26 @@ module JABACoreExt
 
     ##
     #
-    def cleanpath!
-      replace(cleanpath)
+    def relative_path_from(base, backslashes: false)
+      parts = split_path(preserve_absolute_unix: true)
+      base_parts = base.split_path(preserve_absolute_unix: true)
+      while (!parts.empty? && !base_parts.empty? && parts[0] == base_parts[0])
+        parts.shift
+        base_parts.shift
+      end
+      if (!parts.empty? && parts[0].absolute_path?) || (!base_parts.empty? && base_parts[0].absolute_path?)
+        raise "Cannot turn '#{self}' into a relative path from '#{base}' - paths are unrelated"
+      end
+      result = base_parts.fill('..').concat(parts)
+      result.push('.') if result.empty?
+      backslashes ? result.join('\\') : result.join('/')
     end
 
     ##
     # Helper method that splits string on forward or backslashes, deleting any resulting blanks and uneeded '.'.
     # Does not preserve absolute UNIX paths or UNC paths, which the calling method is expected to handle.
     #
-    def split_path
+    def split_path(preserve_absolute_unix: false)
       result = []
       parts = split(/[\/\\]/)
       parts.delete('.')
@@ -140,20 +149,25 @@ module JABACoreExt
           result.push(p)
         end
       end
+      if preserve_absolute_unix && absolute_unix_path?
+        result.unshift('/')
+      end
       result
     end
 
     ##
     #
-    def to_forward_slashes
-      dup.to_forward_slashes!
+    def absolute_unix_path?
+      raise "Empty path is invalid" if empty?
+      self[0].chr == '/' && ((size > 1 && self[1].chr != '/') || size == 1)
     end
-    
+
     ##
+    # Returns true if string is a windows or unix style absolute path.
     #
-    def to_forward_slashes!
-      tr!('\\', '/')
-      self
+    def absolute_path?
+      raise "Empty path is invalid" if empty?
+      self[0].chr == '/' || self[0].chr == '\\' || (size > 1 && self[1].chr == ':')
     end
 
     ##
@@ -169,20 +183,6 @@ module JABACoreExt
       self
     end
     
-    ##
-    #
-    def relative_path_from(base)
-      # TODO: SLOW. 
-      Pathname.new(self).relative_path_from(base).to_s
-    end
-  
-    ##
-    # Returns true if string is a windows or unix style absolute path.
-    #
-    def absolute_path?
-      self[0].chr == '/' || self[0].chr == '\\' || (size > 1 && self[1].chr == ':')
-    end
-
     ##
     #
     def quote!(quote_char = '"')

@@ -165,7 +165,7 @@ module JABA
         item_group(w) do
           deps.each do |dep|
             proj_ref = @generator.project_from_node(dep)
-            w << "    <ProjectReference Include=\"#{proj_ref.vcxproj_file.relative_path_from(projroot).to_backslashes!}\">"
+            w << "    <ProjectReference Include=\"#{proj_ref.vcxproj_file.relative_path_from(projroot, backslashes: true)}\">"
             w << "      <Project>#{proj_ref.guid}</Project>"
             # TODO: reference properties
             w << '    </ProjectReference>'

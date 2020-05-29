@@ -29,6 +29,8 @@ module JABA
         './/.\\.\\.\\'.split_path.must_equal []
         'a.b.c'.split_path.must_equal ['a.b.c']
         '..'.split_path.must_equal ['..']
+        '/a/b'.split_path(preserve_absolute_unix: true).must_equal ['/', 'a', 'b']
+        # TODO: test some cleaning
        end
 
       it 'supports clean_path' do
@@ -66,13 +68,61 @@ module JABA
         '$(ENV_VAR)'.cleanpath.must_equal('$(ENV_VAR)')
         '//'.cleanpath.must_equal('//') # UNC, albeit invalid
         '//a////b//'.cleanpath.must_equal('//a/b') # UNC
-        'a'.cleanpath!.must_equal('a')
         'a//b'.cleanpath(validate: true) do |clean|
           clean.must_equal('a/b')
         end
       end
+
+      it 'supports relative_path_from' do
+        '.'.relative_path_from('.').must_equal('.')
+        'a'.relative_path_from('a').must_equal('.')
+        '/'.relative_path_from('/').must_equal('.')
+        'C:/'.relative_path_from('C:/').must_equal('.')
+        'C:'.relative_path_from('C:').must_equal('.')
+        'a'.relative_path_from('a/b/c').must_equal('../..')
+        'a/b/c'.relative_path_from('d').must_equal('../a/b/c')
+        'e'.relative_path_from('a/b/c').must_equal('../../../e')
+        'a/../b/.././c'.relative_path_from('d').must_equal('../c')
+        assert_raises RuntimeError do
+          'a'.relative_path_from('/')
+        end.message.must_match("Cannot turn 'a' into a relative path from '/' - paths are unrelated")
+        assert_raises RuntimeError do
+          'a'.relative_path_from("C:")
+        end
+        assert_raises RuntimeError do
+          'C:/'.relative_path_from('D:/')
+        end.message.must_match('paths are unrelated')
+        assert_raises RuntimeError do
+          'C:/'.relative_path_from('D:/a/b/c')
+        end.message.must_match('paths are unrelated')
+        assert_raises RuntimeError do
+          'C:/a/b/c'.relative_path_from('x/y/z')
+        end.message.must_match('paths are unrelated')
+        '//a/b'.relative_path_from('//a/b/c').must_equal('..')
+        'a\\b\\c'.relative_path_from('d').must_equal('../a/b/c')
+        'a\\b\\c'.relative_path_from('d', backslashes: true).must_equal('..\\a\\b\\c')
+        'a/b/c'.relative_path_from('d', backslashes: true).must_equal('..\\a\\b\\c')
+      end
       
+      it 'supports absolute_unix_path?' do
+        assert_raises RuntimeError do
+          ''.absolute_path?
+        end.message.must_match("Empty path is invalid")
+        '/'.absolute_unix_path?.must_equal(true)
+        '/a/b'.absolute_unix_path?.must_equal(true)
+        '//'.absolute_unix_path?.must_equal(false)
+        'C:'.absolute_unix_path?.must_equal(false)
+        'a'.absolute_unix_path?.must_equal(false)
+        '.'.absolute_unix_path?.must_equal(false)
+      end
+
       it 'supports absolute_path?' do
+        assert_raises RuntimeError do
+          ''.absolute_path?
+        end.message.must_match("Empty path is invalid")
+        '/'.absolute_path?.must_equal(true)
+        'C:'.absolute_path?.must_equal(true)
+        'C:/'.absolute_path?.must_equal(true)
         'C:/temp'.absolute_path?.must_equal(true)
         'C:\\Program Files'.absolute_path?.must_equal(true)
         '/usr/bin'.absolute_path?.must_equal(true)
