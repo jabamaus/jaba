@@ -221,8 +221,8 @@ module JABA
 
       # Execute any definitions supplied inline in a block
       #
-      if input.definitions
-        execute_definitions(&input.definitions)
+      Array(input.definitions).each do |block|
+        execute_definitions(&block)
       end
       
       # Create attribute types
