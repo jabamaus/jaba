@@ -673,10 +673,10 @@ module JABA
     #
     def gather_definition_src_files
       # Load core type definitions 
-      @definition_src_files.concat(@file_manager.glob("#{__dir__}/../definitions/*.rb"))
+      @definition_src_files.concat(@file_manager.glob("#{__dir__}/../definitions/*.rb".cleanpath))
       
       Array(input.load_paths).each do |p|
-        p = p.to_forward_slashes # take copy in case string frozen
+        p = p.cleanpath # take copy in case string frozen
 
         if !File.exist?(p)
           jaba_error("#{p} does not exist")
@@ -701,8 +701,6 @@ module JABA
           @definition_src_files << p
         end
       end
-      
-      @definition_src_files.map!(&:cleanpath)
     end
 
     ##
