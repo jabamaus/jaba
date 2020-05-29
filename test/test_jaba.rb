@@ -28,10 +28,23 @@ module JABA
 
     ##
     #
-    def jaba(load_paths: nil, dry_run: false, &block)
+    def jaba(load_paths: nil, dry_run: false, cpp_app: false, &block)
       op = JABA.run do |c|
         c.load_paths = load_paths
         c.definitions(&block) if block_given?
+        td = temp_dir
+        if cpp_app
+          c.definitions do
+            defaults :cpp do
+              hosts [:vs2017]
+              platforms [:windows]
+              archs [:x86, :x86_64]
+              configs [:Debug, :Release]
+              root td
+              type :app
+            end
+          end
+        end
         c.dump_output = false
         c.dry_run = dry_run
         c.use_glob_cache = true

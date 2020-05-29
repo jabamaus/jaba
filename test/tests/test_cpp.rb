@@ -4,6 +4,7 @@ module JABA
 
   class TestCpp < JabaTest
 
+    # TODO
     it 'is evaluated per-type, per-sku and per-config' do
       jaba do
       end
@@ -55,14 +56,9 @@ module JABA
     end
 
     it 'prevents nil access when attributes not set up yet' do
-      op = jaba(dry_run: true) do
+      op = jaba(dry_run: true, cpp_app: true) do
         cpp :app do
-          type :app
-          platforms [:windows]
-          archs [:x86]
           projname "app_#{host&.upcase}" # TODO: remove safe call
-          hosts [:vs2017] # Doesn't actually matter whether this is called before or after projname
-          configs [:debug]
         end
       end
       proj = op[:cpp]['cpp|app|vs2017|windows']
@@ -71,29 +67,19 @@ module JABA
     end
 
     # TODO. Test that can control whether multiple platforms can be combined into one project or not
+    # but how to test this as don't have acceess to any appropriate platforms
     it 'has a flexible approach to platforms' do
-      jaba(dry_run: true) do
+      jaba(dry_run: true, cpp_app: true) do
         cpp :app do
-          hosts :vs2017
-          platforms [:windows]
-          archs [:x86]
-          configs [:debug, :release]
-          type :app
+
         end
       end
     end
 
     # TODO: explicitly test that flags are applied after exporting.
     it 'supports exporting array attributes to dependents' do
-      op = jaba(dry_run: true) do
-        defaults :cpp do
-          hosts [:vs2017]
-          platforms [:windows]
-          archs [:x86]
-          configs [:debug, :release]
-        end
+      op = jaba(dry_run: true, cpp_app: true) do
         cpp :app do
-          type :app
           deps [:lib]
           vcglobal :BoolAttr, true
           src ['b', 'a']
@@ -110,7 +96,7 @@ module JABA
           src ['f']
           defines ['D']
           defines ['C', 'B'], :export
-          defines ['R'], :export if config == :release
+          defines ['R'], :export if config == :Release
           defines ['E']
           # TODO: test vcproperty
         end
@@ -121,10 +107,10 @@ module JABA
       app[:vcglobal][:StringAttr2].must_equal('s2')
       app[:vcglobal][:StringAttr3].must_equal('s3')
       app[:src].must_equal ['b', 'a', 'e', 'd']
-      cfg_debug = app[:configs][:debug]
+      cfg_debug = app[:configs][:Debug]
       cfg_debug.wont_be_nil
       cfg_debug[:defines].must_equal ['A', 'B', 'C', 'F']
-      cfg_release = app[:configs][:release]
+      cfg_release = app[:configs][:Release]
       cfg_release.wont_be_nil
       cfg_release[:defines].must_equal ['A', 'B', 'C', 'F', 'R']
     end
