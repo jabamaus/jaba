@@ -85,28 +85,13 @@ module JABACoreExt
     def capitalize_first
       dup.capitalize_first!
     end
-    
+
     ##
     # Cleans path by removing all extraneous ., .. and slashes. Supports windows and UNIX style absolute paths
     # and UNC paths.
     #
     def cleanpath(validate: false)
-      result = []
-      
-      split_path.each do |part|
-        if part == '..'
-          case result.last
-          when '..', nil
-            result.push('..')
-          else
-            result.pop
-          end
-        else
-          result.push(part)
-        end
-      end
-      
-      path = result.join('/')
+      path = split_path.join('/')
 
       # Preserve leading slash(es) if its a UNC path or UNIX style absolute path
       #
@@ -139,10 +124,23 @@ module JABACoreExt
     # Does not preserve absolute UNIX paths or UNC paths, which the calling method is expected to handle.
     #
     def split_path
+      result = []
       parts = split(/[\/\\]/)
       parts.delete('.')
       parts.delete('')
-      parts
+      parts.each do |p|
+        if p == '..'
+          case result.last
+          when '..', nil
+            result.push('..')
+          else
+            result.pop
+          end
+        else
+          result.push(p)
+        end
+      end
+      result
     end
 
     ##
