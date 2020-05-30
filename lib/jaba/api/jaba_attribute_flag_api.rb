@@ -9,8 +9,8 @@ module JABA
     ##
     # Set help for the attribute flag. Required.
     #
-    def help(val = nil, &block)
-      @attr_flag.set_property(:help, val, &block)
+    def help(val = nil)
+      @attr_flag.set_property(:help, val)
     end
 
     ##

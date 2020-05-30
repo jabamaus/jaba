@@ -11,8 +11,8 @@ module JABA
     ##
     # Set help for the type. Required.
     #
-    def help(val = nil, &block)
-      @jaba_type.set_property(:help, val, &block)
+    def help(val = nil)
+      @jaba_type.set_property(:help, val)
     end
 
     ##

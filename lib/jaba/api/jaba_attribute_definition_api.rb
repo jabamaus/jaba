@@ -9,15 +9,15 @@ module JABA
     ##
     # Set help for the attribute. Required.
     #
-    def help(val = nil, &block)
-      @attr_def.set_property(:help, val, &block)
+    def help(val = nil)
+      @attr_def.set_property(:help, val)
     end
     
     ##
     # Set any number of flags to control the behaviour of the attribute.
     #
-    def flags(*flags, &block)
-      @attr_def.set_property(:flags, flags, &block)
+    def flags(*flags)
+      @attr_def.set_property(:flags, flags)
     end
     
     ##
@@ -35,8 +35,8 @@ module JABA
     
     ##
     #
-    def flag_options(*options, &block)
-      @attr_def.set_property(:flag_options, options, &block)
+    def flag_options(*options)
+      @attr_def.set_property(:flag_options, options)
     end
 
     ##
@@ -52,8 +52,8 @@ module JABA
     #
     # And the presence of the :group option and its value would be validated.
     #
-    def value_option(id, required: false, items: [], &block)
-      @attr_def.add_value_option(id, required, items, &block)
+    def value_option(id, required: false, items: [])
+      @attr_def.add_value_option(id, required, items)
     end
     
     ##
