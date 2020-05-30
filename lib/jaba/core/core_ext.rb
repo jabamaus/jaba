@@ -304,6 +304,18 @@ module JABACoreExt
 
   ##
   #
+  refine Enumerable do
+
+    ##
+    #
+    def sort_no_case!
+      sort!{|x, y| x.to_s.casecmp(y.to_s)}
+    end
+
+  end
+
+  ##
+  #
   refine Hash do
 
     ##
