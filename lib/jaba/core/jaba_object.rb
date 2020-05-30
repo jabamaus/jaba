@@ -63,21 +63,19 @@ module JABA
     
     ##
     #
-    def include_shared(ids, args)
-      ids.each do |id|
-        @services.log "  Including shared definition [id=#{id}]"
+    def include_shared(id, args)
+      @services.log "  Including shared definition [id=#{id}]"
 
-        db = @services.get_shared_definition(id)
-        
-        n_expected = db.block.arity
-        n_actual = args ? Array(args).size : 0
-        
-        if n_actual != n_expected
-          jaba_error("shared definition '#{id}' expects #{n_expected} arguments but #{n_actual} were passed")
-        end
-        
-        eval_api_block(args, &db.block)
+      db = @services.get_shared_definition(id)
+      
+      n_expected = db.block.arity
+      n_actual = args ? Array(args).size : 0
+      
+      if n_actual != n_expected
+        jaba_error("shared definition '#{id}' expects #{n_expected} arguments but #{n_actual} were passed")
       end
+      
+      eval_api_block(args, &db.block)
     end
     
   end

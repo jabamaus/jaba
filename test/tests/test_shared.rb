@@ -120,9 +120,6 @@ module JABA
       end
     end
     
-    it 'can include multiple at once' do
-    end
-    
     it 'can chain includes' do
     end
     

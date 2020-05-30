@@ -37,8 +37,8 @@ module  JABA
 
     ##
     #
-    def include(*shared_definition_ids, args: nil)
-      @obj.include_shared(shared_definition_ids, args)
+    def include(shared_definition_id, args: nil)
+      @obj.include_shared(shared_definition_id, args)
     end
 
     ##
