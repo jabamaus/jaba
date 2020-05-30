@@ -163,6 +163,12 @@ module JABACoreExt
 
     ##
     #
+    def extname
+      File.extname(self)
+    end
+
+    ##
+    #
     def expand_path
       File.expand_path(self)
     end
@@ -262,6 +268,12 @@ module JABACoreExt
 
     ##
     #
+    def sort_no_case!
+      sort!{|x, y| x.to_s.casecmp(y.to_s)}
+    end
+
+    ##
+    #
     def stable_sort!
       sort_by!.with_index {|x, i| [x, i] }
     end
@@ -298,18 +310,6 @@ module JABACoreExt
     #
     def vs_join_paths(**args)
       map(&:vs_quote!).vs_join(**args)&.to_backslashes!
-    end
-
-  end
-
-  ##
-  #
-  refine Enumerable do
-
-    ##
-    #
-    def sort_no_case!
-      sort!{|x, y| x.to_s.casecmp(y.to_s)}
     end
 
   end
