@@ -56,4 +56,3 @@ if there are multiple attrs, with a warning.
   - Make _ID be id of the definition the code is in, such that it works even inside
     a block that is being executed in the context of a different jaba object
   - give attributes a 'title' and a 'help' string. title can be used when dumping help, help string can be used in error msgs
-  - use vs2019 in all tests

@@ -112,11 +112,11 @@ module JABA
         define :type_a do
           attr :host, type: :reference do
             referenced_type :host
-            default :vs2017
+            default :vs2019
           end
         end
         type_a :a1 do
-          host.version_year.must_equal 2017
+          host.version_year.must_equal 2019
         end
       end
     end
@@ -238,10 +238,10 @@ module JABA
 
         testproj :t do
           platforms [:windows]
-          hosts [:vs2017]
+          hosts [:vs2019]
           path "#{platform.valid_archs[0]}/#{host.version_year}"
           generate do
-            children[0].children[0].attrs.path.must_equal("x86/2017")
+            children[0].children[0].attrs.path.must_equal("x86/2019")
           end
         end
 

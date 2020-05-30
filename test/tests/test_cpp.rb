@@ -13,7 +13,7 @@ module JABA
     it 'supports defaults' do
       op = jaba(dry_run: true) do
         defaults :cpp do
-          hosts [:vs2017]
+          hosts [:vs2019]
           platforms [:windows]
           archs [:x86]
           configs [:debug, :release]
@@ -28,7 +28,7 @@ module JABA
         end
       end
 
-      proj = op[:cpp]['cpp|a|vs2017|windows']
+      proj = op[:cpp]['cpp|a|vs2019|windows']
       proj.wont_be_nil
 
       cfg_debug = proj[:configs][:debug]
@@ -63,9 +63,9 @@ module JABA
           src 'main.cpp', :force
         end
       end
-      proj = op[:cpp]['cpp|app|vs2017|windows']
+      proj = op[:cpp]['cpp|app|vs2019|windows']
       proj.wont_be_nil
-      proj[:projname].must_equal('app_VS2017')
+      proj[:projname].must_equal('app_VS2019')
     end
 
     # TODO. Test that can control whether multiple platforms can be combined into one project or not
@@ -100,7 +100,7 @@ module JABA
           # TODO: test vcproperty
         end
       end
-      app = op[:cpp]['cpp|app|vs2017|windows']
+      app = op[:cpp]['cpp|app|vs2019|windows']
       app.wont_be_nil
       app[:vcglobal][:BoolAttr].must_equal(true)
       app[:vcglobal][:StringAttr2].must_equal('s2')

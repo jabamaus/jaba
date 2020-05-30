@@ -14,7 +14,7 @@ module JABA
           src ['main.cpp', 'file.z']
         end
       end
-      proj = op[:cpp]['cpp|a|vs2017|windows']
+      proj = op[:cpp]['cpp|a|vs2019|windows']
       proj.wont_be_nil
       proj[:src].must_equal(['file.z', 'main.cpp'])
     end
@@ -31,7 +31,7 @@ module JABA
             src 'main.cpp', :force
           end
         end
-        proj = op[:cpp]['cpp|a|vs2017|windows']
+        proj = op[:cpp]['cpp|a|vs2019|windows']
         proj.wont_be_nil
         proj[:src].must_equal(['main.cpp'])
       end

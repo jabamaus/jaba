@@ -36,7 +36,7 @@ module JABA
         if cpp_app
           c.definitions do
             defaults :cpp do
-              hosts [:vs2017]
+              hosts [:vs2019]
               platforms [:windows]
               archs [:x86, :x86_64]
               configs [:Debug, :Release]
