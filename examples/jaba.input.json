@@ -239,6 +239,21 @@
               "projroot": ".",
               "projname": "MyApp",
               "projname_suffix": null,
+              "src": [
+
+              ],
+              "srcfilters": [
+                ".cpp",
+                ".h",
+                ".inl",
+                ".c",
+                ".cc",
+                ".cxx",
+                ".hpp",
+                ".def",
+                ".rc",
+                ".natvis"
+              ],
               "winsdkver": null,
               "vcglobal": {
               },
@@ -246,9 +261,6 @@
                 "cpp|MyApp|vs2017|windows|x86": {
                   "arch": "x86",
                   "arch_ref": "arch|x86",
-                  "src": [
-
-                  ],
                   "children": {
                     "cpp|MyApp|vs2017|windows|x86|Debug": {
                       "type": "app",
@@ -309,9 +321,6 @@
                 "cpp|MyApp|vs2017|windows|x86_64": {
                   "arch": "x86_64",
                   "arch_ref": "arch|x86_64",
-                  "src": [
-
-                  ],
                   "children": {
                     "cpp|MyApp|vs2017|windows|x86_64|Debug": {
                       "type": "app",
@@ -405,6 +414,21 @@
               "projroot": ".",
               "projname": "MyLib",
               "projname_suffix": null,
+              "src": [
+
+              ],
+              "srcfilters": [
+                ".cpp",
+                ".h",
+                ".inl",
+                ".c",
+                ".cc",
+                ".cxx",
+                ".hpp",
+                ".def",
+                ".rc",
+                ".natvis"
+              ],
               "winsdkver": null,
               "vcglobal": {
               },
@@ -412,9 +436,6 @@
                 "cpp|MyLib|vs2017|windows|x86": {
                   "arch": "x86",
                   "arch_ref": "arch|x86",
-                  "src": [
-
-                  ],
                   "children": {
                     "cpp|MyLib|vs2017|windows|x86|Debug": {
                       "type": "lib",
@@ -475,9 +496,6 @@
                 "cpp|MyLib|vs2017|windows|x86_64": {
                   "arch": "x86_64",
                   "arch_ref": "arch|x86_64",
-                  "src": [
-
-                  ],
                   "children": {
                     "cpp|MyLib|vs2017|windows|x86_64|Debug": {
                       "type": "lib",

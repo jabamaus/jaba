@@ -51,3 +51,4 @@ if there are multiple attrs, with a warning.
 
   - check for duplicate filenames at generator level, with proper error reporting
   - put version number into output file
+  - Make contents of attr def defaults overidable by user, including calling super

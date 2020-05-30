@@ -90,6 +90,24 @@ define :cpp do
       flag_options :export
     end
     
+    attr_array :srcfilters do
+      help 'File extensions that will be added when src is not specified explicitly. ' \
+           'Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.'
+      default do
+        ext = ['.cpp', '.h', '.inl', '.c', '.cc', '.cxx', '.hpp']
+        if visual_studio?
+          ext << '.natvis'
+        elsif xcode?
+          ext << '.xcconfig'
+        end
+        case platform
+        when :windows
+          ext << '.def' << '.rc'
+        end
+        ext
+      end
+    end
+
     attr :winsdkver, type: :choice do
       help 'Windows SDK version. Defaults to nil.'
       items [
