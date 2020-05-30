@@ -40,6 +40,7 @@ module JABA
       @default_set = false
       @default_is_block = false
 
+      define_property(:title)
       define_property(:help)
       define_property(:default)
       define_array_property(:flags)
@@ -67,6 +68,7 @@ module JABA
 
       validate
       
+      @title.freeze
       @help.freeze
       @default.freeze
       @flags.freeze
