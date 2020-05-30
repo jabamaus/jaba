@@ -73,8 +73,13 @@ module JABA
     ##
     #
     def make_file(*fns)
-      fns.each do |f|
-        IO.write("#{temp_dir}/#{f}", "test\n")
+      fns.each do |fn|
+        fn = "#{temp_dir}/#{fn}"
+        dir = File.dirname(fn)
+        if !File.exist?(dir)
+          FileUtils.makedirs(dir)
+        end
+        IO.write(fn, "test\n")
       end
     end
     
