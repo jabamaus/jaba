@@ -4,6 +4,8 @@ require_relative 'api/jaba_context'
 require 'optparse'
 require 'ostruct'
 
+using JABACoreExt
+
 opts = OpenStruct.new(
   load_paths: nil,
   dump_input: nil,
