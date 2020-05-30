@@ -9,10 +9,10 @@
 
   ],
   "cpp": {
-    "cpp|MyApp|vs2017|windows": {
+    "cpp|MyApp|vs2019|windows": {
       "projroot": "C:/projects/GitHub/jaba/examples/example1/./.",
       "projname": "MyApp",
-      "host": "vs2017",
+      "host": "vs2019",
       "platform": "windows",
       "vcxproj": "C:/projects/GitHub/jaba/examples/example1/././MyApp.vcxproj",
       "src": [
@@ -39,7 +39,7 @@
             "ConfigurationType": "Application",
             "UseDebugLibraries": true,
             "CharacterSet": null,
-            "PlatformToolset": "v141",
+            "PlatformToolset": "v142",
             "AdditionalIncludeDirectories": null,
             "AdditionalOptions": null,
             "ExceptionHandling": "Sync",
@@ -64,7 +64,7 @@
             "ConfigurationType": "Application",
             "UseDebugLibraries": false,
             "CharacterSet": null,
-            "PlatformToolset": "v141",
+            "PlatformToolset": "v142",
             "AdditionalIncludeDirectories": null,
             "AdditionalOptions": null,
             "ExceptionHandling": "Sync",
@@ -77,10 +77,10 @@
         }
       }
     },
-    "cpp|MyLib|vs2017|windows": {
+    "cpp|MyLib|vs2019|windows": {
       "projroot": "C:/projects/GitHub/jaba/examples/example2/./.",
       "projname": "MyLib",
-      "host": "vs2017",
+      "host": "vs2019",
       "platform": "windows",
       "vcxproj": "C:/projects/GitHub/jaba/examples/example2/././MyLib.vcxproj",
       "src": [
@@ -107,7 +107,7 @@
             "ConfigurationType": "StaticLibrary",
             "UseDebugLibraries": true,
             "CharacterSet": null,
-            "PlatformToolset": "v141",
+            "PlatformToolset": "v142",
             "AdditionalIncludeDirectories": null,
             "AdditionalOptions": null,
             "ExceptionHandling": "Sync",
@@ -131,7 +131,7 @@
             "ConfigurationType": "StaticLibrary",
             "UseDebugLibraries": false,
             "CharacterSet": null,
-            "PlatformToolset": "v141",
+            "PlatformToolset": "v142",
             "AdditionalIncludeDirectories": null,
             "AdditionalOptions": null,
             "ExceptionHandling": "Sync",
