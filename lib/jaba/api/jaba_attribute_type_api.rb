@@ -9,7 +9,7 @@ module JABA
     ##
     # Set help for the attribute type. Required.
     #
-    def help(val = nil)
+    def help(val)
       @attr_type.set_property(:help, val)
     end
 
