@@ -169,14 +169,12 @@ module JABA
       
       @platform_nodes.reverse_each do |node|
         node.attrs.deps.each do |dep_node|
-          dep_node.visit_attr(top_level: true) do |dep_attr|
-
-            # Skip single value attributes as they cannot export. The reason for this is that exporting it would simply
-            # overwrite the destination attribute creating a conflict. Which node should control the value? For this
-            # reason disallow.
-            #
-            next if dep_attr.attr_def.variant == :single
-            n_attr = nil
+          # Skip single value attributes as they cannot export. The reason for this is that exporting it would simply
+          # overwrite the destination attribute creating a conflict. Which node should control the value? For this
+          # reason disallow.
+          #
+          dep_node.visit_attr(top_level: true, skip_variant: :single) do |dep_attr|
+            attr = nil
 
             # visit all attribute elements in array/hash
             #
@@ -186,8 +184,8 @@ module JABA
                 # Get the corresponding attr in this project node. Only consider this node so don't set search: true.
                 # This will always be a hash or an array.
                 #
-                n_attr = node.get_attr(elem.definition_id) if !n_attr
-                n_attr.insert_clone(elem)
+                attr = node.get_attr(elem.definition_id) if !attr
+                attr.insert_clone(elem)
               end
             end
           end
