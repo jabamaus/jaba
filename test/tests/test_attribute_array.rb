@@ -4,7 +4,7 @@ module JABA
 
   class TestAttributeArray < JabaTest
 
-    it 'allows setting a default array' do
+    it 'supports setting a default value' do
       jaba do
         define :test do
           attr_array :a do
@@ -19,6 +19,22 @@ module JABA
       end
     end
     
+    it 'supports extending default value' do
+      jaba do
+        define :test do
+          attr_array :a do
+            default [1, 2, 3]
+          end
+        end
+        test :t do
+          a [4, 5, 6]
+          generate do
+            attrs.a.must_equal [1, 2, 3, 4, 5, 6]
+          end
+        end
+      end
+    end
+
     it 'allows setting value with block' do
       jaba do
         define :test do

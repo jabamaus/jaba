@@ -86,6 +86,7 @@ define :cpp do
 
     attr_array :src, type: :path do
       help 'Source file specification'
+      flags :required # Must be specified by user
       flags :nosort # Final source will be sorted so no need to sort this
       flag_options :force # Specify when explicitly specidied src does not exist on disk but still want to add to project
       flag_options :export

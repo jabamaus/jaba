@@ -21,6 +21,7 @@ module JABA
         end
         cpp :a do
           type :app
+          src 'main.cpp', :force
           if config == :debug
             rtti true
           end
@@ -59,6 +60,7 @@ module JABA
       op = jaba(dry_run: true, cpp_app: true) do
         cpp :app do
           projname "app_#{host&.upcase}" # TODO: remove safe call
+          src 'main.cpp', :force
         end
       end
       proj = op[:cpp]['cpp|app|vs2017|windows']
@@ -71,7 +73,7 @@ module JABA
     it 'has a flexible approach to platforms' do
       jaba(dry_run: true, cpp_app: true) do
         cpp :app do
-
+          src 'main.cpp', :force
         end
       end
     end
@@ -82,9 +84,11 @@ module JABA
           deps [:lib]
           vcglobal :BoolAttr, true
           defines ['F', 'A']
+          src 'main.cpp', :force
         end
         cpp :lib do
           type :lib
+          src 'main.cpp', :force
           vcglobal :StringAttr, 's'
           vcglobal :StringAttr2, 's2', :export
           vcglobal :StringAttr3, 's3', :export

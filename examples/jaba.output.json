@@ -16,7 +16,7 @@
       "platform": "windows",
       "vcxproj": "C:/projects/GitHub/jaba/examples/example1/././MyApp.vcxproj",
       "src": [
-
+        "main.cpp"
       ],
       "vcglobal": {
         "ProjectName": "MyApp",
@@ -84,7 +84,8 @@
       "platform": "windows",
       "vcxproj": "C:/projects/GitHub/jaba/examples/example2/././MyLib.vcxproj",
       "src": [
-
+        "include/MyLibrary/MyLibrary.h",
+        "src/MyLibrary.cpp"
       ],
       "vcglobal": {
         "ProjectName": "MyLib",

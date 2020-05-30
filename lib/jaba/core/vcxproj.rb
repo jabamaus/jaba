@@ -16,7 +16,7 @@ module JABA
     #
     def init
       super
-      @vcxproj_file = "#{@projroot}/#{@attrs.projname}.vcxproj"
+      @vcxproj_file = "#{@projroot}/#{@projname}.vcxproj"
       @vcxproj_filters_file = "#{@vcxproj_file}.filters"
     end
     
@@ -37,7 +37,7 @@ module JABA
     #
     def dump_jaba_output(p_root)
       p_root[:projroot] = @projroot
-      p_root[:projname] = @attrs.projname
+      p_root[:projname] = @projname
       p_root[:host] = @host.definition_id
       p_root[:platform] = @attrs.platform_ref.definition_id
       p_root[:vcxproj] = @vcxproj_file

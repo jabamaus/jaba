@@ -4,4 +4,5 @@ cpp :MyApp do
   platforms [:windows]
   archs [:x86, :x86_64]
   configs [:Debug, :Release]
+  src '**/*'
 end
