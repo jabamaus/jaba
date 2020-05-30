@@ -522,6 +522,7 @@ module JABA
     ##
     #
     def dump_jaba_output
+      @output[:version] = '1.0'
       @output[:generated] = @file_manager.generated
       @output[:warnings] = @warnings
       @generators.each do |g|

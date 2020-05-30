@@ -50,7 +50,6 @@ if there are multiple attrs, with a warning.
   end
 
   - check for duplicate filenames at generator level, with proper error reporting
-  - put version number into output file
   - Make contents of attr def defaults overidable by user, including calling super
   - could change last_call_location to an array to track all call locations
   - Make _ID be id of the definition the code is in, such that it works even inside
