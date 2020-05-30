@@ -35,7 +35,18 @@ module JABA
         proj.wont_be_nil
         proj[:src].must_equal(['main.cpp'])
       end
+    end
 
+    it 'disallows wildcards when force adding src' do
+      make_file('a/a.cpp')
+      check_fail "Wildcards are not allowed when force adding src - only explicitly specified source files",
+                 trace: [__FILE__, 'tagB'] do
+        jaba(cpp_app: true) do
+          cpp :app do
+            src ['a/*.*'], :force # tagB
+          end
+        end
+      end
     end
 
   end
