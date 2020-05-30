@@ -87,10 +87,11 @@ define :cpp do
     attr_array :src, type: :path do
       help 'Source file specification'
       flags :nosort # Final source will be sorted so no need to sort this
+      flag_options :force # Specify when explicitly specidied src does not exist on disk but still want to add to project
       flag_options :export
     end
     
-    attr_array :srcfilters do
+    attr_array :src_ext do
       help 'File extensions that will be added when src is not specified explicitly. ' \
            'Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.'
       default do

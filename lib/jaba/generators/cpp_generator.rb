@@ -193,7 +193,9 @@ module JABA
       end
 
       @platform_nodes.each do |pn|
-        @projects << make_project(Vcxproj, pn)
+        proj = make_project(Vcxproj, pn)
+        proj.process_src(:src, :src_ext)
+        @projects << proj
       end
     end
 

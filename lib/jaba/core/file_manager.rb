@@ -202,6 +202,15 @@ module JABA
       files
     end
 
+    ##
+    #
+    def files_from_spec(spec, ext, force: false)
+      return Array(spec) if force
+      files = glob(spec)
+      files = files.select{|f| ext.include?(f.extname)}
+      files
+    end
+
   end
 
 end

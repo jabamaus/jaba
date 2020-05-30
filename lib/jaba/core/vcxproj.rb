@@ -41,7 +41,7 @@ module JABA
       p_root[:host] = @host.definition_id
       p_root[:platform] = @attrs.platform_ref.definition_id
       p_root[:vcxproj] = @vcxproj_file
-      p_root[:src] = @attrs.src # TODO: output actual src not the spec
+      p_root[:src] = @src
       p_root[:vcglobal] = @attrs.vcglobal
       cfg_root = {}
       p_root[:configs] = cfg_root
@@ -157,7 +157,10 @@ module JABA
       w.write_raw(@idg)
       
       item_group(w) do
-        # TODO: src
+        @src.each do |f|
+          # TODO: handle not just ClInclude
+          w << "    <ClInclude Include=\"#{f}\" />"
+        end
       end
       
       deps = @attrs.deps

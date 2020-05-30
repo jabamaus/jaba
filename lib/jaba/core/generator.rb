@@ -25,6 +25,7 @@ module JABA
     end
     
     ##
+    # Call this from subclass
     #
     def make_node(**options, &block)
       node = @services.make_node(**options, &block)
@@ -53,6 +54,7 @@ module JABA
     end
 
     ##
+    # Call this from subclass
     #
     def make_project(klass, node)
       p = klass.new(@services, self, node)

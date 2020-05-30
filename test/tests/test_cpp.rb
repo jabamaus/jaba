@@ -81,7 +81,6 @@ module JABA
         cpp :app do
           deps [:lib]
           vcglobal :BoolAttr, true
-          src ['b', 'a']
           defines ['F', 'A']
         end
         cpp :lib do
@@ -90,9 +89,6 @@ module JABA
           vcglobal :StringAttr2, 's2', :export
           vcglobal :StringAttr3, 's3', :export
           # TODO: what happens if export :BoolAttr, false ? will it overwrite? Probably fail. Warn if same value.
-          src ['c']
-          src ['e', 'd', 'b'], :export
-          src ['f']
           defines ['D']
           defines ['C', 'B'], :export
           defines ['R'], :export if config == :Release
@@ -105,7 +101,6 @@ module JABA
       app[:vcglobal][:BoolAttr].must_equal(true)
       app[:vcglobal][:StringAttr2].must_equal('s2')
       app[:vcglobal][:StringAttr3].must_equal('s3')
-      app[:src].must_equal ['b', 'a', 'e', 'd']
       cfg_debug = app[:configs][:Debug]
       cfg_debug.wont_be_nil
       cfg_debug[:defines].must_equal ['A', 'B', 'C', 'F']

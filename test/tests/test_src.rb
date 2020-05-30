@@ -4,6 +4,8 @@ module JABA
 
   class TestSrc < JabaTest
 
+    # TODO: test case sensitivity
+    
     it 'can be specified explicitly' do
       make_file('main.cpp')
       op = jaba(cpp_app: true) do
