@@ -103,29 +103,31 @@ module JABA
     end
 
     ##
+    # Prefer over visit_attr when only basic unfiltered iteration is required, over top level attributes only.
     #
     def each_attr(&block)
       @attributes.each(&block)
     end
 
     ##
+    # Multi-purpose visit method. Works in multiple modes. 
     #
-    def visit_attr(attr_id = nil, top_level: false, type: nil, &block)
-      if top_level
-        @attributes.each do |a|
-          next if type && type != a.attr_def.type_id
-          if block.arity == 2
-            yield a, a.value
-          else
-            yield a
-          end
-        end
-      elsif attr_id
+    def visit_attr(attr_id = nil, top_level: false, type: nil, variant: nil, &block)
+      if attr_id
         get_attr(attr_id).visit_attr(&block)
       else
         @attributes.each do |a|
           next if type && type != a.attr_def.type_id
-          a.visit_attr(&block)
+          next if variant && variant != a.attr_def.variant
+          if top_level
+            if block.arity == 2
+              yield a, a.value
+            else
+              yield a
+            end
+          else
+            a.visit_attr(&block)
+          end
         end
       end
     end

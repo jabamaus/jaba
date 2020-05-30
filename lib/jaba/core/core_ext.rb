@@ -243,7 +243,7 @@ module JABACoreExt
     end
 
     ##
-    #
+    # TODO: There must be a better/faster way
     def remove_and_return_dupes(by: nil)
       s = Set.new
       dupes = []

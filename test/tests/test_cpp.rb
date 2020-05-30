@@ -76,7 +76,6 @@ module JABA
       end
     end
 
-    # TODO: explicitly test that flags are applied after exporting.
     it 'supports exporting array attributes to dependents' do
       op = jaba(dry_run: true, cpp_app: true) do
         cpp :app do
