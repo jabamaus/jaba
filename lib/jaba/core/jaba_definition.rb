@@ -20,7 +20,8 @@ module JABA
       @id = id
       @block = block
       @source_location = source_location
-      @source_location.sub!(/:in .*/, '')
+      i = @source_location.rindex(':in') # Remove unwanted ':in' string
+      @source_location.slice!(i..-1)
     end
 
   end
