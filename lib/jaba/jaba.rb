@@ -30,6 +30,16 @@ end.parse!
 
 ##
 #
+def timer
+  start_time = Time.now
+  yield
+  duration = Time.now - start_time
+  millis = (duration * 1000).round(0)
+  "#{millis}ms"
+end
+
+##
+#
 def profile(enabled)
   if !enabled
     yield
@@ -68,12 +78,14 @@ end
   
 begin
   output = nil
-  profile(opts.enable_profiling) do
-    output = JABA.run do |j|
-      j.load_paths = opts.load_paths if opts.load_paths
-      j.dump_input = opts.dump_input if opts.dump_input
-      j.dry_run = opts.dry_run if opts.dry_run
-      j.enable_logging = opts.enable_logging if opts.enable_logging
+  duration = timer do
+    profile(opts.enable_profiling) do
+      output = JABA.run do |j|
+        j.load_paths = opts.load_paths if opts.load_paths
+        j.dump_input = opts.dump_input if opts.dump_input
+        j.dry_run = opts.dry_run if opts.dry_run
+        j.enable_logging = opts.enable_logging if opts.enable_logging
+      end
     end
   end
 
@@ -82,7 +94,7 @@ begin
   modified = output[:modified_files]
   warnings = output[:warnings]
 
-  print "Generated #{generated.size} files, #{added.size} added, #{modified.size} modified"
+  print "Generated #{generated.size} files, #{added.size} added, #{modified.size} modified in #{duration}"
   print " [dry run]" if opts.dry_run
   puts
   

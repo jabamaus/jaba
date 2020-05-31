@@ -55,4 +55,3 @@ if there are multiple attrs, with a warning.
     a block that is being executed in the context of a different jaba object
   - give attributes a 'title' and a 'help' string. title can be used when dumping help, help string can be used in error msgs
 - Stop profiling test as a whole. Add a stresstest feature.
-- Add timing info to output
