@@ -62,7 +62,7 @@ module JABA
         spec_files.clear
         force = elem.has_flag_option?(:force)
         wildcard = spec =~ /\*/ ? true : false
-        abs_spec = "#{@root}/#{spec}"
+        abs_spec = !spec.absolute_path? ? "#{@root}/#{spec}" : spec
 
         if wildcard
           if force
