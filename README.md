@@ -18,7 +18,6 @@ To do:
 - test :required flag compatibility
 - Revisit set_to_default and wipe. Have way of clearing to default and clearing fully, but don't count that as set=true
 - In defaults block are paths relative to the defaults file or the file of the definition being instanced?
-- Improve how jaba tests are invoked
 - Consider something like  base: :__dir__ option on :dir attribute types to force a path to be relative to source definition file and not root
 - Test __dir__
 - Allow 'axes' of configs

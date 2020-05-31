@@ -71,7 +71,7 @@ module JABACoreExt
     # Cleans path by removing all extraneous ., .. and slashes. Supports windows and UNIX style absolute paths
     # and UNC paths.
     #
-    def cleanpath(validate: false, expand: false)
+    def cleanpath(validate: false)
       path = split_path.join('/')
 
       # Preserve leading slash(es) if its a UNC path or UNIX style absolute path
@@ -86,8 +86,6 @@ module JABACoreExt
         path[0] = path[0].chr.upcase # Capitalise drive letter
       end
 
-      path = path.expand_path if expand
-      
       if validate
         raise 'block expected' if !block_given?
         yield path if path != self
@@ -169,8 +167,13 @@ module JABACoreExt
 
     ##
     #
-    def expand_path
-      File.expand_path(self)
+    def to_absolute(clean: false)
+      if absolute_path?
+        clean ? cleanpath : self
+      else
+        abs = "#{JABA.cwd}/#{self}"
+        clean ? abs.cleanpath : abs
+      end
     end
 
     ##

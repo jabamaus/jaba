@@ -130,6 +130,18 @@ module JABA
         '.'.absolute_path?.must_equal(false)
       end
 
+      it 'supports to_absolute' do
+        cwd = Dir.getwd
+        'C:'.to_absolute.must_equal('C:')
+           'C:/a/b/c'.to_absolute.must_equal('C:/a/b/c')
+        '/'.to_absolute.must_equal('/')
+        '/a'.to_absolute.must_equal('/a')
+        '..'.to_absolute(clean: true).must_equal("#{cwd}/..".cleanpath)
+        'a'.to_absolute.must_equal("#{cwd}/a")
+        '.'.to_absolute.must_match(cwd)
+        '././a/b/../../.'.to_absolute(clean: true).must_equal(cwd)
+      end
+
       it 'supports quote!' do
         'p'.quote!.must_equal('"p"')
         '"p"'.quote!.must_equal('"p"')

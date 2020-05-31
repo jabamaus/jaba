@@ -36,6 +36,12 @@ module JABA
   using JABACoreExt
 
   ##
+  # 
+  def self.cwd
+    @@cwd ||= Dir.getwd
+  end
+  
+  ##
   #
   class Services
 
@@ -57,10 +63,9 @@ module JABA
 
       # Add cwd to load_paths, unless in the root of jaba itself (ie when developing)
       #
-      cwd = Dir.getwd
       load_paths = []
-      if !File.exist?("#{cwd}/jaba_root")
-        load_paths << cwd
+      if !File.exist?("#{JABA.cwd}/jaba_root")
+        load_paths << JABA.cwd
       end
       @input.instance_variable_set(:@load_paths, load_paths)
 
@@ -683,7 +688,7 @@ module JABA
       @definition_src_files.concat(@file_manager.glob("#{__dir__}/../definitions/*.rb".cleanpath))
       
       Array(input.load_paths).each do |p|
-        p = p.cleanpath # take copy in case string frozen
+        p = p.to_absolute(clean: true)
 
         if !File.exist?(p)
           jaba_error("#{p} does not exist")
@@ -713,7 +718,7 @@ module JABA
     ##
     #
     def init_logger 
-      log_file = 'jaba.log'.expand_path
+      log_file = 'jaba.log'.to_absolute
       puts "Logging to #{log_file}..."
       FileUtils.remove(log_file, force: true)
       @logger = Logger.new(log_file)

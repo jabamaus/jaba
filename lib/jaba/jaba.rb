@@ -47,7 +47,7 @@ def profile(enabled)
   RubyProf.start
   yield
   result = RubyProf.stop
-  file = 'jaba.profile'.expand_path
+  file = 'jaba.profile'.to_absolute
   str = String.new
   puts "Write profiling results to #{file}..."
   [RubyProf::FlatPrinter, RubyProf::GraphPrinter].each do |p|
