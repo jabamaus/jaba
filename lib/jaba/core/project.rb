@@ -78,7 +78,7 @@ module JABA
           end
         else # else its an explicitly specified file
           if !file_manager.exist?(abs_spec) && !force
-            @services.jaba_error("'#{spec}' does not exist on disk. Use :force to add anyway", callstack: src_attr.last_call_location)
+            @services.jaba_error("'#{spec}' does not exist on disk. Use :force to add anyway.", callstack: src_attr.last_call_location)
           end
           spec_files << abs_spec
         end

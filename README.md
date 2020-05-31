@@ -55,3 +55,6 @@ if there are multiple attrs, with a warning.
     a block that is being executed in the context of a different jaba object
   - give attributes a 'title' and a 'help' string. title can be used when dumping help, help string can be used in error msgs
 - Stop profiling test as a whole. Add a stresstest feature.
+- Ability to reverse engineer jaba definitions from existing vsprojects would be awesome
+- Should 'absolute' paths starting with / force 'root' to be disregarded and make paths relative to definition file or
+  should use eg "#{__dir__}/main.cpp"?
