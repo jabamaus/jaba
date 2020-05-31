@@ -65,12 +65,6 @@ module JABA
     attr_bool :enable_logging
 
     ##
-    # Uses a cache when globbing definition files. Useful if calling jaba multiple times and definition files
-    # are not changing (eg during unit testing). No benefit for single run invocations. Off by default.
-    #
-    attr_bool :use_glob_cache
-
-    ##
     # Execute as normal but don't write any files.
     #
     attr_bool :dry_run

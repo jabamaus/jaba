@@ -95,7 +95,7 @@ module JABA
       @jaba_type_id = jaba_type_id
       @jaba_type = nil
       @source_file = @source_location[/^(.+):\d/, 1]
-      @source_dir = File.dirname(@source_file)
+      @source_dir = @source_file.dirname
 
       define_hook(:generate)
     end

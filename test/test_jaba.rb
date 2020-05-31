@@ -10,6 +10,7 @@ module JABA
   ##
   #
   def self.run_tests
+    @@running_tests = true
     ::Minitest.run(ARGV)
   end
 
@@ -47,7 +48,6 @@ module JABA
         end
         c.dump_output = false
         c.dry_run = dry_run
-        c.use_glob_cache = true
       end
       warnings = op[:warnings]
       puts warnings if warnings
@@ -75,7 +75,7 @@ module JABA
     def make_file(*fns)
       fns.each do |fn|
         fn = "#{temp_dir}/#{fn}"
-        dir = File.dirname(fn)
+        dir = fn.dirname
         if !File.exist?(dir)
           FileUtils.makedirs(dir)
         end

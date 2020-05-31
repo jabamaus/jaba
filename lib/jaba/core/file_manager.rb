@@ -99,9 +99,6 @@ module JABA
   #
   class FileManager
     
-    @@file_read_cache = {}
-    @@glob_cache = {}
-
     attr_reader :added
     attr_reader :modified
     attr_reader :generated
@@ -156,9 +153,8 @@ module JABA
       else
         @services.log "Saving #{fn}"
 
-        # TODO: optimise
-        dir = File.dirname(fn)
-        if !File.exist?(dir)
+        dir = fn.dirname
+        if !exist?(dir)
           FileUtils.makedirs(dir)
         end
 
@@ -170,9 +166,9 @@ module JABA
     #
     def read_file(filename, encoding: nil, fail_if_not_found: false)
       fn = filename.to_absolute(clean: true)
-      str = @@file_read_cache[fn]
+      str = file_read_cache[fn]
       if str.nil?
-        if !File.exist?(fn)
+        if !exist?(fn)
           if fail_if_not_found
             jaba_error("'#{fn}' does not exist - cannot read")
           else
@@ -181,7 +177,7 @@ module JABA
         else
           str = IO.binread(fn)
           str.force_encoding(encoding) if encoding
-          @@file_read_cache[fn] = str
+          file_read_cache[fn] = str
         end
       end
       str
@@ -190,15 +186,57 @@ module JABA
     ##
     #
     def glob(spec)
-      files = nil
-      if @services.input.use_glob_cache?
-        files = @@glob_cache[spec]
-      end
+      files = glob_cache[spec]
       if files.nil?
         files = Dir.glob(spec)
-        @@glob_cache[spec] = files.sort
+        glob_cache[spec] = files
       end
       files
+    end
+
+    ##
+    #
+    def exist?(fn)
+      exist = file_exist_cache[fn]
+      if exist.nil?
+        exist = File.exist?(fn)
+        file_exist_cache[fn] = exist
+      end
+      exist
+    end
+
+    # If running tests use the same file cache across all runs to speed them up as nothing odd happens to files
+    # between tests. In production mode do caching per-jaba invocation (of which normally there would be only one),
+    # but this allows flexibility to do more than one run with potentially anything changing between runs.
+    
+    ##
+    #
+    def file_exist_cache
+      if JABA.running_tests?
+        @@file_exist_cache ||= {}
+      else
+        @file_exist_cache ||= {}
+      end
+    end
+
+    ##
+    #
+    def glob_cache
+      if JABA.running_tests?
+        @@glob_cache ||= {}
+      else
+        @glob_cache ||= {}
+      end
+    end
+
+    ##
+    #
+    def file_read_cache
+      if JABA.running_tests?
+        @@file_read_cache ||= {}
+      else
+        @file_read_cache ||= {}
+      end
     end
 
   end

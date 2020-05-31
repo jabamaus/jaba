@@ -167,6 +167,12 @@ module JABACoreExt
 
     ##
     #
+    def dirname
+      File.dirname(self)
+    end
+
+    ##
+    #
     def to_absolute(clean: false)
       if absolute_path?
         clean ? cleanpath : self

@@ -54,6 +54,7 @@ module JABA
       src_attr = @node.get_attr(src_attr_id)
       extensions = @node.get_attr(src_ext_attr_id).value.to_set
 
+      file_manager = @services.file_manager
       dest = instance_variable_set("@#{src_attr_id}", [])
       spec_files = []
 
@@ -61,28 +62,25 @@ module JABA
         spec_files.clear
         force = elem.has_flag_option?(:force)
         wildcard = spec =~ /\*/ ? true : false
+        abs_spec = "#{@root}/#{spec}"
 
-        if force
-          if wildcard
+        if wildcard
+          if force
             @services.jaba_error('Wildcards are not allowed when force adding src - ' \
               'only explicitly specified source files', callstack: src_attr.last_call_location)
+          end
+          glob_matches = file_manager.glob(abs_spec)
+          if glob_matches.empty?
+            @services.jaba_warning("'#{spec}' did not match any #{src_attr_id} files ", callstack: src_attr.last_call_location)
           else
-            spec_files << "#{@root}/#{spec}"
+            glob_matches.select!{|f| extensions.include?(f.extname)}
+            spec_files.concat(glob_matches)
           end
-        else
-          glob_matches = @services.file_manager.glob("#{@root}/#{spec}")
-          if wildcard
-            if glob_matches.empty?
-              @services.jaba_warning("'#{spec}' did not match any #{src_attr_id} files ", callstack: src_attr.last_call_location)
-            else
-              glob_matches.select!{|f| extensions.include?(f.extname)}
-            end
-          else # else its an explicitly specified file
-            if glob_matches.empty?
-              @services.jaba_error("'#{spec}' does not exist on disk. Use :force to add anyway", callstack: src_attr.last_call_location)
-            end
+        else # else its an explicitly specified file
+          if !file_manager.exist?(abs_spec) && !force
+            @services.jaba_error("'#{spec}' does not exist on disk. Use :force to add anyway", callstack: src_attr.last_call_location)
           end
-          spec_files.concat(glob_matches)
+          spec_files << abs_spec
         end
 
         dest.concat(spec_files)

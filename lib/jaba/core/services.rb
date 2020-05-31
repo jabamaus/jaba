@@ -35,6 +35,14 @@ module JABA
 
   using JABACoreExt
 
+  @@running_tests = false
+  
+  ##
+  #
+  def self.running_tests?
+    @@running_tests
+  end
+
   ##
   # 
   def self.cwd
@@ -59,7 +67,6 @@ module JABA
       @input.instance_variable_set(:@dump_output, true)
       @input.instance_variable_set(:@dry_run, false)
       @input.instance_variable_set(:@enable_logging, false)
-      @input.instance_variable_set(:@use_glob_cache, false)
 
       # Add cwd to load_paths, unless in the root of jaba itself (ie when developing)
       #
