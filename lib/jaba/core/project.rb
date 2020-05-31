@@ -91,7 +91,7 @@ module JABA
       end
 
       dest.sort_no_case!
-      dest.map!{|f| f.relative_path_from(@projroot)}
+      dest.map!{|f| f.relative_path_from(@projroot, backslashes: true)} # TODO: pass backslashes in properly, dependent on target system
     end
 
   end
