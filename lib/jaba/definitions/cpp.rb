@@ -95,6 +95,7 @@ define :cpp do
     attr_array :src_ext do
       help 'File extensions that will be added when src is not specified explicitly. ' \
            'Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.'
+      flags :nosort
       default do
         ext = ['.cpp', '.h', '.inl', '.c', '.cc', '.cxx', '.hpp']
         if visual_studio?
