@@ -44,6 +44,13 @@ module JABA
     ##
     # Override this in subclass.
     #
+    def generate
+      # nothing
+    end
+
+    ##
+    # Override this in subclass.
+    #
     def dump_jaba_output(p_root)
       # nothing
     end

@@ -56,8 +56,9 @@ module JABA
     end
     
     ##
-    #
+    # TODO: move out of this file so it is pluggable
     def setup_project(proj)
+     return if !proj.attrs.visual_studio?
 
       proj.attrs.instance_eval do
         vcglobal :ProjectName, projname
@@ -193,7 +194,15 @@ module JABA
       end
 
       @platform_nodes.each do |pn|
-        proj = make_project(Vcxproj, pn)
+        # TODO: make pluggable
+        klass = if pn.attrs.visual_studio?
+          Vcxproj
+        elsif pn.attrs.xcode?
+          XcodeProj
+        else
+          raise 'unknown host'
+        end
+        proj = make_project(klass, pn)
         proj.process_src(:src, :src_ext)
         @projects << proj
       end
