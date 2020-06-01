@@ -93,7 +93,7 @@ attr_type :file do
 
   validate_value do |file|
     file.cleanpath(validate: true) do |clean|
-      warn "File '#{dir}' not specified cleanly. Should be '#{clean}'."
+      warn "File '#{file}' not specified cleanly. Should be '#{clean}'."
     end
   end
 
@@ -105,7 +105,7 @@ attr_type :path do
 
   validate_value do |path|
     path.cleanpath(validate: true) do |clean|
-      warn "Path '#{dir}' not specified cleanly. Should be '#{clean}'."
+      warn "Path '#{path}' not specified cleanly. Should be '#{clean}'."
     end
   end
 
