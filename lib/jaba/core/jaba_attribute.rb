@@ -23,7 +23,7 @@ module JABA
       @last_call_location = nil
       @set = false
       @default = @attr_def.default
-      @default_is_block = @attr_def.default_is_block
+      @default_is_proc = @attr_def.default_is_proc
     end
 
     ##
@@ -53,7 +53,7 @@ module JABA
     ##
     #
     def get_default
-      if @default_is_block
+      if @default_is_proc
         @node.eval_api_block(&@default)
       else
         @default
@@ -182,7 +182,7 @@ module JABA
     def clear
       @value = nil
       d = @attr_def.default
-      if !@default_is_block && !d.nil?
+      if !@default_is_proc && !d.nil?
         @value = d
       end
     end
@@ -284,7 +284,7 @@ module JABA
     def initialize(services, attr_def, node)
       super
       
-      if !@default.nil? && !@default_is_block
+      if !@default.nil? && !@default_is_proc
         set(@default)
       end
     end
