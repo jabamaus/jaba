@@ -8,7 +8,7 @@ module JABA
 
   ##
   #
-  class Vcxproj < VSProject
+  class Vcxproj < VSProj
     
     attr_reader :vcxproj_file
     

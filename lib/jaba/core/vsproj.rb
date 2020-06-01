@@ -8,7 +8,7 @@ module JABA
 
   ##
   #
-  class VSProject < Project
+  class VSProj < Project
   
     ##
     #

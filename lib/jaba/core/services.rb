@@ -20,7 +20,7 @@ require_relative 'jaba_type'
 require_relative 'jaba_node'
 require_relative 'generator'
 require_relative 'project'
-require_relative 'vsproject'
+require_relative 'vsproj'
 require_relative 'vcxproj'
 
 Dir.glob("#{__dir__}/../generators/*_generator.rb").sort.each {|f| require f}
