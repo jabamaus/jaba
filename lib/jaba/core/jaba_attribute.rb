@@ -284,7 +284,7 @@ module JABA
     def initialize(services, attr_def, node)
       super
       
-      if !@default.nil? && !@default_is_proc
+      if attr_def.default_set? && !@default_is_proc
         set(@default)
       end
     end

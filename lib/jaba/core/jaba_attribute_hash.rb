@@ -15,7 +15,7 @@ module JABA
     def initialize(services, attr_def, node)
       super
       @hash = {}
-      if @default && !@default_is_proc
+      if attr_def.default_set? && !@default_is_proc
         @default.each do |k, v|
           set(k, v)
         end
@@ -32,7 +32,7 @@ module JABA
     ##
     #
     def value(api_call_line = nil)
-      if @default_is_proc && !set?
+      if !@set && @default_is_proc
         @node.eval_api_block(&@default)
       else
         @hash.transform_values {|e| e.value(api_call_line)}

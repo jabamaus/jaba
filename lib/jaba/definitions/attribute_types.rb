@@ -39,7 +39,7 @@ attr_type :bool do
   help "Boolean attribute type. Accepts [true|false]. Defaults to false"
 
   post_init_attr_def do
-    default false if !default_set? && !has_flag?(:required)
+    default false if variant == :single && !default_set? && !has_flag?(:required)
     flags :nosort, :allow_dupes if variant == :array
   end
   

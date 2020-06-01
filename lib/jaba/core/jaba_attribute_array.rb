@@ -16,7 +16,7 @@ module JABA
       super
       @elems = []
       @excludes = []
-      if @default && !@default_is_proc
+      if attr_def.default_set? && !@default_is_proc
         set(@default)
       end
     end
@@ -31,7 +31,7 @@ module JABA
     ##
     #
     def value(api_call_line = nil)
-      if @default_is_proc && !set?
+      if !@set && @default_is_proc
         @node.eval_api_block(&@default)
       else
         @elems.map {|e| e.value(api_call_line)}
