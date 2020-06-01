@@ -58,3 +58,4 @@ if there are multiple attrs, with a warning.
 - Ability to reverse engineer jaba definitions from existing vsprojects would be awesome
 - Should 'absolute' paths starting with / force 'root' to be disregarded and make paths relative to definition file or
   should use eg "#{__dir__}/main.cpp"?
+- move project types into separate folder

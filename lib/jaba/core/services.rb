@@ -22,6 +22,7 @@ require_relative 'generator'
 require_relative 'project'
 require_relative 'vsproj'
 require_relative 'vcxproj'
+require_relative 'xcodeproj'
 
 Dir.glob("#{__dir__}/../generators/*_generator.rb").sort.each {|f| require f}
 
