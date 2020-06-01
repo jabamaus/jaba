@@ -70,7 +70,7 @@ module JABA
 
   ##
   #
-  class JabaAttribute < JabaAttributeBase
+  class JabaAttributeElement < JabaAttributeBase
 
     attr_reader :value_options
     attr_reader :flag_options
@@ -96,9 +96,7 @@ module JABA
     # definitions then return the node's attributes rather than the node itself.
     #
     def value(api_call_line = nil)
-      if !@set
-        get_default
-      elsif api_call_line && @value.is_a?(JabaNode)
+      if api_call_line && @value.is_a?(JabaNode)
         @value.attrs_read_only
       else
         @value
@@ -175,16 +173,6 @@ module JABA
       end
 
       @value = resolve_ref ? resolve_reference(new_value) : new_value
-    end
-    
-    ##
-    #
-    def clear
-      @value = nil
-      d = @attr_def.default
-      if !@default_is_proc && !d.nil?
-        @value = d
-      end
     end
     
     ##
@@ -277,7 +265,7 @@ module JABA
 
   ##
   #
-  class JabaAttributeSingle < JabaAttribute
+  class JabaAttributeSingle < JabaAttributeElement
 
     ##
     #
@@ -286,6 +274,30 @@ module JABA
       
       if attr_def.default_set? && !@default_is_proc
         set(@default)
+      end
+    end
+
+    ##
+    # Returns the value of the attribute. If value is a reference to a JabaNode and the call to value() came from user
+    # definitions then return the node's attributes rather than the node itself.
+    #
+    def value(api_call_line = nil)
+      if !@set
+        get_default
+      elsif api_call_line && @value.is_a?(JabaNode)
+        @value.attrs_read_only
+      else
+        @value
+      end
+    end
+
+    ##
+    #
+    def clear
+      @value = nil
+      d = @attr_def.default
+      if !@default_is_proc && !d.nil?
+        @value = d
       end
     end
 

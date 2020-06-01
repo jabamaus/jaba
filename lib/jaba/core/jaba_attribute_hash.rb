@@ -55,7 +55,7 @@ module JABA
       #
       val = block_given? ? @node.eval_api_block(&block) : args.shift
 
-      elem = JabaAttribute.new(@services, @attr_def, @node)
+      elem = JabaAttributeElement.new(@services, @attr_def, @node)
       elem.set(val, *args, api_call_line: api_call_line, __key: key, **keyvalue_args)
 
       @hash[key] = elem
@@ -80,7 +80,7 @@ module JABA
       key = value_options[:__key]
       val = Marshal.load(Marshal.dump(other.raw_value))
 
-      elem = JabaAttribute.new(@services, @attr_def, @node)
+      elem = JabaAttributeElement.new(@services, @attr_def, @node)
       elem.set(val, *f_options, api_call_line: nil, validate: false, resolve_ref: false, **value_options)
       
       @hash[key] = elem

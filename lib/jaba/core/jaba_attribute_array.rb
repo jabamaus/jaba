@@ -47,7 +47,7 @@ module JABA
       values = block_given? ? @node.eval_api_block(&block) : args.shift
 
       Array(values).each do |v|
-        elem = JabaAttribute.new(@services, @attr_def, @node)
+        elem = JabaAttributeElement.new(@services, @attr_def, @node)
         v = apply_pre_post_fix(prefix, postfix, v)
         elem.set(v, *args, api_call_line: api_call_line, **keyvalue_args)
         @elems << elem
@@ -69,7 +69,7 @@ module JABA
       f_options = other.flag_options
       val = Marshal.load(Marshal.dump(other.raw_value))
 
-      elem = JabaAttribute.new(@services, @attr_def, @node)
+      elem = JabaAttributeElement.new(@services, @attr_def, @node)
       elem.set(val, *f_options, api_call_line: nil, validate: false, resolve_ref: false, **value_options)
       
       @elems << elem
