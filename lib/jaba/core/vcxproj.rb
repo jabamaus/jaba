@@ -159,7 +159,7 @@ module JABA
       item_group(w) do
         @src.each do |f|
           # TODO: handle not just ClInclude
-          w << "    <ClInclude Include=\"#{f}\" />"
+          w << "    <ClInclude Include=\"#{f.to_backslashes}\" />"
         end
       end
       

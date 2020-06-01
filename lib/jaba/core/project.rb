@@ -76,11 +76,21 @@ module JABA
             glob_matches.select!{|f| extensions.include?(f.extname)}
             spec_files.concat(glob_matches)
           end
-        else # else its an explicitly specified file
+        else # else its an explicitly specified file or directory
           if !file_manager.exist?(abs_spec) && !force
             @services.jaba_error("'#{spec}' does not exist on disk. Use :force to add anyway.", callstack: src_attr.last_call_location)
           end
-          spec_files << abs_spec
+          if File.directory?(abs_spec)
+            glob_matches = file_manager.glob("#{abs_spec}/**/*")
+            if glob_matches.empty?
+              @services.jaba_warning("'#{spec}' did not match any #{src_attr_id} files ", callstack: src_attr.last_call_location)
+            else
+              glob_matches.select!{|f| extensions.include?(f.extname)}
+              spec_files.concat(glob_matches)
+            end
+          else
+            spec_files << abs_spec
+          end
         end
 
         dest.concat(spec_files)
@@ -91,7 +101,7 @@ module JABA
       end
 
       dest.sort_no_case!
-      dest.map!{|f| f.relative_path_from(@projroot, backslashes: true)} # TODO: pass backslashes in properly, dependent on target system
+      dest.map!{|f| f.relative_path_from(@projroot)}
     end
 
   end

@@ -19,7 +19,7 @@ module JABA
           configs [:debug, :release]
           rtti false
         end
-        cpp :a do
+        cpp :app do
           type :app
           src 'main.cpp', :force
           if config == :debug
@@ -27,8 +27,7 @@ module JABA
           end
         end
       end
-
-      proj = op[:cpp]['cpp|a|vs2019|windows']
+      proj = op[:cpp]['cpp|app|vs2019|windows']
       proj.wont_be_nil
 
       cfg_debug = proj[:configs][:debug]
@@ -57,14 +56,12 @@ module JABA
     end
 
     it 'prevents nil access when attributes not set up yet' do
-      op = jaba(dry_run: true, cpp_app: true) do
+      proj = jaba(dry_run: true, cpp_app: true) do
         cpp :app do
           projname "app_#{host&.upcase}" # TODO: remove safe call
           src 'main.cpp', :force
         end
       end
-      proj = op[:cpp]['cpp|app|vs2019|windows']
-      proj.wont_be_nil
       proj[:projname].must_equal('app_VS2019')
     end
 
@@ -79,7 +76,7 @@ module JABA
     end
 
     it 'supports exporting array attributes to dependents' do
-      op = jaba(dry_run: true, cpp_app: true) do
+      proj = jaba(dry_run: true, cpp_app: true) do
         cpp :app do
           deps [:lib]
           vcglobal :BoolAttr, true
@@ -100,15 +97,13 @@ module JABA
           # TODO: test vcproperty
         end
       end
-      app = op[:cpp]['cpp|app|vs2019|windows']
-      app.wont_be_nil
-      app[:vcglobal][:BoolAttr].must_equal(true)
-      app[:vcglobal][:StringAttr2].must_equal('s2')
-      app[:vcglobal][:StringAttr3].must_equal('s3')
-      cfg_debug = app[:configs][:Debug]
+      proj[:vcglobal][:BoolAttr].must_equal(true)
+      proj[:vcglobal][:StringAttr2].must_equal('s2')
+      proj[:vcglobal][:StringAttr3].must_equal('s3')
+      cfg_debug = proj[:configs][:Debug]
       cfg_debug.wont_be_nil
       cfg_debug[:defines].must_equal ['A', 'B', 'C', 'F']
-      cfg_release = app[:configs][:Release]
+      cfg_release = proj[:configs][:Release]
       cfg_release.wont_be_nil
       cfg_release[:defines].must_equal ['A', 'B', 'C', 'F', 'R']
     end
