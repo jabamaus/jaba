@@ -107,8 +107,8 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include/MyLibrary/MyLibrary.h" />
-    <ClInclude Include="src/MyLibrary.cpp" />
+    <ClInclude Include="include\MyLibrary\MyLibrary.h" />
+    <ClInclude Include="src\MyLibrary.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
