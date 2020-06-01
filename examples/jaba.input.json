@@ -133,8 +133,8 @@
     },
     "platform|windows": {
       "windows?": true,
-      "iOS?": false,
-      "macOS?": false,
+      "ios?": false,
+      "macos?": false,
       "microsoft?": true,
       "apple?": false,
       "valid_archs": [
@@ -149,10 +149,10 @@
       "children": {
       }
     },
-    "platform|iOS": {
+    "platform|ios": {
       "windows?": false,
-      "iOS?": true,
-      "macOS?": false,
+      "ios?": true,
+      "macos?": false,
       "microsoft?": false,
       "apple?": true,
       "valid_archs": [
@@ -164,10 +164,10 @@
       "children": {
       }
     },
-    "platform|macOS": {
+    "platform|macos": {
       "windows?": false,
-      "iOS?": false,
-      "macOS?": true,
+      "ios?": false,
+      "macos?": true,
       "microsoft?": false,
       "apple?": true,
       "valid_archs": [
