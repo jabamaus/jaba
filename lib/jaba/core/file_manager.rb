@@ -185,10 +185,10 @@ module JABA
 
     ##
     #
-    def glob(spec)
+    def glob(spec, flags=0)
       files = glob_cache[spec]
       if files.nil?
-        files = Dir.glob(spec)
+        files = Dir.glob(spec, flags)
         glob_cache[spec] = files
       end
       files
