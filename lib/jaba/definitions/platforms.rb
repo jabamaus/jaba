@@ -1,4 +1,4 @@
-SUPPORTED_PLATFORMS = [:windows, :iOS, :macOS].freeze
+SUPPORTED_PLATFORMS = [:windows, :ios, :macos].freeze
 
 define :platform do
 
@@ -42,15 +42,15 @@ platform :windows do
   default_archs [:x86, :x86_64]
 end
 
-platform :iOS do
-  iOS? true
+platform :ios do
+  ios? true
   apple? true
   valid_archs [] # TODO
   default_archs [] # TODO
 end
 
-platform :macOS do
-  macOS? true
+platform :macos do
+  macos? true
   apple? true
   valid_archs [] # TODO
   default_archs [] # TODO
