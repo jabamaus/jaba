@@ -23,7 +23,7 @@ module JABA
     attr_reader :jaba_type
 
     attr_reader :default
-    attr_reader :default_is_proc
+    attr_reader :default_block
     attr_reader :flag_options
     attr_reader :referenced_type # Defined and used by reference attribute type but give access here for efficiency
     
@@ -38,7 +38,7 @@ module JABA
       @value_options = []
       @jaba_attr_flags = []
       @default_set = false
-      @default_is_proc = false
+      @default_block = nil
 
       define_property(:title)
       define_property(:help)
@@ -129,10 +129,21 @@ module JABA
       case id
       when :default
         @default_set = true
-        @default_is_proc = @default.proc?
-        if @variant == :single && !@default_is_proc
-          if new_val.is_a?(Array)
-            @services.jaba_error("'#{definition_id}' attribute is not an array so cannot accept one")
+        @default_block = @default.proc? ? @default : nil
+        if !@default_block
+          case @variant
+          when :single
+            if new_val.is_a?(Enumerable)
+              @services.jaba_error("'#{definition_id}' attribute default must be a single value not a container")
+            end
+          when :array
+            if !new_val.array?
+              @services.jaba_error("'#{definition_id}' array attribute default must be an array")
+            end
+          when :hash
+            if !new_val.hash?
+              @services.jaba_error("'#{definition_id}' hash attribute default must be a hash")
+            end
           end
         end
       when :flags
@@ -158,7 +169,7 @@ module JABA
         @jaba_attr_type.call_hook(:post_init_attr_def, receiver: self)
       end
  
-      if @default_set && !@default_is_proc
+      if @default_set && !@default_block
         @services.set_warn_object(self) do
           @jaba_attr_type.call_hook(:validate_value, @default, receiver: self)
         end

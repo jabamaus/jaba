@@ -19,6 +19,18 @@ module JABA
       end
     end
     
+    it 'validates that default is an array' do
+      check_fail "'a' array attribute default must be an array", trace: [__FILE__, 'tagV'] do
+        jaba do
+          define :test do
+            attr_array :a do
+              default 1 # tagV
+            end
+          end
+        end
+      end
+    end
+
     it 'supports extending default value' do
       jaba do
         define :test do

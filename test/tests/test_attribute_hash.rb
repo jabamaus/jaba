@@ -28,6 +28,18 @@ module JABA
       end
     end
 
+    it 'validates that default is a hash' do
+      check_fail "'a' hash attribute default must be a hash", trace: [__FILE__, 'tagU'] do
+        jaba do
+          define :test do
+            attr_hash :a do
+              default [] # tagU
+            end
+          end
+        end
+      end
+    end
+
     it 'can be set' do
       jaba do
         define :test do

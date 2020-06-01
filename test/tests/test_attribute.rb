@@ -4,19 +4,18 @@ module JABA
 
   class TestAttribute < JabaTest
 
-    it 'rejects passing array to single value attribute' do
-      check_fail "'a' attribute is not an array so cannot accept one", trace: [__FILE__, 'tagX'] do
+    it 'only accepts single values' do
+      check_fail "'a' attribute default must be a single value not a container", trace: [__FILE__, 'tagV'] do
         jaba do
           define :test do
             attr :a do
-              default [1, 2] # tagX
+              default [] # tagV
             end
           end
-          test :t
         end
       end
-      
-      check_fail "'a' attribute is not an array so cannot accept one", trace: [__FILE__, 'tagK'] do
+
+      check_fail "'a' must be a single value not a container", trace: [__FILE__, 'tagK'] do
         jaba do
           define :test do
             attr :a
@@ -27,7 +26,7 @@ module JABA
         end
       end
     end
-    
+
     it 'allows setting value with block' do
       jaba do
         define :test do

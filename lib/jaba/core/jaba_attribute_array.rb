@@ -16,8 +16,8 @@ module JABA
       super
       @elems = []
       @excludes = []
-      if attr_def.default_set? && !@default_is_proc
-        set(@default)
+      if attr_def.default_set? && !@default_block
+        set(attr_def.default)
       end
     end
     
@@ -31,8 +31,8 @@ module JABA
     ##
     #
     def value(api_call_line = nil)
-      if !@set && @default_is_proc
-        @node.eval_api_block(&@default)
+      if !@set && @default_block
+        @node.eval_api_block(&@default_block)
       else
         @elems.map {|e| e.value(api_call_line)}
       end
@@ -60,6 +60,14 @@ module JABA
       end
     end
     
+    ##
+    #
+    def set_from_default_block_if_present
+      return if !@default_block
+      val = @node.eval_api_block(&@default_block)
+      set(val)
+    end
+
     ##
     # Clone other attribute and append to this array. Other attribute has already been validated and had any reference resolved.
     # just clone raw value and options. Flags will be processed after, eg stripping duplicates.

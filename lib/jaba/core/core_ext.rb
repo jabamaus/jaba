@@ -60,6 +60,18 @@ module JABACoreExt
     def proc?
       is_a?(Proc)
     end
+
+    ##
+    #
+    def array?
+      is_a?(Array)
+    end
+
+    ##
+    #
+    def hash?
+      is_a?(Hash)
+    end
     
   end
 
@@ -334,7 +346,7 @@ module JABACoreExt
     def push_value(key, value, clear: false)
       v = self[key] = fetch(key, [])
       v.clear if clear
-      value.is_a?(Array) ? v.concat(value) : v << value
+      value.array? ? v.concat(value) : v << value
       self
     end
     

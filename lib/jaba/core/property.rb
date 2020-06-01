@@ -61,18 +61,18 @@ module JABA
         instance_variable_set(PropertyMethods.get_var(p_id), val)
       else
         current_val = instance_variable_get(PropertyMethods.get_var(p_id))
-        if current_val.is_a?(Array)
-          if val.is_a?(Array)
-            val = val.flatten # don't flatten! as might be frozen
-          else
-            val = Array(val)
-          end
+        if current_val.array?
+          val = if val.array?
+                  val.flatten # don't flatten! as might be frozen
+                else
+                  Array(val)
+                end
           current_val.concat(val)
         else
           # Fail if setting a single value property as an array, unless its the first time. This is to allow
           # a property to become either single value or array, depending on how it is first initialised.
           #
-          if !current_val.nil? && val.is_a?(Array)
+          if !current_val.nil? && val.array?
             @services.jaba_error("'#{p_id}' property cannot accept an array")
           end
           instance_variable_set(PropertyMethods.get_var(p_id), val)

@@ -22,8 +22,7 @@ module JABA
       @node = node
       @last_call_location = nil
       @set = false
-      @default = @attr_def.default
-      @default_is_proc = @attr_def.default_is_proc
+      @default_block = @attr_def.default_block
     end
 
     ##
@@ -50,22 +49,6 @@ module JABA
       @attr_def.has_flag?(:required)
     end
     
-    ##
-    #
-    def get_default
-      if @default_is_proc
-        @node.eval_api_block(&@default)
-      else
-        @default
-      end
-    end
-
-    ##
-    #
-    def set_to_default
-      set(get_default)
-    end
-
   end
 
   ##
@@ -126,8 +109,8 @@ module JABA
       #
       @value_options = key_val_args.empty? ? {} : Marshal.load(Marshal.dump(key_val_args))
 
-      if new_value.is_a?(Array)
-        @services.jaba_error("'#{@attr_def.definition_id}' attribute is not an array so cannot accept one")
+      if new_value.is_a?(Enumerable)
+        @services.jaba_error("'#{@attr_def.definition_id}' must be a single value not a container")
       end
 
       @flag_options.each do |f|
@@ -272,9 +255,17 @@ module JABA
     def initialize(services, attr_def, node)
       super
       
-      if attr_def.default_set? && !@default_is_proc
-        set(@default)
+      if attr_def.default_set? && !@default_block
+        set(attr_def.default)
       end
+    end
+
+    ##
+    #
+    def set_from_default_block_if_present
+      return if !@default_block
+      val = @node.eval_api_block(&@default_block)
+      set(val)
     end
 
     ##
@@ -282,8 +273,8 @@ module JABA
     # definitions then return the node's attributes rather than the node itself.
     #
     def value(api_call_line = nil)
-      if !@set
-        get_default
+      if !@set && @default_block
+        @node.eval_api_block(&@default_block)
       elsif api_call_line && @value.is_a?(JabaNode)
         @value.attrs_read_only
       else
@@ -292,12 +283,12 @@ module JABA
     end
 
     ##
-    #
+    # TODO: re-examine
     def clear
-      @value = nil
-      d = @attr_def.default
-      if !@default_is_proc && !d.nil?
-        @value = d
+      if attr_def.default_set? && !@default_block
+        @value = attr_def.default
+      else
+        @value = nil
       end
     end
 
