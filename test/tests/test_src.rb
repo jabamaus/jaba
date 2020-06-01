@@ -80,12 +80,53 @@ module JABA
 
     it 'supports adding whole src directories recursively' do
       make_file('a/b.cpp', 'a/c.cpp', 'a/d.cpp', 'a/e/f/g.cpp')
+      make_file('a/b.z') # won't match as .z not in src_ext attr
       proj = jaba(cpp_app: true) do
         cpp :app do
           src 'a'
         end
       end
       proj[:src].must_equal(['a/b.cpp', 'a/c.cpp', 'a/d.cpp', 'a/e/f/g.cpp'])
+    end
+
+    it 'supports platform-specific default src extensions' do
+      make_file('a.cpp', 'b.natvis', 'c.xcconfig', 'e.def', 'f.rc')
+      td = temp_dir
+      op = jaba do
+        cpp :app do
+          type :app
+          root td
+          hosts [:vs2019, :xcode]
+          case host
+          when :vs2019
+            platforms [:windows]
+            archs [:x86, :x86_64]
+          when :xcode
+            platforms [:ios]
+            archs [:arm64]
+          end
+          configs [:Debug, :Release]
+          src '*'
+        end
+      end
+      vsproj = op[:cpp]['cpp|app|vs2019|windows']
+      vsproj.wont_be_nil
+      vsproj[:src].must_equal ['a.cpp', 'b.natvis', 'e.def', 'f.rc']
+      xcodeproj = op[:cpp]['cpp|app|xcode|ios']
+      xcodeproj.wont_be_nil
+      xcodeproj[:src].must_equal ['a.cpp', 'c.xcconfig']
+    end
+
+    it 'supports adding custom extensions' do
+      make_file('a/b.cpp', 'a/c.cpp', 'a/d.cpp', 'a/e/f/g.cpp')
+      make_file('a/b.z', 'a/e/f/g/h.y')
+      proj = jaba(cpp_app: true) do
+        cpp :app do
+          src_ext ['.z', '.y']
+          src 'a'
+        end
+      end
+      proj[:src].must_equal(['a/b.cpp', 'a/b.z', 'a/c.cpp', 'a/d.cpp', 'a/e/f/g.cpp', 'a/e/f/g/h.y'])
     end
 
   end

@@ -177,6 +177,7 @@ module JABA
         else
           str = IO.binread(fn)
           str.force_encoding(encoding) if encoding
+          str.freeze # Don't want cache entries being inadvertently modified
           file_read_cache[fn] = str
         end
       end
@@ -189,6 +190,7 @@ module JABA
       files = glob_cache[spec]
       if files.nil?
         files = Dir.glob(spec, flags)
+        files.freeze # Don't want cache entries being inadvertently modified
         glob_cache[spec] = files
       end
       files

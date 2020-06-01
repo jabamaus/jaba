@@ -94,8 +94,8 @@ module JABA
           if glob_matches.empty?
             @services.jaba_warning("'#{spec}' did not match any #{src_attr_id} files ", callstack: src_attr.last_call_location)
           else
-            glob_matches.select!{|f| extensions.include?(f.extname)}
-            dest.concat(glob_matches)
+            matching_ext = glob_matches.select{|f| extensions.include?(f.extname)}
+            dest.concat(matching_ext)
           end
         end
       end
