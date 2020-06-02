@@ -61,8 +61,11 @@ module JABA
     end
     
     ##
+    # If attribute's default value was specified as a block it is executed here, after the node has been created, since
+    # default blocks can be implemented in terms of other attributes. Note that the default block is always executed regardless
+    # of whether the user added array elements as the behaviour of array attributes is to always append.
     #
-    def set_from_default_block_if_present
+    def finalise
       return if !@default_block
       val = @node.eval_api_block(&@default_block)
       set(val)

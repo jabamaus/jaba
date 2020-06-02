@@ -261,9 +261,12 @@ module JABA
     end
 
     ##
+    # If attribute's default value was specified as a block it is executed here, after the node has been created, since
+    # default blocks can be implemented in terms of other attributes. If the user has already supplied a value then the
+    # default block will not be executed.
     #
-    def set_from_default_block_if_present
-      return if !@default_block
+    def finalise
+      return if !@default_block || @set
       val = @node.eval_api_block(&@default_block)
       set(val)
     end

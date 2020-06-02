@@ -164,18 +164,14 @@ module JABA
     # 
     def post_create
       @attributes.each do |a|
-        if !a.set?
-          if a.required?
-            jaba_error("'#{a.definition_id}' attribute requires a value. See #{a.attr_def.definition.source_location}", callstack: @definition.source_location)
-          end
-
-          # If attribute has a default specified as a block, execute it now and bake the value into the attribute.
-          #
-          a.set_from_default_block_if_present
-
-          # Note that it is still possible for attributes to not be marked as 'set' by this point, ie if the user never
-          # set it and it didn't have a default. But by this point the set flag has served it purpose.
+        if !a.set? && a.required?
+          jaba_error("'#{a.definition_id}' attribute requires a value. See #{a.attr_def.definition.source_location}", callstack: @definition.source_location)
         end
+      
+        a.finalise
+
+        # Note that it is still possible for attributes to not be marked as 'set' by this point, ie if the user never
+        # set it and it didn't have a default. But by this point the set flag has served it purpose.
       end
     end
     

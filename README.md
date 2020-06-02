@@ -61,3 +61,4 @@ if there are multiple attrs, with a warning.
 - move project types into separate folder
 - remove 'cpp' handle prefix from output files as everything already namespaced in :cpp
 - Support for opening instances as well as types
+- Add a check that default block does not pull unset attrs
