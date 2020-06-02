@@ -31,6 +31,88 @@ module JABA
       end
     end
 
+    it 'works with block style default' do
+      jaba do
+        define :test do
+          attr :a
+          attr :b
+          attr_array :c do
+            default do
+              [a, b]
+            end
+          end
+        end
+        test :t do
+          a 1
+          b 2
+          c.must_equal [1, 2]
+        end
+      end
+
+      # test with array attr default using an unset attr
+      #
+      check_fail "Cannot read uninitialised 'b' attribute", trace: [__FILE__, 'tagI'] do
+        jaba do
+          define :test do
+            attr :a
+            attr :b
+            attr_array :c do
+              default do
+                [a, b] # tagI
+              end
+            end
+          end
+          test :t do
+            a 1
+            c # TODO: this should be in trace
+          end
+        end
+      end
+
+      # test with another attr using unset array attr
+      #
+      check_fail "Cannot read uninitialised 'a' attribute", trace: [__FILE__, 'tagF'] do
+        jaba do
+          define :test do
+            attr_array :a
+            attr :b do
+              default do
+                a[0] # tagF
+              end
+            end
+          end
+          test :t do
+            b
+          end
+        end
+      end
+    end
+
+    it 'can be set' do
+      jaba do
+        define :test do
+          attr_hash :a
+        end
+        test :t do
+          # Test basic set
+          a :k, :v
+          a[:k].must_equal(:v)
+          
+          # Overwrite value
+          a :k, nil
+          a[:k].must_be_nil
+          
+          # Overwrite back to original
+          a :k, :v
+          a[:k].must_equal(:v)
+          
+          # Add key
+          a :k2, :v2
+          a[:k2].must_equal(:v2)
+        end
+      end
+    end
+
     it 'supports extending default value' do
       jaba do
         define :test do
@@ -71,6 +153,21 @@ module JABA
       end
     end
     
+    it 'is not possible to modify returned array' do
+      check_fail 'Cannot modify read only value', trace: [__FILE__, 'tagN'] do
+        jaba do
+          define :test do
+            attr_array :a do
+              default([:a])
+            end
+          end
+          test :t do
+            a << :b # tagN
+          end
+        end
+      end
+    end
+
     it 'considers setting to empty array as marking it as set' do
       jaba do
         define :test do

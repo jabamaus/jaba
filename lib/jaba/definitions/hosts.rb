@@ -83,4 +83,5 @@ end
 
 host :xcode do
   xcode? true
+  toolset nil
 end

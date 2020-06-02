@@ -110,6 +110,8 @@ module JABA
       @root_nodes = []
       @null_nodes = {}
       
+      @in_attr_default_block = false
+
       @top_level_api = JabaTopLevelAPI.new(self)
 
       @default_attr_type = JabaAttributeType.new(self, JabaDefinition.new(nil, nil, caller(0, 1)[0])).freeze
@@ -451,25 +453,32 @@ module JABA
       @nodes << jn
       @node_lookup[handle] = jn
       
-      # Give calling block a chance to initialise attributes. This block is in library code as opposed to user
-      # definitions so use instance_eval instead of eval_api_block.
-      #
-      if block_given?
-        jn.attrs.instance_eval(&block)
-      end
-      
-      # Next execute defaults block if there is one defined for this type.
-      #
-      defaults = @current_definition.jaba_type.definition.defaults_definition
-      if defaults
-        log "  Including defaults"
-        jn.eval_api_block(&defaults.block)
+      begin
+        # Give calling block a chance to initialise attributes. This block is in library code as opposed to user
+        # definitions so use instance_eval instead of eval_api_block, as it doesn't need to go through api.
+        # Read only attributes are allowed to be set (initialised) for the duration of this block.
+        #
+        if block_given?
+          jn.allow_set_read_only_attrs do
+            jn.attrs.instance_eval(&block)
+          end
+        end
+        
+        # Next execute defaults block if there is one defined for this type.
+        #
+        defaults = @current_definition.jaba_type.definition.defaults_definition
+        if defaults
+          log "  Including defaults"
+          jn.eval_api_block(&defaults.block)
+        end
+
+        if @current_definition.block
+          jn.eval_api_block(&@current_definition.block)
+        end
+      rescue FrozenError => e
+        jaba_error('Cannot modify read only value', callstack: e.backtrace)
       end
 
-      if @current_definition.block
-        jn.eval_api_block(&@current_definition.block)
-      end
-      
       jn.post_create
       jn
     end
@@ -486,6 +495,24 @@ module JABA
         "#{ad.referenced_type}|#{ref_node_id}"
       end
       node_from_handle(handle, callstack: ref_attr.last_call_location)
+    end
+
+    ##
+    #
+    def in_attr_default_block?
+      @in_attr_default_block
+    end#
+
+    ##
+    #
+    def execute_attr_default_block(node, default_block)
+      @in_attr_default_block = true
+      result = nil
+      node.make_read_only do # default blocks should not attempt to set another attribute
+        result = node.eval_api_block(&default_block)
+      end
+      @in_attr_default_block = false
+      result
     end
 
     ##

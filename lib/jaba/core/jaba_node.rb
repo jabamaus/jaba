@@ -33,6 +33,8 @@ module JABA
       
       @attrs = AttributeAccessor.new(self)
       @attrs_read_only = AttributeAccessor.new(self, read_only: true)
+      @read_only = false
+      @allow_set_read_only_attrs = false
 
       @attributes = []
       @attribute_lookup = {}
@@ -180,7 +182,7 @@ module JABA
     # which act as options. eg my_attr 'val', :export, :exclude would make args equal to ['val', :opt1, :opt2]. If
     # however the value being passed in is an array it could be eg [['val1', 'val2'], :opt1, :opt2].
     #  
-    def handle_attr(id, *args, api_call_line: nil, _read_only_mode: false, **keyvalue_args, &block)
+    def handle_attr(id, *args, api_call_line: nil, _read_only: false, **keyvalue_args, &block)
       # First determine if it is a set or a get operation
       #
       is_get = (args.empty? && keyvalue_args.empty? && !block_given?)
@@ -215,7 +217,7 @@ module JABA
           return nil
         end
 
-        if _read_only_mode
+        if _read_only || @read_only
           jaba_error("'#{id}' attribute is read only")
         end
         
@@ -234,11 +236,34 @@ module JABA
         get_attr(id).clear
       end
     end
+ 
+    ##
+    #
+    def allow_set_read_only_attrs?
+      @allow_set_read_only_attrs
+    end
+
+    ##
+    # Temporarily allow setting read only attrs. Used in generator make_nodes methods when initialising read only attributes
+    #
+    def allow_set_read_only_attrs
+      @allow_set_read_only_attrs = true
+      yield
+      @allow_set_read_only_attrs = false
+    end
     
     ##
     #
     def make_read_only
+      old_attrs = @attrs
       @attrs = @attrs_read_only
+      @read_only = true
+
+      if block_given?
+        yield
+        @attrs = old_attrs
+        @read_only = false
+      end
     end
 
   end
@@ -263,7 +288,7 @@ module JABA
     ##
     #
     def method_missing(attr_id, *args, **keyvalue_args, &block)
-      @node.handle_attr(attr_id, *args, _read_only_mode: @read_only, **keyvalue_args, &block)
+      @node.handle_attr(attr_id, *args, _read_only: @read_only, **keyvalue_args, &block)
     end
    
   end

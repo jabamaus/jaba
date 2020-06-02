@@ -30,13 +30,17 @@ module JABA
     end
 
     ##
+    # Returns a read only hash of key->attribute values. Expensive because it must map attributes to their values.
     #
     def value(api_call_line = nil)
-      if !@set && @default_block
-        @node.eval_api_block(&@default_block)
-      else
-        @hash.transform_values {|e| e.value(api_call_line)}
+      if !@set
+        if @default_block
+          return @services.execute_attr_default_block(@node, @default_block)
+        elsif @services.in_attr_default_block?
+          @services.jaba_error("Cannot read uninitialised '#{definition_id}' attribute")
+        end
       end
+      @hash.transform_values {|e| e.value(api_call_line)}.freeze  # read only, enforce by freezing
     end
     
     ##
@@ -69,7 +73,7 @@ module JABA
     #
     def finalise
       return if !@default_block
-      val = @node.eval_api_block(&@default_block)
+      val = @services.execute_attr_default_block(@node, @default_block)
       val.each do |k, v|
         set(k, v)
       end

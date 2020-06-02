@@ -239,7 +239,7 @@
               ],
               "projroot": ".",
               "projname": "MyApp",
-              "projname_suffix": null,
+              "projname_suffix": "",
               "src": [
                 "**/*"
               ],
@@ -414,7 +414,7 @@
               ],
               "projroot": ".",
               "projname": "MyLib",
-              "projname_suffix": null,
+              "projname_suffix": "",
               "src": [
                 "**/*"
               ],

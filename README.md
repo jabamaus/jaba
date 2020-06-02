@@ -61,4 +61,8 @@ if there are multiple attrs, with a warning.
 - move project types into separate folder
 - remove 'cpp' handle prefix from output files as everything already namespaced in :cpp
 - Support for opening instances as well as types
-- Add a check that default block does not pull unset attrs
+- Add check for re-entrancy when evaluating default blocks
+- consistent method names across tests and consistent brackets on must_equal
+- Rename TestAttribute to TestSingleAttribute
+- Wrap up variant == :single etc to single? array? hash?
+- Should string attrs be initialised to ''?

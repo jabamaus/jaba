@@ -43,6 +43,80 @@ module JABA
       end
     end
 
+    it 'works with block style default' do
+      jaba do
+        define :test do
+          attr :a
+          attr :b
+          attr :c do
+            default do
+              "#{a}_#{b}"
+            end
+          end
+        end
+        test :t do
+          a 1
+          b 2
+          c.must_equal '1_2'
+        end
+      end
+
+      # test with attr default using an unset attr
+      #
+      check_fail "Cannot read uninitialised 'b' attribute", trace: [__FILE__, 'tagI'] do
+        jaba do
+          define :test do
+            attr :a
+            attr_array :b
+            attr :c do
+              default do
+                "#{a}_#{b.size}" # tagI
+              end
+            end
+          end
+          test :t do
+            a 1
+            c # TODO: this should be in trace
+          end
+        end
+      end
+
+      # test with another attr using unset attr
+      #
+      check_fail "Cannot read uninitialised 'a' attribute", trace: [__FILE__, 'tagF'] do
+        jaba do
+          define :test do
+            attr :a
+            attr_array :b do
+              default do
+                [a] # tagF
+              end
+            end
+          end
+          test :t do
+            b
+          end
+        end
+      end
+    end
+
+    it 'fails if default block sets attribute' do
+      check_fail "'a' attribute is read only", trace: [__FILE__, 'tagA'] do
+        jaba do
+          define :test do
+            attr :a
+            attr :b do
+              default do
+                a 1 # tagA
+              end
+            end
+          end
+          test :t do
+          end
+        end
+      end
+    end
+
     it 'validates flag options' do
       check_fail "Invalid flag option ':d'. Valid flags are [:a, :b, :c]", trace: [__FILE__, 'tagD'] do
         jaba do

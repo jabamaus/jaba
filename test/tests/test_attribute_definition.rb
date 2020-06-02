@@ -4,7 +4,7 @@ module JABA
 
   class TestAttributeDefinition < JabaTest
 
-    it 'accepts a string or a symbol' do
+    it 'accepts a string or a symbol as id' do
       check_fail '\'123\' is an invalid id', trace: [__FILE__, 'tagL'] do
         jaba do
           define :test do
@@ -31,7 +31,11 @@ module JABA
     it 'does not require a block to be supplied' do
       jaba do
         define :test do
-          attr :b
+          attr :a
+        end
+        test :t do
+          a 1
+          a.must_equal 1
         end
       end
     end
@@ -65,7 +69,7 @@ module JABA
           attr :a do
             define_property :b, 'b'
             define_property :c, 1
-            define_property :d, []
+            define_array_property :d
             define_property :e
             define_property :f do
             end
@@ -103,7 +107,7 @@ module JABA
     end
 
     it 'fails if property does not exist' do
-      check_fail "'undefined' property not defined", trace: [__FILE__, 'tagZ'] do
+      check_fail "Failed to set undefined 'undefined' property", trace: [__FILE__, 'tagZ'] do
         jaba do
           define :test do
             attr :a do
@@ -113,7 +117,7 @@ module JABA
         end
       end
     end
-    
+
     it 'supports supplying defaults in block form' do
       jaba do
         define :test do
@@ -141,6 +145,32 @@ module JABA
         end
       end
     end
+
+    it 'fails if default block references an unset attribute that does not have a default block' do
+      check_fail "Cannot read uninitialised 'a' attribute", trace: [__FILE__, 'tagP'] do
+        jaba do
+          define :test do
+            attr :a
+            attr :b do
+              default do
+                "#{a.upcase}" # tagP
+              end
+            end
+            attr :c do
+              default do
+                b
+              end
+            end
+            attr :d
+          end
+          test :t do
+            d c
+          end
+        end
+      end
+    end
+
+    # TODO: also check for circularity in default blocks
     
     it 'supports specifying a validator' do
       check_fail "'a' attribute failed validation: Val must not be 2", trace: [__FILE__, 'tagT', __FILE__, 'tagS'] do

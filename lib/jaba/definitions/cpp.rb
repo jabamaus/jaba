@@ -84,6 +84,7 @@ define :cpp do
 
     attr :projname_suffix, type: :symbol_or_string do
       help 'Optional suffix to be applied to <projname>. Has no effect if <projname> is set explicitly.'
+      default ''
     end
 
     attr_array :src, type: :path do

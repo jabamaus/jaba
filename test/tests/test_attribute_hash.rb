@@ -24,6 +24,7 @@ module JABA
         end
         test :t do
           a[:k].must_equal(:v)
+          a.must_equal({k: :v})
         end
       end
     end
@@ -35,6 +36,63 @@ module JABA
             attr_hash :a do
               default [] # tagU
             end
+          end
+        end
+      end
+    end
+
+    it 'works with block style default' do
+      jaba do
+        define :test do
+          attr :a
+          attr :b
+          attr_hash :c do
+            default do
+              {k1: a, k2: b}
+            end
+          end
+        end
+        test :t do
+          a 1
+          b 2
+          c.must_equal({k1: 1, k2: 2})
+        end
+      end
+
+      # test with hash attr default using an unset attr
+      #
+      check_fail "Cannot read uninitialised 'b' attribute", trace: [__FILE__, 'tagI'] do
+        jaba do
+          define :test do
+            attr :a
+            attr :b
+            attr_hash :c do
+              default do
+                {k1: a, k2: b} # tagI
+              end
+            end
+          end
+          test :t do
+            a 1
+            c # TODO: this should be in trace
+          end
+        end
+      end
+
+      # test with another attr using unset hash attr
+      #
+      check_fail "Cannot read uninitialised 'a' attribute", trace: [__FILE__, 'tagF'] do
+        jaba do
+          define :test do
+            attr_hash :a
+            attr :b do
+              default do
+                a[:k] # tagF
+              end
+            end
+          end
+          test :t do
+            b
           end
         end
       end
@@ -63,6 +121,34 @@ module JABA
           a[:k2].must_equal(:v2)
         end
       end
+    end
+
+    it 'is not possible to modify returned hash' do
+      check_fail 'Cannot modify read only value', trace: [__FILE__, 'tagN'] do
+        jaba do
+          define :test do
+            attr_hash :a do
+              default({k: :v})
+            end
+          end
+          test :t do
+            a[:k] = :v2 # tagN
+          end
+        end
+      end
+    end
+
+    it 'considers setting to empty array as marking it as set' do
+      jaba do
+        define :test do
+          attr_hash :a do
+            flags :required
+          end
+        end
+        test :t do
+          a {}
+        end
+      end  
     end
 
     it 'can extend default' do

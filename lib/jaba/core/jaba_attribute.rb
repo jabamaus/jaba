@@ -82,7 +82,7 @@ module JABA
       if api_call_line && @value.is_a?(JabaNode)
         @value.attrs_read_only
       else
-        @value
+        @value # TODO: look into ramifications of freezing
       end
     end
     
@@ -94,7 +94,7 @@ module JABA
       # Check for read only if calling from definitions, or if not calling from definitions but from library code,
       # allow setting read only attrs the first time, in order to initialise them.
       #
-      if (api_call_line || @set)
+      if (api_call_line || @set) && !@node.allow_set_read_only_attrs?
         if @attr_def.has_flag?(:read_only)
           @services.jaba_error("'#{@attr_def.definition_id}' attribute is read only")
         end
@@ -267,7 +267,7 @@ module JABA
     #
     def finalise
       return if !@default_block || @set
-      val = @node.eval_api_block(&@default_block)
+      val = @services.execute_attr_default_block(@node, @default_block)
       set(val)
     end
 
@@ -276,8 +276,15 @@ module JABA
     # definitions then return the node's attributes rather than the node itself.
     #
     def value(api_call_line = nil)
-      if !@set && @default_block
-        @node.eval_api_block(&@default_block)
+      # TODO: should do  @last_call_location = api_call_line ?
+      if !@set
+        if @default_block
+          @services.execute_attr_default_block(@node, @default_block)
+        elsif @services.in_attr_default_block?
+          @services.jaba_error("Cannot read uninitialised '#{definition_id}' attribute")
+        else
+          nil
+        end
       elsif api_call_line && @value.is_a?(JabaNode)
         @value.attrs_read_only
       else
