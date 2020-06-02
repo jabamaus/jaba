@@ -65,7 +65,7 @@ module JABA
         pc = PropertyContainer.new
         pc.get_property(:a)
       end
-      e.message.must_equal("'a' property not defined")
+      e.message.must_equal("Failed to get undefined 'a' property")
     end
 
     it 'fails if set undefined property' do
@@ -73,7 +73,7 @@ module JABA
         pc = PropertyContainer.new
         pc.set_property(:a)
       end
-      e.message.must_equal("'a' property not defined")
+      e.message.must_equal("Failed to set undefined 'a' property")
     end
 
     it 'fails if property multiply defined' do

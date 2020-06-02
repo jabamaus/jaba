@@ -50,7 +50,7 @@ module JABA
     #
     def set_property(p_id, val = nil, &block)
       if !@properties.key?(p_id)
-        @services.jaba_error("'#{p_id}' property not defined")
+        @services.jaba_error("Failed to set undefined '#{p_id}' property")
       end
 
       if block_given?
@@ -92,7 +92,7 @@ module JABA
     #
     def get_property(p_id)
       if !@properties.key?(p_id)
-        @services.jaba_error("'#{p_id}' property not defined")
+        @services.jaba_error("Failed to get undefined '#{p_id}' property")
       end
       instance_variable_get(PropertyMethods.get_var(p_id))
     end
