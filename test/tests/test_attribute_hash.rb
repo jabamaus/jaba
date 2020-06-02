@@ -65,6 +65,9 @@ module JABA
       end
     end
 
+    it 'can extend default' do
+    end
+
     it 'allows setting value with block' do
       jaba do
         define :test do
@@ -84,6 +87,34 @@ module JABA
             end
           end
           a[:key].must_equal :yes
+        end
+      end
+    end
+
+    it 'validates default element types are valid' do
+      check_fail "'not a symbol' must be a symbol but was a 'String'",
+                  trace: [ATTR_TYPES_FILE, 'fail "\'#{value}\' must be a symbol but was a', __FILE__, 'tagD'] do
+        jaba do
+          define :test do
+            attr_hash :a, type: :symbol do # tagD
+              default({k: :v, k2: 'not a symbol'})
+            end
+          end
+        end
+      end
+    end
+
+    it 'validates element types are valid' do
+      check_fail "'not a symbol' must be a symbol but was a 'String'",
+                 trace: [ATTR_TYPES_FILE, 'fail "\'#{value}\' must be a symbol but was a', __FILE__, 'tagE'] do
+        jaba do
+          define :test do
+            attr_hash :a, type: :symbol
+          end
+          test :t do
+            a :k, :v
+            a :k2, 'not a symbol' # tagE
+          end
         end
       end
     end

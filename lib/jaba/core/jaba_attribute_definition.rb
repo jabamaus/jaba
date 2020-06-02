@@ -171,7 +171,18 @@ module JABA
  
       if @default_set && !@default_block
         @services.set_warn_object(self) do
-          @jaba_attr_type.call_hook(:validate_value, @default, receiver: self)
+          case @variant
+          when :single
+            @jaba_attr_type.call_hook(:validate_value, @default, receiver: self)
+          when :array
+            @default.each do |elem|
+              @jaba_attr_type.call_hook(:validate_value, elem, receiver: self)
+            end
+          when :hash
+            @default.each_value do |elem|
+              @jaba_attr_type.call_hook(:validate_value, elem, receiver: self)
+            end
+          end
         end
       end
 

@@ -154,6 +154,19 @@ module JABA
       end
     end
 
+    it 'validates default element types are valid' do
+      check_fail "'not a symbol' must be a symbol but was a 'String'",
+                  trace: [ATTR_TYPES_FILE, 'fail "\'#{value}\' must be a symbol but was a', __FILE__, 'tagD'] do
+        jaba do
+          define :test do
+            attr_array :a, type: :symbol do # tagD
+              default ['not a symbol']
+            end
+          end
+        end
+      end
+    end
+
     it 'validates element types are valid' do
       check_fail ':bool attributes only accept [true|false]', 
                  trace: [ATTR_TYPES_FILE, 'fail ":bool attributes only accept', __FILE__, 'tagT'] do

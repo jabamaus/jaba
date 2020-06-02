@@ -4,7 +4,7 @@ attr_type :string do
 
   validate_value do |value|
     if !value.string?
-      fail "Value must be a string but was a '#{value.class}'"
+      fail "'#{value}' must be a string but was a '#{value.class}'"
     end
   end
 
@@ -16,7 +16,7 @@ attr_type :symbol do
 
   validate_value do |value|
     if !value.symbol?
-      fail "Value must be a symbol but was a '#{value.class}'"
+      fail "'#{value}' must be a symbol but was a '#{value.class}'"
     end
   end
 
@@ -28,7 +28,7 @@ attr_type :symbol_or_string do
 
   validate_value do |value|
     if !value.symbol? && !value.string?
-      fail "Value must be a symbol or a string but was a '#{value.class}'"
+      fail "'#{value}' must be a symbol or a string but was a '#{value.class}'"
     end
   end
 
