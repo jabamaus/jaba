@@ -66,6 +66,17 @@ module JABA
     end
 
     it 'can extend default' do
+      jaba do
+        define :test do
+          attr_hash :a do
+            default({k: :v})
+          end
+        end
+        test :t do
+          a :k2, :v2
+          a.must_equal({k: :v, k2: :v2})
+        end
+      end
     end
 
     it 'allows setting value with block' do
