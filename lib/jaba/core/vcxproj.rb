@@ -18,6 +18,7 @@ module JABA
       super
       @vcxproj_file = "#{@projroot}/#{@projname}.vcxproj"
       @vcxproj_filters_file = "#{@vcxproj_file}.filters"
+      @file_types = @node.get_attr(:vcfiletype)
     end
     
     ##
@@ -158,8 +159,9 @@ module JABA
       
       item_group(w) do
         @src.each do |f|
-          # TODO: handle not just ClInclude
-          w << "    <ClInclude Include=\"#{f.to_backslashes}\" />"
+          file_type = @file_types.fetch(f.extname, fail_if_not_found: false)&.value
+          file_type = :None if !file_type
+          w << "    <#{file_type} Include=\"#{f.to_backslashes}\" />"
         end
       end
       
