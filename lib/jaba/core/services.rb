@@ -56,6 +56,7 @@ module JABA
 
     attr_reader :input
     attr_reader :file_manager
+    attr_reader :globals_node
 
     ##
     #
@@ -308,6 +309,8 @@ module JABA
                        end
       end
       
+      @globals_node = node_from_handle('globals|globals')
+
       log "Resolving references..."
 
       # Resolve references

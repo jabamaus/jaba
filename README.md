@@ -60,4 +60,4 @@ if there are multiple attrs, with a warning.
   should use eg "#{__dir__}/main.cpp"?
 - move project types into separate folder
 - remove 'cpp' handle prefix from output files as everything already namespaced in :cpp
-- Could add a global VSHost node that all vs nodes are parented to. Would contain vcfiletypes. Could have some sort of copy on write system.
+- Support for opening instances as well as types

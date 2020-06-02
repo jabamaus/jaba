@@ -131,22 +131,6 @@ define :cpp do
       flag_options :export
     end
 
-    # TODO: too much of an efficiency penalty done like this. Change to a 'global' attribute
-    attr_hash :vcfiletype, type: :symbol do
-      default({
-        '.h' => :ClInclude,
-        '.inl' => :ClInclude,
-        '.hpp' => :ClInclude,
-        '.cpp' => :ClCompile,
-        '.c' => :ClCompile,
-        '.cxx' => :ClCompile,
-        '.cc' => :ClCompile,
-        '.png' => :Image,
-        '.asm' => :MASM,
-        '.rc' => :ResourceCompile,
-        '.natvis' => :Natvis
-      })
-      end
   end
 
   define :per_arch do

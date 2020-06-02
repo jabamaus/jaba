@@ -4,6 +4,7 @@
     "C:/projects/GitHub/jaba/lib/jaba/definitions/attribute_types.rb",
     "C:/projects/GitHub/jaba/lib/jaba/definitions/category.rb",
     "C:/projects/GitHub/jaba/lib/jaba/definitions/cpp.rb",
+    "C:/projects/GitHub/jaba/lib/jaba/definitions/globals.rb",
     "C:/projects/GitHub/jaba/lib/jaba/definitions/hosts.rb",
     "C:/projects/GitHub/jaba/lib/jaba/definitions/platforms.rb",
     "C:/projects/GitHub/jaba/lib/jaba/definitions/text.rb",
@@ -257,19 +258,6 @@
               "winsdkver": null,
               "vcglobal": {
               },
-              "vcfiletype": {
-                ".h": "ClInclude",
-                ".inl": "ClInclude",
-                ".hpp": "ClInclude",
-                ".cpp": "ClCompile",
-                ".c": "ClCompile",
-                ".cxx": "ClCompile",
-                ".cc": "ClCompile",
-                ".png": "Image",
-                ".asm": "MASM",
-                ".rc": "ResourceCompile",
-                ".natvis": "Natvis"
-              },
               "children": {
                 "cpp|MyApp|vs2019|windows|x86": {
                   "arch": "x86",
@@ -445,19 +433,6 @@
               "winsdkver": null,
               "vcglobal": {
               },
-              "vcfiletype": {
-                ".h": "ClInclude",
-                ".inl": "ClInclude",
-                ".hpp": "ClInclude",
-                ".cpp": "ClCompile",
-                ".c": "ClCompile",
-                ".cxx": "ClCompile",
-                ".cc": "ClCompile",
-                ".png": "Image",
-                ".asm": "MASM",
-                ".rc": "ResourceCompile",
-                ".natvis": "Natvis"
-              },
               "children": {
                 "cpp|MyLib|vs2019|windows|x86": {
                   "arch": "x86",
@@ -583,6 +558,23 @@
             }
           }
         }
+      }
+    },
+    "globals|globals": {
+      "vcfiletype": {
+        ".h": "ClInclude",
+        ".inl": "ClInclude",
+        ".hpp": "ClInclude",
+        ".cpp": "ClCompile",
+        ".c": "ClCompile",
+        ".cxx": "ClCompile",
+        ".cc": "ClCompile",
+        ".png": "Image",
+        ".asm": "MASM",
+        ".rc": "ResourceCompile",
+        ".natvis": "Natvis"
+      },
+      "children": {
       }
     }
   }

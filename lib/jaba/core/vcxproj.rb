@@ -18,7 +18,7 @@ module JABA
       super
       @vcxproj_file = "#{@projroot}/#{@projname}.vcxproj"
       @vcxproj_filters_file = "#{@vcxproj_file}.filters"
-      @file_types = @node.get_attr(:vcfiletype)
+      @file_types = @services.globals_node.get_attr(:vcfiletype)
     end
     
     ##
