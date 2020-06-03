@@ -64,11 +64,12 @@ module JABA
 
     ##
     #
-    def initialize(file_manager, filename, encoding, eol, capacity)
+    def initialize(file_manager, filename, encoding, eol, capacity, track)
       @file_manager = file_manager
       @filename = filename
       @encoding = encoding
       @eol = eol
+      @track = track
       @writer = work_area(capacity: capacity)
     end
 
@@ -84,6 +85,12 @@ module JABA
       @writer.str
     end
 
+    ##
+    #
+    def track?
+      @track
+    end
+    
     ##
     #
     def save(**options)
@@ -117,23 +124,23 @@ module JABA
 
     ##
     #
-    def new_file(filename, eol: :unix, encoding: nil, capacity: nil)
+    def new_file(filename, eol: :unix, encoding: nil, capacity: nil, track: true)
       if !ValidEols.include?(eol)
         raise "'#{eol.inspect}' is an invalid eol style. Valid values: #{ValidEols.inspect}"
       end
-      JabaFile.new(self, filename.to_absolute(clean: true), encoding, eol, capacity)
+      JabaFile.new(self, filename.to_absolute(clean: true), encoding, eol, capacity, track)
     end
 
     ##
     #
-    def save(file, track: true)
+    def save(file)
       fn = file.filename
 
       if file.str.empty?
         @services.jaba_warning("'#{fn}' is empty")
       end
 
-      if track
+      if file.track?
         existing = read_file(fn, encoding: file.encoding)
         if existing.nil?
           @added << fn

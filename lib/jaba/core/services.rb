@@ -542,10 +542,10 @@ module JABA
       end
 
       json = JSON.pretty_generate(root)
-      file = @file_manager.new_file(input.jaba_input_file, eol: :unix)
+      file = @file_manager.new_file(input.jaba_input_file, eol: :unix, track: false)
       w = file.writer
       w.write_raw(json)
-      file.save(track: false)
+      file.save
     end
 
     ##
@@ -570,32 +570,35 @@ module JABA
     end
 
     ##
-    # TODO: if user is not interested in output no need to generate whole output
+    #
     def build_jaba_output
       @building_jaba_output = true
-      out_file = input.dump_output? ? input.jaba_output_file : nil
-      out_dir = out_file ? out_file.dirname : nil
 
       @output[:version] = '1.0'
       @output[:generated] = @file_manager.generated
       @output[:warnings] = @warnings
-      @generators.each do |g|
-        g_root = {}
 
-        # Namespace each generator. Each node handle prefix is removed to acount for this, eg cpp|MyApp|vs2019|windows
-        # becomes MyApp|vs2019|windows and goes inside a 'cpp' json element.
-        #
-        @output[g.type_id] = g_root
-        g.build_jaba_output(g_root, out_dir)
-      end
+      if input.dump_output?
+        out_file = input.jaba_output_file
+        out_dir = out_file.dirname
 
-      if out_file
+        @generators.each do |g|
+          g_root = {}
+
+          # Namespace each generator. Each node handle prefix is removed to acount for this, eg cpp|MyApp|vs2019|windows
+          # becomes MyApp|vs2019|windows and goes inside a 'cpp' json element.
+          #
+          @output[g.type_id] = g_root
+          g.build_jaba_output(g_root, out_dir)
+        end
+
         json = JSON.pretty_generate(@output)
-        file = @file_manager.new_file(out_file, eol: :unix)
+        file = @file_manager.new_file(out_file, eol: :unix, track: false)
         w = file.writer
         w.write_raw(json)
-        file.save(track: false)
+        file.save
       end
+
       @output[:added_files] = @file_manager.added
       @output[:modified_files] = @file_manager.modified
       @building_jaba_output = false

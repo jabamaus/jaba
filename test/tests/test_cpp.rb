@@ -11,7 +11,7 @@ module JABA
     end
 
     it 'supports defaults' do
-      op = jaba(dry_run: true) do
+      op = jaba(dry_run: true, dump_output: true) do
         defaults :cpp do
           hosts [:vs2019]
           platforms [:windows]

@@ -9,6 +9,7 @@ using JABACoreExt
 opts = OpenStruct.new(
   load_paths: nil,
   dump_input: nil,
+  no_dump_output: nil,
   enable_logging: nil,
   dry_run: nil,
   enable_profiling: nil,
@@ -21,6 +22,7 @@ OptionParser.new do |op|
   op.separator 'Options:'
   op.on('-l', '--load-path LP', "Load path") {|lp| opts.load_paths = lp }
   op.on('--dump-input', 'Dumps Jaba input') { opts.dump_input = true }
+  op.on('--no-dump-output', 'Disables dumping of jaba output') { opts.no_dump_output = true }
   op.on('--log', 'Enable logging') { opts.enable_logging = true}
   op.on('--dry-run', 'Dry run') { opts.dry_run = true }
   op.on('--profile', 'Profile jaba with ruby-prof gem') { opts.enable_profiling = true }
@@ -83,6 +85,7 @@ begin
       output = JABA.run do |j|
         j.load_paths = opts.load_paths if opts.load_paths
         j.dump_input = opts.dump_input if opts.dump_input
+        j.dump_output = false if opts.no_dump_output
         j.dry_run = opts.dry_run if opts.dry_run
         j.enable_logging = opts.enable_logging if opts.enable_logging
       end
