@@ -155,7 +155,7 @@ module JABACoreExt
     ##
     #
     def absolute_unix_path?
-      raise "Empty path is invalid" if empty?
+      return false if empty?
       self[0].chr == '/' && ((size > 1 && self[1].chr != '/') || size == 1)
     end
 
@@ -163,8 +163,21 @@ module JABACoreExt
     # Returns true if string is a windows or unix style absolute path.
     #
     def absolute_path?
-      raise "Empty path is invalid" if empty?
+      return false if empty?
       self[0].chr == '/' || self[0].chr == '\\' || (size > 1 && self[1].chr == ':')
+    end
+
+    ##
+    # Very must like basename but doesn't clean up last component, eg 'dir/file.rb:12'.last_path_component
+    # will return 'file.rb:12', and so works with ruby source locations whereas 'dir/file.rb:12'.basename
+    # returns 'file.rb'. Slower than basename so prefer the latter.
+    #
+    def last_path_component
+      if size > 1
+        split(/[\/\\]/).last
+      else
+        self
+      end
     end
 
     ##

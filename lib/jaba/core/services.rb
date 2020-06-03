@@ -125,10 +125,12 @@ module JABA
       jaba_error("id is required") if id.nil?
       log "Registering attr type [id=#{id}]"
       validate_id(id)
-      if @jaba_attr_type_definitions.find{|d| d.id == id}
-        jaba_error("'#{id}' multiply defined")
+      existing = @jaba_attr_type_definitions.find{|d| d.id == id}
+      if existing
+        jaba_error("Attribute type '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
       end
       @jaba_attr_type_definitions << JabaDefinition.new(id, block, caller(2, 1)[0])
+      nil
     end
 
     ##
@@ -137,10 +139,12 @@ module JABA
       jaba_error("id is required") if id.nil?
       log "  Registering attr flag [id=#{id}]"
       validate_id(id)
-      if @jaba_attr_flag_definitions.find{|d| d.id == id}
-        jaba_error("'#{id}' multiply defined")
+      existing = @jaba_attr_flag_definitions.find{|d| d.id == id}
+      if existing
+        jaba_error("Attribute flag '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
       end
       @jaba_attr_flag_definitions << JabaDefinition.new(id, block, caller(2, 1)[0])
+      nil
     end
 
     ##
@@ -149,8 +153,9 @@ module JABA
       jaba_error("id is required") if id.nil?
       log "  Registering type [id=#{id}]"
       validate_id(id)
-      if @jaba_type_definitions.find{|d| d.id == id}
-        jaba_error("'#{id}' multiply defined")
+      existing = @jaba_type_definitions.find{|d| d.id == id}
+      if existing
+        jaba_error("Type '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
       end
       @jaba_type_definitions << JabaTypeDefinition.new(id, block, caller(2, 1)[0])
     end
@@ -162,6 +167,7 @@ module JABA
       log "  Opening type [id=#{id}]"
       jaba_error("a block is required") if !block_given?
       @jaba_open_definitions << JabaTypeDefinition.new(id, block, caller(2, 1)[0])
+      nil
     end
     
     ##
@@ -173,11 +179,13 @@ module JABA
       log "  Registering shared definition block [id=#{id}]"
       validate_id(id)
 
-      if get_shared_definition(id, fail_if_not_found: false)
-        jaba_error("'#{id}' multiply defined")
+      existing = get_shared_definition(id, fail_if_not_found: false)
+      if existing
+        jaba_error("Shared definition '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
       end
 
       @shared_definition_lookup[id] = JabaDefinition.new(id, block, caller(2, 1)[0])
+      nil
     end
 
     ##
@@ -190,13 +198,15 @@ module JABA
 
       log "  Registering instance [id=#{id}, type=#{type_id}]"
 
-      if instanced?(type_id, id)
-        jaba_error("'#{id}' multiply defined")
+      existing = get_instance_definition(type_id, id, fail_if_not_found: false)
+      if existing
+        jaba_error("Type instance '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
       end
       
       d = JabaInstanceDefinition.new(id, type_id, block, caller(2, 1)[0])
       @instance_definition_lookup.push_value(type_id, d)
       @instance_definitions << d
+      nil
     end
     
     ##
@@ -204,10 +214,12 @@ module JABA
     def define_defaults(id, &block)
       jaba_error("id is required") if id.nil?
       log "  Registering defaults [id=#{id}]"
-      if @default_definitions.find {|d| d.id == id}
-        jaba_error("'#{id}' multiply defined")
+      existing = @default_definitions.find {|d| d.id == id}
+      if existing
+        jaba_error("Defaults block '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
       end
       @default_definitions << JabaDefinition.new(id, block, caller(2, 1)[0])
+      nil
     end
 
     ##
@@ -657,12 +669,6 @@ module JABA
         jaba_error("No '#{type_id}' type defined")
       end
       defs.map(&:id)
-    end
-
-    ##
-    #
-    def instanced?(type_id, id)
-      get_instance_definition(type_id, id, fail_if_not_found: false) != nil
     end
     
     ##

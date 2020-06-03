@@ -2,6 +2,8 @@
 
 module JABA
 
+  using JABACoreExt
+
   class TestTopLevelDefinition < JabaTest
 
     it 'rejects invalid ids' do
@@ -33,9 +35,9 @@ module JABA
     
     it 'detects duplicate ids with definitions of the same type' do
       [:attr_flag, :attr_type, :cpp, :defaults, :define, :shared, :text, :workspace].each do |type|
-        check_fail "'a' multiply defined", trace: [__FILE__, 'tagI'] do
+        check_fail "':a' multiply defined. See #{__FILE__.basename}:#{find_line_number(__FILE__, 'tagX')}.", trace: [__FILE__, 'tagI'] do
           jaba do
-            __send__(type, :a) do
+            __send__(type, :a) do # tagX
             end
             __send__(type, :a) do # tagI
             end

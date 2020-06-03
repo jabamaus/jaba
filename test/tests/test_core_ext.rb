@@ -85,6 +85,7 @@ module JABA
         'e'.relative_path_from('a/b/c').must_equal('../../../e')
         'a/../b/.././c'.relative_path_from('d').must_equal('../c')
         'C:/a/b/c'.relative_path_from('C:/a/b').must_equal('c')
+        'C:/a/b/c/d/e/f.rb:12'.relative_path_from('C:/a/b/c').must_equal('d/e/f.rb:12') # test can use on ruby source file locations
         assert_raises RuntimeError do
           'a'.relative_path_from('/')
         end.message.must_match("Cannot turn 'a' into a relative path from '/' - paths are unrelated")
@@ -107,9 +108,7 @@ module JABA
       end
       
       it 'supports absolute_unix_path?' do
-        assert_raises RuntimeError do
-          ''.absolute_path?
-        end.message.must_match("Empty path is invalid")
+        ''.absolute_path?.must_equal(false)
         '/'.absolute_unix_path?.must_equal(true)
         '/a/b'.absolute_unix_path?.must_equal(true)
         '//'.absolute_unix_path?.must_equal(false)
@@ -119,9 +118,7 @@ module JABA
       end
 
       it 'supports absolute_path?' do
-        assert_raises RuntimeError do
-          ''.absolute_path?
-        end.message.must_match("Empty path is invalid")
+        ''.absolute_path?.must_equal(false)
         '/'.absolute_path?.must_equal(true)
         'C:'.absolute_path?.must_equal(true)
         'C:/'.absolute_path?.must_equal(true)
@@ -142,6 +139,21 @@ module JABA
         'a'.to_absolute.must_equal("#{cwd}/a")
         '.'.to_absolute.must_match(cwd)
         '././a/b/../../.'.to_absolute(clean: true).must_equal(cwd)
+      end
+
+      it 'supports last_path_component' do
+        'a'.last_path_component.must_equal('a')
+        'a/b'.last_path_component.must_equal('b')
+        'a/b/'.last_path_component.must_equal('b')
+        'a\\b\\'.last_path_component.must_equal('b')
+        'a/b.c'.last_path_component.must_equal('b.c')
+        'a/b.c.d'.last_path_component.must_equal('b.c.d')
+        ''.last_path_component.must_equal('')
+        '/'.last_path_component.must_equal('/')
+        'C:'.last_path_component.must_equal('C:')
+        'C:/'.last_path_component.must_equal('C:')
+        '../a.b'.last_path_component.must_equal('a.b')
+        'a/b.c:12'.last_path_component.must_equal('b.c:12') # test works with ruby source file location
       end
 
       it 'supports quote!' do

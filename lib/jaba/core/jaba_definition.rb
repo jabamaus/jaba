@@ -24,6 +24,14 @@ module JABA
       @source_location.slice!(i..-1)
     end
 
+    ##
+    # Given a path in ruby 'backtrace' format, eg dir/file.rb:12, returns file.rb:12. Can't use the usual File.basename as it
+    # strips the :12. Used in error messages.
+    #
+    def src_loc_basename
+      @source_location.last_path_component
+    end
+
   end
 
   ##
