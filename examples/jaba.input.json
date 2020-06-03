@@ -257,6 +257,10 @@
               ],
               "winsdkver": null,
               "vcglobal": {
+                "ProjectName": "MyApp",
+                "ProjectGuid": "{94B39F2E-598F-4977-32A2-3152F335DBBD}",
+                "RootNamespace": "MyApp",
+                "WindowsTargetPlatformVersion": null
               },
               "children": {
                 "cpp|MyApp|vs2019|windows|x86": {
@@ -286,6 +290,18 @@
                       "rtti": true,
                       "toolset": "v142",
                       "vcproperty": {
+                        "ConfigurationType": "Application",
+                        "UseDebugLibraries": true,
+                        "CharacterSet": null,
+                        "PlatformToolset": "v142",
+                        "AdditionalIncludeDirectories": null,
+                        "AdditionalOptions": null,
+                        "ExceptionHandling": "Sync",
+                        "PreprocessorDefinitions": null,
+                        "RuntimeTypeInfo": true,
+                        "TreatWarningAsError": false,
+                        "SubSystem": "Windows",
+                        "TargetMachine": null
                       },
                       "children": {
                       }
@@ -313,6 +329,18 @@
                       "rtti": true,
                       "toolset": "v142",
                       "vcproperty": {
+                        "ConfigurationType": "Application",
+                        "UseDebugLibraries": false,
+                        "CharacterSet": null,
+                        "PlatformToolset": "v142",
+                        "AdditionalIncludeDirectories": null,
+                        "AdditionalOptions": null,
+                        "ExceptionHandling": "Sync",
+                        "PreprocessorDefinitions": null,
+                        "RuntimeTypeInfo": true,
+                        "TreatWarningAsError": false,
+                        "SubSystem": "Windows",
+                        "TargetMachine": null
                       },
                       "children": {
                       }
@@ -346,6 +374,18 @@
                       "rtti": true,
                       "toolset": "v142",
                       "vcproperty": {
+                        "ConfigurationType": "Application",
+                        "UseDebugLibraries": true,
+                        "CharacterSet": null,
+                        "PlatformToolset": "v142",
+                        "AdditionalIncludeDirectories": null,
+                        "AdditionalOptions": null,
+                        "ExceptionHandling": "Sync",
+                        "PreprocessorDefinitions": null,
+                        "RuntimeTypeInfo": true,
+                        "TreatWarningAsError": false,
+                        "SubSystem": "Windows",
+                        "TargetMachine": "MachineX64"
                       },
                       "children": {
                       }
@@ -373,6 +413,18 @@
                       "rtti": true,
                       "toolset": "v142",
                       "vcproperty": {
+                        "ConfigurationType": "Application",
+                        "UseDebugLibraries": false,
+                        "CharacterSet": null,
+                        "PlatformToolset": "v142",
+                        "AdditionalIncludeDirectories": null,
+                        "AdditionalOptions": null,
+                        "ExceptionHandling": "Sync",
+                        "PreprocessorDefinitions": null,
+                        "RuntimeTypeInfo": true,
+                        "TreatWarningAsError": false,
+                        "SubSystem": "Windows",
+                        "TargetMachine": "MachineX64"
                       },
                       "children": {
                       }
@@ -432,6 +484,10 @@
               ],
               "winsdkver": null,
               "vcglobal": {
+                "ProjectName": "MyLib",
+                "ProjectGuid": "{BC1B8BAC-BF1A-46A6-8180-E02C42CA6FF0}",
+                "RootNamespace": "MyLib",
+                "WindowsTargetPlatformVersion": null
               },
               "children": {
                 "cpp|MyLib|vs2019|windows|x86": {
@@ -461,6 +517,17 @@
                       "rtti": true,
                       "toolset": "v142",
                       "vcproperty": {
+                        "ConfigurationType": "StaticLibrary",
+                        "UseDebugLibraries": true,
+                        "CharacterSet": null,
+                        "PlatformToolset": "v142",
+                        "AdditionalIncludeDirectories": null,
+                        "AdditionalOptions": null,
+                        "ExceptionHandling": "Sync",
+                        "PreprocessorDefinitions": null,
+                        "RuntimeTypeInfo": true,
+                        "TreatWarningAsError": false,
+                        "TargetMachine": null
                       },
                       "children": {
                       }
@@ -488,6 +555,17 @@
                       "rtti": true,
                       "toolset": "v142",
                       "vcproperty": {
+                        "ConfigurationType": "StaticLibrary",
+                        "UseDebugLibraries": false,
+                        "CharacterSet": null,
+                        "PlatformToolset": "v142",
+                        "AdditionalIncludeDirectories": null,
+                        "AdditionalOptions": null,
+                        "ExceptionHandling": "Sync",
+                        "PreprocessorDefinitions": null,
+                        "RuntimeTypeInfo": true,
+                        "TreatWarningAsError": false,
+                        "TargetMachine": null
                       },
                       "children": {
                       }
@@ -521,6 +599,17 @@
                       "rtti": true,
                       "toolset": "v142",
                       "vcproperty": {
+                        "ConfigurationType": "StaticLibrary",
+                        "UseDebugLibraries": true,
+                        "CharacterSet": null,
+                        "PlatformToolset": "v142",
+                        "AdditionalIncludeDirectories": null,
+                        "AdditionalOptions": null,
+                        "ExceptionHandling": "Sync",
+                        "PreprocessorDefinitions": null,
+                        "RuntimeTypeInfo": true,
+                        "TreatWarningAsError": false,
+                        "TargetMachine": "MachineX64"
                       },
                       "children": {
                       }
@@ -548,6 +637,17 @@
                       "rtti": true,
                       "toolset": "v142",
                       "vcproperty": {
+                        "ConfigurationType": "StaticLibrary",
+                        "UseDebugLibraries": false,
+                        "CharacterSet": null,
+                        "PlatformToolset": "v142",
+                        "AdditionalIncludeDirectories": null,
+                        "AdditionalOptions": null,
+                        "ExceptionHandling": "Sync",
+                        "PreprocessorDefinitions": null,
+                        "RuntimeTypeInfo": true,
+                        "TreatWarningAsError": false,
+                        "TargetMachine": "MachineX64"
                       },
                       "children": {
                       }

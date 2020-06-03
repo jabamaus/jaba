@@ -330,13 +330,6 @@ module JABA
         end
       end
       
-      # Output definition input data as a json file, before generation. This is raw data as generated from the definitions.
-      # Can be used for debugging and testing.
-      #
-      if input.dump_input?
-        dump_jaba_input
-      end
-
       log 'Calling generators...'
 
       # Call generators to build project representations from nodes
@@ -353,6 +346,13 @@ module JABA
       #
       @nodes.each(&:make_read_only)
       
+      # Output definition input data as a json file, before generation. This is raw data as generated from the definitions.
+      # Can be used for debugging and testing.
+      #
+      if input.dump_input?
+        dump_jaba_input
+      end
+
       # Write final files
       #
       @generators.each(&:generate)
