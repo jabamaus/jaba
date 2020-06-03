@@ -64,5 +64,4 @@ if there are multiple attrs, with a warning.
 - Add check for re-entrancy when evaluating default blocks
 - consistent method names across tests and consistent brackets on must_equal
 - Rename TestAttribute to TestSingleAttribute
-- Wrap up variant == :single etc to single? array? hash?
 - Should string attrs be initialised to ''?

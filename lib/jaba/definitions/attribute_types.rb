@@ -40,12 +40,9 @@ attr_type :bool do
 
   # TODO: I don't like this
   post_init_attr_def do
-    case variant
-    when :single
-      if !default_set? && !has_flag?(:required)
-        default false
-      end
-    when :array
+    if attr_single? && !default_set? && !has_flag?(:required)
+      default false
+    elsif attr_array?
       flags :nosort, :allow_dupes
     end
   end

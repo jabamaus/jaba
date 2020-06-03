@@ -62,7 +62,7 @@ module JABA
       # used when cloning attributes. Store as __key to indicate it is internal and to stop it clashing with any user
       # defined option.
       #
-      if @variant == :hash
+      if attr_hash?
         add_value_option(:__key, false, [])
       end
 
@@ -125,25 +125,36 @@ module JABA
 
     ##
     #
+    def attr_single?
+      @variant == :single
+    end
+
+    ##
+    #
+    def attr_array?
+      @variant == :array
+    end
+
+    ##
+    #
+    def attr_hash?
+      @variant == :hash
+    end
+
+    ##
+    #
     def on_property_set(id, new_val)
       case id
       when :default
         @default_set = true
         @default_block = @default.proc? ? @default : nil
         if !@default_block
-          case @variant
-          when :single
-            if new_val.is_a?(Enumerable)
-              @services.jaba_error("'#{definition_id}' attribute default must be a single value not a container")
-            end
-          when :array
-            if !new_val.array?
-              @services.jaba_error("'#{definition_id}' array attribute default must be an array")
-            end
-          when :hash
-            if !new_val.hash?
-              @services.jaba_error("'#{definition_id}' hash attribute default must be a hash")
-            end
+          if attr_single? && new_val.is_a?(Enumerable)
+            @services.jaba_error("'#{definition_id}' attribute default must be a single value not a container")
+          elsif attr_array? && !new_val.array?
+           @services.jaba_error("'#{definition_id}' array attribute default must be an array")
+          elsif attr_hash? && !new_val.hash?
+            @services.jaba_error("'#{definition_id}' hash attribute default must be a hash")
           end
         end
       when :flags

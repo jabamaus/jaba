@@ -104,6 +104,24 @@ module JABA
 
     ##
     #
+    def attr_single?
+      @attr_def.attr_single?
+    end
+
+    ##
+    #
+    def attr_array?
+      @attr_def.attr_array?
+    end
+
+    ##
+    #
+    def attr_hash?
+      @attr_def.attr_hash?
+    end
+
+    ##
+    #
     def has_flag?(flag)
       @attr_def.has_flag?(flag)
     end
