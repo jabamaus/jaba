@@ -2,7 +2,8 @@
 
 To do:
 
-- make paths in jaba.output.json relative to itself
+- make paths in jaba.output.json relative to itself. Introduce json node writing api to wrap this up and to make it robust.
+- think more about path handling in general and make it very consistent. eg all paths get to generators as absolute.
 - test absolute root paths
 - Have a way of globally setting default for :platforms, :hosts and :configs (and for clearing)
 - make file/dir attrs cleanpath
@@ -62,3 +63,4 @@ if there are multiple attrs, with a warning.
 - Add check for re-entrancy when evaluating default blocks
 - consistent method names across tests and consistent brackets on must_equal
 - Should string attrs be initialised to ''?
+- Test cpp json output

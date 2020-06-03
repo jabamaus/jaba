@@ -92,7 +92,7 @@ module JABA
     it 'supports platform-specific default src extensions' do
       make_file('a.cpp', 'b.natvis', 'c.xcconfig', 'e.def', 'f.rc')
       td = temp_dir
-      op = jaba do
+      op = jaba(dump_output: true) do
         cpp :app do
           type :app
           root td

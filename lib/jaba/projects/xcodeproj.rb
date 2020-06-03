@@ -24,12 +24,12 @@ module JABA
 
     ##
     #
-    def build_jaba_output(p_root)
-      p_root[:projroot] = @projroot
+    def build_jaba_output(p_root, out_dir)
+      p_root[:projroot] = @projroot.relative_path_from(out_dir)
       p_root[:projname] = @projname
       p_root[:host] = @host.definition_id
       p_root[:platform] = @attrs.platform_ref.definition_id
-      p_root[:src] = @src
+      p_root[:src] = @src.map{|f| f.relative_path_from(out_dir)}
       cfg_root = {}
       p_root[:configs] = cfg_root
       each_config do |c|

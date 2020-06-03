@@ -52,11 +52,12 @@ module JABA
     ##
     # Override this in subclass.
     #
-    def build_jaba_output(p_root)
+    def build_jaba_output(p_root, out_dir)
       # nothing
     end
 
     ##
+    # Builds sorted array of absolute src paths and stores in @<src_attr_id> instance variable.
     #
     def process_src(src_attr_id, src_ext_attr_id)
       src_attr = @node.get_attr(src_attr_id)
@@ -106,7 +107,6 @@ module JABA
       end
 
       dest.sort_no_case!
-      dest.map!{|f| f.relative_path_from(@projroot)}
     end
 
   end

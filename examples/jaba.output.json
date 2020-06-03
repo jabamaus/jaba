@@ -11,13 +11,13 @@
   ],
   "cpp": {
     "MyApp|vs2019|windows": {
-      "projroot": "C:/projects/GitHub/jaba/examples/example1",
+      "projroot": "example1",
       "projname": "MyApp",
       "host": "vs2019",
       "platform": "windows",
-      "vcxproj": "C:/projects/GitHub/jaba/examples/example1/MyApp.vcxproj",
+      "vcxproj": "example1/MyApp.vcxproj",
       "src": [
-        "main.cpp"
+        "example1/main.cpp"
       ],
       "vcglobal": {
         "ProjectName": "MyApp",
@@ -79,14 +79,14 @@
       }
     },
     "MyLib|vs2019|windows": {
-      "projroot": "C:/projects/GitHub/jaba/examples/example2",
+      "projroot": "example2",
       "projname": "MyLib",
       "host": "vs2019",
       "platform": "windows",
-      "vcxproj": "C:/projects/GitHub/jaba/examples/example2/MyLib.vcxproj",
+      "vcxproj": "example2/MyLib.vcxproj",
       "src": [
-        "include/MyLibrary/MyLibrary.h",
-        "src/MyLibrary.cpp"
+        "example2/include/MyLibrary/MyLibrary.h",
+        "example2/src/MyLibrary.cpp"
       ],
       "vcglobal": {
         "ProjectName": "MyLib",

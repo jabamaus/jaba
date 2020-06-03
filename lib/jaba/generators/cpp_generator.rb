@@ -216,11 +216,11 @@ module JABA
     
     ##
     # 
-    def build_jaba_output(g_root)
+    def build_jaba_output(g_root, out_dir)
       @projects.each do |p|
         p_root = {}
         g_root[p.handle] = p_root
-        p.build_jaba_output(p_root)
+        p.build_jaba_output(p_root, out_dir)
       end
     end
 

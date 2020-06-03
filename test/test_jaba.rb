@@ -29,12 +29,16 @@ module JABA
 
     ##
     #
-    def jaba(load_paths: nil, dry_run: false, cpp_app: false, &block)
+    def jaba(load_paths: nil, dry_run: false, dump_output: false, cpp_app: false, &block)
       op = JABA.run do |c|
         c.load_paths = load_paths
         c.definitions(&block) if block_given?
         td = temp_dir
+        c.jaba_output_file = "#{td}/jaba.output.json"
         if cpp_app
+          # force dump output to ensure that output paths are made relative to the temp_dir and therefore the
+          # root, for easy testing. If the output is not written to disk the paths are left as absolute.
+          dump_output = true
           c.definitions do
             defaults :cpp do
               hosts [:vs2019]
@@ -46,7 +50,7 @@ module JABA
             end
           end
         end
-        c.dump_output = false
+        c.dump_output = dump_output
         c.dry_run = dry_run
       end
       warnings = op[:warnings]

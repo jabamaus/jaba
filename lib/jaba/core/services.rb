@@ -65,7 +65,7 @@ module JABA
       @input.instance_variable_set(:@definitions, [])
       @input.instance_variable_set(:@jaba_input_file, 'jaba.input.json')
       @input.instance_variable_set(:@dump_input, false)
-      @input.instance_variable_set(:@jaba_output_file, 'jaba.output.json')
+      @input.instance_variable_set(:@jaba_output_file, 'jaba.output.json'.to_absolute)
       @input.instance_variable_set(:@dump_output, true)
       @input.instance_variable_set(:@dry_run, false)
       @input.instance_variable_set(:@enable_logging, false)
@@ -570,21 +570,28 @@ module JABA
     end
 
     ##
-    #
+    # TODO: if user is not interested in output no need to generate whole output
     def build_jaba_output
       @building_jaba_output = true
+      out_file = input.dump_output? ? input.jaba_output_file : nil
+      out_dir = out_file ? out_file.dirname : nil
+
       @output[:version] = '1.0'
       @output[:generated] = @file_manager.generated
       @output[:warnings] = @warnings
       @generators.each do |g|
         g_root = {}
-        @output[g.type_id] = g_root # Namespace each generator
-        g.build_jaba_output(g_root)
+
+        # Namespace each generator. Each node handle prefix is removed to acount for this, eg cpp|MyApp|vs2019|windows
+        # becomes MyApp|vs2019|windows and goes inside a 'cpp' json element.
+        #
+        @output[g.type_id] = g_root
+        g.build_jaba_output(g_root, out_dir)
       end
 
-      if input.dump_output?
+      if out_file
         json = JSON.pretty_generate(@output)
-        file = @file_manager.new_file(input.jaba_output_file, eol: :unix)
+        file = @file_manager.new_file(out_file, eol: :unix)
         w = file.writer
         w.write_raw(json)
         file.save(track: false)

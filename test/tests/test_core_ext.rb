@@ -74,6 +74,7 @@ module JABA
       end
 
       it 'supports relative_path_from' do
+        'a/b/c'.relative_path_from(nil).must_equal('a/b/c')
         '.'.relative_path_from('.').must_equal('.')
         'a'.relative_path_from('a').must_equal('.')
         '/'.relative_path_from('/').must_equal('.')
@@ -83,6 +84,7 @@ module JABA
         'a/b/c'.relative_path_from('d').must_equal('../a/b/c')
         'e'.relative_path_from('a/b/c').must_equal('../../../e')
         'a/../b/.././c'.relative_path_from('d').must_equal('../c')
+        'C:/a/b/c'.relative_path_from('C:/a/b').must_equal('c')
         assert_raises RuntimeError do
           'a'.relative_path_from('/')
         end.message.must_match("Cannot turn 'a' into a relative path from '/' - paths are unrelated")

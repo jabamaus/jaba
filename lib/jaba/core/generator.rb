@@ -90,7 +90,7 @@ module JABA
     ##
     # Override this in subclass.
     #
-    def build_jaba_output(g_root)
+    def build_jaba_output(g_root, out_dir)
     end
 
   end

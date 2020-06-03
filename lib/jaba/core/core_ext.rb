@@ -110,6 +110,7 @@ module JABACoreExt
     ##
     #
     def relative_path_from(base, backslashes: false)
+      return self if base.nil?
       parts = split_path(preserve_absolute_unix: true)
       base_parts = base.split_path(preserve_absolute_unix: true)
       while (!parts.empty? && !base_parts.empty? && parts[0] == base_parts[0])
