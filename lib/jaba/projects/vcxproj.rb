@@ -36,7 +36,7 @@ module JABA
     
     ##
     #
-    def dump_jaba_output(p_root)
+    def build_jaba_output(p_root)
       p_root[:projroot] = @projroot
       p_root[:projname] = @projname
       p_root[:host] = @host.definition_id

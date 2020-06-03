@@ -52,7 +52,7 @@ module JABA
     ##
     # Override this in subclass.
     #
-    def dump_jaba_output(p_root)
+    def build_jaba_output(p_root)
       # nothing
     end
 

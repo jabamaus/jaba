@@ -364,7 +364,7 @@ module JABA
         n.definition.call_hook(:generate, receiver: n, use_api: false)
       end
 
-      dump_jaba_output
+      build_jaba_output
 
       @logger&.close
       
@@ -571,7 +571,7 @@ module JABA
 
     ##
     #
-    def dump_jaba_output
+    def build_jaba_output
       @building_jaba_output = true
       @output[:version] = '1.0'
       @output[:generated] = @file_manager.generated
@@ -579,7 +579,7 @@ module JABA
       @generators.each do |g|
         g_root = {}
         @output[g.type_id] = g_root # Namespace each generator
-        g.dump_jaba_output(g_root)
+        g.build_jaba_output(g_root)
       end
 
       if input.dump_output?
