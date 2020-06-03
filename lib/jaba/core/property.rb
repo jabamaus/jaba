@@ -58,7 +58,10 @@ module JABA
           @services.jaba_error('Must provide a default value or a block but not both')
         end
         val = block
-        instance_variable_set(PropertyMethods.get_var(p_id), val)
+        if pre_property_set(p_id, val) != :ignore
+          instance_variable_set(PropertyMethods.get_var(p_id), val)
+          post_property_set(p_id, val)
+        end
       else
         current_val = instance_variable_get(PropertyMethods.get_var(p_id))
         if current_val.array?
@@ -67,7 +70,12 @@ module JABA
                 else
                   Array(val)
                 end
-          current_val.concat(val)
+          val.each do |elem|
+            if pre_property_set(p_id, elem) != :ignore
+              current_val << elem
+              post_property_set(p_id, elem)
+            end
+          end
         else
           # Fail if setting a single value property as an array, unless its the first time. This is to allow
           # a property to become either single value or array, depending on how it is first initialised.
@@ -75,17 +83,25 @@ module JABA
           if !current_val.nil? && val.array?
             @services.jaba_error("'#{p_id}' property cannot accept an array")
           end
-          instance_variable_set(PropertyMethods.get_var(p_id), val)
+          if pre_property_set(p_id, val) != :ignore
+            instance_variable_set(PropertyMethods.get_var(p_id), val)
+            post_property_set(p_id, val)
+          end
         end
       end
-      on_property_set(p_id, val)
     end
     
     ##
-    # Override in subclass to validate value.
+    # Override in subclass to validate value. If property is an array will be called for each element.
+    # Return :ignore to cancel property set
     #
-    def on_property_set(id, incoming_val)
-      # nothing
+    def pre_property_set(id, incoming_val)
+    end
+
+    ##
+    # Override in subclass to validate value. If property is an array will be called for each element.
+    #
+    def post_property_set(id, incoming_val)
     end
 
     ##

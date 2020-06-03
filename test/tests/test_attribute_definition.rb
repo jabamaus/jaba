@@ -51,6 +51,40 @@ module JABA
       end
     end
 
+    it 'checks for duplicate flags' do
+      check_warn("Duplicate flag ':read_only' specified", __FILE__, 'tagH') do
+        jaba do
+          define :test do
+            attr :a do
+              flags :read_only, :read_only # tagH
+            end
+          end
+          test :t do
+            generate do
+              get_attr(:a).attr_def.get_property(:flags).must_equal [:read_only]
+            end
+          end
+        end
+      end
+    end
+
+    it 'checks for duplicate flag options' do
+      check_warn("Duplicate flag option ':export' specified", __FILE__, 'tagD') do
+        jaba do
+          define :test do
+            attr :a do
+              flag_options :export, :export # tagD
+            end
+          end
+          test :t do
+            generate do
+              get_attr(:a).attr_def.get_property(:flag_options).must_equal [:export]
+            end
+          end
+        end
+      end
+    end
+
     it 'checks for invalid flags' do
       check_fail "':invalid' is an invalid flag", trace: [__FILE__, 'tagE'] do
         jaba do

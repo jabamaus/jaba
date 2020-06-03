@@ -11,14 +11,32 @@ module JABA
       super()
       @services = Services.new
       @on_prop_set = on_prop_set
+      @ignore_next = false
     end
 
-    def on_property_set(id, new_val)
+    def ignore_next
+      @ignore_next = true
+    end
+
+    def pre_property_set(id, new_val)
+      return if !@on_prop_set
+      if @ignore_next
+        @ignore_next = false
+        return :ignore
+      end
+      if new_val.proc?
+        puts "pre #{id}->block"
+      else
+        puts "pre #{id}->#{new_val}"
+      end
+    end
+
+    def post_property_set(id, new_val)
       return if !@on_prop_set
       if new_val.proc?
-        puts "#{id} -> block"
+        puts "post #{id}->block"
       else
-        puts "#{id} -> #{new_val}"
+        puts "post #{id}->#{new_val}"
       end
     end
   end
@@ -125,13 +143,15 @@ module JABA
       end
     end
 
-    it 'calls on_property_set with incoming value' do
-      assert_output "a -> 1\nb -> [2]\nb -> [3, 4]\nc -> block\n" do
+    it 'calls pre_property_set and post_property_set with incoming value' do
+      assert_output "pre a->1\npost a->1\npre b->2\npost b->2\npre b->3\npost b->3\npre b->4\npost b->4\npre c->block\npost c->block\n" do
         pc = PropertyContainer.new(on_prop_set: true)
         pc.define_property(:a)
         pc.set_property(:a, 1)
         pc.define_array_property(:b)
         pc.set_property(:b, 2)
+        pc.ignore_next
+        pc.set_property(:b, 5) # Won't get set
         pc.set_property(:b, [3, 4])
         pc.define_property(:c)
         pc.set_property(:c) do

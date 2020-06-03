@@ -143,31 +143,45 @@ module JABA
 
     ##
     #
-    def on_property_set(id, new_val)
+    def pre_property_set(id, incoming)
+      case id
+      when :flags
+        f = incoming
+        if !f.symbol?
+          jaba_error('Flags must be specified as symbols, eg :flag')
+        end
+        if @flags.include?(f)
+          jaba_warning("Duplicate flag '#{f.inspect}' specified")
+          return :ignore
+        end
+        @jaba_attr_flags << @services.get_attribute_flag(f) # check flag exists
+      when :flag_options
+        f = incoming
+        if !f.symbol?
+          jaba_error('Flag options must be specified as symbols, eg :option')
+        end
+        if @flag_options.include?(f)
+          jaba_warning("Duplicate flag option '#{f.inspect}' specified")
+          return :ignore
+        end
+      end
+    end
+
+    ##
+    #
+    def post_property_set(id, incoming)
       case id
       when :default
         @default_set = true
         @default_block = @default.proc? ? @default : nil
+
         if !@default_block
-          if attr_single? && new_val.is_a?(Enumerable)
+          if attr_single? && incoming.is_a?(Enumerable)
             @services.jaba_error("'#{definition_id}' attribute default must be a single value not a container")
-          elsif attr_array? && !new_val.array?
+          elsif attr_array? && !incoming.array?
            @services.jaba_error("'#{definition_id}' array attribute default must be an array")
-          elsif attr_hash? && !new_val.hash?
+          elsif attr_hash? && !incoming.hash?
             @services.jaba_error("'#{definition_id}' hash attribute default must be a hash")
-          end
-        end
-      when :flags
-        new_val.each do |f|
-          if !f.symbol?
-            jaba_error('Flags must be specified as symbols, eg :flag')
-          end
-          @jaba_attr_flags << @services.get_attribute_flag(f) # check flag exists
-        end
-      when :flag_options
-        new_val.each do |f|
-          if !f.symbol?
-            jaba_error('Flag options must be specified as symbols, eg :option')
           end
         end
       end
@@ -197,7 +211,6 @@ module JABA
         end
       end
 
-      # TODO: check for duplicate attr flags
       @jaba_attr_flags.each do |jaf|
         begin
           @services.set_warn_object(self) do
