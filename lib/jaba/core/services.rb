@@ -111,6 +111,7 @@ module JABA
       @null_nodes = {}
       
       @in_attr_default_block = false
+      @building_jaba_output = false
 
       @top_level_api = JabaTopLevelAPI.new(self)
 
@@ -564,7 +565,14 @@ module JABA
 
     ##
     #
+    def building_jaba_output?
+      @building_jaba_output
+    end
+
+    ##
+    #
     def dump_jaba_output
+      @building_jaba_output = true
       @output[:version] = '1.0'
       @output[:generated] = @file_manager.generated
       @output[:warnings] = @warnings
@@ -583,6 +591,7 @@ module JABA
       end
       @output[:added_files] = @file_manager.added
       @output[:modified_files] = @file_manager.modified
+      @building_jaba_output = false
     end
 
     ##

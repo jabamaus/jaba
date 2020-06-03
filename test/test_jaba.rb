@@ -52,7 +52,7 @@ module JABA
       warnings = op[:warnings]
       puts warnings if warnings
       if cpp_app
-        op = op[:cpp]['cpp|app|vs2019|windows']
+        op = op[:cpp]['app|vs2019|windows']
         op.wont_be_nil
       end
       op

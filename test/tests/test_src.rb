@@ -109,10 +109,10 @@ module JABA
           src '*'
         end
       end
-      vsproj = op[:cpp]['cpp|app|vs2019|windows']
+      vsproj = op[:cpp]['app|vs2019|windows']
       vsproj.wont_be_nil
       vsproj[:src].must_equal ['a.cpp', 'b.natvis', 'e.def', 'f.rc']
-      xcodeproj = op[:cpp]['cpp|app|xcode|ios']
+      xcodeproj = op[:cpp]['app|xcode|ios']
       xcodeproj.wont_be_nil
       xcodeproj[:src].must_equal ['a.cpp', 'c.xcconfig']
     end

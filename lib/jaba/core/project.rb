@@ -36,6 +36,7 @@ module JABA
     end
     
     ##
+    # eg cpp|MyApp|vs2019|windows
     #
     def handle
       @node.handle

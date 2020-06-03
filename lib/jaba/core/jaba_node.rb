@@ -11,7 +11,6 @@ module JABA
   class JabaNode < JabaObject
 
     attr_reader :jaba_type
-    attr_reader :handle
     attr_reader :attrs
     attr_reader :attrs_read_only
     attr_reader :referenced_nodes
@@ -65,6 +64,19 @@ module JABA
       @handle.casecmp(other.handle)
     end
     
+    ##
+    # Returns the handle of the node, eg cpp|MyApp|vs2019|windows.
+    # When building jaba output the 'namespace' is stripped, it becomes eg MyApp|vs2019|windows. This is
+    # because the node will be namespaced inside a 'cpp' json element.
+    #
+    def handle
+      if @services.building_jaba_output?
+        @handle.sub(/^.*?\|/, '')
+      else
+        @handle
+      end
+    end
+
     ##
     #
     def get_attr(attr_id, fail_if_not_found: true, search: false)

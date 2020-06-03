@@ -10,7 +10,7 @@
 
   ],
   "cpp": {
-    "cpp|MyApp|vs2019|windows": {
+    "MyApp|vs2019|windows": {
       "projroot": "C:/projects/GitHub/jaba/examples/example1",
       "projname": "MyApp",
       "host": "vs2019",
@@ -78,7 +78,7 @@
         }
       }
     },
-    "cpp|MyLib|vs2019|windows": {
+    "MyLib|vs2019|windows": {
       "projroot": "C:/projects/GitHub/jaba/examples/example2",
       "projname": "MyLib",
       "host": "vs2019",
