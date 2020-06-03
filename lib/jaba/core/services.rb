@@ -20,11 +20,11 @@ require_relative 'jaba_type'
 require_relative 'jaba_node'
 require_relative 'generator'
 require_relative 'project'
-require_relative 'vsproj'
-require_relative 'vcxproj'
-require_relative 'xcodeproj'
-
-Dir.glob("#{__dir__}/../generators/*_generator.rb").sort.each {|f| require f}
+require_relative '../projects/vsproj'
+require_relative '../projects/vcxproj'
+require_relative '../projects/xcodeproj'
+require_relative '../generators/cpp_generator.rb'
+require_relative '../generators/text_generator.rb'
 
 module DidYouMean::Correctable
   remove_method :to_s
