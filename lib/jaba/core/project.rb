@@ -24,13 +24,13 @@ module JABA
       @attrs = node.attrs
 
       r = @attrs.root
-      @root = r.absolute_path? ? r : "#{node.definition.source_dir}/#{r}"
+      @root = r.absolute_path? ? r : "#{node.definition.source_dir}/#{r}".cleanpath
 
       # If projroot is specified as an absolute path, use it directly, else prepend 'root', which itself
       # could either be an absolute or relative to the definition source file.
       #
       pr = @attrs.projroot
-      @projroot = pr.absolute_path? ? pr : "#{@root}/#{pr}"
+      @projroot = pr.absolute_path? ? pr : "#{@root}/#{pr}".cleanpath
 
       @projname = @attrs.projname
     end
