@@ -18,6 +18,13 @@ module JABA
     end
     
     ##
+    # Overridden from Project
+    #
+    def want_backslashes?
+      true
+    end
+
+    ##
     #
     def tools_version
       @host.attrs.version_year < 2013 ? '4.0' : @host.attrs.version

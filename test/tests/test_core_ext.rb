@@ -77,6 +77,7 @@ module JABA
         'a/b/c'.relative_path_from(nil).must_equal('a/b/c')
         '.'.relative_path_from('.').must_equal('.')
         'a'.relative_path_from('a').must_equal('.')
+        'a/b/c/d'.relative_path_from('a/b/c/d').must_equal('.')
         '/'.relative_path_from('/').must_equal('.')
         'C:/'.relative_path_from('C:/').must_equal('.')
         'C:'.relative_path_from('C:').must_equal('.')
@@ -105,6 +106,11 @@ module JABA
         'a\\b\\c'.relative_path_from('d').must_equal('../a/b/c')
         'a\\b\\c'.relative_path_from('d', backslashes: true).must_equal('..\\a\\b\\c')
         'a/b/c'.relative_path_from('d', backslashes: true).must_equal('..\\a\\b\\c')
+
+        # The nil_if_dot option returns nil in the case that the path ends up as '.'
+        #
+        '.'.relative_path_from('.', nil_if_dot: true).must_be_nil
+        'a/b/c/d'.relative_path_from('a/b/c/d', nil_if_dot: true).must_be_nil
       end
       
       it 'supports absolute_unix_path?' do

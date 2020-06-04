@@ -29,7 +29,7 @@ module JABA
       p_root[:projname] = @projname
       p_root[:host] = @host.definition_id
       p_root[:platform] = @attrs.platform_ref.definition_id
-      p_root[:src] = @src.map{|f| f.relative_path_from(out_dir)}
+      p_root[:src] = @src.map{|f| f.absolute_path.relative_path_from(out_dir)}
       cfg_root = {}
       p_root[:configs] = cfg_root
       each_config do |c|

@@ -108,8 +108,9 @@ module JABACoreExt
     end
 
     ##
+    # The nil_if_dot option returns nil in the case that the path ends up as '.'
     #
-    def relative_path_from(base, backslashes: false)
+    def relative_path_from(base, backslashes: false, nil_if_dot: false)
       return self if base.nil?
       parts = split_path(preserve_absolute_unix: true)
       base_parts = base.split_path(preserve_absolute_unix: true)
@@ -121,7 +122,10 @@ module JABACoreExt
         raise "Cannot turn '#{self}' into a relative path from '#{base}' - paths are unrelated"
       end
       result = base_parts.fill('..').concat(parts)
-      result.push('.') if result.empty?
+      if result.empty?
+        return nil if nil_if_dot
+        result.push('.')
+      end
       backslashes ? result.join('\\') : result.join('/')
     end
 

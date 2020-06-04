@@ -93,6 +93,7 @@ define :cpp do
       flags :nosort # Final source will be sorted so no need to sort this
       flag_options :force # Specify when explicitly specidied src does not exist on disk but still want to add to project
       flag_options :export
+      value_option :vpath # For organising files in a generated project
     end
     
     attr_array :src_ext do

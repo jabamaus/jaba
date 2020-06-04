@@ -18,9 +18,18 @@ module JABA
       super
       @vcxproj_file = "#{@projroot}/#{@projname}.vcxproj"
       @vcxproj_filters_file = "#{@vcxproj_file}.filters"
-      @file_types = @services.globals_node.get_attr(:vcfiletype)
+      @file_type_hash = @services.globals_node.get_attr(:vcfiletype).value
     end
     
+    ##
+    # Overridden from Project. Yields eg :ClCompile given '.cpp'.
+    #
+    def file_type_from_extension(ext)
+      ft = @file_type_hash[ext]
+      return ft if ft
+      :None
+    end
+
     ##
     #
     def each_config(&block)
@@ -42,7 +51,7 @@ module JABA
       p_root[:host] = @host.definition_id
       p_root[:platform] = @attrs.platform_ref.definition_id
       p_root[:vcxproj] = @vcxproj_file.relative_path_from(out_dir)
-      p_root[:src] = @src.map{|f| f.relative_path_from(out_dir)}
+      p_root[:src] = @src.map{|f| f.absolute_path.relative_path_from(out_dir)}
       p_root[:vcglobal] = @attrs.vcglobal
       cfg_root = {}
       p_root[:configs] = cfg_root
@@ -158,10 +167,8 @@ module JABA
       w.write_raw(@idg)
       
       item_group(w) do
-        @src.each do |f|
-          file_type = @file_types.fetch(f.extname, fail_if_not_found: false)&.value
-          file_type = :None if !file_type
-          w << "    <#{file_type} Include=\"#{f.relative_path_from(@projroot, backslashes: true)}\" />"
+        @src.each do |sf|
+          w << "    <#{sf.file_type} Include=\"#{sf.projroot_rel}\" />"
         end
       end
       
@@ -202,9 +209,32 @@ module JABA
 
       write_xml_version(w)
       w << "<Project ToolsVersion=\"4.0\" xmlns=\"#{xmlns}\">"
+      
       item_group(w) do
+        filters = {}
+        @src.each do |sf|
+          vp = sf.vpath
+          while vp && vp != '.' && !filters.key?(vp)
+            filters[vp] = nil
+            vp = vp.dirname
+          end
+        end
+        
+        filters.each_key do |f|
+          w << "    <Filter Include=\"#{f}\" />"
+        end
       end
+
       item_group(w) do
+        @src.each do |sf|
+          if sf.vpath
+            w << "    <#{sf.file_type} Include=\"#{sf.projroot_rel}\">"
+            w << "      <Filter>#{sf.vpath}</Filter>"
+            w << "    </#{sf.file_type}>"
+          else
+            w << "    <#{sf.file_type} Include=\"#{sf.projroot_rel}\" />"
+          end
+        end
       end
       w << '</Project>'
       w.chomp!

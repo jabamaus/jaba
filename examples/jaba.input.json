@@ -241,7 +241,7 @@
               "projname": "MyApp",
               "projname_suffix": "",
               "src": [
-                "**/*"
+                "."
               ],
               "src_ext": [
                 ".cpp",
@@ -468,7 +468,7 @@
               "projname": "MyLib",
               "projname_suffix": "",
               "src": [
-                "**/*"
+                "."
               ],
               "src_ext": [
                 ".cpp",
