@@ -108,9 +108,10 @@ module JABACoreExt
     end
 
     ##
-    # The nil_if_dot option returns nil in the case that the path ends up as '.'
+    # 'nil_if_dot: true' returns nil in the case that the path ends up as '.'
+    # 'no_dot_dot: true' causes resulting relative path not to be filled with '..'. Used when generated vcxproj.filters files.
     #
-    def relative_path_from(base, backslashes: false, nil_if_dot: false)
+    def relative_path_from(base, backslashes: false, nil_if_dot: false, no_dot_dot: false)
       return self if base.nil?
       parts = split_path(preserve_absolute_unix: true)
       base_parts = base.split_path(preserve_absolute_unix: true)
@@ -121,7 +122,11 @@ module JABACoreExt
       if (!parts.empty? && parts[0].absolute_path?) || (!base_parts.empty? && base_parts[0].absolute_path?)
         raise "Cannot turn '#{self}' into a relative path from '#{base}' - paths are unrelated"
       end
-      result = base_parts.fill('..').concat(parts)
+      result = []
+      if !no_dot_dot
+        result.concat(base_parts.fill('..'))
+      end
+      result.concat(parts)
       if result.empty?
         return nil if nil_if_dot
         result.push('.')

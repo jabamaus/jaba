@@ -107,10 +107,15 @@ module JABA
         'a\\b\\c'.relative_path_from('d', backslashes: true).must_equal('..\\a\\b\\c')
         'a/b/c'.relative_path_from('d', backslashes: true).must_equal('..\\a\\b\\c')
 
-        # The nil_if_dot option returns nil in the case that the path ends up as '.'
+        # The nil_if_dot and no_dot_dot options are used when generating vcxproj.filters files.
+        # 'nil_if_dot: true' returns nil in the case that the path ends up as '.'
+        # 'no_dot_dot: true' causes resulting relative path not to be filled with '..'. Used when generated vcxproj.filters files.
         #
         '.'.relative_path_from('.', nil_if_dot: true).must_be_nil
         'a/b/c/d'.relative_path_from('a/b/c/d', nil_if_dot: true).must_be_nil
+        'a'.relative_path_from('a/b/c', no_dot_dot: true).must_equal('.')
+        'a'.relative_path_from('a/b/c', no_dot_dot: true, nil_if_dot).must_be_nil
+        'e'.relative_path_from('a/b/c', no_dot_dot: true).must_equal('e')
       end
       
       it 'supports absolute_unix_path?' do

@@ -124,18 +124,20 @@ module JABA
         end
 
         spec_files.each do |f|
-          vpath = if vpath_option
-            "#{@root}/#{vpath_option}"
-          else
-            f.dirname
-          end
-
           bs = want_backslashes? # Does this project require backslashes (eg Visual Studio)
+          
+          vpath = if vpath_option
+            vpath_option
+          else
+            # vpath must not actually contain any ..
+            #
+            f.dirname.relative_path_from(@projroot, backslashes: bs, nil_if_dot: true, no_dot_dot: true)
+          end
 
           sf = SourceFile.new
           sf.absolute_path = f
           sf.projroot_rel = f.relative_path_from(@projroot, backslashes: bs)
-          sf.vpath = vpath.relative_path_from(@projroot, backslashes: bs, nil_if_dot: true)
+          sf.vpath = vpath
           sf.file_type = file_type_from_extension(f.extname)
 
           src << sf

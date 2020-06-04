@@ -202,6 +202,7 @@ module JABA
     end
     
     ##
+    # See https://docs.microsoft.com/en-us/cpp/build/reference/vcxproj-filters-files?view=vs-2019
     #
     def write_vcxproj_filters
       file = @services.file_manager.new_file(@vcxproj_filters_file, eol: :windows, encoding: 'UTF-8', capacity: 16 * 1024)
