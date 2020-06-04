@@ -13,7 +13,6 @@ module JABA
     ##
     #
     def init
-      @guid = nil
       @host = @attrs.host_ref
     end
     
@@ -28,24 +27,6 @@ module JABA
     #
     def tools_version
       @host.attrs.version_year < 2013 ? '4.0' : @host.attrs.version
-    end
-    
-    ##
-    #
-    def guid
-      if !@guid
-        content = @services.file_manager.read_file(@vcxproj_file, encoding: 'UTF-8')
-        if content
-          if content !~ /<ProjectGuid>(.+)<\/ProjectGuid>/
-            @services.jaba_error("Failed to extract GUID from #{@vcxproj_file}")
-          end
-          @guid = Regexp.last_match(1)
-        else
-          @guid = OS.generate_guid
-        end
-        @guid.freeze
-      end
-      @guid
     end
     
     ##

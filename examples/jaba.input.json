@@ -258,7 +258,7 @@
               "winsdkver": null,
               "vcglobal": {
                 "ProjectName": "MyApp",
-                "ProjectGuid": "{94B39F2E-598F-4977-32A2-3152F335DBBD}",
+                "ProjectGuid": "{A1E4CE60-2155-53B5-BC4B-D1480CD9A7C6}",
                 "RootNamespace": "MyApp",
                 "WindowsTargetPlatformVersion": null
               },
@@ -485,7 +485,7 @@
               "winsdkver": null,
               "vcglobal": {
                 "ProjectName": "MyLib",
-                "ProjectGuid": "{BC1B8BAC-BF1A-46A6-8180-E02C42CA6FF0}",
+                "ProjectGuid": "{12939F73-FBD0-52B0-AFAD-9A1726F33F06}",
                 "RootNamespace": "MyLib",
                 "WindowsTargetPlatformVersion": null
               },

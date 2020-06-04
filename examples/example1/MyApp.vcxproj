@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectName>MyApp</ProjectName>
-    <ProjectGuid>{94B39F2E-598F-4977-32A2-3152F335DBBD}</ProjectGuid>
+    <ProjectGuid>{A1E4CE60-2155-53B5-BC4B-D1480CD9A7C6}</ProjectGuid>
     <RootNamespace>MyApp</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
