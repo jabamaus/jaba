@@ -114,7 +114,7 @@ module JABA
         '.'.relative_path_from('.', nil_if_dot: true).must_be_nil
         'a/b/c/d'.relative_path_from('a/b/c/d', nil_if_dot: true).must_be_nil
         'a'.relative_path_from('a/b/c', no_dot_dot: true).must_equal('.')
-        'a'.relative_path_from('a/b/c', no_dot_dot: true, nil_if_dot).must_be_nil
+        'a'.relative_path_from('a/b/c', no_dot_dot: true, nil_if_dot: true).must_be_nil
         'e'.relative_path_from('a/b/c', no_dot_dot: true).must_equal('e')
       end
       
