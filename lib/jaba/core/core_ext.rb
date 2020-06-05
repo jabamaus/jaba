@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'set'
 require 'tsort'
 
 ##
@@ -291,24 +290,6 @@ module JABACoreExt
         end
       end
       replace(result)
-    end
-
-    ##
-    # TODO: There must be a better/faster way
-    def remove_and_return_dupes(by: nil)
-      s = Set.new
-      dupes = []
-      delete_if do |e|
-        val = by ? e.send(by) : e 
-        if !s.add?(val)
-          dupes << val
-          true
-        else
-          false
-        end
-      end
-      dupes.uniq!
-      !dupes.empty? ? dupes : nil
     end
 
     ##

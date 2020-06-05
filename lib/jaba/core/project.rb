@@ -77,7 +77,7 @@ module JABA
     #
     def process_src(src_attr_id, src_ext_attr_id)
       src_attr = @node.get_attr(src_attr_id)
-      extensions = @node.get_attr(src_ext_attr_id).value.to_set
+      extensions = @node.get_attr(src_ext_attr_id).value
 
       file_manager = @services.file_manager
       src = instance_variable_set("@#{src_attr_id}", [])

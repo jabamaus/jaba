@@ -50,10 +50,20 @@ module JABA
       values = block_given? ? @node.eval_api_block(&block) : args.shift
 
       Array(values).each do |v|
-        elem = JabaAttributeElement.new(@services, @attr_def, @node)
-        v = apply_pre_post_fix(prefix, postfix, v)
-        elem.set(v, *args, api_call_line: api_call_line, **keyvalue_args)
-        @elems << elem
+        existing = nil
+        if !@attr_def.has_flag?(:allow_dupes)
+          existing = @elems.find{|e| e.value == v}
+        end
+
+        if existing
+          @services.jaba_warning("Stripping duplicate '#{v.inspect}'. See previous at #{existing.last_call_loc_basename}. " \
+            "Flag with :allow_dupes to allow.", callstack: @last_call_location)
+        else
+          elem = JabaAttributeElement.new(@services, @attr_def, @node)
+          v = apply_pre_post_fix(prefix, postfix, v)
+          elem.set(v, *args, api_call_line: api_call_line, **keyvalue_args)
+          @elems << elem
+        end
       end
       
       if exclude
@@ -139,12 +149,6 @@ module JABA
               ex == val
             end
           end
-        end
-      end
-      if !@attr_def.has_flag?(:allow_dupes)
-        dupes = @elems.remove_and_return_dupes(by: :value)
-        if dupes
-          @services.jaba_warning("'#{definition_id}' array attribute contains duplicates: #{dupes.inspect}", callstack: last_call_location)
         end
       end
       if !@attr_def.has_flag?(:nosort)
