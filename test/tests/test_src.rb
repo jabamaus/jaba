@@ -129,6 +129,16 @@ module JABA
       proj[:src].must_equal(['a/b.cpp', 'a/b.z', 'a/c.cpp', 'a/d.cpp', 'a/e/f/g.cpp', 'a/e/f/g/h.y'])
     end
 
+    it 'supports glob matches' do
+      make_file('a.cpp', 'b.cpp', 'c/d.cpp', 'd/e/f/g.cpp')
+      proj = jaba(cpp_app: true) do
+        cpp :app do
+          src '*' # should not recurse
+        end
+      end
+      proj[:src].must_equal ['a.cpp', 'b.cpp']
+    end
+
   end
 
 end
