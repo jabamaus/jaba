@@ -188,15 +188,6 @@ module JABA
 
     describe 'Array' do
 
-      it 'supports remove_and_return_dupes' do
-        a = [1, 2, 3, 4]
-        a.remove_and_return_dupes.must_be_nil
-        a.must_equal [1, 2, 3, 4]
-        a = [1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 5]
-        a.remove_and_return_dupes.must_equal [1, 2, 3]
-        a.must_equal [1, 2, 3, 4, 5]
-      end
-
       it 'supports vs_join' do
         [].vs_join.must_be_nil
         [].vs_join(inherit: '%(var)').must_be_nil
