@@ -62,3 +62,4 @@ if there are multiple attrs, with a warning.
 - consistent method names across tests and consistent brackets on must_equal
 - Should string attrs be initialised to ''?
 - Test cpp json output
+- Renable logger

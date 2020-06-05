@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'logger'
 require 'json'
 require_relative 'core_ext'
 require_relative 'utils'
@@ -705,7 +704,7 @@ module JABA
     ##
     #
     def jaba_warning(msg, **options)
-      log msg, Logger::WARN
+      #log msg, Logger::WARN
       if @warn_object
         options[:callstack] = @warn_object.is_a?(JabaObject) ? @warn_object.definition.source_location : @warn_object
       end
@@ -716,7 +715,7 @@ module JABA
     ##
     #
     def jaba_error(msg, **options)
-      log msg, Logger::ERROR
+      #log msg, Logger::ERROR
       raise make_jaba_error(msg, **options)
     end
 
@@ -778,24 +777,25 @@ module JABA
     def init_logger 
       log_file = 'jaba.log'.to_absolute
       puts "Logging to #{log_file}..."
+      require 'fileutils'
       FileUtils.remove(log_file, force: true)
-      @logger = Logger.new(log_file)
-      @logger.formatter = proc do |severity, datetime, _, msg|
-        "#{severity} #{datetime}: #{msg}\n"
-      end
-      @logger.level = Logger::INFO
+      #@logger = Logger.new(log_file)
+      #@logger.formatter = proc do |severity, datetime, _, msg|
+      #  "#{severity} #{datetime}: #{msg}\n"
+      #end
+      #@logger.level = Logger::INFO
       log 'Starting Jaba', section: true
     end
 
     ##
     #
-    def log(msg, severity = Logger::INFO, section: false)
-      line = msg
-      if section
-        n = ((96 - msg.size)/2).round
-        line = "#{'=' * n} #{msg} #{'=' * n}"
-      end
-      @logger&.log(severity, line)
+    def log(msg, severity = :info, section: false)
+      #line = msg
+      #if section
+      #  n = ((96 - msg.size)/2).round
+      #  line = "#{'=' * n} #{msg} #{'=' * n}"
+      #end
+      #@logger&.log(severity, line)
     end
 
     ##
