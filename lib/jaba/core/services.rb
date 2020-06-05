@@ -607,7 +607,7 @@ module JABA
       added = @file_manager.added
       modified = @file_manager.modified
 
-      summary = "Generated #{generated.size} files, #{added.size} added, #{modified.size} modified"
+      summary = String.new "Generated #{generated.size} files, #{added.size} added, #{modified.size} modified"
       summary << " [dry run]" if input.dry_run?
 
       @output[:version] = '1.0'
