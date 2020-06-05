@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
+# The only ruby library files that Jaba core depends on
+require 'digest/sha1'
+require 'fileutils'
 require 'json'
+require 'tsort'
+
 require_relative 'core_ext'
 require_relative 'utils'
 require_relative 'file_manager'
@@ -777,7 +782,6 @@ module JABA
     def init_logger 
       log_file = 'jaba.log'.to_absolute
       puts "Logging to #{log_file}..."
-      require 'fileutils'
       FileUtils.remove(log_file, force: true)
       #@logger = Logger.new(log_file)
       #@logger.formatter = proc do |severity, datetime, _, msg|
