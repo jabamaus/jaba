@@ -38,7 +38,7 @@ module JABA
     ##
     #
     def define_attr(id, variant, type: nil, &block)
-      @services.log "  Adding '#{id}' to '#{@handle}'"
+      @services.log "  Defining '#{id}' attribute [variant=#{variant}, type=#{type}]"
       
       validate_id(id)
       id = id.to_sym
@@ -49,7 +49,7 @@ module JABA
       @attribute_defs << ad
 
       @definition.register_attr_def(id, ad)
-      ad
+      ad  
     end
 
     ##

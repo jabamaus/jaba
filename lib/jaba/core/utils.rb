@@ -35,4 +35,14 @@ module JABA
     ("{%08x-%04x-%04x-%04x-%04x%08x}" % a).upcase.freeze
   end
 
+  ##
+  #
+  def self.milli_timer
+    start_time = Time.now
+    yield
+    duration = Time.now - start_time
+    millis = (duration * 1000).round(0)
+    "#{millis}ms"
+  end
+
 end

@@ -40,7 +40,7 @@ module JABA
       f = fm.new_file(fn, eol: :native)
       w = f.writer
       w << 'test'
-      f.save
+      f.write
       File.exist?(fn).must_equal(true)
       if OS.windows?
         IO.binread(fn).must_equal("test\r\n")
@@ -55,7 +55,7 @@ module JABA
       f = fm.new_file(fn, eol: :windows)
       w = f.writer
       w << 'test'
-      f.save
+      f.write
       File.exist?(fn).must_equal(true)
       IO.binread(fn).must_equal("test\r\n")
     end
@@ -66,7 +66,7 @@ module JABA
       f = fm.new_file(fn, eol: :unix)
       w = f.writer
       w << 'test'
-      f.save
+      f.write
       File.exist?(fn).must_equal(true)
       IO.binread(fn).must_equal("test\n")
     end
@@ -86,13 +86,13 @@ module JABA
       f = fm.new_file(fn)
       w = f.writer
       w << 'a'
-      f.save
+      f.write
       File.exist?(fn).must_equal(true)
       f = fm.new_file(fn)
       w = f.writer
       w << 'b'
       check_fail(/Duplicate filename '.*' detected/, exception: RuntimeError) do
-        f.save
+        f.write
       end
     end
 
@@ -103,16 +103,16 @@ module JABA
       f = fm.new_file(fn)
       w = f.writer
       w << 'a'
-      f.save
+      f.write
       File.exist?(fn).must_equal(true)
     end
 
-    it 'warns on saving empty file' do
+    it 'warns on writing empty file' do
       fn = "#{temp_dir}/f"
       s = Services.new
       fm = s.file_manager
       f = fm.new_file(fn)
-      f.save
+      f.write
       s.instance_variable_get(:@warnings)[0].must_equal("'#{fn}' is empty")
       File.exist?(fn).must_equal(true)
       IO.read(fn).must_equal("")
@@ -126,7 +126,7 @@ module JABA
       fm = s.file_manager
       fns.each do |fn|
         f = fm.new_file(fn)
-        f.save
+        f.write
       end
       fm.generated.must_equal fns
     end
@@ -137,7 +137,7 @@ module JABA
       s = Services.new
       fm = s.file_manager
       f = fm.new_file(fn)
-      f.save
+      f.write
       File.exist?(fn).must_equal(true)
       fm.added.must_equal [fn]
     end
@@ -151,7 +151,7 @@ module JABA
       f = fm.new_file(fn, eol: :windows)
       w = f.writer
       w << "test2"
-      f.save
+      f.write
       IO.binread(fn).must_equal("test2\r\n")
       fm.modified.must_equal [fn]
     end
@@ -165,7 +165,7 @@ module JABA
       f = fm.new_file(fn, eol: :unix)
       w = f.writer
       w << "test"
-      f.save
+      f.write
       IO.binread(fn).must_equal("test\n")
       fm.modified.must_equal [fn]
     end

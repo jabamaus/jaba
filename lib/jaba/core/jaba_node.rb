@@ -15,10 +15,11 @@ module JABA
     attr_reader :attrs_read_only
     attr_reader :referenced_nodes
     attr_reader :children
+    attr_reader :depth
     
     ##
     #
-    def initialize(services, definition, jaba_type, handle, parent)
+    def initialize(services, definition, jaba_type, handle, parent, depth)
       super(services, definition, JabaNodeAPI.new(self))
 
       @jaba_type = jaba_type # Won't always be the same as the JabaType in definition
@@ -28,6 +29,7 @@ module JABA
       if parent
         parent.instance_variable_get(:@children) << self
       end
+      @depth = depth
       @referenced_nodes = []
       
       @attrs = AttributeAccessor.new(self)

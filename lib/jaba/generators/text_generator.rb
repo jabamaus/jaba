@@ -23,7 +23,7 @@ module JABA
         if !lines.empty?
           w << "#{lines.join("\n")}"
         end
-        file.save
+        file.write
       end
     end
     

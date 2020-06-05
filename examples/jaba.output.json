@@ -1,10 +1,17 @@
 {
   "version": "1.0",
+  "summary": "Generated 4 files, 0 added, 0 modified",
   "generated": [
     "C:/projects/GitHub/jaba/examples/example1/MyApp.vcxproj",
     "C:/projects/GitHub/jaba/examples/example1/MyApp.vcxproj.filters",
     "C:/projects/GitHub/jaba/examples/example2/MyLib.vcxproj",
     "C:/projects/GitHub/jaba/examples/example2/MyLib.vcxproj.filters"
+  ],
+  "added": [
+
+  ],
+  "modified": [
+
   ],
   "warnings": [
 

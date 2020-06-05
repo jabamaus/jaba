@@ -79,7 +79,7 @@ module JABA
 
       @output = {}
       
-      @logger = nil
+      @log_file = nil
       
       @warnings = []
       @warn_object = nil
@@ -120,125 +120,25 @@ module JABA
 
     ##
     #
-    def define_attr_type(id, &block)
-      jaba_error("id is required") if id.nil?
-      log "Registering attr type [id=#{id}]"
-      validate_id(id)
-      existing = @jaba_attr_type_definitions.find{|d| d.id == id}
-      if existing
-        jaba_error("Attribute type '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
-      end
-      @jaba_attr_type_definitions << JabaDefinition.new(id, block, caller(2, 1)[0])
-      nil
-    end
-
-    ##
-    #
-    def define_attr_flag(id, &block)
-      jaba_error("id is required") if id.nil?
-      log "  Registering attr flag [id=#{id}]"
-      validate_id(id)
-      existing = @jaba_attr_flag_definitions.find{|d| d.id == id}
-      if existing
-        jaba_error("Attribute flag '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
-      end
-      @jaba_attr_flag_definitions << JabaDefinition.new(id, block, caller(2, 1)[0])
-      nil
-    end
-
-    ##
-    #
-    def define_type(id, &block)
-      jaba_error("id is required") if id.nil?
-      log "  Registering type [id=#{id}]"
-      validate_id(id)
-      existing = @jaba_type_definitions.find{|d| d.id == id}
-      if existing
-        jaba_error("Type '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
-      end
-      @jaba_type_definitions << JabaTypeDefinition.new(id, block, caller(2, 1)[0])
-    end
-    
-    ##
-    #
-    def open_type(id, &block)
-      jaba_error("id is required") if id.nil?
-      log "  Opening type [id=#{id}]"
-      jaba_error("a block is required") if !block_given?
-      @jaba_open_definitions << JabaTypeDefinition.new(id, block, caller(2, 1)[0])
-      nil
-    end
-    
-    ##
-    #
-    def define_shared(id, &block)
-      jaba_error("id is required") if id.nil?
-      jaba_error("a block is required") if !block_given?
-
-      log "  Registering shared definition block [id=#{id}]"
-      validate_id(id)
-
-      existing = get_shared_definition(id, fail_if_not_found: false)
-      if existing
-        jaba_error("Shared definition '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
-      end
-
-      @shared_definition_lookup[id] = JabaDefinition.new(id, block, caller(2, 1)[0])
-      nil
-    end
-
-    ##
-    #
-    def define_instance(type_id, id, &block)
-      jaba_error("type_id is required") if type_id.nil?
-      jaba_error("id is required") if id.nil?
-
-      validate_id(id)
-
-      log "  Registering instance [id=#{id}, type=#{type_id}]"
-
-      existing = get_instance_definition(type_id, id, fail_if_not_found: false)
-      if existing
-        jaba_error("Type instance '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
-      end
-      
-      d = JabaInstanceDefinition.new(id, type_id, block, caller(2, 1)[0])
-      @instance_definition_lookup.push_value(type_id, d)
-      @instance_definitions << d
-      nil
-    end
-    
-    ##
-    #
-    def define_defaults(id, &block)
-      jaba_error("id is required") if id.nil?
-      log "  Registering defaults [id=#{id}]"
-      existing = @default_definitions.find {|d| d.id == id}
-      if existing
-        jaba_error("Defaults block '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
-      end
-      @default_definitions << JabaDefinition.new(id, block, caller(2, 1)[0])
-      nil
-    end
-
-    ##
-    #
-    def validate_id(id)
-      if !(id.symbol? || id.string?) || id !~ /^[a-zA-Z0-9_\-.]+$/
-        jaba_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol " \
-          "(-_. permitted), eg :my_id, 'my-id', 'my.id'")
-      end
-    end
-
-    ##
-    #
     def run
-      # Set up logger
-      #
-      if input.enable_logging?
-        init_logger
+      init_log if input.enable_logging?
+      log 'Starting Jaba', section: true
+
+      duration = JABA.milli_timer do
+        do_run
       end
-      
+
+      log "Done! (#{duration})"
+
+      @output[:duration] = duration
+      @output
+    ensure
+      term_log
+    end
+
+    ##
+    #
+    def do_run
       # Load and execute any definition files specified in Input#load_paths
       #
       gather_definition_src_files
@@ -293,14 +193,15 @@ module JABA
       
       @jaba_type_definitions.each(&:register_referenced_attributes)
 
-      log 'Initialisation of JabaTypes complete', section: true
-      
+
       # Now that the JabaTypes are dependency sorted, pass on the dependency ordering to the JabaNodes.
       # This is achieved by giving each JabaType an index and then sorting nodes based on this index.
       # The sort is stable so as to preserve the order that was specified in definition files.
       #
       @jaba_types.each_with_index {|jt, i| jt.instance_variable_set(:@order_index, i)}
-      
+
+      log 'Initialisation of JabaTypes complete'
+
       # Associate a JabaType with each instance of a type.
       #
       @instance_definitions.each do |d|
@@ -313,6 +214,7 @@ module JABA
       # Track the root node that is returned in each case. The array of root nodes is used to dump definition data to json.
       #
       @instance_definitions.each do |d|
+        log "Processing #{d.jaba_type.handle} #{d.id} definition", section: true
         @current_definition = d
 
         g = d.jaba_type.generator
@@ -323,6 +225,8 @@ module JABA
                        end
       end
       
+      log 'Initialisation of JabaNodes complete'
+
       @globals_node = node_from_handle('globals|globals')
 
       log "Resolving references..."
@@ -341,7 +245,7 @@ module JABA
         end
       end
       
-      log 'Calling generators...'
+      log 'Making projects...'
 
       # Call generators to build project representations from nodes
       #
@@ -364,6 +268,8 @@ module JABA
         dump_jaba_input
       end
 
+      log 'Performing file generation...'
+
       # Write final files
       #
       @generators.each(&:generate)
@@ -375,13 +281,122 @@ module JABA
         n.definition.call_hook(:generate, receiver: n, use_api: false)
       end
 
+      log 'Building output...'
       build_jaba_output
-
-      @logger&.close
-      
-      @output
     end
     
+    ##
+    #
+    def define_attr_type(id, &block)
+      jaba_error("id is required") if id.nil?
+      log "  Defining attr type [id=#{id}]"
+      validate_id(id)
+      existing = @jaba_attr_type_definitions.find{|d| d.id == id}
+      if existing
+        jaba_error("Attribute type '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
+      end
+      @jaba_attr_type_definitions << JabaDefinition.new(id, block, caller(2, 1)[0])
+      nil
+    end
+
+    ##
+    #
+    def define_attr_flag(id, &block)
+      jaba_error("id is required") if id.nil?
+      log "  Defining attr flag [id=#{id}]"
+      validate_id(id)
+      existing = @jaba_attr_flag_definitions.find{|d| d.id == id}
+      if existing
+        jaba_error("Attribute flag '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
+      end
+      @jaba_attr_flag_definitions << JabaDefinition.new(id, block, caller(2, 1)[0])
+      nil
+    end
+
+    ##
+    #
+    def define_type(id, &block)
+      jaba_error("id is required") if id.nil?
+      log "  Defining type [id=#{id}]"
+      validate_id(id)
+      existing = @jaba_type_definitions.find{|d| d.id == id}
+      if existing
+        jaba_error("Type '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
+      end
+      @jaba_type_definitions << JabaTypeDefinition.new(id, block, caller(2, 1)[0])
+    end
+    
+    ##
+    #
+    def open_type(id, &block)
+      jaba_error("id is required") if id.nil?
+      log "  Opening type [id=#{id}]"
+      jaba_error("a block is required") if !block_given?
+      @jaba_open_definitions << JabaTypeDefinition.new(id, block, caller(2, 1)[0])
+      nil
+    end
+    
+    ##
+    #
+    def define_shared(id, &block)
+      jaba_error("id is required") if id.nil?
+      jaba_error("a block is required") if !block_given?
+
+      log "  Defining shared definition [id=#{id}]"
+      validate_id(id)
+
+      existing = get_shared_definition(id, fail_if_not_found: false)
+      if existing
+        jaba_error("Shared definition '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
+      end
+
+      @shared_definition_lookup[id] = JabaDefinition.new(id, block, caller(2, 1)[0])
+      nil
+    end
+
+    ##
+    #
+    def define_instance(type_id, id, &block)
+      jaba_error("type_id is required") if type_id.nil?
+      jaba_error("id is required") if id.nil?
+
+      validate_id(id)
+
+      log "  Defining instance [id=#{id}, type=#{type_id}]"
+
+      existing = get_instance_definition(type_id, id, fail_if_not_found: false)
+      if existing
+        jaba_error("Type instance '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
+      end
+      
+      d = JabaInstanceDefinition.new(id, type_id, block, caller(2, 1)[0])
+      @instance_definition_lookup.push_value(type_id, d)
+      @instance_definitions << d
+      nil
+    end
+    
+    ##
+    #
+    def define_defaults(id, &block)
+      jaba_error("id is required") if id.nil?
+      log "  Defining defaults [id=#{id}]"
+      existing = @default_definitions.find {|d| d.id == id}
+      if existing
+        jaba_error("Defaults block '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
+      end
+      @default_definitions << JabaDefinition.new(id, block, caller(2, 1)[0])
+      nil
+    end
+
+    ##
+    #
+    def validate_id(id)
+      if !(id.symbol? || id.string?) || id !~ /^[a-zA-Z0-9_\-.]+$/
+        jaba_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol " \
+          "(-_. permitted), eg :my_id, 'my-id', 'my.id'")
+      end
+    end
+
     ##
     #
     def make_generator(id)
@@ -389,14 +404,13 @@ module JABA
       
       return nil if !JABA.const_defined?(gen_classname)
 
-      log "Making generator [id=#{id}]"
-      generator_class = JABA.const_get(gen_classname)
+      klass = JABA.const_get(gen_classname)
 
-      if generator_class.superclass != Generator
-        jaba_error "#{generator_class} must inherit from Generator class"
+      if klass.superclass != Generator
+        jaba_error "#{klass} must inherit from Generator class"
       end
 
-      g = generator_class.new(self, id)
+      g = klass.new(self, id)
       @generators << g
       g
     end
@@ -407,7 +421,7 @@ module JABA
     # are created on the fly as attributes are added to the types.
     #
     def make_type(handle, definition, sub_type: false, &block)
-      log "Making JabaType [handle=#{handle}]"
+      log "Instancing JabaType [handle=#{handle}]"
 
       if @jaba_type_lookup.key?(handle)
         jaba_error("'#{handle}' jaba type multiply defined")
@@ -441,18 +455,23 @@ module JABA
     ##
     #
     def make_node(type_id: @current_definition.jaba_type_id, name: nil, parent: nil, &block)
-      handle = if parent
-                 jaba_error('name is required for child nodes') if !name
-                 if name.is_a?(JabaNode)
-                   name = name.definition_id
-                 end
-                 "#{parent.handle}|#{name}"
-               else
-                 jaba_error('name not required for root nodes') if name
-                 "#{@current_definition.jaba_type_id}|#{@current_definition.id}"
-               end
+      depth = 0
+      handle = nil
 
-      log "Making node [type=#{type_id} handle=#{handle}, parent=#{parent}]"
+      if parent
+        jaba_error('name is required for child nodes') if !name
+        if name.is_a?(JabaNode)
+          name = name.definition_id
+        end
+        handle = "#{parent.handle}|#{name}"
+        depth = parent.depth + 1
+      else
+        jaba_error('name not required for root nodes') if name
+        depth = 0
+        handle = "#{@current_definition.jaba_type_id}|#{@current_definition.id}"
+      end
+
+      log "#{'  ' * depth}Instancing node [type=#{type_id}, handle=#{handle}]"
 
       if @node_lookup.key?(handle)
         jaba_error("Duplicate node handle '#{handle}'")
@@ -460,7 +479,7 @@ module JABA
 
       jt = get_jaba_type(type_id)
 
-      jn = JabaNode.new(self, @current_definition, jt, handle, parent)
+      jn = JabaNode.new(self, @current_definition, jt, handle, parent, depth)
 
       @nodes << jn
       @node_lookup[handle] = jn
@@ -480,7 +499,6 @@ module JABA
         #
         defaults = @current_definition.jaba_type.definition.defaults_definition
         if defaults
-          log "  Including defaults"
           jn.eval_api_block(&defaults.block)
         end
 
@@ -533,7 +551,7 @@ module JABA
       nn = @null_nodes[type_id]
       if !nn
         jt = get_jaba_type(type_id)
-        nn = JabaNode.new(self, jt.definition, jt, "Null#{jt.definition_id}", nil)
+        nn = JabaNode.new(self, jt.definition, jt, "Null#{jt.definition_id}", nil, 0)
         @null_nodes[type_id] = nn
       end
       nn
@@ -556,7 +574,7 @@ module JABA
       file = @file_manager.new_file(input.jaba_input_file, eol: :unix, track: false)
       w = file.writer
       w.write_raw(json)
-      file.save
+      file.write
     end
 
     ##
@@ -585,8 +603,18 @@ module JABA
     def build_jaba_output
       @building_jaba_output = true
 
+      generated = @file_manager.generated
+      added = @file_manager.added
+      modified = @file_manager.modified
+
+      summary = "Generated #{generated.size} files, #{added.size} added, #{modified.size} modified"
+      summary << " [dry run]" if input.dry_run?
+
       @output[:version] = '1.0'
-      @output[:generated] = @file_manager.generated
+      @output[:summary] = summary
+      @output[:generated] = generated
+      @output[:added] = added
+      @output[:modified] = modified
       @output[:warnings] = @warnings
 
       if input.dump_output?
@@ -604,14 +632,14 @@ module JABA
         end
 
         json = JSON.pretty_generate(@output)
-        file = @file_manager.new_file(out_file, eol: :unix, track: false)
+        file = @file_manager.new_file(out_file, eol: :unix)
         w = file.writer
         w.write_raw(json)
-        file.save
+        file.write
       end
-
-      @output[:added_files] = @file_manager.added
-      @output[:modified_files] = @file_manager.modified
+      
+      log summary
+      
       @building_jaba_output = false
     end
 
@@ -698,34 +726,6 @@ module JABA
     
     ##
     #
-    def set_warn_object(wo)
-      @warn_object = wo
-      if block_given?
-        yield
-        @warn_object = nil
-      end
-    end
-
-    ##
-    #
-    def jaba_warning(msg, **options)
-      #log msg, Logger::WARN
-      if @warn_object
-        options[:callstack] = @warn_object.is_a?(JabaObject) ? @warn_object.definition.source_location : @warn_object
-      end
-      @warnings << make_jaba_error(msg, warn: true, **options).message
-      nil
-    end
-    
-    ##
-    #
-    def jaba_error(msg, **options)
-      #log msg, Logger::ERROR
-      raise make_jaba_error(msg, **options)
-    end
-
-    ##
-    #
     def execute_definitions(file = nil, &block)
       if file
         log "Executing #{file}"
@@ -779,27 +779,60 @@ module JABA
 
     ##
     #
-    def init_logger 
-      log_file = 'jaba.log'.to_absolute
-      puts "Logging to #{log_file}..."
-      FileUtils.remove(log_file, force: true)
-      #@logger = Logger.new(log_file)
-      #@logger.formatter = proc do |severity, datetime, _, msg|
-      #  "#{severity} #{datetime}: #{msg}\n"
-      #end
-      #@logger.level = Logger::INFO
-      log 'Starting Jaba', section: true
+    def init_log
+      log_fn = 'jaba.log'.to_absolute
+      puts "Logging to #{log_fn}..."
+      
+      File.delete(log_fn) if File.exist?(log_fn)
+      @log_file = File.open(log_fn, 'a')
     end
 
     ##
     #
-    def log(msg, severity = :info, section: false)
-      #line = msg
-      #if section
-      #  n = ((96 - msg.size)/2).round
-      #  line = "#{'=' * n} #{msg} #{'=' * n}"
-      #end
-      #@logger&.log(severity, line)
+    def log(msg, severity = :INFO, section: false)
+      return if !@log_file
+      line = msg
+      if section
+        n = ((96 - msg.size)/2).round
+        line = "#{'=' * n} #{msg} #{'=' * n}"
+      end
+      @log_file.puts("#{Time.now.strftime("%Y-%m-%d %H:%M:%S")} #{severity} #{line}")
+    end
+
+    ##
+    #
+    def term_log
+      return if !@log_file
+      @log_file.flush
+      @log_file.close
+    end
+
+    ##
+    #
+    def set_warn_object(wo)
+      @warn_object = wo
+      if block_given?
+        yield
+        @warn_object = nil
+      end
+    end
+
+    ##
+    #
+    def jaba_warning(msg, **options)
+      log msg, :WARN
+      if @warn_object
+        options[:callstack] = @warn_object.is_a?(JabaObject) ? @warn_object.definition.source_location : @warn_object
+      end
+      @warnings << make_jaba_error(msg, warn: true, **options).message
+      nil
+    end
+    
+    ##
+    #
+    def jaba_error(msg, **options)
+      log msg, :ERROR
+      raise make_jaba_error(msg, **options)
     end
 
     ##

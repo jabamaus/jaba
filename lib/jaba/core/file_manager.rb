@@ -93,11 +93,11 @@ module JABA
     
     ##
     #
-    def save(**options)
+    def write(**options)
       if (@eol == :windows) || ((@eol == :native) && OS.windows?)
         @writer.str.gsub!("\n", "\r\n")
       end
-      @file_manager.save(self, **options)
+      @file_manager.write_file(self, **options)
     end
 
   end
@@ -133,19 +133,25 @@ module JABA
 
     ##
     #
-    def save(file)
+    def write_file(file)
       fn = file.filename
 
       if file.str.empty?
         @services.jaba_warning("'#{fn}' is empty")
       end
 
+      status = nil
+
       if file.track?
         existing = read_file(fn, encoding: file.encoding)
         if existing.nil?
+          status = :ADDED
           @added << fn
         elsif existing != file.str
+          status = :MODIFIED
           @modified << fn
+        else
+          status = :UNCHANGED
         end
 
         if @generated_tracker.key?(fn)
@@ -156,9 +162,13 @@ module JABA
       end
 
       if @services.input.dry_run?
-        @services.log "Not saving #{fn} [dry run]"
+        @services.log "Not writing #{fn} [dry run]"
       else
-        @services.log "Saving #{fn}"
+        if status
+          @services.log "Writing #{fn} [#{status}]"
+        else
+          @services.log "Writing #{fn}"
+        end
 
         dir = fn.dirname
         if !exist?(dir)
@@ -182,6 +192,7 @@ module JABA
             return nil
           end
         else
+          @services.log "Reading #{fn}"
           str = IO.binread(fn)
           str.force_encoding(encoding) if encoding
           str.freeze # Don't want cache entries being inadvertently modified

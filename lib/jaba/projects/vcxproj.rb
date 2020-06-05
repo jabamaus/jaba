@@ -74,7 +74,7 @@ module JABA
     # See https://docs.microsoft.com/en-us/cpp/build/reference/vcxproj-file-structure?view=vs-2019
     #
     def write_vcxproj
-      @services.log "Generating #{@vcxproj_file}"
+      @services.log "Generating #{@vcxproj_file}", section: true
       
       # TODO: check capacities
       file = @services.file_manager.new_file(@vcxproj_file, eol: :windows, encoding: 'UTF-8', capacity: 64 * 1024)
@@ -201,7 +201,7 @@ module JABA
       w << '</Project>'
       w.chomp!
       
-      file.save
+      file.write
     end
     
     ##
@@ -251,7 +251,7 @@ module JABA
       end
       w << '</Project>'
       w.chomp!
-      file.save
+      file.write
     end
   
   end
