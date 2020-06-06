@@ -89,7 +89,7 @@ module JABA
     end
 
     ##
-    # Returns attribute type id, eg :bool, :choice, :reference, :file, :path etc
+    # Returns attribute type id, eg :bool, :string, :choice, :reference, :file etc
     #
     def type
       @attr_def.type_id

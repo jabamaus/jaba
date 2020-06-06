@@ -7,6 +7,13 @@ module JABA
     include APICommon
 
     ##
+    # Set title of attribute type
+    #
+    def title(val = nil)
+      @attr_type.set_property(:title, val)
+    end
+
+    ##
     # Set help for the attribute type. Required.
     #
     def help(val)
