@@ -224,7 +224,7 @@ define :cpp do
       end
     end
     
-    attr_array :defines, type: :string do
+    attr_array :defines, type: :symbol_or_string do
       help 'Preprocessor defines'
       flag_options :export
     end
