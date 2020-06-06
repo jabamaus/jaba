@@ -61,6 +61,5 @@ if there are multiple attrs, with a warning.
 - consistent method names across tests and consistent brackets on must_equal
 - Test cpp json output
 - Renable logger
-- remove :in ... from api_call_line, by using caller_loc
 - Create a table of attr mappings from jaba->premake->cmake
 - Enforce that array attrs are passed arrays. eg defines :a becomes defines [:a]. Too easy to type defines :a, :b and get an odd message
