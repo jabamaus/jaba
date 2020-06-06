@@ -15,6 +15,12 @@ module JABA
 
     ##
     #
+    def default(val)
+      @attr_type.set_property(:default, val)
+    end
+    
+    ##
+    #
     def init_attr_def(&block)
       @attr_type.set_hook(:init_attr_def, &block)
     end

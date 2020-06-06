@@ -58,6 +58,15 @@ module JABA
         eval_api_block(&@definition.block)
       end
 
+      # If default not specified by the user (single value attributes only), fall back to default for the attribute
+      # type, if there is one eg a string would be ''. Skip if the attribute is flagged as :required, in which case
+      # the user must supply the value in definitions.
+      #
+      attr_type_default = @jaba_attr_type.default
+      if !attr_type_default.nil? && attr_single? && !default_set? && !has_flag?(:required)
+        set_property(:default, attr_type_default)
+      end
+
       # Attributes that are stored as values in a hash have their corresponding key stored in their options. This is
       # used when cloning attributes. Store as __key to indicate it is internal and to stop it clashing with any user
       # defined option.

@@ -11,6 +11,8 @@ module JABA
   class JabaAttributeType < JabaObject
 
     include PropertyMethods
+
+    attr_reader :default
     
     ##
     #
@@ -18,6 +20,7 @@ module JABA
       super(services, definition, JabaAttributeTypeAPI.new(self))
      
       define_property(:help)
+      define_property(:default)
       define_hook(:init_attr_def)
       define_hook(:post_init_attr_def)
       define_hook(:validate_value)

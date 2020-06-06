@@ -77,14 +77,13 @@ define :cpp do
       flags :no_check_exist # May get created during generation
     end
     
-    attr :projname, type: :symbol_or_string do
+    attr :projname, type: :string do
       help 'Seeds file basename of project files. Defaults to <name><projsuffix>.'
       default { "#{_ID}#{projname_suffix}" }
     end
 
-    attr :projname_suffix, type: :symbol_or_string do
+    attr :projname_suffix, type: :string do
       help 'Optional suffix to be applied to <projname>. Has no effect if <projname> is set explicitly.'
-      default ''
     end
 
     attr_array :src, type: :path do
@@ -212,13 +211,11 @@ define :cpp do
     attr :targetprefix, type: :string do
       title 'Prefix to apply to <targetname>'
       help 'Has no effect if <targetname> specified'
-      default ''
     end
     
     attr :targetsuffix, type: :string do
       title 'Suffix to apply to <targetname>'
       help 'Has no effect if <targetname> specified'
-      default ''
     end
 
     attr :targetext, type: :string do

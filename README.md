@@ -60,7 +60,6 @@ if there are multiple attrs, with a warning.
 - Support for opening instances as well as types
 - Add check for re-entrancy when evaluating default blocks
 - consistent method names across tests and consistent brackets on must_equal
-- Should string attrs be initialised to ''?
 - Test cpp json output
 - Renable logger
 - remove :in ... from api_call_line, by using caller_loc
