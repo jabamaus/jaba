@@ -128,12 +128,13 @@ module JABA
     ##
     # Multi-purpose visit method. Works in multiple modes. 
     #
-    def visit_attr(attr_id = nil, top_level: false, type: nil, skip_variant: nil, &block)
+    def visit_attr(attr_id = nil, top_level: false, type: nil, skip_variant: nil, skip_attr: nil, &block)
       if attr_id
         get_attr(attr_id).visit_attr(&block)
       else
         @attributes.each do |a|
-          next if type && type != a.attr_def.type_id
+          next if skip_attr && a.definition_id == skip_attr
+          next if type && !Array(type).include?(a.attr_def.type_id)
           next if skip_variant && skip_variant == a.attr_def.variant
           if top_level
             if block.arity == 2
