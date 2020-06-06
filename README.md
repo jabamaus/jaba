@@ -62,6 +62,8 @@ if there are multiple attrs, with a warning.
 - Test cpp json output
 - Create a table of attr mappings from jaba->premake->cmake
 - Think about a 'configure' system. Eg could have a configure block eg for ruby jaba file it might be
+- Bring back boolean reader, eg if debug?
+- Consider whether arrays should be allowed to be set with single value. I'm thinking not again.
 
 configure do
   attr :extensions, type: :multichoice do
@@ -95,3 +97,8 @@ cpp :ruby do
 end
 
 
+
+
+* Jaba does not try to be a complete cross platform 'API' to underlying build systems. It recognises where there is obvious commonality,
+eg include paths, defines, libs, etc, but where things diverge across systems you can simply drop down and address that system directly,
+because defining conditional data is very easy.

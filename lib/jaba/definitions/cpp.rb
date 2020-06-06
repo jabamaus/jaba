@@ -104,6 +104,7 @@ define :cpp do
       help 'File extensions that will be added when src is not specified explicitly. ' \
            'Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.'
       flags :nosort
+      flag_options :export
       default do
         ext = ['.cpp', '.h', '.inl', '.c', '.cc', '.cxx', '.hpp']
         if visual_studio?
@@ -232,6 +233,12 @@ define :cpp do
     attr_array :inc, type: :dir do
       help 'Include paths'
       flags :nosort
+      flag_options :export
+    end
+
+    attr_array :nowarn do
+      title 'Warnings to disable'
+      help 'Placed directly into projects as is, with no validation'
       flag_options :export
     end
 

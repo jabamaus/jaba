@@ -120,11 +120,15 @@ module JABA
           # ClCompile
           #
           vcproperty :AdditionalIncludeDirectories, group: :ClCompile do
-            inc.vs_join_paths(inherit: '%(AdditionalIncludeDirectories)')
+            inc.map{|i| i.relative_path_from(proj.projroot, backslashes: true)}.vs_join_paths(inherit: '%(AdditionalIncludeDirectories)')
           end
 
           vcproperty :AdditionalOptions, group: :ClCompile do
             cflags.vs_join(separator: ' ', inherit: '%(AdditionalOptions)')
+          end
+
+          vcproperty :DisableSpecificWarnings, group: :ClCompile do
+            nowarn.vs_join(inherit: '%(DisableSpecificWarnings)')
           end
 
           vcproperty :ExceptionHandling, group: :ClCompile do
