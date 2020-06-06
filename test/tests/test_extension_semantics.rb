@@ -182,7 +182,7 @@ module JABA
               
               define :test_config do
                 attr :config
-                attr :config_name
+                attr :configname
               end
             end
           end
@@ -195,9 +195,9 @@ module JABA
             src "#{platform}_src"
             case config
             when :debug
-              config_name "Debug"
+              configname "Debug"
             when :release
-              config_name 'Release'
+              configname 'Release'
             end
             generate do
               print 'only called once'

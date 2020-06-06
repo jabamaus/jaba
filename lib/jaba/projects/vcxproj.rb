@@ -62,7 +62,7 @@ module JABA
         attrs = c.attrs
         cfg_root[attrs.config] = cfg
         cfg[:arch] = attrs.arch_ref.definition_id
-        cfg[:name] = attrs.config_name
+        cfg[:name] = attrs.configname
         cfg[:defines] = attrs.defines
         cfg[:inc] = attrs.inc
         cfg[:rtti] = attrs.rtti
@@ -88,7 +88,7 @@ module JABA
 
       each_config do |cfg|
         platform = cfg.attrs.arch_ref.attrs.vsname
-        cfg_name = cfg.attrs.config_name
+        cfg_name = cfg.attrs.configname
         @item_def_groups = {}
 
         @pc.yield_self do |w|

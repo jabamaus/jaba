@@ -183,21 +183,21 @@ define :cpp do
 
     attr :bindir, type: :dir do
       default do
-        "#{buildroot}/bin"
+        "#{buildroot}/bin/#{config}"
       end
       flags :no_check_exist
     end
 
     attr :libdir, type: :dir do
       default do
-        "#{buildroot}/lib"
+        "#{buildroot}/lib/#{config}"
       end
       flags :no_check_exist
     end
 
     attr :objdir, type: :dir do
       default do
-        "#{buildroot}/obj"
+        "#{buildroot}/obj/#{config}/#{projname}"
       end
       flags :no_check_exist
     end
@@ -207,7 +207,7 @@ define :cpp do
       flag_options :export
     end
 
-    attr :config_name do
+    attr :configname do
       help 'Display name of config in Visual Studio. Defaults to <config>'
       default { config }
     end
