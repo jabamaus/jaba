@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# frozen_string_literal: false # Specifically want this false for a test
 
 module JABA
 
@@ -39,6 +39,36 @@ module JABA
             b + 1
           end
           a.must_equal 2
+        end
+      end
+    end
+
+    it 'prevents modifying read values' do
+      check_fail "Cannot modify read only value", trace: [__FILE__, 'tagY'] do
+        jaba do
+          define :test do
+            attr :a, type: :string do
+              default 'b'
+            end
+          end
+          test :t do
+            val = a
+            val.upcase! # tagY
+            a.must_equal('b')
+          end
+        end
+      end
+      check_fail "Cannot modify read only value", trace: [__FILE__, 'tagS'] do
+        jaba do
+          define :test do
+            attr :a, type: :string do
+            end
+          end
+          test :t do
+            a 'b'
+            val = a
+            val.upcase! # tagS
+          end
         end
       end
     end

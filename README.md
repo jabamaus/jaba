@@ -60,6 +60,38 @@ if there are multiple attrs, with a warning.
 - Add check for re-entrancy when evaluating default blocks
 - consistent method names across tests and consistent brackets on must_equal
 - Test cpp json output
-- Renable logger
 - Create a table of attr mappings from jaba->premake->cmake
-- Enforce that array attrs are passed arrays. eg defines :a becomes defines [:a]. Too easy to type defines :a, :b and get an odd message
+- Think about a 'configure' system. Eg could have a configure block eg for ruby jaba file it might be
+
+configure do
+  attr :extensions, type: :multichoice do
+    items Dir.glob(ext_dir) # get list of ruby extension
+  end
+  attr :static, type: :bool do
+    default false
+  end
+  ...
+end
+
+When jaba is run and no configure file has been generated, jaba generates one from the above definition which is just a flat list.
+Maybe a yml file?
+
+jaba.configure:
+
+static = false
+extension_json = true
+extension_ripper = true
+...
+
+This is then used in the jaba build definition eg
+
+cpp :ruby do
+  type (static ? :lib : :dll)
+
+  case extension
+  when :json
+  ...
+  end
+end
+
+

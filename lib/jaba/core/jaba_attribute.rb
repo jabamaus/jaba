@@ -89,7 +89,7 @@ module JABA
       if api_call_loc && @value.is_a?(JabaNode)
         @value.attrs_read_only
       else
-        @value # TODO: look into ramifications of freezing
+        @value
       end
     end
     
@@ -162,7 +162,12 @@ module JABA
         end
       end
 
-      @value = resolve_ref ? resolve_reference(new_value) : new_value
+      if @attr_def.type_id == :reference
+        @value = resolve_reference(new_value)
+      else
+        @value = new_value
+        @value.freeze # Prevents value from being changed directly after it has been returned by 'value' method
+      end
     end
     
     ##
@@ -230,8 +235,6 @@ module JABA
     ##
     #
     def resolve_reference(value)
-      return value if @attr_def.type_id != :reference
-
       # Get the type id of the referenced node
       #
       rt = @attr_def.referenced_type
