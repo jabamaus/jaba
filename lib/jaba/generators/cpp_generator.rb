@@ -110,7 +110,7 @@ module JABA
           end
 
           vcproperty :IntDir, group: :pg2 do
-            objdir.relative_path_from(proj.projroot, backslashes: true)
+            objdir.relative_path_from(proj.projroot, backslashes: true, trailing: true)
           end
 
           vcproperty :TargetName, targetname, group: :pg2
