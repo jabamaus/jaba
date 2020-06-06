@@ -214,7 +214,7 @@
       "hosts": [
         "vs2019"
       ],
-      "root": ".",
+      "root": "C:/projects/GitHub/jaba/examples/example1",
       "children": {
         "cpp|MyApp|vs2019": {
           "platforms": [
@@ -237,11 +237,11 @@
               "deps": [
 
               ],
-              "projroot": ".",
+              "projroot": "C:/projects/GitHub/jaba/examples/example1",
               "projname": "MyApp",
               "projname_suffix": "",
               "src": [
-                "."
+                "C:/projects/GitHub/jaba/examples/example1"
               ],
               "src_ext": [
                 ".cpp",
@@ -273,6 +273,10 @@
                       "build_action": [
 
                       ],
+                      "buildroot": "C:/projects/GitHub/jaba/examples/example1/build",
+                      "bindir": "C:/projects/GitHub/jaba/examples/example1/build/bin",
+                      "libdir": "C:/projects/GitHub/jaba/examples/example1/build/lib",
+                      "objdir": "C:/projects/GitHub/jaba/examples/example1/build/obj",
                       "cflags": [
 
                       ],
@@ -298,6 +302,8 @@
                         "UseDebugLibraries": true,
                         "CharacterSet": null,
                         "PlatformToolset": "v142",
+                        "OutDir": "build\\bin",
+                        "IntDir": "build\\obj",
                         "TargetName": "MyApp",
                         "TargetExt": ".exe",
                         "AdditionalIncludeDirectories": null,
@@ -318,6 +324,10 @@
                       "build_action": [
 
                       ],
+                      "buildroot": "C:/projects/GitHub/jaba/examples/example1/build",
+                      "bindir": "C:/projects/GitHub/jaba/examples/example1/build/bin",
+                      "libdir": "C:/projects/GitHub/jaba/examples/example1/build/lib",
+                      "objdir": "C:/projects/GitHub/jaba/examples/example1/build/obj",
                       "cflags": [
 
                       ],
@@ -343,6 +353,8 @@
                         "UseDebugLibraries": false,
                         "CharacterSet": null,
                         "PlatformToolset": "v142",
+                        "OutDir": "build\\bin",
+                        "IntDir": "build\\obj",
                         "TargetName": "MyApp",
                         "TargetExt": ".exe",
                         "AdditionalIncludeDirectories": null,
@@ -369,6 +381,10 @@
                       "build_action": [
 
                       ],
+                      "buildroot": "C:/projects/GitHub/jaba/examples/example1/build",
+                      "bindir": "C:/projects/GitHub/jaba/examples/example1/build/bin",
+                      "libdir": "C:/projects/GitHub/jaba/examples/example1/build/lib",
+                      "objdir": "C:/projects/GitHub/jaba/examples/example1/build/obj",
                       "cflags": [
 
                       ],
@@ -394,6 +410,8 @@
                         "UseDebugLibraries": true,
                         "CharacterSet": null,
                         "PlatformToolset": "v142",
+                        "OutDir": "build\\bin",
+                        "IntDir": "build\\obj",
                         "TargetName": "MyApp",
                         "TargetExt": ".exe",
                         "AdditionalIncludeDirectories": null,
@@ -414,6 +432,10 @@
                       "build_action": [
 
                       ],
+                      "buildroot": "C:/projects/GitHub/jaba/examples/example1/build",
+                      "bindir": "C:/projects/GitHub/jaba/examples/example1/build/bin",
+                      "libdir": "C:/projects/GitHub/jaba/examples/example1/build/lib",
+                      "objdir": "C:/projects/GitHub/jaba/examples/example1/build/obj",
                       "cflags": [
 
                       ],
@@ -439,6 +461,8 @@
                         "UseDebugLibraries": false,
                         "CharacterSet": null,
                         "PlatformToolset": "v142",
+                        "OutDir": "build\\bin",
+                        "IntDir": "build\\obj",
                         "TargetName": "MyApp",
                         "TargetExt": ".exe",
                         "AdditionalIncludeDirectories": null,
@@ -465,7 +489,7 @@
       "hosts": [
         "vs2019"
       ],
-      "root": ".",
+      "root": "C:/projects/GitHub/jaba/examples/example2",
       "children": {
         "cpp|MyLib|vs2019": {
           "platforms": [
@@ -488,11 +512,11 @@
               "deps": [
 
               ],
-              "projroot": ".",
+              "projroot": "C:/projects/GitHub/jaba/examples/example2",
               "projname": "MyLib",
               "projname_suffix": "",
               "src": [
-                "."
+                "C:/projects/GitHub/jaba/examples/example2"
               ],
               "src_ext": [
                 ".cpp",
@@ -524,6 +548,10 @@
                       "build_action": [
 
                       ],
+                      "buildroot": "C:/projects/GitHub/jaba/examples/example2/build",
+                      "bindir": "C:/projects/GitHub/jaba/examples/example2/build/bin",
+                      "libdir": "C:/projects/GitHub/jaba/examples/example2/build/lib",
+                      "objdir": "C:/projects/GitHub/jaba/examples/example2/build/obj",
                       "cflags": [
 
                       ],
@@ -549,6 +577,8 @@
                         "UseDebugLibraries": true,
                         "CharacterSet": null,
                         "PlatformToolset": "v142",
+                        "OutDir": "build\\lib",
+                        "IntDir": "build\\obj",
                         "TargetName": "MyLib",
                         "TargetExt": ".lib",
                         "AdditionalIncludeDirectories": null,
@@ -568,6 +598,10 @@
                       "build_action": [
 
                       ],
+                      "buildroot": "C:/projects/GitHub/jaba/examples/example2/build",
+                      "bindir": "C:/projects/GitHub/jaba/examples/example2/build/bin",
+                      "libdir": "C:/projects/GitHub/jaba/examples/example2/build/lib",
+                      "objdir": "C:/projects/GitHub/jaba/examples/example2/build/obj",
                       "cflags": [
 
                       ],
@@ -593,6 +627,8 @@
                         "UseDebugLibraries": false,
                         "CharacterSet": null,
                         "PlatformToolset": "v142",
+                        "OutDir": "build\\lib",
+                        "IntDir": "build\\obj",
                         "TargetName": "MyLib",
                         "TargetExt": ".lib",
                         "AdditionalIncludeDirectories": null,
@@ -618,6 +654,10 @@
                       "build_action": [
 
                       ],
+                      "buildroot": "C:/projects/GitHub/jaba/examples/example2/build",
+                      "bindir": "C:/projects/GitHub/jaba/examples/example2/build/bin",
+                      "libdir": "C:/projects/GitHub/jaba/examples/example2/build/lib",
+                      "objdir": "C:/projects/GitHub/jaba/examples/example2/build/obj",
                       "cflags": [
 
                       ],
@@ -643,6 +683,8 @@
                         "UseDebugLibraries": true,
                         "CharacterSet": null,
                         "PlatformToolset": "v142",
+                        "OutDir": "build\\lib",
+                        "IntDir": "build\\obj",
                         "TargetName": "MyLib",
                         "TargetExt": ".lib",
                         "AdditionalIncludeDirectories": null,
@@ -662,6 +704,10 @@
                       "build_action": [
 
                       ],
+                      "buildroot": "C:/projects/GitHub/jaba/examples/example2/build",
+                      "bindir": "C:/projects/GitHub/jaba/examples/example2/build/bin",
+                      "libdir": "C:/projects/GitHub/jaba/examples/example2/build/lib",
+                      "objdir": "C:/projects/GitHub/jaba/examples/example2/build/obj",
                       "cflags": [
 
                       ],
@@ -687,6 +733,8 @@
                         "UseDebugLibraries": false,
                         "CharacterSet": null,
                         "PlatformToolset": "v142",
+                        "OutDir": "build\\lib",
+                        "IntDir": "build\\obj",
                         "TargetName": "MyLib",
                         "TargetExt": ".lib",
                         "AdditionalIncludeDirectories": null,

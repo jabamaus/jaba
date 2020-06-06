@@ -63,3 +63,4 @@ if there are multiple attrs, with a warning.
 - Test cpp json output
 - Renable logger
 - remove :in ... from api_call_line, by using caller_loc
+- Create a table of attr mappings from jaba->premake->cmake

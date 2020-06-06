@@ -174,6 +174,34 @@ define :cpp do
       value_option :type, required: true, items: [:PreBuild, :PreLink, :PostBuild]
     end
 
+    attr :buildroot, type: :dir do
+      title 'Root directory for build artifacts'
+      help 'Specified as a relative path from <root>'
+      default 'build'
+      flags :no_check_exist
+    end
+
+    attr :bindir, type: :dir do
+      default do
+        "#{buildroot}/bin"
+      end
+      flags :no_check_exist
+    end
+
+    attr :libdir, type: :dir do
+      default do
+        "#{buildroot}/lib"
+      end
+      flags :no_check_exist
+    end
+
+    attr :objdir, type: :dir do
+      default do
+        "#{buildroot}/obj"
+      end
+      flags :no_check_exist
+    end
+
     attr_array :cflags do
       help 'Raw compiler command line switches'
       flag_options :export
