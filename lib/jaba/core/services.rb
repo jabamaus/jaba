@@ -127,9 +127,13 @@ module JABA
         do_run
       end
 
+      summary = String.new "Generated #{@generated.size} files, #{@added.size} added, #{@modified.size} modified in #{duration}"
+      summary << " [dry run]" if input.dry_run?
+      @output[:summary] = summary
+      log summary
+
       log "Done! (#{duration})"
 
-      @output[:duration] = duration
       @output
     ensure
       term_log
@@ -602,24 +606,20 @@ module JABA
     def build_jaba_output
       @building_jaba_output = true
 
-      generated = @file_manager.generated
-      added = @file_manager.added
-      modified = @file_manager.modified
+      out_file = input.jaba_output_file
+      out_dir = out_file.dirname
 
-      summary = String.new "Generated #{generated.size} files, #{added.size} added, #{modified.size} modified"
-      summary << " [dry run]" if input.dry_run?
+      @generated = @file_manager.generated
+      
+      if input.dump_output?
+        @generated = @generated.map{|f| f.relative_path_from(out_dir)}
+      end
 
       @output[:version] = '1.0'
-      @output[:summary] = summary
-      @output[:generated] = generated
-      @output[:added] = added
-      @output[:modified] = modified
+      @output[:generated] = @generated
       @output[:warnings] = @warnings
 
       if input.dump_output?
-        out_file = input.jaba_output_file
-        out_dir = out_file.dirname
-
         @generators.each do |g|
           g_root = {}
 
@@ -637,8 +637,19 @@ module JABA
         file.write
       end
       
-      log summary
+      @added = @file_manager.added
+      @modified = @file_manager.modified
       
+      if input.dump_output?
+        @added = @added.map{|f| f.relative_path_from(out_dir)}
+        @modified = @modified.map{|f| f.relative_path_from(out_dir)}
+      end
+
+      # These are not included in the output file but are returned to outer context
+      #
+      @output[:added] = @added
+      @output[:modified] = @modified
+
       @building_jaba_output = false
     end
 

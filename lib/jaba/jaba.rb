@@ -84,14 +84,13 @@ begin
   modified = output[:modified]
   warnings = output[:warnings]
 
-  puts "#{output[:summary]} in #{output[:duration]}"
+  puts output[:summary]
   
-  cwd = Dir.getwd
   added.each do |f|
-    puts "  #{f.relative_path_from(cwd)} [A]"
+    puts "  #{f} [A]"
   end
   modified.each do |f|
-    puts "  #{f.relative_path_from(cwd)} [M]"
+    puts "  #{f} [M]"
   end
   puts warnings if warnings
 rescue JABA::JabaDefinitionError => e

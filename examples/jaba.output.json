@@ -1,17 +1,10 @@
 {
   "version": "1.0",
-  "summary": "Generated 4 files, 0 added, 0 modified",
   "generated": [
-    "C:/projects/GitHub/jaba/examples/example1/MyApp.vcxproj",
-    "C:/projects/GitHub/jaba/examples/example1/MyApp.vcxproj.filters",
-    "C:/projects/GitHub/jaba/examples/example2/MyLib.vcxproj",
-    "C:/projects/GitHub/jaba/examples/example2/MyLib.vcxproj.filters"
-  ],
-  "added": [
-
-  ],
-  "modified": [
-
+    "example1/MyApp.vcxproj",
+    "example1/MyApp.vcxproj.filters",
+    "example2/MyLib.vcxproj",
+    "example2/MyLib.vcxproj.filters"
   ],
   "warnings": [
 
@@ -48,6 +41,8 @@
             "UseDebugLibraries": true,
             "CharacterSet": null,
             "PlatformToolset": "v142",
+            "OutDir": "build\\bin",
+            "IntDir": "build\\obj",
             "TargetName": "MyApp",
             "TargetExt": ".exe",
             "AdditionalIncludeDirectories": null,
@@ -75,6 +70,8 @@
             "UseDebugLibraries": false,
             "CharacterSet": null,
             "PlatformToolset": "v142",
+            "OutDir": "build\\bin",
+            "IntDir": "build\\obj",
             "TargetName": "MyApp",
             "TargetExt": ".exe",
             "AdditionalIncludeDirectories": null,
@@ -121,6 +118,8 @@
             "UseDebugLibraries": true,
             "CharacterSet": null,
             "PlatformToolset": "v142",
+            "OutDir": "build\\lib",
+            "IntDir": "build\\obj",
             "TargetName": "MyLib",
             "TargetExt": ".lib",
             "AdditionalIncludeDirectories": null,
@@ -147,6 +146,8 @@
             "UseDebugLibraries": false,
             "CharacterSet": null,
             "PlatformToolset": "v142",
+            "OutDir": "build\\lib",
+            "IntDir": "build\\obj",
             "TargetName": "MyLib",
             "TargetExt": ".lib",
             "AdditionalIncludeDirectories": null,
