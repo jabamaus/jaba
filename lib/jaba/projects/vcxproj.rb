@@ -76,15 +76,15 @@ module JABA
     def write_vcxproj
       @services.log "Generating #{@vcxproj_file}", section: true
       
-      # TODO: check capacities
-      file = @services.file_manager.new_file(@vcxproj_file, eol: :windows, encoding: 'UTF-8', capacity: 64 * 1024)
+      file = @services.file_manager.new_file(@vcxproj_file, eol: :windows, encoding: 'UTF-8', capacity: 128 * 1024)
       
       w = file.writer
-      @pc = file.work_area(capacity: 2 * 1024)
-      @pg1 = file.work_area(capacity: 2 * 1024)
-      @pg2 = file.work_area(capacity: 2 * 1024)
-      @ps = file.work_area(capacity: 2 * 1024)
-      @idg = file.work_area(capacity: 2 * 1024)
+      c = 32 * 1024
+      @pc = file.work_area(capacity: c)
+      @pg1 = file.work_area(capacity: c)
+      @pg2 = file.work_area(capacity: c)
+      @ps = file.work_area(capacity: c)
+      @idg = file.work_area(capacity: c)
 
       each_config do |cfg|
         platform = cfg.attrs.arch_ref.attrs.vsname
