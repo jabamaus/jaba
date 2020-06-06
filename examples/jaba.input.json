@@ -268,7 +268,7 @@
                   "arch_ref": "arch|x86",
                   "children": {
                     "cpp|MyApp|vs2019|windows|x86|Debug": {
-                      "type": "app",
+                      "type": "console",
                       "config": "Debug",
                       "build_action": [
 
@@ -312,14 +312,14 @@
                         "PreprocessorDefinitions": null,
                         "RuntimeTypeInfo": true,
                         "TreatWarningAsError": false,
-                        "SubSystem": "Windows",
+                        "SubSystem": "Console",
                         "TargetMachine": null
                       },
                       "children": {
                       }
                     },
                     "cpp|MyApp|vs2019|windows|x86|Release": {
-                      "type": "app",
+                      "type": "console",
                       "config": "Release",
                       "build_action": [
 
@@ -363,7 +363,7 @@
                         "PreprocessorDefinitions": null,
                         "RuntimeTypeInfo": true,
                         "TreatWarningAsError": false,
-                        "SubSystem": "Windows",
+                        "SubSystem": "Console",
                         "TargetMachine": null
                       },
                       "children": {
@@ -376,7 +376,7 @@
                   "arch_ref": "arch|x86_64",
                   "children": {
                     "cpp|MyApp|vs2019|windows|x86_64|Debug": {
-                      "type": "app",
+                      "type": "console",
                       "config": "Debug",
                       "build_action": [
 
@@ -420,14 +420,14 @@
                         "PreprocessorDefinitions": null,
                         "RuntimeTypeInfo": true,
                         "TreatWarningAsError": false,
-                        "SubSystem": "Windows",
+                        "SubSystem": "Console",
                         "TargetMachine": "MachineX64"
                       },
                       "children": {
                       }
                     },
                     "cpp|MyApp|vs2019|windows|x86_64|Release": {
-                      "type": "app",
+                      "type": "console",
                       "config": "Release",
                       "build_action": [
 
@@ -471,7 +471,7 @@
                         "PreprocessorDefinitions": null,
                         "RuntimeTypeInfo": true,
                         "TreatWarningAsError": false,
-                        "SubSystem": "Windows",
+                        "SubSystem": "Console",
                         "TargetMachine": "MachineX64"
                       },
                       "children": {

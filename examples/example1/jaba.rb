@@ -1,5 +1,5 @@
 cpp :MyApp do
-  type :app
+  type :console
   hosts [:vs2019]
   platforms [:windows]
   archs [:x86, :x86_64]

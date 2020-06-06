@@ -51,7 +51,7 @@
             "PreprocessorDefinitions": null,
             "RuntimeTypeInfo": true,
             "TreatWarningAsError": false,
-            "SubSystem": "Windows",
+            "SubSystem": "Console",
             "TargetMachine": "MachineX64"
           }
         },
@@ -80,7 +80,7 @@
             "PreprocessorDefinitions": null,
             "RuntimeTypeInfo": true,
             "TreatWarningAsError": false,
-            "SubSystem": "Windows",
+            "SubSystem": "Console",
             "TargetMachine": "MachineX64"
           }
         }
