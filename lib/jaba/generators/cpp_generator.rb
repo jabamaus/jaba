@@ -63,6 +63,7 @@ module JABA
       proj.attrs.instance_eval do
         vcglobal :ProjectName, projname
         vcglobal :ProjectGuid, proj.guid
+        vcglobal :Keyword, 'Win32Proj'
         vcglobal :RootNamespace, projname
         vcglobal :WindowsTargetPlatformVersion, winsdkver
       end

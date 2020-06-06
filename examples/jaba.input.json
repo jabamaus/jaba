@@ -259,6 +259,7 @@
               "vcglobal": {
                 "ProjectName": "MyApp",
                 "ProjectGuid": "{A1E4CE60-2155-53B5-BC4B-D1480CD9A7C6}",
+                "Keyword": "Win32Proj",
                 "RootNamespace": "MyApp",
                 "WindowsTargetPlatformVersion": null
               },
@@ -534,6 +535,7 @@
               "vcglobal": {
                 "ProjectName": "MyLib",
                 "ProjectGuid": "{12939F73-FBD0-52B0-AFAD-9A1726F33F06}",
+                "Keyword": "Win32Proj",
                 "RootNamespace": "MyLib",
                 "WindowsTargetPlatformVersion": null
               },

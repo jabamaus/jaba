@@ -21,6 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectName>MyLib</ProjectName>
     <ProjectGuid>{12939F73-FBD0-52B0-AFAD-9A1726F33F06}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
     <RootNamespace>MyLib</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
