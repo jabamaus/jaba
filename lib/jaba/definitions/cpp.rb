@@ -86,7 +86,7 @@ define :cpp do
       help 'Optional suffix to be applied to <projname>. Has no effect if <projname> is set explicitly.'
     end
 
-    attr_array :src, type: :path do
+    attr_array :src, type: :src_spec do
       title 'Source file specification'
       flags :required # Must be specified by user
       flags :nosort # Final source will be sorted so no need to sort this

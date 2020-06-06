@@ -79,11 +79,12 @@ attr_type :file do
   end
 end
 
-attr_type :path do
-  help 'Path attribute type. Validates that value is a string path representing either a file or a directory'
+attr_type :src_spec do
+  title 'Source file specification pattern'
+  help 'Can be file glob match an explicit path or a directory'
   validate_value do |path|
     path.cleanpath(validate: true) do |clean|
-      warn "Path '#{path}' not specified cleanly. Should be '#{clean}'."
+      warn "Src spec '#{path}' not specified cleanly. Should be '#{clean}'."
     end
   end
 end

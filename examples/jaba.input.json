@@ -241,7 +241,7 @@
               "projname": "MyApp",
               "projname_suffix": "",
               "src": [
-                "C:/projects/GitHub/jaba/examples/example1"
+                "."
               ],
               "src_ext": [
                 ".cpp",
@@ -516,7 +516,7 @@
               "projname": "MyLib",
               "projname_suffix": "",
               "src": [
-                "C:/projects/GitHub/jaba/examples/example2"
+                "."
               ],
               "src_ext": [
                 ".cpp",

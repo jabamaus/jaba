@@ -19,6 +19,7 @@ module JABA
     def initialize(services, definition)
       super(services, definition, JabaAttributeTypeAPI.new(self))
      
+      define_property(:title)
       define_property(:help)
       define_property(:default)
       define_hook(:init_attr_def)

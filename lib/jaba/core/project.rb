@@ -19,10 +19,11 @@ module JABA
     
     ##
     #
-    def initialize(services, generator, node)
+    def initialize(services, generator, node, root)
       @services = services
       @generator = generator # required in order to look up other projects when resolving dependencies
       @node = node
+      @root = root
       @attrs = node.attrs
       @projroot = @attrs.projroot
       @projname = @attrs.projname

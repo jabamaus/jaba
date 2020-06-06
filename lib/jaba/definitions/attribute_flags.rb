@@ -40,6 +40,6 @@ end
 attr_flag :no_check_exist do
   help 'Use with file, dir or path attributes to disable checking if the path exists on disk, eg if it will get generated'
   compatibility do
-    fail ":no_check_exist can only be used with :file, :dir and :path attribute types" if ![:file, :dir, :path].include?(type)
+    fail ":no_check_exist can only be used with :file and :dir attribute types" if ![:file, :dir].include?(type)
   end
 end

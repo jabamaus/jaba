@@ -226,7 +226,7 @@ module JABA
         # Make all file/dir/path attributes into absolute paths based on root
         #
         pn.visit_node(visit_self: true) do |node|
-          node.visit_attr(type: [:file, :path, :dir], skip_attr: :root) do |a|
+          node.visit_attr(type: [:file, :dir], skip_attr: :root) do |a|
             a.map_value! do |p|
               p.absolute_path? ? p : "#{root}/#{p}".cleanpath
             end
@@ -241,7 +241,7 @@ module JABA
         else
           raise 'unknown host'
         end
-        proj = make_project(klass, pn)
+        proj = make_project(klass, pn, root)
         proj.process_src(:src, :src_ext)
         @projects << proj
       end

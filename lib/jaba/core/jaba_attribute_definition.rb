@@ -17,7 +17,7 @@ module JABA
 
     include PropertyMethods
 
-    attr_reader :type_id # eg :bool, :file, :path etc
+    attr_reader :type_id # eg :bool, :string, :file etc
     attr_reader :variant # :single, :array, :hash
     attr_reader :jaba_attr_type # JabaAttributeType object
     attr_reader :jaba_type

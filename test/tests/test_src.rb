@@ -8,7 +8,7 @@ module JABA
 
     it 'warns if src not specified cleanly' do
       make_file('a.cpp')
-      check_warn "Path 'a/../b/c/../../' not specified cleanly. Should be '.'", __FILE__, 'tagW' do
+      check_warn "Src spec 'a/../b/c/../../' not specified cleanly. Should be '.'", __FILE__, 'tagW' do
         jaba(cpp_app: true) do
           cpp :app do
             src ['a.cpp', 'a/../b/c/../../'] # tagW
