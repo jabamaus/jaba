@@ -283,7 +283,6 @@ module JABA
     # definitions then return the node's attributes rather than the node itself.
     #
     def value(api_call_loc = nil)
-      # TODO: should do  @last_call_location = api_call_loc ?
       if !@set
         if @default_block
           @services.execute_attr_default_block(@node, @default_block)
