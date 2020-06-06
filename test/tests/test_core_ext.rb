@@ -107,6 +107,9 @@ module JABA
         'a\\b\\c'.relative_path_from('d', backslashes: true).must_equal('..\\a\\b\\c')
         'a/b/c'.relative_path_from('d', backslashes: true).must_equal('..\\a\\b\\c')
 
+        'a/b/c'.relative_path_from('d', backslashes: true, trailing: true).must_equal('..\\a\\b\\c\\')
+        'a/b/c'.relative_path_from('d', trailing: true).must_equal('../a/b/c/')
+
         # The nil_if_dot and no_dot_dot options are used when generating vcxproj.filters files.
         # 'nil_if_dot: true' returns nil in the case that the path ends up as '.'
         # 'no_dot_dot: true' causes resulting relative path not to be filled with '..'. Used when generated vcxproj.filters files.
