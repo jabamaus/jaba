@@ -132,7 +132,7 @@ module JABA
     end
 
     ##
-    #
+    # TODO: warn if nothing excluded
     def process_flags
       if @excludes
         @elems.delete_if do |e|
