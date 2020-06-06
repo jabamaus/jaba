@@ -203,6 +203,49 @@ define :cpp do
       flag_options :export
     end
 
+    attr :targetname, type: :string do
+      title 'Base name of output file without extension'
+      help 'Defaults to <targetprefix><targetname><projname><targetsuffix>'
+      default { "#{targetprefix}#{projname}#{targetsuffix}" }
+    end
+    
+    attr :targetprefix, type: :string do
+      title 'Prefix to apply to <targetname>'
+      help 'Has no effect if <targetname> specified'
+      default ''
+    end
+    
+    attr :targetsuffix, type: :string do
+      title 'Suffix to apply to <targetname>'
+      help 'Has no effect if <targetname> specified'
+      default ''
+    end
+
+    attr :targetext, type: :string do
+      title 'Extension to apply to <targetname>'
+      help 'Defaults to standard extension for <type> of project for target <platform>'
+      default do
+        case platform
+        when :windows
+          case type
+          when :app, :console
+            '.exe'
+          when :lib
+            '.lib'
+          when :dll
+            '.dll'
+          end
+        when :ios
+          case type
+          when :app, :console
+            '.app'
+          when :lib
+            '.a'
+          end
+        end
+      end
+    end
+
     attr :warnerror, type: :bool do
       help 'Enable warnings as errors. Off by default.'
     end

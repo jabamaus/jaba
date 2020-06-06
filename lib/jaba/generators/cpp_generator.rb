@@ -70,6 +70,9 @@ module JABA
       proj.each_config do |cfg|
         cfg.attrs.instance_eval do
           cfg_type = type
+
+          # First set of property groups
+          #
           vcproperty :ConfigurationType, group: :pg1 do
             case cfg_type
             when :app, :console
@@ -82,7 +85,9 @@ module JABA
               fail "'#{cfg_type}' unhandled"
             end
           end
+
           vcproperty :UseDebugLibraries, debug, group: :pg1
+
           vcproperty :CharacterSet, group: :pg1 do
             case character_set
             when :mbcs
@@ -91,7 +96,13 @@ module JABA
               :Unicode
             end
           end
+          
           vcproperty :PlatformToolset, toolset, group: :pg1
+
+          # Second set of property groups
+          #
+          vcproperty :TargetName, targetname, group: :pg2
+          vcproperty :TargetExt, targetext, group: :pg2
 
           # ClCompile
           #

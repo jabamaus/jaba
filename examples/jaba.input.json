@@ -284,6 +284,10 @@
                       "inc": [
 
                       ],
+                      "targetname": "MyApp",
+                      "targetprefix": "",
+                      "targetsuffix": "",
+                      "targetext": ".exe",
                       "warnerror": false,
                       "character_set": null,
                       "exceptions": true,
@@ -294,6 +298,8 @@
                         "UseDebugLibraries": true,
                         "CharacterSet": null,
                         "PlatformToolset": "v142",
+                        "TargetName": "MyApp",
+                        "TargetExt": ".exe",
                         "AdditionalIncludeDirectories": null,
                         "AdditionalOptions": null,
                         "ExceptionHandling": "Sync",
@@ -323,6 +329,10 @@
                       "inc": [
 
                       ],
+                      "targetname": "MyApp",
+                      "targetprefix": "",
+                      "targetsuffix": "",
+                      "targetext": ".exe",
                       "warnerror": false,
                       "character_set": null,
                       "exceptions": true,
@@ -333,6 +343,8 @@
                         "UseDebugLibraries": false,
                         "CharacterSet": null,
                         "PlatformToolset": "v142",
+                        "TargetName": "MyApp",
+                        "TargetExt": ".exe",
                         "AdditionalIncludeDirectories": null,
                         "AdditionalOptions": null,
                         "ExceptionHandling": "Sync",
@@ -368,6 +380,10 @@
                       "inc": [
 
                       ],
+                      "targetname": "MyApp",
+                      "targetprefix": "",
+                      "targetsuffix": "",
+                      "targetext": ".exe",
                       "warnerror": false,
                       "character_set": null,
                       "exceptions": true,
@@ -378,6 +394,8 @@
                         "UseDebugLibraries": true,
                         "CharacterSet": null,
                         "PlatformToolset": "v142",
+                        "TargetName": "MyApp",
+                        "TargetExt": ".exe",
                         "AdditionalIncludeDirectories": null,
                         "AdditionalOptions": null,
                         "ExceptionHandling": "Sync",
@@ -407,6 +425,10 @@
                       "inc": [
 
                       ],
+                      "targetname": "MyApp",
+                      "targetprefix": "",
+                      "targetsuffix": "",
+                      "targetext": ".exe",
                       "warnerror": false,
                       "character_set": null,
                       "exceptions": true,
@@ -417,6 +439,8 @@
                         "UseDebugLibraries": false,
                         "CharacterSet": null,
                         "PlatformToolset": "v142",
+                        "TargetName": "MyApp",
+                        "TargetExt": ".exe",
                         "AdditionalIncludeDirectories": null,
                         "AdditionalOptions": null,
                         "ExceptionHandling": "Sync",
@@ -511,6 +535,10 @@
                       "inc": [
 
                       ],
+                      "targetname": "MyLib",
+                      "targetprefix": "",
+                      "targetsuffix": "",
+                      "targetext": ".lib",
                       "warnerror": false,
                       "character_set": null,
                       "exceptions": true,
@@ -521,6 +549,8 @@
                         "UseDebugLibraries": true,
                         "CharacterSet": null,
                         "PlatformToolset": "v142",
+                        "TargetName": "MyLib",
+                        "TargetExt": ".lib",
                         "AdditionalIncludeDirectories": null,
                         "AdditionalOptions": null,
                         "ExceptionHandling": "Sync",
@@ -549,6 +579,10 @@
                       "inc": [
 
                       ],
+                      "targetname": "MyLib",
+                      "targetprefix": "",
+                      "targetsuffix": "",
+                      "targetext": ".lib",
                       "warnerror": false,
                       "character_set": null,
                       "exceptions": true,
@@ -559,6 +593,8 @@
                         "UseDebugLibraries": false,
                         "CharacterSet": null,
                         "PlatformToolset": "v142",
+                        "TargetName": "MyLib",
+                        "TargetExt": ".lib",
                         "AdditionalIncludeDirectories": null,
                         "AdditionalOptions": null,
                         "ExceptionHandling": "Sync",
@@ -593,6 +629,10 @@
                       "inc": [
 
                       ],
+                      "targetname": "MyLib",
+                      "targetprefix": "",
+                      "targetsuffix": "",
+                      "targetext": ".lib",
                       "warnerror": false,
                       "character_set": null,
                       "exceptions": true,
@@ -603,6 +643,8 @@
                         "UseDebugLibraries": true,
                         "CharacterSet": null,
                         "PlatformToolset": "v142",
+                        "TargetName": "MyLib",
+                        "TargetExt": ".lib",
                         "AdditionalIncludeDirectories": null,
                         "AdditionalOptions": null,
                         "ExceptionHandling": "Sync",
@@ -631,6 +673,10 @@
                       "inc": [
 
                       ],
+                      "targetname": "MyLib",
+                      "targetprefix": "",
+                      "targetsuffix": "",
+                      "targetext": ".lib",
                       "warnerror": false,
                       "character_set": null,
                       "exceptions": true,
@@ -641,6 +687,8 @@
                         "UseDebugLibraries": false,
                         "CharacterSet": null,
                         "PlatformToolset": "v142",
+                        "TargetName": "MyLib",
+                        "TargetExt": ".lib",
                         "AdditionalIncludeDirectories": null,
                         "AdditionalOptions": null,
                         "ExceptionHandling": "Sync",
