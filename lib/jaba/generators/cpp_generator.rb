@@ -103,9 +103,9 @@ module JABA
           #
           vcproperty :OutDir, group: :pg2 do
             if cfg_type == :lib
-              libdir.relative_path_from(proj.projroot, backslashes: true)
+              libdir.relative_path_from(proj.projroot, backslashes: true, trailing: true)
             else
-              bindir.relative_path_from(proj.projroot, backslashes: true)
+              bindir.relative_path_from(proj.projroot, backslashes: true, trailing: true)
             end
           end
 

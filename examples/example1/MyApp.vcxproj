@@ -61,25 +61,25 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>build\bin\Debug</OutDir>
+    <OutDir>build\bin\Debug\</OutDir>
     <IntDir>build\obj\Debug\MyApp\</IntDir>
     <TargetName>MyApp</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>build\bin\Release</OutDir>
+    <OutDir>build\bin\Release\</OutDir>
     <IntDir>build\obj\Release\MyApp\</IntDir>
     <TargetName>MyApp</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>build\bin\Debug</OutDir>
+    <OutDir>build\bin\Debug\</OutDir>
     <IntDir>build\obj\Debug\MyApp\</IntDir>
     <TargetName>MyApp</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>build\bin\Release</OutDir>
+    <OutDir>build\bin\Release\</OutDir>
     <IntDir>build\obj\Release\MyApp\</IntDir>
     <TargetName>MyApp</TargetName>
     <TargetExt>.exe</TargetExt>
