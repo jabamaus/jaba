@@ -71,6 +71,15 @@ module JABACoreExt
       is_a?(Hash)
     end
     
+    ##
+    #
+    def inspect_unquoted
+      str = inspect
+      str.delete_prefix!('"')
+      str.delete_suffix!('"')
+      str
+    end
+    
   end
 
   ##

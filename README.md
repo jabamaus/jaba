@@ -49,7 +49,6 @@ if there are multiple attrs, with a warning.
 
   - check for duplicate filenames at generator level, with proper error reporting
   - Make contents of attr def defaults overidable by user, including calling super
-  - could change last_call_location to an array to track all call locations
   - Make _ID be id of the definition the code is in, such that it works even inside
     a block that is being executed in the context of a different jaba object
   - give attributes a 'title' and a 'help' string. title can be used when dumping help, help string can be used in error msgs
@@ -64,3 +63,4 @@ if there are multiple attrs, with a warning.
 - Renable logger
 - remove :in ... from api_call_line, by using caller_loc
 - Create a table of attr mappings from jaba->premake->cmake
+- Enforce that array attrs are passed arrays. eg defines :a becomes defines [:a]. Too easy to type defines :a, :b and get an odd message

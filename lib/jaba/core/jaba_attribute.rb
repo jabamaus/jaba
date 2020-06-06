@@ -54,7 +54,7 @@ module JABA
     # strips the :12. Used in error messages.
     #
     def last_call_loc_basename
-      last_call_location.last_path_component
+      "#{@last_call_location.path.basename}:#{@last_call_location.lineno}"
     end
 
   end
@@ -86,8 +86,8 @@ module JABA
     # Returns the value of the attribute. If value is a reference to a JabaNode and the call to value() came from user
     # definitions then return the node's attributes rather than the node itself.
     #
-    def value(api_call_line = nil)
-      if api_call_line && @value.is_a?(JabaNode)
+    def value(api_call_loc = nil)
+      if api_call_loc && @value.is_a?(JabaNode)
         @value.attrs_read_only
       else
         @value # TODO: look into ramifications of freezing
@@ -96,13 +96,13 @@ module JABA
     
     ##
     #
-    def set(*args, api_call_line: nil, validate: true, resolve_ref: true, **key_val_args, &block)
-      @last_call_location = api_call_line
+    def set(*args, api_call_loc: nil, validate: true, resolve_ref: true, **key_val_args, &block)
+      @last_call_location = api_call_loc
 
       # Check for read only if calling from definitions, or if not calling from definitions but from library code,
       # allow setting read only attrs the first time, in order to initialise them.
       #
-      if (api_call_line || @set) && !@node.allow_set_read_only_attrs?
+      if (api_call_loc || @set) && !@node.allow_set_read_only_attrs?
         if @attr_def.has_flag?(:read_only)
           @services.jaba_error("'#{@attr_def.definition_id}' attribute is read only")
         end
@@ -123,7 +123,7 @@ module JABA
 
       @flag_options.each do |f|
         if !@attr_def.flag_options.include?(f)
-          @services.jaba_error("Invalid flag option '#{f.inspect}'. Valid flags are #{@attr_def.flag_options}")
+          @services.jaba_error("Invalid flag option '#{f.inspect_unquoted}'. Valid flags are #{@attr_def.flag_options}")
         end
       end
 
@@ -147,7 +147,7 @@ module JABA
         vo = @attr_def.get_value_option(k)
         if !vo.items.empty?
           if !vo.items.include?(v)
-            @services.jaba_error("Invalid value '#{v.inspect}' passed to '#{k.inspect}' option. Valid values: #{vo.items.inspect}")
+            @services.jaba_error("Invalid value '#{v.inspect_unquoted}' passed to '#{k.inspect_unquoted}' option. Valid values: #{vo.items.inspect}")
           end
         end
       end
@@ -283,8 +283,8 @@ module JABA
     # Returns the value of the attribute. If value is a reference to a JabaNode and the call to value() came from user
     # definitions then return the node's attributes rather than the node itself.
     #
-    def value(api_call_line = nil)
-      # TODO: should do  @last_call_location = api_call_line ?
+    def value(api_call_loc = nil)
+      # TODO: should do  @last_call_location = api_call_loc ?
       if !@set
         if @default_block
           @services.execute_attr_default_block(@node, @default_block)
@@ -293,7 +293,7 @@ module JABA
         else
           nil
         end
-      elsif api_call_line && @value.is_a?(JabaNode)
+      elsif api_call_loc && @value.is_a?(JabaNode)
         @value.attrs_read_only
       else
         @value

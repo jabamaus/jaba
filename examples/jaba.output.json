@@ -6,9 +6,6 @@
     "example2/MyLib.vcxproj",
     "example2/MyLib.vcxproj.filters"
   ],
-  "warnings": [
-
-  ],
   "cpp": {
     "MyApp|vs2019|windows": {
       "projroot": "example1",

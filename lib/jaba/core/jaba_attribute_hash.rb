@@ -32,7 +32,7 @@ module JABA
     ##
     # Returns a read only hash of key->attribute values. Expensive because it must map attributes to their values.
     #
-    def value(api_call_line = nil)
+    def value(api_call_loc = nil)
       if !@set
         if @default_block
           return @services.execute_attr_default_block(@node, @default_block)
@@ -40,13 +40,13 @@ module JABA
           @services.jaba_error("Cannot read uninitialised '#{definition_id}' attribute")
         end
       end
-      @hash.transform_values {|e| e.value(api_call_line)}.freeze  # read only, enforce by freezing
+      @hash.transform_values {|e| e.value(api_call_loc)}.freeze  # read only, enforce by freezing
     end
     
     ##
     # TODO: handle overwriting
-    def set(*args, api_call_line: nil, **keyvalue_args, &block)
-      @last_call_location = api_call_line
+    def set(*args, api_call_loc: nil, **keyvalue_args, &block)
+      @last_call_location = api_call_loc
       
       # TODO: validate only key passed if block given
       if args.size < 2 && !block_given?
@@ -60,7 +60,7 @@ module JABA
       val = block_given? ? @node.eval_api_block(&block) : args.shift
 
       elem = JabaAttributeElement.new(@services, @attr_def, @node)
-      elem.set(val, *args, api_call_line: api_call_line, __key: key, **keyvalue_args)
+      elem.set(val, *args, api_call_loc: api_call_loc, __key: key, **keyvalue_args)
 
       @hash[key] = elem
       @set = true
@@ -90,7 +90,7 @@ module JABA
       val = Marshal.load(Marshal.dump(other.raw_value))
 
       elem = JabaAttributeElement.new(@services, @attr_def, @node)
-      elem.set(val, *f_options, api_call_line: nil, validate: false, resolve_ref: false, **value_options)
+      elem.set(val, *f_options, validate: false, resolve_ref: false, **value_options)
       
       @hash[key] = elem
     end

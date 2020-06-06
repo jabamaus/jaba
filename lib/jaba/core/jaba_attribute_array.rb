@@ -30,7 +30,7 @@ module JABA
 
     ##
     #
-    def value(api_call_line = nil)
+    def value(api_call_loc = nil)
       if !@set
         if @default_block
           return @services.execute_attr_default_block(@node, @default_block)
@@ -38,13 +38,13 @@ module JABA
           @services.jaba_error("Cannot read uninitialised '#{definition_id}' attribute")
         end
       end
-      @elems.map {|e| e.value(api_call_line)}.freeze  # read only, enforce by freezing
+      @elems.map {|e| e.value(api_call_loc)}.freeze  # read only, enforce by freezing
     end
     
     ##
     #
-    def set(*args, api_call_line: nil, prefix: nil, postfix: nil, exclude: nil, **keyvalue_args, &block)
-      @last_call_location = api_call_line
+    def set(*args, api_call_loc: nil, prefix: nil, postfix: nil, exclude: nil, **keyvalue_args, &block)
+      @last_call_location = api_call_loc
       @set = true
       
       values = block_given? ? @node.eval_api_block(&block) : args.shift
@@ -56,12 +56,12 @@ module JABA
         end
 
         if existing
-          @services.jaba_warning("Stripping duplicate '#{v.inspect}'. See previous at #{existing.last_call_loc_basename}. " \
+          @services.jaba_warning("Stripping duplicate '#{v.inspect_unquoted}'. See previous at #{existing.last_call_loc_basename}. " \
             "Flag with :allow_dupes to allow.", callstack: @last_call_location)
         else
           elem = JabaAttributeElement.new(@services, @attr_def, @node)
           v = apply_pre_post_fix(prefix, postfix, v)
-          elem.set(v, *args, api_call_line: api_call_line, **keyvalue_args)
+          elem.set(v, *args, api_call_loc: api_call_loc, **keyvalue_args)
           @elems << elem
         end
       end
@@ -94,7 +94,7 @@ module JABA
       val = Marshal.load(Marshal.dump(other.raw_value))
 
       elem = JabaAttributeElement.new(@services, @attr_def, @node)
-      elem.set(val, *f_options, api_call_line: nil, validate: false, resolve_ref: false, **value_options)
+      elem.set(val, *f_options, validate: false, resolve_ref: false, **value_options)
       
       @elems << elem
     end

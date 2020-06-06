@@ -239,7 +239,7 @@
               ],
               "projroot": "C:/projects/GitHub/jaba/examples/example1",
               "projname": "MyApp",
-              "projname_suffix": "",
+              "projsuffix": "",
               "src": [
                 "."
               ],
@@ -515,7 +515,7 @@
               ],
               "projroot": "C:/projects/GitHub/jaba/examples/example2",
               "projname": "MyLib",
-              "projname_suffix": "",
+              "projsuffix": "",
               "src": [
                 "."
               ],

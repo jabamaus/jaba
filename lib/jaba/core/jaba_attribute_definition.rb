@@ -105,11 +105,11 @@ module JABA
     #
     def get_value_option(id)
       if @value_options.empty?
-        jaba_error("Invalid value option '#{id.inspect}' - no options defined.")
+        jaba_error("Invalid value option '#{id.inspect_unquoted}' - no options defined.")
       end
       vo = @value_options.find{|v| v.id == id}
       if !vo
-        jaba_error("Invalid value option '#{id.inspect}'. Valid options: #{@value_options.map{|v| v.id}}")
+        jaba_error("Invalid value option '#{id.inspect_unquoted}'. Valid options: #{@value_options.map{|v| v.id}}")
       end
       vo
     end
@@ -160,7 +160,7 @@ module JABA
           jaba_error('Flags must be specified as symbols, eg :flag')
         end
         if @flags.include?(f)
-          jaba_warning("Duplicate flag '#{f.inspect}' specified")
+          jaba_warning("Duplicate flag '#{f.inspect_unquoted}' specified")
           return :ignore
         end
         @jaba_attr_flags << @services.get_attribute_flag(f) # check flag exists
@@ -170,7 +170,7 @@ module JABA
           jaba_error('Flag options must be specified as symbols, eg :option')
         end
         if @flag_options.include?(f)
-          jaba_warning("Duplicate flag option '#{f.inspect}' specified")
+          jaba_warning("Duplicate flag option '#{f.inspect_unquoted}' specified")
           return :ignore
         end
       end

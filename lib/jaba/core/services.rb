@@ -132,6 +132,8 @@ module JABA
       @output[:summary] = summary
       log summary
 
+      @output[:warnings] = @warnings.uniq # Strip duplicate warnings
+
       log "Done! (#{duration})"
 
       @output
@@ -296,7 +298,7 @@ module JABA
       validate_id(id)
       existing = @jaba_attr_type_definitions.find{|d| d.id == id}
       if existing
-        jaba_error("Attribute type '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
+        jaba_error("Attribute type '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_basename}.")
       end
       @jaba_attr_type_definitions << JabaDefinition.new(id, block, caller(2, 1)[0])
       nil
@@ -310,7 +312,7 @@ module JABA
       validate_id(id)
       existing = @jaba_attr_flag_definitions.find{|d| d.id == id}
       if existing
-        jaba_error("Attribute flag '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
+        jaba_error("Attribute flag '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_basename}.")
       end
       @jaba_attr_flag_definitions << JabaDefinition.new(id, block, caller(2, 1)[0])
       nil
@@ -324,7 +326,7 @@ module JABA
       validate_id(id)
       existing = @jaba_type_definitions.find{|d| d.id == id}
       if existing
-        jaba_error("Type '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
+        jaba_error("Type '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_basename}.")
       end
       @jaba_type_definitions << JabaTypeDefinition.new(id, block, caller(2, 1)[0])
     end
@@ -350,7 +352,7 @@ module JABA
 
       existing = get_shared_definition(id, fail_if_not_found: false)
       if existing
-        jaba_error("Shared definition '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
+        jaba_error("Shared definition '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_basename}.")
       end
 
       @shared_definition_lookup[id] = JabaDefinition.new(id, block, caller(2, 1)[0])
@@ -369,7 +371,7 @@ module JABA
 
       existing = get_instance_definition(type_id, id, fail_if_not_found: false)
       if existing
-        jaba_error("Type instance '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
+        jaba_error("Type instance '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_basename}.")
       end
       
       d = JabaInstanceDefinition.new(id, type_id, block, caller(2, 1)[0])
@@ -385,7 +387,7 @@ module JABA
       log "  Defining defaults [id=#{id}]"
       existing = @default_definitions.find {|d| d.id == id}
       if existing
-        jaba_error("Defaults block '#{id.inspect}' multiply defined. See #{existing.src_loc_basename}.")
+        jaba_error("Defaults block '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_basename}.")
       end
       @default_definitions << JabaDefinition.new(id, block, caller(2, 1)[0])
       nil
@@ -617,7 +619,6 @@ module JABA
 
       @output[:version] = '1.0'
       @output[:generated] = @generated
-      @output[:warnings] = @warnings
 
       if input.dump_output?
         @generators.each do |g|
@@ -671,7 +672,7 @@ module JABA
     def get_attribute_flag(id)
       f = @jaba_attr_flags.find {|af| af.definition_id == id}
       if !f
-        jaba_error("'#{id.inspect}' is an invalid flag. Valid flags: #{@jaba_attr_flags.map(&:definition_id)}")
+        jaba_error("'#{id.inspect_unquoted}' is an invalid flag. Valid flags: #{@jaba_attr_flags.map(&:definition_id)}")
       end
       f
     end
@@ -856,7 +857,6 @@ module JABA
     def make_jaba_error(msg, syntax: false, callstack: nil, warn: false, user_error: false)
       msg = msg.capitalize_first if msg.split.first !~ /_/
       
-      lines = []
       error_line = nil
 
       if syntax
@@ -868,11 +868,20 @@ module JABA
         #
         msg = msg.sub(/^.* syntax error, /, '')
       else
-        cs = Array(callstack || caller)
+        # Clean up callstack which could be in 'caller' form or 'caller_locations' form. In the case of caller remove the
+        # unwanted ':in ...' suffix.
+        #
+        backtrace = Array(callstack || caller).map do |l|
+          if l.is_a?(::Thread::Backtrace::Location)
+            "#{l.absolute_path}:#{l.lineno}"
+          else
+            l.sub(/:in .*/, '')
+          end
+        end
 
         # Extract any lines in the callstack that contain references to definition source files.
         #
-        lines = cs.select {|c| @definition_src_files.any? {|sf| c.include?(sf)}}
+        lines = backtrace.select {|c| @definition_src_files.any? {|sf| c.include?(sf)}}
         
         # If no references to definition files assume the error came from internal library code and raise a RuntimeError,
         # unless its specifically flagged as a user error, which can happen when validating jaba input, before any
@@ -888,14 +897,10 @@ module JABA
               else
                 RuntimeError.new(msg)
               end
-          e.set_backtrace(cs)
+          e.set_backtrace(backtrace)
           return e
         end
         
-        # Clean up lines so they only contain file and line information and not the additional ':in ...' that ruby
-        # includes. This is not useful in definition errors.
-        #
-        lines.map! {|l| l.sub(/:in .*/, '')}
         error_line = lines[0]
       end
 
