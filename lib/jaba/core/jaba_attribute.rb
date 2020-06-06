@@ -50,8 +50,7 @@ module JABA
     end
     
     ##
-    # Given a path in ruby 'backtrace' format, eg dir/file.rb:12, returns file.rb:12. Can't use the usual File.basename as it
-    # strips the :12. Used in error messages.
+    # Returns file and line number but using file basename instead of full path.
     #
     def last_call_loc_basename
       "#{@last_call_location.path.basename}:#{@last_call_location.lineno}"

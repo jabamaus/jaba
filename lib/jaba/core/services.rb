@@ -113,7 +113,7 @@ module JABA
 
       @top_level_api = JabaTopLevelAPI.new(self)
 
-      @default_attr_type = JabaAttributeType.new(self, JabaDefinition.new(nil, nil, caller(0, 1)[0])).freeze
+      @default_attr_type = JabaAttributeType.new(self, JabaDefinition.new(nil, nil, caller_locations(0, 1)[0])).freeze
       @file_manager = FileManager.new(self)
     end
 
@@ -300,7 +300,7 @@ module JABA
       if existing
         jaba_error("Attribute type '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_basename}.")
       end
-      @jaba_attr_type_definitions << JabaDefinition.new(id, block, caller(2, 1)[0])
+      @jaba_attr_type_definitions << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
       nil
     end
 
@@ -314,7 +314,7 @@ module JABA
       if existing
         jaba_error("Attribute flag '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_basename}.")
       end
-      @jaba_attr_flag_definitions << JabaDefinition.new(id, block, caller(2, 1)[0])
+      @jaba_attr_flag_definitions << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
       nil
     end
 
@@ -328,7 +328,7 @@ module JABA
       if existing
         jaba_error("Type '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_basename}.")
       end
-      @jaba_type_definitions << JabaTypeDefinition.new(id, block, caller(2, 1)[0])
+      @jaba_type_definitions << JabaTypeDefinition.new(id, block, caller_locations(2, 1)[0])
     end
     
     ##
@@ -337,7 +337,7 @@ module JABA
       jaba_error("id is required") if id.nil?
       log "  Opening type [id=#{id}]"
       jaba_error("a block is required") if !block_given?
-      @jaba_open_definitions << JabaTypeDefinition.new(id, block, caller(2, 1)[0])
+      @jaba_open_definitions << JabaTypeDefinition.new(id, block, caller_locations(2, 1)[0])
       nil
     end
     
@@ -355,7 +355,7 @@ module JABA
         jaba_error("Shared definition '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_basename}.")
       end
 
-      @shared_definition_lookup[id] = JabaDefinition.new(id, block, caller(2, 1)[0])
+      @shared_definition_lookup[id] = JabaDefinition.new(id, block, caller_locations(2, 1)[0])
       nil
     end
 
@@ -374,7 +374,7 @@ module JABA
         jaba_error("Type instance '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_basename}.")
       end
       
-      d = JabaInstanceDefinition.new(id, type_id, block, caller(2, 1)[0])
+      d = JabaInstanceDefinition.new(id, type_id, block, caller_locations(2, 1)[0])
       @instance_definition_lookup.push_value(type_id, d)
       @instance_definitions << d
       nil
@@ -389,7 +389,7 @@ module JABA
       if existing
         jaba_error("Defaults block '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_basename}.")
       end
-      @default_definitions << JabaDefinition.new(id, block, caller(2, 1)[0])
+      @default_definitions << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
       nil
     end
 
@@ -868,20 +868,23 @@ module JABA
         #
         msg = msg.sub(/^.* syntax error, /, '')
       else
-        # Clean up callstack which could be in 'caller' form or 'caller_locations' form. In the case of caller remove the
-        # unwanted ':in ...' suffix.
+        # Clean up callstack which could be in 'caller' form or 'caller_locations' form.
         #
         backtrace = Array(callstack || caller).map do |l|
           if l.is_a?(::Thread::Backtrace::Location)
             "#{l.absolute_path}:#{l.lineno}"
           else
-            l.sub(/:in .*/, '')
+            l
           end
         end
 
         # Extract any lines in the callstack that contain references to definition source files.
         #
         lines = backtrace.select {|c| @definition_src_files.any? {|sf| c.include?(sf)}}
+
+        # remove the unwanted ':in ...' suffix from user level definition errors
+        #
+        lines.map!{|l| l.sub(/:in .*/, '')}
         
         # If no references to definition files assume the error came from internal library code and raise a RuntimeError,
         # unless its specifically flagged as a user error, which can happen when validating jaba input, before any

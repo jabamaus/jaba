@@ -43,7 +43,7 @@ module JABA
       validate_id(id)
       id = id.to_sym
       
-      db = JabaDefinition.new(id, block, caller(2, 1)[0])
+      db = JabaDefinition.new(id, block, caller_locations(2, 1)[0])
       ad = JabaAttributeDefinition.new(@services, db, type, variant, self)
       
       @attribute_defs << ad

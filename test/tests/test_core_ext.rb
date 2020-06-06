@@ -155,21 +155,6 @@ module JABA
         '././a/b/../../.'.to_absolute(clean: true).must_equal(cwd)
       end
 
-      it 'supports last_path_component' do
-        'a'.last_path_component.must_equal('a')
-        'a/b'.last_path_component.must_equal('b')
-        'a/b/'.last_path_component.must_equal('b')
-        'a\\b\\'.last_path_component.must_equal('b')
-        'a/b.c'.last_path_component.must_equal('b.c')
-        'a/b.c.d'.last_path_component.must_equal('b.c.d')
-        ''.last_path_component.must_equal('')
-        '/'.last_path_component.must_equal('/')
-        'C:'.last_path_component.must_equal('C:')
-        'C:/'.last_path_component.must_equal('C:')
-        '../a.b'.last_path_component.must_equal('a.b')
-        'a/b.c:12'.last_path_component.must_equal('b.c:12') # test works with ruby source file location
-      end
-
       it 'supports quote!' do
         'p'.quote!.must_equal('"p"')
         '"p"'.quote!.must_equal('"p"')

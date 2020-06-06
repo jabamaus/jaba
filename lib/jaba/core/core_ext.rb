@@ -187,19 +187,6 @@ module JABACoreExt
     end
 
     ##
-    # Very must like basename but doesn't clean up last component, eg 'dir/file.rb:12'.last_path_component
-    # will return 'file.rb:12', and so works with ruby source locations whereas 'dir/file.rb:12'.basename
-    # returns 'file.rb'. Slower than basename so prefer the latter.
-    #
-    def last_path_component
-      if size > 1
-        split(/[\/\\]/).last
-      else
-        self
-      end
-    end
-
-    ##
     #
     def basename
       File.basename(self)

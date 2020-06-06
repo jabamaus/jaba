@@ -13,6 +13,8 @@ module JABA
     attr_reader :id
     attr_reader :block
     attr_reader :source_location
+    attr_reader :source_file
+    attr_reader :source_line
     
     ##
     #
@@ -20,16 +22,15 @@ module JABA
       @id = id
       @block = block
       @source_location = source_location
-      i = @source_location.rindex(':in') # Remove unwanted ':in' string
-      @source_location.slice!(i..-1)
+      @source_file = @source_location.path
+      @source_line = @source_location.lineno
     end
 
     ##
-    # Given a path in ruby 'backtrace' format, eg dir/file.rb:12, returns file.rb:12. Can't use the usual File.basename as it
-    # strips the :12. Used in error messages.
+    # Returns file and line number but using file basename instead of full path.
     #
     def src_loc_basename
-      @source_location.last_path_component
+      "#{@source_file.basename}:#{@source_line}"
     end
 
   end
@@ -103,7 +104,6 @@ module JABA
       
       @jaba_type_id = jaba_type_id
       @jaba_type = nil
-      @source_file = @source_location[/^(.+):\d/, 1]
       @source_dir = @source_file.dirname
 
       define_hook(:generate)
