@@ -53,10 +53,14 @@ define :cpp do
     # Control flow attributes
     #
     attr :platform, type: :symbol do
+      title 'Target platform'
+      help 'Use for querying the current target platform'
       flags :read_only
     end
       
     attr :platform_ref, type: :reference do
+      title 'Target platform node'
+      help 'Use when access to platform attributes is required'
       referenced_type :platform
     end
   
@@ -78,11 +82,12 @@ define :cpp do
     end
     
     attr :projname, type: :string do
-      help 'Seeds file basename of project files. Defaults to <name><projsuffix>.'
-      default { "#{_ID}#{projname_suffix}" }
+      title 'Base name of project files'
+      help 'Defaults to <id><projsuffix>.'
+      default { "#{_ID}#{projsuffix}" }
     end
 
-    attr :projname_suffix, type: :string do
+    attr :projsuffix, type: :string do
       help 'Optional suffix to be applied to <projname>. Has no effect if <projname> is set explicitly.'
     end
 
