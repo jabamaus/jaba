@@ -147,7 +147,7 @@ module JABA
       if expected_file
         expected_line = find_line_number(expected_file, tag)
 
-        if out !~ /Warning at (.+):(\d+)/
+        if out !~ /Warning at (.+?):(\d+)/
           raise "couldn't extract file and line number from warning"
         end
         
