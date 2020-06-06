@@ -88,31 +88,6 @@ module JABA
       end
     end
 
-    it 'can be set' do
-      jaba do
-        define :test do
-          attr_hash :a
-        end
-        test :t do
-          # Test basic set
-          a :k, :v
-          a[:k].must_equal(:v)
-          
-          # Overwrite value
-          a :k, nil
-          a[:k].must_be_nil
-          
-          # Overwrite back to original
-          a :k, :v
-          a[:k].must_equal(:v)
-          
-          # Add key
-          a :k2, :v2
-          a[:k2].must_equal(:v2)
-        end
-      end
-    end
-
     it 'supports extending default value' do
       jaba do
         define :test do
