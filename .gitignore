@@ -1,6 +1,7 @@
 /test/tests/temp
 *.profile
 *.exe
+*.idb
 *.ilk
 *.log
 *.obj
