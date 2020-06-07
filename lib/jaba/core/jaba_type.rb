@@ -7,12 +7,11 @@ module JABA
   using JABACoreExt
   
   ##
-  # eg project/workspace/category etc.
   #
   class JabaType < JabaObject
 
     include PropertyMethods
-    
+
     # The type id given to the jaba type in define() method, whether a top level type or a subtype.
     # Contrast this with definition_id which will return the top level type's id even if it is called
     # on a subtype.
@@ -20,19 +19,23 @@ module JABA
     attr_reader :handle
     attr_reader :attribute_defs
     attr_reader :dependencies
-    attr_reader :generator
-    
+
     ##
     #
-    def initialize(services, definition, handle, generator)
+    def initialize(services, definition, handle)
       super(services, definition, JabaTypeAPI.new(self))
 
       @handle = handle
       @attribute_defs = []
-      @generator = generator
 
       define_property(:help)
-      define_array_property(:dependencies)
+      define_array_property(:dependencies) # TODO: validate explicitly specified deps
+    end
+
+    ##
+    #
+    def to_s
+      @handle.to_s
     end
 
     ##
@@ -55,14 +58,7 @@ module JABA
     ##
     #
     def define_sub_type(id, &block)
-      @services.make_type(id, @definition, sub_type: true, &block)
-      @dependencies << id
-    end
-
-    ##
-    #
-    def to_s
-      @handle.to_s
+      jaba_error("Sub type '#{handle.inspect_unquoted}' cannot have another subtype '#{id.inspect_unquoted}'")
     end
 
     ##
@@ -82,7 +78,31 @@ module JABA
       @dependencies.uniq!
       @dependencies.map! {|dep| @services.get_jaba_type(dep)}
     end
+
+  end
+
+  ##
+  # eg project/workspace/category etc.
+  #
+  class TopLevelJabaType < JabaType
+
+    attr_reader :generator
     
+    ##
+    #
+    def initialize(services, definition, handle, generator)
+      super(services, definition, handle)
+
+      @generator = generator
+    end
+
+    ##
+    #
+    def define_sub_type(id, &block)
+      @services.make_type(id, @definition, sub_type: true, &block)
+      @dependencies << id
+    end
+
   end
 
 end

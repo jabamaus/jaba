@@ -167,7 +167,6 @@ module JABA
             attr_array :platforms do
               flags :nosort, :required
             end
-
             define :tproject do
               attr :platform do
                 flags :read_only
@@ -179,11 +178,11 @@ module JABA
               attr_array :configs do
                 flags :required, :nosort
               end
+            end
               
-              define :test_config do
-                attr :config
-                attr :configname
-              end
+            define :test_config do
+              attr :config
+              attr :configname
             end
           end
 

@@ -432,28 +432,24 @@ module JABA
         jaba_error("'#{handle}' jaba type multiply defined")
       end
 
-      # Generator is only created if one exists for the type, otherwise it is nil
-      #
-      generator = nil
-      if !sub_type
-        generator = make_generator(definition.id)
-      end
-
-      jt = JabaType.new(self, definition, handle, generator)
-
-      @jaba_types << jt
-      @jaba_type_lookup[handle] = jt
-
+      jt = nil
       if sub_type
+        jt = JabaType.new(self, definition, handle)
         if block_given?
           jt.eval_api_block(&block)
         end
       else
+        # Generator is only created if one exists for the type, otherwise it is nil
+        #
+        generator = make_generator(definition.id)
+        jt = TopLevelJabaType.new(self, definition, handle, generator)
         if definition.block
           jt.eval_api_block(&definition.block)
         end
       end
 
+      @jaba_types << jt
+      @jaba_type_lookup[handle] = jt
       jt
     end
 

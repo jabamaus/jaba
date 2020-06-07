@@ -227,12 +227,12 @@ module JABA
               referenced_type :platform
             end
             attr_array :hosts
-            define :testproj_main do
-              attr :host, type: :reference do
-                referenced_type :host
-              end
-              attr :path
+          end
+          define :testproj_main do
+            attr :host, type: :reference do
+              referenced_type :host
             end
+            attr :path
           end
         end
 
