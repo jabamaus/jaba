@@ -186,7 +186,7 @@ module JABA
 
         if !@default_block
           if attr_single? && incoming.is_a?(Enumerable)
-            @services.jaba_error("'#{definition_id}' attribute default must be a single value not a container")
+            @services.jaba_error("'#{definition_id}' attribute default must be a single value not a #{incoming.class}")
           elsif attr_array? && !incoming.array?
            @services.jaba_error("'#{definition_id}' array attribute default must be an array")
           elsif attr_hash? && !incoming.hash?

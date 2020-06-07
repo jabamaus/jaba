@@ -117,7 +117,7 @@ module JABA
       @value_options = key_val_args.empty? ? {} : Marshal.load(Marshal.dump(key_val_args))
 
       if new_value.is_a?(Enumerable)
-        @services.jaba_error("'#{@attr_def.definition_id}' must be a single value not a container")
+        @services.jaba_error("'#{@attr_def.definition_id}' must be a single value not a #{new_value.class}")
       end
 
       @flag_options.each do |f|
