@@ -70,6 +70,7 @@ if there are multiple attrs, with a warning.
 - Add 'underlying type' to attribute types? eg file.dir/src_spec are strings. Use this for extra
   validation and also to sort using casecmp
 - resolve issues around sorting with mixed type elements
+- Make it so that only top level jaba type can make its own sub types
 - Add an init callback to definitions?
 
 cpp :a do

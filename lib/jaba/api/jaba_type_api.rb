@@ -46,7 +46,7 @@ module JABA
     ##
     #
     def dependencies(*deps)
-      @jaba_type.set_property(:dependencies, deps)
+      @jaba_type.top_level_type.set_property(:dependencies, deps)
     end
 
     private

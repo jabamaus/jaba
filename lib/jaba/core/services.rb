@@ -112,7 +112,6 @@ module JABA
       @building_jaba_output = false
 
       @top_level_api = JabaTopLevelAPI.new(self)
-
       @default_attr_type = JabaAttributeType.new(self, JabaDefinition.new(nil, nil, caller_locations(0, 1)[0])).freeze
       @file_manager = FileManager.new(self)
     end
@@ -129,9 +128,10 @@ module JABA
 
       summary = String.new "Generated #{@generated.size} files, #{@added.size} added, #{@modified.size} modified in #{duration}"
       summary << " [dry run]" if input.dry_run?
-      @output[:summary] = summary
+
       log summary
 
+      @output[:summary] = summary
       @output[:warnings] = @warnings.uniq # Strip duplicate warnings
 
       log "Done! (#{duration})"
@@ -173,7 +173,6 @@ module JABA
       # Create JabaTypes and any associated Generators
       #
       @jaba_type_definitions.each do |d|
-        d.instance_variable_set(:@defaults_definition, get_defaults_definition(d.id))
         make_type(d.id, d)
       end
 
@@ -187,7 +186,10 @@ module JABA
       # type is added. JabaTypes are dependency order sorted to ensure that referenced JabaNodes are created
       # before the JabaNode that are referencing it.
       #
-      @jaba_types.each(&:resolve_dependencies)
+      @jaba_types.each do |jt|
+        jt.resolve_dependencies
+        jt.register_referenced_attributes
+      end
       
       begin
         @jaba_types.sort_topological!(:dependencies)
@@ -196,9 +198,6 @@ module JABA
         jaba_error("'#{err_type}' contains a cyclic dependency", callstack: err_type.definition.source_location)
       end
       
-      @jaba_type_definitions.each(&:register_referenced_attributes)
-
-
       # Now that the JabaTypes are dependency sorted, pass on the dependency ordering to the JabaNodes.
       # This is achieved by giving each JabaType an index and then sorting nodes based on this index.
       # The sort is stable so as to preserve the order that was specified in definition files.
@@ -260,12 +259,12 @@ module JABA
         n.each_attr do |a|
           a.process_flags
         end
+        
+        # Make all nodes read only from this point, to help catch mistakes
+        #
+        n.make_read_only
       end
-
-      # Make all nodes read only from this point, to help catch mistakes
-      #
-      @nodes.each(&:make_read_only)
-      
+     
       # Output definition input data as a json file, before generation. This is raw data as generated from the definitions.
       # Can be used for debugging and testing.
       #
@@ -328,7 +327,7 @@ module JABA
       if existing
         jaba_error("Type '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_basename}.")
       end
-      @jaba_type_definitions << JabaTypeDefinition.new(id, block, caller_locations(2, 1)[0])
+      @jaba_type_definitions << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
     end
     
     ##
@@ -337,7 +336,7 @@ module JABA
       jaba_error("id is required") if id.nil?
       log "  Opening type [id=#{id}]"
       jaba_error("a block is required") if !block_given?
-      @jaba_open_definitions << JabaTypeDefinition.new(id, block, caller_locations(2, 1)[0])
+      @jaba_open_definitions << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
       nil
     end
     
@@ -425,7 +424,7 @@ module JABA
     # creation in the case where a tree of nodes is created from a single definition. These JabaTypes
     # are created on the fly as attributes are added to the types.
     #
-    def make_type(handle, definition, sub_type: false, &block)
+    def make_type(handle, definition, parent: nil, &block)
       log "Instancing JabaType [handle=#{handle}]"
 
       if @jaba_type_lookup.key?(handle)
@@ -433,22 +432,26 @@ module JABA
       end
 
       jt = nil
-      if sub_type
-        jt = JabaType.new(self, definition, handle)
+
+      if parent
+        jt = JabaType.new(self, definition, handle, parent)
         if block_given?
           jt.eval_api_block(&block)
         end
       else
         # Generator is only created if one exists for the type, otherwise it is nil
         #
-        generator = make_generator(definition.id)
-        jt = TopLevelJabaType.new(self, definition, handle, generator)
+        g = make_generator(definition.id)
+        dd = get_defaults_definition(definition.id)
+
+        jt = TopLevelJabaType.new(self, definition, handle, g, dd)
+        @jaba_types  << jt
+
         if definition.block
           jt.eval_api_block(&definition.block)
         end
       end
 
-      @jaba_types << jt
       @jaba_type_lookup[handle] = jt
       jt
     end
@@ -474,7 +477,7 @@ module JABA
 
       log "#{'  ' * depth}Instancing node [type=#{type_id}, handle=#{handle}]"
 
-      if @node_lookup.key?(handle)
+      if node_from_handle(handle, fail_if_not_found: false)
         jaba_error("Duplicate node handle '#{handle}'")
       end
 
@@ -498,7 +501,7 @@ module JABA
         
         # Next execute defaults block if there is one defined for this type.
         #
-        defaults = @current_definition.jaba_type.definition.defaults_definition
+        defaults = jt.top_level_type.defaults_definition
         if defaults
           jn.eval_api_block(&defaults.block)
         end
@@ -522,6 +525,7 @@ module JABA
       node = attr.node
       rt = attr_def.referenced_type
       if ignore_if_same_type && rt == node.jaba_type.definition_id
+        # TODO: track for later to save having to iterate over all nodes and attributes
         return ref_node_id
       end
       make_handle_block = attr_def.get_property(:make_handle)

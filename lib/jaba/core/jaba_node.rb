@@ -214,7 +214,7 @@ module JABA
         a = get_attr(id, search: true, fail_if_not_found: false)
         
         if !a
-          attr_def = @jaba_type.definition.get_attr_def(id)
+          attr_def = @jaba_type.top_level_type.get_attr_def(id)
           if !attr_def
             jaba_error("'#{id}' attribute not defined")
           elsif attr_def.reference?
@@ -229,7 +229,7 @@ module JABA
         a = get_attr(id, search: false, fail_if_not_found: false)
         
         if !a
-          attr_def = @jaba_type.definition.get_attr_def(id)
+          attr_def = @jaba_type.top_level_type.get_attr_def(id)
           if !attr_def
             jaba_error("'#{id}' attribute not defined")
           elsif attr_def.jaba_type.definition != @jaba_type.definition

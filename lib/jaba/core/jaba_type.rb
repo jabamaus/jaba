@@ -18,24 +18,29 @@ module JABA
     #
     attr_reader :handle
     attr_reader :attribute_defs
-    attr_reader :dependencies
 
     ##
     #
-    def initialize(services, definition, handle)
+    def initialize(services, definition, handle, parent)
       super(services, definition, JabaTypeAPI.new(self))
 
       @handle = handle
+      @top_level_type = parent
       @attribute_defs = []
 
       define_property(:help)
-      define_array_property(:dependencies) # TODO: validate explicitly specified deps
     end
 
     ##
     #
     def to_s
       @handle.to_s
+    end
+
+    ##
+    #
+    def top_level_type
+      @top_level_type
     end
 
     ##
@@ -51,7 +56,7 @@ module JABA
       
       @attribute_defs << ad
 
-      @definition.register_attr_def(id, ad)
+      top_level_type.register_attr_def(id, ad)
       ad  
     end
 
@@ -70,6 +75,76 @@ module JABA
       end
     end
 
+  end
+
+  ##
+  # eg project/workspace/category etc.
+  #
+  class TopLevelJabaType < JabaType
+
+    attr_reader :generator
+    attr_reader :defaults_definition
+    attr_reader :dependencies
+
+    ##
+    #
+    def initialize(services, definition, handle, generator, defaults_definition)
+      super(services, definition, handle, self)
+
+      @generator = generator
+      @defaults_definition = defaults_definition
+      @attr_defs = {}
+
+      define_array_property(:dependencies) # TODO: validate explicitly specified deps
+    end
+
+    ##
+    #
+    def top_level_type
+      self
+    end
+
+    ##
+    #
+    def define_sub_type(id, &block)
+      @services.make_type(id, @definition, parent: self, &block)
+    end
+
+    ##
+    #
+    def get_attr_def(id)
+      @attr_defs[id]
+    end
+
+    ##
+    #
+    def register_attr_def(id, attr_def)
+      if @attr_defs.key?(id)
+        attr_def.jaba_error("'#{id}' attribute multiply defined in '#{definition_id}'")
+      end
+      @attr_defs[id] = attr_def
+    end
+
+    ##
+    #
+    def register_referenced_attributes
+      to_register = []
+      @attr_defs.each do |id, attr_def|
+        if attr_def.reference?
+          rt_id = attr_def.referenced_type
+          if rt_id != definition_id
+            jt = attr_def.services.get_jaba_type(rt_id)
+            jt.attribute_defs.each do |d|
+              if d.has_flag?(:expose)
+                to_register << d
+              end
+            end
+          end
+        end
+      end
+      to_register.each{|d| register_attr_def(d.definition_id, d)}
+    end
+
     ##
     #
     def resolve_dependencies
@@ -79,29 +154,6 @@ module JABA
       @dependencies.map! {|dep| @services.get_jaba_type(dep)}
     end
 
-  end
-
-  ##
-  # eg project/workspace/category etc.
-  #
-  class TopLevelJabaType < JabaType
-
-    attr_reader :generator
-    
-    ##
-    #
-    def initialize(services, definition, handle, generator)
-      super(services, definition, handle)
-
-      @generator = generator
-    end
-
-    ##
-    #
-    def define_sub_type(id, &block)
-      @services.make_type(id, @definition, sub_type: true, &block)
-      @dependencies << id
-    end
 
   end
 
