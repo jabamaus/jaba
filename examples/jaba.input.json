@@ -289,6 +289,9 @@
                       "inc": [
 
                       ],
+                      "nowarn": [
+
+                      ],
                       "targetname": "MyApp",
                       "targetprefix": "",
                       "targetsuffix": "",
@@ -309,6 +312,7 @@
                         "TargetExt": ".exe",
                         "AdditionalIncludeDirectories": null,
                         "AdditionalOptions": null,
+                        "DisableSpecificWarnings": null,
                         "ExceptionHandling": "Sync",
                         "PreprocessorDefinitions": null,
                         "RuntimeTypeInfo": true,
@@ -340,6 +344,9 @@
                       "inc": [
 
                       ],
+                      "nowarn": [
+
+                      ],
                       "targetname": "MyApp",
                       "targetprefix": "",
                       "targetsuffix": "",
@@ -360,6 +367,7 @@
                         "TargetExt": ".exe",
                         "AdditionalIncludeDirectories": null,
                         "AdditionalOptions": null,
+                        "DisableSpecificWarnings": null,
                         "ExceptionHandling": "Sync",
                         "PreprocessorDefinitions": null,
                         "RuntimeTypeInfo": true,
@@ -397,6 +405,9 @@
                       "inc": [
 
                       ],
+                      "nowarn": [
+
+                      ],
                       "targetname": "MyApp",
                       "targetprefix": "",
                       "targetsuffix": "",
@@ -417,6 +428,7 @@
                         "TargetExt": ".exe",
                         "AdditionalIncludeDirectories": null,
                         "AdditionalOptions": null,
+                        "DisableSpecificWarnings": null,
                         "ExceptionHandling": "Sync",
                         "PreprocessorDefinitions": null,
                         "RuntimeTypeInfo": true,
@@ -448,6 +460,9 @@
                       "inc": [
 
                       ],
+                      "nowarn": [
+
+                      ],
                       "targetname": "MyApp",
                       "targetprefix": "",
                       "targetsuffix": "",
@@ -468,6 +483,7 @@
                         "TargetExt": ".exe",
                         "AdditionalIncludeDirectories": null,
                         "AdditionalOptions": null,
+                        "DisableSpecificWarnings": null,
                         "ExceptionHandling": "Sync",
                         "PreprocessorDefinitions": null,
                         "RuntimeTypeInfo": true,
@@ -565,6 +581,9 @@
                       "inc": [
 
                       ],
+                      "nowarn": [
+
+                      ],
                       "targetname": "MyLib",
                       "targetprefix": "",
                       "targetsuffix": "",
@@ -585,6 +604,7 @@
                         "TargetExt": ".lib",
                         "AdditionalIncludeDirectories": null,
                         "AdditionalOptions": null,
+                        "DisableSpecificWarnings": null,
                         "ExceptionHandling": "Sync",
                         "PreprocessorDefinitions": null,
                         "RuntimeTypeInfo": true,
@@ -615,6 +635,9 @@
                       "inc": [
 
                       ],
+                      "nowarn": [
+
+                      ],
                       "targetname": "MyLib",
                       "targetprefix": "",
                       "targetsuffix": "",
@@ -635,6 +658,7 @@
                         "TargetExt": ".lib",
                         "AdditionalIncludeDirectories": null,
                         "AdditionalOptions": null,
+                        "DisableSpecificWarnings": null,
                         "ExceptionHandling": "Sync",
                         "PreprocessorDefinitions": null,
                         "RuntimeTypeInfo": true,
@@ -671,6 +695,9 @@
                       "inc": [
 
                       ],
+                      "nowarn": [
+
+                      ],
                       "targetname": "MyLib",
                       "targetprefix": "",
                       "targetsuffix": "",
@@ -691,6 +718,7 @@
                         "TargetExt": ".lib",
                         "AdditionalIncludeDirectories": null,
                         "AdditionalOptions": null,
+                        "DisableSpecificWarnings": null,
                         "ExceptionHandling": "Sync",
                         "PreprocessorDefinitions": null,
                         "RuntimeTypeInfo": true,
@@ -721,6 +749,9 @@
                       "inc": [
 
                       ],
+                      "nowarn": [
+
+                      ],
                       "targetname": "MyLib",
                       "targetprefix": "",
                       "targetsuffix": "",
@@ -741,6 +772,7 @@
                         "TargetExt": ".lib",
                         "AdditionalIncludeDirectories": null,
                         "AdditionalOptions": null,
+                        "DisableSpecificWarnings": null,
                         "ExceptionHandling": "Sync",
                         "PreprocessorDefinitions": null,
                         "RuntimeTypeInfo": true,
