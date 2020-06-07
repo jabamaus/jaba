@@ -196,12 +196,12 @@ module JABA
         end
         test :t do
           a [5, 4, 2, 1, 3]
-          b ['e', 'c', 'a', 'A', 'C']
+          b ['e', 'c', :a, 'a', 'A', :C] # sorts case-insensitively
           c [10.34, 3, 800.1, 0.01, -1]
           d [:e, :c, :a, :A, :C]
           generate do
             attrs.a.must_equal [1, 2, 3, 4, 5]
-            attrs.b.must_equal ['a', 'A', 'c', 'C', 'e']
+            attrs.b.must_equal [:a, 'a', 'A', 'c', :C, 'e']
             attrs.c.must_equal [-1, 0.01, 3, 10.34, 800.1]
             attrs.d.must_equal [:a, :A, :c, :C, :e]
           end
