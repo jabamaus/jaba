@@ -535,7 +535,14 @@ module JABA
         "#{rt}|#{ref_node_id}"
       end
       ref_node = node_from_handle(handle, callstack: attr.last_call_location)
-      node.add_node_reference(ref_node)
+      
+      # Don't need to track node references when resolving references between the same types as this
+      # happens after all the nodes have been set up, by which time the functionality is not needed.
+      # The node references are used in the attribute search path in JabaNode#get_attr.
+      #
+      if ignore_if_same_type 
+        node.add_node_reference(ref_node)
+      end
       ref_node
     end
 
