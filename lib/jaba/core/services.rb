@@ -521,15 +521,32 @@ module JABA
     ##
     # Given a reference attribute and the definition id it is pointing at, returns the node instance.
     #
-    def resolve_reference(ref_attr, ref_node_id)
-      ad = ref_attr.attr_def
-      make_handle_block = ad.get_property(:make_handle)
-      handle = if make_handle_block
-        ref_attr.node.eval_api_block(ref_node_id, &make_handle_block)
-      else
-        "#{ad.referenced_type}|#{ref_node_id}"
+    def resolve_reference(attr, ref_node_id, ignore_if_same_type: false)
+      attr_def = attr.attr_def
+      node = attr.node
+      rt = attr_def.referenced_type
+      if ignore_if_same_type && rt == node.jaba_type.definition_id
+        return ref_node_id
       end
-      node_from_handle(handle, callstack: ref_attr.last_call_location)
+      make_handle_block = attr_def.get_property(:make_handle)
+      handle = if make_handle_block
+        node.eval_api_block(ref_node_id, &make_handle_block)
+      else
+        "#{rt}|#{ref_node_id}"
+      end
+      ref_node = node_from_handle(handle, callstack: attr.last_call_location)
+      node.add_node_reference(ref_node)
+      ref_node
+    end
+
+    ##
+    #
+    def node_from_handle(handle, fail_if_not_found: true, callstack: nil)
+      n = @node_lookup[handle]
+      if !n && fail_if_not_found
+        jaba_error("Node with handle '#{handle}' not found", callstack: callstack)
+      end
+      n
     end
 
     ##
@@ -725,16 +742,6 @@ module JABA
       @default_definitions.find {|d| d.id == id}
     end
 
-    ##
-    #
-    def node_from_handle(handle, fail_if_not_found: true, callstack: nil)
-      n = @node_lookup[handle]
-      if !n && fail_if_not_found
-        jaba_error("Node with handle '#{handle}' not found", callstack: callstack)
-      end
-      n
-    end
-    
     ##
     #
     def execute_definitions(file = nil, &block)

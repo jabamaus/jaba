@@ -8,7 +8,6 @@ To do:
 - Have a way of globally setting default for :platforms, :hosts and :configs (and for clearing)
 - make file/dir attrs cleanpath
 - test subtypes, eg opening
-- add id as a read only attr to all types
 - sortable arrays must be of same type
 - Do something with help strings
 - check that only arrays and hashes can be exported
@@ -49,9 +48,13 @@ if there are multiple attrs, with a warning.
 
   - check for duplicate filenames at generator level, with proper error reporting
   - Make contents of attr def defaults overidable by user, including calling super
-  - Make _ID be id of the definition the code is in, such that it works even inside
-    a block that is being executed in the context of a different jaba object
-  - give attributes a 'title' and a 'help' string. title can be used when dumping help, help string can be used in error msgs
+
+  - Sort out _ID
+    - Make _ID be id of the definition the code is in, such that it works even inside
+      a block that is being executed in the context of a different jaba object
+    - rename existing _ID to id
+
+- give attributes a 'title' and a 'help' string. title can be used when dumping help, help string can be used in error msgs
 - Stop profiling test as a whole. Add a stresstest feature.
 - Ability to reverse engineer jaba definitions from existing vsprojects would be awesome
 - Should 'absolute' paths starting with / force 'root' to be disregarded and make paths relative to definition file or
@@ -64,6 +67,16 @@ if there are multiple attrs, with a warning.
 - Think about a 'configure' system. Eg could have a configure block eg for ruby jaba file it might be
 - Bring back boolean reader, eg if debug?
 - Consider whether arrays should be allowed to be set with single value. I'm thinking not again.
+- Add 'underlying type' to attribute types? eg file.dir/src_spec are strings. Use this for extra
+  validation and also to sort using casecmp
+- resolve issues around sorting with mixed type elements
+- Add an init callback to definitions?
+
+cpp :a do
+  _init do
+     make_file('a')
+  end
+end
 
 configure do
   attr :extensions, type: :multichoice do
@@ -102,3 +115,12 @@ end
 * Jaba does not try to be a complete cross platform 'API' to underlying build systems. It recognises where there is obvious commonality,
 eg include paths, defines, libs, etc, but where things diverge across systems you can simply drop down and address that system directly,
 because defining conditional data is very easy.
+* Jaba aims to be lightweight. An executable and a bundle of ruby source files. Without sacrificing power and fleixibilty.
+* Jaba aims to excel at validation and error reporting.
+
+FAQ
+Q: Why is Jaba so aggressive with sorting and stripping duplicates?
+A: Because Jaba cares a lot about a clean build, and about deterministic minimum noise generation.
+
+Q: Why is Jaba library code style not very 'ruby'?
+A: The code is written in a style that is the easiest to step through in an IDE debugger, which is an essential tool in the development process

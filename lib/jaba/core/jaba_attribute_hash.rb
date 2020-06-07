@@ -40,13 +40,17 @@ module JABA
           @services.jaba_error("Cannot read uninitialised '#{definition_id}' attribute")
         end
       end
-      @hash.transform_values {|e| e.value(api_call_loc)}.freeze  # read only, enforce by freezing
+      values = @hash.transform_values {|e| e.value(api_call_loc)}
+      if !@attr_def.reference? # read only, enforce by freezing, unless value is a node
+        values.freeze
+      end
+      values
     end
     
     ##
     # TODO: handle overwriting
-    def set(*args, api_call_loc: nil, **keyvalue_args, &block)
-      @last_call_location = api_call_loc
+    def set(*args, __api_call_loc: nil, **keyvalue_args, &block)
+      @last_call_location = __api_call_loc
       
       # TODO: validate only key passed if block given
       if args.size < 2 && !block_given?
@@ -60,7 +64,7 @@ module JABA
       val = block_given? ? @node.eval_api_block(&block) : args.shift
 
       elem = JabaAttributeElement.new(@services, @attr_def, @node)
-      elem.set(val, *args, api_call_loc: api_call_loc, __key: key, **keyvalue_args)
+      elem.set(val, *args, __api_call_loc: __api_call_loc, __key: key, **keyvalue_args)
 
       @hash[key] = elem
       @set = true
@@ -90,7 +94,7 @@ module JABA
       val = Marshal.load(Marshal.dump(other.raw_value))
 
       elem = JabaAttributeElement.new(@services, @attr_def, @node)
-      elem.set(val, *f_options, validate: false, resolve_ref: false, **value_options)
+      elem.set(val, *f_options, validate: false, __resolve_ref: false, **value_options)
       
       @hash[key] = elem
     end

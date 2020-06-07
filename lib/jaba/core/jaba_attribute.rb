@@ -95,13 +95,13 @@ module JABA
     
     ##
     #
-    def set(*args, api_call_loc: nil, validate: true, resolve_ref: true, **key_val_args, &block)
-      @last_call_location = api_call_loc
+    def set(*args, __api_call_loc: nil, validate: true, __resolve_ref: true, **key_val_args, &block)
+      @last_call_location = __api_call_loc
 
       # Check for read only if calling from definitions, or if not calling from definitions but from library code,
       # allow setting read only attrs the first time, in order to initialise them.
       #
-      if (api_call_loc || @set) && !@node.allow_set_read_only_attrs?
+      if (__api_call_loc || @set) && !@node.allow_set_read_only_attrs?
         if @attr_def.has_flag?(:read_only)
           @services.jaba_error("'#{@attr_def.definition_id}' attribute is read only")
         end
@@ -162,14 +162,21 @@ module JABA
         end
       end
 
+      @value = new_value
+
       if @attr_def.reference?
-        @value = resolve_reference(new_value)
+        if __resolve_ref
+          # Only resolve reference immediately if referencing a different type to this node's type. This is because not all nodes
+          # of the same type will have been created by this point whereas nodes of a different type will all have been created
+          # due to having been dependency sorted. References to the same type are resolved after all nodes have been created.
+          #
+          @value = @services.resolve_reference(self, new_value, ignore_if_same_type: true)
+        end
       else
-        @value = new_value
         @value.freeze # Prevents value from being changed directly after it has been returned by 'value' method
       end
     end
-    
+
     ##
     #
     def <=>(other)
@@ -230,30 +237,6 @@ module JABA
       # Nothing yet
     end
 
-    private
- 
-    ##
-    #
-    def resolve_reference(value)
-      # Get the type id of the referenced node
-      #
-      rt = @attr_def.referenced_type
-      
-      # Only resolve reference immediately if referencing a different type to this node's type. This is because not all nodes
-      # of the same type will have been created by this point whereas nodes of a different type will all have been created
-      # due to having been dependency sorted. References to the same type are resolved after all nodes have been created.
-      #
-      if rt != @node.jaba_type.definition_id
-        ref_node = @services.resolve_reference(self, value)
-
-        # Hang the referenced node of this one. It is used in JabaNode#get_attr when searching for readable attributes.
-        #
-        @node.referenced_nodes << ref_node
-        value = ref_node
-      end
-      value
-    end
-    
   end
 
   ##

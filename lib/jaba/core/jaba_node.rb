@@ -13,7 +13,6 @@ module JABA
     attr_reader :jaba_type
     attr_reader :attrs
     attr_reader :attrs_read_only
-    attr_reader :referenced_nodes
     attr_reader :children
     attr_reader :depth
     
@@ -77,6 +76,13 @@ module JABA
       else
         @handle
       end
+    end
+
+    ##
+    #
+    def add_node_reference(node)
+      # TODO: handle duplicates
+      @referenced_nodes << node
     end
 
     ##
@@ -197,7 +203,7 @@ module JABA
     # which act as options. eg my_attr 'val', :export, :exclude would make args equal to ['val', :opt1, :opt2]. If
     # however the value being passed in is an array it could be eg [['val1', 'val2'], :opt1, :opt2].
     #  
-    def handle_attr(id, *args, api_call_loc: nil, _read_only: false, **keyvalue_args, &block)
+    def handle_attr(id, *args, __api_call_loc: nil, __read_only: false, **keyvalue_args, &block)
       # First determine if it is a set or a get operation
       #
       is_get = (args.empty? && keyvalue_args.empty? && !block_given?)
@@ -218,7 +224,7 @@ module JABA
           return nil
         end
         
-        return a.value(api_call_loc)
+        return a.value(__api_call_loc)
       else
         a = get_attr(id, search: false, fail_if_not_found: false)
         
@@ -232,11 +238,11 @@ module JABA
           return nil
         end
 
-        if _read_only || @read_only
+        if __read_only || @read_only
           jaba_error("'#{id}' attribute is read only")
         end
         
-        a.set(*args, api_call_loc: api_call_loc, **keyvalue_args, &block)
+        a.set(*args, __api_call_loc: __api_call_loc, **keyvalue_args, &block)
         return nil
       end
     end
@@ -302,8 +308,14 @@ module JABA
     
     ##
     #
+    def _ID
+      @node.definition_id
+    end
+    
+    ##
+    #
     def method_missing(attr_id, *args, **keyvalue_args, &block)
-      @node.handle_attr(attr_id, *args, _read_only: @read_only, **keyvalue_args, &block)
+      @node.handle_attr(attr_id, *args, __read_only: @read_only, **keyvalue_args, &block)
     end
    
   end
