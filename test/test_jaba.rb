@@ -29,13 +29,13 @@ module JABA
 
     ##
     #
-    def jaba(load_paths: nil, dry_run: false, dump_output: false, cpp_app: false, &block)
+    def jaba(load_paths: nil, dry_run: false, dump_output: false, cpp_app: false, cpp_defaults: false, &block)
       op = JABA.run do |c|
         c.load_paths = load_paths
         c.definitions(&block) if block_given?
         td = temp_dir
         c.jaba_output_file = "#{td}/jaba.output.json"
-        if cpp_app
+        if cpp_app || cpp_defaults
           # force dump output to ensure that output paths are made relative to the temp_dir and therefore the
           # root, for easy testing. If the output is not written to disk the paths are left as absolute.
           dump_output = true
@@ -46,7 +46,7 @@ module JABA
               archs [:x86, :x86_64]
               configs [:Debug, :Release]
               root td
-              type :app
+              type :app if cpp_app
             end
           end
         end
@@ -80,13 +80,21 @@ module JABA
     
     ##
     #
+    def make_dir(*dirs)
+      dirs.each do |dir|
+        d = dir.absolute_path? ? dir : "#{temp_dir}/#{dir}"
+        if !File.exist?(d)
+          FileUtils.makedirs(d)
+        end
+      end
+    end
+
+    ##
+    #
     def make_file(*fns)
       fns.each do |fn|
         fn = "#{temp_dir}/#{fn}"
-        dir = fn.dirname
-        if !File.exist?(dir)
-          FileUtils.makedirs(dir)
-        end
+        make_dir(fn.dirname)
         IO.write(fn, "test\n")
       end
     end
