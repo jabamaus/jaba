@@ -75,6 +75,7 @@ module JABA
       end
     end
 
+    # TODO: test exporting references
     it 'supports exporting array attributes to dependents' do
       proj = jaba(dry_run: true, cpp_app: true) do
         cpp :app do
