@@ -152,6 +152,12 @@ module JABA
 
     ##
     #
+    def reference?
+      @type_id == :reference
+    end
+    
+    ##
+    #
     def pre_property_set(id, incoming)
       case id
       when :flags

@@ -162,7 +162,7 @@ module JABA
         end
       end
 
-      if @attr_def.type_id == :reference
+      if @attr_def.reference?
         @value = resolve_reference(new_value)
       else
         @value = new_value
