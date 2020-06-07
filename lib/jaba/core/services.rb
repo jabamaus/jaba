@@ -525,7 +525,7 @@ module JABA
       end
       make_handle_block = attr_def.get_property(:make_handle)
       handle = if make_handle_block
-        node.eval_api_block(ref_node_id, &make_handle_block)
+        "#{rt}|#{node.eval_api_block(ref_node_id, &make_handle_block)}"
       else
         "#{rt}|#{ref_node_id}"
       end

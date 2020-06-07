@@ -72,6 +72,7 @@ if there are multiple attrs, with a warning.
 - resolve issues around sorting with mixed type elements
 - Make it so that only top level jaba type can make its own sub types
 - Add an init callback to definitions?
+- Make sure only one globals can be created
 
 cpp :a do
   _init do

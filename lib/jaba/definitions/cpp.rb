@@ -70,7 +70,7 @@ define :cpp do
       help 'Specify project dependencies. List of ids of other cpp definitions.'
       referenced_type :cpp
       make_handle do |id|
-        "cpp|#{id}|#{host}|#{platform}"
+        "#{id}|#{host}|#{platform}"
       end
     end
 
