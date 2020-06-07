@@ -107,6 +107,7 @@ module JABA
       @node_lookup = {}
       @root_nodes = []
       @null_nodes = {}
+      @reference_attrs_to_resolve = []
       
       @in_attr_default_block = false
       @building_jaba_output = false
@@ -237,15 +238,9 @@ module JABA
 
       # Resolve references
       #
-      @nodes.each do |n|
-        n.visit_attr(type: :reference) do |a|
-          a.map_value! do |ref|
-            if ref && !ref.is_a?(JabaNode)
-              resolve_reference(a, ref)
-            else
-              ref
-            end
-          end
+      @reference_attrs_to_resolve.each do |a|
+        a.map_value! do |ref|
+          resolve_reference(a, ref)
         end
       end
       
@@ -525,7 +520,7 @@ module JABA
       node = attr.node
       rt = attr_def.referenced_type
       if ignore_if_same_type && rt == node.jaba_type.definition_id
-        # TODO: track for later to save having to iterate over all nodes and attributes
+        @reference_attrs_to_resolve << attr
         return ref_node_id
       end
       make_handle_block = attr_def.get_property(:make_handle)
