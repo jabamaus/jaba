@@ -46,6 +46,9 @@ module JABA
       validate_id(id)
       id = id.to_sym
       
+      # TODO: why does attribute definition require its own definition but sub types require to
+      # not have their own definition? It works but is inconsistent
+      #
       db = JabaDefinition.new(id, block, caller_locations(2, 1)[0])
       ad = JabaAttributeDefinition.new(@services, db, type, variant, self)
       
