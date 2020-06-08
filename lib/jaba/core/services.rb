@@ -219,8 +219,8 @@ module JABA
       # Process instance definitions and assign them to a generator
       #
       @instance_definitions.each do |d|
-        g = get_generator(d.jaba_type_id)
-        g.register_instance_definition(d)
+        jt = get_jaba_type(d.jaba_type_id, callstack: d.source_location)
+        jt.generator.register_instance_definition(d)
       end
 
       # Process generators
