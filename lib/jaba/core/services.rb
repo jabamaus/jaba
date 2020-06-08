@@ -531,6 +531,7 @@ module JABA
 
       if input.dump_output?
         @generators.each do |g|
+          next if g.is_a?(DefaultGenerator)
           g_root = {}
 
           # Namespace each generator. Each node handle prefix is removed to acount for this, eg cpp|MyApp|vs2019|windows
