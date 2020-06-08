@@ -253,6 +253,73 @@ module JABA
     
     ##
     #
+    def make_generator(id)
+      gen_classname = "#{id.to_s.capitalize_first}Generator"
+      
+      klass = if !JABA.const_defined?(gen_classname)
+        DefaultGenerator
+      else
+        JABA.const_get(gen_classname)
+      end
+
+      if klass.superclass != Generator
+        jaba_error "#{klass} must inherit from Generator class"
+      end
+
+      klass.new(self, id)
+    end
+
+    ##
+    # JabaTypes can have some of their attributes split of into separate JabaTypes to help with node
+    # creation in the case where a tree of nodes is created from a single definition. These JabaTypes
+    # are created on the fly as attributes are added to the types.
+    #
+    def make_type(handle, definition, parent: nil, &block)
+      log "Instancing JabaType [handle=#{handle}]"
+
+      if @jaba_type_lookup.key?(handle)
+        jaba_error("'#{handle}' jaba type multiply defined")
+      end
+
+      jt = nil
+
+      if parent
+        jt = JabaType.new(self, definition, handle, parent)
+        if block_given?
+          jt.eval_api_block(&block)
+        end
+      else
+        # Generator is only created if one exists for the type, otherwise it is nil
+        #
+        g = make_generator(definition.id)
+        dd = get_defaults_definition(definition.id)
+
+        jt = TopLevelJabaType.new(self, definition, handle, g, dd)
+        @jaba_types  << jt
+
+        if definition.block
+          jt.eval_api_block(&definition.block)
+        end
+      end
+
+      @jaba_type_lookup[handle] = jt
+      jt
+    end
+
+    ##
+    #
+    def execute_attr_default_block(node, default_block)
+      @in_attr_default_block = true
+      result = nil
+      node.make_read_only do # default blocks should not attempt to set another attribute
+        result = node.eval_api_block(&default_block)
+      end
+      @in_attr_default_block = false
+      result
+    end
+
+    ##
+    #
     def define_attr_type(id, &block)
       jaba_error("id is required") if id.nil?
       log "  Defining attr type [id=#{id}]"
@@ -383,76 +450,9 @@ module JABA
 
     ##
     #
-    def make_generator(id)
-      gen_classname = "#{id.to_s.capitalize_first}Generator"
-      
-      klass = if !JABA.const_defined?(gen_classname)
-        DefaultGenerator
-      else
-        JABA.const_get(gen_classname)
-      end
-
-      if klass.superclass != Generator
-        jaba_error "#{klass} must inherit from Generator class"
-      end
-
-      klass.new(self, id)
-    end
-
-    ##
-    # JabaTypes can have some of their attributes split of into separate JabaTypes to help with node
-    # creation in the case where a tree of nodes is created from a single definition. These JabaTypes
-    # are created on the fly as attributes are added to the types.
-    #
-    def make_type(handle, definition, parent: nil, &block)
-      log "Instancing JabaType [handle=#{handle}]"
-
-      if @jaba_type_lookup.key?(handle)
-        jaba_error("'#{handle}' jaba type multiply defined")
-      end
-
-      jt = nil
-
-      if parent
-        jt = JabaType.new(self, definition, handle, parent)
-        if block_given?
-          jt.eval_api_block(&block)
-        end
-      else
-        # Generator is only created if one exists for the type, otherwise it is nil
-        #
-        g = make_generator(definition.id)
-        dd = get_defaults_definition(definition.id)
-
-        jt = TopLevelJabaType.new(self, definition, handle, g, dd)
-        @jaba_types  << jt
-
-        if definition.block
-          jt.eval_api_block(&definition.block)
-        end
-      end
-
-      @jaba_type_lookup[handle] = jt
-      jt
-    end
-
-    ##
-    #
     def in_attr_default_block?
       @in_attr_default_block
     end#
-
-    ##
-    #
-    def execute_attr_default_block(node, default_block)
-      @in_attr_default_block = true
-      result = nil
-      node.make_read_only do # default blocks should not attempt to set another attribute
-        result = node.eval_api_block(&default_block)
-      end
-      @in_attr_default_block = false
-      result
-    end
 
     ##
     #
