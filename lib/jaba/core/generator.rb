@@ -251,4 +251,16 @@ module JABA
   class DefaultGenerator < Generator
   end
 
+  ##
+  # TODO: improve
+  class GlobalsGenerator < Generator
+
+    # TODO: extra checking.
+    def process
+      super
+      @services.instance_variable_set(:@globals_node, @root_nodes.first)
+    end
+
+  end
+
 end

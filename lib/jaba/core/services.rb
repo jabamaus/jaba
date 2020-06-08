@@ -207,10 +207,6 @@ module JABA
       #
       @generators = @jaba_types.map(&:generator)
 
-      @globals_type = get_jaba_type(:globals)
-      @globals_node = JabaNode.new(self, @globals_node_definition, @globals_type, 'globals', nil, 0)
-      @globals_node.eval_api_block(&@globals_node_definition.block)
-
       # Process instance definitions and assign them to a generator
       #
       @instance_definitions.each do |d|
@@ -400,12 +396,8 @@ module JABA
       end
       
       d = JabaInstanceDefinition.new(id, type_id, block, caller_locations(2, 1)[0])
-      if d.id == :globals
-        @globals_node_definition = d
-      else
-        @instance_definition_lookup.push_value(type_id, d)
-        @instance_definitions << d
-      end
+      @instance_definition_lookup.push_value(type_id, d)
+      @instance_definitions << d
       nil
     end
     
@@ -513,12 +505,10 @@ module JABA
         @generators.each do |g|
           next if g.is_a?(DefaultGenerator)
           g_root = {}
-
-          # Namespace each generator. Each node handle prefix is removed to acount for this, eg cpp|MyApp|vs2019|windows
-          # becomes MyApp|vs2019|windows and goes inside a 'cpp' json element.
-          #
-          @output[g.type_id] = g_root
           g.build_jaba_output(g_root, out_dir)
+          if !g_root.empty?
+            @output[g.type_id] = g_root
+          end
         end
 
         json = JSON.pretty_generate(@output)

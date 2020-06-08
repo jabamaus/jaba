@@ -13,6 +13,23 @@
     "C:/projects/GitHub/jaba/examples/example2/jaba.rb"
   ],
   "globals": {
+    "globals": {
+      "vcfiletype": {
+        ".h": "ClInclude",
+        ".inl": "ClInclude",
+        ".hpp": "ClInclude",
+        ".cpp": "ClCompile",
+        ".c": "ClCompile",
+        ".cxx": "ClCompile",
+        ".cc": "ClCompile",
+        ".png": "Image",
+        ".asm": "MASM",
+        ".rc": "ResourceCompile",
+        ".natvis": "Natvis"
+      },
+      "children": {
+      }
+    }
   },
   "category": {
     "App": {
