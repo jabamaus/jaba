@@ -33,8 +33,8 @@ module JABA
     
     ##
     #
-    def definition_id
-      @attr_def.definition.id
+    def defn_id
+      @attr_def.defn_id
     end
     
     ##
@@ -103,7 +103,7 @@ module JABA
       #
       if (__api_call_loc || @set) && !@node.allow_set_read_only_attrs?
         if @attr_def.has_flag?(:read_only)
-          @services.jaba_error("'#{@attr_def.definition_id}' attribute is read only")
+          @services.jaba_error("'#{@attr_def.defn_id}' attribute is read only")
         end
       end
 
@@ -117,7 +117,7 @@ module JABA
       @value_options = key_val_args.empty? ? {} : Marshal.load(Marshal.dump(key_val_args))
 
       if new_value.is_a?(Enumerable)
-        @services.jaba_error("'#{@attr_def.definition_id}' must be a single value not a #{new_value.class}")
+        @services.jaba_error("'#{@attr_def.defn_id}' must be a single value not a #{new_value.class}")
       end
 
       @flag_options.each do |f|
@@ -158,7 +158,7 @@ module JABA
             @attr_def.call_hook(:validate, new_value, @flag_options, **@value_options)
           end
         rescue JabaDefinitionError => e
-          @services.jaba_error("'#{@attr_def.definition_id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
+          @services.jaba_error("'#{@attr_def.defn_id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
         end
       end
 
@@ -273,7 +273,7 @@ module JABA
         if @default_block
           @services.execute_attr_default_block(@node, @default_block)
         elsif @services.in_attr_default_block?
-          @services.jaba_error("Cannot read uninitialised '#{definition_id}' attribute")
+          @services.jaba_error("Cannot read uninitialised '#{defn_id}' attribute")
         else
           nil
         end

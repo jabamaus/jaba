@@ -211,7 +211,7 @@ module JABA
                 # Get the corresponding attr in this project node. Only consider this node so don't set search: true.
                 # This will always be a hash or an array.
                 #
-                attr = node.get_attr(elem.definition_id) if !attr
+                attr = node.get_attr(elem.defn_id) if !attr
                 attr.insert_clone(elem)
               end
             end

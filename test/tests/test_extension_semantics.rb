@@ -224,7 +224,7 @@ module JABA
       @projects.size.must_equal 1
 
       proj = @projects[0]
-      proj.attrs.platform_ref.definition_id.must_equal(:windows)
+      proj.attrs.platform_ref.defn_id.must_equal(:windows)
       proj.attrs.src.must_equal 'windows_src'
 
       begin

@@ -32,13 +32,13 @@ module  JABA
     ##
     #
     def _ID
-      @obj.definition.id
+      @obj.defn_id
     end
 
     ##
     #
-    def include(shared_definition_id, args: nil)
-      @obj.include_shared(shared_definition_id, args)
+    def include(shared_defn_id, args: nil)
+      @obj.include_shared(shared_defn_id, args)
     end
 
     ##

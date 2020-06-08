@@ -37,7 +37,7 @@ module JABA
         if @default_block
           return @services.execute_attr_default_block(@node, @default_block)
         elsif @services.in_attr_default_block?
-          @services.jaba_error("Cannot read uninitialised '#{definition_id}' attribute")
+          @services.jaba_error("Cannot read uninitialised '#{defn_id}' attribute")
         end
       end
       values = @hash.transform_values {|e| e.value(api_call_loc)}
@@ -110,7 +110,7 @@ module JABA
     def fetch(key, fail_if_not_found: true)
       if !@hash.key?(key)
         if fail_if_not_found
-          @services.jaba_error("'#{key}' key not found in #{@attr_def.definition_id}")
+          @services.jaba_error("'#{key}' key not found in #{@attr_def.defn_id}")
         else
           return nil
         end

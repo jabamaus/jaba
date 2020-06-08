@@ -89,7 +89,7 @@ module JABA
     ##
     #
     def to_s
-      "#{@definition.id} type=#{@type_id}"
+      "#{@defn_id} type=#{@type_id}"
     end
 
     ##
@@ -192,11 +192,11 @@ module JABA
 
         if !@default_block
           if attr_single? && incoming.is_a?(Enumerable)
-            @services.jaba_error("'#{definition_id}' attribute default must be a single value not a #{incoming.class}")
+            @services.jaba_error("'#{defn_id}' attribute default must be a single value not a #{incoming.class}")
           elsif attr_array? && !incoming.array?
-           @services.jaba_error("'#{definition_id}' array attribute default must be an array")
+           @services.jaba_error("'#{defn_id}' array attribute default must be an array")
           elsif attr_hash? && !incoming.hash?
-            @services.jaba_error("'#{definition_id}' hash attribute default must be a hash")
+            @services.jaba_error("'#{defn_id}' hash attribute default must be a hash")
           end
         end
       end
@@ -232,12 +232,12 @@ module JABA
             jaf.call_hook(:compatibility, receiver: self)
           end
         rescue JabaDefinitionError => e
-          jaba_error("#{jaf.definition_id.inspect} flag is incompatible: #{e.raw_message}")
+          jaba_error("#{jaf.defn_id.inspect} flag is incompatible: #{e.raw_message}")
         end
       end
       
     rescue JabaDefinitionError => e
-      jaba_error("'#{definition_id}' attribute definition failed validation: #{e.raw_message}", callstack: e.backtrace)
+      jaba_error("'#{defn_id}' attribute definition failed validation: #{e.raw_message}", callstack: e.backtrace)
     end
 
   end

@@ -20,7 +20,7 @@ module JABA
     def initialize(services, top_level_jaba_type)
       @services = services
       @top_level_jaba_type = top_level_jaba_type
-      @type_id = @top_level_jaba_type.definition.id
+      @type_id = @top_level_jaba_type.defn_id
       @definitions = []
       @root_nodes = []
       @nodes = []
@@ -80,7 +80,7 @@ module JABA
       if parent
         @services.jaba_error('name is required for child nodes') if !name
         if name.is_a?(JabaNode)
-          name = name.definition_id
+          name = name.defn_id
         end
         handle = "#{parent.handle}|#{name}"
         depth = parent.depth + 1
@@ -154,7 +154,7 @@ module JABA
       node = attr.node
       rt = attr_def.referenced_type
       rjt = @services.get_top_level_jaba_type(rt) # TOO: improve. Maybe expand referenced_type into a JabaType earlier
-      if ignore_if_same_type && rt == node.jaba_type.definition_id
+      if ignore_if_same_type && rt == node.jaba_type.defn_id
         @reference_attrs_to_resolve << attr
         return ref_node_id
       end

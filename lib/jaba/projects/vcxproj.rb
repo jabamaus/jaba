@@ -50,8 +50,8 @@ module JABA
     def build_jaba_output(p_root, out_dir)
       p_root[:projroot] = @projroot.relative_path_from(out_dir)
       p_root[:projname] = @projname
-      p_root[:host] = @host.definition_id
-      p_root[:platform] = @attrs.platform_ref.definition_id
+      p_root[:host] = @host.defn_id
+      p_root[:platform] = @attrs.platform_ref.defn_id
       p_root[:vcxproj] = @vcxproj_file.relative_path_from(out_dir)
       p_root[:src] = @src.map{|f| f.absolute_path.relative_path_from(out_dir)}
       p_root[:vcglobal] = @attrs.vcglobal
@@ -61,7 +61,7 @@ module JABA
         cfg = {}
         attrs = c.attrs
         cfg_root[attrs.config] = cfg
-        cfg[:arch] = attrs.arch_ref.definition_id
+        cfg[:arch] = attrs.arch_ref.defn_id
         cfg[:name] = attrs.configname
         cfg[:defines] = attrs.defines
         cfg[:inc] = attrs.inc

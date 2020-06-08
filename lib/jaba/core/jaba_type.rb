@@ -13,7 +13,7 @@ module JABA
     include PropertyMethods
 
     # The type id given to the jaba type in define() method, whether a top level type or a subtype.
-    # Contrast this with definition_id which will return the top level type's id even if it is called
+    # Contrast this with defn_id which will return the top level type's id even if it is called
     # on a subtype.
     #
     attr_reader :handle
@@ -87,7 +87,7 @@ module JABA
       super(services, definition, handle, self)
 
       init_generator
-      @defaults_definition = @services.get_defaults_definition(definition.id)
+      @defaults_definition = @services.get_defaults_definition(@defn_id)
 
       @attr_defs = {}
       @sub_types = []
@@ -98,7 +98,7 @@ module JABA
     ##
     #
     def init_generator
-      gen_classname = "#{@definition.id.to_s.capitalize_first}Generator"
+      gen_classname = "#{@defn_id.to_s.capitalize_first}Generator"
       
       klass = if !JABA.const_defined?(gen_classname)
         DefaultGenerator
@@ -130,7 +130,7 @@ module JABA
     def get_sub_type(id)
       st = @sub_types.find{|st| st.handle == id}
       if !st
-        jaba_error("'#{id.inspect_unquoted}' sub type not found in '#{@definition.id.inspect_unquoted}' top level type")
+        jaba_error("'#{id.inspect_unquoted}' sub type not found in '#{@defn_id.inspect_unquoted}' top level type")
       end
       st
     end
@@ -145,7 +145,7 @@ module JABA
     #
     def register_attr_def(id, attr_def)
       if @attr_defs.key?(id)
-        attr_def.jaba_error("'#{id}' attribute multiply defined in '#{definition_id}'")
+        attr_def.jaba_error("'#{id}' attribute multiply defined in '#{defn_id}'")
       end
       @attr_defs[id] = attr_def
     end
@@ -159,7 +159,7 @@ module JABA
       @attr_defs.each do |id, attr_def|
         if attr_def.reference?
           rt_id = attr_def.referenced_type
-          if rt_id != definition_id
+          if rt_id != defn_id
             jt = attr_def.services.get_top_level_jaba_type(rt_id)
             jt.attribute_defs.each do |d|
               if d.has_flag?(:expose)
@@ -169,7 +169,7 @@ module JABA
           end
         end
       end
-      to_register.each{|d| register_attr_def(d.definition_id, d)}
+      to_register.each{|d| register_attr_def(d.defn_id, d)}
 
       # Convert dependencies specified as ids to jaba type objects
       #

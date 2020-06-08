@@ -15,6 +15,7 @@ module JABA
     attr_reader :services
     attr_reader :definition
     attr_reader :api
+    attr_reader :defn_id # As specified by user in definition files.
 
     ##
     #
@@ -22,20 +23,14 @@ module JABA
       super()
       @services = services
       @definition = definition
+      @defn_id = definition.id
       @api = api_object
-    end
-
-    ##
-    # As specified by user in definition files.
-    #
-    def definition_id
-      @definition.id
     end
 
     ##
     #
     def to_s
-      @definition.id.to_s
+      @defn_id.to_s
     end
 
     ##

@@ -401,7 +401,7 @@ module JABA
       nn = @null_nodes[type_id]
       if !nn
         jt = get_top_level_jaba_type(type_id)
-        nn = JabaNode.new(self, jt.definition, jt, "Null#{jt.definition_id}", nil, 0)
+        nn = JabaNode.new(self, jt.definition, jt, "Null#{jt.defn_id}", nil, 0)
         @null_nodes[type_id] = nn
       end
       nn
@@ -433,7 +433,7 @@ module JABA
     #
     def write_node_json(node, obj)
       node.visit_attr(top_level: true) do |attr, val|
-        obj[attr.definition_id] = val
+        obj[attr.defn_id] = val
       end
       children = {}
       obj[:children] = children
@@ -496,9 +496,9 @@ module JABA
       if id.nil?
         return @default_attr_type
       end
-      t = @jaba_attr_types.find {|at| at.definition_id == id}
+      t = @jaba_attr_types.find {|at| at.defn_id == id}
       if !t
-        jaba_error("'#{id}' attribute type is undefined. Valid types: #{@jaba_attr_types.map(&:definition_id)}")
+        jaba_error("'#{id}' attribute type is undefined. Valid types: #{@jaba_attr_types.map(&:defn_id)}")
       end
       t
     end
@@ -506,9 +506,9 @@ module JABA
     ##
     #
     def get_attribute_flag(id)
-      f = @jaba_attr_flags.find {|af| af.definition_id == id}
+      f = @jaba_attr_flags.find {|af| af.defn_id == id}
       if !f
-        jaba_error("'#{id.inspect_unquoted}' is an invalid flag. Valid flags: #{@jaba_attr_flags.map(&:definition_id)}")
+        jaba_error("'#{id.inspect_unquoted}' is an invalid flag. Valid flags: #{@jaba_attr_flags.map(&:defn_id)}")
       end
       f
     end

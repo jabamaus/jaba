@@ -50,7 +50,7 @@ module JABA
               JabaAttributeHash.new(services, attr_def, self)
             end
         @attributes << a
-        @attribute_lookup[attr_def.definition_id] = a
+        @attribute_lookup[attr_def.defn_id] = a
       end
     end
 
@@ -127,7 +127,7 @@ module JABA
         get_attr(attr_id).visit_attr(&block)
       else
         @attributes.each do |a|
-          next if skip_attr && a.definition_id == skip_attr
+          next if skip_attr && a.defn_id == skip_attr
           next if type && !Array(type).include?(a.attr_def.type_id)
           next if skip_variant && skip_variant == a.attr_def.variant
           if top_level
@@ -150,7 +150,7 @@ module JABA
       if @attribute_lookup.delete(attr_id).nil?
         jaba_error("Could not remove '#{attr_id}' attribute from '#{handle}' node")
       end
-      index = @attributes.index{|a| a.definition_id == attr_id}
+      index = @attributes.index{|a| a.defn_id == attr_id}
       if index.nil?
         jaba_error("Could not remove '#{attr_id}' attribute from '#{handle}' node")
       end
@@ -176,7 +176,7 @@ module JABA
     def post_create
       @attributes.each do |a|
         if !a.set? && a.required?
-          jaba_error("'#{a.definition_id}' attribute requires a value. See #{a.attr_def.definition.source_location}", callstack: @definition.source_location)
+          jaba_error("'#{a.defn_id}' attribute requires a value. See #{a.attr_def.definition.source_location}", callstack: @definition.source_location)
         end
       
         a.finalise
@@ -297,7 +297,7 @@ module JABA
     ##
     #
     def _ID
-      @node.definition_id
+      @node.defn_id
     end
     
     ##
