@@ -88,11 +88,12 @@ module JABA
 
     ##
     #
-    def initialize(services, definition, handle, generator, defaults_definition)
+    def initialize(services, definition, handle)
       super(services, definition, handle, self)
 
-      @generator = generator
-      @defaults_definition = defaults_definition
+      init_generator
+      @defaults_definition = @services.get_defaults_definition(definition.id)
+
       @attr_defs = {}
 
       define_array_property(:dependencies) # TODO: validate explicitly specified deps
@@ -102,6 +103,24 @@ module JABA
     #
     def top_level_type
       self
+    end
+
+    ##
+    #
+    def init_generator
+      gen_classname = "#{@definition.id.to_s.capitalize_first}Generator"
+      
+      klass = if !JABA.const_defined?(gen_classname)
+        DefaultGenerator
+      else
+        JABA.const_get(gen_classname)
+      end
+
+      if klass.superclass != Generator
+        jaba_error "#{klass} must inherit from Generator class"
+      end
+
+      @generator = klass.new(@services, self)
     end
 
     ##

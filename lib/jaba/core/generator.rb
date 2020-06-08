@@ -17,9 +17,10 @@ module JABA
 
     ##
     #
-    def initialize(services, type_id)
+    def initialize(services, top_level_jaba_type)
       @services = services
-      @type_id = type_id
+      @top_level_jaba_type = top_level_jaba_type
+      @type_id = @top_level_jaba_type.definition.id
       @definitions = []
       @root_nodes = []
       @nodes = []

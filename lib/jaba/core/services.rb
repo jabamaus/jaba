@@ -239,24 +239,6 @@ module JABA
     end
     
     ##
-    #
-    def make_generator(id)
-      gen_classname = "#{id.to_s.capitalize_first}Generator"
-      
-      klass = if !JABA.const_defined?(gen_classname)
-        DefaultGenerator
-      else
-        JABA.const_get(gen_classname)
-      end
-
-      if klass.superclass != Generator
-        jaba_error "#{klass} must inherit from Generator class"
-      end
-
-      klass.new(self, id)
-    end
-
-    ##
     # JabaTypes can have some of their attributes split of into separate JabaTypes to help with node
     # creation in the case where a tree of nodes is created from a single definition. These JabaTypes
     # are created on the fly as attributes are added to the types.
@@ -276,12 +258,7 @@ module JABA
           jt.eval_api_block(&block)
         end
       else
-        # Generator is only created if one exists for the type, otherwise it is nil
-        #
-        g = make_generator(definition.id)
-        dd = get_defaults_definition(definition.id)
-
-        jt = TopLevelJabaType.new(self, definition, handle, g, dd)
+        jt = TopLevelJabaType.new(self, definition, handle)
         @jaba_types  << jt
 
         if definition.block
