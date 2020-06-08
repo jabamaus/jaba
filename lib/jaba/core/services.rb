@@ -97,7 +97,6 @@ module JABA
 
       @current_definition = nil
 
-      @globals_type = nil
       @jaba_attr_types = []
       @jaba_attr_flags = []
       @jaba_types = []
