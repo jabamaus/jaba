@@ -46,9 +46,6 @@ module JABA
       validate_id(id)
       id = id.to_sym
       
-      # TODO: why does attribute definition require its own definition but sub types require to
-      # not have their own definition? It works but is inconsistent
-      #
       db = JabaDefinition.new(id, block, caller_locations(2, 1)[0])
       ad = JabaAttributeDefinition.new(@services, db, type, variant, self)
       
@@ -120,6 +117,12 @@ module JABA
     #
     def define_sub_type(id, &block)
       # TODO: check for multiply defined sub types
+      
+      # Sub types share the top level defintion block info rather than having the info of their local block.
+      # This is because sub types are very self contained and are not important to the rest of the system.
+      # When something wants to ask it its definition id it is more helpful to return the id of the
+      # top level definition than its local id, which nothing external to JabaType is interested in.
+      #
       st = JabaType.new(@services, @definition, id, self)
       if block_given?
         st.eval_api_block(&block)
