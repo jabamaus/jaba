@@ -87,15 +87,18 @@ module JABA
       
       @jaba_attr_type_definitions = []
       @jaba_attr_flag_definitions = []
+      @globals_type_definition = nil
       @jaba_type_definitions = []
       @jaba_open_definitions = []
       @default_definitions = []
+      @globals_node_definition = nil
       @instance_definitions = []
       @instance_definition_lookup = {}
       @shared_definition_lookup = {}
 
       @current_definition = nil
 
+      @globals_type = nil
       @jaba_attr_types = []
       @jaba_attr_flags = []
       @jaba_types = []
@@ -103,11 +106,9 @@ module JABA
 
       @generators = []
 
-      @nodes = []
-      @node_lookup = {}
+      @globals_node = nil
       @root_nodes = []
       @null_nodes = {}
-      @reference_attrs_to_resolve = []
       
       @in_attr_default_block = false
       @building_jaba_output = false
@@ -171,6 +172,8 @@ module JABA
         @jaba_attr_flags << JabaAttributeFlag.new(self, d)
       end
 
+      @globals_type = make_type(@globals_type_definition.id, @globals_type_definition)
+
       # Create JabaTypes and any associated Generators
       #
       @jaba_type_definitions.each do |d|
@@ -198,67 +201,29 @@ module JABA
         err_type = e.instance_variable_get(:@err_obj)
         jaba_error("'#{err_type}' contains a cyclic dependency", callstack: err_type.definition.source_location)
       end
-      
-      # Now that the JabaTypes are dependency sorted, pass on the dependency ordering to the JabaNodes.
-      # This is achieved by giving each JabaType an index and then sorting nodes based on this index.
-      # The sort is stable so as to preserve the order that was specified in definition files.
-      #
-      @jaba_types.each_with_index {|jt, i| jt.instance_variable_set(:@order_index, i)}
 
       log 'Initialisation of JabaTypes complete'
 
-      # Associate a JabaType with each instance of a type.
+      # Now that the JabaTypes are dependency sorted build generator list from them, so they are in dependency order too
+      #
+      @generators = @jaba_types.map(&:generator)
+
+      @globals_node = JabaNode.new(self, @globals_node_definition, @globals_type, 'globals', nil, 0)
+      @globals_node.eval_api_block(&@globals_node_definition.block)
+
+      # Process instance definitions and assign them to a generator
       #
       @instance_definitions.each do |d|
-        d.instance_variable_set(:@jaba_type, get_jaba_type(d.jaba_type_id, callstack: d.source_location))
+        g = get_generator(d.jaba_type_id)
+        g.register_instance_definition(d)
       end
-      
-      @instance_definitions.stable_sort_by! {|d| d.jaba_type.instance_variable_get(:@order_index)}
-      
-      # Create instances of JabaNode from JabaTypes. This could be a single node or a tree of nodes.
-      # Track the root node that is returned in each case. The array of root nodes is used to dump definition data to json.
+
+      # Process generators
       #
-      @instance_definitions.each do |d|
-        log "Processing #{d.jaba_type.handle} #{d.id} definition", section: true
-        @current_definition = d
-
-        g = d.jaba_type.generator
-        @root_nodes << if g
-                         g.make_nodes
-                       else
-                         make_node
-                       end
-      end
-      
-      log 'Initialisation of JabaNodes complete'
-
-      # TODO: create globals first
-      @globals_node = node_from_handle('globals|globals')
-
-      log "Resolving references..."
-
-      # Resolve references
-      #
-      @reference_attrs_to_resolve.each do |a|
-        a.map_value! do |ref|
-          resolve_reference(a, ref)
-        end
-      end
-      
-      log 'Making projects...'
-
-      # Call generators to build project representations from nodes
-      #
-      @generators.each(&:make_projects)
-
-      @nodes.each do |n|
-        n.each_attr do |a|
-          a.process_flags
-        end
-        
-        # Make all nodes read only from this point, to help catch mistakes
-        #
-        n.make_read_only
+      @generators.each do |g|
+        log "Processing #{g.type_id} generator", section: true
+        g.process
+        @root_nodes.concat(g.root_nodes)
       end
      
       # Output definition input data as a json file, before generation. This is raw data as generated from the definitions.
@@ -276,6 +241,7 @@ module JABA
 
       # Call generators defined per-node instance, in the context of the node itself, not its api
       #
+      # TODO: move into Generator?
       @root_nodes.each do |n|
         # TODO: review again. should it use api?
         n.definition.call_hook(:generate, receiver: n, use_api: false)
@@ -323,7 +289,13 @@ module JABA
       if existing
         jaba_error("Type '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_basename}.")
       end
-      @jaba_type_definitions << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
+      d = JabaDefinition.new(id, block, caller_locations(2, 1)[0])
+      if id == :globals
+        @globals_type_definition = d
+      else
+        @jaba_type_definitions << d
+      end
+      nil
     end
     
     ##
@@ -370,8 +342,12 @@ module JABA
       end
       
       d = JabaInstanceDefinition.new(id, type_id, block, caller_locations(2, 1)[0])
-      @instance_definition_lookup.push_value(type_id, d)
-      @instance_definitions << d
+      if d.id == :globals
+        @globals_node_definition = d
+      else
+        @instance_definition_lookup.push_value(type_id, d)
+        @instance_definitions << d
+      end
       nil
     end
     
@@ -410,17 +386,17 @@ module JABA
     def make_generator(id)
       gen_classname = "#{id.to_s.capitalize_first}Generator"
       
-      return nil if !JABA.const_defined?(gen_classname)
-
-      klass = JABA.const_get(gen_classname)
+      klass = if !JABA.const_defined?(gen_classname)
+        DefaultGenerator
+      else
+        JABA.const_get(gen_classname)
+      end
 
       if klass.superclass != Generator
         jaba_error "#{klass} must inherit from Generator class"
       end
 
-      g = klass.new(self, id)
-      @generators << g
-      g
+      klass.new(self, id)
     end
 
     ##
@@ -458,106 +434,6 @@ module JABA
 
       @jaba_type_lookup[handle] = jt
       jt
-    end
-
-    ##
-    #
-    def make_node(type_id: @current_definition.jaba_type_id, name: nil, parent: nil, &block)
-      depth = 0
-      handle = nil
-
-      if parent
-        jaba_error('name is required for child nodes') if !name
-        if name.is_a?(JabaNode)
-          name = name.definition_id
-        end
-        handle = "#{parent.handle}|#{name}"
-        depth = parent.depth + 1
-      else
-        jaba_error('name not required for root nodes') if name
-        depth = 0
-        handle = "#{@current_definition.jaba_type_id}|#{@current_definition.id}"
-      end
-
-      log "#{'  ' * depth}Instancing node [type=#{type_id}, handle=#{handle}]"
-
-      if node_from_handle(handle, fail_if_not_found: false)
-        jaba_error("Duplicate node handle '#{handle}'")
-      end
-
-      jt = get_jaba_type(type_id)
-
-      jn = JabaNode.new(self, @current_definition, jt, handle, parent, depth)
-
-      @nodes << jn
-      @node_lookup[handle] = jn
-      
-      begin
-        # Give calling block a chance to initialise attributes. This block is in library code as opposed to user
-        # definitions so use instance_eval instead of eval_api_block, as it doesn't need to go through api.
-        # Read only attributes are allowed to be set (initialised) for the duration of this block.
-        #
-        if block_given?
-          jn.allow_set_read_only_attrs do
-            jn.attrs.instance_eval(&block)
-          end
-        end
-        
-        # Next execute defaults block if there is one defined for this type.
-        #
-        defaults = jt.top_level_type.defaults_definition
-        if defaults
-          jn.eval_api_block(&defaults.block)
-        end
-
-        if @current_definition.block
-          jn.eval_api_block(&@current_definition.block)
-        end
-      rescue FrozenError => e
-        jaba_error('Cannot modify read only value', callstack: e.backtrace)
-      end
-
-      jn.post_create
-      jn
-    end
-    
-    ##
-    # Given a reference attribute and the definition id it is pointing at, returns the node instance.
-    #
-    def resolve_reference(attr, ref_node_id, ignore_if_same_type: false)
-      attr_def = attr.attr_def
-      node = attr.node
-      rt = attr_def.referenced_type
-      if ignore_if_same_type && rt == node.jaba_type.definition_id
-        @reference_attrs_to_resolve << attr
-        return ref_node_id
-      end
-      make_handle_block = attr_def.get_property(:make_handle)
-      handle = if make_handle_block
-        "#{rt}|#{node.eval_api_block(ref_node_id, &make_handle_block)}"
-      else
-        "#{rt}|#{ref_node_id}"
-      end
-      ref_node = node_from_handle(handle, callstack: attr.last_call_location)
-      
-      # Don't need to track node references when resolving references between the same types as this
-      # happens after all the nodes have been set up, by which time the functionality is not needed.
-      # The node references are used in the attribute search path in JabaNode#get_attr.
-      #
-      if ignore_if_same_type 
-        node.add_node_reference(ref_node)
-      end
-      ref_node
-    end
-
-    ##
-    #
-    def node_from_handle(handle, fail_if_not_found: true, callstack: nil)
-      n = @node_lookup[handle]
-      if !n && fail_if_not_found
-        jaba_error("Node with handle '#{handle}' not found", callstack: callstack)
-      end
-      n
     end
 
     ##

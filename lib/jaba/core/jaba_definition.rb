@@ -42,7 +42,6 @@ module JABA
     include HookMethods
 
     attr_reader :jaba_type_id
-    attr_reader :jaba_type
     attr_reader :source_dir
 
     ##
@@ -51,7 +50,6 @@ module JABA
       super(id, block, source_location)
       
       @jaba_type_id = jaba_type_id
-      @jaba_type = nil
       @source_dir = @source_file.dirname
 
       define_hook(:generate)
