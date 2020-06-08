@@ -74,6 +74,7 @@ if there are multiple attrs, with a warning.
 - Add an init callback to definitions?
 - Make sure only one globals can be created
 - Add wildcard validation to dir property
+- Only load relevant definition files when executing unit tests, to speed them up.
 
 cpp :a do
   _init do

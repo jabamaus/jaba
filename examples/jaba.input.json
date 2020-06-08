@@ -13,6 +13,23 @@
     "C:/projects/GitHub/jaba/examples/example2/jaba.rb"
   ],
   "nodes": {
+    "globals": {
+      "vcfiletype": {
+        ".h": "ClInclude",
+        ".inl": "ClInclude",
+        ".hpp": "ClInclude",
+        ".cpp": "ClCompile",
+        ".c": "ClCompile",
+        ".cxx": "ClCompile",
+        ".cc": "ClCompile",
+        ".png": "Image",
+        ".asm": "MASM",
+        ".rc": "ResourceCompile",
+        ".natvis": "Natvis"
+      },
+      "children": {
+      }
+    },
     "category|App": {
       "name": "Apps",
       "guid": "43F42D01-78C0-416E-8979-2807134DB488",
@@ -788,23 +805,6 @@
             }
           }
         }
-      }
-    },
-    "globals|globals": {
-      "vcfiletype": {
-        ".h": "ClInclude",
-        ".inl": "ClInclude",
-        ".hpp": "ClInclude",
-        ".cpp": "ClCompile",
-        ".c": "ClCompile",
-        ".cxx": "ClCompile",
-        ".cc": "ClCompile",
-        ".png": "Image",
-        ".asm": "MASM",
-        ".rc": "ResourceCompile",
-        ".natvis": "Natvis"
-      },
-      "children": {
       }
     }
   }

@@ -146,15 +146,19 @@ module JABA
     ##
     #
     def do_run
-      # Load and execute any definition files specified in Input#load_paths
+      # Calculate which definition files need to be Loaded
       #
       gather_definition_src_files
 
+      # Execute them. This will cause a series of calls to eg define_attr_type, define_type, define_instance (see further
+      # down in this file). These calls will come from user definitions via the api files.
+      #
       @definition_src_files.each do |f|
         execute_definitions(f)
       end
 
-      # Execute any definitions supplied inline in a block
+      # Definitions can also be provided in a block associated with the main 'jaba' entry point.
+      # Execute if it was supplied.
       #
       Array(input.definitions).each do |block|
         execute_definitions(&block)
@@ -210,6 +214,7 @@ module JABA
 
       @globals_node = JabaNode.new(self, @globals_node_definition, @globals_type, 'globals', nil, 0)
       @globals_node.eval_api_block(&@globals_node_definition.block)
+      @root_nodes << @globals_node
 
       # Process instance definitions and assign them to a generator
       #
