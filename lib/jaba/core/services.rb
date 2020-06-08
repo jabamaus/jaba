@@ -96,7 +96,7 @@ module JABA
 
       @jaba_attr_types = []
       @jaba_attr_flags = []
-      @jaba_types = []
+      @top_level_jaba_types = []
       @jaba_type_lookup = {}
 
       @generators = []
@@ -185,13 +185,13 @@ module JABA
       # type is added. JabaTypes are dependency order sorted to ensure that referenced JabaNodes are created
       # before the JabaNode that are referencing it.
       #
-      @jaba_types.each do |jt|
+      @top_level_jaba_types.each do |jt|
         jt.resolve_dependencies
         jt.register_referenced_attributes
       end
       
       begin
-        @jaba_types.sort_topological!(:dependencies)
+        @top_level_jaba_types.sort_topological!(:dependencies)
       rescue TSort::Cyclic => e
         err_type = e.instance_variable_get(:@err_obj)
         jaba_error("'#{err_type}' contains a cyclic dependency", callstack: err_type.definition.source_location)
@@ -201,7 +201,7 @@ module JABA
 
       # Now that the JabaTypes are dependency sorted build generator list from them, so they are in dependency order too
       #
-      @generators = @jaba_types.map(&:generator)
+      @generators = @top_level_jaba_types.map(&:generator)
 
       # Process instance definitions and assign them to a generator
       #
@@ -255,7 +255,7 @@ module JABA
         end
       else
         jt = TopLevelJabaType.new(self, definition, handle)
-        @jaba_types  << jt
+        @top_level_jaba_types  << jt
 
         if definition.block
           jt.eval_api_block(&definition.block)
