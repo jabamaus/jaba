@@ -87,7 +87,6 @@ module JABA
       
       @jaba_attr_type_definitions = []
       @jaba_attr_flag_definitions = []
-      @globals_type_definition = nil
       @jaba_type_definitions = []
       @jaba_open_definitions = []
       @default_definitions = []
@@ -107,7 +106,6 @@ module JABA
       @generators = []
 
       @globals_node = nil
-      @root_nodes = []
       @null_nodes = {}
       
       @in_attr_default_block = false
@@ -176,8 +174,6 @@ module JABA
         @jaba_attr_flags << JabaAttributeFlag.new(self, d)
       end
 
-      @globals_type = make_type(@globals_type_definition.id, @globals_type_definition)
-
       # Create JabaTypes and any associated Generators
       #
       @jaba_type_definitions.each do |d|
@@ -212,9 +208,9 @@ module JABA
       #
       @generators = @jaba_types.map(&:generator)
 
+      @globals_type = get_jaba_type(:globals)
       @globals_node = JabaNode.new(self, @globals_node_definition, @globals_type, 'globals', nil, 0)
       @globals_node.eval_api_block(&@globals_node_definition.block)
-      @root_nodes << @globals_node
 
       # Process instance definitions and assign them to a generator
       #
@@ -228,7 +224,6 @@ module JABA
       @generators.each do |g|
         log "Processing #{g.type_id} generator", section: true
         g.process
-        @root_nodes.concat(g.root_nodes)
       end
      
       # Output definition input data as a json file, before generation. This is raw data as generated from the definitions.
@@ -242,15 +237,7 @@ module JABA
 
       # Write final files
       #
-      @generators.each(&:generate)
-
-      # Call generators defined per-node instance, in the context of the node itself, not its api
-      #
-      # TODO: move into Generator?
-      @root_nodes.each do |n|
-        # TODO: review again. should it use api?
-        n.definition.call_hook(:generate, receiver: n, use_api: false)
-      end
+      @generators.each(&:perform_generation)
 
       log 'Building output...'
       build_jaba_output
@@ -363,7 +350,7 @@ module JABA
       end
       d = JabaDefinition.new(id, block, caller_locations(2, 1)[0])
       if id == :globals
-        @globals_type_definition = d
+        @jaba_type_definitions.prepend(d)
       else
         @jaba_type_definitions << d
       end
@@ -475,15 +462,17 @@ module JABA
     #
     def dump_jaba_input
       root = {}
-      nodes_root = {}
       root[:definition_src] = @definition_src_files
-      root[:nodes] = nodes_root
-      @root_nodes.each do |rn|
-        obj = {}
-        nodes_root[rn.handle] = obj
-        write_node_json(rn, obj)
-      end
 
+      @generators.each do |g|
+        g_root = {}
+        root[g.type_id] = g_root
+        g.root_nodes.each do |rn|
+          obj = {}
+          g_root[rn.handle] = obj
+          write_node_json(rn, obj)
+        end
+      end
       json = JSON.pretty_generate(root)
       file = @file_manager.new_file(input.jaba_input_file, eol: :unix, track: false)
       w = file.writer
