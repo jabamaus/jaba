@@ -81,11 +81,10 @@ module JABA
         spec_files.clear
         vpath_option = elem.get_option_value(:vpath, fail_if_not_found: false)
 
-        wildcard = spec =~ /\*/ ? true : false
         abs_spec = !spec.absolute_path? ? "#{@root}/#{spec}" : spec
         glob_matches = nil
 
-        if wildcard
+        if spec.wildcard?
           if force
             @services.jaba_error('Wildcards are not allowed when force adding src - ' \
               'only explicitly specified source files', callstack: src_attr.last_call_location)

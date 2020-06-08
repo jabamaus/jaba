@@ -187,6 +187,13 @@ module JABACoreExt
     end
 
     ##
+    # Returns true if string contains '*' wildcard character.
+    #
+    def wildcard?
+      self =~ /\*/ ? true : false
+    end
+
+    ##
     #
     def basename
       File.basename(self)
