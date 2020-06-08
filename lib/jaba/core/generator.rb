@@ -73,7 +73,7 @@ module JABA
     ##
     # Call this from subclass
     #
-    def make_node(type_id: @type_id, name: nil, parent: nil, &block)
+    def make_node(sub_type_id: nil, name: nil, parent: nil, &block)
       depth = 0
       handle = nil
 
@@ -96,7 +96,11 @@ module JABA
         @services.jaba_error("Duplicate node handle '#{handle}'")
       end
 
-      jt = @services.get_jaba_type(type_id)
+      jt = if sub_type_id
+        @top_level_jaba_type.get_sub_type(sub_type_id)
+      else
+        @top_level_jaba_type
+      end
 
       jn = JabaNode.new(@services, @current_definition, jt, handle, parent, depth)
 
@@ -149,7 +153,7 @@ module JABA
       attr_def = attr.attr_def
       node = attr.node
       rt = attr_def.referenced_type
-      rjt = @services.get_jaba_type(rt) # TOO: improve. Maybe expand referenced_type into a JabaType earlier
+      rjt = @services.get_top_level_jaba_type(rt) # TOO: improve. Maybe expand referenced_type into a JabaType earlier
       if ignore_if_same_type && rt == node.jaba_type.definition_id
         @reference_attrs_to_resolve << attr
         return ref_node_id
@@ -160,7 +164,7 @@ module JABA
       else
         "#{ref_node_id}"
       end
-      ref_node = rjt.top_level_type.generator.node_from_handle(handle, callstack: attr.last_call_location)
+      ref_node = rjt.generator.node_from_handle(handle, callstack: attr.last_call_location)
       
       # Don't need to track node references when resolving references between the same types as this
       # happens after all the nodes have been set up, by which time the functionality is not needed.

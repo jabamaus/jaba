@@ -19,10 +19,8 @@ module JABA
     ##
     #
     def make_nodes
-      root_node = make_node(type_id: :workspace)
+      root_node = make_node
       @workspaces << root_node
-
-      # TODO: namespacing of sub type ids
 
       cpp_generator = get_generator(:cpp)
       

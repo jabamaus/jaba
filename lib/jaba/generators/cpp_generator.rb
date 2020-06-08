@@ -20,18 +20,16 @@ module JABA
     ##
     #
     def make_nodes
-      root_node = make_node(type_id: :cpp)
-
-      # TODO: namespacing of sub type ids
+      root_node = make_node
 
       root_node.attrs.hosts.each do |h|
-        host_node = make_node(type_id: :per_host, name: h, parent: root_node) do
+        host_node = make_node(sub_type_id: :per_host, name: h, parent: root_node) do
           host h
           host_ref h
         end
         
         host_node.attrs.platforms.each do |p|
-          platform_node = make_node(type_id: :per_platform, name: p, parent: host_node) do
+          platform_node = make_node(sub_type_id: :per_platform, name: p, parent: host_node) do
             platform p
             platform_ref p
           end
@@ -39,13 +37,13 @@ module JABA
           @platform_nodes << platform_node
 
           platform_node.attrs.archs.each do |a|
-            arch_node = make_node(type_id: :per_arch, name: a, parent: platform_node) do
+            arch_node = make_node(sub_type_id: :per_arch, name: a, parent: platform_node) do
               arch a
               arch_ref a
             end
           
             arch_node.attrs.configs.each do |cfg|
-              make_node(type_id: :config, name: cfg, parent: arch_node) do
+              make_node(sub_type_id: :config, name: cfg, parent: arch_node) do
                 config cfg
               end
             end

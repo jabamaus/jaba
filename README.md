@@ -4,10 +4,9 @@ To do:
 
 - make paths in jaba.output.json relative to itself. Introduce json node writing api to wrap this up and to make it robust.
 - think more about path handling in general and make it very consistent. eg all paths get to generators as absolute.
-- test absolute root paths
 - Have a way of globally setting default for :platforms, :hosts and :configs (and for clearing)
 - make file/dir attrs cleanpath
-- test subtypes, eg opening
+- test subtypes
 - sortable arrays must be of same type
 - Do something with help strings
 - check that only arrays and hashes can be exported
@@ -70,7 +69,6 @@ if there are multiple attrs, with a warning.
 - Add 'underlying type' to attribute types? eg file.dir/src_spec are strings. Use this for extra
   validation and also to sort using casecmp
 - resolve issues around sorting with mixed type elements
-- Make it so that only top level jaba type can make its own sub types
 - Add an init callback to definitions?
 - Make sure only one globals can be created
 - Add wildcard validation to dir property

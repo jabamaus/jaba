@@ -172,24 +172,21 @@ module JABA
       # Create JabaTypes and any associated Generators
       #
       @jaba_type_definitions.each do |d|
-        make_type(d.id, d)
+        make_top_level_type(d.id, d)
       end
 
-      # Open JabaTypes so more attributes can be added
+      # Open top level JabaTypes so more attributes can be added
       #
       @jaba_open_definitions.each do |d|
-        get_jaba_type(d.id, callstack: d.source_location).eval_api_block(&d.block)
+        get_top_level_jaba_type(d.id, callstack: d.source_location).eval_api_block(&d.block)
       end
       
+      @top_level_jaba_types.each(&:post_create)
+
       # When an attribute defined in a JabaType will reference a differernt JabaType a dependency on that
       # type is added. JabaTypes are dependency order sorted to ensure that referenced JabaNodes are created
       # before the JabaNode that are referencing it.
       #
-      @top_level_jaba_types.each do |jt|
-        jt.resolve_dependencies
-        jt.register_referenced_attributes
-      end
-      
       begin
         @top_level_jaba_types.sort_topological!(:dependencies)
       rescue TSort::Cyclic => e
@@ -206,7 +203,7 @@ module JABA
       # Process instance definitions and assign them to a generator
       #
       @instance_definitions.each do |d|
-        jt = get_jaba_type(d.jaba_type_id, callstack: d.source_location)
+        jt = get_top_level_jaba_type(d.jaba_type_id, callstack: d.source_location)
         jt.generator.register_instance_definition(d)
       end
 
@@ -235,33 +232,21 @@ module JABA
     end
     
     ##
-    # JabaTypes can have some of their attributes split of into separate JabaTypes to help with node
-    # creation in the case where a tree of nodes is created from a single definition. These JabaTypes
-    # are created on the fly as attributes are added to the types.
     #
-    def make_type(handle, definition, parent: nil, &block)
-      log "Instancing JabaType [handle=#{handle}]"
+    def make_top_level_type(handle, definition)
+      log "Instancing top level JabaType [handle=#{handle}]"
 
       if @jaba_type_lookup.key?(handle)
         jaba_error("'#{handle}' jaba type multiply defined")
       end
 
-      jt = nil
+      jt = TopLevelJabaType.new(self, definition, handle)
 
-      if parent
-        jt = JabaType.new(self, definition, handle, parent)
-        if block_given?
-          jt.eval_api_block(&block)
-        end
-      else
-        jt = TopLevelJabaType.new(self, definition, handle)
-        @top_level_jaba_types  << jt
-
-        if definition.block
-          jt.eval_api_block(&definition.block)
-        end
+      if definition.block
+        jt.eval_api_block(&definition.block)
       end
 
+      @top_level_jaba_types  << jt
       @jaba_type_lookup[handle] = jt
       jt
     end
@@ -415,7 +400,7 @@ module JABA
     def get_null_node(type_id)
       nn = @null_nodes[type_id]
       if !nn
-        jt = get_jaba_type(type_id)
+        jt = get_top_level_jaba_type(type_id)
         nn = JabaNode.new(self, jt.definition, jt, "Null#{jt.definition_id}", nil, 0)
         @null_nodes[type_id] = nn
       end
@@ -530,7 +515,7 @@ module JABA
 
     ##
     #
-    def get_jaba_type(id, fail_if_not_found: true, callstack: nil)
+    def get_top_level_jaba_type(id, fail_if_not_found: true, callstack: nil)
       jt = @jaba_type_lookup[id]
       if !jt && fail_if_not_found
         jaba_error("'#{id}' type not defined", callstack: callstack)

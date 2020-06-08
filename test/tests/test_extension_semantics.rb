@@ -167,7 +167,7 @@ module JABA
             attr_array :platforms do
               flags :nosort, :required
             end
-            define :tproject do
+            define :project do
               attr :platform do
                 flags :read_only
               end
@@ -180,7 +180,7 @@ module JABA
               end
             end
               
-            define :test_config do
+            define :config do
               attr :config
               attr :configname
             end
@@ -239,17 +239,17 @@ module JABA
     ##
     #
     def make_nodes
-      root_node = make_node(type_id: :test_project)
+      root_node = make_node
       
       root_node.attrs.platforms.each do |p|
-        project = make_node(type_id: :tproject, name: p, parent: root_node) do 
+        project = make_node(sub_type_id: :project, name: p, parent: root_node) do 
           platform p
           platform_ref p
         end
         @projects << project
         
         project.attrs.configs.each do |c|
-          make_node(type_id: :test_config, name: c, parent: project) { config c }
+          make_node(sub_type_id: :config, name: c, parent: project) { config c }
         end
       end
       root_node
