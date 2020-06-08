@@ -73,6 +73,7 @@ if there are multiple attrs, with a warning.
 - Make it so that only top level jaba type can make its own sub types
 - Add an init callback to definitions?
 - Make sure only one globals can be created
+- Add wildcard validation to dir property
 
 cpp :a do
   _init do

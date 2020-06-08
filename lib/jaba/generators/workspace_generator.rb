@@ -24,11 +24,19 @@ module JABA
 
       # TODO: namespacing of sub type ids
 
+      cpp_generator = get_generator(:cpp)
+      
       # Build a union of all hosts and platforms of the specified project
       #
       all_hosts = []
       all_platforms = []
       root_node.attrs.projects.each do |proj_spec|
+        if proj_spec.symbol?
+
+        elsif proj_spec.wildcard?
+
+        else
+        end
       end
       root_node
     end

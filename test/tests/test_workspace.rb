@@ -58,6 +58,9 @@ module JABA
     it 'only allows valid project types' do
     end
     
+    it 'can be specified before containing projects' do
+    end
+
   end
 
 end
