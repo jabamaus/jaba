@@ -45,7 +45,8 @@ module JABA
     end
     
     it 'catches invalid reference to different type' do
-      check_fail 'Node with handle \'type_b|undefined\' not found', trace: [__FILE__, 'tagW'] do
+      # TODO: don't like this error message
+      check_fail 'Node with handle \'undefined\' not found', trace: [__FILE__, 'tagW'] do
         jaba do
           define :type_a do
             attr :ref, type: :reference do
@@ -93,7 +94,7 @@ module JABA
     end
     
     it 'catches invalid reference to same type' do
-      check_fail 'Node with handle \'a|undefined\' not found', trace: [__FILE__, 'tagQ'] do
+      check_fail 'Node with handle \'undefined\' not found', trace: [__FILE__, 'tagQ'] do
         jaba do
           define :a do
             attr :b, type: :reference do

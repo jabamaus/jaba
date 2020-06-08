@@ -15,7 +15,7 @@
   "globals": {
   },
   "category": {
-    "category|App": {
+    "App": {
       "name": "Apps",
       "guid": "43F42D01-78C0-416E-8979-2807134DB488",
       "parent": null,
@@ -24,7 +24,7 @@
     }
   },
   "host": {
-    "host|vs2010": {
+    "vs2010": {
       "visual_studio?": true,
       "xcode?": false,
       "major_version": 10,
@@ -40,7 +40,7 @@
       "children": {
       }
     },
-    "host|vs2012": {
+    "vs2012": {
       "visual_studio?": true,
       "xcode?": false,
       "major_version": 11,
@@ -56,7 +56,7 @@
       "children": {
       }
     },
-    "host|vs2013": {
+    "vs2013": {
       "visual_studio?": true,
       "xcode?": false,
       "major_version": 12,
@@ -72,7 +72,7 @@
       "children": {
       }
     },
-    "host|vs2015": {
+    "vs2015": {
       "visual_studio?": true,
       "xcode?": false,
       "major_version": 14,
@@ -88,7 +88,7 @@
       "children": {
       }
     },
-    "host|vs2017": {
+    "vs2017": {
       "visual_studio?": true,
       "xcode?": false,
       "major_version": 15,
@@ -104,7 +104,7 @@
       "children": {
       }
     },
-    "host|vs2019": {
+    "vs2019": {
       "visual_studio?": true,
       "xcode?": false,
       "major_version": 16,
@@ -120,7 +120,7 @@
       "children": {
       }
     },
-    "host|xcode": {
+    "xcode": {
       "visual_studio?": false,
       "xcode?": true,
       "major_version": null,
@@ -138,7 +138,7 @@
     }
   },
   "platform": {
-    "platform|windows": {
+    "windows": {
       "windows?": true,
       "ios?": false,
       "macos?": false,
@@ -156,7 +156,7 @@
       "children": {
       }
     },
-    "platform|ios": {
+    "ios": {
       "windows?": false,
       "ios?": true,
       "macos?": false,
@@ -171,7 +171,7 @@
       "children": {
       }
     },
-    "platform|macos": {
+    "macos": {
       "windows?": false,
       "ios?": false,
       "macos?": true,
@@ -188,7 +188,7 @@
     }
   },
   "arch": {
-    "arch|x86": {
+    "x86": {
       "x86?": true,
       "x86_64?": false,
       "arm64?": false,
@@ -198,7 +198,7 @@
       "children": {
       }
     },
-    "arch|x86_64": {
+    "x86_64": {
       "x86?": false,
       "x86_64?": true,
       "arm64?": false,
@@ -208,7 +208,7 @@
       "children": {
       }
     },
-    "arch|arm64": {
+    "arm64": {
       "x86?": false,
       "x86_64?": false,
       "arm64?": true,
@@ -220,20 +220,20 @@
     }
   },
   "cpp": {
-    "cpp|MyApp": {
+    "MyApp": {
       "hosts": [
         "vs2019"
       ],
       "root": "C:/projects/GitHub/jaba/examples/example1",
       "children": {
-        "cpp|MyApp|vs2019": {
+        "MyApp|vs2019": {
           "platforms": [
             "windows"
           ],
           "host": "vs2019",
-          "host_ref": "host|vs2019",
+          "host_ref": "vs2019",
           "children": {
-            "cpp|MyApp|vs2019|windows": {
+            "MyApp|vs2019|windows": {
               "archs": [
                 "x86",
                 "x86_64"
@@ -243,7 +243,7 @@
                 "Release"
               ],
               "platform": "windows",
-              "platform_ref": "platform|windows",
+              "platform_ref": "windows",
               "deps": [
 
               ],
@@ -274,11 +274,11 @@
                 "WindowsTargetPlatformVersion": null
               },
               "children": {
-                "cpp|MyApp|vs2019|windows|x86": {
+                "MyApp|vs2019|windows|x86": {
                   "arch": "x86",
-                  "arch_ref": "arch|x86",
+                  "arch_ref": "x86",
                   "children": {
-                    "cpp|MyApp|vs2019|windows|x86|Debug": {
+                    "MyApp|vs2019|windows|x86|Debug": {
                       "type": "console",
                       "config": "Debug",
                       "build_action": [
@@ -333,7 +333,7 @@
                       "children": {
                       }
                     },
-                    "cpp|MyApp|vs2019|windows|x86|Release": {
+                    "MyApp|vs2019|windows|x86|Release": {
                       "type": "console",
                       "config": "Release",
                       "build_action": [
@@ -390,11 +390,11 @@
                     }
                   }
                 },
-                "cpp|MyApp|vs2019|windows|x86_64": {
+                "MyApp|vs2019|windows|x86_64": {
                   "arch": "x86_64",
-                  "arch_ref": "arch|x86_64",
+                  "arch_ref": "x86_64",
                   "children": {
-                    "cpp|MyApp|vs2019|windows|x86_64|Debug": {
+                    "MyApp|vs2019|windows|x86_64|Debug": {
                       "type": "console",
                       "config": "Debug",
                       "build_action": [
@@ -449,7 +449,7 @@
                       "children": {
                       }
                     },
-                    "cpp|MyApp|vs2019|windows|x86_64|Release": {
+                    "MyApp|vs2019|windows|x86_64|Release": {
                       "type": "console",
                       "config": "Release",
                       "build_action": [
@@ -512,20 +512,20 @@
         }
       }
     },
-    "cpp|MyLib": {
+    "MyLib": {
       "hosts": [
         "vs2019"
       ],
       "root": "C:/projects/GitHub/jaba/examples/example2",
       "children": {
-        "cpp|MyLib|vs2019": {
+        "MyLib|vs2019": {
           "platforms": [
             "windows"
           ],
           "host": "vs2019",
-          "host_ref": "host|vs2019",
+          "host_ref": "vs2019",
           "children": {
-            "cpp|MyLib|vs2019|windows": {
+            "MyLib|vs2019|windows": {
               "archs": [
                 "x86",
                 "x86_64"
@@ -535,7 +535,7 @@
                 "Release"
               ],
               "platform": "windows",
-              "platform_ref": "platform|windows",
+              "platform_ref": "windows",
               "deps": [
 
               ],
@@ -566,11 +566,11 @@
                 "WindowsTargetPlatformVersion": null
               },
               "children": {
-                "cpp|MyLib|vs2019|windows|x86": {
+                "MyLib|vs2019|windows|x86": {
                   "arch": "x86",
-                  "arch_ref": "arch|x86",
+                  "arch_ref": "x86",
                   "children": {
-                    "cpp|MyLib|vs2019|windows|x86|Debug": {
+                    "MyLib|vs2019|windows|x86|Debug": {
                       "type": "lib",
                       "config": "Debug",
                       "build_action": [
@@ -624,7 +624,7 @@
                       "children": {
                       }
                     },
-                    "cpp|MyLib|vs2019|windows|x86|Release": {
+                    "MyLib|vs2019|windows|x86|Release": {
                       "type": "lib",
                       "config": "Release",
                       "build_action": [
@@ -680,11 +680,11 @@
                     }
                   }
                 },
-                "cpp|MyLib|vs2019|windows|x86_64": {
+                "MyLib|vs2019|windows|x86_64": {
                   "arch": "x86_64",
-                  "arch_ref": "arch|x86_64",
+                  "arch_ref": "x86_64",
                   "children": {
-                    "cpp|MyLib|vs2019|windows|x86_64|Debug": {
+                    "MyLib|vs2019|windows|x86_64|Debug": {
                       "type": "lib",
                       "config": "Debug",
                       "build_action": [
@@ -738,7 +738,7 @@
                       "children": {
                       }
                     },
-                    "cpp|MyLib|vs2019|windows|x86_64|Release": {
+                    "MyLib|vs2019|windows|x86_64|Release": {
                       "type": "lib",
                       "config": "Release",
                       "build_action": [

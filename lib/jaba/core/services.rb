@@ -109,7 +109,6 @@ module JABA
       @null_nodes = {}
       
       @in_attr_default_block = false
-      @building_jaba_output = false
 
       @top_level_api = JabaTopLevelAPI.new(self)
       @default_attr_type = JabaAttributeType.new(self, JabaDefinition.new(nil, nil, caller_locations(0, 1)[0])).freeze
@@ -497,15 +496,7 @@ module JABA
 
     ##
     #
-    def building_jaba_output?
-      @building_jaba_output
-    end
-
-    ##
-    #
     def build_jaba_output
-      @building_jaba_output = true
-
       out_file = input.jaba_output_file
       out_dir = out_file.dirname
 
@@ -549,8 +540,6 @@ module JABA
       #
       @output[:added] = @added
       @output[:modified] = @modified
-
-      @building_jaba_output = false
     end
 
     ##

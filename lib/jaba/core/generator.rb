@@ -86,7 +86,7 @@ module JABA
       else
         @services.jaba_error('name not required for root nodes') if name
         depth = 0
-        handle = "#{@type_id}|#{@current_definition.id}"
+        handle = "#{@current_definition.id}"
       end
 
       @services.log "#{'  ' * depth}Instancing node [type=#{type_id}, handle=#{handle}]"
@@ -155,9 +155,9 @@ module JABA
       end
       make_handle_block = attr_def.get_property(:make_handle)
       handle = if make_handle_block
-        "#{rt}|#{node.eval_api_block(ref_node_id, &make_handle_block)}"
+        "#{node.eval_api_block(ref_node_id, &make_handle_block)}"
       else
-        "#{rt}|#{ref_node_id}"
+        "#{ref_node_id}"
       end
       ref_node = rjt.top_level_type.generator.node_from_handle(handle, callstack: attr.last_call_location)
       
