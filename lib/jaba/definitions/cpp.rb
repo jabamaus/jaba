@@ -85,7 +85,7 @@ define :cpp do
     attr :projname, type: :string do
       title 'Base name of project files'
       help 'Defaults to <id><projsuffix>.'
-      default { "#{_ID}#{projsuffix}" }
+      default { "#{id}#{projsuffix}" }
     end
 
     attr :projsuffix, type: :string do

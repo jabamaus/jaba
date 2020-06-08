@@ -296,7 +296,7 @@ module JABA
     
     ##
     #
-    def _ID
+    def id
       @node.defn_id
     end
     

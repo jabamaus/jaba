@@ -139,6 +139,7 @@ module JABA
       proj[:src].must_equal ['a.cpp', 'b.cpp']
     end
 
+    # TODO: test fail when no src file matches
   end
 
 end

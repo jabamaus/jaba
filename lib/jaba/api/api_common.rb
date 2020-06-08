@@ -31,7 +31,7 @@ module  JABA
 
     ##
     #
-    def _ID
+    def id
       @obj.defn_id
     end
 

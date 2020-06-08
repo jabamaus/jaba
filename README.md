@@ -48,10 +48,8 @@ if there are multiple attrs, with a warning.
   - check for duplicate filenames at generator level, with proper error reporting
   - Make contents of attr def defaults overidable by user, including calling super
 
-  - Sort out _ID
-    - Make _ID be id of the definition the code is in, such that it works even inside
+  - Make _ID be id of the definition the code is in, such that it works even inside
       a block that is being executed in the context of a different jaba object
-    - rename existing _ID to id
 
 - give attributes a 'title' and a 'help' string. title can be used when dumping help, help string can be used in error msgs
 - Stop profiling test as a whole. Add a stresstest feature.

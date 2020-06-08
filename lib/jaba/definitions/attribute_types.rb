@@ -100,7 +100,7 @@ attr_type :reference do
     if rt.nil?
       fail "'referenced_type' must be set"
     end
-    if jaba_type._ID != rt
+    if jaba_type.id != rt
       jaba_type.dependencies rt
     end
   end
