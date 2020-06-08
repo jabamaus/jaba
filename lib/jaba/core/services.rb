@@ -90,12 +90,9 @@ module JABA
       @jaba_type_definitions = []
       @jaba_open_definitions = []
       @default_definitions = []
-      @globals_node_definition = nil
       @instance_definitions = []
       @instance_definition_lookup = {}
       @shared_definition_lookup = {}
-
-      @current_definition = nil
 
       @jaba_attr_types = []
       @jaba_attr_flags = []
