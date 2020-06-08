@@ -232,6 +232,7 @@ module JABA
       
       log 'Initialisation of JabaNodes complete'
 
+      # TODO: create globals first
       @globals_node = node_from_handle('globals|globals')
 
       log "Resolving references..."
@@ -394,6 +395,14 @@ module JABA
         jaba_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol " \
           "(-_. permitted), eg :my_id, 'my-id', 'my.id'")
       end
+    end
+
+    ##
+    #
+    def get_generator(top_level_type_id)
+      g = @generators.find {|g| g.type_id == top_level_type_id}
+      jaba_error("'#{top_level_type_id.inspect_unquoted}' generator not found") if !g
+      g
     end
 
     ##

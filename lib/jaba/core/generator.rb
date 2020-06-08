@@ -25,6 +25,12 @@ module JABA
     end
     
     ##
+    #
+    def get_generator(top_level_type_id)
+      @services.get_generator(top_level_type_id)
+    end
+
+    ##
     # Call this from subclass
     #
     def make_node(**options, &block)
