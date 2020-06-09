@@ -5,7 +5,7 @@ module JABA
   class TestAttributeHash < JabaTest
 
     it 'defaults to empty hash' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_hash :a
         end
@@ -16,7 +16,7 @@ module JABA
     end
 
     it 'can have a default' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_hash :a do
             default({k: :v})
@@ -31,7 +31,7 @@ module JABA
 
     it 'validates that default is a hash' do
       check_fail "'a' hash attribute default must be a hash", trace: [__FILE__, 'tagU'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr_hash :a do
               default [] # tagU
@@ -42,7 +42,7 @@ module JABA
     end
 
     it 'works with block style default' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr :a
           attr :b
@@ -62,7 +62,7 @@ module JABA
       # test with hash attr default using an unset attr
       #
       check_fail "Cannot read uninitialised 'b' attribute", trace: [__FILE__, 'tagI'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a
             attr :b
@@ -82,7 +82,7 @@ module JABA
       # test with another attr using unset hash attr
       #
       check_fail "Cannot read uninitialised 'a' attribute", trace: [__FILE__, 'tagF'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr_hash :a
             attr :b do
@@ -99,7 +99,7 @@ module JABA
     end
 
     it 'can be set' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_hash :a
         end
@@ -125,7 +125,7 @@ module JABA
 
     it 'is not possible to modify returned hash' do
       check_fail 'Cannot modify read only value', trace: [__FILE__, 'tagN'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr_hash :a do
               default({k: :v})
@@ -139,7 +139,7 @@ module JABA
     end
 
     it 'considers setting to empty array as marking it as set' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_hash :a do
             flags :required
@@ -152,7 +152,7 @@ module JABA
     end
 
     it 'can extend default' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_hash :a do
             default({k: :v})
@@ -166,7 +166,7 @@ module JABA
     end
 
     it 'allows setting value with block' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_hash :a
           attr :b, type: :choice do
@@ -191,7 +191,7 @@ module JABA
     it 'validates default element types are valid' do
       check_fail "'not a symbol' must be a symbol but was a 'String'",
                   trace: [ATTR_TYPES_FILE, 'fail "\'#{value}\' must be a symbol but was a', __FILE__, 'tagD'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr_hash :a, type: :symbol do # tagD
               default({k: :v, k2: 'not a symbol'})
@@ -204,7 +204,7 @@ module JABA
     it 'validates element types are valid' do
       check_fail "'not a symbol' must be a symbol but was a 'String'",
                  trace: [ATTR_TYPES_FILE, 'fail "\'#{value}\' must be a symbol but was a', __FILE__, 'tagE'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr_hash :a, type: :symbol
           end
@@ -219,7 +219,7 @@ module JABA
     it 'disallows :nosort' do
       check_fail "'a' attribute definition failed validation: :nosort flag is incompatible: :nosort is only allowed on array attributes",
                 trace: [__FILE__, 'tagQ'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr_hash :a do # tagQ
               flags :nosort
@@ -232,7 +232,7 @@ module JABA
     it 'disallows :allow_dupes' do
       check_fail "'a' attribute definition failed validation: :allow_dupes flag is incompatible: :allow_dupes is only allowed on array attributes",
                  trace: [__FILE__, 'tagP'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr_hash :a do # tagP
               flags :allow_dupes
@@ -243,7 +243,7 @@ module JABA
     end
     
     it 'can accept flag options' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_hash :a do
             flag_options :f1, :f2, :f3
@@ -265,7 +265,7 @@ module JABA
     end
 
     it 'can accept value options' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_hash :a do
             value_option :kv1
@@ -286,7 +286,7 @@ module JABA
     end
 
     it 'can accept value and flag options' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_hash :a do
             value_option :kv1
@@ -313,7 +313,7 @@ module JABA
 
     it 'validates a value is given' do
       check_fail("Hash attribute requires a key and a value", trace: [__FILE__, 'tagM']) do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr_hash :a
           end

@@ -20,7 +20,7 @@ module JABA
         end
       end
       
-      jaba do
+      jaba(barebones: true) do
         shared :at_setup do
           init_attr_def do
             flags :allow_dupes
@@ -54,7 +54,7 @@ module JABA
 
     it 'fails if no block supplied' do
       check_fail "A block is required", trace: [__FILE__, 'tagP'] do
-        jaba do
+        jaba(barebones: true) do
           shared :a # tagP
         end
       end
@@ -62,7 +62,7 @@ module JABA
 
     it 'fails if shared definition does not exist' do
       check_fail "Shared definition 'b' not found", trace: [__FILE__, 'tagT'] do
-        jaba do
+        jaba(barebones: true) do
           shared :a do
           end
           define :test
@@ -74,7 +74,7 @@ module JABA
     end
     
     it 'supports passing args to shared definitions' do
-      jaba do
+      jaba(barebones: true) do
         shared :a do |n1, s1, s2, s3, n2|
           c "#{s3}#{s1}#{n2}#{s2}#{n1}"
         end

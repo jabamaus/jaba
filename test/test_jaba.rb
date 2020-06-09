@@ -29,10 +29,11 @@ module JABA
 
     ##
     #
-    def jaba(load_paths: nil, dry_run: false, dump_output: false, cpp_app: false, cpp_defaults: false, &block)
+    def jaba(barebones: false, load_paths: nil, dry_run: false, dump_output: false, cpp_app: false, cpp_defaults: false, &block)
       op = JABA.run do |c|
         c.load_paths = load_paths
         c.definitions(&block) if block_given?
+        c.barebones = barebones
         td = temp_dir
         c.jaba_output_file = "#{td}/jaba.output.json"
         if cpp_app || cpp_defaults

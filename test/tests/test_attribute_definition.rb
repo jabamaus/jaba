@@ -6,13 +6,13 @@ module JABA
 
     it 'accepts a string or a symbol as id' do
       check_fail '\'123\' is an invalid id', trace: [__FILE__, 'tagL'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr 123 # tagL
           end
         end
       end
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr 'attr1' do
             default 1
@@ -29,7 +29,7 @@ module JABA
     end
     
     it 'does not require a block to be supplied' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr :a
         end
@@ -42,7 +42,7 @@ module JABA
     
     it 'detects duplicate attribute ids' do
       check_fail "'a' attribute multiply defined", trace: [__FILE__, 'tagQ'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a
             attr :a # tagQ
@@ -53,7 +53,7 @@ module JABA
 
     it 'checks for duplicate flags' do
       check_warn("Duplicate flag ':read_only' specified", __FILE__, 'tagH') do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a do
               flags :read_only, :read_only # tagH
@@ -70,7 +70,7 @@ module JABA
 
     it 'checks for duplicate flag options' do
       check_warn("Duplicate flag option ':export' specified", __FILE__, 'tagD') do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a do
               flag_options :export, :export # tagD
@@ -87,7 +87,7 @@ module JABA
 
     it 'checks for invalid flags' do
       check_fail "':invalid' is an invalid flag", trace: [__FILE__, 'tagE'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a do
               flags :invalid # tagE
@@ -98,7 +98,7 @@ module JABA
     end
 
     it 'supports adding properties' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr :a do
             define_property :b, 'b'
@@ -129,7 +129,7 @@ module JABA
     
     it 'detects multiply defined properties' do
       check_fail "'a' property multiply defined", trace: [__FILE__, 'tagR'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a do
               define_property :a
@@ -142,7 +142,7 @@ module JABA
 
     it 'fails if property does not exist' do
       check_fail "Failed to set undefined 'undefined' property", trace: [__FILE__, 'tagZ'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a do
               undefined 1 # tagZ
@@ -153,7 +153,7 @@ module JABA
     end
 
     it 'supports supplying defaults in block form' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr :a do
             default '1'
@@ -182,7 +182,7 @@ module JABA
 
     it 'fails if default block references an unset attribute that does not have a default block' do
       check_fail "Cannot read uninitialised 'a' attribute", trace: [__FILE__, 'tagP'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a
             attr :b do
@@ -208,7 +208,7 @@ module JABA
     
     it 'supports specifying a validator' do
       check_fail "'a' attribute failed validation: Val must not be 2", trace: [__FILE__, 'tagT', __FILE__, 'tagS'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a do
               validate do |val|
@@ -226,7 +226,7 @@ module JABA
 
     it 'ensures flag options are symbols' do
       check_fail 'Flag options must be specified as symbols, eg :option', trace: [__FILE__, 'tagJ'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a do
               flag_options 'a' # tagJ
@@ -238,7 +238,7 @@ module JABA
 
     it 'ensures value options are symbols' do
       check_fail 'value_option id must be specified as a symbol, eg :option', trace: [__FILE__, 'tagW'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a do
               value_option 'a' # tagW
@@ -249,7 +249,7 @@ module JABA
     end
 
     it 'supports specifying valid value options' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_array :a do
             value_option :group
@@ -262,7 +262,7 @@ module JABA
         end
       end
       check_fail 'Invalid value option \':undefined\'. Valid options: [:group, :condition]', trace: [__FILE__, 'tagA'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr_array :a do
               value_option :group
@@ -275,7 +275,7 @@ module JABA
         end
       end
       check_fail 'Invalid value option \':undefined\' - no options defined', trace: [__FILE__, 'tagB'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr_array :a
           end
@@ -288,7 +288,7 @@ module JABA
     
     it 'supports flagging value options as required' do
       check_fail "'group' option requires a value", trace: [__FILE__, 'tagI'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr_hash :a do
               value_option :group, required: true
@@ -303,7 +303,7 @@ module JABA
 
     it 'supports specifying a valid set of values for value option' do
       check_fail "Invalid value ':d' passed to ':group' option. Valid values: [:a, :b, :c]", trace: [__FILE__, 'tagX'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr_hash :a do
               value_option :group, items: [:a, :b, :c]
@@ -318,7 +318,7 @@ module JABA
 
     it 'supports specifying a valid set of values for required value option' do
       check_fail "'group' option requires a value. Valid values are [:a, :b, :c]", trace: [__FILE__, 'tagO'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr_hash :a do
               value_option :group, required: true, items: [:a, :b, :c]

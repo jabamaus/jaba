@@ -5,7 +5,7 @@ module JABA
   class TestAttributeArray < JabaTest
 
     it 'supports setting a default value' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_array :a do
             default [1, 2, 3]
@@ -21,7 +21,7 @@ module JABA
     
     it 'validates that default is an array' do
       check_fail "'a' array attribute default must be an array", trace: [__FILE__, 'tagV'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr_array :a do
               default 1 # tagV
@@ -32,7 +32,7 @@ module JABA
     end
 
     it 'works with block style default' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr :a
           attr :b
@@ -52,7 +52,7 @@ module JABA
       # test with array attr default using an unset attr
       #
       check_fail "Cannot read uninitialised 'b' attribute", trace: [__FILE__, 'tagI'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a
             attr :b
@@ -72,7 +72,7 @@ module JABA
       # test with another attr using unset array attr
       #
       check_fail "Cannot read uninitialised 'a' attribute", trace: [__FILE__, 'tagF'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr_array :a
             attr :b do
@@ -89,7 +89,7 @@ module JABA
     end
 
     it 'supports extending default value' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_array :a do
             default [1, 2, 3]
@@ -105,7 +105,7 @@ module JABA
     end
 
     it 'allows setting value with block' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_array :a
           attr :b
@@ -130,7 +130,7 @@ module JABA
     
     it 'is not possible to modify returned array' do
       check_fail 'Cannot modify read only value', trace: [__FILE__, 'tagN'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr_array :a do
               default([:a])
@@ -144,7 +144,7 @@ module JABA
     end
 
     it 'considers setting to empty array as marking it as set' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_array :a do
             flags :required
@@ -158,7 +158,7 @@ module JABA
 
     it 'strips duplicates by default' do
       check_warn("Stripping duplicate '5'", __FILE__, 'tagU') do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr_array :a
           end
@@ -171,7 +171,7 @@ module JABA
     end
     
     it 'allows flagging arrays with :allow_dupes' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_array :a do
             flags :allow_dupes
@@ -187,7 +187,7 @@ module JABA
     end
     
     it 'sorts by default' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_array :a
           attr_array :b
@@ -210,7 +210,7 @@ module JABA
     end
     
     it 'does not sort or strip duplicates from bool arrays' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_array :a, type: :bool
         end
@@ -226,7 +226,7 @@ module JABA
     it 'validates default element types are valid' do
       check_fail "'not a symbol' must be a symbol but was a 'String'",
                   trace: [ATTR_TYPES_FILE, 'fail "\'#{value}\' must be a symbol but was a', __FILE__, 'tagD'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr_array :a, type: :symbol do # tagD
               default ['not a symbol']
@@ -239,7 +239,7 @@ module JABA
     it 'validates element types are valid' do
       check_fail ':bool attributes only accept [true|false]', 
                  trace: [ATTR_TYPES_FILE, 'fail ":bool attributes only accept', __FILE__, 'tagT'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr_array :a, type: :bool
           end
@@ -252,7 +252,7 @@ module JABA
     end
     
     it 'allows flagging arrays with nosort' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_array :a do
             flags :nosort, :allow_dupes
@@ -268,7 +268,7 @@ module JABA
     end
     
     it 'supports prefix and postfix options' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_array :a do
             flags :nosort, :allow_dupes
@@ -285,7 +285,7 @@ module JABA
     
     it 'only allows prefix/postfix on string elements' do
       check_fail 'Prefix/postfix option can only be used with arrays of strings', trace: [__FILE__, 'tagQ'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr_array :a
           end
@@ -297,7 +297,7 @@ module JABA
     end
     
     it 'supports excluding elements' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_array :a
           attr_array :b
@@ -317,7 +317,7 @@ module JABA
     end
 
     it 'supports :prefix and :postfix in conjunction with :exclude' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_array :a do
             flags :nosort
@@ -334,7 +334,7 @@ module JABA
     end
     
     it 'supports excluding elements with regexes' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_array :a
         end
@@ -350,7 +350,7 @@ module JABA
     
     it 'fails if excluding with regex on non-strings' do
       check_fail 'Exclude regex can only operate on strings', trace: [__FILE__, 'tagR'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr_array :a
           end
@@ -362,7 +362,7 @@ module JABA
     end
     
     it 'supports conditional excluding' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_array :a
           attr_array :b
@@ -381,7 +381,7 @@ module JABA
     end
     
     it 'supports wiping arrays' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_array :a
           attr :b do
@@ -410,7 +410,7 @@ module JABA
     end
     
     it 'supports wiping default array' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr_array :a do
             default [1, 2]
@@ -432,7 +432,7 @@ module JABA
 
     it 'catches invalid args to wipe' do
       check_fail "'b' attribute not found", trace: [__FILE__, 'tagS'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr_array :a
           end
@@ -450,7 +450,7 @@ module JABA
     # TODO: test flag option copies
 
     it 'gives a copy of keyval options to each element' do
-      jaba do
+      jaba(barebones: true) do
         opt1 = 'opt1'
         opt2 = 'opt2'
         define :test do

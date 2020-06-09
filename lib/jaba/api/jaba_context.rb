@@ -69,6 +69,10 @@ module JABA
     #
     attr_bool :dry_run
     
+    ##
+    # Used during testing. Only loads the bare minimum definitions. Jaba will not be able to generate any projects in this mode. 
+    #
+    attr_bool :barebones
   end
 
   ##

@@ -5,7 +5,7 @@ module JABA
   class TestExtensionSemantics < JabaTest
 
     it 'supports creating new node types' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr :a
         end
@@ -18,7 +18,7 @@ module JABA
 
     it 'fails if try to open undefined type' do
       check_fail "'undefined' type not defined", trace: [__FILE__, 'tagL'] do
-        jaba do
+        jaba(barebones: true) do
           open :undefined do # tagL
           end
         end
@@ -41,7 +41,7 @@ module JABA
     # TODO: extend
     it 'supports defining new attribute types' do
       check_fail "'b' attribute failed validation: Invalid", trace: [__FILE__, 'tagD', __FILE__, 'tagO'] do 
-        jaba do
+        jaba(barebones: true) do
           attr_type :a do
             validate_value do
               fail 'invalid' # tagD'
@@ -60,7 +60,7 @@ module JABA
     
     it 'detects usage of undefined attribute types' do
       check_fail(/'undefined' attribute type is undefined. Valid types: \[.*?\]/, trace: [__FILE__, 'tagK']) do
-        jaba do
+        jaba(barebones: true) do
           define :a do
             attr :b, type: :undefined # tagK
           end
@@ -84,7 +84,7 @@ module JABA
 
     it 'instances types in order of definition' do
       assert_output 'a;1;2;3;' do
-        jaba do
+        jaba(barebones: true) do
           a :a do
             print '1;'
           end
@@ -103,7 +103,7 @@ module JABA
     
     it 'supports dependencies between types' do
       assert_output 'def a;def b;def c;a;b;c;' do
-        jaba do
+        jaba(barebones: true) do
           define :a do
             print 'def a;'
           end
@@ -130,7 +130,7 @@ module JABA
     
     it 'checks for cyclic dependencies' do
       check_fail '\'a\' contains a cyclic dependency', trace: [__FILE__, 'tagF'] do
-        jaba do
+        jaba(barebones: true) do
           define :a do # tagF
             dependencies :c
           end
@@ -146,7 +146,7 @@ module JABA
     
     it 'supports a generate hook per-definition' do
       assert_output 'generate' do
-        jaba do
+        jaba(barebones: true) do
           define :test
           test :t do
             generate do

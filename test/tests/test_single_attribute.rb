@@ -6,7 +6,7 @@ module JABA
 
     it 'only accepts single values' do
       check_fail "'a' attribute default must be a single value not a Array", trace: [__FILE__, 'tagV'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a do
               default [] # tagV
@@ -16,7 +16,7 @@ module JABA
       end
 
       check_fail "'a' must be a single value not a Array", trace: [__FILE__, 'tagK'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a
           end
@@ -28,7 +28,7 @@ module JABA
     end
 
     it 'allows setting value with block' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr :a
           attr :b
@@ -45,7 +45,7 @@ module JABA
 
     it 'prevents modifying read values' do
       check_fail "Cannot modify read only value", trace: [__FILE__, 'tagY'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a, type: :string do
               default 'b'
@@ -59,7 +59,7 @@ module JABA
         end
       end
       check_fail "Cannot modify read only value", trace: [__FILE__, 'tagS'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a, type: :string do
             end
@@ -74,7 +74,7 @@ module JABA
     end
 
     it 'works with block style default' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr :a
           attr :b
@@ -94,7 +94,7 @@ module JABA
       # test with attr default using an unset attr
       #
       check_fail "Cannot read uninitialised 'b' attribute", trace: [__FILE__, 'tagI'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a
             attr_array :b
@@ -114,7 +114,7 @@ module JABA
       # test with another attr using unset attr
       #
       check_fail "Cannot read uninitialised 'a' attribute", trace: [__FILE__, 'tagF'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a
             attr_array :b do
@@ -132,7 +132,7 @@ module JABA
 
     it 'fails if default block sets attribute' do
       check_fail "'a' attribute is read only", trace: [__FILE__, 'tagA'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a
             attr :b do
@@ -149,7 +149,7 @@ module JABA
 
     it 'validates flag options' do
       check_fail "Invalid flag option ':d'. Valid flags are [:a, :b, :c]", trace: [__FILE__, 'tagD'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a do
               flag_options :a, :b, :c
@@ -163,7 +163,7 @@ module JABA
     end
 
     it 'overwrites flag and keyval options on successive calls' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr :a do
             flag_options :fo1, :fo2, :fo3
@@ -190,7 +190,7 @@ module JABA
 
     # TODO: check wiping down required values
     it 'supports wiping value back to default' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr :a do
             default 1
@@ -228,7 +228,7 @@ module JABA
     
     it 'rejects setting readonly attrs' do
       check_fail "'a' attribute is read only", trace: [__FILE__, 'tagJ'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a do
               flags :read_only
@@ -245,7 +245,7 @@ module JABA
       # Check not settable even if no default supplied
       #
       check_fail "'a' attribute is read only", trace: [__FILE__, 'tagC'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a do
               flags :read_only

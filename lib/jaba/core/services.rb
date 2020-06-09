@@ -67,6 +67,7 @@ module JABA
       @input.instance_variable_set(:@dump_output, true)
       @input.instance_variable_set(:@dry_run, false)
       @input.instance_variable_set(:@enable_logging, false)
+      @input.instance_variable_set(:@barebones, false)
 
       # Add cwd to load_paths, unless in the root of jaba itself (ie when developing)
       #
@@ -583,8 +584,15 @@ module JABA
     ##
     #
     def gather_definition_src_files
-      # Load core type definitions 
-      @definition_src_files.concat(@file_manager.glob("#{__dir__}/../definitions/*.rb".cleanpath))
+      # Load core type definitions
+      #
+      if input.barebones?
+        [:attribute_flags, :attribute_types].each do |d|
+          @definition_src_files << "#{__dir__}/../definitions/#{d}.rb".cleanpath
+        end
+      else
+        @definition_src_files.concat(@file_manager.glob("#{__dir__}/../definitions/*.rb".cleanpath))
+      end
       
       Array(input.load_paths).each do |p|
         p = p.to_absolute(clean: true)

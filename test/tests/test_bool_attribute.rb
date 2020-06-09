@@ -5,7 +5,7 @@ module JABA
   class TestBoolAttribute < JabaTest
 
     it 'defaults to false' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr :a, type: :bool
         end
@@ -21,7 +21,7 @@ module JABA
                    ATTR_TYPES_FILE, 'fail ":bool attributes only accept [true|false]',
                    __FILE__, 'tagP' # evaluated later so exact call line is lost
                  ] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :b, type: :bool do # tagP
               default 1
@@ -29,7 +29,7 @@ module JABA
           end
         end
       end
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr :b, type: :bool do
             default true
@@ -51,7 +51,7 @@ module JABA
                   ATTR_TYPES_FILE, 'fail ":bool attributes only accept',
                    __FILE__, 'tagW'
                  ] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :c, type: :bool do
               default true
@@ -82,7 +82,7 @@ module JABA
     
     it 'works with :required flag' do
       check_fail "'a' attribute requires a value", trace: [__FILE__, 'tagY'] do
-        jaba do
+        jaba(barebones: true) do
           define :test do
             attr :a, type: :bool do
               flags :required

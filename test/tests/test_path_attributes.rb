@@ -8,7 +8,7 @@ module JABA
       
       it 'fails if dir is not clean' do
         check_warn "'a\\b' not specified cleanly. Should be 'a/b'", __FILE__, 'tagA' do
-          jaba do
+          jaba(barebones: true) do
             define :test do
               attr :a, type: :dir
             end

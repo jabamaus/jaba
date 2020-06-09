@@ -7,7 +7,7 @@ module JABA
   class TestTopLevelDefinition < JabaTest
 
     it 'rejects invalid ids' do
-      jaba do
+      jaba(barebones: true) do
         shared :Alpha_Num3r1cs_With_Underscores_Are_Valid_Everything_Else_Is_Not do
         end
         shared 'Str1ngs_also_allowed' do
@@ -19,14 +19,14 @@ module JABA
       end
       
       check_fail "'Space invalid' is an invalid id. Must be an alphanumeric string or symbol", trace: [__FILE__, 'tagS'] do
-        jaba do
+        jaba(barebones: true) do
           shared 'Space invalid' do # tagS
           end
         end
       end
       
       check_fail "'1' is an invalid id", trace: [__FILE__, 'tagZ'] do
-        jaba do
+        jaba(barebones: true) do
           shared 1 do # tagZ
           end
         end
@@ -55,7 +55,7 @@ module JABA
     end
     
     it 'allows definition id to be accessed from all definitions' do
-      jaba do
+      jaba(barebones: true) do
         attr_type :v do
           id.must_equal(:v)
         end
@@ -86,14 +86,14 @@ module JABA
 
     it 'rejects attempts to instance an unknown type' do
       check_fail "'undefined' type not defined", trace: [__FILE__, 'tagJ'] do
-        jaba do
+        jaba(barebones: true) do
           undefined :a # tagJ
         end
       end
     end
 
     it 'supports per-type defaults' do
-      jaba do
+      jaba(barebones: true) do
         define :test do
           attr :a
           attr_array :b do
