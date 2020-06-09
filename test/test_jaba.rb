@@ -179,7 +179,6 @@ $tag_to_line = {}
 Dir.glob("#{__dir__}/tests/*.rb").sort.each do |f|
   str = IO.read(f)
   index = 0
-  # TODO: use scan
   str.each_line(chomp: true) do |ln|
     if ln =~ / # (tag.)/
       tag_id = "#{f}##{Regexp.last_match(1)}"
