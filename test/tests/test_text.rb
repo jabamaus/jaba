@@ -6,7 +6,7 @@ module JABA
 
   class TestText < JabaTest
 
-    TEXT_DEF_FILE = "#{__dir__}/../../lib/jaba/definitions/text.rb".cleanpath
+    TEXT_JDL_FILE = "#{__dir__}/../../lib/jaba/plugins/text/text_jdl.rb".cleanpath
 
     it 'can generate a text file' do
       fn = "#{temp_dir}/a"
@@ -62,7 +62,7 @@ module JABA
     end
 
     it 'fails if no filename specified' do
-      check_fail "'filename' attribute requires a value. See #{TEXT_DEF_FILE}:#{find_line_number(TEXT_DEF_FILE, 'attr :filename')}", trace: [__FILE__, 'tagY'] do
+      check_fail "'filename' attribute requires a value. See #{TEXT_JDL_FILE}:#{find_line_number(TEXT_JDL_FILE, 'attr :filename')}", trace: [__FILE__, 'tagY'] do
         jaba do
           text :t # tagY
         end

@@ -25,8 +25,6 @@ require_relative 'project'
 require_relative '../projects/vsproj'
 require_relative '../projects/vcxproj'
 require_relative '../projects/xcodeproj'
-require_relative '../generators/cpp_generator.rb'
-require_relative '../generators/text_generator.rb'
 
 ##
 #
@@ -140,9 +138,7 @@ module JABA
     ##
     #
     def do_run
-      # Calculate which definition files need to be Loaded
-      #
-      gather_definition_src_files
+      load_plugins
 
       # Execute them. This will cause a series of calls to eg define_attr_type, define_type, define_instance (see further
       # down in this file). These calls will come from user definitions via the api files.
@@ -583,16 +579,21 @@ module JABA
     
     ##
     #
-    def gather_definition_src_files
+    def load_plugins
+      @plugins_dir = "#{__dir__}/../plugins".cleanpath
+      require_relative '../plugins/text/text_generator.rb'
+      require_relative '../plugins/cpp/cpp_generator.rb'
+      require_relative '../plugins/workspace/workspace_generator.rb'
+
       # Load core type definitions
       #
-      if input.barebones?
-        [:attribute_flags, :attribute_types].each do |d|
-          @definition_src_files << "#{__dir__}/../definitions/#{d}.rb".cleanpath
-        end
-      else
-        @definition_src_files.concat(@file_manager.glob("#{__dir__}/../definitions/*.rb".cleanpath))
-      end
+      #if input.barebones?
+      #  [:attribute_flags, :attribute_types].each do |d|
+      #    @definition_src_files << "#{__dir__}/../definitions/#{d}.rb".cleanpath
+      #  end
+      #else
+        @definition_src_files.concat(@file_manager.glob("#{@plugins_dir}/**/*jdl.rb"))
+      #end
       
       Array(input.load_paths).each do |p|
         p = p.to_absolute(clean: true)

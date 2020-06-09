@@ -21,7 +21,7 @@ module JABA
     end
   end
 
-  ATTR_TYPES_FILE = "#{__dir__}/../lib/jaba/definitions/attribute_types.rb".cleanpath
+  ATTR_TYPES_JDL = "#{__dir__}/../lib/jaba/plugins/core/attribute_types_jdl.rb".cleanpath
 
   class JabaTest < Minitest::Spec
     

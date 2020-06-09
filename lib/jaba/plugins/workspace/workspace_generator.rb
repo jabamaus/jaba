@@ -20,6 +20,7 @@ module JABA
     #
     def make_nodes
       root_node = make_node
+=begin
       @workspaces << root_node
 
       cpp_gen = get_generator(:cpp)
@@ -48,7 +49,7 @@ module JABA
           all_platforms[platform] = nil
         end
       end
-
+=end
       root_node
     end
     

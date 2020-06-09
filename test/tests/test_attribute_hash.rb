@@ -190,7 +190,7 @@ module JABA
 
     it 'validates default element types are valid' do
       check_fail "'not a symbol' must be a symbol but was a 'String'",
-                  trace: [ATTR_TYPES_FILE, 'fail "\'#{value}\' must be a symbol but was a', __FILE__, 'tagD'] do
+                  trace: [ATTR_TYPES_JDL, 'fail "\'#{value}\' must be a symbol but was a', __FILE__, 'tagD'] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a, type: :symbol do # tagD
@@ -203,7 +203,7 @@ module JABA
 
     it 'validates element types are valid' do
       check_fail "'not a symbol' must be a symbol but was a 'String'",
-                 trace: [ATTR_TYPES_FILE, 'fail "\'#{value}\' must be a symbol but was a', __FILE__, 'tagE'] do
+                 trace: [ATTR_TYPES_JDL, 'fail "\'#{value}\' must be a symbol but was a', __FILE__, 'tagE'] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a, type: :symbol
