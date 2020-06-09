@@ -22,20 +22,33 @@ module JABA
       root_node = make_node
       @workspaces << root_node
 
-      cpp_generator = get_generator(:cpp)
+      cpp_gen = get_generator(:cpp)
       
       # Build a union of all hosts and platforms of the specified project
       #
-      all_hosts = []
-      all_platforms = []
+      all_hosts = {}
+      all_platforms = {}
+      all_projects = []
+
       root_node.attrs.projects.each do |proj_spec|
-        if proj_spec.symbol?
+        all_projects.concat(cpp_gen.get_matching_projects(proj_spec))
+      end
 
-        elsif proj_spec.wildcard?
+      if all_projects.empty?
+        jaba_error("No matching projects")
+      end
 
-        else
+      all_projects.each do |p|
+        host = p.host
+        platform = p.platform
+        if !all_hosts.key?(host)
+          all_hosts[host] = nil
+        end
+        if !all_platforms.key?(platform)
+          all_platforms[platform] = nil
         end
       end
+
       root_node
     end
     

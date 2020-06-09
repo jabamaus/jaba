@@ -7,6 +7,7 @@ module JABA
   using JABACoreExt
   
   ##
+  # TODO: split this. Not nice having internal code mixed with generator code.
   #
   class Generator
     
@@ -78,14 +79,14 @@ module JABA
       handle = nil
 
       if parent
-        @services.jaba_error('name is required for child nodes') if !name
+        jaba_error('name is required for child nodes') if !name
         if name.is_a?(JabaNode)
           name = name.defn_id
         end
         handle = "#{parent.handle}|#{name}"
         depth = parent.depth + 1
       else
-        @services.jaba_error('name not required for root nodes') if name
+        jaba_error('name not required for root nodes') if name
         depth = 0
         handle = "#{@current_definition.id}"
       end
@@ -93,7 +94,7 @@ module JABA
       @services.log "#{'  ' * depth}Instancing node [type=#{type_id}, handle=#{handle}]"
 
       if node_from_handle(handle, fail_if_not_found: false)
-        @services.jaba_error("Duplicate node handle '#{handle}'")
+        jaba_error("Duplicate node handle '#{handle}'")
       end
 
       jt = if sub_type_id
@@ -129,7 +130,7 @@ module JABA
           jn.eval_api_block(&@current_definition.block)
         end
       rescue FrozenError => e
-        @services.jaba_error('Cannot modify read only value', callstack: e.backtrace)
+        jaba_error('Cannot modify read only value', callstack: e.backtrace)
       end
 
       jn.post_create
@@ -141,7 +142,7 @@ module JABA
     def node_from_handle(handle, fail_if_not_found: true, callstack: nil)
       n = @node_lookup[handle]
       if !n && fail_if_not_found
-        @services.jaba_error("Node with handle '#{handle}' not found", callstack: callstack)
+        jaba_error("Node with handle '#{handle}' not found", callstack: callstack)
       end
       n
     end
@@ -174,6 +175,18 @@ module JABA
         node.add_node_reference(ref_node)
       end
       ref_node
+    end
+
+    ##
+    #
+    def jaba_warning(...)
+      @services.jaba_warning(...)
+    end
+
+    ##
+    #
+    def jaba_error(...)
+      @services.jaba_error(...)
     end
 
     ##
@@ -219,7 +232,7 @@ module JABA
     def project_from_node(node, fail_if_not_found: true)
       p = @node_to_project[node]
       if !p && fail_if_not_found
-        @services.jaba_error("'#{node}' not found")
+        jaba_error("'#{node}' not found")
       end
       p
     end

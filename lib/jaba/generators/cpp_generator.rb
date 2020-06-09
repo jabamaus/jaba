@@ -251,6 +251,26 @@ module JABA
     end
 
     ##
+    # For use by workspace generator. spec is either a defn_id or a wildcard match against projroot.
+    # 
+    def get_matching_projects(spec)
+      defn_id = spec.symbol? ? spec : nil
+      wildcard = spec.wildcard?
+
+      matches = @projects.select do |proj|
+        if defn_id && proj.handle.start_with?("#{spec}|")
+          true
+        elsif wildcard && File.fnmatch?(wildcard, proj.root)
+          true
+        end
+      end
+      if matches.empty?
+        jaba_warning("'#{spec.inspect_unquoted}' did not match any projects")
+      end
+      matches
+    end
+
+    ##
     #
     def generate
       @projects.each(&:generate)
