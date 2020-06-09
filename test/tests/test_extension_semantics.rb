@@ -229,7 +229,7 @@ module JABA
 
       begin
         proj.attrs.src 'invalid'
-      rescue JabaDefinitionError => e
+      rescue JDLError => e
         e.raw_message.must_equal("'src' attribute is read only")
       else
         raise 'never get here'

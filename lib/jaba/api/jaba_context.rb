@@ -76,10 +76,11 @@ module JABA
   end
 
   ##
+  # Jaba Definition Language error.
   # Raised when there is an error in a definition. These errors should be fixable by the user by modifying the definition
   # file.
   #
-  class JabaDefinitionError < StandardError
+  class JDLError < StandardError
     
     ##
     #

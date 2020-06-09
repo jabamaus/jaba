@@ -17,10 +17,10 @@ module JABA
     end
 
     it 'works when a definition contains an error when definitions in separate file' do
-      fullpath = "#{temp_dir}/definitions.rb"
+      fullpath = "#{temp_dir}/test.jdl.rb"
       IO.write(fullpath, "\n\ncategory 'invalid id' do\nend\n")
       line = 3
-      e = check_fail "Error at definitions.rb:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric " \
+      e = check_fail "Error at test.jdl.rb:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric " \
                      "string or symbol",
                      trace: [fullpath, line] do
         jaba(barebones: true, load_paths: fullpath)
@@ -41,9 +41,9 @@ module JABA
     end
 
     it 'works when a there is a syntax error when definitions in a separate file' do
-      fullpath = "#{temp_dir}/definitions.rb"
+      fullpath = "#{temp_dir}/test.jdl.rb"
       IO.write(fullpath, "\n\n&*^^\n")
-      e = check_fail 'Syntax error at definitions.rb:3: unexpected &' do
+      e = check_fail 'Syntax error at test.jdl.rb:3: unexpected &' do
         jaba(barebones: true, load_paths: fullpath)
       end
       e.cause.wont_be_nil

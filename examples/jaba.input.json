@@ -1,16 +1,16 @@
 {
-  "definition_src": [
-    "C:/projects/GitHub/jaba/lib/jaba/plugins/category/category_jdl.rb",
-    "C:/projects/GitHub/jaba/lib/jaba/plugins/core/attribute_flags_jdl.rb",
-    "C:/projects/GitHub/jaba/lib/jaba/plugins/core/attribute_types_jdl.rb",
-    "C:/projects/GitHub/jaba/lib/jaba/plugins/core/globals_jdl.rb",
-    "C:/projects/GitHub/jaba/lib/jaba/plugins/core/hosts_jdl.rb",
-    "C:/projects/GitHub/jaba/lib/jaba/plugins/core/platforms_jdl.rb",
-    "C:/projects/GitHub/jaba/lib/jaba/plugins/cpp/cpp_jdl.rb",
-    "C:/projects/GitHub/jaba/lib/jaba/plugins/text/text_jdl.rb",
-    "C:/projects/GitHub/jaba/lib/jaba/plugins/workspace/workspace_jdl.rb",
-    "C:/projects/GitHub/jaba/examples/example1/jaba.rb",
-    "C:/projects/GitHub/jaba/examples/example2/jaba.rb"
+  "jdl_files": [
+    "C:/projects/GitHub/jaba/lib/jaba/modules/core/attribute_flags.jdl.rb",
+    "C:/projects/GitHub/jaba/lib/jaba/modules/core/attribute_types.jdl.rb",
+    "C:/projects/GitHub/jaba/lib/jaba/modules/core/category.jdl.rb",
+    "C:/projects/GitHub/jaba/lib/jaba/modules/core/globals.jdl.rb",
+    "C:/projects/GitHub/jaba/lib/jaba/modules/core/hosts.jdl.rb",
+    "C:/projects/GitHub/jaba/lib/jaba/modules/core/platforms.jdl.rb",
+    "C:/projects/GitHub/jaba/lib/jaba/modules/cpp/cpp.jdl.rb",
+    "C:/projects/GitHub/jaba/lib/jaba/modules/text/text.jdl.rb",
+    "C:/projects/GitHub/jaba/lib/jaba/modules/workspace/workspace.jdl.rb",
+    "C:/projects/GitHub/jaba/examples/example1/example1.jdl.rb",
+    "C:/projects/GitHub/jaba/examples/example2/example2.jdl.rb"
   ],
   "globals": {
     "globals": {

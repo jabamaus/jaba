@@ -21,7 +21,7 @@ module JABA
     end
   end
 
-  ATTR_TYPES_JDL = "#{__dir__}/../lib/jaba/plugins/core/attribute_types_jdl.rb".cleanpath
+  ATTR_TYPES_JDL = "#{__dir__}/../lib/jaba/modules/core/attribute_types.jdl.rb".cleanpath
 
   class JabaTest < Minitest::Spec
     
@@ -121,7 +121,7 @@ module JABA
 
     ##
     #
-    def check_fail(msg, exception: JabaDefinitionError, trace: nil)
+    def check_fail(msg, exception: JDLError, trace: nil)
       e = assert_raises exception do
         yield
       end
@@ -179,6 +179,7 @@ $tag_to_line = {}
 Dir.glob("#{__dir__}/tests/*.rb").sort.each do |f|
   str = IO.read(f)
   index = 0
+  # TODO: use scan
   str.each_line(chomp: true) do |ln|
     if ln =~ / # (tag.)/
       tag_id = "#{f}##{Regexp.last_match(1)}"

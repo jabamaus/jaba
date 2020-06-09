@@ -231,12 +231,12 @@ module JABA
           @services.set_warn_object(self) do
             jaf.call_hook(:compatibility, receiver: self)
           end
-        rescue JabaDefinitionError => e
+        rescue JDLError => e
           jaba_error("#{jaf.defn_id.inspect} flag is incompatible: #{e.raw_message}")
         end
       end
       
-    rescue JabaDefinitionError => e
+    rescue JDLError => e
       jaba_error("'#{defn_id}' attribute definition failed validation: #{e.raw_message}", callstack: e.backtrace)
     end
 

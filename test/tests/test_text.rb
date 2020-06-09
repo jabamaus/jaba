@@ -6,7 +6,7 @@ module JABA
 
   class TestText < JabaTest
 
-    TEXT_JDL_FILE = "#{__dir__}/../../lib/jaba/plugins/text/text_jdl.rb".cleanpath
+    TEXT_JDL_FILE = "#{__dir__}/../../lib/jaba/modules/text/text.jdl.rb".cleanpath
 
     it 'can generate a text file' do
       fn = "#{temp_dir}/a"

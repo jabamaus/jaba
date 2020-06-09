@@ -6,11 +6,12 @@ require 'json'
 require 'tsort'
 
 require_relative 'core_ext'
+require_relative 'hook'
 require_relative 'utils'
 require_relative 'file_manager'
+require_relative 'generator'
+require_relative 'project'
 require_relative 'property'
-require_relative 'hook'
-require_relative 'jaba_definition'
 require_relative 'jaba_object'
 require_relative 'jaba_attribute_type'
 require_relative 'jaba_attribute_flag'
@@ -18,10 +19,10 @@ require_relative 'jaba_attribute_definition'
 require_relative 'jaba_attribute'
 require_relative 'jaba_attribute_array'
 require_relative 'jaba_attribute_hash'
-require_relative 'jaba_type'
+require_relative 'jaba_definition'
+require_relative 'jaba_module'
 require_relative 'jaba_node'
-require_relative 'generator'
-require_relative 'project'
+require_relative 'jaba_type'
 require_relative '../projects/vsproj'
 require_relative '../projects/vcxproj'
 require_relative '../projects/xcodeproj'
@@ -82,7 +83,7 @@ module JABA
       @warnings = []
       @warn_object = nil
       
-      @definition_src_files = []
+      @jdl_files = []
       
       @jaba_attr_type_definitions = []
       @jaba_attr_flag_definitions = []
@@ -98,6 +99,7 @@ module JABA
       @top_level_jaba_types = []
       @jaba_type_lookup = {}
 
+      @modules = []
       @generators = []
 
       @globals_node = nil
@@ -138,20 +140,33 @@ module JABA
     ##
     #
     def do_run
-      load_plugins
+      modules_dir = "#{__dir__}/../modules".cleanpath
 
-      # Execute them. This will cause a series of calls to eg define_attr_type, define_type, define_instance (see further
-      # down in this file). These calls will come from user definitions via the api files.
-      #
-      @definition_src_files.each do |f|
-        execute_definitions(f)
+      @file_manager.glob("#{modules_dir}/*").each do |module_dir|
+        pm = PluginModule.new(self, module_dir)
+        @modules << pm
+      end
+      
+      um = UserModule.new(self, input.load_paths)
+      @modules << um
+
+      @modules.each do |m|
+        m.gather_files
+      end
+
+      @modules.each do |m|
+        m.load
+      end
+
+      @modules.each do |m|
+        m.execute
       end
 
       # Definitions can also be provided in a block associated with the main 'jaba' entry point.
       # Execute if it was supplied.
       #
       Array(input.definitions).each do |block|
-        execute_definitions(&block)
+        execute_jdl(&block)
       end
       
       # Create attribute types
@@ -408,7 +423,7 @@ module JABA
     #
     def dump_jaba_input
       root = {}
-      root[:definition_src] = @definition_src_files
+      root[:jdl_files] = @jdl_files
 
       @generators.each do |g|
         g_root = {}
@@ -559,68 +574,25 @@ module JABA
     end
 
     ##
+    # This will cause a series of calls to eg define_attr_type, define_type, define_instance (see further
+    # down in this file). These calls will come from user definitions via the api files.
     #
-    def execute_definitions(file = nil, &block)
+    def execute_jdl(code_str = nil, file = nil, &block)
       if file
         log "Executing #{file}"
-        @top_level_api.instance_eval(@file_manager.read_file(file), file)
+        @jdl_files << file
+        @top_level_api.instance_eval(code_str, file)
       end
       if block_given?
-        @definition_src_files << block.source_location[0]
+        @jdl_files << block.source_location[0]
         @top_level_api.instance_eval(&block)
       end
-    rescue JabaDefinitionError
+    rescue JDLError
       raise # Prevent fallthrough to next case
     rescue StandardError => e # Catches errors like invalid constants
       jaba_error(e.message, callstack: e.backtrace)
     rescue ScriptError => e # Catches syntax errors. In this case there is no backtrace.
       jaba_error(e.message, syntax: true)
-    end
-    
-    ##
-    #
-    def load_plugins
-      @plugins_dir = "#{__dir__}/../plugins".cleanpath
-      require_relative '../plugins/text/text_generator.rb'
-      require_relative '../plugins/cpp/cpp_generator.rb'
-      require_relative '../plugins/workspace/workspace_generator.rb'
-
-      # Load core type definitions
-      #
-      #if input.barebones?
-      #  [:attribute_flags, :attribute_types].each do |d|
-      #    @definition_src_files << "#{__dir__}/../definitions/#{d}.rb".cleanpath
-      #  end
-      #else
-        @definition_src_files.concat(@file_manager.glob("#{@plugins_dir}/**/*jdl.rb"))
-      #end
-      
-      Array(input.load_paths).each do |p|
-        p = p.to_absolute(clean: true)
-
-        if !File.exist?(p)
-          jaba_error("#{p} does not exist")
-        end
-
-        # If load path is a directory, if its called 'jaba' then load all files recursively,
-        # else search all files recursively and load any called jaba.rb.
-        # 
-        if File.directory?(p)
-          match = if p.basename == 'jaba'
-                    "#{p}/**/*.rb"
-                  else
-                    "#{p}/**/jaba.rb"
-                  end
-          files = @file_manager.glob(match)
-          if files.empty?
-            jaba_warning("No definition files found in #{p}")
-          else
-            @definition_src_files.concat(files)
-          end
-        else
-          @definition_src_files << p
-        end
-      end
     end
 
     ##
@@ -685,7 +657,7 @@ module JABA
     # Errors can be raised in 3 contexts:
     #
     # 1) Syntax errors/other ruby errors that are raised by the initial evaluation of the definition files or block in
-    #    execute_definitions.
+    #    execute_jdl.
     # 2) From user definitions using the 'fail' API.
     # 3) From core library code. 
     #
@@ -715,19 +687,19 @@ module JABA
 
         # Extract any lines in the callstack that contain references to definition source files.
         #
-        lines = backtrace.select {|c| @definition_src_files.any? {|sf| c.include?(sf)}}
+        lines = backtrace.select {|c| @jdl_files.any? {|sf| c.include?(sf)}}
 
         # remove the unwanted ':in ...' suffix from user level definition errors
         #
         lines.map!{|l| l.sub(/:in .*/, '')}
         
-        # If no references to definition files assume the error came from internal library code and raise a RuntimeError,
+        # If no references to jdl files assume the error came from internal library code and raise a RuntimeError,
         # unless its specifically flagged as a user error, which can happen when validating jaba input, before any
         # definitions are executed.
         #
         if lines.empty?
           e = if user_error
-                e = JabaDefinitionError.new(msg)
+                e = JDLError.new(msg)
                 e.instance_variable_set(:@raw_message, msg)
                 e.instance_variable_set(:@file, nil)
                 e.instance_variable_set(:@line, nil)
@@ -764,7 +736,7 @@ module JABA
       m << " #{file.basename}:#{line}"
       m << ": #{msg}"
       
-      e = JabaDefinitionError.new(m)
+      e = JDLError.new(m)
       e.instance_variable_set(:@raw_message, msg)
       e.instance_variable_set(:@file, file)
       e.instance_variable_set(:@line, line)

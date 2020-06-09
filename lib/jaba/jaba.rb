@@ -93,7 +93,7 @@ begin
     puts "  #{f} [M]"
   end
   puts warnings if warnings
-rescue JABA::JabaDefinitionError => e
+rescue JABA::JDLError => e
   puts e.message
   if !e.backtrace.empty?
     puts 'Backtrace:'
