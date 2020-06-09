@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+require_relative 'cpp/VisualStudio/common' # TODO: make modular
+require_relative 'cpp/VisualStudio/windows'
 
 ##
 #
