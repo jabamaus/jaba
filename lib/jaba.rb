@@ -1,3 +1,8 @@
+if $PROGRAM_NAME
+  $stderr.puts "Library file cannot be executed"
+  exit 1
+end
+
 require 'jaba/core/services'
 require 'jaba/jdl_api/api_common'
 require 'jaba/jdl_api/jaba_attribute_type_api'
