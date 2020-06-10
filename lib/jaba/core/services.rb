@@ -22,9 +22,9 @@ require_relative 'jaba_node'
 require_relative 'jaba_type'
 require_relative '../ext/generator'
 require_relative '../ext/project'
-require_relative '../projects/vsproj'
-require_relative '../projects/vcxproj'
-require_relative '../projects/xcodeproj'
+require_relative '../ext/vsproj'
+require_relative '../ext/vcxproj'
+require_relative '../ext/xcodeproj'
 
 ##
 #
