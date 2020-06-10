@@ -589,7 +589,7 @@ module JABA
       #
       if input.barebones?
         [:attribute_flags, :attribute_types].each do |d|
-          @jdl_files << "#{modules_dir}/core/#{d}.jdl.rb".cleanpath
+          @jdl_files << "#{modules_dir}/core/#{d}.jdl.rb"
         end
       else
         @jdl_files.concat(@file_manager.glob("#{modules_dir}/**/*.jdl.rb"))
