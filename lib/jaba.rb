@@ -1,4 +1,4 @@
-if $PROGRAM_NAME
+if __FILE__ == $PROGRAM_NAME
   $stderr.puts "Library file cannot be executed"
   exit 1
 end
