@@ -91,7 +91,6 @@ module JABA
       @top_level_jaba_types = []
       @jaba_type_lookup = {}
 
-      @modules = []
       @generators = []
 
       @globals_node = nil
@@ -606,6 +605,7 @@ module JABA
           @jdl_files << p
         end
       end
+      @jdl_files.uniq!
     end
 
     ##
