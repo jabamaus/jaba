@@ -35,7 +35,6 @@ module JABA
     #
     def process
       @definitions.each do |d|
-        @services.log "Processing #{d.id} definition", section: true
         @current_definition = d
         @root_nodes << make_nodes
       end
