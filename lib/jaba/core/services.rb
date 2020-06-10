@@ -20,7 +20,6 @@ require_relative 'jaba_attribute'
 require_relative 'jaba_attribute_array'
 require_relative 'jaba_attribute_hash'
 require_relative 'jaba_definition'
-require_relative 'jaba_module'
 require_relative 'jaba_node'
 require_relative 'jaba_type'
 require_relative '../projects/vsproj'
@@ -140,26 +139,10 @@ module JABA
     ##
     #
     def do_run
-      modules_dir = "#{__dir__}/../modules".cleanpath
+      load_modules
 
-      @file_manager.glob("#{modules_dir}/*").each do |module_dir|
-        pm = PluginModule.new(self, module_dir)
-        @modules << pm
-      end
-      
-      um = UserModule.new(self, input.load_paths)
-      @modules << um
-
-      @modules.each do |m|
-        m.gather_files
-      end
-
-      @modules.each do |m|
-        m.load
-      end
-
-      @modules.each do |m|
-        m.execute
+      @jdl_files.each do |f|
+        execute_jdl(f)
       end
 
       # Definitions can also be provided in a block associated with the main 'jaba' entry point.
@@ -577,11 +560,10 @@ module JABA
     # This will cause a series of calls to eg define_attr_type, define_type, define_instance (see further
     # down in this file). These calls will come from user definitions via the api files.
     #
-    def execute_jdl(code_str = nil, file = nil, &block)
+    def execute_jdl(file = nil, &block)
       if file
         log "Executing #{file}"
-        @jdl_files << file
-        @top_level_api.instance_eval(code_str, file)
+        @top_level_api.instance_eval(file_manager.read_file(file), file)
       end
       if block_given?
         @jdl_files << block.source_location[0]
@@ -593,6 +575,44 @@ module JABA
       jaba_error(e.message, callstack: e.backtrace)
     rescue ScriptError => e # Catches syntax errors. In this case there is no backtrace.
       jaba_error(e.message, syntax: true)
+    end
+
+    ##
+    #
+    def load_modules
+      modules_dir = "#{__dir__}/../modules".cleanpath
+      require_relative '../modules/text/text_generator.rb'
+      require_relative '../modules/cpp/cpp_generator.rb'
+      require_relative '../modules/workspace/workspace_generator.rb'
+
+      # Load core type definitions
+      #
+      if input.barebones?
+        [:attribute_flags, :attribute_types].each do |d|
+          @jdl_files << "#{modules_dir}/core/#{d}.jdl.rb".cleanpath
+        end
+      else
+        @jdl_files.concat(@file_manager.glob("#{modules_dir}/**/*.jdl.rb"))
+      end
+      
+      Array(input.load_paths).each do |p|
+        p = p.to_absolute(clean: true)
+
+        if !File.exist?(p)
+          jaba_error("#{p} does not exist")
+        end
+
+        if File.directory?(p)
+          files = @file_manager.glob("#{p}/**/*.jdl.rb")
+          if files.empty?
+            jaba_warning("No definition files found in #{p}")
+          else
+            @jdl_files.concat(files)
+          end
+        else
+          @jdl_files << p
+        end
+      end
     end
 
     ##
