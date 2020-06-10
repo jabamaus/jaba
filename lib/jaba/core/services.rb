@@ -99,7 +99,7 @@ module JABA
       
       @in_attr_default_block = false
 
-      @top_level_api = JabaTopLevelAPI.new(self)
+      @top_level_api = JDL_TopLevel.new(self)
       @default_attr_type = JabaAttributeType.new(self, JabaDefinition.new(nil, nil, caller_locations(0, 1)[0])).freeze
       @file_manager = FileManager.new(self)
     end

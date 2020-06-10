@@ -3,7 +3,7 @@ module  JABA
   ##
   # API that is common to all public facing definitions.
   #
-  module APICommon
+  module JDL_Common
 
     ##
     #

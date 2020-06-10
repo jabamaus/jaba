@@ -2,9 +2,9 @@ module JABA
 
   ##
   #
-  class JabaAttributeDefinitionAPI < BasicObject
+  class JDL_AttributeDefinition < BasicObject
 
-    include APICommon
+    include JDL_Common
 
     ##
     # Set title of attribute.

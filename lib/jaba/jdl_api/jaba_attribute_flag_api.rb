@@ -2,9 +2,9 @@ module JABA
 
   ##
   #
-  class JabaAttributeFlagAPI < BasicObject
+  class JDL_AttributeFlag < BasicObject
 
-    include APICommon
+    include JDL_Common
 
     ##
     # Set help for the attribute flag. Required.

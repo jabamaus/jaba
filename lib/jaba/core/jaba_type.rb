@@ -23,7 +23,7 @@ module JABA
     ##
     #
     def initialize(services, definition, handle, top_level_type)
-      super(services, definition, JabaTypeAPI.new(self))
+      super(services, definition, JDL_Type.new(self))
 
       @handle = handle
       @top_level_type = top_level_type

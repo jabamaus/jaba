@@ -2,7 +2,7 @@ module JABA
 
   ##
   #
-  class JabaTopLevelAPI < BasicObject
+  class JDL_TopLevel < BasicObject
     
     ##
     # Define a cpp project.

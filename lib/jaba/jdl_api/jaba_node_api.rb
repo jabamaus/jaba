@@ -2,9 +2,9 @@ module JABA
 
   ##
   #
-  class JabaNodeAPI < BasicObject
+  class JDL_Node < BasicObject
 
-    include APICommon
+    include JDL_Common
 
     ##
     # Clears any previously set values. Sets single attribute values to nil and clears array attributes.

@@ -4,9 +4,9 @@ module JABA
 
   ##
   #
-  class JabaTypeAPI < BasicObject
+  class JDL_Type < BasicObject
 
-    include APICommon
+    include JDL_Common
 
     ##
     # Set help for the type. Required.

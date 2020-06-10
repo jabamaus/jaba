@@ -15,7 +15,7 @@ module JABA
     ##
     #
     def initialize(services, definition)
-      super(services, definition, JabaAttributeFlagAPI.new(self))
+      super(services, definition, JDL_AttributeFlag.new(self))
 
       define_property(:help)
       define_hook(:compatibility)

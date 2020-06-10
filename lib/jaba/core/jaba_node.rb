@@ -20,7 +20,7 @@ module JABA
     ##
     #
     def initialize(services, definition, jaba_type, handle, parent, depth)
-      super(services, definition, JabaNodeAPI.new(self))
+      super(services, definition, JDL_Node.new(self))
 
       @jaba_type = jaba_type # Won't always be the same as the JabaType in definition
       @handle = handle

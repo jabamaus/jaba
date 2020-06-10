@@ -30,7 +30,7 @@ module JABA
     ##
     #
     def initialize(services, definition, type_id, variant, jaba_type)
-      super(services, definition, JabaAttributeDefinitionAPI.new(self))
+      super(services, definition, JDL_AttributeDefinition.new(self))
       
       @type_id = type_id
       @variant = variant

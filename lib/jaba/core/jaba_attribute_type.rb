@@ -17,7 +17,7 @@ module JABA
     ##
     #
     def initialize(services, definition)
-      super(services, definition, JabaAttributeTypeAPI.new(self))
+      super(services, definition, JDL_AttributeType.new(self))
      
       define_property(:title)
       define_property(:help)
