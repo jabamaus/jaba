@@ -61,7 +61,7 @@ module JABA
 
       # If block given, use it to evaluate value
       #
-      val = block_given? ? @node.eval_api_block(&block) : args.shift
+      val = block_given? ? @node.eval_jdl(&block) : args.shift
 
       elem = JabaAttributeElement.new(@services, @attr_def, @node)
       elem.set(val, *args, __api_call_loc: __api_call_loc, __key: key, **keyvalue_args)

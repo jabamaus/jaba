@@ -166,7 +166,7 @@ module JABA
       # Open top level JabaTypes so more attributes can be added
       #
       @jaba_open_definitions.each do |d|
-        get_top_level_jaba_type(d.id, callstack: d.source_location).eval_api_block(&d.block)
+        get_top_level_jaba_type(d.id, callstack: d.source_location).eval_jdl(&d.block)
       end
       
       @top_level_jaba_types.each(&:post_create)
@@ -231,7 +231,7 @@ module JABA
       jt = TopLevelJabaType.new(self, definition, handle)
 
       if definition.block
-        jt.eval_api_block(&definition.block)
+        jt.eval_jdl(&definition.block)
       end
 
       @top_level_jaba_types  << jt
@@ -245,7 +245,7 @@ module JABA
       @in_attr_default_block = true
       result = nil
       node.make_read_only do # default blocks should not attempt to set another attribute
-        result = node.eval_api_block(&default_block)
+        result = node.eval_jdl(&default_block)
       end
       @in_attr_default_block = false
       result

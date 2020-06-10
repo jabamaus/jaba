@@ -1,7 +1,7 @@
 module  JABA
 
   ##
-  # API that is common to all public facing definitions.
+  # API that is common to all JDL elements.
   #
   module JDL_Common
 

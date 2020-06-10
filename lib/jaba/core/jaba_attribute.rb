@@ -109,7 +109,7 @@ module JABA
 
       @set = true
 
-      new_value = block_given? ? @node.eval_api_block(&block) : args.shift
+      new_value = block_given? ? @node.eval_jdl(&block) : args.shift
       @flag_options = args
 
       # Take a deep copy of value_options so they are private to this attribute

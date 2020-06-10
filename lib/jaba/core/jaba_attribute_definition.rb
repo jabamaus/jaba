@@ -55,7 +55,7 @@ module JABA
       end
 
       if @definition.block
-        eval_api_block(&@definition.block)
+        eval_jdl(&@definition.block)
       end
 
       # If default not specified by the user (single value attributes only), fall back to default for the attribute

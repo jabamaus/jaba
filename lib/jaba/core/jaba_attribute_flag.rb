@@ -21,7 +21,7 @@ module JABA
       define_hook(:compatibility)
 
       if definition.block
-        eval_api_block(&definition.block)
+        eval_jdl(&definition.block)
       end
     end
 

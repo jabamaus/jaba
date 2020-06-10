@@ -51,7 +51,7 @@ module JABA
       @last_call_location = __api_call_loc
       @set = true
       
-      values = block_given? ? @node.eval_api_block(&block) : args.shift
+      values = block_given? ? @node.eval_jdl(&block) : args.shift
 
       Array(values).each do |v|
         existing = nil

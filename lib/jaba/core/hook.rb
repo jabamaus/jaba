@@ -48,7 +48,7 @@ module JABA
         end
         return nil
       else
-        receiver.eval_api_block(*args, **keyval_args, &block)
+        receiver.eval_jdl(*args, **keyval_args, &block)
       end
     end
 

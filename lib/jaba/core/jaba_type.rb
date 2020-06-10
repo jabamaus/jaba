@@ -125,7 +125,7 @@ module JABA
       #
       st = JabaType.new(@services, @definition, id, self)
       if block_given?
-        st.eval_api_block(&block)
+        st.eval_jdl(&block)
       end
       @sub_types << st
       st

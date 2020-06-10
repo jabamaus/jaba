@@ -27,7 +27,7 @@ module JABA
       define_hook(:validate_value)
 
       if definition.block
-        eval_api_block(&definition.block)
+        eval_jdl(&definition.block)
       end
     end
 

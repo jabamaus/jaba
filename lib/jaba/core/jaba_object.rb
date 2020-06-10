@@ -47,7 +47,7 @@ module JABA
     
     ##
     #
-    def eval_api_block(*args, use_api: true, **keyval_args, &block)
+    def eval_jdl(*args, use_api: true, **keyval_args, &block)
       receiver = use_api ? @api : self
       if args.empty? && keyval_args.empty?
         receiver.instance_eval(&block)
@@ -70,7 +70,7 @@ module JABA
         jaba_error("shared definition '#{id}' expects #{n_expected} arguments but #{n_actual} were passed")
       end
       
-      eval_api_block(args, &db.block)
+      eval_jdl(args, &db.block)
     end
     
   end

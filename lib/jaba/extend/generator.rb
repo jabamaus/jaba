@@ -110,7 +110,7 @@ module JABA
       
       begin
         # Give calling block a chance to initialise attributes. This block is in library code as opposed to user
-        # definitions so use instance_eval instead of eval_api_block, as it doesn't need to go through api.
+        # definitions so use instance_eval instead of eval_jdl, as it doesn't need to go through api.
         # Read only attributes are allowed to be set (initialised) for the duration of this block.
         #
         if block_given?
@@ -123,11 +123,11 @@ module JABA
         #
         defaults = jt.top_level_type.defaults_definition
         if defaults
-          jn.eval_api_block(&defaults.block)
+          jn.eval_jdl(&defaults.block)
         end
 
         if @current_definition.block
-          jn.eval_api_block(&@current_definition.block)
+          jn.eval_jdl(&@current_definition.block)
         end
       rescue FrozenError => e
         jaba_error('Cannot modify read only value', callstack: e.backtrace)
@@ -161,7 +161,7 @@ module JABA
       end
       make_handle_block = attr_def.get_property(:make_handle)
       handle = if make_handle_block
-        "#{node.eval_api_block(ref_node_id, &make_handle_block)}"
+        "#{node.eval_jdl(ref_node_id, &make_handle_block)}"
       else
         "#{ref_node_id}"
       end
