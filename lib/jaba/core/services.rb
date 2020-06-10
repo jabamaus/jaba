@@ -66,14 +66,7 @@ module JABA
       @input.instance_variable_set(:@dry_run, false)
       @input.instance_variable_set(:@enable_logging, false)
       @input.instance_variable_set(:@barebones, false)
-
-      # Add cwd to jdl_paths, unless in the root of jaba itself (ie when developing)
-      #
-      jdl_paths = []
-      if !File.exist?("#{JABA.cwd}/jaba_root")
-        jdl_paths << JABA.cwd
-      end
-      @input.instance_variable_set(:@jdl_paths, jdl_paths)
+      @input.instance_variable_set(:@jdl_paths, [JABA.cwd])
 
       @output = {}
       

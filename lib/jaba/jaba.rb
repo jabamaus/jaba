@@ -1,108 +1,101 @@
-# frozen_string_literal: true
+require_relative 'core/services'
+require_relative 'api/api_common'
+require_relative 'api/jaba_attribute_type_api'
+require_relative 'api/jaba_attribute_flag_api'
+require_relative 'api/jaba_attribute_definition_api'
+require_relative 'api/jaba_node_api'
+require_relative 'api/jaba_top_level_api'
+require_relative 'api/jaba_type_api'
 
-require_relative 'api/jaba_context'
-require 'optparse'
-require 'ostruct'
+module JABA
 
-using JABACoreExt
+  using JABACoreExt
 
-opts = OpenStruct.new(
-  jdl_paths: nil,
-  dump_input: nil,
-  no_dump_output: nil,
-  enable_logging: nil,
-  dry_run: nil,
-  enable_profiling: nil,
-  run_tests: nil
-)
-
-OptionParser.new do |op|
-  op.banner = 'Welcome to JABA'
-  op.separator ''
-  op.separator 'Options:'
-  op.on('--jdl-path P', "JDL paths") {|lp| opts.jdl_paths = p }
-  op.on('--dump-input', 'Dumps Jaba input') { opts.dump_input = true }
-  op.on('--no-dump-output', 'Disables dumping of jaba output') { opts.no_dump_output = true }
-  op.on('--log', 'Enable logging') { opts.enable_logging = true}
-  op.on('--dry-run', 'Dry run') { opts.dry_run = true }
-  op.on('--profile', 'Profile jaba with ruby-prof gem') { opts.enable_profiling = true }
-  op.on('--test', 'Run tests') { opts.run_tests = true }
-  op.separator ''
-end.parse!
-
-##
-#
-def profile(enabled)
-  if !enabled
-    yield
-    return
+  ##
+  # Jaba entry point. Returns a json-like hash object containing a summary of what has been generated.
+  #
+  def self.run
+    s = Services.new
+    yield s.input if block_given?
+    s.run
   end
 
-  begin
-    require 'ruby-prof'
-  rescue LoadError
-    puts "'gem install ruby-prof' is required to run with --profile"
-    exit 1
+  ##
+  # Input to pass to Jaba.
+  #
+  class Input
+    
+    ##
+    # One or more filenames and/or directories from which to load Jaba Definition Language definitions.
+    #
+    attr_accessor :jdl_paths
+    
+    ##
+    #
+    attr_block :definitions
+    
+    ##
+    # Name/path of file to contain a raw dump of all the input data to Jaba, that is to say all the definition data. Mostly
+    # useful for debugging and testing but could be useful as a second way of tracking definition changes in source control.
+    # The file is written before any file generation occurs, and can be considered a specification of the final data.
+    # Defaults to 'jaba.input.json', which will be created in cwd. By default this is disabled.
+    #
+    attr_accessor :jaba_input_file
+
+    ##
+    # Controls generation of :jaba_input_file. Off by default.
+    #
+    attr_bool :dump_input
+
+    ##
+    # Name/path of file to contain Jaba output in json format. Defaults to 'jaba.output.json', which will be created in cwd.
+    # Jaba output can be later used by another process (eg the build process) to do things like looking up paths by id rather
+    # than embedding them in code, iterating over all defined unit tests and invoking them, etc.
+    #
+    attr_accessor :jaba_output_file
+
+    ##
+    # Controls generation of :jaba_output_file. On by default.
+    #
+    attr_bool :dump_output
+
+    ##
+    # Enable logging. 'jaba.log' will be written to cwd. Off by default.
+    #
+    attr_bool :enable_logging
+
+    ##
+    # Execute as normal but don't write any files.
+    #
+    attr_bool :dry_run
+    
+    ##
+    # Used during testing. Only loads the bare minimum definitions. Jaba will not be able to generate any projects in this mode. 
+    #
+    attr_bool :barebones
   end
 
-  puts 'Invoking ruby-prof...'
-  RubyProf.start
-  yield
-  result = RubyProf.stop
-  file = 'jaba.profile'.to_absolute
-  str = String.new
-  puts "Write profiling results to #{file}..."
-  [RubyProf::FlatPrinter, RubyProf::GraphPrinter].each do |p|
-    printer = p.new(result)
-    printer.print(str)
-  end
-  IO.write(file, str)
-end
-
-if opts.run_tests
-  require_relative "../../test/test_jaba"
-  JABA.init_tests
-  profile(opts.enable_profiling) do
-    JABA.run_tests
-  end
-  exit
-end
-  
-begin
-  output = nil
-  profile(opts.enable_profiling) do
-    output = JABA.run do |j|
-      j.jdl_paths = opts.jdl_paths if opts.jdl_paths
-      j.dump_input = opts.dump_input if opts.dump_input
-      j.dump_output = false if opts.no_dump_output
-      j.dry_run = opts.dry_run if opts.dry_run
-      j.enable_logging = opts.enable_logging if opts.enable_logging
-    end
+  ##
+  # Jaba Definition Language error.
+  # Raised when there is an error in a definition. These errors should be fixable by the user by modifying the definition
+  # file.
+  #
+  class JDLError < StandardError
+    
+    ##
+    #
+    attr_reader :raw_message
+    
+    ##
+    # The definition file the error occurred in.
+    #
+    attr_reader :file
+    
+    ##
+    # The line in the definition file that the error occurred at.
+    #
+    attr_reader :line
+    
   end
 
-  added = output[:added]
-  modified = output[:modified]
-  warnings = output[:warnings]
-
-  puts output[:summary]
-  
-  added.each do |f|
-    puts "  #{f} [A]"
-  end
-  modified.each do |f|
-    puts "  #{f} [M]"
-  end
-  puts warnings if warnings
-rescue JABA::JDLError => e
-  puts e.message
-  if !e.backtrace.empty?
-    puts 'Backtrace:'
-    puts(e.backtrace.map {|line| "  #{line}"})
-  end
-  exit 1
-rescue => e
-  puts "Internal error: #{e.message}"
-  puts 'Backtrace:'
-  puts(e.backtrace.map {|line| "  #{line}"})
-  exit 1
 end
