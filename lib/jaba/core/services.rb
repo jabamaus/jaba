@@ -20,11 +20,11 @@ require_relative 'jaba_attribute_hash'
 require_relative 'jaba_definition'
 require_relative 'jaba_node'
 require_relative 'jaba_type'
-require_relative '../ext/generator'
-require_relative '../ext/project'
-require_relative '../ext/vsproj'
-require_relative '../ext/vcxproj'
-require_relative '../ext/xcodeproj'
+require_relative '../extend/generator'
+require_relative '../extend/project'
+require_relative '../extend/vsproj'
+require_relative '../extend/vcxproj'
+require_relative '../extend/xcodeproj'
 
 ##
 #
