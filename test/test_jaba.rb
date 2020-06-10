@@ -29,9 +29,9 @@ module JABA
 
     ##
     #
-    def jaba(barebones: false, load_paths: nil, dry_run: false, dump_output: false, cpp_app: false, cpp_defaults: false, &block)
+    def jaba(barebones: false, jdl_paths: nil, dry_run: false, dump_output: false, cpp_app: false, cpp_defaults: false, &block)
       op = JABA.run do |c|
-        c.load_paths = load_paths
+        c.jdl_paths = jdl_paths
         c.definitions(&block) if block_given?
         c.barebones = barebones
         td = temp_dir

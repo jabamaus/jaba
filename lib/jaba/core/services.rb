@@ -67,13 +67,13 @@ module JABA
       @input.instance_variable_set(:@enable_logging, false)
       @input.instance_variable_set(:@barebones, false)
 
-      # Add cwd to load_paths, unless in the root of jaba itself (ie when developing)
+      # Add cwd to jdl_paths, unless in the root of jaba itself (ie when developing)
       #
-      load_paths = []
+      jdl_paths = []
       if !File.exist?("#{JABA.cwd}/jaba_root")
-        load_paths << JABA.cwd
+        jdl_paths << JABA.cwd
       end
-      @input.instance_variable_set(:@load_paths, load_paths)
+      @input.instance_variable_set(:@jdl_paths, jdl_paths)
 
       @output = {}
       
@@ -595,7 +595,7 @@ module JABA
         @jdl_files.concat(@file_manager.glob("#{modules_dir}/**/*.jdl.rb"))
       end
       
-      Array(input.load_paths).each do |p|
+      Array(input.jdl_paths).each do |p|
         p = p.to_absolute(clean: true)
 
         if !File.exist?(p)
