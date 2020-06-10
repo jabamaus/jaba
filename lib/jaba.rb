@@ -1,11 +1,11 @@
-require_relative 'core/services'
-require_relative 'api/api_common'
-require_relative 'api/jaba_attribute_type_api'
-require_relative 'api/jaba_attribute_flag_api'
-require_relative 'api/jaba_attribute_definition_api'
-require_relative 'api/jaba_node_api'
-require_relative 'api/jaba_top_level_api'
-require_relative 'api/jaba_type_api'
+require 'jaba/core/services'
+require 'jaba/api/api_common'
+require 'jaba/api/jaba_attribute_type_api'
+require 'jaba/api/jaba_attribute_flag_api'
+require 'jaba/api/jaba_attribute_definition_api'
+require 'jaba/api/jaba_node_api'
+require 'jaba/api/jaba_top_level_api'
+require 'jaba/api/jaba_type_api'
 
 module JABA
 

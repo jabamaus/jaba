@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../lib/jaba/jaba'
+require_relative '../lib/jaba'
 require 'optparse'
 require 'ostruct'
 
