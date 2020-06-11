@@ -14,16 +14,16 @@ module JABA
           end
         end
       end
-      check_fail "'a' array attribute default must be an array", trace: [__FILE__, 'tagO'] do
+      check_fail "'a' array attribute requires an array", trace: [__FILE__, 'tagO'] do
         jaba(barebones: true) do
           define :test do
-            attr_array :a do
+            attr_array :a do # tagO
               default do
-                1 # tagO
+                1
               end
             end
           end
-          test :t # need an intance of test in order for block style defaults to be called
+          test :t # need an instance of test in order for block style defaults to be called
         end
       end
       
@@ -52,6 +52,7 @@ module JABA
               end
             end
           end
+          test :t # need an intance of test in order for block style defaults to be called
         end
       end
 
@@ -233,7 +234,7 @@ module JABA
           end
           test :t do
             a [true, false, false, true]
-            a 'true' # tagT
+            a ['true'] # tagT
           end
         end
       end
@@ -291,7 +292,7 @@ module JABA
           attr_array :b
         end
         test :t do
-          a :a
+          a [:a]
           a [:b], exclude: [:c]
           a [:c, :d, :e], exclude: [:d, :e]
           b [1, 2, 3, 4]
@@ -378,7 +379,7 @@ module JABA
         end
         test :t do
           a [1, 2]
-          a 3
+          a [3]
           a [4, 5]
           a.must_equal [1, 2, 3, 4, 5]
           b 2
@@ -449,7 +450,7 @@ module JABA
         end
         test :t do
           a [1, 2], opt1: opt1, opt2: opt2
-          a 3, opt1: opt1, opt2: opt2
+          a [3], opt1: opt1, opt2: opt2
           generate do
             a = get_attr(:a)
             

@@ -31,12 +31,12 @@ module JABA
       check_fail "'a.cpp' does not exist on disk. Use :force to add anyway", trace: [__FILE__, 'tagA'] do
         jaba(cpp_app: true) do
           cpp :app do
-            src 'a.cpp' # tagA
+            src ['a.cpp'] # tagA
           end
         end
         proj = jaba(cpp_app: true) do
           cpp :app do
-            src 'a.cpp', :force
+            src ['a.cpp'], :force
           end
         end
         proj[:src].must_equal(['main.cpp'])
@@ -72,7 +72,7 @@ module JABA
       fn = "#{temp_dir}/a.cpp"
       proj = jaba(cpp_app: true) do
         cpp :app do
-          src fn
+          src [fn]
         end
       end
       proj[:src].must_equal(['a.cpp'])
@@ -83,7 +83,7 @@ module JABA
       make_file('a/b.z') # won't match as .z not in src_ext attr
       proj = jaba(cpp_app: true) do
         cpp :app do
-          src 'a'
+          src ['a']
         end
       end
       proj[:src].must_equal(['a/b.cpp', 'a/c.cpp', 'a/d.cpp', 'a/e/f/g.cpp'])
@@ -106,7 +106,7 @@ module JABA
             archs [:arm64]
           end
           configs [:Debug, :Release]
-          src '*'
+          src ['*']
         end
       end
       vsproj = op[:cpp]['app|vs2019|windows']
@@ -123,7 +123,7 @@ module JABA
       proj = jaba(cpp_app: true) do
         cpp :app do
           src_ext ['.z', '.y']
-          src 'a'
+          src ['a']
         end
       end
       proj[:src].must_equal(['a/b.cpp', 'a/b.z', 'a/c.cpp', 'a/d.cpp', 'a/e/f/g.cpp', 'a/e/f/g/h.y'])
@@ -133,7 +133,7 @@ module JABA
       make_file('a.cpp', 'b.cpp', 'c/d.cpp', 'd/e/f/g.cpp')
       proj = jaba(cpp_app: true) do
         cpp :app do
-          src '*' # should not recurse
+          src ['*'] # should not recurse
         end
       end
       proj[:src].must_equal ['a.cpp', 'b.cpp']

@@ -25,9 +25,9 @@ module JABA
       jaba do
         text :a do
           filename fn
-          line 'b'
-          line 'a'
-          line 'b'
+          line ['b']
+          line ['a']
+          line ['b']
           line ['c', 'd']
         end
       end
@@ -53,8 +53,8 @@ module JABA
         text :a do
           filename fn
           content "some\ncontent\n"
-          line 'line3'
-          line 'line4'
+          line ['line3']
+          line ['line4']
         end
       end
       File.exist?(fn).must_equal(true)

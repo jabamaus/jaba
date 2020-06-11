@@ -257,8 +257,8 @@ module JABA
           end
         end
         test :t do
-          a 1, group: :a
-          a 2, condition: :b
+          a [1], group: :a
+          a [2], condition: :b
         end
       end
       check_fail 'Invalid value option \':undefined\'. Valid options: [:group, :condition]', trace: [__FILE__, 'tagA'] do
@@ -270,7 +270,7 @@ module JABA
             end
           end
           test :t do
-            a 1, undefined: :a # tagA
+            a [1], undefined: :a # tagA
           end
         end
       end
@@ -280,7 +280,7 @@ module JABA
             attr_array :a
           end
           test :t do
-            a 1, undefined: :a # tagB
+            a [1], undefined: :a # tagB
           end
         end
       end

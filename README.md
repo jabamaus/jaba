@@ -63,7 +63,6 @@ if there are multiple attrs, with a warning.
 - Create a table of attr mappings from jaba->premake->cmake
 - Think about a 'configure' system. Eg could have a configure block eg for ruby jaba file it might be
 - Bring back boolean reader, eg if debug?
-- Consider whether arrays should be allowed to be set with single value. I'm thinking not again.
 - Add 'underlying type' to attribute types? eg file.dir/src_spec are strings. Use this for extra
   validation and also to sort using casecmp
 - resolve issues around sorting with mixed type elements

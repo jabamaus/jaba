@@ -53,6 +53,11 @@ module JABA
       
       values = block_given? ? @node.eval_jdl(&block) : args.shift
 
+      if values && !values.array?
+        err_loc = @last_call_location ? @last_call_location : @attr_def.definition.source_location
+        @services.jaba_error("'#{@attr_def.defn_id}' array attribute requires an array", callstack: err_loc)
+      end
+
       Array(values).each do |v|
         existing = nil
         if !@attr_def.has_flag?(:allow_dupes)
