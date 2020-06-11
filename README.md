@@ -71,6 +71,7 @@ if there are multiple attrs, with a warning.
 - Make sure only one globals can be created
 - Add wildcard validation to dir property
 - Allow jaba.input.json/jaba.output.json to be configured in jdl file
+- jdl_exclude system
 - find out about gemspecs and write one
 - A jaba 'plugin' or 'module' would be a 0 or more generators, 0 or more project files and 0 or more definition files.
   This would be relevant for something like C#. To add a C++ platform or a new host to generate C++ projects - not sure yet.

@@ -60,11 +60,14 @@ def profile(enabled)
 end
 
 if opts.run_tests
-  require_relative "../test/test_jaba"
-  JABA.init_tests
-  profile(opts.enable_profiling) do
-    JABA.run_tests
+  total = JABA.milli_timer do
+    require_relative "../test/test_jaba"
+    JABA.init_tests
+    profile(opts.enable_profiling) do
+      JABA.run_tests
+    end
   end
+  puts "Tests took #{total}"
   exit
 end
   

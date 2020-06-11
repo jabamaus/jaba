@@ -105,16 +105,12 @@ module JABA
     #
     def find_line_number(file, spec)
       return spec if spec.is_a?(Numeric)
-      ln = if spec.start_with?('tag')
-        $tag_to_line["#{file}##{spec}"]
-      else
-        str = @@file_cache[file]
-        if str.nil?
-          str = IO.read(file)
-          @@file_cache[file] = str
-        end
-        str.each_line.find_index {|l| l =~ / #{Regexp.escape(spec)}/}
+      str = @@file_cache[file]
+      if str.nil?
+        str = IO.read(file)
+        @@file_cache[file] = str
       end
+      ln = str.each_line.find_index {|l| l =~ / #{Regexp.escape(spec)}/}
       raise "\"#{spec}\" not found in #{file}" if ln.nil?
       ln + 1
     end
@@ -172,19 +168,4 @@ module JABA
   
 end
 
-$tag_to_line = {}
-
-# Load each test file as a string, extract all the '# tag' lines and execute the file.
-#
-Dir.glob("#{__dir__}/tests/*.rb").sort.each do |f|
-  str = IO.read(f)
-  index = 0
-  str.each_line(chomp: true) do |ln|
-    if ln =~ / # (tag.)/
-      tag_id = "#{f}##{Regexp.last_match(1)}"
-      $tag_to_line[tag_id] = index
-    end
-    index += 1
-  end
-  eval(str, nil, f)
-end
+Dir.glob("#{__dir__}/tests/*.rb").each {|f| require f}
