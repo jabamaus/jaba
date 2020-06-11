@@ -72,6 +72,7 @@ module JABA
     ##
     #
     def temp_dir
+      # TODO: this does not work well with describe statements
       dir = "#{JabaTest.temp_root}/#{self.class.name_no_namespace}/#{name.delete(':')}"
       if !File.exist?(dir)
         FileUtils.makedirs(dir)
