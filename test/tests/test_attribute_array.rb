@@ -14,6 +14,47 @@ module JABA
           end
         end
       end
+      check_fail "'a' array attribute default must be an array", trace: [__FILE__, 'tagO'] do
+        jaba(barebones: true) do
+          define :test do
+            attr_array :a do
+              default do
+                1 # tagO
+              end
+            end
+          end
+          test :t # need an intance of test in order for block style defaults to be called
+        end
+      end
+      
+      # It validates default elements respect attribute type
+      #
+      check_fail "'not a symbol' must be a symbol but was a 'String'",
+                 trace: [ATTR_TYPES_JDL, 'fail "\'#{value}\' must be a symbol but was a', __FILE__, 'tagD'] do
+        jaba(barebones: true) do
+          define :test do
+            attr_array :a, type: :symbol do # tagD
+              default ['not a symbol'] # TODO: validate immediately to get better error line
+            end
+          end
+        end
+      end
+
+      # It validates default elements respect attribute type when block form used
+      #
+      check_fail "'not a symbol' must be a symbol but was a 'String'",
+                 trace: [ATTR_TYPES_JDL, 'fail "\'#{value}\' must be a symbol but was a', __FILE__, 'tagW'] do
+        jaba(barebones: true) do
+          define :test do
+            attr_array :a, type: :symbol do # tagW
+              default do
+                ['not a symbol']
+              end
+            end
+          end
+        end
+      end
+
       jaba(barebones: true) do
         define :test do
           attr_array :b do
@@ -135,81 +176,49 @@ module JABA
       end  
     end
 
-    it 'strips duplicates by default' do
+    it 'handles duplicates' do
       check_warn("Stripping duplicate '5'", __FILE__, 'tagU') do
         jaba(barebones: true) do
           define :test do
-            attr_array :a
+            attr_array :a # Duplicates will be stripped by default
+            attr_array :b do
+              flags :allow_dupes
+            end
+            attr_array :c, type: :bool
           end
           test :t do
             a [4, 5, 5, 6, 6, 7, 7, 7, 8] # tagU
             a.must_equal [4, 5, 6, 7, 8]
+            b [5, 5, 6, 6, 7, 7, 7] # duplicates allowed
+            b.must_equal [5, 5, 6, 6, 7, 7, 7]
+            c [true, false, false, true] # Never strips duplicates in bool arrays
+            c.must_equal [true, false, false, true]
           end
         end
       end
     end
     
-    it 'allows flagging arrays with :allow_dupes' do
-      jaba(barebones: true) do
-        define :test do
-          attr_array :a do
-            flags :allow_dupes
-          end
-        end
-        test :t do
-          a [5, 5, 6, 6, 7, 7, 7]
-          generate do
-            attrs.a.must_equal [5, 5, 6, 6, 7, 7, 7]
-          end
-        end
-      end
-    end
-    
-    it 'sorts by default' do
+    it 'handles sorting' do
       jaba(barebones: true) do
         define :test do
           attr_array :a
           attr_array :b
           attr_array :c
           attr_array :d
+          attr_array :e, type: :bool
         end
         test :t do
           a [5, 4, 2, 1, 3]
           b ['e', 'c', :a, 'a', 'A', :C] # sorts case-insensitively
           c [10.34, 3, 800.1, 0.01, -1]
           d [:e, :c, :a, :A, :C]
+          e [true, false, false, true] # never sorts a bool array
+          e.must_equal [true, false, false, true]
           generate do
             attrs.a.must_equal [1, 2, 3, 4, 5]
             attrs.b.must_equal [:a, 'a', 'A', 'c', :C, 'e']
             attrs.c.must_equal [-1, 0.01, 3, 10.34, 800.1]
             attrs.d.must_equal [:a, :A, :c, :C, :e]
-          end
-        end
-      end
-    end
-    
-    it 'does not sort or strip duplicates from bool arrays' do
-      jaba(barebones: true) do
-        define :test do
-          attr_array :a, type: :bool
-        end
-        test :t do
-          a [true, false, false, true]
-          generate do
-            attrs.a.must_equal [true, false, false, true]
-          end
-        end
-      end
-    end
-
-    it 'validates default element types are valid' do
-      check_fail "'not a symbol' must be a symbol but was a 'String'",
-                  trace: [ATTR_TYPES_JDL, 'fail "\'#{value}\' must be a symbol but was a', __FILE__, 'tagD'] do
-        jaba(barebones: true) do
-          define :test do
-            attr_array :a, type: :symbol do # tagD
-              default ['not a symbol']
-            end
           end
         end
       end
