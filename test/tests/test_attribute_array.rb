@@ -4,22 +4,7 @@ module JABA
 
   class TestAttributeArray < JabaTest
 
-    it 'supports setting a default value' do
-      jaba(barebones: true) do
-        define :test do
-          attr_array :a do
-            default [1, 2, 3]
-          end
-        end
-        test :t do
-          generate do
-            attrs.a.must_equal [1, 2, 3]
-          end
-        end
-      end
-    end
-    
-    it 'validates that default is an array' do
+    it 'supports a default' do
       check_fail "'a' array attribute default must be an array", trace: [__FILE__, 'tagV'] do
         jaba(barebones: true) do
           define :test do
@@ -29,26 +14,36 @@ module JABA
           end
         end
       end
-    end
-
-    it 'works with block style default' do
       jaba(barebones: true) do
         define :test do
-          attr :a
-          attr :b
+          attr_array :b do
+            default [1, 2, 3] # value style default
+          end
           attr_array :c do
-            default do
-              [a, b]
+            default do # block style default
+              [4, 5, 6]
             end
+          end
+          attr_array :d do
+            default do # block style default referencing other attrs
+              b + c
+            end
+          end
+          attr_array :e do
+            default [7, 8]
           end
         end
         test :t do
-          a 1
-          b 2
-          c.must_equal [1, 2]
+          b.must_equal [1, 2, 3]
+          c.must_equal [4, 5, 6]
+          d.must_equal [1, 2, 3, 4, 5, 6]
+          e [9] # default array values are appended to not overwritten
+          e.must_equal [7, 8, 9]
         end
       end
+    end
 
+    it 'works with block style default' do
       # test with array attr default using an unset attr
       #
       check_fail "Cannot read uninitialised 'b' attribute", trace: [__FILE__, 'tagI'] do
@@ -83,22 +78,6 @@ module JABA
           end
           test :t do
             b
-          end
-        end
-      end
-    end
-
-    it 'supports extending default value' do
-      jaba(barebones: true) do
-        define :test do
-          attr_array :a do
-            default [1, 2, 3]
-          end
-        end
-        test :t do
-          a [4, 5, 6]
-          generate do
-            attrs.a.must_equal [1, 2, 3, 4, 5, 6]
           end
         end
       end
