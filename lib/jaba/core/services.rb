@@ -10,7 +10,7 @@ require_relative 'hook'
 require_relative 'utils'
 require_relative 'file_manager'
 require_relative 'property'
-require_relative 'jaba_object'
+require_relative 'jdl_object'
 require_relative 'jaba_attribute_type'
 require_relative 'jaba_attribute_flag'
 require_relative 'jaba_attribute_definition'
@@ -680,7 +680,7 @@ module JABA
     def jaba_warning(msg, **options)
       log msg, :WARN
       if @warn_object
-        options[:callstack] = @warn_object.is_a?(JabaObject) ? @warn_object.definition.source_location : @warn_object
+        options[:callstack] = @warn_object.is_a?(JDL_Object) ? @warn_object.definition.source_location : @warn_object
       end
       @warnings << make_jaba_error(msg, warn: true, **options).message
       nil

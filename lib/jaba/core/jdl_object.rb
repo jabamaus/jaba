@@ -8,7 +8,7 @@ module JABA
   
   ##
   #
-  class JabaObject
+  class JDL_Object
     
     include HookMethods
     

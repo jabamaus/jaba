@@ -8,7 +8,7 @@ module JABA
 
   ##
   #
-  class JabaAttributeFlag < JabaObject
+  class JabaAttributeFlag < JDL_Object
   
     include PropertyMethods
 

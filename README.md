@@ -2,7 +2,6 @@
 
 To do:
 
-- rename JabaObject to JDL_Object
 - make paths in jaba.output.json relative to itself. Introduce json node writing api to wrap this up and to make it robust.
 - think more about path handling in general and make it very consistent. eg all paths get to generators as absolute.
 - Have a way of globally setting default for :platforms, :hosts and :configs (and for clearing)

@@ -13,7 +13,7 @@ module JABA
   ##
   # Manages shared data that is common to Attributes instanced from this definition.
   #
-  class JabaAttributeDefinition < JabaObject
+  class JabaAttributeDefinition < JDL_Object
 
     include PropertyMethods
 
