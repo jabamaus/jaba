@@ -19,6 +19,7 @@ require_relative 'jaba_attribute_array'
 require_relative 'jaba_attribute_hash'
 require_relative 'jaba_definition'
 require_relative 'jaba_node'
+require_relative 'jaba_translator'
 require_relative 'jaba_type'
 require_relative '../extend/generator'
 require_relative '../extend/project'
@@ -85,11 +86,13 @@ module JABA
       @instance_definitions = []
       @instance_definition_lookup = {}
       @shared_definition_lookup = {}
+      @translator_definitions = []
 
       @jaba_attr_types = []
       @jaba_attr_flags = []
       @top_level_jaba_types = []
       @jaba_type_lookup = {}
+      @translators = {}
 
       @generators = []
 
@@ -192,6 +195,11 @@ module JABA
       @instance_definitions.each do |d|
         jt = get_top_level_jaba_type(d.jaba_type_id, callstack: d.source_location)
         jt.generator.register_instance_definition(d)
+      end
+
+      @translator_definitions.each do |d|
+        t = Translator.new(self, d)
+        @translators[d.id] = t
       end
 
       # Process generators
@@ -356,6 +364,19 @@ module JABA
         jaba_error("Defaults block '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_basename}.")
       end
       @default_definitions << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
+      nil
+    end
+
+    ##
+    #
+    def define_translator(id, &block)
+      jaba_error("id is required") if id.nil?
+      log "  Defining translator [id=#{id}]"
+      existing = @translator_definitions.find {|d| d.id == id}
+      if existing
+        jaba_error("Translator block '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_basename}.")
+      end
+      @translator_definitions << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
       nil
     end
 
@@ -546,6 +567,12 @@ module JABA
     #
     def get_defaults_definition(id)
       @default_definitions.find {|d| d.id == id}
+    end
+
+    ##
+    #
+    def get_translator(id)
+      @translators[id]
     end
 
     ##

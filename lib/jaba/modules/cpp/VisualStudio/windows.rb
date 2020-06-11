@@ -1,3 +1,0 @@
-class VisualStudioPlatformWindows < VisualStudioPlatform
-
-end

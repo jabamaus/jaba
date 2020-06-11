@@ -78,6 +78,13 @@ module JABA
     def open(id, &block)
       @services.open_type(id, &block)
     end
+
+    ##
+    # EXTENSION API
+    #
+    def translator(id, &block)
+      @services.define_translator(id, &block)
+    end
     
     private
 

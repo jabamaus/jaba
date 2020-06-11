@@ -10,6 +10,7 @@ require 'jaba/jdl_api/jdl_attribute_flag'
 require 'jaba/jdl_api/jdl_attribute_definition'
 require 'jaba/jdl_api/jdl_node'
 require 'jaba/jdl_api/jdl_top_level'
+require 'jaba/jdl_api/jdl_translator'
 require 'jaba/jdl_api/jdl_type'
 
 module JABA

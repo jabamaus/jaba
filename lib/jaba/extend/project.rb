@@ -13,6 +13,7 @@ module JABA
   #
   class Project
     
+    attr_reader :node
     attr_reader :attrs
     attr_reader :projroot
     attr_reader :projname

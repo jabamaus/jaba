@@ -1,6 +1,4 @@
 # frozen_string_literal: true
-require_relative 'VisualStudio/common' # TODO: make modular
-require_relative 'VisualStudio/windows'
 
 ##
 #
@@ -56,135 +54,32 @@ module JABA
     end
     
     ##
-    # TODO: move out of this file so it is pluggable
+    # TODO: make this fully generic
     def setup_project(proj)
-     return if !proj.attrs.visual_studio?
+      return if !proj.attrs.visual_studio?
 
-      proj.attrs.instance_eval do
-        vcglobal :ProjectName, projname
-        vcglobal :ProjectGuid, proj.guid
-        vcglobal :Keyword, 'Win32Proj'
-        vcglobal :RootNamespace, projname
-        vcglobal :WindowsTargetPlatformVersion, winsdkver
-      end
+      t = @services.get_translator(:vcxproj_windows)
+      t.set_node(proj.node)
+      t.eval_jdl(proj, &t.definition.block)
       
       proj.each_config do |cfg|
-        cfg.attrs.instance_eval do
-          cfg_type = type
+        t = @services.get_translator(:vcxproj_config_windows)
+        t.set_node(cfg)
+        t.eval_jdl(proj, cfg.attrs.type, &t.definition.block)
 
-          # First set of property groups
-          #
-          vcproperty :ConfigurationType, group: :pg1 do
-            case cfg_type
-            when :app, :console
-              'Application'
-            when :lib
-              'StaticLibrary'
-            when :dll
-              'DynamicLibrary'
-            else
-              fail "'#{cfg_type}' unhandled"
-            end
+        # Build events
+        #
+        cfg.visit_attr(:build_action) do |a, value|
+          cmd = String.new
+          msg = a.get_option_value(:msg, fail_if_not_found: false)
+          cmd << "#{msg}\n" if msg
+          cmd << value
+          type = a.get_option_value(:type)
+          group = case type
+          when :PreBuild, :PreLink, :PostBuild
+            "#{type}Event"
           end
-
-          vcproperty :UseDebugLibraries, debug, group: :pg1
-
-          vcproperty :CharacterSet, group: :pg1 do
-            case character_set
-            when :mbcs
-              :MultiByte
-            when :unicode
-              :Unicode
-            end
-          end
-
-          vcproperty :PlatformToolset, toolset, group: :pg1
-
-          # Second set of property groups
-          #
-          vcproperty :OutDir, group: :pg2 do
-            if cfg_type == :lib
-              libdir.relative_path_from(proj.projroot, backslashes: true, trailing: true)
-            else
-              bindir.relative_path_from(proj.projroot, backslashes: true, trailing: true)
-            end
-          end
-
-          vcproperty :IntDir, group: :pg2 do
-            objdir.relative_path_from(proj.projroot, backslashes: true, trailing: true)
-          end
-
-          vcproperty :TargetName, targetname, group: :pg2
-          vcproperty :TargetExt, targetext, group: :pg2
-
-          # ClCompile
-          #
-          vcproperty :AdditionalIncludeDirectories, group: :ClCompile do
-            inc.map{|i| i.relative_path_from(proj.projroot, backslashes: true)}.vs_join_paths(inherit: '%(AdditionalIncludeDirectories)')
-          end
-
-          vcproperty :AdditionalOptions, group: :ClCompile do
-            cflags.vs_join(separator: ' ', inherit: '%(AdditionalOptions)')
-          end
-
-          vcproperty :DisableSpecificWarnings, group: :ClCompile do
-            nowarn.vs_join(inherit: '%(DisableSpecificWarnings)')
-          end
-
-          vcproperty :ExceptionHandling, group: :ClCompile do
-            case exceptions
-            when true
-              :Sync
-            when false
-              false
-            when :structured
-              :Async
-            else
-              fail "'#{exceptions}' unhandled"
-            end
-          end
-
-          vcproperty :PreprocessorDefinitions, group: :ClCompile do
-            defines.vs_join(inherit: '%(PreprocessorDefinitions)')
-          end
-
-          vcproperty :RuntimeTypeInfo, rtti, group: :ClCompile
-
-          vcproperty :TreatWarningAsError, warnerror, group: :ClCompile
-
-          # Link
-          #
-          if cfg_type != :lib
-            vcproperty :SubSystem, group: :Link do
-              case cfg_type
-              when :console
-                :Console
-              when :app, :dll
-                :Windows
-              else
-                raise "'#{type}' unhandled"
-              end
-            end
-          end
-
-          vcproperty :TargetMachine, group: (cfg_type == :lib ? :Lib : :Link) do
-            :MachineX64 if x86_64?
-          end
-
-          # Build events
-          #
-          cfg.visit_attr(:build_action) do |a, value|
-            cmd = String.new
-            msg = a.get_option_value(:msg, fail_if_not_found: false)
-            cmd << "#{msg}\n" if msg
-            cmd << value
-            type = a.get_option_value(:type)
-            group = case type
-            when :PreBuild, :PreLink, :PostBuild
-              "#{type}Event"
-            end
-            vcproperty :Command, cmd, group: group
-          end
+          vcproperty :Command, cmd, group: group
         end
       end
     end
