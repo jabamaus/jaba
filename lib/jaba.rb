@@ -4,13 +4,13 @@ if __FILE__ == $PROGRAM_NAME
 end
 
 require 'jaba/core/services'
-require 'jaba/jdl_api/api_common'
-require 'jaba/jdl_api/jaba_attribute_type_api'
-require 'jaba/jdl_api/jaba_attribute_flag_api'
-require 'jaba/jdl_api/jaba_attribute_definition_api'
-require 'jaba/jdl_api/jaba_node_api'
-require 'jaba/jdl_api/jaba_top_level_api'
-require 'jaba/jdl_api/jaba_type_api'
+require 'jaba/jdl_api/jdl_common'
+require 'jaba/jdl_api/jdl_attribute_type'
+require 'jaba/jdl_api/jdl_attribute_flag'
+require 'jaba/jdl_api/jdl_attribute_definition'
+require 'jaba/jdl_api/jdl_node'
+require 'jaba/jdl_api/jdl_top_level'
+require 'jaba/jdl_api/jdl_type'
 
 module JABA
 
