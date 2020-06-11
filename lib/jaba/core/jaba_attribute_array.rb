@@ -31,11 +31,12 @@ module JABA
     ##
     #
     def value(api_call_loc = nil)
+      @last_call_location = api_call_loc if api_call_loc
       if !@set
         if @default_block
           return @services.execute_attr_default_block(@node, @default_block)
         elsif @services.in_attr_default_block?
-          @services.jaba_error("Cannot read uninitialised '#{defn_id}' attribute")
+          jaba_error("Cannot read uninitialised '#{defn_id}' attribute")
         end
       end
       values = @elems.map {|e| e.value(api_call_loc)}
@@ -48,14 +49,13 @@ module JABA
     ##
     #
     def set(*args, __api_call_loc: nil, prefix: nil, postfix: nil, exclude: nil, **keyvalue_args, &block)
-      @last_call_location = __api_call_loc
+      @last_call_location = __api_call_loc if __api_call_loc
       @set = true
       
       values = block_given? ? @node.eval_jdl(&block) : args.shift
 
       if values && !values.array?
-        err_loc = @last_call_location ? @last_call_location : @attr_def.definition.source_location
-        @services.jaba_error("'#{@attr_def.defn_id}' array attribute requires an array", callstack: err_loc)
+        jaba_error("'#{@attr_def.defn_id}' array attribute requires an array")
       end
 
       Array(values).each do |v|
@@ -65,8 +65,8 @@ module JABA
         end
 
         if existing
-          @services.jaba_warning("Stripping duplicate '#{v.inspect_unquoted}'. See previous at #{existing.last_call_loc_basename}. " \
-            "Flag with :allow_dupes to allow.", callstack: @last_call_location)
+          jaba_warning("Stripping duplicate '#{v.inspect_unquoted}'. See previous at #{existing.last_call_loc_basename}. " \
+            "Flag with :allow_dupes to allow.")
         else
           elem = JabaAttributeElement.new(@services, @attr_def, @node)
           v = apply_pre_post_fix(prefix, postfix, v)
@@ -113,7 +113,7 @@ module JABA
     def apply_pre_post_fix(pre, post, val)
       if pre || post
         if !val.string?
-          @services.jaba_error('prefix/postfix option can only be used with arrays of strings')
+          jaba_error('prefix/postfix option can only be used with arrays of strings')
         end
         "#{pre}#{val}#{post}"
       else
@@ -151,7 +151,7 @@ module JABA
               ex.call(val)
             elsif ex.is_a?(Regexp)
               if !val.string?
-                @services.jaba_error('exclude regex can only operate on strings', callstack: e.last_call_location)
+                jaba_error('exclude regex can only operate on strings')
               end
               val.match(ex)
             else
@@ -164,7 +164,7 @@ module JABA
         begin
           @elems.stable_sort!
         rescue StandardError
-          @services.jaba_error("Failed to sort #{defn_id}. Might be missing <=> operator")
+          jaba_error("Failed to sort #{defn_id}. Might be missing <=> operator")
         end
       end
     end

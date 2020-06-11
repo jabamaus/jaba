@@ -56,6 +56,20 @@ module JABA
       "#{@last_call_location.path.basename}:#{@last_call_location.lineno}"
     end
 
+    ##
+    #
+    def jaba_warning(msg)
+      cs = @last_call_location ? @last_call_location : @attr_def.definition.source_location
+      @services.jaba_warning(msg, callstack: cs)
+    end
+
+    ##
+    #
+    def jaba_error(msg)
+      cs = @last_call_location ? @last_call_location : @attr_def.definition.source_location
+      @services.jaba_error(msg, callstack: cs)
+    end
+    
   end
 
   ##
@@ -86,6 +100,7 @@ module JABA
     # definitions then return the node's attributes rather than the node itself.
     #
     def value(api_call_loc = nil)
+      @last_call_location = api_call_loc if api_call_loc
       if api_call_loc && @value.is_a?(JabaNode)
         @value.attrs_read_only
       else
@@ -96,14 +111,14 @@ module JABA
     ##
     #
     def set(*args, __api_call_loc: nil, validate: true, __resolve_ref: true, **key_val_args, &block)
-      @last_call_location = __api_call_loc
+      @last_call_location = __api_call_loc if __api_call_loc
 
       # Check for read only if calling from definitions, or if not calling from definitions but from library code,
       # allow setting read only attrs the first time, in order to initialise them.
       #
       if (__api_call_loc || @set) && !@node.allow_set_read_only_attrs?
         if @attr_def.has_flag?(:read_only)
-          @services.jaba_error("'#{@attr_def.defn_id}' attribute is read only")
+          jaba_error("'#{@attr_def.defn_id}' attribute is read only")
         end
       end
 
@@ -117,12 +132,12 @@ module JABA
       @value_options = key_val_args.empty? ? {} : Marshal.load(Marshal.dump(key_val_args))
 
       if new_value.is_a?(Enumerable)
-        @services.jaba_error("'#{@attr_def.defn_id}' must be a single value not a #{new_value.class}")
+        jaba_error("'#{@attr_def.defn_id}' must be a single value not a #{new_value.class}")
       end
 
       @flag_options.each do |f|
         if !@attr_def.flag_options.include?(f)
-          @services.jaba_error("Invalid flag option '#{f.inspect_unquoted}'. Valid flags are #{@attr_def.flag_options}")
+          jaba_error("Invalid flag option '#{f.inspect_unquoted}'. Valid flags are #{@attr_def.flag_options}")
         end
       end
 
@@ -132,9 +147,9 @@ module JABA
         if vo.required
           if !@value_options.key?(vo.id)
             if !vo.items.empty?
-              @services.jaba_error("'#{vo.id}' option requires a value. Valid values are #{vo.items.inspect}")
+              jaba_error("'#{vo.id}' option requires a value. Valid values are #{vo.items.inspect}")
             else
-              @services.jaba_error("'#{vo.id}' option requires a value")
+              jaba_error("'#{vo.id}' option requires a value")
             end
           end
         end
@@ -146,7 +161,7 @@ module JABA
         vo = @attr_def.get_value_option(k)
         if !vo.items.empty?
           if !vo.items.include?(v)
-            @services.jaba_error("Invalid value '#{v.inspect_unquoted}' passed to '#{k.inspect_unquoted}' option. Valid values: #{vo.items.inspect}")
+            jaba_error("Invalid value '#{v.inspect_unquoted}' passed to '#{k.inspect_unquoted}' option. Valid values: #{vo.items.inspect}")
           end
         end
       end
@@ -158,7 +173,9 @@ module JABA
             @attr_def.call_hook(:validate, new_value, @flag_options, **@value_options)
           end
         rescue JDLError => e
-          @services.jaba_error("'#{@attr_def.defn_id}' attribute failed validation: #{e.raw_message}", callstack: e.backtrace)
+          cs = [e.backtrace[0]]
+          cs << (@last_call_location ? @last_call_location : @attr_def.definition.source_location)
+          @services.jaba_error("'#{@attr_def.defn_id}' attribute failed validation: #{e.raw_message}", callstack: cs)
         end
       end
 
@@ -199,7 +216,7 @@ module JABA
       @attr_def.get_value_option(key)
       if !@value_options.key?(key)
         if fail_if_not_found
-          @services.jaba_error("option key '#{key}' not found")
+          jaba_error("option key '#{key}' not found")
         else
           return nil
         end
@@ -269,11 +286,12 @@ module JABA
     # definitions then return the node's attributes rather than the node itself.
     #
     def value(api_call_loc = nil)
+      @last_call_location = api_call_loc if api_call_loc
       if !@set
         if @default_block
           @services.execute_attr_default_block(@node, @default_block)
         elsif @services.in_attr_default_block?
-          @services.jaba_error("Cannot read uninitialised '#{defn_id}' attribute")
+          jaba_error("Cannot read uninitialised '#{defn_id}' attribute")
         else
           nil
         end

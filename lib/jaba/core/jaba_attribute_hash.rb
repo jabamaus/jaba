@@ -33,11 +33,12 @@ module JABA
     # Returns a read only hash of key->attribute values. Expensive because it must map attributes to their values.
     #
     def value(api_call_loc = nil)
+      @last_call_location = api_call_loc if api_call_loc
       if !@set
         if @default_block
           return @services.execute_attr_default_block(@node, @default_block)
         elsif @services.in_attr_default_block?
-          @services.jaba_error("Cannot read uninitialised '#{defn_id}' attribute")
+          jaba_error("Cannot read uninitialised '#{defn_id}' attribute")
         end
       end
       values = @hash.transform_values {|e| e.value(api_call_loc)}
@@ -50,11 +51,11 @@ module JABA
     ##
     # TODO: handle overwriting
     def set(*args, __api_call_loc: nil, **keyvalue_args, &block)
-      @last_call_location = __api_call_loc
+      @last_call_location = __api_call_loc if __api_call_loc
       
       # TODO: validate only key passed if block given
       if args.size < 2 && !block_given?
-        @services.jaba_error('Hash attribute requires a key and a value')
+        jaba_error('Hash attribute requires a key and a value')
       end
       
       key = args.shift
@@ -110,7 +111,7 @@ module JABA
     def fetch(key, fail_if_not_found: true)
       if !@hash.key?(key)
         if fail_if_not_found
-          @services.jaba_error("'#{key}' key not found in #{@attr_def.defn_id}")
+          jaba_error("'#{key}' key not found in #{@attr_def.defn_id}")
         else
           return nil
         end
