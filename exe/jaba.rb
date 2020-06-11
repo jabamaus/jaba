@@ -26,7 +26,7 @@ OptionParser.new do |op|
   op.on('--log', 'Enable logging') { opts.enable_logging = true}
   op.on('--dry-run', 'Dry run') { opts.dry_run = true }
   op.on('--profile', 'Profile jaba with ruby-prof gem') { opts.enable_profiling = true }
-  op.on('--test', 'Run tests') { opts.run_tests = true }
+  op.on('-t', '--test', 'Run tests') { opts.run_tests = true }
   op.separator ''
 end.parse!
 
