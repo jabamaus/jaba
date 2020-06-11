@@ -207,6 +207,9 @@ module JABA
           attr_array :c
           attr_array :d
           attr_array :e, type: :bool
+          attr_array :f do
+            flags :nosort
+          end
         end
         test :t do
           a [5, 4, 2, 1, 3]
@@ -215,11 +218,13 @@ module JABA
           d [:e, :c, :a, :A, :C]
           e [true, false, false, true] # never sorts a bool array
           e.must_equal [true, false, false, true]
+          f [5, 4, 3, 2, 1]
           generate do
             attrs.a.must_equal [1, 2, 3, 4, 5]
             attrs.b.must_equal [:a, 'a', 'A', 'c', :C, 'e']
             attrs.c.must_equal [-1, 0.01, 3, 10.34, 800.1]
             attrs.d.must_equal [:a, :A, :c, :C, :e]
+            attrs.f.must_equal [5, 4, 3, 2, 1] # unsorted due to :nosort
           end
         end
       end
@@ -235,22 +240,6 @@ module JABA
           test :t do
             a [true, false, false, true]
             a ['true'] # tagT
-          end
-        end
-      end
-    end
-    
-    it 'allows flagging arrays with nosort' do
-      jaba(barebones: true) do
-        define :test do
-          attr_array :a do
-            flags :nosort, :allow_dupes
-          end
-        end
-        test :t do
-          a ['j', 'a', 'b', 'a']
-          generate do
-            attrs.a.must_equal ['j', 'a', 'b', 'a']
           end
         end
       end
