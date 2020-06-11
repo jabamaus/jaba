@@ -11,7 +11,7 @@ module JABA
   #
   def self.run_tests
     @@running_tests = true
-    ::Minitest.run(ARGV)
+    ::Minitest.run(ARGV + ["--no-plugins"])
   end
 
   ##
