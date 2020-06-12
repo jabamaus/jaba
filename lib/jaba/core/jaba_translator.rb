@@ -8,6 +8,8 @@ module JABA
   #
   class Translator < JDL_Object
 
+    ##
+    #
     def initialize(services, definition)
       super(services, definition, JDL_Translator.new(self))
     end

@@ -16,16 +16,13 @@ module JABA
       end
     end
 
-    it 'fails if try to open undefined type' do
+    it 'supports opening types' do
       check_fail "'undefined' type not defined", trace: [__FILE__, 'tagL'] do
         jaba(barebones: true) do
           open :undefined do # tagL
           end
         end
       end
-    end
-    
-    it 'supports opening types' do
       jaba do
         open :workspace do
           attr :a
@@ -40,6 +37,13 @@ module JABA
 
     # TODO: extend
     it 'supports defining new attribute types' do
+      check_fail(/'undefined' attribute type is undefined. Valid types: \[.*?\]/, trace: [__FILE__, 'tagK']) do
+        jaba(barebones: true) do
+          define :a do
+            attr :b, type: :undefined # tagK
+          end
+        end
+      end
       check_fail "'b' attribute failed validation: Invalid", trace: [__FILE__, 'tagD', __FILE__, 'tagO'] do 
         jaba(barebones: true) do
           attr_type :a do
@@ -53,16 +57,6 @@ module JABA
           end
           test :t do
             b 'c' # tagO
-          end
-        end
-      end
-    end
-    
-    it 'detects usage of undefined attribute types' do
-      check_fail(/'undefined' attribute type is undefined. Valid types: \[.*?\]/, trace: [__FILE__, 'tagK']) do
-        jaba(barebones: true) do
-          define :a do
-            attr :b, type: :undefined # tagK
           end
         end
       end
@@ -82,25 +76,6 @@ module JABA
       # TODO: test something
     end
 
-    it 'instances types in order of definition' do
-      assert_output 'a;1;2;3;' do
-        jaba(barebones: true) do
-          a :a do
-            print '1;'
-          end
-          a :b do
-            print '2;'
-          end
-          a :c do
-            print '3;'
-          end
-          define :a do
-            print 'a;'
-          end
-        end
-      end
-    end
-    
     it 'supports dependencies between types' do
       assert_output 'def a;def b;def c;a;b;c;' do
         jaba(barebones: true) do

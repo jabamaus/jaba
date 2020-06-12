@@ -84,6 +84,25 @@ module JABA
       end
     end
 
+    it 'instances types in order of definition' do
+      assert_output 'a;1;2;3;' do
+        jaba(barebones: true) do
+          a :a do
+            print '1;'
+          end
+          a :b do
+            print '2;'
+          end
+          a :c do
+            print '3;'
+          end
+          define :a do
+            print 'a;'
+          end
+        end
+      end
+    end
+    
     it 'rejects attempts to instance an unknown type' do
       check_fail "'undefined' type not defined", trace: [__FILE__, 'tagJ'] do
         jaba(barebones: true) do
