@@ -78,18 +78,18 @@ module JABA
       
       @jdl_files = []
       
-      @jaba_attr_type_definitions = []
-      @jaba_attr_flag_definitions = []
-      @jaba_type_definitions = []
-      @jaba_open_definitions = []
-      @default_definitions = []
-      @instance_definitions = []
-      @open_instance_definitions = []
-      @translator_definitions = []
+      @attr_type_defs = []
+      @attr_flag_defs = []
+      @jaba_type_defs = []
+      @open_defs = []
+      @default_defs = []
+      @instance_defs = []
+      @open_instance_defs = []
+      @translator_defs = []
 
-      @instance_definition_lookup = {}
-      @open_instance_definition_lookup = {}
-      @shared_definition_lookup = {}
+      @instance_def_lookup = {}
+      @open_instance_def_lookup = {}
+      @shared_def_lookup = {}
 
       @jaba_attr_types = []
       @jaba_attr_flags = []
@@ -152,25 +152,25 @@ module JABA
       
       # Create attribute types
       #
-      @jaba_attr_type_definitions.each do |d|
+      @attr_type_defs.each do |d|
         @jaba_attr_types << JabaAttributeType.new(self, d)
       end
       
       # Create attribute flags, which are used in attribute definitions
       #
-      @jaba_attr_flag_definitions.each do |d|
+      @attr_flag_defs.each do |d|
         @jaba_attr_flags << JabaAttributeFlag.new(self, d)
       end
 
       # Create JabaTypes and any associated Generators
       #
-      @jaba_type_definitions.each do |d|
+      @jaba_type_defs.each do |d|
         make_top_level_type(d.id, d)
       end
 
       # Open top level JabaTypes so more attributes can be added
       #
-      @jaba_open_definitions.each do |d|
+      @open_defs.each do |d|
         get_top_level_jaba_type(d.id, callstack: d.source_location).eval_jdl(&d.block)
       end
 
@@ -195,7 +195,7 @@ module JABA
 
       # Process instance definitions and assign them to a generator
       #
-      @instance_definitions.each do |d|
+      @instance_defs.each do |d|
         jt = get_top_level_jaba_type(d.jaba_type_id, callstack: d.source_location)
         jt.generator.register_instance_definition(d)
       end
@@ -203,12 +203,12 @@ module JABA
       # Convert open instance definitions specified as type id and id into a mapping from the instance definition object
       # to an array of open instance definitions.
       #
-      @open_instance_definitions.each do |d|
+      @open_instance_defs.each do |d|
         inst_def = get_instance_definition(d.instance_variable_get(:@jaba_type_id), d.id)
-        @open_instance_definition_lookup.push_value(inst_def, d)
+        @open_instance_def_lookup.push_value(inst_def, d)
       end
 
-      @translator_definitions.each do |d|
+      @translator_defs.each do |d|
         t = Translator.new(self, d)
         @translators[d.id] = t
       end
@@ -259,14 +259,21 @@ module JABA
 
     ##
     #
-    def execute_attr_default_block(node, default_block)
-      @in_attr_default_block = true
-      result = nil
-      node.make_read_only do # default blocks should not attempt to set another attribute
-        result = node.eval_jdl(&default_block)
+    def get_top_level_jaba_type(id, fail_if_not_found: true, callstack: nil)
+      jt = @jaba_type_lookup[id]
+      if !jt && fail_if_not_found
+        jaba_error("'#{id}' type not defined", callstack: callstack)
       end
-      @in_attr_default_block = false
-      result
+      jt
+    end
+
+    ##
+    #
+    def validate_id(id)
+      if !(id.symbol? || id.string?) || id !~ /^[a-zA-Z0-9_\-.]+$/
+        jaba_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol " \
+          "(-_. permitted), eg :my_id, 'my-id', 'my.id'")
+      end
     end
 
     ##
@@ -275,12 +282,25 @@ module JABA
       jaba_error("id is required") if id.nil?
       log "  Defining attr type [id=#{id}]"
       validate_id(id)
-      existing = @jaba_attr_type_definitions.find{|d| d.id == id}
+      existing = @attr_type_defs.find{|d| d.id == id}
       if existing
         jaba_error("Attribute type '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_basename}.")
       end
-      @jaba_attr_type_definitions << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
+      @attr_type_defs << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
       nil
+    end
+
+   ##
+    #
+    def get_attribute_type(id)
+      if id.nil?
+        return @default_attr_type
+      end
+      t = @jaba_attr_types.find {|at| at.defn_id == id}
+      if !t
+        jaba_error("'#{id}' attribute type is undefined. Valid types: #{@jaba_attr_types.map(&:defn_id)}")
+      end
+      t
     end
 
     ##
@@ -289,12 +309,22 @@ module JABA
       jaba_error("id is required") if id.nil?
       log "  Defining attr flag [id=#{id}]"
       validate_id(id)
-      existing = @jaba_attr_flag_definitions.find{|d| d.id == id}
+      existing = @attr_flag_defs.find{|d| d.id == id}
       if existing
         jaba_error("Attribute flag '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_basename}.")
       end
-      @jaba_attr_flag_definitions << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
+      @attr_flag_defs << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
       nil
+    end
+
+    ##
+    #
+    def get_attribute_flag(id)
+      f = @jaba_attr_flags.find {|af| af.defn_id == id}
+      if !f
+        jaba_error("'#{id.inspect_unquoted}' is an invalid flag. Valid flags: #{@jaba_attr_flags.map(&:defn_id)}")
+      end
+      f
     end
 
     ##
@@ -303,15 +333,15 @@ module JABA
       jaba_error("id is required") if id.nil?
       log "  Defining type [id=#{id}]"
       validate_id(id)
-      existing = @jaba_type_definitions.find{|d| d.id == id}
+      existing = @jaba_type_defs.find{|d| d.id == id}
       if existing
         jaba_error("Type '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_basename}.")
       end
       d = JabaDefinition.new(id, block, caller_locations(2, 1)[0])
       if id == :globals
-        @jaba_type_definitions.prepend(d)
+        @jaba_type_defs.prepend(d)
       else
-        @jaba_type_definitions << d
+        @jaba_type_defs << d
       end
       nil
     end
@@ -322,7 +352,7 @@ module JABA
       jaba_error("id is required") if id.nil?
       log "  Opening type [id=#{id}]"
       jaba_error("a block is required") if !block_given?
-      @jaba_open_definitions << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
+      @open_defs << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
       nil
     end
     
@@ -340,8 +370,18 @@ module JABA
         jaba_error("Shared definition '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_basename}.")
       end
 
-      @shared_definition_lookup[id] = JabaDefinition.new(id, block, caller_locations(2, 1)[0])
+      @shared_def_lookup[id] = JabaDefinition.new(id, block, caller_locations(2, 1)[0])
       nil
+    end
+
+    ##
+    #
+    def get_shared_definition(id, fail_if_not_found: true)
+      d = @shared_def_lookup[id]
+      if !d && fail_if_not_found
+        jaba_error("Shared definition '#{id}' not found")
+      end
+      d
     end
 
     ##
@@ -360,11 +400,33 @@ module JABA
       end
       
       d = JabaInstanceDefinition.new(id, type_id, block, caller_locations(2, 1)[0])
-      @instance_definition_lookup.push_value(type_id, d)
-      @instance_definitions << d
+      @instance_def_lookup.push_value(type_id, d)
+      @instance_defs << d
       nil
     end
     
+    ##
+    #
+    def get_instance_definition(type_id, id, fail_if_not_found: true)
+      defs = @instance_def_lookup[type_id]
+      return nil if !defs
+      d = defs.find {|dd| dd.id == id}
+      if !d && fail_if_not_found
+        jaba_error("No '#{id}' definition found")
+      end
+      d
+    end
+
+    ##
+    #
+    def get_instance_ids(type_id)
+      defs = @instance_def_lookup[type_id]
+      if !defs
+        jaba_error("No '#{type_id}' type defined")
+      end
+      defs.map(&:id)
+    end
+
     ##
     # Instances can be opened multiple times and blocks are processed in order of definition.
     #
@@ -374,14 +436,14 @@ module JABA
       jaba_error("a block is required") if !block_given?
       d = JabaDefinition.new(id, block, caller_locations(2, 1)[0])
       d.instance_variable_set(:@jaba_type_id, type)
-      @open_instance_definitions << d
+      @open_instance_defs << d
       nil
     end
 
     ##
     #
     def iterate_open_instance_definitions(inst_def, &block)
-      defs = @open_instance_definition_lookup[inst_def]
+      defs = @open_instance_def_lookup[inst_def]
       defs.each(&block) if defs
     end
 
@@ -390,12 +452,36 @@ module JABA
     def define_defaults(id, &block)
       jaba_error("id is required") if id.nil?
       log "  Defining defaults [id=#{id}]"
-      existing = @default_definitions.find {|d| d.id == id}
+      existing = @default_defs.find {|d| d.id == id}
       if existing
         jaba_error("Defaults block '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_basename}.")
       end
-      @default_definitions << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
+      @default_defs << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
       nil
+    end
+
+    ##
+    #
+    def get_defaults_definition(id)
+      @default_defs.find {|d| d.id == id}
+    end
+
+    ##
+    #
+    def in_attr_default_block?
+      @in_attr_default_block
+    end
+
+    ##
+    #
+    def execute_attr_default_block(node, default_block)
+      @in_attr_default_block = true
+      result = nil
+      node.make_read_only do # default blocks should not attempt to set another attribute
+        result = node.eval_jdl(&default_block)
+      end
+      @in_attr_default_block = false
+      result
     end
 
     ##
@@ -403,21 +489,20 @@ module JABA
     def define_translator(id, &block)
       jaba_error("id is required") if id.nil?
       log "  Defining translator [id=#{id}]"
-      existing = @translator_definitions.find {|d| d.id == id}
+      existing = @translator_defs.find {|d| d.id == id}
       if existing
         jaba_error("Translator block '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_basename}.")
       end
-      @translator_definitions << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
+      @translator_defs << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
       nil
     end
 
     ##
     #
-    def validate_id(id)
-      if !(id.symbol? || id.string?) || id !~ /^[a-zA-Z0-9_\-.]+$/
-        jaba_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol " \
-          "(-_. permitted), eg :my_id, 'my-id', 'my.id'")
-      end
+    def get_translator(id, fail_if_not_found: true)
+      t = @translators[id]
+      jaba_error("'#{id.inspect_unquoted}' translator not found") if !t
+      t
     end
 
     ##
@@ -427,12 +512,6 @@ module JABA
       jaba_error("'#{top_level_type_id.inspect_unquoted}' generator not found") if !g
       g
     end
-
-    ##
-    #
-    def in_attr_default_block?
-      @in_attr_default_block
-    end#
 
     ##
     #
@@ -527,83 +606,6 @@ module JABA
       #
       @output[:added] = @added
       @output[:modified] = @modified
-    end
-
-    ##
-    #
-    def get_attribute_type(id)
-      if id.nil?
-        return @default_attr_type
-      end
-      t = @jaba_attr_types.find {|at| at.defn_id == id}
-      if !t
-        jaba_error("'#{id}' attribute type is undefined. Valid types: #{@jaba_attr_types.map(&:defn_id)}")
-      end
-      t
-    end
-    
-    ##
-    #
-    def get_attribute_flag(id)
-      f = @jaba_attr_flags.find {|af| af.defn_id == id}
-      if !f
-        jaba_error("'#{id.inspect_unquoted}' is an invalid flag. Valid flags: #{@jaba_attr_flags.map(&:defn_id)}")
-      end
-      f
-    end
-
-    ##
-    #
-    def get_top_level_jaba_type(id, fail_if_not_found: true, callstack: nil)
-      jt = @jaba_type_lookup[id]
-      if !jt && fail_if_not_found
-        jaba_error("'#{id}' type not defined", callstack: callstack)
-      end
-      jt
-    end
-    
-    ##
-    #
-    def get_instance_definition(type_id, id, fail_if_not_found: true)
-      defs = @instance_definition_lookup[type_id]
-      return nil if !defs
-      d = defs.find {|dd| dd.id == id}
-      if !d && fail_if_not_found
-        jaba_error("No '#{id}' definition found")
-      end
-      d
-    end
-
-    ##
-    #
-    def get_instance_ids(type_id)
-      defs = @instance_definition_lookup[type_id]
-      if !defs
-        jaba_error("No '#{type_id}' type defined")
-      end
-      defs.map(&:id)
-    end
-    
-    ##
-    #
-    def get_shared_definition(id, fail_if_not_found: true)
-      d = @shared_definition_lookup[id]
-      if !d && fail_if_not_found
-        jaba_error("Shared definition '#{id}' not found")
-      end
-      d
-    end
-
-    ##
-    #
-    def get_defaults_definition(id)
-      @default_definitions.find {|d| d.id == id}
-    end
-
-    ##
-    #
-    def get_translator(id)
-      @translators[id]
     end
 
     ##
