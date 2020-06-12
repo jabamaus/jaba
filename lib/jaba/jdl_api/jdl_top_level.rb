@@ -75,7 +75,7 @@ module JABA
     ##
     # EXTENSION API
     #
-    def open(id, &block)
+    def open_type(id, &block)
       @services.open_type(id, &block)
     end
 

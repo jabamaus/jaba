@@ -68,7 +68,7 @@ module JABA
             id.must_equal(:b)
           end
         end
-        open :test do
+        open_type :test do
           id.must_equal(:test)
         end
         defaults :test do
@@ -102,7 +102,7 @@ module JABA
         end
       end
     end
-    
+
     it 'rejects attempts to instance an unknown type' do
       check_fail "'undefined' type not defined", trace: [__FILE__, 'tagJ'] do
         jaba(barebones: true) do

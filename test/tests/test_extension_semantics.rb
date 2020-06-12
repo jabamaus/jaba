@@ -19,7 +19,7 @@ module JABA
     it 'supports opening types and instances' do
       check_fail "'undefined' type not defined", trace: [__FILE__, 'tagL'] do
         jaba(barebones: true) do
-          open :undefined do # tagL
+          open_type :undefined do # tagL
           end
         end
       end
@@ -38,14 +38,14 @@ module JABA
           attr :b
         end
         
-        open :test do
+        open_type :test do
           attr :c do
             default 3
           end
           attr :d
         end
 
-        open :test do
+        open_type :test do
           attr :e do
             default 5
           end
@@ -102,11 +102,11 @@ module JABA
     end
     
     it 'supports defining new attribute flags' do
-      jaba do
+      jaba(barebones: true) do
         attr_flag :foo
         attr_flag :bar
         
-        open :category do
+        define :test do
           attr :a do
             flags :foo, :bar
           end
