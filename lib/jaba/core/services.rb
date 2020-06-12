@@ -204,7 +204,7 @@ module JABA
       # to an array of open instance definitions.
       #
       @open_instance_defs.each do |d|
-        inst_def = get_instance_definition(d.instance_variable_get(:@jaba_type_id), d.id)
+        inst_def = get_instance_definition(d.instance_variable_get(:@jaba_type_id), d.id, callstack: d.source_location)
         @open_instance_def_lookup.push_value(inst_def, d)
       end
 
@@ -407,12 +407,11 @@ module JABA
     
     ##
     #
-    def get_instance_definition(type_id, id, fail_if_not_found: true)
+    def get_instance_definition(type_id, id, fail_if_not_found: true, callstack: nil)
       defs = @instance_def_lookup[type_id]
-      return nil if !defs
-      d = defs.find {|dd| dd.id == id}
+      d = defs&.find {|dd| dd.id == id}
       if !d && fail_if_not_found
-        jaba_error("No '#{id}' definition found")
+        jaba_error("'#{id}' instance not defined", callstack: callstack)
       end
       d
     end

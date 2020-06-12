@@ -16,50 +16,60 @@ module JABA
       end
     end
 
-    it 'supports opening types' do
+    it 'supports opening types and instances' do
       check_fail "'undefined' type not defined", trace: [__FILE__, 'tagL'] do
         jaba(barebones: true) do
           open :undefined do # tagL
           end
         end
       end
-      jaba do
-        open :workspace do
-          attr :a
-        end
-        
-        workspace :w do
-          a 'val'
-          a.must_equal('val')
-        end
-      end
-    end
-
-    it 'supports opening instances' do
-      jaba(barebones: true) do
-        define :test do
-          attr :a
-          attr :b
-          attr :c
-          attr :d
-        end
-        test :t do
-          a 1
-          b 2
-          generate do
-            attrs.a.must_equal(1)
-            attrs.b.must_equal(3)
-            attrs.c.must_equal(5)
-            attrs.d.must_equal(6)
+      # TODO: also check type
+      check_fail "'undefined_id' instance not defined", trace: [__FILE__, 'tagA'] do
+        jaba(barebones: true) do
+          open_instance :undefined_id, type: :undefined_type do # tagA
           end
         end
-        open_instance :t, type: :test do
-          b 3
-          c 4
+      end
+      jaba do
+        define :test do
+          attr :a do
+            default 1
+          end
+          attr :b
         end
+        
+        open :test do
+          attr :c do
+            default 3
+          end
+          attr :d
+        end
+
+        open :test do
+          attr :e do
+            default 5
+          end
+          attr :f
+        end
+
+        test :t do
+          b 6
+          d 7
+          generate do
+            attrs.a.must_equal(1)
+            attrs.b.must_equal(2)
+            attrs.c.must_equal(3)
+            attrs.d.must_equal(4)
+            attrs.e.must_equal(5)
+          end
+        end
+
         open_instance :t, type: :test do
-          c 5
-          d 6
+          b 2
+        end
+        
+        open_instance :t, type: :test do
+          d 4
         end
       end
     end

@@ -2,6 +2,7 @@
 
 To do:
 
+- support for 'overriding' attribute defs when opening types
 - make_generator should be able to make subclasses of eg CppGenerator
 - make paths in jaba.output.json relative to itself. Introduce json node writing api to wrap this up and to make it robust.
 - think more about path handling in general and make it very consistent. eg all paths get to generators as absolute.
