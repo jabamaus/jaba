@@ -35,6 +35,35 @@ module JABA
       end
     end
 
+    it 'supports opening instances' do
+      jaba(barebones: true) do
+        define :test do
+          attr :a
+          attr :b
+          attr :c
+          attr :d
+        end
+        test :t do
+          a 1
+          b 2
+          generate do
+            attrs.a.must_equal(1)
+            attrs.b.must_equal(3)
+            attrs.c.must_equal(5)
+            attrs.d.must_equal(6)
+          end
+        end
+        open_instance :t, type: :test do
+          b 3
+          c 4
+        end
+        open_instance :t, type: :test do
+          c 5
+          d 6
+        end
+      end
+    end
+    
     # TODO: extend
     it 'supports defining new attribute types' do
       check_fail(/'undefined' attribute type is undefined. Valid types: \[.*?\]/, trace: [__FILE__, 'tagK']) do

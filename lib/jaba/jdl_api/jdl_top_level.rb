@@ -82,6 +82,13 @@ module JABA
     ##
     # EXTENSION API
     #
+    def open_instance(id, type:, &block)
+      @services.open_instance(id, type, &block)
+    end
+
+    ##
+    # EXTENSION API
+    #
     def translator(id, &block)
       @services.define_translator(id, &block)
     end

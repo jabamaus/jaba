@@ -84,9 +84,12 @@ module JABA
       @jaba_open_definitions = []
       @default_definitions = []
       @instance_definitions = []
-      @instance_definition_lookup = {}
-      @shared_definition_lookup = {}
+      @open_instance_definitions = []
       @translator_definitions = []
+
+      @instance_definition_lookup = {}
+      @open_instance_definition_lookup = {}
+      @shared_definition_lookup = {}
 
       @jaba_attr_types = []
       @jaba_attr_flags = []
@@ -170,7 +173,7 @@ module JABA
       @jaba_open_definitions.each do |d|
         get_top_level_jaba_type(d.id, callstack: d.source_location).eval_jdl(&d.block)
       end
-      
+
       @top_level_jaba_types.each(&:post_create)
 
       # When an attribute defined in a JabaType will reference a differernt JabaType a dependency on that
@@ -195,6 +198,14 @@ module JABA
       @instance_definitions.each do |d|
         jt = get_top_level_jaba_type(d.jaba_type_id, callstack: d.source_location)
         jt.generator.register_instance_definition(d)
+      end
+
+      # Convert open instance definitions specified as type id and id into a mapping from the instance definition object
+      # to an array of open instance definitions.
+      #
+      @open_instance_definitions.each do |d|
+        inst_def = get_instance_definition(d.instance_variable_get(:@jaba_type_id), d.id)
+        @open_instance_definition_lookup.push_value(inst_def, d)
       end
 
       @translator_definitions.each do |d|
@@ -354,6 +365,26 @@ module JABA
       nil
     end
     
+    ##
+    # Instances can be opened multiple times and blocks are processed in order of definition.
+    #
+    def open_instance(id, type, &block)
+      jaba_error("id is required") if id.nil?
+      log "  Opening istance [id=#{id}]"
+      jaba_error("a block is required") if !block_given?
+      d = JabaDefinition.new(id, block, caller_locations(2, 1)[0])
+      d.instance_variable_set(:@jaba_type_id, type)
+      @open_instance_definitions << d
+      nil
+    end
+
+    ##
+    #
+    def iterate_open_instance_definitions(inst_def, &block)
+      defs = @open_instance_definition_lookup[inst_def]
+      defs.each(&block) if defs
+    end
+
     ##
     #
     def define_defaults(id, &block)

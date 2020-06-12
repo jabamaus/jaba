@@ -128,6 +128,11 @@ module JABA
         if @current_definition.block
           jn.eval_jdl(&@current_definition.block)
         end
+
+        @services.iterate_open_instance_definitions(@current_definition) do |d|
+          jn.eval_jdl(&d.block)
+        end
+        
       rescue FrozenError => e
         jaba_error('Cannot modify read only value', callstack: e.backtrace)
       end
