@@ -348,16 +348,6 @@ module JABA
     
     ##
     #
-    def open_type(id, &block)
-      jaba_error("id is required") if id.nil?
-      log "  Opening type [id=#{id}]"
-      jaba_error("a block is required") if !block_given?
-      @open_defs << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
-      nil
-    end
-    
-    ##
-    #
     def define_shared(id, &block)
       jaba_error("id is required") if id.nil?
       jaba_error("a block is required") if !block_given?
@@ -427,26 +417,6 @@ module JABA
     end
 
     ##
-    # Instances can be opened multiple times and blocks are processed in order of definition.
-    #
-    def open_instance(id, type, &block)
-      jaba_error("id is required") if id.nil?
-      log "  Opening istance [id=#{id}]"
-      jaba_error("a block is required") if !block_given?
-      d = JabaDefinition.new(id, block, caller_locations(2, 1)[0])
-      d.instance_variable_set(:@jaba_type_id, type)
-      @open_instance_defs << d
-      nil
-    end
-
-    ##
-    #
-    def iterate_open_instance_definitions(inst_def, &block)
-      defs = @open_instance_def_lookup[inst_def]
-      defs.each(&block) if defs
-    end
-
-    ##
     #
     def define_defaults(id, &block)
       jaba_error("id is required") if id.nil?
@@ -502,6 +472,32 @@ module JABA
       t = @translators[id]
       jaba_error("'#{id.inspect_unquoted}' translator not found") if !t
       t
+    end
+
+    ##
+    #
+    def open(what, id, type, &block)
+      jaba_error("id is required") if id.nil?
+      jaba_error("a block is required") if !block_given?
+
+      case what
+      when :type
+        log "  Opening type [id=#{id}]"
+        @open_defs << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
+      when :instance
+        log "  Opening instance [id=#{id} type=#{type}]"
+        d = JabaDefinition.new(id, block, caller_locations(2, 1)[0])
+        d.instance_variable_set(:@jaba_type_id, type)
+        @open_instance_defs << d
+      end
+      nil
+    end
+
+    ##
+    #
+    def iterate_open_instance_definitions(inst_def, &block)
+      defs = @open_instance_def_lookup[inst_def]
+      defs.each(&block) if defs
     end
 
     ##

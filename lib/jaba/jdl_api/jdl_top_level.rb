@@ -76,14 +76,14 @@ module JABA
     # EXTENSION API
     #
     def open_type(id, &block)
-      @services.open_type(id, &block)
+      @services.open(:type, id, nil, &block)
     end
 
     ##
     # EXTENSION API
     #
     def open_instance(id, type:, &block)
-      @services.open_instance(id, type, &block)
+      @services.open(:instance, id, type, &block)
     end
 
     ##
