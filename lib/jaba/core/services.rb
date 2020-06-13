@@ -89,6 +89,7 @@ module JABA
       @open_type_defs = []
       @open_instance_defs = []
       @open_translator_defs = {}
+      @open_shared_defs = {}
 
       @instance_def_lookup = {}
       @open_instance_def_lookup = {}
@@ -504,6 +505,9 @@ module JABA
       when :translator
         log "  Opening translator [id=#{id}]"
         @open_translator_defs.push_value(id, JabaDefinition.new(id, block, caller_locations(2, 1)[0]))
+      when :shared
+        log "  Opening shared definition [id=#{id}]"
+        @open_shared_defs.push_value(id, JabaDefinition.new(id, block, caller_locations(2, 1)[0]))
       end
       nil
     end
@@ -515,6 +519,12 @@ module JABA
       defs.each(&block) if defs
     end
 
+    ##
+    #
+    def get_open_shared_defs(id)
+      @open_shared_defs[id]
+    end
+    
     ##
     #
     def get_generator(top_level_type_id)

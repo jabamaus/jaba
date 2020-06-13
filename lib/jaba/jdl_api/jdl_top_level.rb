@@ -100,6 +100,13 @@ module JABA
       @services.open(:translator, id, &block)
     end
 
+    ##
+    # EXTENSION API
+    #
+    def open_shared(id, &block)
+      @services.open(:shared, id, &block)
+    end
+
     private
 
     ##

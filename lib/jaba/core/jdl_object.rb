@@ -62,6 +62,8 @@ module JABA
       @services.log "  Including shared definition [id=#{id}]"
 
       db = @services.get_shared_definition(id)
+
+      open_defs = @services.get_open_shared_defs(id)
       
       n_expected = db.block.arity
       n_actual = args ? Array(args).size : 0
@@ -71,6 +73,9 @@ module JABA
       end
       
       eval_jdl(args, &db.block)
+      open_defs&.each do |d|
+        eval_jdl(args, &d.block)
+      end
     end
     
   end

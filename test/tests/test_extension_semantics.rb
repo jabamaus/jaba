@@ -52,9 +52,16 @@ module JABA
           attr :f
         end
 
-        test :t do
+        shared :s do
           b 6
+        end
+
+        open_shared :s do
           d 7
+        end
+
+        test :t do
+          include :s
           generate do
             attrs.a.must_equal(1)
             attrs.b.must_equal(2)
