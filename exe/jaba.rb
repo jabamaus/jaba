@@ -103,7 +103,9 @@ rescue JABA::JDLError => e
   #
   if e.backtrace.size > 1
     puts 'Backtrace:'
-    puts(e.backtrace.shift.map {|line| "  #{line}"})
+    bt = e.backtrace
+    bt.shift
+    puts(bt.map {|line| "  #{line}"})
   end
   exit 1
 rescue => e
