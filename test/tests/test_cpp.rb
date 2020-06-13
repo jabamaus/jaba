@@ -115,7 +115,7 @@ module JABA
 
     it 'supports opening translators' do
       proj = jaba(dry_run: true, cpp_app: true) do
-        cpp :a do
+        cpp :app do
           src ['main.cpp'], :force
         end
         open_translator :vcxproj_windows do

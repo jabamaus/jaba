@@ -93,6 +93,13 @@ module JABA
       @services.define_translator(id, &block)
     end
     
+    ##
+    # EXTENSION API
+    #
+    def open_translator(id, &block)
+      @services.open(:translator, id, &block)
+    end
+
     private
 
     ##

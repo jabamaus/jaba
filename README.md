@@ -2,6 +2,7 @@
 
 To do:
 
+- Remove --test from Jaba. Look into how to run tests with gemspec/bundler
 - How customise jaba output file? Subclass vcxproj or jdl definition, or something else?
 - open globals to add vcfiletype
 - Add uuid attribute type.

@@ -10,14 +10,20 @@ module JABA
 
     ##
     #
-    def initialize(services, definition)
+    def initialize(services, definition, open_defs)
       super(services, definition, JDL_Translator.new(self))
+
+      @open_defs = open_defs
     end
 
     ##
     #
-    def set_node(node)
+    def execute(node:, args:)
       @node = node
+      eval_jdl(*args, &@definition.block)
+      @open_defs&.each do |d|
+        eval_jdl(*args, &d.block)
+      end
     end
 
     ##

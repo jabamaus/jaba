@@ -73,6 +73,7 @@ module JABA
       
       @log_file = nil
       
+      @jdl_backtrace_files = [] # Files to include in jdl level error backtraces. Includes jdl files and api files.
       @warnings = []
       @warn_object = nil
       
@@ -81,11 +82,13 @@ module JABA
       @attr_type_defs = []
       @attr_flag_defs = []
       @jaba_type_defs = []
-      @open_defs = []
       @default_defs = []
       @instance_defs = []
-      @open_instance_defs = []
       @translator_defs = []
+
+      @open_type_defs = []
+      @open_instance_defs = []
+      @open_translator_defs = {}
 
       @instance_def_lookup = {}
       @open_instance_def_lookup = {}
@@ -139,6 +142,13 @@ module JABA
     def do_run
       load_modules
 
+      #@jdl_backtrace_files.concat($LOADED_FEATURES.select{|f| f =~ /jaba\/lib\/jaba\/jdl_api/})
+      @jdl_backtrace_files.concat(@jdl_files)
+      
+      Array(input.definitions).each do |block|
+        @jdl_backtrace_files << block.source_location[0]
+      end
+
       @jdl_files.each do |f|
         execute_jdl(f)
       end
@@ -170,7 +180,7 @@ module JABA
 
       # Open top level JabaTypes so more attributes can be added
       #
-      @open_defs.each do |d|
+      @open_type_defs.each do |d|
         get_top_level_jaba_type(d.id, callstack: d.source_location).eval_jdl(&d.block)
       end
 
@@ -209,7 +219,8 @@ module JABA
       end
 
       @translator_defs.each do |d|
-        t = Translator.new(self, d)
+        open_defs = @open_translator_defs[d.id]
+        t = Translator.new(self, d, open_defs)
         @translators[d.id] = t
       end
 
@@ -476,19 +487,23 @@ module JABA
 
     ##
     #
-    def open(what, id, type, &block)
+    def open(what, id, type=nil, &block)
       jaba_error("id is required") if id.nil?
       jaba_error("a block is required") if !block_given?
 
       case what
       when :type
         log "  Opening type [id=#{id}]"
-        @open_defs << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
+        @open_type_defs << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
       when :instance
         log "  Opening instance [id=#{id} type=#{type}]"
+        jaba_error("type is required") if type.nil?
         d = JabaDefinition.new(id, block, caller_locations(2, 1)[0])
         d.instance_variable_set(:@jaba_type_id, type)
         @open_instance_defs << d
+      when :translator
+        log "  Opening translator [id=#{id}]"
+        @open_translator_defs.push_value(id, JabaDefinition.new(id, block, caller_locations(2, 1)[0]))
       end
       nil
     end
@@ -613,7 +628,6 @@ module JABA
         @top_level_api.instance_eval(file_manager.read_file(file), file)
       end
       if block_given?
-        @jdl_files << block.source_location[0]
         @top_level_api.instance_eval(&block)
       end
     rescue JDLError
@@ -755,7 +769,7 @@ module JABA
 
         # Extract any lines in the callstack that contain references to definition source files.
         #
-        lines = backtrace.select {|c| @jdl_files.any? {|sf| c.include?(sf)}}
+        lines = backtrace.select {|c| @jdl_backtrace_files.any? {|sf| c.include?(sf)}}
 
         # remove the unwanted ':in ...' suffix from user level definition errors
         #

@@ -59,13 +59,11 @@ module JABA
       return if !proj.attrs.visual_studio?
 
       t = @services.get_translator(:vcxproj_windows)
-      t.set_node(proj.node)
-      t.eval_jdl(proj, &t.definition.block)
+      t.execute(node: proj.node, args: [proj])
       
       proj.each_config do |cfg|
         t = @services.get_translator(:vcxproj_config_windows)
-        t.set_node(cfg)
-        t.eval_jdl(proj, cfg.attrs.type, &t.definition.block)
+        t.execute(node: cfg, args: [proj, cfg.attrs.type], &t.definition.block)
 
         # Build events
         #
