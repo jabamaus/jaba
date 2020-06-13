@@ -5,7 +5,7 @@ module JABA
   class TestAttributeArray < JabaTest
 
     it 'supports a default' do
-      check_fail "'a' array attribute default must be an array", trace: [__FILE__, 'tagV'] do
+      check_fail "'a' array attribute default must be an array", line: [__FILE__, 'tagV'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a do
@@ -14,7 +14,7 @@ module JABA
           end
         end
       end
-      check_fail "'a' array attribute requires an array", trace: [__FILE__, 'tagO'] do
+      check_fail "'a' array attribute requires an array", line: [__FILE__, 'tagO'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a do # tagO
@@ -30,7 +30,7 @@ module JABA
       # It validates default elements respect attribute type
       #
       check_fail "'not a symbol' must be a symbol but was a 'String'",
-                 trace: [ATTR_TYPES_JDL, 'fail "\'#{value}\' must be a symbol but was a', __FILE__, 'tagD'] do
+                 line: [ATTR_TYPES_JDL, 'fail "\'#{value}\' must be a symbol but was a'], trace: [__FILE__, 'tagD'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a, type: :symbol do # tagD
@@ -43,7 +43,7 @@ module JABA
       # It validates default elements respect attribute type when block form used
       #
       check_fail "'not a symbol' must be a symbol but was a 'String'",
-                 trace: [ATTR_TYPES_JDL, 'fail "\'#{value}\' must be a symbol but was a', __FILE__, 'tagW'] do
+                 line: [ATTR_TYPES_JDL, 'fail "\'#{value}\' must be a symbol but was a'], trace: [__FILE__, 'tagW'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a, type: :symbol do # tagW
@@ -88,7 +88,7 @@ module JABA
     it 'works with block style default' do
       # test with array attr default using an unset attr
       #
-      check_fail "Cannot read uninitialised 'b' attribute", trace: [__FILE__, 'tagI'] do
+      check_fail "Cannot read uninitialised 'b' attribute", line: [__FILE__, 'tagI'] do
         jaba(barebones: true) do
           define :test do
             attr :a
@@ -108,7 +108,7 @@ module JABA
 
       # test with another attr using unset array attr
       #
-      check_fail "Cannot read uninitialised 'a' attribute", trace: [__FILE__, 'tagF'] do
+      check_fail "Cannot read uninitialised 'a' attribute", line: [__FILE__, 'tagF'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a
@@ -150,7 +150,7 @@ module JABA
     end
     
     it 'is not possible to modify returned array' do
-      check_fail 'Cannot modify read only value', trace: [__FILE__, 'tagN'] do
+      check_fail 'Cannot modify read only value', line: [__FILE__, 'tagN'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a do
@@ -232,7 +232,7 @@ module JABA
 
     it 'validates element types are valid' do
       check_fail ':bool attributes only accept [true|false]', 
-                 trace: [ATTR_TYPES_JDL, 'fail ":bool attributes only accept', __FILE__, 'tagT'] do
+                 line: [ATTR_TYPES_JDL, 'fail ":bool attributes only accept'], trace: [__FILE__, 'tagT'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a, type: :bool
@@ -262,7 +262,7 @@ module JABA
     end
     
     it 'only allows prefix/postfix on string elements' do
-      check_fail 'Prefix/postfix option can only be used with arrays of strings', trace: [__FILE__, 'tagQ'] do
+      check_fail 'Prefix/postfix option can only be used with arrays of strings', line: [__FILE__, 'tagQ'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a
@@ -327,7 +327,7 @@ module JABA
     end
     
     it 'fails if excluding with regex on non-strings' do
-      check_fail 'Exclude regex can only operate on strings', trace: [__FILE__, 'tagR'] do
+      check_fail 'Exclude regex can only operate on strings', line: [__FILE__, 'tagR'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a
@@ -409,7 +409,7 @@ module JABA
     end
 
     it 'catches invalid args to wipe' do
-      check_fail "'b' attribute not found", trace: [__FILE__, 'tagS'] do
+      check_fail "'b' attribute not found", line: [__FILE__, 'tagS'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a

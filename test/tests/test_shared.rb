@@ -8,7 +8,7 @@ module JABA
       # check that all types support include directive
       #
       [:text, :workspace, :category, :attr_type, :define].each do |type|
-        check_fail 'Included', trace: [__FILE__, "fail 'Included'", __FILE__, 'tagG'] do
+        check_fail 'Included', line: [__FILE__, "fail 'Included'"], trace: [__FILE__, 'tagG'] do
           jaba do
             shared :a do
               fail 'Included'
@@ -53,7 +53,7 @@ module JABA
     end
 
     it 'fails if no block supplied' do
-      check_fail "A block is required", trace: [__FILE__, 'tagP'] do
+      check_fail "A block is required", line: [__FILE__, 'tagP'] do
         jaba(barebones: true) do
           shared :a # tagP
         end
@@ -61,7 +61,7 @@ module JABA
     end
 
     it 'fails if shared definition does not exist' do
-      check_fail "Shared definition 'b' not found", trace: [__FILE__, 'tagT'] do
+      check_fail "Shared definition 'b' not found", line: [__FILE__, 'tagT'] do
         jaba(barebones: true) do
           shared :a do
           end
@@ -91,7 +91,7 @@ module JABA
     end
     
     it 'catches argument mismatches' do
-      check_fail "Shared definition 'd' expects 3 arguments but 0 were passed", trace: [__FILE__, 'tagW'] do
+      check_fail "Shared definition 'd' expects 3 arguments but 0 were passed", line: [__FILE__, 'tagW'] do
         jaba do
           shared :d do |a1, a2, a3|
           end
@@ -100,7 +100,7 @@ module JABA
           end
         end
       end
-      check_fail "Shared definition 'e' expects 0 arguments but 1 were passed", trace: [__FILE__, 'tagU'] do
+      check_fail "Shared definition 'e' expects 0 arguments but 1 were passed", line: [__FILE__, 'tagU'] do
         jaba do
           shared :e do
           end
@@ -109,7 +109,7 @@ module JABA
           end
         end
       end
-      check_fail "Shared definition 'f' expects 2 arguments but 3 were passed", trace: [__FILE__, 'tagB'] do
+      check_fail "Shared definition 'f' expects 2 arguments but 3 were passed", line: [__FILE__, 'tagB'] do
         jaba do
           shared :f do |a1, a2|
           end

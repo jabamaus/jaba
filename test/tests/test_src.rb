@@ -28,7 +28,7 @@ module JABA
     end
 
     it 'fails if explicitly specified files do not exist unless forced' do
-      check_fail "'a.cpp' does not exist on disk. Use :force to add anyway", trace: [__FILE__, 'tagA'] do
+      check_fail "'a.cpp' does not exist on disk. Use :force to add anyway", line: [__FILE__, 'tagA'] do
         jaba(cpp_app: true) do
           cpp :app do
             src ['a.cpp'] # tagA
@@ -46,7 +46,7 @@ module JABA
     it 'disallows wildcards when force adding src' do
       make_file('a/a.cpp')
       check_fail "Wildcards are not allowed when force adding src - only explicitly specified source files",
-                 trace: [__FILE__, 'tagB'] do
+                line: [__FILE__, 'tagB'] do
         jaba(cpp_app: true) do
           cpp :app do
             src ['a/*.*'], :force # tagB

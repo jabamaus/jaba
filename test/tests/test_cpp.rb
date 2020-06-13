@@ -47,7 +47,7 @@ module JABA
     end
 
     it 'reports errors correctly with subtype attributes' do
-      check_fail "'hosts' attribute requires a value", trace: [__FILE__, 'tagY'] do
+      check_fail "'hosts' attribute requires a value", line: [__FILE__, 'tagY'] do
         jaba do
           cpp :app do # tagY
           end

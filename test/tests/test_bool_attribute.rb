@@ -17,10 +17,8 @@ module JABA
 
     it 'requires default to be true or false' do
       check_fail ':bool attributes only accept [true|false] but got \'1\'',
-                 trace: [
-                   ATTR_TYPES_JDL, 'fail ":bool attributes only accept [true|false]',
-                   __FILE__, 'tagP' # evaluated later so exact call line is lost
-                 ] do
+                 line: [ATTR_TYPES_JDL, 'fail ":bool attributes only accept [true|false]'],
+                 trace: [__FILE__, 'tagP'] do # evaluated later so exact call line is lost
         jaba(barebones: true) do
           define :test do
             attr :b, type: :bool do # tagP
@@ -47,10 +45,7 @@ module JABA
 
     it 'only allows boolean values' do
       check_fail ':bool attributes only accept [true|false]',
-                 trace: [
-                  ATTR_TYPES_JDL, 'fail ":bool attributes only accept',
-                   __FILE__, 'tagW'
-                 ] do
+                 line: [ATTR_TYPES_JDL, 'fail ":bool attributes only accept'], trace: [__FILE__, 'tagW'] do
         jaba(barebones: true) do
           define :test do
             attr :c, type: :bool do
@@ -81,7 +76,7 @@ module JABA
     end
     
     it 'works with :required flag' do
-      check_fail "'a' attribute requires a value", trace: [__FILE__, 'tagY'] do
+      check_fail "'a' attribute requires a value", line: [__FILE__, 'tagY'] do
         jaba(barebones: true) do
           define :test do
             attr :a, type: :bool do

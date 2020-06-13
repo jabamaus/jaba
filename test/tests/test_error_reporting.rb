@@ -8,7 +8,7 @@ module JABA
       line = find_line_number(__FILE__, 'tagR')
       e = check_fail "Error at test_error_reporting.rb:#{line}: 'invalid id' is an invalid id. Must be an " \
                      "alphanumeric string or symbol",
-                     trace: [__FILE__, line] do
+                     line: [__FILE__, line] do
         jaba do
           category 'invalid id' # tagR
         end
@@ -22,7 +22,7 @@ module JABA
       line = 3
       e = check_fail "Error at test.jdl.rb:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric " \
                      "string or symbol",
-                     trace: [fullpath, line] do
+                     line: [fullpath, line] do
         jaba(barebones: true, jdl_paths: fullpath)
       end
       e.cause.must_be_nil
@@ -30,7 +30,7 @@ module JABA
     
     it 'works when a there is a syntax error when definitions in a block' do
       line = find_line_number(__FILE__, 'tagL')
-      e = check_fail "Error at test_error_reporting.rb:#{line}", trace: [__FILE__, line] do
+      e = check_fail "Error at test_error_reporting.rb:#{line}", line: [__FILE__, line] do
         jaba(barebones: true) do
           shared :a do
           end
@@ -51,8 +51,8 @@ module JABA
     
     it 'reports lines correctly when using shared modules' do
       check_fail ':bool attributes only accept [true|false]', 
-                 trace: [ATTR_TYPES_JDL, 'fail ":bool attributes only accept',
-                         __FILE__, 'tagH'] do
+                 line: [ATTR_TYPES_JDL, 'fail ":bool attributes only accept'],
+                 trace: [__FILE__, 'tagH'] do
         jaba(barebones: true) do
           define :test do
             attr :a, type: :bool
@@ -68,7 +68,7 @@ module JABA
     end
 
     it 'allows errors to be raised from definitions' do
-      check_fail 'Error msg', trace: [__FILE__, 'tagW'] do
+      check_fail 'Error msg', line: [__FILE__, 'tagW'] do
         jaba(barebones: true) do
           define :test do
             fail "error msg" # tagW

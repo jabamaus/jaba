@@ -6,7 +6,7 @@ module JABA
     
     it 'requires referent type to be specified' do
       check_fail "'b' attribute definition failed validation: 'referenced_type' must be set",
-                 trace: [ATTR_TYPES_JDL, "fail \"'referenced_type' must be set\"", __FILE__, 'tagP'] do
+        line: [ATTR_TYPES_JDL, "fail \"'referenced_type' must be set\""], trace: [__FILE__, 'tagP'] do
         jaba(barebones: true) do
           define :a do
             attr :b, type: :reference # tagP
@@ -46,7 +46,7 @@ module JABA
     
     it 'catches invalid reference to different type' do
       # TODO: don't like this error message
-      check_fail 'Node with handle \'undefined\' not found', trace: [__FILE__, 'tagW'] do
+      check_fail 'Node with handle \'undefined\' not found', line: [__FILE__, 'tagW'] do
         jaba(barebones: true) do
           define :type_a do
             attr :ref, type: :reference do
@@ -94,7 +94,7 @@ module JABA
     end
     
     it 'catches invalid reference to same type' do
-      check_fail 'Node with handle \'undefined\' not found', trace: [__FILE__, 'tagQ'] do
+      check_fail 'Node with handle \'undefined\' not found', line: [__FILE__, 'tagQ'] do
         jaba(barebones: true) do
           define :a do
             attr :b, type: :reference do
@@ -126,7 +126,7 @@ module JABA
     end
     
     it 'imports exposed referenced attributes' do
-      check_fail "'height' attribute not defined", trace: [__FILE__, 'tagI'] do
+      check_fail "'height' attribute not defined", line: [__FILE__, 'tagI'] do
         jaba(barebones: true) do
           define :square do
             attr :length do
@@ -156,7 +156,7 @@ module JABA
     end
 
     it 'treats references read only when imported' do
-      check_fail "Cannot change referenced 'length' attribute", trace: [__FILE__, 'tagF'] do
+      check_fail "Cannot change referenced 'length' attribute", line: [__FILE__, 'tagF'] do
         jaba(barebones: true) do
           define :line do
             attr :length do
@@ -180,7 +180,7 @@ module JABA
     end
     
     it 'treats references read only when caled through object' do
-      check_fail "'length' attribute is read only", trace: [__FILE__, 'tagD'] do
+      check_fail "'length' attribute is read only", line: [__FILE__, 'tagD'] do
         jaba(barebones: true) do
           define :line do
             attr :length

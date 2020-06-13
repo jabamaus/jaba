@@ -5,7 +5,7 @@ module JABA
   class TestSingleAttribute < JabaTest
 
     it 'only accepts single values' do
-      check_fail "'a' attribute default must be a single value not a Array", trace: [__FILE__, 'tagV'] do
+      check_fail "'a' attribute default must be a single value not a Array", line: [__FILE__, 'tagV'] do
         jaba(barebones: true) do
           define :test do
             attr :a do
@@ -15,7 +15,7 @@ module JABA
         end
       end
 
-      check_fail "'a' must be a single value not a Array", trace: [__FILE__, 'tagK'] do
+      check_fail "'a' must be a single value not a Array", line: [__FILE__, 'tagK'] do
         jaba(barebones: true) do
           define :test do
             attr :a
@@ -44,7 +44,7 @@ module JABA
     end
 
     it 'prevents modifying read values' do
-      check_fail "Cannot modify read only value", trace: [__FILE__, 'tagY'] do
+      check_fail "Cannot modify read only value", line: [__FILE__, 'tagY'] do
         jaba(barebones: true) do
           define :test do
             attr :a, type: :string do
@@ -58,7 +58,7 @@ module JABA
           end
         end
       end
-      check_fail "Cannot modify read only value", trace: [__FILE__, 'tagS'] do
+      check_fail "Cannot modify read only value", line: [__FILE__, 'tagS'] do
         jaba(barebones: true) do
           define :test do
             attr :a, type: :string do
@@ -93,7 +93,7 @@ module JABA
 
       # test with attr default using an unset attr
       #
-      check_fail "Cannot read uninitialised 'b' attribute", trace: [__FILE__, 'tagI'] do
+      check_fail "Cannot read uninitialised 'b' attribute", line: [__FILE__, 'tagI'] do
         jaba(barebones: true) do
           define :test do
             attr :a
@@ -113,7 +113,7 @@ module JABA
 
       # test with another attr using unset attr
       #
-      check_fail "Cannot read uninitialised 'a' attribute", trace: [__FILE__, 'tagF'] do
+      check_fail "Cannot read uninitialised 'a' attribute", line: [__FILE__, 'tagF'] do
         jaba(barebones: true) do
           define :test do
             attr :a
@@ -131,7 +131,7 @@ module JABA
     end
 
     it 'fails if default block sets attribute' do
-      check_fail "'a' attribute is read only", trace: [__FILE__, 'tagA'] do
+      check_fail "'a' attribute is read only", line: [__FILE__, 'tagA'] do
         jaba(barebones: true) do
           define :test do
             attr :a
@@ -148,7 +148,7 @@ module JABA
     end
 
     it 'validates flag options' do
-      check_fail "Invalid flag option ':d'. Valid flags are [:a, :b, :c]", trace: [__FILE__, 'tagD'] do
+      check_fail "Invalid flag option ':d'. Valid flags are [:a, :b, :c]", line: [__FILE__, 'tagD'] do
         jaba(barebones: true) do
           define :test do
             attr :a do
@@ -227,7 +227,7 @@ module JABA
     end
     
     it 'rejects setting readonly attrs' do
-      check_fail "'a' attribute is read only", trace: [__FILE__, 'tagJ'] do
+      check_fail "'a' attribute is read only", line: [__FILE__, 'tagJ'] do
         jaba(barebones: true) do
           define :test do
             attr :a do
@@ -244,7 +244,7 @@ module JABA
 
       # Check not settable even if no default supplied
       #
-      check_fail "'a' attribute is read only", trace: [__FILE__, 'tagC'] do
+      check_fail "'a' attribute is read only", line: [__FILE__, 'tagC'] do
         jaba(barebones: true) do
           define :test do
             attr :a do

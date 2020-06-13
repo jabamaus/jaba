@@ -18,14 +18,14 @@ module JABA
         end
       end
       
-      check_fail "'Space invalid' is an invalid id. Must be an alphanumeric string or symbol", trace: [__FILE__, 'tagS'] do
+      check_fail "'Space invalid' is an invalid id. Must be an alphanumeric string or symbol", line: [__FILE__, 'tagS'] do
         jaba(barebones: true) do
           shared 'Space invalid' do # tagS
           end
         end
       end
       
-      check_fail "'1' is an invalid id", trace: [__FILE__, 'tagZ'] do
+      check_fail "'1' is an invalid id", line: [__FILE__, 'tagZ'] do
         jaba(barebones: true) do
           shared 1 do # tagZ
           end
@@ -35,7 +35,7 @@ module JABA
     
     it 'detects duplicate ids with definitions of the same type' do
       [:attr_flag, :attr_type, :cpp, :defaults, :define, :shared, :text, :workspace].each do |type|
-        check_fail "':a' multiply defined. See #{__FILE__.basename}:#{find_line_number(__FILE__, 'tagX')}.", trace: [__FILE__, 'tagI'] do
+        check_fail "':a' multiply defined. See #{__FILE__.basename}:#{find_line_number(__FILE__, 'tagX')}.", line: [__FILE__, 'tagI'] do
           jaba do
             __send__(type, :a) do # tagX
             end
@@ -104,7 +104,7 @@ module JABA
     end
 
     it 'rejects attempts to instance an unknown type' do
-      check_fail "'undefined' type not defined", trace: [__FILE__, 'tagJ'] do
+      check_fail "'undefined' type not defined", line: [__FILE__, 'tagJ'] do
         jaba(barebones: true) do
           undefined :a # tagJ
         end

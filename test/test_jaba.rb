@@ -118,25 +118,27 @@ module JABA
 
     ##
     #
-    def check_fail(msg, exception: JDLError, trace: nil)
+    def check_fail(msg, exception: JDLError, line: nil, trace: nil)
       e = assert_raises exception do
         yield
       end
       
       e.message.must_match(msg)
 
-      if trace
-        file = trace[0]
-        line = find_line_number(file, trace[1])
+      if line
+        file = line[0]
+        line = find_line_number(file, line[1])
         
         e.file.must_equal(file)
         e.line.must_equal(line)
-        
+      end
+
+      if trace
         backtrace = []
         trace.each_slice(2) do |elem|
           backtrace << "#{elem[0]}:#{find_line_number(elem[0], elem[1])}"
         end
-        e.backtrace.slice(0, backtrace.size).must_equal(backtrace)
+        e.backtrace.slice(1, backtrace.size).must_equal(backtrace)
       end
       e
     end

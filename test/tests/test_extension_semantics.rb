@@ -17,14 +17,14 @@ module JABA
     end
 
     it 'supports opening types and instances' do
-      check_fail "'undefined' type not defined", trace: [__FILE__, 'tagL'] do
+      check_fail "'undefined' type not defined", line: [__FILE__, 'tagL'] do
         jaba(barebones: true) do
           open_type :undefined do # tagL
           end
         end
       end
       # TODO: also check type
-      check_fail "'undefined_id' instance not defined", trace: [__FILE__, 'tagA'] do
+      check_fail "'undefined_id' instance not defined", line: [__FILE__, 'tagA'] do
         jaba(barebones: true) do
           open_instance :undefined_id, type: :undefined_type do # tagA
           end
@@ -76,14 +76,14 @@ module JABA
     
     # TODO: extend
     it 'supports defining new attribute types' do
-      check_fail(/'undefined' attribute type is undefined. Valid types: \[.*?\]/, trace: [__FILE__, 'tagK']) do
+      check_fail(/'undefined' attribute type is undefined. Valid types: \[.*?\]/, line: [__FILE__, 'tagK']) do
         jaba(barebones: true) do
           define :a do
             attr :b, type: :undefined # tagK
           end
         end
       end
-      check_fail "'b' attribute failed validation: Invalid", trace: [__FILE__, 'tagD', __FILE__, 'tagO'] do 
+      check_fail "'b' attribute failed validation: Invalid", line: [__FILE__, 'tagD'], trace: [__FILE__, 'tagO'] do 
         jaba(barebones: true) do
           attr_type :a do
             validate_value do
@@ -143,7 +143,7 @@ module JABA
     end
     
     it 'checks for cyclic dependencies' do
-      check_fail '\'a\' contains a cyclic dependency', trace: [__FILE__, 'tagF'] do
+      check_fail '\'a\' contains a cyclic dependency', line: [__FILE__, 'tagF'] do
         jaba(barebones: true) do
           define :a do # tagF
             dependencies :c

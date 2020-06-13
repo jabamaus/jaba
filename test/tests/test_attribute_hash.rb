@@ -30,7 +30,7 @@ module JABA
     end
 
     it 'validates that default is a hash' do
-      check_fail "'a' hash attribute default must be a hash", trace: [__FILE__, 'tagU'] do
+      check_fail "'a' hash attribute default must be a hash", line: [__FILE__, 'tagU'] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a do
@@ -61,7 +61,7 @@ module JABA
 
       # test with hash attr default using an unset attr
       #
-      check_fail "Cannot read uninitialised 'b' attribute", trace: [__FILE__, 'tagI'] do
+      check_fail "Cannot read uninitialised 'b' attribute", line: [__FILE__, 'tagI'] do
         jaba(barebones: true) do
           define :test do
             attr :a
@@ -81,7 +81,7 @@ module JABA
 
       # test with another attr using unset hash attr
       #
-      check_fail "Cannot read uninitialised 'a' attribute", trace: [__FILE__, 'tagF'] do
+      check_fail "Cannot read uninitialised 'a' attribute", line: [__FILE__, 'tagF'] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a
@@ -124,7 +124,7 @@ module JABA
     end
 
     it 'is not possible to modify returned hash' do
-      check_fail 'Cannot modify read only value', trace: [__FILE__, 'tagN'] do
+      check_fail 'Cannot modify read only value', line: [__FILE__, 'tagN'] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a do
@@ -190,7 +190,7 @@ module JABA
 
     it 'validates default element types are valid' do
       check_fail "'not a symbol' must be a symbol but was a 'String'",
-                  trace: [ATTR_TYPES_JDL, 'fail "\'#{value}\' must be a symbol but was a', __FILE__, 'tagD'] do
+                  line: [ATTR_TYPES_JDL, 'fail "\'#{value}\' must be a symbol but was a'], trace:[__FILE__, 'tagD'] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a, type: :symbol do # tagD
@@ -203,7 +203,7 @@ module JABA
 
     it 'validates element types are valid' do
       check_fail "'not a symbol' must be a symbol but was a 'String'",
-                 trace: [ATTR_TYPES_JDL, 'fail "\'#{value}\' must be a symbol but was a', __FILE__, 'tagE'] do
+                 line: [ATTR_TYPES_JDL, 'fail "\'#{value}\' must be a symbol but was a'], trace: [__FILE__, 'tagE'] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a, type: :symbol
@@ -218,7 +218,7 @@ module JABA
 
     it 'disallows :nosort' do
       check_fail "'a' attribute definition failed validation: :nosort flag is incompatible: :nosort is only allowed on array attributes",
-                trace: [__FILE__, 'tagQ'] do
+                line: [__FILE__, 'tagQ'] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a do # tagQ
@@ -231,7 +231,7 @@ module JABA
     
     it 'disallows :allow_dupes' do
       check_fail "'a' attribute definition failed validation: :allow_dupes flag is incompatible: :allow_dupes is only allowed on array attributes",
-                 trace: [__FILE__, 'tagP'] do
+                 line: [__FILE__, 'tagP'] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a do # tagP
@@ -312,7 +312,7 @@ module JABA
     end
 
     it 'validates a value is given' do
-      check_fail("Hash attribute requires a key and a value", trace: [__FILE__, 'tagM']) do
+      check_fail("Hash attribute requires a key and a value", line: [__FILE__, 'tagM']) do
         jaba(barebones: true) do
           define :test do
             attr_hash :a
