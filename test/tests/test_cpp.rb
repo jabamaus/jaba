@@ -113,6 +113,23 @@ module JABA
       # TODO
     end
 
+    it 'supports opening translators' do
+      proj = jaba(dry_run: true, cpp_app: true) do
+        cpp :a do
+          src ['main.cpp'], :force
+        end
+        open_translator :vcxproj_windows do
+          vcglobal :NewGlobal, 'g'
+        end
+        open_translator :vcxproj_config_windows do
+          vcproperty :NewProperty, 'p', group: :pg1
+        end
+      end
+      proj[:vcglobal][:NewGlobal].must_equal('g')
+      proj[:configs][:Debug][:vcproperty][:NewProperty].must_equal('p')
+      proj[:configs][:Release][:vcproperty][:NewProperty].must_equal('p')
+    end
+
   end
 
 end

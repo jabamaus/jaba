@@ -2,7 +2,9 @@
 
 To do:
 
-- Make opening generic under the hood.
+- How customise jaba output file? Subclass vcxproj or jdl definition, or something else?
+- open globals to add vcfiletype
+- Add uuid attribute type.
 - support for 'overriding' attribute defs when opening types
 - make_generator should be able to make subclasses of eg CppGenerator
 - make paths in jaba.output.json relative to itself. Introduce json node writing api to wrap this up and to make it robust.
