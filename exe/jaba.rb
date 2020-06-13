@@ -98,9 +98,12 @@ begin
   puts warnings if warnings
 rescue JABA::JDLError => e
   puts e.message
-  if !e.backtrace.empty?
+
+  # If there is a backtrace skip the first item as file and line info is included in main message
+  #
+  if e.backtrace.size > 1
     puts 'Backtrace:'
-    puts(e.backtrace.map {|line| "  #{line}"})
+    puts(e.backtrace.shift.map {|line| "  #{line}"})
   end
   exit 1
 rescue => e
