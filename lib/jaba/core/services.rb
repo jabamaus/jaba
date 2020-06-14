@@ -74,6 +74,7 @@ module JABA
       @log_file = nil
       
       @jdl_backtrace_files = [] # Files to include in jdl level error backtraces. Includes jdl files and api files.
+      @jdl_backtrace_files_with_api = []
       @warnings = []
       @warn_object = nil
       
@@ -142,13 +143,15 @@ module JABA
     def do_run
       load_modules
 
-      #@jdl_backtrace_files.concat($LOADED_FEATURES.select{|f| f =~ /jaba\/lib\/jaba\/jdl_api/})
       @jdl_backtrace_files.concat(@jdl_files)
       
       Array(input.definitions).each do |block|
         @jdl_backtrace_files << block.source_location[0]
       end
 
+      @jdl_backtrace_files_with_api.concat(@jdl_backtrace_files)
+      @jdl_backtrace_files_with_api.concat($LOADED_FEATURES.select{|f| f =~ /jaba\/lib\/jaba\/jdl_api/})
+      
       @jdl_files.each do |f|
         execute_jdl(f)
       end
@@ -646,7 +649,7 @@ module JABA
     rescue JDLError
       raise # Prevent fallthrough to next case
     rescue StandardError => e # Catches errors like invalid constants
-      jaba_error(e.message, callstack: e.backtrace)
+      jaba_error(e.message, callstack: e.backtrace, include_api: true)
     rescue ScriptError => e # Catches syntax errors. In this case there is no backtrace.
       jaba_error(e.message, syntax: true)
     end
@@ -756,7 +759,7 @@ module JABA
     # 2) From user definitions using the 'fail' API.
     # 3) From core library code. 
     #
-    def make_jaba_error(msg, syntax: false, callstack: nil, warn: false, user_error: false)
+    def make_jaba_error(msg, syntax: false, callstack: nil, warn: false, user_error: false, include_api: false)
       msg = msg.capitalize_first if msg.split.first !~ /_/
       
       error_line = nil
@@ -780,9 +783,10 @@ module JABA
           end
         end
 
+        files = include_api ? @jdl_backtrace_files_with_api : @jdl_backtrace_files
         # Extract any lines in the callstack that contain references to definition source files.
         #
-        lines = backtrace.select {|c| @jdl_backtrace_files.any? {|sf| c.include?(sf)}}
+        lines = backtrace.select {|c| files.any? {|sf| c.include?(sf)}}
 
         # remove the unwanted ':in ...' suffix from user level definition errors
         #
