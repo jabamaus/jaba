@@ -15,6 +15,7 @@ module JABA
     attr_reader :source_location
     attr_reader :source_file
     attr_reader :source_line
+    attr_reader :open_defs
     
     ##
     #
@@ -24,6 +25,13 @@ module JABA
       @source_location = source_location
       @source_file = @source_location.path
       @source_line = @source_location.lineno
+      @open_defs = []
+    end
+
+    ##
+    #
+    def add_open_def(d)
+      @open_defs << d
     end
 
     ##

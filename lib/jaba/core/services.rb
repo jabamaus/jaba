@@ -88,11 +88,10 @@ module JABA
 
       @open_type_defs = []
       @open_instance_defs = []
-      @open_translator_defs = {}
-      @open_shared_defs = {}
+      @open_translator_defs = []
+      @open_shared_defs = []
 
       @instance_def_lookup = {}
-      @open_instance_def_lookup = {}
       @shared_def_lookup = {}
 
       @jaba_attr_types = []
@@ -211,18 +210,32 @@ module JABA
         jt.generator.register_instance_definition(d)
       end
 
-      # Convert open instance definitions specified as type id and id into a mapping from the instance definition object
-      # to an array of open instance definitions.
+      # Register instance open defs
       #
       @open_instance_defs.each do |d|
         inst_def = get_instance_definition(d.instance_variable_get(:@jaba_type_id), d.id, callstack: d.source_location)
-        @open_instance_def_lookup.push_value(inst_def, d)
+        inst_def.add_open_def(d)
       end
 
+      # Create translators
+      #
       @translator_defs.each do |d|
-        open_defs = @open_translator_defs[d.id]
-        t = Translator.new(self, d, open_defs)
+        t = Translator.new(self, d)
         @translators[d.id] = t
+      end
+
+      # Register translator open defs
+      #
+      @open_translator_defs.each do |d|
+        t = get_translator(d.id)
+        t.definition.add_open_def(d)
+      end
+
+      # Register shared definition open blocks
+      #
+      @open_shared_defs.each do |d|
+        sd = get_shared_definition(d.id)
+        sd.add_open_def(d)
       end
 
       # Process generators
@@ -482,7 +495,9 @@ module JABA
     #
     def get_translator(id, fail_if_not_found: true)
       t = @translators[id]
-      jaba_error("'#{id.inspect_unquoted}' translator not found") if !t
+      if !t && fail_if_not_found
+        jaba_error("'#{id.inspect_unquoted}' translator not found")
+      end
       t
     end
 
@@ -491,40 +506,28 @@ module JABA
     def open(what, id, type=nil, &block)
       jaba_error("id is required") if id.nil?
       jaba_error("a block is required") if !block_given?
+      call_loc = caller_locations(2, 1)[0]
 
       case what
       when :type
         log "  Opening type [id=#{id}]"
-        @open_type_defs << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
+        @open_type_defs << JabaDefinition.new(id, block, call_loc)
       when :instance
         log "  Opening instance [id=#{id} type=#{type}]"
         jaba_error("type is required") if type.nil?
-        d = JabaDefinition.new(id, block, caller_locations(2, 1)[0])
+        d = JabaDefinition.new(id, block, call_loc)
         d.instance_variable_set(:@jaba_type_id, type)
         @open_instance_defs << d
       when :translator
         log "  Opening translator [id=#{id}]"
-        @open_translator_defs.push_value(id, JabaDefinition.new(id, block, caller_locations(2, 1)[0]))
+        @open_translator_defs << JabaDefinition.new(id, block, call_loc)
       when :shared
         log "  Opening shared definition [id=#{id}]"
-        @open_shared_defs.push_value(id, JabaDefinition.new(id, block, caller_locations(2, 1)[0]))
+        @open_shared_defs << JabaDefinition.new(id, block, call_loc)
       end
       nil
     end
 
-    ##
-    #
-    def iterate_open_instance_definitions(inst_def, &block)
-      defs = @open_instance_def_lookup[inst_def]
-      defs.each(&block) if defs
-    end
-
-    ##
-    #
-    def get_open_shared_defs(id)
-      @open_shared_defs[id]
-    end
-    
     ##
     #
     def get_generator(top_level_type_id)

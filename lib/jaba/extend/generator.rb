@@ -129,7 +129,7 @@ module JABA
           jn.eval_jdl(&@current_definition.block)
         end
 
-        @services.iterate_open_instance_definitions(@current_definition) do |d|
+        @current_definition.open_defs.each do |d|
           jn.eval_jdl(&d.block)
         end
         
