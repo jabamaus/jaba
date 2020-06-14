@@ -3,15 +3,15 @@ if __FILE__ == $PROGRAM_NAME
   exit 1
 end
 
-require 'jaba/core/services'
-require 'jaba/jdl_api/jdl_common'
-require 'jaba/jdl_api/jdl_attribute_type'
-require 'jaba/jdl_api/jdl_attribute_flag'
-require 'jaba/jdl_api/jdl_attribute_definition'
-require 'jaba/jdl_api/jdl_node'
-require 'jaba/jdl_api/jdl_top_level'
-require 'jaba/jdl_api/jdl_translator'
-require 'jaba/jdl_api/jdl_type'
+require_relative 'jaba/core/services'
+require_relative 'jaba/jdl_api/jdl_common'
+require_relative 'jaba/jdl_api/jdl_attribute_type'
+require_relative 'jaba/jdl_api/jdl_attribute_flag'
+require_relative 'jaba/jdl_api/jdl_attribute_definition'
+require_relative 'jaba/jdl_api/jdl_node'
+require_relative 'jaba/jdl_api/jdl_top_level'
+require_relative 'jaba/jdl_api/jdl_translator'
+require_relative 'jaba/jdl_api/jdl_type'
 
 module JABA
 
