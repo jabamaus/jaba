@@ -218,17 +218,9 @@ module JABA
     #
     def make_project(klass, node, root)
       p = klass.new(@services, self, node, root)
-      @node_to_project[node] = p
       p.init
-      setup_project(p)
+      @node_to_project[node] = p
       p
-    end
-    
-    ##
-    # Override this in subclass.
-    #
-    def setup_project(project)
-      # Nothing.
     end
 
     ##
