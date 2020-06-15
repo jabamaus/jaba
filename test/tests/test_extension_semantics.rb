@@ -30,6 +30,7 @@ module JABA
           end
         end
       end
+      # TODO: test opening sub types
       jaba do
         define :test do
           attr :a do

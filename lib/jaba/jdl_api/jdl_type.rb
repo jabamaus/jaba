@@ -45,6 +45,12 @@ module JABA
 
     ##
     #
+    def open_type(id, &block)
+      @jaba_type.open_sub_type(id, &block)
+    end
+    
+    ##
+    #
     def dependencies(*deps)
       @jaba_type.top_level_type.set_property(:dependencies, deps)
     end

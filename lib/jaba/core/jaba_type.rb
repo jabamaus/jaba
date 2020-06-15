@@ -91,6 +91,7 @@ module JABA
 
       @attr_defs = {}
       @sub_types = []
+      @open_sub_type_defs = []
 
       define_array_property(:dependencies) # TODO: validate explicitly specified deps
     end
@@ -133,6 +134,12 @@ module JABA
 
     ##
     #
+    def open_sub_type(id, &block)
+      @open_sub_type_defs << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
+    end
+
+    ##
+    #
     def get_sub_type(id)
       st = @sub_types.find{|st| st.handle == id}
       if !st
@@ -159,6 +166,13 @@ module JABA
     ##
     #
     def post_create
+      # Process open blocks, which could add attributes
+      #
+      @open_sub_type_defs.each do |d|
+        st = get_sub_type(d.id)
+        st.eval_jdl(&d.block)
+      end
+
       # Register referenced attributes
       #
       to_register = []
