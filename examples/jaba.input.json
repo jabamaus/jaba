@@ -9,6 +9,7 @@
     "C:/projects/GitHub/jaba/lib/jaba/modules/cpp/cpp.jdl.rb",
     "C:/projects/GitHub/jaba/lib/jaba/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb",
     "C:/projects/GitHub/jaba/lib/jaba/modules/cpp/VisualStudio/vcxproj_windows.jdl.rb",
+    "C:/projects/GitHub/jaba/lib/jaba/modules/cpp/Xcode/cpp_xcode.jdl.rb",
     "C:/projects/GitHub/jaba/lib/jaba/modules/text/text.jdl.rb",
     "C:/projects/GitHub/jaba/lib/jaba/modules/workspace/workspace.jdl.rb",
     "C:/projects/GitHub/jaba/examples/example1/example1.jdl.rb",
@@ -56,6 +57,7 @@
       "vs2015?": false,
       "vs2017?": false,
       "vs2019?": false,
+      "cpp_project_classname": "Vcxproj",
       "children": {
       }
     },
@@ -72,6 +74,7 @@
       "vs2015?": false,
       "vs2017?": false,
       "vs2019?": false,
+      "cpp_project_classname": "Vcxproj",
       "children": {
       }
     },
@@ -88,6 +91,7 @@
       "vs2015?": false,
       "vs2017?": false,
       "vs2019?": false,
+      "cpp_project_classname": "Vcxproj",
       "children": {
       }
     },
@@ -104,6 +108,7 @@
       "vs2015?": true,
       "vs2017?": false,
       "vs2019?": false,
+      "cpp_project_classname": "Vcxproj",
       "children": {
       }
     },
@@ -120,6 +125,7 @@
       "vs2015?": false,
       "vs2017?": true,
       "vs2019?": false,
+      "cpp_project_classname": "Vcxproj",
       "children": {
       }
     },
@@ -136,6 +142,7 @@
       "vs2015?": false,
       "vs2017?": false,
       "vs2019?": true,
+      "cpp_project_classname": "Vcxproj",
       "children": {
       }
     },
@@ -152,6 +159,7 @@
       "vs2015?": false,
       "vs2017?": false,
       "vs2019?": false,
+      "cpp_project_classname": "Xcodeproj",
       "children": {
       }
     }

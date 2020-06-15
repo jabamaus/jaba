@@ -8,7 +8,7 @@ module JABA
 
   ##
   #
-  class XcodeProj < Project
+  class Xcodeproj < Project
   
     ##
     #

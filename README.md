@@ -2,10 +2,10 @@
 
 To do:
 
+- Add 'describe' method to everything which can be used as standard in error and log messages
 - Think about attribute types that map a value. Eg a uuid attr is supplied a name and returns a uuid.
 - Remove --test from Jaba. Look into how to run tests with gemspec/bundler
 - How customise jaba output file? Subclass vcxproj or jdl definition, or something else?
-- open globals to add vcfiletype
 - Add uuid attribute type.
 - support for 'overriding' attribute defs when opening types
 - make_generator should be able to make subclasses of eg CppGenerator
@@ -13,7 +13,6 @@ To do:
 - think more about path handling in general and make it very consistent. eg all paths get to generators as absolute.
 - Have a way of globally setting default for :platforms, :hosts and :configs (and for clearing)
 - make file/dir attrs cleanpath
-- test subtypes
 - sortable arrays must be of same type
 - Do something with help strings
 - check that only arrays and hashes can be exported
@@ -58,7 +57,6 @@ if there are multiple attrs, with a warning.
   - Make _ID be id of the definition the code is in, such that it works even inside
       a block that is being executed in the context of a different jaba object
 
-- give attributes a 'title' and a 'help' string. title can be used when dumping help, help string can be used in error msgs
 - Stop profiling test as a whole. Add a stresstest feature.
 - Ability to reverse engineer jaba definitions from existing vsprojects would be awesome
 - Should 'absolute' paths starting with / force 'root' to be disregarded and make paths relative to definition file or
@@ -67,7 +65,6 @@ if there are multiple attrs, with a warning.
 - consistent method names across tests and consistent brackets on must_equal
 - Test cpp json output
 - Create a table of attr mappings from jaba->premake->cmake
-- Think about a 'configure' system. Eg could have a configure block eg for ruby jaba file it might be
 - Bring back boolean reader, eg if debug?
 - Add 'underlying type' to attribute types? eg file.dir/src_spec are strings. Use this for extra
   validation and also to sort using casecmp
@@ -77,15 +74,8 @@ if there are multiple attrs, with a warning.
 - Add wildcard validation to dir property
 - Allow jaba.input.json/jaba.output.json to be configured in jdl file
 - jdl_exclude system
-- find out about gemspecs and write one
-- A jaba 'plugin' or 'module' would be a 0 or more generators, 0 or more project files and 0 or more definition files.
-  This would be relevant for something like C#. To add a C++ platform or a new host to generate C++ projects - not sure yet.
 
-cpp :a do
-  _init do
-     make_file('a')
-  end
-end
+- Think about a 'configure' system. Eg could have a configure block eg for ruby jaba file it might be
 
 configure do
   attr :extensions, type: :multichoice do

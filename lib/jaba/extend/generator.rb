@@ -217,6 +217,7 @@ module JABA
     # Call this from subclass
     #
     def make_project(klass, node, root)
+      klass = klass.string? ? JABA.const_get(klass) : klass
       p = klass.new(@services, self, node, root)
       p.init
       @node_to_project[node] = p

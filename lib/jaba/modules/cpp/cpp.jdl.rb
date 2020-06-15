@@ -326,3 +326,13 @@ define :cpp do
   end
 
 end
+
+# Each host (eg Visual Studio, Xcode etc) must provide a class name which will be used in project
+# creation. If plugging in a new cpp host generator then a new subclass of 'Project' should be
+# implemented.
+#
+open_type :host do
+  attr :cpp_project_classname do
+    flags :required
+  end
+end

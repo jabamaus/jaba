@@ -17,3 +17,7 @@ open_instance :globals, type: :globals do
   vcfiletype '.rc', :ResourceCompile
   vcfiletype '.natvis', :Natvis
 end
+
+open_shared :vscommon do
+  cpp_project_classname 'Vcxproj'
+end

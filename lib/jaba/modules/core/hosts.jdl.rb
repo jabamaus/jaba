@@ -23,6 +23,8 @@ define :host do
   
 end
 
+# This can be opened in plugin modules to add extra attributes to all Visual Studio hosts
+#
 shared :vscommon do
   visual_studio? true
 end

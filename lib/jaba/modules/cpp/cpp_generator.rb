@@ -102,14 +102,7 @@ module JABA
           end
         end
 
-        # TODO: make pluggable
-        klass = if pn.attrs.visual_studio?
-          Vcxproj
-        elsif pn.attrs.xcode?
-          XcodeProj
-        else
-          raise 'unknown host'
-        end
+        klass = pn.attrs.host_ref.attrs.cpp_project_classname
         proj = make_project(klass, pn, root)
         proj.process_src(:src, :src_ext)
         @projects << proj
