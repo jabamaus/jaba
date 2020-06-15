@@ -176,7 +176,7 @@ module JABA
     def post_create
       @attributes.each do |a|
         if !a.set? && a.required?
-          jaba_error("'#{a.defn_id}' attribute requires a value. See #{a.attr_def.definition.source_location}", callstack: @definition.source_location)
+          jaba_error("'#{@handle}::#{a.defn_id}' attribute requires a value. See #{a.attr_def.definition.source_location}", callstack: @definition.source_location)
         end
       
         a.finalise

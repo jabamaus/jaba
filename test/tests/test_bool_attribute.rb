@@ -76,7 +76,7 @@ module JABA
     end
     
     it 'works with :required flag' do
-      check_fail "'a' attribute requires a value", line: [__FILE__, 'tagY'] do
+      check_fail "'t::a' attribute requires a value", line: [__FILE__, 'tagY'] do
         jaba(barebones: true) do
           define :test do
             attr :a, type: :bool do
