@@ -657,10 +657,10 @@ module JABA
     ##
     #
     def load_modules
-      modules_dir = "#{__dir__}/../modules".cleanpath
-      require_relative '../modules/text/text_generator.rb'
-      require_relative '../modules/cpp/cpp_generator.rb'
-      require_relative '../modules/workspace/workspace_generator.rb'
+      modules_dir = "#{__dir__}/../../../modules".cleanpath
+      require_relative '../../../modules/text/text_generator.rb'
+      require_relative '../../../modules/cpp/cpp_generator.rb'
+      require_relative '../../../modules/workspace/workspace_generator.rb'
 
       # Load core type definitions
       #
