@@ -105,3 +105,13 @@ attr_type :reference do
     end
   end
 end
+
+# TODO: generate UUID from string
+attr_type :uuid do
+  title 'UUID attribute type'
+  validate_value do |uuid|
+    if uuid !~ /[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}/
+      fail 'Must be an all upper case GUID in the form 0376E589-F783-4B80-DA86-705F2E05304E'
+    end
+  end
+end

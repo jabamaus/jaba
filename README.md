@@ -2,6 +2,7 @@
 
 To do:
 
+- Think about attribute types that map a value. Eg a uuid attr is supplied a name and returns a uuid.
 - Remove --test from Jaba. Look into how to run tests with gemspec/bundler
 - How customise jaba output file? Subclass vcxproj or jdl definition, or something else?
 - open globals to add vcfiletype
