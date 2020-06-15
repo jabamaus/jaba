@@ -22,14 +22,21 @@ module JABA
       @file_type_hash = @services.globals_node.get_attr(:vcfiletype).value
       @guid = JABA.generate_guid(namespace: 'JABA', name: @projname)
 
-      t = @services.get_translator(:vcxproj_windows)
+      # Call translator for this platform to initialse project level Visual Studio-specific attributes
+      # (vcglobals), based on cross platform definition.
+      #
+      platform = @node.attrs.platform
+      t = @services.get_translator("vcxproj_#{platform}".to_sym)
       t.execute(node: @node, args: [self])
       
+      # Call translator to initialise configuration level Visual Studio-specific attributes (vcproperty)
+      # based on cross platform definition.
+      #
       each_config do |cfg|
-        t = @services.get_translator(:vcxproj_config_windows)
+        t = @services.get_translator("vcxproj_config_#{platform}".to_sym)
         t.execute(node: cfg, args: [self, cfg.attrs.type], &t.definition.block)
 
-        # Build events
+        # Build events. Standard across platforms.
         #
         cfg.visit_attr(:build_action) do |a, value|
           cmd = String.new
