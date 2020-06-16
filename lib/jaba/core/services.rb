@@ -854,31 +854,39 @@ module JABA
     #
     def generate_reference_doc
       docs_dir = "#{__dir__}/../../../docs"
-      file = @file_manager.new_file("#{docs_dir}/jaba_type_reference.md", capacity: 16 * 1024)
+      file = @file_manager.new_file("#{docs_dir}/src/jaba_type_reference.md", capacity: 16 * 1024)
       w = file.writer
       w << "# Jaba Type Reference"
-      w << "    Defines what instances can be made with what attributes"
+      w << "Defines what instances can be made with what attributes"
       w.newline
       @top_level_jaba_types.each do |jt|
         w << "---"
         w << ""
         w << "## #{jt.defn_id}"
-        w << "### #{jt.title}"
+        #w << "### #{jt.title}"
         w << "    #{jt.help}" if jt.help
         w << ""
         w << "        generator: #{jt.generator.source_file}" if !jt.generator.is_a?(DefaultGenerator)
         w << ""
         jt.visit_attr_defs do |ad|
-          w << "    #{ad.defn_id}"
-          w << "        #{ad.title}"
-          w << "        #{ad.help}" if ad.help
-          w << "        variant: #{ad.variant}"
-          w << "        Supported flags: #{ad.flag_options.inspect}"
-          if ad.array?
-            w << "        #{ad.has_flag?(:nosort) ? 'Not sorted' : 'Sorted'}" # should be a link to flags docs
+          w << "#### #{ad.defn_id}"
+          w << ""
+          w << "> _#{ad.title}_"
+          w << "> "
+          w << "> | Property | Value  |"
+          w << "> |-|-|"
+          w << "> | _type_ | #{ad.type_id} |"
+          w << "> | _variant_ | #{ad.variant} |"
+          w << "> | _default_ | #{ad.default} |"
+          w << "> | _flags_ | #{ad.flags.join(',')}"
+          w << "> | _options_ | #{ad.flag_options.join(', ')} |"
+          w << "> "
+          if ad.help
+            w << "> _**Notes**_"
+            w << "> "
+            w << "> #{ad.help}"
           end
           w << ""
-          w << "---"
         end
         w << ""
       end
