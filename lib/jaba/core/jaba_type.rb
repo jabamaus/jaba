@@ -202,6 +202,8 @@ module JABA
     ##
     #
     def post_create
+      @attribute_defs.sort_by! {|ad| ad.defn_id}
+
       # Register referenced attributes
       #
       to_register = []

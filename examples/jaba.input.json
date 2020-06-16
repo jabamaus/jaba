@@ -37,40 +37,34 @@
   },
   "arch": {
     "x86": {
+      "arm64?": false,
+      "vsname": "Win32",
       "x86?": true,
       "x86_64?": false,
-      "arm64?": false,
-      "little_endian?": true,
-      "big_endian?": false,
-      "vsname": "Win32",
       "children": {
       }
     },
     "x86_64": {
+      "arm64?": false,
+      "vsname": "x64",
       "x86?": false,
       "x86_64?": true,
-      "arm64?": false,
-      "little_endian?": true,
-      "big_endian?": false,
-      "vsname": "x64",
       "children": {
       }
     },
     "arm64": {
+      "arm64?": true,
+      "vsname": "ARM64",
       "x86?": false,
       "x86_64?": false,
-      "arm64?": true,
-      "little_endian?": true,
-      "big_endian?": false,
-      "vsname": "ARM64",
       "children": {
       }
     }
   },
   "category": {
     "App": {
-      "name": "Apps",
       "guid": "43F42D01-78C0-416E-8979-2807134DB488",
+      "name": "Apps",
       "parent": null,
       "children": {
       }
@@ -78,161 +72,161 @@
   },
   "host": {
     "vs2010": {
-      "visual_studio?": true,
-      "xcode?": false,
+      "cpp_project_classname": "Vcxproj",
       "major_version": 10,
+      "toolset": "v100",
       "version": "10.0",
       "version_year": 2010,
-      "toolset": "v100",
+      "visual_studio?": true,
       "vs2010?": true,
       "vs2012?": false,
       "vs2013?": false,
       "vs2015?": false,
       "vs2017?": false,
       "vs2019?": false,
-      "cpp_project_classname": "Vcxproj",
+      "xcode?": false,
       "children": {
       }
     },
     "vs2012": {
-      "visual_studio?": true,
-      "xcode?": false,
+      "cpp_project_classname": "Vcxproj",
       "major_version": 11,
+      "toolset": "v110",
       "version": "11.0",
       "version_year": 2012,
-      "toolset": "v110",
+      "visual_studio?": true,
       "vs2010?": false,
       "vs2012?": true,
       "vs2013?": false,
       "vs2015?": false,
       "vs2017?": false,
       "vs2019?": false,
-      "cpp_project_classname": "Vcxproj",
+      "xcode?": false,
       "children": {
       }
     },
     "vs2013": {
-      "visual_studio?": true,
-      "xcode?": false,
+      "cpp_project_classname": "Vcxproj",
       "major_version": 12,
+      "toolset": "v120",
       "version": "12.0",
       "version_year": 2013,
-      "toolset": "v120",
+      "visual_studio?": true,
       "vs2010?": false,
       "vs2012?": false,
       "vs2013?": true,
       "vs2015?": false,
       "vs2017?": false,
       "vs2019?": false,
-      "cpp_project_classname": "Vcxproj",
+      "xcode?": false,
       "children": {
       }
     },
     "vs2015": {
-      "visual_studio?": true,
-      "xcode?": false,
+      "cpp_project_classname": "Vcxproj",
       "major_version": 14,
+      "toolset": "v140",
       "version": "14.0",
       "version_year": 2015,
-      "toolset": "v140",
+      "visual_studio?": true,
       "vs2010?": false,
       "vs2012?": false,
       "vs2013?": false,
       "vs2015?": true,
       "vs2017?": false,
       "vs2019?": false,
-      "cpp_project_classname": "Vcxproj",
+      "xcode?": false,
       "children": {
       }
     },
     "vs2017": {
-      "visual_studio?": true,
-      "xcode?": false,
+      "cpp_project_classname": "Vcxproj",
       "major_version": 15,
+      "toolset": "v141",
       "version": "15.0",
       "version_year": 2017,
-      "toolset": "v141",
+      "visual_studio?": true,
       "vs2010?": false,
       "vs2012?": false,
       "vs2013?": false,
       "vs2015?": false,
       "vs2017?": true,
       "vs2019?": false,
-      "cpp_project_classname": "Vcxproj",
+      "xcode?": false,
       "children": {
       }
     },
     "vs2019": {
-      "visual_studio?": true,
-      "xcode?": false,
+      "cpp_project_classname": "Vcxproj",
       "major_version": 16,
+      "toolset": "v142",
       "version": "16.0",
       "version_year": 2019,
-      "toolset": "v142",
+      "visual_studio?": true,
       "vs2010?": false,
       "vs2012?": false,
       "vs2013?": false,
       "vs2015?": false,
       "vs2017?": false,
       "vs2019?": true,
-      "cpp_project_classname": "Vcxproj",
+      "xcode?": false,
       "children": {
       }
     },
     "xcode": {
-      "visual_studio?": false,
-      "xcode?": true,
+      "cpp_project_classname": "Xcodeproj",
       "major_version": null,
+      "toolset": null,
       "version": null,
       "version_year": null,
-      "toolset": null,
+      "visual_studio?": false,
       "vs2010?": false,
       "vs2012?": false,
       "vs2013?": false,
       "vs2015?": false,
       "vs2017?": false,
       "vs2019?": false,
-      "cpp_project_classname": "Xcodeproj",
+      "xcode?": true,
       "children": {
       }
     }
   },
   "platform": {
     "windows": {
-      "windows?": true,
+      "apple?": false,
       "ios?": false,
       "macos?": false,
       "microsoft?": true,
-      "apple?": false,
       "valid_archs": [
         "x86",
         "x86_64",
         "arm64"
       ],
+      "windows?": true,
       "children": {
       }
     },
     "ios": {
-      "windows?": false,
+      "apple?": true,
       "ios?": true,
       "macos?": false,
       "microsoft?": false,
-      "apple?": true,
       "valid_archs": [
 
       ],
+      "windows?": false,
       "children": {
       }
     },
     "macos": {
-      "windows?": false,
+      "apple?": true,
       "ios?": false,
       "macos?": true,
       "microsoft?": false,
-      "apple?": true,
       "valid_archs": [
 
       ],
+      "windows?": false,
       "children": {
       }
     }
