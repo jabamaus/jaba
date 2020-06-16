@@ -7,23 +7,24 @@ define :platform do
 
   SUPPORTED_PLATFORMS.each do |p|
     attr "#{p}?", type: :bool do
+      title "Queries target platform"
       help "Returns true if current platform is #{p}"
       flags :expose
     end
   end
   
   attr :microsoft?, type: :bool do
-    help 'True if its a Microsoft platform'
+    help 'Returns true if its a Microsoft platform'
     flags :expose
   end
 
   attr :apple?, type: :bool do
-    help 'True if its an Apple platform'
+    help 'Returns true if its an Apple platform'
     flags :expose
   end
   
   attr_array :valid_archs, type: :choice do
-    help 'List of architectures supported by this platform'
+    title 'List of architectures supported by this platform'
     items all_instance_ids(:arch)
     flags :required, :nosort
   end
