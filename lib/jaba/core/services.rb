@@ -120,8 +120,15 @@ module JABA
       init_log if input.enable_logging?
       log 'Starting Jaba', section: true
 
+      if input.generate_reference_doc?
+        input.instance_variable_set(:@dump_output, false)
+      end
+
       duration = JABA.milli_timer do
         do_run
+
+        log 'Building output...'
+        build_jaba_output
       end
 
       summary = String.new "Generated #{@generated.size} files, #{@added.size} added, #{@modified.size} modified in #{duration}"
@@ -203,7 +210,7 @@ module JABA
 
       if input.generate_reference_doc?
         generate_reference_doc
-        exit
+        return
       end
 
       log 'Initialisation of JabaTypes complete'
@@ -266,9 +273,6 @@ module JABA
       # Write final files
       #
       @generators.each(&:perform_generation)
-
-      log 'Building output...'
-      build_jaba_output
     end
     
     ##
@@ -849,7 +853,8 @@ module JABA
     ##
     #
     def generate_reference_doc
-      file = @file_manager.new_file('jabaref.md', capacity: 16 * 1024)
+      docs_dir = "#{__dir__}/../../../docs"
+      file = @file_manager.new_file("#{docs_dir}/jaba_type_reference.md", capacity: 16 * 1024)
       w = file.writer
       w << "# Jaba Type Reference"
       w << "    Defines what instances can be made with what attributes"
