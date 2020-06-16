@@ -1,8 +1,9 @@
+# TODO: make this a global
 SUPPORTED_PLATFORMS = [:windows, :ios, :macos].freeze
 
 define :platform do
 
-  help 'Represents a target platform'
+  title 'Target platform'
 
   SUPPORTED_PLATFORMS.each do |p|
     attr "#{p}?", type: :bool do
@@ -27,78 +28,28 @@ define :platform do
     flags :required, :nosort
   end
 
-  attr_array :default_archs, type: :choice do
-    help 'List of default target architectures for this platform'
-    items all_instance_ids(:arch)
-    flags :required, :nosort
-  end
-
 end
 
+# windows platform instance for use in definitions
+#
 platform :windows do
   windows? true
   microsoft? true
   valid_archs [:x86, :x86_64, :arm64]
-  default_archs [:x86, :x86_64]
 end
 
+# ios platform instance for use in definitions
+#
 platform :ios do
   ios? true
   apple? true
   valid_archs [] # TODO
-  default_archs [] # TODO
 end
 
+# macos platform instance for use in definitions
+#
 platform :macos do
   macos? true
   apple? true
   valid_archs [] # TODO
-  default_archs [] # TODO
-end
-
-SUPPORTED_ARCHS = [:x86, :x86_64, :arm64].freeze
-
-define :arch do
-  
-  help 'Represents a target architecture'
-
-  SUPPORTED_ARCHS.each do |a|
-    attr "#{a}?", type: :bool do
-      help "Returns true if current architecture is #{a}"
-      flags :expose
-    end
-  end
-
-  attr :little_endian?, type: :bool do
-    flags :expose, :required
-  end
-
-  attr :big_endian?, type: :bool do
-    flags :expose
-    default { !little_endian? }
-  end
-
-  attr :vsname do
-    flags :expose
-    help 'Name of target architecture (platform) as seen in Visual Studio IDE'
-  end
-
-end
-
-arch :x86 do
-  x86? true
-  vsname 'Win32'
-  little_endian? true
-end
-
-arch :x86_64 do
-  x86_64? true
-  vsname 'x64'
-  little_endian? true
-end
-
-arch :arm64 do
-  arm64? true
-  vsname 'ARM64'
-  little_endian? true
 end

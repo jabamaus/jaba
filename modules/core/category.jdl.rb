@@ -1,6 +1,6 @@
 define :category do
   
-  help 'Represents a project category, for categorisation in workspaces'
+  title 'Project category'
 
   attr :name do
     title 'Display name of category'

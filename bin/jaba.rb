@@ -13,7 +13,8 @@ opts = OpenStruct.new(
   enable_logging: nil,
   dry_run: nil,
   enable_profiling: nil,
-  run_tests: nil
+  run_tests: nil,
+  generate_ref: nil
 )
 
 OptionParser.new do |op|
@@ -27,6 +28,7 @@ OptionParser.new do |op|
   op.on('--dry-run', 'Dry run') { opts.dry_run = true }
   op.on('--profile', 'Profile jaba with ruby-prof gem') { opts.enable_profiling = true }
   op.on('-t', '--test', 'Run tests') { opts.run_tests = true }
+  op.on('--gen-ref', 'Generate reference doc') { opts.generate_ref = true }
   op.separator ''
 end.parse!
 
@@ -80,6 +82,7 @@ begin
       j.dump_output = false if opts.no_dump_output
       j.dry_run = opts.dry_run if opts.dry_run
       j.enable_logging = opts.enable_logging if opts.enable_logging
+      j.generate_reference_doc = opts.generate_ref if opts.generate_ref
     end
   end
 

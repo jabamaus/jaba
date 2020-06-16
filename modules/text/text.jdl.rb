@@ -1,23 +1,24 @@
 define :text do
   
-  help 'Represents a simple text file that is written to HDD. See generators/text_generator.rb'
+  title 'Basic text file that is written to HDD'
 
   attr :filename, type: :file do
-    help 'Path to the filename to be generated'
+    title 'Path of the filename to be generated'
     flags :required
   end
   
   attr :content do
-    help 'Directly set content of file as a string. Takes precedence over line attribute, which will be ignored'
+    title 'Content as a single multiline string'
+    help 'Directly set content of file as a string.'
   end
   
   attr_array :line do
-    help 'Adds a line of content to file'
+    title 'Adds a line of content to file'
     flags :allow_dupes, :nosort
   end
   
   attr :eol, type: :choice do
-    help 'End of line style'
+    title 'End of line style'
     items [:lf, :crlf, :native]
     default :native
   end

@@ -28,8 +28,6 @@ module JABA
       @handle = handle
       @top_level_type = top_level_type
       @attribute_defs = []
-
-      define_property(:help)
     end
 
     ##
@@ -77,6 +75,8 @@ module JABA
   #
   class TopLevelJabaType < JabaType
 
+    attr_reader :title
+    attr_reader :help
     attr_reader :generator
     attr_reader :defaults_definition
     attr_reader :dependencies
@@ -93,7 +93,22 @@ module JABA
       @sub_types = []
       @open_sub_type_defs = []
 
+      define_property(:title)
+      define_property(:help)
       define_array_property(:dependencies) # TODO: validate explicitly specified deps
+
+      if definition.block
+        eval_jdl(&definition.block)
+      end
+
+      # Process open blocks, which could add attributes
+      #
+      @open_sub_type_defs.each do |d|
+        st = get_sub_type(d.id)
+        st.eval_jdl(&d.block)
+      end
+
+      validate
     end
 
     ##
@@ -107,8 +122,8 @@ module JABA
         JABA.const_get(gen_classname)
       end
 
-      if klass.superclass != Generator
-        jaba_error "#{klass} must inherit from Generator class"
+      if !klass.ancestors.include?(Generator)
+        jaba_error "#{klass} must be a subclass of Generator class"
       end
 
       @generator = klass.new(@services, self)
@@ -128,6 +143,7 @@ module JABA
       if block_given?
         st.eval_jdl(&block)
       end
+      
       @sub_types << st
       st
     end
@@ -156,6 +172,15 @@ module JABA
 
     ##
     #
+    def visit_attr_defs(&block)
+      @attribute_defs.each(&block)
+      @sub_types.each do |st|
+        st.attribute_defs.each(&block)
+      end
+    end
+
+    ##
+    #
     def register_attr_def(id, attr_def)
       if @attr_defs.key?(id)
         attr_def.jaba_error("'#{id}' attribute multiply defined in '#{defn_id}'")
@@ -165,14 +190,18 @@ module JABA
 
     ##
     #
-    def post_create
-      # Process open blocks, which could add attributes
-      #
-      @open_sub_type_defs.each do |d|
-        st = get_sub_type(d.id)
-        st.eval_jdl(&d.block)
+    def validate
+      if @title.nil? && !JABA.running_tests?
+        jaba_error("requires a title", callstack: @definition.source_location)
       end
 
+    rescue JDLError => e
+      jaba_error("'#{defn_id}' type failed validation: #{e.raw_message}", callstack: e.backtrace)
+    end
+
+    ##
+    #
+    def post_create
       # Register referenced attributes
       #
       to_register = []

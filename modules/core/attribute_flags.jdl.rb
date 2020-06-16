@@ -36,7 +36,7 @@ attr_flag :nosort do
 end
 
 # File/dir/path attribute flags
-#
+# TODO: use this
 attr_flag :no_check_exist do
   help 'Use with file, dir or path attributes to disable checking if the path exists on disk, eg if it will get generated'
   compatibility do

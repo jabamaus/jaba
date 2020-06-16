@@ -17,6 +17,9 @@ module JABA
 
     include PropertyMethods
 
+    attr_reader :title
+    attr_reader :help
+    
     attr_reader :type_id # eg :bool, :string, :file etc
     attr_reader :variant # :single, :array, :hash
     attr_reader :jaba_attr_type # JabaAttributeType object
@@ -192,11 +195,11 @@ module JABA
 
         if !@default_block
           if attr_single? && incoming.is_a?(Enumerable)
-            @services.jaba_error("'#{defn_id}' attribute default must be a single value not a #{incoming.class}")
+            jaba_error("'#{defn_id}' attribute default must be a single value not a #{incoming.class}")
           elsif attr_array? && !incoming.array?
-           @services.jaba_error("'#{defn_id}' array attribute default must be an array")
+           jaba_error("'#{defn_id}' array attribute default must be an array")
           elsif attr_hash? && !incoming.hash?
-            @services.jaba_error("'#{defn_id}' hash attribute default must be a hash")
+            jaba_error("'#{defn_id}' hash attribute default must be a hash")
           end
         end
       end
@@ -205,6 +208,11 @@ module JABA
     ##
     #
     def validate
+      if @title.nil? && !JABA.running_tests?
+        # TODO: reinstate
+        #jaba_error("requires a title")
+      end
+
       @services.set_warn_object(self) do
         @jaba_attr_type.call_hook(:post_init_attr_def, receiver: self)
       end

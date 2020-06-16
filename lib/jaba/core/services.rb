@@ -68,6 +68,7 @@ module JABA
       @input.instance_variable_set(:@enable_logging, false)
       @input.instance_variable_set(:@barebones, false)
       @input.instance_variable_set(:@jdl_paths, [JABA.cwd])
+      @input.instance_variable_set(:@generate_reference_doc, false)
 
       @output = {}
       
@@ -200,6 +201,11 @@ module JABA
         jaba_error("'#{err_type}' contains a cyclic dependency", callstack: err_type.definition.source_location)
       end
 
+      if input.generate_reference_doc?
+        generate_reference_doc
+        exit
+      end
+
       log 'Initialisation of JabaTypes complete'
 
       # Now that the JabaTypes are dependency sorted build generator list from them, so they are in dependency order too
@@ -275,10 +281,6 @@ module JABA
       end
 
       jt = TopLevelJabaType.new(self, definition, handle)
-
-      if definition.block
-        jt.eval_jdl(&definition.block)
-      end
 
       @top_level_jaba_types  << jt
       @jaba_type_lookup[handle] = jt
@@ -784,6 +786,7 @@ module JABA
         end
 
         files = include_api ? @jdl_backtrace_files_with_api : @jdl_backtrace_files
+
         # Extract any lines in the callstack that contain references to definition source files.
         #
         lines = backtrace.select {|c| files.any? {|sf| c.include?(sf)}}
@@ -806,7 +809,7 @@ module JABA
               else
                 RuntimeError.new(msg)
               end
-          e.set_backtrace(backtrace)
+          e.set_backtrace(backtrace.uniq)
           return e
         end
         
@@ -839,8 +842,42 @@ module JABA
       e.instance_variable_set(:@raw_message, msg)
       e.instance_variable_set(:@file, file)
       e.instance_variable_set(:@line, line)
-      e.set_backtrace(lines)
+      e.set_backtrace(lines.uniq) # Can contain unhelp duplicates due to loops, make unique.
       e
+    end
+
+    ##
+    #
+    def generate_reference_doc
+      file = @file_manager.new_file('jabaref.md', capacity: 16 * 1024)
+      w = file.writer
+      w << "# Jaba Type Reference"
+      w << "    Defines what instances can be made with what attributes"
+      w.newline
+      @top_level_jaba_types.each do |jt|
+        w << "---"
+        w << ""
+        w << "## #{jt.defn_id}"
+        w << "### #{jt.title}"
+        w << "    #{jt.help}" if jt.help
+        w << ""
+        w << "        generator: #{jt.generator.source_file}" if !jt.generator.is_a?(DefaultGenerator)
+        w << ""
+        jt.visit_attr_defs do |ad|
+          w << "    #{ad.defn_id}"
+          w << "        #{ad.title}"
+          w << "        #{ad.help}" if ad.help
+          w << "        variant: #{ad.variant}"
+          w << "        Supported flags: #{ad.flag_options.inspect}"
+          if ad.array?
+            w << "        #{ad.has_flag?(:nosort) ? 'Not sorted' : 'Sorted'}" # should be a link to flags docs
+          end
+          w << ""
+          w << "---"
+        end
+        w << ""
+      end
+      file.write
     end
 
   end

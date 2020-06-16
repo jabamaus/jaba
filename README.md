@@ -2,6 +2,9 @@
 
 To do:
 
+- Sort jaba input/output files
+- Should instance definitions be able to access globals? Probably. Globals are like implicit references. If too many attrs were exposed
+  it would have a performance penalty though.
 - Add 'describe' method to everything which can be used as standard in error and log messages
 - Think about attribute types that map a value. Eg a uuid attr is supplied a name and returns a uuid.
 - Remove --test from Jaba. Look into how to run tests with gemspec/bundler

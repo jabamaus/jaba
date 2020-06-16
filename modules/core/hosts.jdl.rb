@@ -1,13 +1,16 @@
+# TODO: make this a global
 SUPPORTED_VS_VERSIONS = [2010, 2012, 2013, 2015, 2017, 2019].freeze
 
 define :host do
 
-  help 'Represents a host system, eg Visual Studio, Xcode'
+  title 'Target host'
 
   attr :visual_studio?, type: :bool do
+    title 'Targeting Visual Studio?'
     flags :expose
   end
   attr :xcode?, type: :bool do
+    title 'Targeting Xcode?'
     flags :expose
   end
   attr :major_version

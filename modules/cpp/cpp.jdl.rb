@@ -2,7 +2,7 @@
 
 define :cpp do
 
-  help 'Cross platform C++ project definition'
+  title 'Cross platform C++ project definition'
 
    attr_array :hosts, type: :choice do
     items all_instance_ids(:host)

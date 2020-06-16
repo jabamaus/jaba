@@ -7,7 +7,7 @@ module JABA
     include JDL_Common
 
     ##
-    # Set title of attribute.
+    # Set title of attribute. Required.
     #
     def title(val = nil)
       @attr_def.set_property(:title, val)
