@@ -17,7 +17,7 @@ To do:
 - Have a way of globally setting default for :platforms, :hosts and :configs (and for clearing)
 - make file/dir attrs cleanpath
 - sortable arrays must be of same type
-- Do something with help strings
+- Make :no_check_exists do something
 - check that only arrays and hashes can be exported
 - test different default values and different validation for different platforms
 - Think more about project 'skus'. Also, platforms support specific hosts. Where is that info stored?
