@@ -21,6 +21,13 @@ module JABA
     end
     
     ##
+    # Add usage example.
+    #
+    def example(val)
+      @attr_def.set_property(:examples, val)
+    end
+
+    ##
     # Set any number of flags to control the behaviour of the attribute.
     #
     def flags(*flags)

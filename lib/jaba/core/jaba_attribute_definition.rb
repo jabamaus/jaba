@@ -19,6 +19,7 @@ module JABA
 
     attr_reader :title
     attr_reader :help
+    attr_reader :examples
     
     attr_reader :type_id # eg :bool, :string, :file etc
     attr_reader :variant # :single, :array, :hash
@@ -46,6 +47,7 @@ module JABA
 
       define_property(:title)
       define_property(:help)
+      define_array_property(:examples)
       define_property(:default)
       define_array_property(:flags)
       define_array_property(:flag_options)

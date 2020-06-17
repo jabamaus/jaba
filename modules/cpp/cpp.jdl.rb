@@ -99,6 +99,9 @@ define :cpp do
       flag_options :force # Specify when explicitly specidied src does not exist on disk but still want to add to project
       flag_options :export
       value_option :vpath # For organising files in a generated project
+      example "src ['*']  # Add all src in <root> whose extension is in <src_ext>"
+      example "src ['jaba.jdl.rb']  # Explicitly add even though not in <src_ext>"
+      example "src ['does_not_exist.cpp'], :force  # Force addition of file not on disk"
     end
     
     attr_array :src_ext do

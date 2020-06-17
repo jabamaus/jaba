@@ -80,6 +80,7 @@ module JABA
     attr_reader :generator
     attr_reader :defaults_definition
     attr_reader :dependencies
+    attr_reader :all_attr_defs_sorted
 
     ##
     #
@@ -89,7 +90,7 @@ module JABA
       init_generator
       @defaults_definition = @services.get_defaults_definition(@defn_id)
 
-      @attr_defs = {}
+      @all_attr_defs = {}
       @sub_types = []
       @open_sub_type_defs = []
 
@@ -167,25 +168,16 @@ module JABA
     ##
     #
     def get_attr_def(id)
-      @attr_defs[id]
-    end
-
-    ##
-    #
-    def visit_attr_defs(&block)
-      @attribute_defs.each(&block)
-      @sub_types.each do |st|
-        st.attribute_defs.each(&block)
-      end
+      @all_attr_defs[id]
     end
 
     ##
     #
     def register_attr_def(id, attr_def)
-      if @attr_defs.key?(id)
+      if @all_attr_defs.key?(id)
         attr_def.jaba_error("'#{id}' attribute multiply defined in '#{defn_id}'")
       end
-      @attr_defs[id] = attr_def
+      @all_attr_defs[id] = attr_def
     end
 
     ##
@@ -207,7 +199,7 @@ module JABA
       # Register referenced attributes
       #
       to_register = []
-      @attr_defs.each do |id, attr_def|
+      @all_attr_defs.each do |id, attr_def|
         if attr_def.reference?
           rt_id = attr_def.referenced_type
           if rt_id != defn_id
@@ -220,6 +212,13 @@ module JABA
           end
         end
       end
+
+      # Store sorted list of all attributes (including sub_types). Do this before referenced attributes
+      # are registered so list only contains attributes from this jaba type.
+      # Used in reference manual.
+      #
+      @all_attr_defs_sorted = @all_attr_defs.values.sort_by {|ad| ad.defn_id}
+   
       to_register.each{|d| register_attr_def(d.defn_id, d)}
 
       # Convert dependencies specified as ids to jaba type objects

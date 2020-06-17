@@ -41,6 +41,13 @@ module JABA
       "#{@source_file.basename}:#{@source_line}"
     end
 
+    ##
+    # Returns file and line number as a path relative to root of jaba install. Used in reference manual generation.#
+    #
+    def src_loc_rel_jaba_root
+      "#{@source_file.relative_path_from(JABA.jaba_root_dir)}:#{@source_line}"
+    end
+    
   end
 
   ##

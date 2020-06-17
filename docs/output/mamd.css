@@ -191,7 +191,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: Consolas, Helvetica, sans-serif;
+  font-family: Inter, Helvetica, sans-serif;
 }
 
 h1,
@@ -216,7 +216,13 @@ code {
 
 table {
   padding: 0;
+  width: 100%;
 }
+
+th {
+  display:none;
+}
+
 table tr {
   border-top: 1px solid #cccccc;
   background-color: white;

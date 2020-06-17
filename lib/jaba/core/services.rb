@@ -49,6 +49,12 @@ module JABA
   
   ##
   #
+  def self.jaba_root_dir
+    @@jaba_root_dir ||= "#{__dir__}/../../..".cleanpath
+  end
+
+  ##
+  #
   class Services
 
     attr_reader :input
@@ -197,6 +203,12 @@ module JABA
 
       @top_level_jaba_types.each(&:post_create)
 
+      if input.generate_reference_doc?
+        @top_level_jaba_types.sort_by! {|jt| jt.defn_id}
+        generate_reference_doc
+        return
+      end
+
       # When an attribute defined in a JabaType will reference a differernt JabaType a dependency on that
       # type is added. JabaTypes are dependency order sorted to ensure that referenced JabaNodes are created
       # before the JabaNode that are referencing it.
@@ -206,11 +218,6 @@ module JABA
       rescue TSort::Cyclic => e
         err_type = e.instance_variable_get(:@err_obj)
         jaba_error("'#{err_type}' contains a cyclic dependency", callstack: err_type.definition.source_location)
-      end
-
-      if input.generate_reference_doc?
-        generate_reference_doc
-        return
       end
 
       log 'Initialisation of JabaTypes complete'
@@ -663,7 +670,7 @@ module JABA
     ##
     #
     def load_modules
-      modules_dir = "#{__dir__}/../../../modules".cleanpath
+      modules_dir = "#{JABA.jaba_root_dir}/modules"
       require_relative '../../../modules/text/text_generator.rb'
       require_relative '../../../modules/cpp/cpp_generator.rb'
       require_relative '../../../modules/workspace/workspace_generator.rb'
@@ -853,44 +860,76 @@ module JABA
     ##
     #
     def generate_reference_doc
-      docs_dir = "#{__dir__}/../../../docs"
-      file = @file_manager.new_file("#{docs_dir}/src/jaba_type_reference.md", capacity: 16 * 1024)
+      docs_dir = "#{JABA.jaba_root_dir}/docs"
+      file = @file_manager.new_file("#{docs_dir}/src/jaba_reference.md", capacity: 16 * 1024)
       w = file.writer
-      w << "# Jaba Type Reference"
-      w << "Defines what instances can be made with what attributes"
+      w << "# Jaba Reference"
+      w << ""
+
+      w << "- Attribute types"
+      @jaba_attr_types.each do |at|
+        w << "  - #{at.defn_id}"
+      end
+
+      w << "- Attribute flags"
+      @jaba_attr_flags.each do |af|
+        w << "  - #{af.defn_id}"
+      end
+      
+      w << "- Types"
+      @top_level_jaba_types.each do |jt|
+        w << "  - #{jt.defn_id}"
+        jt.all_attr_defs_sorted.each do |ad|
+          w << "    - #{ad.defn_id}"
+        end
+      end
+
       w.newline
       @top_level_jaba_types.each do |jt|
         w << "---"
         w << ""
         w << "## #{jt.defn_id}"
-        #w << "### #{jt.title}"
-        w << "    #{jt.help}" if jt.help
+        w << "> "
+        w << "> _#{jt.title}_"
+        w << "> "
+        w << "> | Property | Value  |"
+        w << "> |-|-|"
+        md_row(w, :src, jt.generator.source_file)
+        md_row(w, :notes, jt.help)
+        w << "> "
         w << ""
-        w << "        generator: #{jt.generator.source_file}" if !jt.generator.is_a?(DefaultGenerator)
-        w << ""
-        jt.visit_attr_defs do |ad|
+        jt.all_attr_defs_sorted.each do |ad|
           w << "#### #{ad.defn_id}"
           w << ""
           w << "> _#{ad.title}_"
           w << "> "
           w << "> | Property | Value  |"
           w << "> |-|-|"
-          w << "> | _type_ | #{ad.type_id} |"
-          w << "> | _variant_ | #{ad.variant} |"
-          w << "> | _default_ | #{ad.default} |"
-          w << "> | _flags_ | #{ad.flags.join(',')}"
-          w << "> | _options_ | #{ad.flag_options.join(', ')} |"
+          # TODO: need to flag whether per-project/per-config etc
+          md_row(w, :type, ad.type_id)
+          md_row(w, :variant, ad.variant)
+          md_row(w, :default, ad.default.proc? ? nil : ad.default)
+          md_row(w, :flags, ad.flags.join(','))
+          md_row(w, :options, ad.flag_options.join(', '))
+          md_row(w, :src, ad.definition.src_loc_rel_jaba_root)
+          md_row(w, :notes, ad.help)
           w << "> "
-          if ad.help
-            w << "> _**Notes**_"
-            w << "> "
-            w << "> #{ad.help}"
-          end
           w << ""
+          w << "```ruby"
+          ad.examples.each do |e|
+            w << e
+          end
+          w << "```"
         end
         w << ""
       end
       file.write
+    end
+
+    ##
+    #
+    def md_row(w, p, v)
+      w << "> | _#{p}_ | #{v} |"
     end
 
   end
