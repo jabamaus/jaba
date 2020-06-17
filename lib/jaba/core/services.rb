@@ -853,7 +853,7 @@ module JABA
       e.instance_variable_set(:@raw_message, msg)
       e.instance_variable_set(:@file, file)
       e.instance_variable_set(:@line, line)
-      e.set_backtrace(lines.uniq) # Can contain unhelp duplicates due to loops, make unique.
+      e.set_backtrace(lines.uniq) if lines # Can contain unhelp duplicates due to loops, make unique.
       e
     end
 
