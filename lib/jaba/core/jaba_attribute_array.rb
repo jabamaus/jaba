@@ -29,6 +29,13 @@ module JABA
     end
 
     ##
+    # Used in error messages.
+    #
+    def describe
+      "'#{@attr_def.defn_id}' array attribute"
+    end
+
+    ##
     #
     def value(api_call_loc = nil)
       @last_call_location = api_call_loc if api_call_loc
@@ -36,7 +43,7 @@ module JABA
         if @default_block
           return @services.execute_attr_default_block(@node, @default_block)
         elsif @services.in_attr_default_block?
-          jaba_error("Cannot read uninitialised '#{defn_id}' attribute")
+          jaba_error("Cannot read uninitialised #{describe}")
         end
       end
       values = @elems.map {|e| e.value(api_call_loc)}
@@ -55,7 +62,7 @@ module JABA
       values = block_given? ? @node.eval_jdl(&block) : args.shift
 
       if values && !values.array?
-        jaba_error("'#{@attr_def.defn_id}' array attribute requires an array")
+        jaba_error("#{describe} requires an array")
       end
 
       Array(values).each do |v|
@@ -65,7 +72,7 @@ module JABA
         end
 
         if existing
-          jaba_warning("Stripping duplicate '#{v.inspect_unquoted}'. See previous at #{existing.last_call_loc_basename}. " \
+          jaba_warning("When setting #{describe} stripping duplicate value '#{v.inspect_unquoted}'. See previous at #{existing.last_call_loc_basename}. " \
             "Flag with :allow_dupes to allow.")
         else
           elem = JabaAttributeElement.new(@services, @attr_def, @node)
@@ -113,7 +120,7 @@ module JABA
     def apply_pre_post_fix(pre, post, val)
       if pre || post
         if !val.string?
-          jaba_error('prefix/postfix option can only be used with arrays of strings')
+          jaba_error("When setting #{describe} prefix/postfix option can only be used with string arrays")
         end
         "#{pre}#{val}#{post}"
       else
@@ -151,7 +158,7 @@ module JABA
               ex.call(val)
             elsif ex.is_a?(Regexp)
               if !val.string?
-                jaba_error('exclude regex can only operate on strings')
+                jaba_error("When setting #{describe} exclude regex can only operate on strings")
               end
               val.match(ex)
             else
@@ -164,7 +171,7 @@ module JABA
         begin
           @elems.stable_sort!
         rescue StandardError
-          jaba_error("Failed to sort #{defn_id}. Might be missing <=> operator")
+          jaba_error("Failed to sort #{decribe}. Might be missing <=> operator")
         end
       end
     end

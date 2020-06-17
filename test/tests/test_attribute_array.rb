@@ -108,7 +108,7 @@ module JABA
 
       # test with another attr using unset array attr
       #
-      check_fail "Cannot read uninitialised 'a' attribute", line: [__FILE__, 'tagF'] do
+      check_fail "Cannot read uninitialised 'a' array attribute", line: [__FILE__, 'tagF'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a
@@ -178,7 +178,7 @@ module JABA
     end
 
     it 'handles duplicates' do
-      check_warn("Stripping duplicate '5'", __FILE__, 'tagU') do
+      check_warn("When setting 'a' array attribute stripping duplicate value '5'", __FILE__, 'tagU') do
         jaba(barebones: true) do
           define :test do
             attr_array :a # Duplicates will be stripped by default
@@ -262,7 +262,7 @@ module JABA
     end
     
     it 'only allows prefix/postfix on string elements' do
-      check_fail 'Prefix/postfix option can only be used with arrays of strings', line: [__FILE__, 'tagQ'] do
+      check_fail "When setting 'a' array attribute prefix/postfix option can only be used with string arrays", line: [__FILE__, 'tagQ'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a
@@ -327,7 +327,7 @@ module JABA
     end
     
     it 'fails if excluding with regex on non-strings' do
-      check_fail 'Exclude regex can only operate on strings', line: [__FILE__, 'tagR'] do
+      check_fail "When setting 'a' array attribute exclude regex can only operate on strings", line: [__FILE__, 'tagR'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a

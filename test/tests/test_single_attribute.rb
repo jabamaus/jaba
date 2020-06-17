@@ -93,7 +93,7 @@ module JABA
 
       # test with attr default using an unset attr
       #
-      check_fail "Cannot read uninitialised 'b' attribute", line: [__FILE__, 'tagI'] do
+      check_fail "Cannot read uninitialised 'b' array attribute", line: [__FILE__, 'tagI'] do
         jaba(barebones: true) do
           define :test do
             attr :a
