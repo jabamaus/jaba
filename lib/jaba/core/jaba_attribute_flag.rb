@@ -25,6 +25,13 @@ module JABA
       end
     end
 
+    ##
+    # Used in error messages.
+    #
+    def describe
+      "':#{@defn_id}' flag"
+    end
+
   end
 
 end

@@ -5,7 +5,7 @@ module JABA
   class TestSingleAttribute < JabaTest
 
     it 'only accepts single values' do
-      check_fail "'a' attribute default must be a single value not a Array", line: [__FILE__, 'tagV'] do
+      check_fail "'a' attribute default must be a single value not a 'Array'", line: [__FILE__, 'tagV'] do
         jaba(barebones: true) do
           define :test do
             attr :a do
@@ -15,7 +15,7 @@ module JABA
         end
       end
 
-      check_fail "'a' attribute must be a single value not a Array", line: [__FILE__, 'tagK'] do
+      check_fail "'a' attribute must be a single value not a 'Array'", line: [__FILE__, 'tagK'] do
         jaba(barebones: true) do
           define :test do
             attr :a

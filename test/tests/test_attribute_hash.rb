@@ -30,7 +30,7 @@ module JABA
     end
 
     it 'validates that default is a hash' do
-      check_fail "'a' hash attribute default must be a hash", line: [__FILE__, 'tagU'] do
+      check_fail "'a' attribute default must be a hash not a 'Array'", line: [__FILE__, 'tagU'] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a do
@@ -217,7 +217,7 @@ module JABA
     end
 
     it 'disallows :nosort' do
-      check_fail "'a' attribute definition failed validation: :nosort flag is incompatible: :nosort is only allowed on array attributes",
+      check_fail "'a' attribute failed validation: ':nosort' flag is incompatible: :nosort is only allowed on array attributes",
                 line: [__FILE__, 'tagQ'] do
         jaba(barebones: true) do
           define :test do
@@ -230,7 +230,7 @@ module JABA
     end
     
     it 'disallows :allow_dupes' do
-      check_fail "'a' attribute definition failed validation: :allow_dupes flag is incompatible: :allow_dupes is only allowed on array attributes",
+      check_fail "'a' attribute failed validation: ':allow_dupes' flag is incompatible: :allow_dupes is only allowed on array attributes",
                  line: [__FILE__, 'tagP'] do
         jaba(barebones: true) do
           define :test do

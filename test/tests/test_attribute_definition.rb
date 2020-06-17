@@ -69,7 +69,7 @@ module JABA
     end
 
     it 'checks for duplicate flag options' do
-      check_warn("Duplicate flag option ':export' specified", __FILE__, 'tagD') do
+      check_warn("Duplicate flag option ':export' specified in 'a' attribute", __FILE__, 'tagD') do
         jaba(barebones: true) do
           define :test do
             attr :a do
@@ -261,7 +261,7 @@ module JABA
           a [2], condition: :b
         end
       end
-      check_fail 'Invalid value option \':undefined\'. Valid options: [:group, :condition]', line: [__FILE__, 'tagA'] do
+      check_fail "Invalid value option ':undefined'. Valid 'a' attribute options: [:group, :condition]", line: [__FILE__, 'tagA'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a do
@@ -274,7 +274,7 @@ module JABA
           end
         end
       end
-      check_fail 'Invalid value option \':undefined\' - no options defined', line: [__FILE__, 'tagB'] do
+      check_fail "Invalid value option ':undefined' - no options defined in 'a' attribute", line: [__FILE__, 'tagB'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a

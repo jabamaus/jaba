@@ -62,7 +62,7 @@ module JABA
       values = block_given? ? @node.eval_jdl(&block) : args.shift
 
       if values && !values.array?
-        jaba_error("#{describe} requires an array")
+        jaba_error("#{describe} requires an array not a '#{values.class}'")
       end
 
       Array(values).each do |v|

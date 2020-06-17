@@ -5,7 +5,7 @@ module JABA
   class TestAttributeArray < JabaTest
 
     it 'supports a default' do
-      check_fail "'a' array attribute default must be an array", line: [__FILE__, 'tagV'] do
+      check_fail "'a' attribute default must be an array not a 'Integer'", line: [__FILE__, 'tagV'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a do
@@ -14,7 +14,10 @@ module JABA
           end
         end
       end
-      check_fail "'a' array attribute requires an array", line: [__FILE__, 'tagO'] do
+
+      # Test block form default
+      #
+      check_fail "'a' array attribute requires an array not a 'Integer'", line: [__FILE__, 'tagO'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a do # tagO

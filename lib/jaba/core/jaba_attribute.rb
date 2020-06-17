@@ -139,7 +139,7 @@ module JABA
       @value_options = key_val_args.empty? ? {} : Marshal.load(Marshal.dump(key_val_args))
 
       if new_value.is_a?(Enumerable)
-        jaba_error("#{describe} must be a single value not a #{new_value.class}")
+        jaba_error("#{describe} must be a single value not a '#{new_value.class}'")
       end
 
       @flag_options.each do |f|

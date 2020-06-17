@@ -99,10 +99,17 @@ module JABA
     end
 
     ##
+    # Used in error messages.
+    #
+    def describe
+      "'#{@defn_id}' attribute"
+    end
+
+    ##
     #
     def add_value_option(id, required, items)
       if !id.symbol?
-        jaba_error('value_option id must be specified as a symbol, eg :option')
+        jaba_error("In #{describe} value_option id must be specified as a symbol, eg :option")
       end
       @value_options << ValueOption.new(id, required, items).freeze
     end
@@ -111,11 +118,11 @@ module JABA
     #
     def get_value_option(id)
       if @value_options.empty?
-        jaba_error("Invalid value option '#{id.inspect_unquoted}' - no options defined.")
+        jaba_error("Invalid value option '#{id.inspect_unquoted}' - no options defined in #{describe}")
       end
       vo = @value_options.find{|v| v.id == id}
       if !vo
-        jaba_error("Invalid value option '#{id.inspect_unquoted}'. Valid options: #{@value_options.map{|v| v.id}}")
+        jaba_error("Invalid value option '#{id.inspect_unquoted}'. Valid #{describe} options: #{@value_options.map{|v| v.id}}")
       end
       vo
     end
@@ -172,7 +179,7 @@ module JABA
           jaba_error('Flags must be specified as symbols, eg :flag')
         end
         if @flags.include?(f)
-          jaba_warning("Duplicate flag '#{f.inspect_unquoted}' specified")
+          jaba_warning("Duplicate flag '#{f.inspect_unquoted}' specified in #{describe}")
           return :ignore
         end
         @jaba_attr_flags << @services.get_attribute_flag(f) # check flag exists
@@ -182,7 +189,7 @@ module JABA
           jaba_error('Flag options must be specified as symbols, eg :option')
         end
         if @flag_options.include?(f)
-          jaba_warning("Duplicate flag option '#{f.inspect_unquoted}' specified")
+          jaba_warning("Duplicate flag option '#{f.inspect_unquoted}' specified in #{describe}")
           return :ignore
         end
       end
@@ -198,11 +205,11 @@ module JABA
 
         if !@default_block
           if attr_single? && incoming.is_a?(Enumerable)
-            jaba_error("'#{defn_id}' attribute default must be a single value not a #{incoming.class}")
+            jaba_error("#{describe} default must be a single value not a '#{incoming.class}'")
           elsif attr_array? && !incoming.array?
-           jaba_error("'#{defn_id}' array attribute default must be an array")
+           jaba_error("#{describe} default must be an array not a '#{incoming.class}'")
           elsif attr_hash? && !incoming.hash?
-            jaba_error("'#{defn_id}' hash attribute default must be a hash")
+            jaba_error("#{describe} default must be a hash not a '#{incoming.class}'")
           end
         end
       end
@@ -243,12 +250,12 @@ module JABA
             jaf.call_hook(:compatibility, receiver: self)
           end
         rescue JDLError => e
-          jaba_error("#{jaf.defn_id.inspect} flag is incompatible: #{e.raw_message}")
+          jaba_error("#{jaf.describe} is incompatible: #{e.raw_message}")
         end
       end
       
     rescue JDLError => e
-      jaba_error("'#{defn_id}' attribute definition failed validation: #{e.raw_message}", callstack: e.backtrace)
+      jaba_error("#{describe} failed validation: #{e.raw_message}", callstack: e.backtrace)
     end
 
   end
