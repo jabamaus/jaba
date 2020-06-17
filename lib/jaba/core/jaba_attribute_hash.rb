@@ -30,6 +30,13 @@ module JABA
     end
 
     ##
+    # Used in error messages.
+    #
+    def describe
+      "'#{@attr_def.defn_id}' hash attribute"
+    end
+
+    ##
     # Returns a read only hash of key->attribute values. Expensive because it must map attributes to their values.
     #
     def value(api_call_loc = nil)
@@ -38,7 +45,7 @@ module JABA
         if @default_block
           return @services.execute_attr_default_block(@node, @default_block)
         elsif @services.in_attr_default_block?
-          jaba_error("Cannot read uninitialised '#{defn_id}' attribute")
+          jaba_error("Cannot read uninitialised #{describe}")
         end
       end
       values = @hash.transform_values {|e| e.value(api_call_loc)}
@@ -55,7 +62,7 @@ module JABA
       
       # TODO: validate only key passed if block given
       if args.size < 2 && !block_given?
-        jaba_error('Hash attribute requires a key and a value')
+        jaba_error("#{describe} requires a key and a value")
       end
       
       key = args.shift
@@ -111,7 +118,7 @@ module JABA
     def fetch(key, fail_if_not_found: true)
       if !@hash.key?(key)
         if fail_if_not_found
-          jaba_error("'#{key}' key not found in #{@attr_def.defn_id}")
+          jaba_error("'#{key}' key not found in #{describe}")
         else
           return nil
         end

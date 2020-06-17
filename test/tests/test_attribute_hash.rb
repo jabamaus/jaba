@@ -81,7 +81,7 @@ module JABA
 
       # test with another attr using unset hash attr
       #
-      check_fail "Cannot read uninitialised 'a' attribute", line: [__FILE__, 'tagF'] do
+      check_fail "Cannot read uninitialised 'a' hash attribute", line: [__FILE__, 'tagF'] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a
@@ -312,7 +312,7 @@ module JABA
     end
 
     it 'validates a value is given' do
-      check_fail("Hash attribute requires a key and a value", line: [__FILE__, 'tagM']) do
+      check_fail("'a' hash attribute requires a key and a value", line: [__FILE__, 'tagM']) do
         jaba(barebones: true) do
           define :test do
             attr_hash :a
