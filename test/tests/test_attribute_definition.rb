@@ -302,7 +302,7 @@ module JABA
     end
 
     it 'supports specifying a valid set of values for value option' do
-      check_fail "Invalid value ':d' passed to ':group' option. Valid values: [:a, :b, :c]", line: [__FILE__, 'tagX'] do
+      check_fail "In 'a' attribute invalid value ':d' passed to ':group' option. Valid values: [:a, :b, :c]", line: [__FILE__, 'tagX'] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a do

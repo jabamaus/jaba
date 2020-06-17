@@ -15,7 +15,7 @@ module JABA
         end
       end
 
-      check_fail "'a' must be a single value not a Array", line: [__FILE__, 'tagK'] do
+      check_fail "'a' attribute must be a single value not a Array", line: [__FILE__, 'tagK'] do
         jaba(barebones: true) do
           define :test do
             attr :a
@@ -148,7 +148,7 @@ module JABA
     end
 
     it 'validates flag options' do
-      check_fail "Invalid flag option ':d'. Valid flags are [:a, :b, :c]", line: [__FILE__, 'tagD'] do
+      check_fail "Invalid flag option ':d' passed to 'a' attribute. Valid flags are [:a, :b, :c]", line: [__FILE__, 'tagD'] do
         jaba(barebones: true) do
           define :test do
             attr :a do
