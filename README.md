@@ -2,6 +2,7 @@
 
 To do:
 
+- A tree view of cpp type would be useful in docs
 - Sort jaba input/output files
 - Should instance definitions be able to access globals? Probably. Globals are like implicit references. If too many attrs were exposed
   it would have a performance penalty though.
