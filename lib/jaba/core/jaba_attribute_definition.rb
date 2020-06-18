@@ -85,6 +85,7 @@ module JABA
       
       @title.freeze
       @help.freeze
+      @examples.freeze
       @default.freeze
       @flags.freeze
       @flag_options.freeze
