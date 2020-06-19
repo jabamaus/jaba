@@ -580,7 +580,7 @@ module JABA
         end
       end
       json = JSON.pretty_generate(root)
-      file = @file_manager.new_file(input.jaba_input_file, eol: :unix, track: false)
+      file = @file_manager.new_file(input.jaba_input_file, eol: :native, track: false)
       w = file.writer
       w.write_raw(json)
       file.write
@@ -627,7 +627,7 @@ module JABA
         end
 
         json = JSON.pretty_generate(@output)
-        file = @file_manager.new_file(out_file, eol: :unix)
+        file = @file_manager.new_file(out_file, eol: :native)
         w = file.writer
         w.write_raw(json)
         file.write
