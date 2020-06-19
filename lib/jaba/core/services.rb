@@ -910,9 +910,9 @@ module JABA
           md_row(w, :type, ad.type_id)
           md_row(w, :variant, ad.variant)
           md_row(w, :default, ad.default.proc? ? nil : ad.default)
-          md_row(w, :flags, ad.flags.join(','))
-          md_row(w, :options, ad.flag_options.join(', '))
-          md_row(w, :src, ad.definition.src_loc_describe(style: :rel_jaba_root))
+          md_row(w, :flags, ad.flags.map(&:inspect).join(','))
+          md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
+          md_row(w, :src, "<jaba_install>/#{ad.definition.src_loc_describe(style: :rel_jaba_root)}")
           md_row(w, :notes, ad.help&.ensure_end_with('.'))
           w << "> "
           w << ""

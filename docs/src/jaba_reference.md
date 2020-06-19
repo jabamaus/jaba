@@ -124,9 +124,9 @@
 > | _type_ | bool |
 > | _variant_ | single |
 > | _default_ | false |
-> | _flags_ | expose |
+> | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | modules/core/archs.jdl.rb:8 |
+> | _src_ | <jaba_install>/modules/core/archs.jdl.rb:8 |
 > | _notes_ | Returns true if current architecture is arm64. |
 > 
 
@@ -141,9 +141,9 @@
 > | _type_ |  |
 > | _variant_ | single |
 > | _default_ |  |
-> | _flags_ | expose |
+> | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:26 |
+> | _src_ | <jaba_install>/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:26 |
 > | _notes_ | Name of target architecture (platform) as seen in Visual Studio IDE. |
 > 
 
@@ -158,9 +158,9 @@
 > | _type_ | bool |
 > | _variant_ | single |
 > | _default_ | false |
-> | _flags_ | expose |
+> | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | modules/core/archs.jdl.rb:8 |
+> | _src_ | <jaba_install>/modules/core/archs.jdl.rb:8 |
 > | _notes_ | Returns true if current architecture is x86. |
 > 
 
@@ -175,9 +175,9 @@
 > | _type_ | bool |
 > | _variant_ | single |
 > | _default_ | false |
-> | _flags_ | expose |
+> | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | modules/core/archs.jdl.rb:8 |
+> | _src_ | <jaba_install>/modules/core/archs.jdl.rb:8 |
 > | _notes_ | Returns true if current architecture is x86_64. |
 > 
 
@@ -205,9 +205,9 @@
 > | _type_ | uuid |
 > | _variant_ | single |
 > | _default_ |  |
-> | _flags_ | required |
+> | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | modules/core/category.jdl.rb:11 |
+> | _src_ | <jaba_install>/modules/core/category.jdl.rb:11 |
 > | _notes_ | Must be of the form '0376E589-F783-4B80-DA86-705F2E05304E'. Required by Visual Studio .sln files. |
 > 
 
@@ -222,9 +222,9 @@
 > | _type_ |  |
 > | _variant_ | single |
 > | _default_ |  |
-> | _flags_ | required |
+> | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | modules/core/category.jdl.rb:5 |
+> | _src_ | <jaba_install>/modules/core/category.jdl.rb:5 |
 > | _notes_ | Maps to name of solution folder in a Visual Studio solution. |
 > 
 
@@ -241,7 +241,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/core/category.jdl.rb:17 |
+> | _src_ | <jaba_install>/modules/core/category.jdl.rb:17 |
 > | _notes_ | Use this to build a category hierarchy that can be used to classify projects in workspaces. |
 > 
 
@@ -269,9 +269,9 @@
 > | _type_ | symbol_or_string |
 > | _variant_ | single |
 > | _default_ |  |
-> | _flags_ | read_only |
+> | _flags_ | :read_only |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:149 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:151 |
 > | _notes_ | Returns current arch being processed. Use to define control flow to set config-specific atttributes. |
 > 
 
@@ -288,7 +288,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:154 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:156 |
 > | _notes_ |  |
 > 
 
@@ -303,9 +303,9 @@
 > | _type_ | choice |
 > | _variant_ | array |
 > | _default_ |  |
-> | _flags_ | required |
+> | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:44 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:46 |
 > | _notes_ |  |
 > 
 
@@ -320,9 +320,9 @@
 > | _type_ | dir |
 > | _variant_ | single |
 > | _default_ |  |
-> | _flags_ | no_check_exist |
+> | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:194 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:196 |
 > | _notes_ |  |
 > 
 
@@ -338,8 +338,8 @@
 > | _variant_ | array |
 > | _default_ |  |
 > | _flags_ |  |
-> | _options_ | export |
-> | _src_ | modules/cpp/cpp.jdl.rb:180 |
+> | _options_ | :export |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:182 |
 > | _notes_ | Build action, eg a prebuild step. |
 > 
 
@@ -354,9 +354,9 @@
 > | _type_ | dir |
 > | _variant_ | single |
 > | _default_ | build |
-> | _flags_ | no_check_exist |
+> | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:187 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:189 |
 > | _notes_ | Specified as a relative path from <root>. |
 > 
 
@@ -372,8 +372,8 @@
 > | _variant_ | array |
 > | _default_ |  |
 > | _flags_ |  |
-> | _options_ | export |
-> | _src_ | modules/cpp/cpp.jdl.rb:215 |
+> | _options_ | :export |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:217 |
 > | _notes_ | Raw compiler command line switches. |
 > 
 
@@ -390,7 +390,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:296 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:298 |
 > | _notes_ | Character set. Defaults to :unicode. |
 > 
 
@@ -405,9 +405,9 @@
 > | _type_ | symbol_or_string |
 > | _variant_ | single |
 > | _default_ |  |
-> | _flags_ | read_only |
+> | _flags_ | :read_only |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:173 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:175 |
 > | _notes_ | Returns current config being processed. Use to define control flow to set config-specific atttributes. |
 > 
 
@@ -424,7 +424,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:220 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:222 |
 > | _notes_ | Display name of config in Visual Studio. Defaults to <config>. |
 > 
 
@@ -439,9 +439,9 @@
 > | _type_ | symbol_or_string |
 > | _variant_ | array |
 > | _default_ |  |
-> | _flags_ | required,nosort |
-> | _options_ | export |
-> | _src_ | modules/cpp/cpp.jdl.rb:49 |
+> | _flags_ | :required,:nosort |
+> | _options_ | :export |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:51 |
 > | _notes_ |  |
 > 
 
@@ -458,7 +458,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:225 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:227 |
 > | _notes_ | Flags config as a debug build. Defaults to true if config id contains 'debug'. |
 > 
 
@@ -474,8 +474,8 @@
 > | _variant_ | array |
 > | _default_ |  |
 > | _flags_ |  |
-> | _options_ | export |
-> | _src_ | modules/cpp/cpp.jdl.rb:232 |
+> | _options_ | :export |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:234 |
 > | _notes_ | Preprocessor defines. |
 > 
 
@@ -492,7 +492,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:70 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:72 |
 > | _notes_ | Specify project dependencies. List of ids of other cpp definitions. |
 > 
 
@@ -509,7 +509,7 @@
 > | _default_ | true |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:306 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:308 |
 > | _notes_ | Enables C++ exceptions. On by default. |
 > 
 
@@ -524,9 +524,9 @@
 > | _type_ | symbol |
 > | _variant_ | single |
 > | _default_ |  |
-> | _flags_ | read_only |
+> | _flags_ | :read_only |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:30 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:32 |
 > | _notes_ |  |
 > 
 
@@ -543,7 +543,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:34 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:36 |
 > | _notes_ |  |
 > 
 
@@ -551,17 +551,17 @@
 ```
 #### hosts
 
-> __
+> _Target hosts_
 > 
 > | Property | Value  |
 > |-|-|
 > | _type_ | choice |
 > | _variant_ | array |
 > | _default_ |  |
-> | _flags_ | required |
+> | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:7 |
-> | _notes_ |  |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:7 |
+> | _notes_ | The following hosts are available as standard: vs2010, vs2012, vs2013, vs2015, vs2017, vs2019, xcode. |
 > 
 
 ```ruby
@@ -575,9 +575,9 @@
 > | _type_ | dir |
 > | _variant_ | array |
 > | _default_ |  |
-> | _flags_ | nosort |
-> | _options_ | export |
-> | _src_ | modules/cpp/cpp.jdl.rb:237 |
+> | _flags_ | :nosort |
+> | _options_ | :export |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:239 |
 > | _notes_ | Include paths. |
 > 
 
@@ -592,9 +592,9 @@
 > | _type_ | dir |
 > | _variant_ | single |
 > | _default_ |  |
-> | _flags_ | no_check_exist |
+> | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:201 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:203 |
 > | _notes_ |  |
 > 
 
@@ -610,8 +610,8 @@
 > | _variant_ | array |
 > | _default_ |  |
 > | _flags_ |  |
-> | _options_ | export |
-> | _src_ | modules/cpp/cpp.jdl.rb:243 |
+> | _options_ | :export |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:245 |
 > | _notes_ | Placed directly into projects as is, with no validation. |
 > 
 
@@ -626,9 +626,9 @@
 > | _type_ | dir |
 > | _variant_ | single |
 > | _default_ |  |
-> | _flags_ | no_check_exist |
+> | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:208 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:210 |
 > | _notes_ |  |
 > 
 
@@ -643,9 +643,9 @@
 > | _type_ | symbol |
 > | _variant_ | single |
 > | _default_ |  |
-> | _flags_ | read_only |
+> | _flags_ | :read_only |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:56 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:58 |
 > | _notes_ | Use for querying the current target platform. |
 > 
 
@@ -662,7 +662,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:62 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:64 |
 > | _notes_ | Use when access to platform attributes is required. |
 > 
 
@@ -677,9 +677,9 @@
 > | _type_ | choice |
 > | _variant_ | array |
 > | _default_ |  |
-> | _flags_ | required |
+> | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:23 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:25 |
 > | _notes_ |  |
 > 
 
@@ -696,7 +696,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:85 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:87 |
 > | _notes_ | Defaults to <id><projsuffix>. |
 > 
 
@@ -711,9 +711,9 @@
 > | _type_ | dir |
 > | _variant_ | single |
 > | _default_ | . |
-> | _flags_ | no_check_exist |
+> | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:78 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:80 |
 > | _notes_ | Directory in which projects will be generated. Specified as a relative path from <root>. If not specified projects will be generated in <root>. |
 > 
 
@@ -730,7 +730,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:91 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:93 |
 > | _notes_ | Optional suffix to be applied to <projname>. Has no effect if <projname> is set explicitly. |
 > 
 
@@ -747,7 +747,7 @@
 > | _default_ | . |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:12 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:14 |
 > | _notes_ | Root of the project specified as a relative path to the file that contains the project definition. All paths are specified relative to this. Project files will be generated here unless <projroot> is set. |
 > 
 
@@ -764,7 +764,7 @@
 > | _default_ | true |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:313 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:315 |
 > | _notes_ | Enable runtime type information. On by default. |
 > 
 
@@ -779,9 +779,9 @@
 > | _type_ | src_spec |
 > | _variant_ | array |
 > | _default_ |  |
-> | _flags_ | required,nosort |
-> | _options_ | force, export |
-> | _src_ | modules/cpp/cpp.jdl.rb:95 |
+> | _flags_ | :required,:nosort |
+> | _options_ | :force, :export |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:97 |
 > | _notes_ |  |
 > 
 
@@ -799,9 +799,9 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _type_ |  |
 > | _variant_ | array |
 > | _default_ |  |
-> | _flags_ | nosort |
-> | _options_ | export |
-> | _src_ | modules/cpp/cpp.jdl.rb:107 |
+> | _flags_ | :nosort |
+> | _options_ | :export |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:109 |
 > | _notes_ | File extensions that will be added when src is not specified explicitly. Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes. |
 > 
 
@@ -818,7 +818,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:265 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:267 |
 > | _notes_ | Defaults to standard extension for <type> of project for target <platform>. |
 > 
 
@@ -835,7 +835,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:249 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:251 |
 > | _notes_ | Defaults to <targetprefix><targetname><projname><targetsuffix>. |
 > 
 
@@ -852,7 +852,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:255 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:257 |
 > | _notes_ | Has no effect if <targetname> specified. |
 > 
 
@@ -869,7 +869,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:260 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:262 |
 > | _notes_ | Has no effect if <targetname> specified. |
 > 
 
@@ -886,7 +886,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:318 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:320 |
 > | _notes_ |  |
 > 
 
@@ -901,9 +901,9 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _type_ | choice |
 > | _variant_ | single |
 > | _default_ |  |
-> | _flags_ | required |
+> | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:166 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:168 |
 > | _notes_ |  |
 > 
 
@@ -919,8 +919,8 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _variant_ | hash |
 > | _default_ |  |
 > | _flags_ |  |
-> | _options_ | export |
-> | _src_ | modules/cpp/cpp.jdl.rb:139 |
+> | _options_ | :export |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:141 |
 > | _notes_ | Directly address the Globals property group in a vcxproj. |
 > 
 
@@ -936,8 +936,8 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _variant_ | hash |
 > | _default_ |  |
 > | _flags_ |  |
-> | _options_ | export |
-> | _src_ | modules/cpp/cpp.jdl.rb:322 |
+> | _options_ | :export |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:324 |
 > | _notes_ | Address config section of a vcxproj directly. |
 > 
 
@@ -954,7 +954,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _default_ | false |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:290 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:292 |
 > | _notes_ | Enable warnings as errors. Off by default. |
 > 
 
@@ -971,7 +971,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:127 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:129 |
 > | _notes_ | Windows SDK version. Defaults to nil. |
 > 
 
@@ -999,9 +999,9 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _type_ | symbol |
 > | _variant_ | hash |
 > | _default_ |  |
-> | _flags_ | required |
+> | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:2 |
+> | _src_ | <jaba_install>/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:2 |
 > | _notes_ |  |
 > 
 
@@ -1029,9 +1029,9 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _type_ |  |
 > | _variant_ | single |
 > | _default_ |  |
-> | _flags_ | required |
+> | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | modules/cpp/cpp.jdl.rb:338 |
+> | _src_ | <jaba_install>/modules/cpp/cpp.jdl.rb:340 |
 > | _notes_ |  |
 > 
 
@@ -1048,7 +1048,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/core/hosts.jdl.rb:16 |
+> | _src_ | <jaba_install>/modules/core/hosts.jdl.rb:16 |
 > | _notes_ |  |
 > 
 
@@ -1065,7 +1065,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/core/hosts.jdl.rb:19 |
+> | _src_ | <jaba_install>/modules/core/hosts.jdl.rb:19 |
 > | _notes_ |  |
 > 
 
@@ -1082,7 +1082,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/core/hosts.jdl.rb:17 |
+> | _src_ | <jaba_install>/modules/core/hosts.jdl.rb:17 |
 > | _notes_ |  |
 > 
 
@@ -1099,7 +1099,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/core/hosts.jdl.rb:18 |
+> | _src_ | <jaba_install>/modules/core/hosts.jdl.rb:18 |
 > | _notes_ |  |
 > 
 
@@ -1114,9 +1114,9 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _type_ | bool |
 > | _variant_ | single |
 > | _default_ | false |
-> | _flags_ | expose |
+> | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | modules/core/hosts.jdl.rb:8 |
+> | _src_ | <jaba_install>/modules/core/hosts.jdl.rb:8 |
 > | _notes_ |  |
 > 
 
@@ -1131,9 +1131,9 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _type_ | bool |
 > | _variant_ | single |
 > | _default_ | false |
-> | _flags_ | expose |
+> | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | modules/core/hosts.jdl.rb:22 |
+> | _src_ | <jaba_install>/modules/core/hosts.jdl.rb:22 |
 > | _notes_ |  |
 > 
 
@@ -1148,9 +1148,9 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _type_ | bool |
 > | _variant_ | single |
 > | _default_ | false |
-> | _flags_ | expose |
+> | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | modules/core/hosts.jdl.rb:22 |
+> | _src_ | <jaba_install>/modules/core/hosts.jdl.rb:22 |
 > | _notes_ |  |
 > 
 
@@ -1165,9 +1165,9 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _type_ | bool |
 > | _variant_ | single |
 > | _default_ | false |
-> | _flags_ | expose |
+> | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | modules/core/hosts.jdl.rb:22 |
+> | _src_ | <jaba_install>/modules/core/hosts.jdl.rb:22 |
 > | _notes_ |  |
 > 
 
@@ -1182,9 +1182,9 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _type_ | bool |
 > | _variant_ | single |
 > | _default_ | false |
-> | _flags_ | expose |
+> | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | modules/core/hosts.jdl.rb:22 |
+> | _src_ | <jaba_install>/modules/core/hosts.jdl.rb:22 |
 > | _notes_ |  |
 > 
 
@@ -1199,9 +1199,9 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _type_ | bool |
 > | _variant_ | single |
 > | _default_ | false |
-> | _flags_ | expose |
+> | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | modules/core/hosts.jdl.rb:22 |
+> | _src_ | <jaba_install>/modules/core/hosts.jdl.rb:22 |
 > | _notes_ |  |
 > 
 
@@ -1216,9 +1216,9 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _type_ | bool |
 > | _variant_ | single |
 > | _default_ | false |
-> | _flags_ | expose |
+> | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | modules/core/hosts.jdl.rb:22 |
+> | _src_ | <jaba_install>/modules/core/hosts.jdl.rb:22 |
 > | _notes_ |  |
 > 
 
@@ -1233,9 +1233,9 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _type_ | bool |
 > | _variant_ | single |
 > | _default_ | false |
-> | _flags_ | expose |
+> | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | modules/core/hosts.jdl.rb:12 |
+> | _src_ | <jaba_install>/modules/core/hosts.jdl.rb:12 |
 > | _notes_ |  |
 > 
 
@@ -1263,9 +1263,9 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _type_ | bool |
 > | _variant_ | single |
 > | _default_ | false |
-> | _flags_ | expose |
+> | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | modules/core/platforms.jdl.rb:21 |
+> | _src_ | <jaba_install>/modules/core/platforms.jdl.rb:21 |
 > | _notes_ | Returns true if its an Apple platform. |
 > 
 
@@ -1280,9 +1280,9 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _type_ | bool |
 > | _variant_ | single |
 > | _default_ | false |
-> | _flags_ | expose |
+> | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | modules/core/platforms.jdl.rb:9 |
+> | _src_ | <jaba_install>/modules/core/platforms.jdl.rb:9 |
 > | _notes_ | Returns true if current platform is ios. |
 > 
 
@@ -1297,9 +1297,9 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _type_ | bool |
 > | _variant_ | single |
 > | _default_ | false |
-> | _flags_ | expose |
+> | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | modules/core/platforms.jdl.rb:9 |
+> | _src_ | <jaba_install>/modules/core/platforms.jdl.rb:9 |
 > | _notes_ | Returns true if current platform is macos. |
 > 
 
@@ -1314,9 +1314,9 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _type_ | bool |
 > | _variant_ | single |
 > | _default_ | false |
-> | _flags_ | expose |
+> | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | modules/core/platforms.jdl.rb:16 |
+> | _src_ | <jaba_install>/modules/core/platforms.jdl.rb:16 |
 > | _notes_ | Returns true if its a Microsoft platform. |
 > 
 
@@ -1331,9 +1331,9 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _type_ | choice |
 > | _variant_ | array |
 > | _default_ |  |
-> | _flags_ | required,nosort |
+> | _flags_ | :required,:nosort |
 > | _options_ |  |
-> | _src_ | modules/core/platforms.jdl.rb:26 |
+> | _src_ | <jaba_install>/modules/core/platforms.jdl.rb:26 |
 > | _notes_ |  |
 > 
 
@@ -1348,9 +1348,9 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _type_ | bool |
 > | _variant_ | single |
 > | _default_ | false |
-> | _flags_ | expose |
+> | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | modules/core/platforms.jdl.rb:9 |
+> | _src_ | <jaba_install>/modules/core/platforms.jdl.rb:9 |
 > | _notes_ | Returns true if current platform is windows. |
 > 
 
@@ -1380,7 +1380,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/text/text.jdl.rb:10 |
+> | _src_ | <jaba_install>/modules/text/text.jdl.rb:10 |
 > | _notes_ | Directly set content of file as a string. |
 > 
 
@@ -1397,7 +1397,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _default_ | native |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/text/text.jdl.rb:20 |
+> | _src_ | <jaba_install>/modules/text/text.jdl.rb:20 |
 > | _notes_ |  |
 > 
 
@@ -1412,9 +1412,9 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _type_ | file |
 > | _variant_ | single |
 > | _default_ |  |
-> | _flags_ | required |
+> | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | modules/text/text.jdl.rb:5 |
+> | _src_ | <jaba_install>/modules/text/text.jdl.rb:5 |
 > | _notes_ |  |
 > 
 
@@ -1429,9 +1429,9 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _type_ |  |
 > | _variant_ | array |
 > | _default_ |  |
-> | _flags_ | allow_dupes,nosort |
+> | _flags_ | :allow_dupes,:nosort |
 > | _options_ |  |
-> | _src_ | modules/text/text.jdl.rb:15 |
+> | _src_ | <jaba_install>/modules/text/text.jdl.rb:15 |
 > | _notes_ |  |
 > 
 
@@ -1459,9 +1459,9 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _type_ | symbol_or_string |
 > | _variant_ | array |
 > | _default_ |  |
-> | _flags_ | nosort |
+> | _flags_ | :nosort |
 > | _options_ |  |
-> | _src_ | modules/workspace/workspace.jdl.rb:13 |
+> | _src_ | <jaba_install>/modules/workspace/workspace.jdl.rb:13 |
 > | _notes_ | Specified by id (symbol or string), or by glob matches against <projroot>. |
 > 
 
@@ -1478,7 +1478,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _default_ | . |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | modules/workspace/workspace.jdl.rb:7 |
+> | _src_ | <jaba_install>/modules/workspace/workspace.jdl.rb:7 |
 > | _notes_ | Defaults to containing directory of definition source file. |
 > 
 

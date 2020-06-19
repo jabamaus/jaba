@@ -5,6 +5,8 @@ define :cpp do
   title 'Cross platform C++ project definition'
 
    attr_array :hosts, type: :choice do
+    title 'Target hosts'
+    help "The following hosts are available as standard: #{all_instance_ids(:host).join(', ')}"
     items all_instance_ids(:host)
     flags :required
   end
