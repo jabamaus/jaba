@@ -251,6 +251,25 @@ module JABACoreExt
 
     ##
     #
+    def ensure_end_with!(str)
+      if empty?
+        replace(str)
+      else
+        if !end_with?(str)
+          self << str
+        end
+      end
+      self
+    end
+
+    ##
+    #
+    def ensure_end_with(str)
+      dup.ensure_end_with!(str)
+    end
+
+    ##
+    #
     def quote!(quote_char = '"')
       if empty?
         replace "#{quote_char}#{quote_char}"

@@ -155,6 +155,15 @@ module JABA
         '././a/b/../../.'.to_absolute(clean: true).must_equal(cwd)
       end
 
+      it 'supports ensure_end_with' do
+        ''.ensure_end_with('').must_equal('')
+        ''.ensure_end_with('a').must_equal('a')
+        'a'.ensure_end_with('a').must_equal('a')
+        'a'.ensure_end_with('.').must_equal('a.')
+        'abc'.ensure_end_with('abc').must_equal('abc')
+        'abc'.ensure_end_with('def').must_equal('abcdef')
+      end
+
       it 'supports quote!' do
         'p'.quote!.must_equal('"p"')
         '"p"'.quote!.must_equal('"p"')

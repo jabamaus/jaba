@@ -848,6 +848,7 @@ module JABA
       m << ' at'
       m << " #{file.basename}:#{line}"
       m << ": #{msg}"
+      m.ensure_end_with!('.')
       
       e = JDLError.new(m)
       e.instance_variable_set(:@raw_message, msg)
@@ -895,7 +896,7 @@ module JABA
         w << "> | Property | Value  |"
         w << "> |-|-|"
         md_row(w, :src, jt.generator.source_file)
-        md_row(w, :notes, jt.help)
+        md_row(w, :notes, jt.help&.ensure_end_with('.'))
         w << "> "
         w << ""
         jt.all_attr_defs_sorted.each do |ad|
@@ -912,7 +913,7 @@ module JABA
           md_row(w, :flags, ad.flags.join(','))
           md_row(w, :options, ad.flag_options.join(', '))
           md_row(w, :src, ad.definition.src_loc_rel_jaba_root)
-          md_row(w, :notes, ad.help)
+          md_row(w, :notes, ad.help&.ensure_end_with('.'))
           w << "> "
           w << ""
           w << "```ruby"
