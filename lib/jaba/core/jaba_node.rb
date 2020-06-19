@@ -61,6 +61,13 @@ module JABA
     end
     
     ##
+    # Used in error messages.
+    #
+    def describe
+      "'#{@defn_id}' attribute"
+    end
+
+    ##
     #
     def <=>(other)
       @handle.casecmp(other.handle)
@@ -94,7 +101,7 @@ module JABA
           end
         end
         if fail_if_not_found
-          jaba_error("'#{attr_id}' attribute not found")
+          jaba_error("'#{attr_id}' attribute not found in #{describe}")
         end
       end
       a
@@ -148,11 +155,11 @@ module JABA
     #
     def remove_attr(attr_id)
       if @attribute_lookup.delete(attr_id).nil?
-        jaba_error("Could not remove '#{attr_id}' attribute from '#{handle}' node")
+        jaba_error("Could not remove '#{attr_id}' attribute from #{describe}")
       end
       index = @attributes.index{|a| a.defn_id == attr_id}
       if index.nil?
-        jaba_error("Could not remove '#{attr_id}' attribute from '#{handle}' node")
+        jaba_error("Could not remove '#{attr_id}' attribute from #{describe}")
       end
       @attributes.delete_at(index)
     end
@@ -176,7 +183,7 @@ module JABA
     def post_create
       @attributes.each do |a|
         if !a.set? && a.required?
-          jaba_error("'#{@handle}::#{a.defn_id}' attribute requires a value. See #{a.attr_def.definition.source_location}", callstack: @definition.source_location)
+          jaba_error("#{a.describe} requires a value. See #{a.attr_def.definition.src_loc_describe}", callstack: @definition.src_loc_raw)
         end
       
         a.finalise

@@ -44,7 +44,7 @@ module JABA
       validate_id(id)
       id = id.to_sym
       
-      db = JabaDefinition.new(id, block, caller_locations(2, 1)[0])
+      db = JabaDefinition.new(@services, id, block, caller_locations(2, 1)[0])
       ad = JabaAttributeDefinition.new(@services, db, type, variant, self)
       
       @attribute_defs << ad
@@ -152,7 +152,7 @@ module JABA
     ##
     #
     def open_sub_type(id, &block)
-      @open_sub_type_defs << JabaDefinition.new(id, block, caller_locations(2, 1)[0])
+      @open_sub_type_defs << JabaDefinition.new(@services, sid, block, caller_locations(2, 1)[0])
     end
 
     ##
@@ -184,7 +184,7 @@ module JABA
     #
     def validate
       if @title.nil? && !JABA.running_tests?
-        jaba_error("requires a title", callstack: @definition.source_location)
+        jaba_error("requires a title", callstack: @definition.src_loc_raw)
       end
 
     rescue JDLError => e

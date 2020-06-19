@@ -127,7 +127,7 @@
 > | _flags_ | expose |
 > | _options_ |  |
 > | _src_ | modules/core/archs.jdl.rb:8 |
-> | _notes_ | Returns true if current architecture is arm64 |
+> | _notes_ | Returns true if current architecture is arm64. |
 > 
 
 ```ruby
@@ -144,7 +144,7 @@
 > | _flags_ | expose |
 > | _options_ |  |
 > | _src_ | modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:26 |
-> | _notes_ | Name of target architecture (platform) as seen in Visual Studio IDE |
+> | _notes_ | Name of target architecture (platform) as seen in Visual Studio IDE. |
 > 
 
 ```ruby
@@ -161,7 +161,7 @@
 > | _flags_ | expose |
 > | _options_ |  |
 > | _src_ | modules/core/archs.jdl.rb:8 |
-> | _notes_ | Returns true if current architecture is x86 |
+> | _notes_ | Returns true if current architecture is x86. |
 > 
 
 ```ruby
@@ -178,7 +178,7 @@
 > | _flags_ | expose |
 > | _options_ |  |
 > | _src_ | modules/core/archs.jdl.rb:8 |
-> | _notes_ | Returns true if current architecture is x86_64 |
+> | _notes_ | Returns true if current architecture is x86_64. |
 > 
 
 ```ruby
@@ -208,7 +208,7 @@
 > | _flags_ | required |
 > | _options_ |  |
 > | _src_ | modules/core/category.jdl.rb:11 |
-> | _notes_ | Must be of the form '0376E589-F783-4B80-DA86-705F2E05304E'. Required by Visual Studio .sln files |
+> | _notes_ | Must be of the form '0376E589-F783-4B80-DA86-705F2E05304E'. Required by Visual Studio .sln files. |
 > 
 
 ```ruby
@@ -225,7 +225,7 @@
 > | _flags_ | required |
 > | _options_ |  |
 > | _src_ | modules/core/category.jdl.rb:5 |
-> | _notes_ | Maps to name of solution folder in a Visual Studio solution |
+> | _notes_ | Maps to name of solution folder in a Visual Studio solution. |
 > 
 
 ```ruby
@@ -242,7 +242,7 @@
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | modules/core/category.jdl.rb:17 |
-> | _notes_ | Use this to build a category hierarchy that can be used to classify projects in workspaces |
+> | _notes_ | Use this to build a category hierarchy that can be used to classify projects in workspaces. |
 > 
 
 ```ruby
@@ -272,7 +272,7 @@
 > | _flags_ | read_only |
 > | _options_ |  |
 > | _src_ | modules/cpp/cpp.jdl.rb:149 |
-> | _notes_ | Returns current arch being processed. Use to define control flow to set config-specific atttributes |
+> | _notes_ | Returns current arch being processed. Use to define control flow to set config-specific atttributes. |
 > 
 
 ```ruby
@@ -340,7 +340,7 @@
 > | _flags_ |  |
 > | _options_ | export |
 > | _src_ | modules/cpp/cpp.jdl.rb:180 |
-> | _notes_ | Build action, eg a prebuild step |
+> | _notes_ | Build action, eg a prebuild step. |
 > 
 
 ```ruby
@@ -357,7 +357,7 @@
 > | _flags_ | no_check_exist |
 > | _options_ |  |
 > | _src_ | modules/cpp/cpp.jdl.rb:187 |
-> | _notes_ | Specified as a relative path from <root> |
+> | _notes_ | Specified as a relative path from <root>. |
 > 
 
 ```ruby
@@ -374,7 +374,7 @@
 > | _flags_ |  |
 > | _options_ | export |
 > | _src_ | modules/cpp/cpp.jdl.rb:215 |
-> | _notes_ | Raw compiler command line switches |
+> | _notes_ | Raw compiler command line switches. |
 > 
 
 ```ruby
@@ -391,7 +391,7 @@
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | modules/cpp/cpp.jdl.rb:296 |
-> | _notes_ | Character set. Defaults to :unicode |
+> | _notes_ | Character set. Defaults to :unicode. |
 > 
 
 ```ruby
@@ -408,7 +408,7 @@
 > | _flags_ | read_only |
 > | _options_ |  |
 > | _src_ | modules/cpp/cpp.jdl.rb:173 |
-> | _notes_ | Returns current config being processed. Use to define control flow to set config-specific atttributes |
+> | _notes_ | Returns current config being processed. Use to define control flow to set config-specific atttributes. |
 > 
 
 ```ruby
@@ -425,7 +425,7 @@
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | modules/cpp/cpp.jdl.rb:220 |
-> | _notes_ | Display name of config in Visual Studio. Defaults to <config> |
+> | _notes_ | Display name of config in Visual Studio. Defaults to <config>. |
 > 
 
 ```ruby
@@ -459,7 +459,7 @@
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | modules/cpp/cpp.jdl.rb:225 |
-> | _notes_ | Flags config as a debug build. Defaults to true if config id contains 'debug' |
+> | _notes_ | Flags config as a debug build. Defaults to true if config id contains 'debug'. |
 > 
 
 ```ruby
@@ -476,7 +476,7 @@
 > | _flags_ |  |
 > | _options_ | export |
 > | _src_ | modules/cpp/cpp.jdl.rb:232 |
-> | _notes_ | Preprocessor defines |
+> | _notes_ | Preprocessor defines. |
 > 
 
 ```ruby
@@ -578,7 +578,7 @@
 > | _flags_ | nosort |
 > | _options_ | export |
 > | _src_ | modules/cpp/cpp.jdl.rb:237 |
-> | _notes_ | Include paths |
+> | _notes_ | Include paths. |
 > 
 
 ```ruby
@@ -612,7 +612,7 @@
 > | _flags_ |  |
 > | _options_ | export |
 > | _src_ | modules/cpp/cpp.jdl.rb:243 |
-> | _notes_ | Placed directly into projects as is, with no validation |
+> | _notes_ | Placed directly into projects as is, with no validation. |
 > 
 
 ```ruby
@@ -646,7 +646,7 @@
 > | _flags_ | read_only |
 > | _options_ |  |
 > | _src_ | modules/cpp/cpp.jdl.rb:56 |
-> | _notes_ | Use for querying the current target platform |
+> | _notes_ | Use for querying the current target platform. |
 > 
 
 ```ruby
@@ -663,7 +663,7 @@
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | modules/cpp/cpp.jdl.rb:62 |
-> | _notes_ | Use when access to platform attributes is required |
+> | _notes_ | Use when access to platform attributes is required. |
 > 
 
 ```ruby
@@ -714,7 +714,7 @@
 > | _flags_ | no_check_exist |
 > | _options_ |  |
 > | _src_ | modules/cpp/cpp.jdl.rb:78 |
-> | _notes_ | Directory in which projects will be generated. Specified as a relative path from <root>. If not specified projects will be generated in <root> |
+> | _notes_ | Directory in which projects will be generated. Specified as a relative path from <root>. If not specified projects will be generated in <root>. |
 > 
 
 ```ruby
@@ -819,7 +819,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | modules/cpp/cpp.jdl.rb:265 |
-> | _notes_ | Defaults to standard extension for <type> of project for target <platform> |
+> | _notes_ | Defaults to standard extension for <type> of project for target <platform>. |
 > 
 
 ```ruby
@@ -836,7 +836,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | modules/cpp/cpp.jdl.rb:249 |
-> | _notes_ | Defaults to <targetprefix><targetname><projname><targetsuffix> |
+> | _notes_ | Defaults to <targetprefix><targetname><projname><targetsuffix>. |
 > 
 
 ```ruby
@@ -853,7 +853,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | modules/cpp/cpp.jdl.rb:255 |
-> | _notes_ | Has no effect if <targetname> specified |
+> | _notes_ | Has no effect if <targetname> specified. |
 > 
 
 ```ruby
@@ -870,7 +870,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | modules/cpp/cpp.jdl.rb:260 |
-> | _notes_ | Has no effect if <targetname> specified |
+> | _notes_ | Has no effect if <targetname> specified. |
 > 
 
 ```ruby
@@ -921,7 +921,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _flags_ |  |
 > | _options_ | export |
 > | _src_ | modules/cpp/cpp.jdl.rb:139 |
-> | _notes_ | Directly address the Globals property group in a vcxproj |
+> | _notes_ | Directly address the Globals property group in a vcxproj. |
 > 
 
 ```ruby
@@ -938,7 +938,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _flags_ |  |
 > | _options_ | export |
 > | _src_ | modules/cpp/cpp.jdl.rb:322 |
-> | _notes_ | Address config section of a vcxproj directly |
+> | _notes_ | Address config section of a vcxproj directly. |
 > 
 
 ```ruby
@@ -1266,7 +1266,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _flags_ | expose |
 > | _options_ |  |
 > | _src_ | modules/core/platforms.jdl.rb:21 |
-> | _notes_ | Returns true if its an Apple platform |
+> | _notes_ | Returns true if its an Apple platform. |
 > 
 
 ```ruby
@@ -1283,7 +1283,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _flags_ | expose |
 > | _options_ |  |
 > | _src_ | modules/core/platforms.jdl.rb:9 |
-> | _notes_ | Returns true if current platform is ios |
+> | _notes_ | Returns true if current platform is ios. |
 > 
 
 ```ruby
@@ -1300,7 +1300,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _flags_ | expose |
 > | _options_ |  |
 > | _src_ | modules/core/platforms.jdl.rb:9 |
-> | _notes_ | Returns true if current platform is macos |
+> | _notes_ | Returns true if current platform is macos. |
 > 
 
 ```ruby
@@ -1317,7 +1317,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _flags_ | expose |
 > | _options_ |  |
 > | _src_ | modules/core/platforms.jdl.rb:16 |
-> | _notes_ | Returns true if its a Microsoft platform |
+> | _notes_ | Returns true if its a Microsoft platform. |
 > 
 
 ```ruby
@@ -1351,7 +1351,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _flags_ | expose |
 > | _options_ |  |
 > | _src_ | modules/core/platforms.jdl.rb:9 |
-> | _notes_ | Returns true if current platform is windows |
+> | _notes_ | Returns true if current platform is windows. |
 > 
 
 ```ruby
@@ -1462,7 +1462,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _flags_ | nosort |
 > | _options_ |  |
 > | _src_ | modules/workspace/workspace.jdl.rb:13 |
-> | _notes_ | Specified by id (symbol or string), or by glob matches against <projroot> |
+> | _notes_ | Specified by id (symbol or string), or by glob matches against <projroot>. |
 > 
 
 ```ruby
@@ -1479,7 +1479,7 @@ src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | modules/workspace/workspace.jdl.rb:7 |
-> | _notes_ | Defaults to containing directory of definition source file |
+> | _notes_ | Defaults to containing directory of definition source file. |
 > 
 
 ```ruby

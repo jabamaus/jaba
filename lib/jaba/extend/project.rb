@@ -137,7 +137,7 @@ module JABA
       end
 
       if src.empty?
-        @services.jaba_error("'#{@node.defn_id}' does not have any source files", callstack: @node.definition.source_location)
+        @services.jaba_error("'#{@node.defn_id}' does not have any source files", callstack: @node.definition.src_loc_raw)
       end
 
       src.sort!{|x, y| x.absolute_path.casecmp(y.absolute_path)}

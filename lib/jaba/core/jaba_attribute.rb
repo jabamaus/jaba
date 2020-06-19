@@ -66,14 +66,14 @@ module JABA
     ##
     #
     def jaba_warning(msg)
-      cs = @last_call_location ? @last_call_location : @attr_def.definition.source_location
+      cs = @last_call_location ? @last_call_location : @attr_def.definition.src_loc_raw
       @services.jaba_warning(msg, callstack: cs)
     end
 
     ##
     #
     def jaba_error(msg)
-      cs = @last_call_location ? @last_call_location : @attr_def.definition.source_location
+      cs = @last_call_location ? @last_call_location : @attr_def.definition.src_loc_raw
       @services.jaba_error(msg, callstack: cs)
     end
     
@@ -181,7 +181,7 @@ module JABA
           end
         rescue JDLError => e
           cs = [e.backtrace[0]]
-          cs << (@last_call_location ? @last_call_location : @attr_def.definition.source_location)
+          cs << (@last_call_location ? @last_call_location : @attr_def.definition.src_loc_raw)
           @services.jaba_error("#{describe} failed validation: #{e.raw_message}", callstack: cs)
         end
       end
