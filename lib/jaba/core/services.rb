@@ -116,7 +116,7 @@ module JABA
       @in_attr_default_block = false
 
       @top_level_api = JDL_TopLevel.new(self)
-      @default_attr_type = JabaAttributeType.new(JabaDefinition.new(self, nil, nil, caller_locations(0, 1)[0])).freeze
+      @default_attr_type = JabaAttributeType.new(make_definition(nil, nil, caller_locations(0, 1)[0])).freeze
       @file_manager = FileManager.new(self)
     end
 
@@ -284,6 +284,12 @@ module JABA
     
     ##
     #
+    def make_definition(id, block, call_loc)
+      JabaDefinition.new(self, id, block, call_loc)
+    end
+
+    ##
+    #
     def make_top_level_type(handle, definition)
       log "Instancing top level JabaType [handle=#{handle}]"
 
@@ -327,7 +333,7 @@ module JABA
       if existing
         jaba_error("Attribute type '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_describe}.")
       end
-      @attr_type_defs << JabaDefinition.new(self, id, block, caller_locations(2, 1)[0])
+      @attr_type_defs << make_definition(id, block, caller_locations(2, 1)[0])
       nil
     end
 
@@ -354,7 +360,7 @@ module JABA
       if existing
         jaba_error("Attribute flag '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_describe}.")
       end
-      @attr_flag_defs << JabaDefinition.new(self, id, block, caller_locations(2, 1)[0])
+      @attr_flag_defs << make_definition(id, block, caller_locations(2, 1)[0])
       nil
     end
 
@@ -378,7 +384,7 @@ module JABA
       if existing
         jaba_error("Type '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_describe}.")
       end
-      d = JabaDefinition.new(self, id, block, caller_locations(2, 1)[0])
+      d = make_definition(id, block, caller_locations(2, 1)[0])
       if id == :globals
         @jaba_type_defs.prepend(d)
       else
@@ -401,7 +407,7 @@ module JABA
         jaba_error("Shared definition '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_describe}.")
       end
 
-      @shared_def_lookup[id] = JabaDefinition.new(self, id, block, caller_locations(2, 1)[0])
+      @shared_def_lookup[id] = make_definition(id, block, caller_locations(2, 1)[0])
       nil
     end
 
@@ -466,7 +472,7 @@ module JABA
       if existing
         jaba_error("Defaults block '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_describe}.")
       end
-      @default_defs << JabaDefinition.new(self, id, block, caller_locations(2, 1)[0])
+      @default_defs << make_definition(id, block, caller_locations(2, 1)[0])
       nil
     end
 
@@ -503,7 +509,7 @@ module JABA
       if existing
         jaba_error("Translator block '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_describe}.")
       end
-      @translator_defs << JabaDefinition.new(self, id, block, caller_locations(2, 1)[0])
+      @translator_defs << make_definition(id, block, caller_locations(2, 1)[0])
       nil
     end
 
@@ -527,19 +533,19 @@ module JABA
       case what
       when :type
         log "  Opening type [id=#{id}]"
-        @open_type_defs << JabaDefinition.new(self, id, block, call_loc)
+        @open_type_defs << make_definition(id, block, call_loc)
       when :instance
         log "  Opening instance [id=#{id} type=#{type}]"
         jaba_error("type is required") if type.nil?
-        d = JabaDefinition.new(self, id, block, call_loc)
+        d = make_definition(id, block, call_loc)
         d.instance_variable_set(:@jaba_type_id, type)
         @open_instance_defs << d
       when :translator
         log "  Opening translator [id=#{id}]"
-        @open_translator_defs << JabaDefinition.new(self, id, block, call_loc)
+        @open_translator_defs << make_definition(id, block, call_loc)
       when :shared
         log "  Opening shared definition [id=#{id}]"
-        @open_shared_defs << JabaDefinition.new(self, id, block, call_loc)
+        @open_shared_defs << make_definition(id, block, call_loc)
       end
       nil
     end

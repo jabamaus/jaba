@@ -44,7 +44,7 @@ module JABA
       validate_id(id)
       id = id.to_sym
       
-      db = JabaDefinition.new(services, id, block, caller_locations(2, 1)[0])
+      db = services.make_definition(id, block, caller_locations(2, 1)[0])
       ad = JabaAttributeDefinition.new(db, type, variant, self)
       
       @attribute_defs << ad
@@ -152,7 +152,7 @@ module JABA
     ##
     #
     def open_sub_type(id, &block)
-      @open_sub_type_defs << JabaDefinition.new(services, sid, block, caller_locations(2, 1)[0])
+      @open_sub_type_defs << services.make_definition(sid, block, caller_locations(2, 1)[0])
     end
 
     ##
