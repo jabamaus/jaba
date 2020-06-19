@@ -7,6 +7,8 @@ module JABA
   class PropertyContainer
     include PropertyMethods
 
+    attr_reader :services
+    
     def initialize(on_prop_set: false)
       super()
       @services = Services.new

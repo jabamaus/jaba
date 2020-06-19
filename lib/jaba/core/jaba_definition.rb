@@ -10,6 +10,7 @@ module JABA
   #
   class JabaDefinition
 
+    attr_reader :services
     attr_reader :id
     attr_reader :block
     attr_reader :source_file # Absolute path to the file definition defined in
@@ -56,7 +57,7 @@ module JABA
       when :rel_jaba_root
         "#{@source_file.relative_path_from(JABA.jaba_root_dir)}:#{@source_line}"
       else
-        @services.jaba_error("Unsupported style '#{style}'")
+        services.jaba_error("Unsupported style '#{style}'")
       end
     end
     

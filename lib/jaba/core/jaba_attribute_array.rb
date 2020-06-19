@@ -12,7 +12,7 @@ module JABA
     
     ##
     #
-    def initialize(services, attr_def, node)
+    def initialize(attr_def, node)
       super
       @elems = []
       @excludes = []
@@ -41,8 +41,8 @@ module JABA
       @last_call_location = api_call_loc if api_call_loc
       if !@set
         if @default_block
-          return @services.execute_attr_default_block(@node, @default_block)
-        elsif @services.in_attr_default_block?
+          return services.execute_attr_default_block(@node, @default_block)
+        elsif services.in_attr_default_block?
           jaba_error("Cannot read uninitialised #{describe}")
         end
       end
@@ -75,7 +75,7 @@ module JABA
           jaba_warning("When setting #{describe} stripping duplicate value '#{v.inspect_unquoted}'. See previous at #{existing.last_call_loc_basename}. " \
             "Flag with :allow_dupes to allow.")
         else
-          elem = JabaAttributeElement.new(@services, @attr_def, @node)
+          elem = JabaAttributeElement.new(@attr_def, @node)
           v = apply_pre_post_fix(prefix, postfix, v)
           elem.set(v, *args, __api_call_loc: __api_call_loc, **keyvalue_args)
           @elems << elem
@@ -96,7 +96,7 @@ module JABA
     #
     def finalise
       return if !@default_block
-      val = @services.execute_attr_default_block(@node, @default_block)
+      val = services.execute_attr_default_block(@node, @default_block)
       set(val)
     end
 
@@ -109,7 +109,7 @@ module JABA
       f_options = other.flag_options
       val = Marshal.load(Marshal.dump(other.raw_value))
 
-      elem = JabaAttributeElement.new(@services, @attr_def, @node)
+      elem = JabaAttributeElement.new(@attr_def, @node)
       elem.set(val, *f_options, validate: false, __resolve_ref: false, **value_options)
       
       @elems << elem

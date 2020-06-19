@@ -19,21 +19,21 @@ module JABA
       super
       @vcxproj_file = "#{@projroot}/#{@projname}.vcxproj"
       @vcxproj_filters_file = "#{@vcxproj_file}.filters"
-      @file_type_hash = @services.globals_node.get_attr(:vcfiletype).value
+      @file_type_hash = services.globals_node.get_attr(:vcfiletype).value
       @guid = JABA.generate_guid(namespace: 'JABA', name: @projname)
 
       # Call translator for this platform to initialse project level Visual Studio-specific attributes
       # (vcglobals), based on cross platform definition.
       #
       platform = @node.attrs.platform
-      t = @services.get_translator("vcxproj_#{platform}".to_sym)
+      t = services.get_translator("vcxproj_#{platform}".to_sym)
       t.execute(node: @node, args: [self])
       
       # Call translator to initialise configuration level Visual Studio-specific attributes (vcproperty)
       # based on cross platform definition.
       #
       each_config do |cfg|
-        t = @services.get_translator("vcxproj_config_#{platform}".to_sym)
+        t = services.get_translator("vcxproj_config_#{platform}".to_sym)
         t.execute(node: cfg, args: [self, cfg.attrs.type], &t.definition.block)
 
         # Build events. Standard across platforms.
@@ -104,9 +104,9 @@ module JABA
     # See https://docs.microsoft.com/en-us/cpp/build/reference/vcxproj-file-structure?view=vs-2019
     #
     def write_vcxproj
-      @services.log "Generating #{@vcxproj_file}", section: true
+      services.log "Generating #{@vcxproj_file}", section: true
       
-      file = @services.file_manager.new_file(@vcxproj_file, eol: :windows, encoding: 'UTF-8', capacity: 128 * 1024)
+      file = services.file_manager.new_file(@vcxproj_file, eol: :windows, encoding: 'UTF-8', capacity: 128 * 1024)
       
       w = file.writer
       c = 32 * 1024
@@ -238,7 +238,7 @@ module JABA
     # See https://docs.microsoft.com/en-us/cpp/build/reference/vcxproj-filters-files?view=vs-2019
     #
     def write_vcxproj_filters
-      file = @services.file_manager.new_file(@vcxproj_filters_file, eol: :windows, encoding: 'UTF-8', capacity: 16 * 1024)
+      file = services.file_manager.new_file(@vcxproj_filters_file, eol: :windows, encoding: 'UTF-8', capacity: 16 * 1024)
       w = file.writer
 
       write_xml_version(w)

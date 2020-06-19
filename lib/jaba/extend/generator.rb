@@ -11,8 +11,7 @@ module JABA
   #
   class Generator
     
-    ##
-    #
+    attr_reader :services
     attr_reader :type_id # eg :cpp, :text
     attr_reader :root_nodes
     attr_reader :source_file
@@ -69,7 +68,7 @@ module JABA
     ##
     #
     def get_generator(top_level_type_id)
-      @services.get_generator(top_level_type_id)
+      services.get_generator(top_level_type_id)
     end
 
     ##
@@ -92,7 +91,7 @@ module JABA
         handle = "#{@current_definition.id}"
       end
 
-      @services.log "#{'  ' * depth}Instancing node [type=#{type_id}, handle=#{handle}]"
+      services.log "#{'  ' * depth}Instancing node [type=#{type_id}, handle=#{handle}]"
 
       if node_from_handle(handle, fail_if_not_found: false)
         jaba_error("Duplicate node handle '#{handle}'")
@@ -104,7 +103,7 @@ module JABA
         @top_level_jaba_type
       end
 
-      jn = JabaNode.new(@services, @current_definition, jt, handle, parent, depth)
+      jn = JabaNode.new(@current_definition, jt, handle, parent, depth)
 
       @nodes << jn
       @node_lookup[handle] = jn
@@ -160,7 +159,7 @@ module JABA
       attr_def = attr.attr_def
       node = attr.node
       rt = attr_def.referenced_type
-      rjt = @services.get_top_level_jaba_type(rt) # TOO: improve. Maybe expand referenced_type into a JabaType earlier
+      rjt = services.get_top_level_jaba_type(rt) # TOO: improve. Maybe expand referenced_type into a JabaType earlier
       if ignore_if_same_type && rt == node.jaba_type.defn_id
         @reference_attrs_to_resolve << attr
         return ref_node_id
@@ -186,13 +185,13 @@ module JABA
     ##
     #
     def jaba_warning(...)
-      @services.jaba_warning(...)
+      services.jaba_warning(...)
     end
 
     ##
     #
     def jaba_error(...)
-      @services.jaba_error(...)
+      services.jaba_error(...)
     end
 
     ##
@@ -220,7 +219,7 @@ module JABA
     #
     def make_project(klass, node, root)
       klass = klass.string? ? JABA.const_get(klass) : klass
-      p = klass.new(@services, self, node, root)
+      p = klass.new(self, node, root)
       p.init
       @node_to_project[node] = p
       p
@@ -275,7 +274,7 @@ module JABA
     # TODO: extra checking.
     def process
       super
-      @services.instance_variable_set(:@globals_node, @root_nodes.first)
+      services.instance_variable_set(:@globals_node, @root_nodes.first)
     end
 
   end

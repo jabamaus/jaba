@@ -34,7 +34,7 @@ module JABA
     #
     def define_property(p_id, val = nil)
       if @properties.key?(p_id)
-        @services.jaba_error("'#{p_id}' property multiply defined")
+        services.jaba_error("'#{p_id}' property multiply defined")
       end
       @properties[p_id] = nil
       instance_variable_set(PropertyMethods.get_var(p_id), val)
@@ -50,12 +50,12 @@ module JABA
     #
     def set_property(p_id, val = nil, &block)
       if !@properties.key?(p_id)
-        @services.jaba_error("Failed to set undefined '#{p_id}' property")
+        services.jaba_error("Failed to set undefined '#{p_id}' property")
       end
 
       if block_given?
         if !val.nil?
-          @services.jaba_error('Must provide a default value or a block but not both')
+          services.jaba_error('Must provide a default value or a block but not both')
         end
         val = block
         if pre_property_set(p_id, val) != :ignore
@@ -81,7 +81,7 @@ module JABA
           # a property to become either single value or array, depending on how it is first initialised.
           #
           if !current_val.nil? && val.array?
-            @services.jaba_error("'#{p_id}' property cannot accept an array")
+            services.jaba_error("'#{p_id}' property cannot accept an array")
           end
           if pre_property_set(p_id, val) != :ignore
             instance_variable_set(PropertyMethods.get_var(p_id), val)
@@ -108,7 +108,7 @@ module JABA
     #
     def get_property(p_id)
       if !@properties.key?(p_id)
-        @services.jaba_error("Failed to get undefined '#{p_id}' property")
+        services.jaba_error("Failed to get undefined '#{p_id}' property")
       end
       instance_variable_get(PropertyMethods.get_var(p_id))
     end

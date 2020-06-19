@@ -10,8 +10,8 @@ module JABA
 
     ##
     #
-    def initialize(services, definition)
-      super(services, definition, JDL_Translator.new(self))
+    def initialize(definition)
+      super(definition, JDL_Translator.new(self))
     end
 
     ##

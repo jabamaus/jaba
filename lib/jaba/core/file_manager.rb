@@ -106,6 +106,7 @@ module JABA
   #
   class FileManager
     
+    attr_reader :services
     attr_reader :added
     attr_reader :modified
     attr_reader :generated
@@ -137,7 +138,7 @@ module JABA
       fn = file.filename
 
       if file.str.empty?
-        @services.jaba_warning("'#{fn}' is empty")
+        services.jaba_warning("'#{fn}' is empty")
       end
 
       status = nil
@@ -155,19 +156,19 @@ module JABA
         end
 
         if @generated_tracker.key?(fn)
-          @services.jaba_error("Duplicate filename '#{fn}' detected")
+          services.jaba_error("Duplicate filename '#{fn}' detected")
         end
         @generated << fn
         @generated_tracker[fn] = nil
       end
 
-      if @services.input.dry_run?
-        @services.log "Not writing #{fn} [dry run]"
+      if services.input.dry_run?
+        services.log "Not writing #{fn} [dry run]"
       else
         if status
-          @services.log "Writing #{fn} [#{status}]"
+          services.log "Writing #{fn} [#{status}]"
         else
-          @services.log "Writing #{fn}"
+          services.log "Writing #{fn}"
         end
 
         dir = fn.dirname
@@ -192,7 +193,7 @@ module JABA
             return nil
           end
         else
-          @services.log "Reading #{fn}"
+          services.log "Reading #{fn}"
           str = IO.binread(fn)
           str.force_encoding(encoding) if encoding
           str.freeze # Don't want cache entries being inadvertently modified

@@ -19,8 +19,8 @@ module JABA
     
     ##
     #
-    def initialize(services, definition, jaba_type, handle, parent, depth)
-      super(services, definition, JDL_Node.new(self))
+    def initialize(definition, jaba_type, handle, parent, depth)
+      super(definition, JDL_Node.new(self))
 
       @jaba_type = jaba_type # Won't always be the same as the JabaType in definition
       @handle = handle
@@ -43,11 +43,11 @@ module JABA
       jaba_type.attribute_defs.each do |attr_def|
         a = case attr_def.variant
             when :single
-              JabaAttributeSingle.new(services, attr_def, self)
+              JabaAttributeSingle.new(attr_def, self)
             when :array
-              JabaAttributeArray.new(services, attr_def, self)
+              JabaAttributeArray.new(attr_def, self)
             when :hash
-              JabaAttributeHash.new(services, attr_def, self)
+              JabaAttributeHash.new(attr_def, self)
             end
         @attributes << a
         @attribute_lookup[attr_def.defn_id] = a
@@ -213,7 +213,7 @@ module JABA
           if !attr_def
             jaba_error("'#{id}' attribute not defined")
           elsif attr_def.reference?
-            null_node = @services.get_null_node(attr_def.referenced_type)
+            null_node = services.get_null_node(attr_def.referenced_type)
             return null_node.attrs_read_only
           end
           return nil

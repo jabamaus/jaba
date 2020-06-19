@@ -12,7 +12,7 @@ module JABA
     
     ##
     #
-    def initialize(services, attr_def, node)
+    def initialize(attr_def, node)
       super
       @hash = {}
       if attr_def.default_set? && !@default_block
@@ -43,8 +43,8 @@ module JABA
       @last_call_location = api_call_loc if api_call_loc
       if !@set
         if @default_block
-          return @services.execute_attr_default_block(@node, @default_block)
-        elsif @services.in_attr_default_block?
+          return services.execute_attr_default_block(@node, @default_block)
+        elsif services.in_attr_default_block?
           jaba_error("Cannot read uninitialised #{describe}")
         end
       end
@@ -71,7 +71,7 @@ module JABA
       #
       val = block_given? ? @node.eval_jdl(&block) : args.shift
 
-      elem = JabaAttributeElement.new(@services, @attr_def, @node)
+      elem = JabaAttributeElement.new(@attr_def, @node)
       elem.set(val, *args, __api_call_loc: __api_call_loc, __key: key, **keyvalue_args)
 
       @hash[key] = elem
@@ -85,7 +85,7 @@ module JABA
     #
     def finalise
       return if !@default_block
-      val = @services.execute_attr_default_block(@node, @default_block)
+      val = services.execute_attr_default_block(@node, @default_block)
       val.each do |k, v|
         set(k, v)
       end
@@ -101,7 +101,7 @@ module JABA
       key = value_options[:__key]
       val = Marshal.load(Marshal.dump(other.raw_value))
 
-      elem = JabaAttributeElement.new(@services, @attr_def, @node)
+      elem = JabaAttributeElement.new(@attr_def, @node)
       elem.set(val, *f_options, validate: false, __resolve_ref: false, **value_options)
       
       @hash[key] = elem

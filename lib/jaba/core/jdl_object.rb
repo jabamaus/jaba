@@ -12,19 +12,23 @@ module JABA
     
     include HookMethods
     
-    attr_reader :services
     attr_reader :definition
     attr_reader :api
     attr_reader :defn_id # As specified by user in definition files.
 
     ##
     #
-    def initialize(services, definition, api_object)
+    def initialize(definition, api_object)
       super()
-      @services = services
       @definition = definition
       @defn_id = definition.id
       @api = api_object
+    end
+
+    ##
+    #
+    def services
+      @definition.services
     end
 
     ##
@@ -36,13 +40,13 @@ module JABA
     ##
     #
     def jaba_warning(...)
-      @services.jaba_warning(...)
+      services.jaba_warning(...)
     end
 
     ##
     #
     def jaba_error(...)
-      @services.jaba_error(...)
+      services.jaba_error(...)
     end
     
     ##
@@ -59,9 +63,9 @@ module JABA
     ##
     #
     def include_shared(id, args)
-      @services.log "  Including shared definition [id=#{id}]"
+      services.log "  Including shared definition [id=#{id}]"
 
-      sd = @services.get_shared_definition(id)
+      sd = services.get_shared_definition(id)
       
       n_expected = sd.block.arity
       n_actual = args ? Array(args).size : 0

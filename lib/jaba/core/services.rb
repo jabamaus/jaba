@@ -116,7 +116,7 @@ module JABA
       @in_attr_default_block = false
 
       @top_level_api = JDL_TopLevel.new(self)
-      @default_attr_type = JabaAttributeType.new(self, JabaDefinition.new(self, nil, nil, caller_locations(0, 1)[0])).freeze
+      @default_attr_type = JabaAttributeType.new(JabaDefinition.new(self, nil, nil, caller_locations(0, 1)[0])).freeze
       @file_manager = FileManager.new(self)
     end
 
@@ -180,13 +180,13 @@ module JABA
       # Create attribute types
       #
       @attr_type_defs.each do |d|
-        @jaba_attr_types << JabaAttributeType.new(self, d)
+        @jaba_attr_types << JabaAttributeType.new(d)
       end
       
       # Create attribute flags, which are used in attribute definitions
       #
       @attr_flag_defs.each do |d|
-        @jaba_attr_flags << JabaAttributeFlag.new(self, d)
+        @jaba_attr_flags << JabaAttributeFlag.new(d)
       end
 
       # Create JabaTypes and any associated Generators
@@ -243,7 +243,7 @@ module JABA
       # Create translators
       #
       @translator_defs.each do |d|
-        t = Translator.new(self, d)
+        t = Translator.new(d)
         @translators[d.id] = t
       end
 
@@ -291,7 +291,7 @@ module JABA
         jaba_error("'#{handle}' jaba type multiply defined")
       end
 
-      jt = TopLevelJabaType.new(self, definition, handle)
+      jt = TopLevelJabaType.new(definition, handle)
 
       @top_level_jaba_types  << jt
       @jaba_type_lookup[handle] = jt
@@ -558,7 +558,7 @@ module JABA
       nn = @null_nodes[type_id]
       if !nn
         jt = get_top_level_jaba_type(type_id)
-        nn = JabaNode.new(self, jt.definition, jt, "Null#{jt.defn_id}", nil, 0)
+        nn = JabaNode.new(jt.definition, jt, "Null#{jt.defn_id}", nil, 0)
         @null_nodes[type_id] = nn
       end
       nn

@@ -16,13 +16,18 @@ module JABA
     
     ##
     #
-    def initialize(services, attr_def, node)
-      @services = services
+    def initialize(attr_def, node)
       @attr_def = attr_def
       @node = node
       @last_call_location = nil
       @set = false
       @default_block = @attr_def.default_block
+    end
+
+    ##
+    #
+    def services
+      @node.services
     end
 
     ##
@@ -67,14 +72,14 @@ module JABA
     #
     def jaba_warning(msg)
       cs = @last_call_location ? @last_call_location : @attr_def.definition.src_loc_raw
-      @services.jaba_warning(msg, callstack: cs)
+      services.jaba_warning(msg, callstack: cs)
     end
 
     ##
     #
     def jaba_error(msg)
       cs = @last_call_location ? @last_call_location : @attr_def.definition.src_loc_raw
-      @services.jaba_error(msg, callstack: cs)
+      services.jaba_error(msg, callstack: cs)
     end
     
   end
@@ -88,7 +93,7 @@ module JABA
 
     ##
     #
-    def initialize(services, attr_def, node)
+    def initialize(attr_def, node)
       super
       @value = nil
       @flag_options = nil
@@ -175,14 +180,14 @@ module JABA
 
       if validate && !new_value.nil?
         begin
-          @services.set_warn_object(@last_call_location) do
+          services.set_warn_object(@last_call_location) do
             @attr_def.jaba_attr_type.call_hook(:validate_value, new_value, receiver: @attr_def)
             @attr_def.call_hook(:validate, new_value, @flag_options, **@value_options)
           end
         rescue JDLError => e
           cs = [e.backtrace[0]]
           cs << (@last_call_location ? @last_call_location : @attr_def.definition.src_loc_raw)
-          @services.jaba_error("#{describe} failed validation: #{e.raw_message}", callstack: cs)
+          services.jaba_error("#{describe} failed validation: #{e.raw_message}", callstack: cs)
         end
       end
 
@@ -269,7 +274,7 @@ module JABA
 
     ##
     #
-    def initialize(services, attr_def, node)
+    def initialize(attr_def, node)
       super
       
       if attr_def.default_set? && !@default_block
@@ -284,7 +289,7 @@ module JABA
     #
     def finalise
       return if !@default_block || @set
-      val = @services.execute_attr_default_block(@node, @default_block)
+      val = services.execute_attr_default_block(@node, @default_block)
       set(val)
     end
 
@@ -296,8 +301,8 @@ module JABA
       @last_call_location = api_call_loc if api_call_loc
       if !@set
         if @default_block
-          @services.execute_attr_default_block(@node, @default_block)
-        elsif @services.in_attr_default_block?
+          services.execute_attr_default_block(@node, @default_block)
+        elsif services.in_attr_default_block?
           jaba_error("Cannot read uninitialised #{describe}")
         else
           nil

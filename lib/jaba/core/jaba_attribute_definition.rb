@@ -34,8 +34,8 @@ module JABA
     
     ##
     #
-    def initialize(services, definition, type_id, variant, jaba_type)
-      super(services, definition, JDL_AttributeDefinition.new(self))
+    def initialize(definition, type_id, variant, jaba_type)
+      super(definition, JDL_AttributeDefinition.new(self))
       
       @type_id = type_id
       @variant = variant
@@ -54,9 +54,9 @@ module JABA
       
       define_hook(:validate)
       
-      @jaba_attr_type = @services.get_attribute_type(@type_id)
+      @jaba_attr_type = services.get_attribute_type(@type_id)
       
-      @services.set_warn_object(self) do
+      services.set_warn_object(self) do
         @jaba_attr_type.call_hook(:init_attr_def, receiver: self)
       end
 
@@ -183,7 +183,7 @@ module JABA
           jaba_warning("Duplicate flag '#{f.inspect_unquoted}' specified in #{describe}")
           return :ignore
         end
-        @jaba_attr_flags << @services.get_attribute_flag(f) # check flag exists
+        @jaba_attr_flags << services.get_attribute_flag(f) # check flag exists
       when :flag_options
         f = incoming
         if !f.symbol?
@@ -224,12 +224,12 @@ module JABA
         #jaba_error("requires a title")
       end
 
-      @services.set_warn_object(self) do
+      services.set_warn_object(self) do
         @jaba_attr_type.call_hook(:post_init_attr_def, receiver: self)
       end
  
       if @default_set && !@default_block
-        @services.set_warn_object(self) do
+        services.set_warn_object(self) do
           case @variant
           when :single
             @jaba_attr_type.call_hook(:validate_value, @default, receiver: self)
@@ -247,7 +247,7 @@ module JABA
 
       @jaba_attr_flags.each do |jaf|
         begin
-          @services.set_warn_object(self) do
+          services.set_warn_object(self) do
             jaf.call_hook(:compatibility, receiver: self)
           end
         rescue JDLError => e

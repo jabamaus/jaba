@@ -22,8 +22,8 @@ module JABA
 
     ##
     #
-    def initialize(services, definition, handle, top_level_type)
-      super(services, definition, JDL_Type.new(self))
+    def initialize(definition, handle, top_level_type)
+      super(definition, JDL_Type.new(self))
 
       @handle = handle
       @top_level_type = top_level_type
@@ -39,13 +39,13 @@ module JABA
     ##
     #
     def define_attr(id, variant, type: nil, &block)
-      @services.log "  Defining '#{id}' attribute [variant=#{variant}, type=#{type}]"
+      services.log "  Defining '#{id}' attribute [variant=#{variant}, type=#{type}]"
       
       validate_id(id)
       id = id.to_sym
       
-      db = JabaDefinition.new(@services, id, block, caller_locations(2, 1)[0])
-      ad = JabaAttributeDefinition.new(@services, db, type, variant, self)
+      db = JabaDefinition.new(services, id, block, caller_locations(2, 1)[0])
+      ad = JabaAttributeDefinition.new(db, type, variant, self)
       
       @attribute_defs << ad
 
@@ -84,11 +84,11 @@ module JABA
 
     ##
     #
-    def initialize(services, definition, handle)
-      super(services, definition, handle, self)
+    def initialize(definition, handle)
+      super(definition, handle, self)
 
       init_generator
-      @defaults_definition = @services.get_defaults_definition(@defn_id)
+      @defaults_definition = services.get_defaults_definition(@defn_id)
 
       @all_attr_defs = {}
       @sub_types = []
@@ -127,7 +127,7 @@ module JABA
         jaba_error "#{klass} must be a subclass of Generator class"
       end
 
-      @generator = klass.new(@services, self)
+      @generator = klass.new(services, self)
     end
 
     ##
@@ -140,7 +140,7 @@ module JABA
       # When something wants to ask it its definition id it is more helpful to return the id of the
       # top level definition than its local id, which nothing external to JabaType is interested in.
       #
-      st = JabaType.new(@services, @definition, id, self)
+      st = JabaType.new(@definition, id, self)
       if block_given?
         st.eval_jdl(&block)
       end
@@ -152,7 +152,7 @@ module JABA
     ##
     #
     def open_sub_type(id, &block)
-      @open_sub_type_defs << JabaDefinition.new(@services, sid, block, caller_locations(2, 1)[0])
+      @open_sub_type_defs << JabaDefinition.new(services, sid, block, caller_locations(2, 1)[0])
     end
 
     ##
@@ -224,7 +224,7 @@ module JABA
       # Convert dependencies specified as ids to jaba type objects
       #
       @dependencies.uniq!
-      @dependencies.map! {|dep| @services.get_top_level_jaba_type(dep)}
+      @dependencies.map! {|dep| services.get_top_level_jaba_type(dep)}
     end
 
 
