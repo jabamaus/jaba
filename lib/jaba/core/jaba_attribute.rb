@@ -122,7 +122,7 @@ module JABA
     
     ##
     #
-    def set(*args, __api_call_loc: nil, validate: true, __resolve_ref: true, **key_val_args, &block)
+    def set(*args, __api_call_loc: nil, validate: true, __resolve_ref: true, **keyval_args, &block)
       @last_call_location = __api_call_loc if __api_call_loc
 
       # Check for read only if calling from definitions, or if not calling from definitions but from library code,
@@ -141,7 +141,7 @@ module JABA
 
       # Take a deep copy of value_options so they are private to this attribute
       #
-      @value_options = key_val_args.empty? ? {} : Marshal.load(Marshal.dump(key_val_args))
+      @value_options = keyval_args.empty? ? {} : Marshal.load(Marshal.dump(keyval_args))
 
       if new_value.is_a?(Enumerable)
         jaba_error("#{describe} must be a single value not a '#{new_value.class}'")
