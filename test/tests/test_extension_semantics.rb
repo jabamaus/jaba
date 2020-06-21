@@ -82,31 +82,8 @@ module JABA
       end
     end
     
-    # TODO: extend
     it 'supports defining new attribute types' do
-      check_fail(/'undefined' attribute type is undefined. Valid types: \[.*?\]/, line: [__FILE__, 'tagK']) do
-        jaba(barebones: true) do
-          define :a do
-            attr :b, type: :undefined # tagK
-          end
-        end
-      end
-      check_fail "'b' attribute failed validation: Invalid", line: [__FILE__, 'tagD'], trace: [__FILE__, 'tagO'] do 
-        jaba(barebones: true) do
-          attr_type :a do
-            validate_value do
-              fail 'invalid' # tagD'
-            end
-          end
-          define :test do
-            attr :b, type: :a do
-            end
-          end
-          test :t do
-            b 'c' # tagO
-          end
-        end
-      end
+      # TODO
     end
     
     it 'supports defining new attribute flags' do

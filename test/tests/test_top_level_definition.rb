@@ -56,9 +56,6 @@ module JABA
     
     it 'allows definition id to be accessed from all definitions' do
       jaba(barebones: true) do
-        attr_type :v do
-          id.must_equal(:v)
-        end
         attr_flag :f do
           id.must_equal(:f)
         end

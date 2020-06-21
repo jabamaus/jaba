@@ -54,13 +54,6 @@ module JABA
     ##
     # EXTENSION API
     #
-    def attr_type(id, &block)
-      @services.define_attr_type(id, &block)
-    end
-    
-    ##
-    # EXTENSION API
-    #
     def attr_flag(id, &block)
       @services.define_attr_flag(id, &block)
     end

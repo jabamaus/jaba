@@ -102,7 +102,7 @@ module JABA
       @instance_def_lookup = {}
       @shared_def_lookup = {}
 
-      @jaba_attr_types = []
+      @jaba_attr_types = {}
       @jaba_attr_flags = []
       @top_level_jaba_types = []
       @jaba_type_lookup = {}
@@ -116,7 +116,6 @@ module JABA
       @in_attr_default_block = false
 
       @top_level_api = JDL_TopLevel.new(self)
-      @default_attr_type = JabaAttributeType.new(make_definition(nil, nil, caller_locations(0, 1)[0])).freeze
       @file_manager = FileManager.new(self)
     end
 
@@ -179,10 +178,19 @@ module JABA
       
       # Create attribute types
       #
-      @attr_type_defs.each do |d|
-        @jaba_attr_types << JabaAttributeType.new(d)
-      end
-      
+      # TODO: genericise
+      @null_attr_type = JabaAttributeType.new
+      make_attr_type(JabaAttributeTypeString)
+      make_attr_type(JabaAttributeTypeSymbol)
+      make_attr_type(JabaAttributeTypeSymbolOrString)
+      make_attr_type(JabaAttributeTypeBool)
+      make_attr_type(JabaAttributeTypeChoice)
+      make_attr_type(JabaAttributeTypeFile)
+      make_attr_type(JabaAttributeTypeDir)
+      make_attr_type(JabaAttributeTypeSrcSpec)
+      make_attr_type(JabaAttributeTypeUUID)
+      make_attr_type(JabaAttributeTypeReference)
+
       # Create attribute flags, which are used in attribute definitions
       #
       @attr_flag_defs.each do |d|
@@ -290,6 +298,15 @@ module JABA
 
     ##
     #
+    def make_attr_type(klass)
+      at = klass.new
+      at.instance_variable_set(:@services, self)
+      @jaba_attr_types[at.id] = at
+      at
+    end
+
+    ##
+    #
     def make_top_level_type(handle, definition)
       log "Instancing top level JabaType [handle=#{handle}]"
 
@@ -325,27 +342,13 @@ module JABA
 
     ##
     #
-    def define_attr_type(id, &block)
-      jaba_error("id is required") if id.nil?
-      log "  Defining attr type [id=#{id}]"
-      validate_id(id)
-      existing = @attr_type_defs.find{|d| d.id == id}
-      if existing
-        jaba_error("Attribute type '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_describe}.")
-      end
-      @attr_type_defs << make_definition(id, block, caller_locations(2, 1)[0])
-      nil
-    end
-
-   ##
-    #
     def get_attribute_type(id)
       if id.nil?
-        return @default_attr_type
+        return @null_attr_type
       end
-      t = @jaba_attr_types.find {|at| at.defn_id == id}
+      t = @jaba_attr_types[id]
       if !t
-        jaba_error("'#{id}' attribute type is undefined. Valid types: #{@jaba_attr_types.map(&:defn_id)}")
+        jaba_error("'#{id}' attribute type is undefined. Valid types: #{@jaba_attr_types.values}")
       end
       t
     end
@@ -684,7 +687,7 @@ module JABA
       # Load core type definitions
       #
       if input.barebones?
-        [:attribute_flags, :attribute_types].each do |d|
+        [:attribute_flags].each do |d|
           @jdl_files << "#{modules_dir}/core/#{d}.jdl.rb"
         end
       else
@@ -778,7 +781,7 @@ module JABA
     # 2) From user definitions using the 'fail' API.
     # 3) From core library code. 
     #
-    def make_jaba_error(msg, syntax: false, callstack: nil, warn: false, user_error: false, include_api: false)
+    def make_jaba_error(msg, syntax: false, callstack: nil, warn: false, include_api: false)
       msg = msg.capitalize_first if msg.split.first !~ /_/
       
       error_line = nil
@@ -812,21 +815,13 @@ module JABA
         #
         lines.map!{|l| l.sub(/:in .*/, '')}
         
-        # If no references to jdl files assume the error came from internal library code and raise a RuntimeError,
-        # unless its specifically flagged as a user error, which can happen when validating jaba input, before any
-        # definitions are executed.
+        # There was nothing in the callstack linking the error to a JDL line. This could be because
+        # there is an internal error in jaba, or because the error was not raised properly (ie the
+        # context of the error was not passed in the 'callstack' option. Assume the former.
         #
         if lines.empty?
-          e = if user_error
-                e = JDLError.new(msg)
-                e.instance_variable_set(:@raw_message, msg)
-                e.instance_variable_set(:@file, nil)
-                e.instance_variable_set(:@line, nil)
-                e
-              else
-                RuntimeError.new(msg)
-              end
-          e.set_backtrace(backtrace.uniq)
+          e = RuntimeError.new(msg)
+          e.set_backtrace(backtrace)
           return e
         end
         
@@ -874,8 +869,8 @@ module JABA
       w << ""
 
       w << "- Attribute types"
-      @jaba_attr_types.each do |at|
-        w << "  - #{at.defn_id}"
+      @jaba_attr_types.values.each do |at|
+        w << "  - #{at.id}"
       end
 
       w << "- Attribute flags"

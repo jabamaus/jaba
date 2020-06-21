@@ -90,12 +90,6 @@ module JABA
     end
 
     ##
-    #
-    def jaba_type
-      @attr_def.jaba_type.api
-    end
-
-    ##
     # Returns attribute type id, eg :bool, :string, :choice, :reference, :file etc
     #
     def type

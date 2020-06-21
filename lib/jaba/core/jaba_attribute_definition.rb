@@ -57,7 +57,7 @@ module JABA
       @jaba_attr_type = services.get_attribute_type(@type_id)
       
       services.set_warn_object(self) do
-        @jaba_attr_type.call_hook(:init_attr_def, receiver: self)
+        @jaba_attr_type.init_attr_def(self)
       end
 
       if @definition.block
@@ -225,21 +225,21 @@ module JABA
       end
 
       services.set_warn_object(self) do
-        @jaba_attr_type.call_hook(:post_init_attr_def, receiver: self)
+        @jaba_attr_type.post_init_attr_def(self)
       end
  
       if @default_set && !@default_block
         services.set_warn_object(self) do
           case @variant
           when :single
-            @jaba_attr_type.call_hook(:validate_value, @default, receiver: self)
+            @jaba_attr_type.validate_value(self, @default)
           when :array
             @default.each do |elem|
-              @jaba_attr_type.call_hook(:validate_value, elem, receiver: self)
+              @jaba_attr_type.validate_value(self, elem)
             end
           when :hash
             @default.each_value do |elem|
-              @jaba_attr_type.call_hook(:validate_value, elem, receiver: self)
+              @jaba_attr_type.validate_value(self, elem)
             end
           end
         end

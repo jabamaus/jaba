@@ -5,8 +5,7 @@ module JABA
   class TestReferenceAttribute < JabaTest
     
     it 'requires referent type to be specified' do
-      check_fail "'b' attribute failed validation: 'referenced_type' must be set",
-        line: [ATTR_TYPES_JDL, "fail \"'referenced_type' must be set\""], trace: [__FILE__, 'tagP'] do
+      check_fail "'b' attribute failed validation: 'referenced_type' must be set", line: [__FILE__, 'tagP'] do
         jaba(barebones: true) do
           define :a do
             attr :b, type: :reference # tagP

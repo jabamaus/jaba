@@ -50,9 +50,7 @@ module JABA
     end
     
     it 'reports lines correctly when using shared modules' do
-      check_fail ':bool attributes only accept [true|false]', 
-                 line: [ATTR_TYPES_JDL, 'fail ":bool attributes only accept'],
-                 trace: [__FILE__, 'tagH'] do
+      check_fail ':bool attributes only accept [true|false]', line: [__FILE__, 'tagH'] do
         jaba(barebones: true) do
           define :test do
             attr :a, type: :bool
