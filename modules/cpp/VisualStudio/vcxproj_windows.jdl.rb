@@ -98,7 +98,7 @@ translator :vcxproj_config_windows do |proj, cfg_type|
       when :app, :dll
         :Windows
       else
-        raise "'#{type}' unhandled"
+        fail "'#{type}' unhandled"
       end
     end
   end

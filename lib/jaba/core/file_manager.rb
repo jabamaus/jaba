@@ -127,7 +127,7 @@ module JABA
     #
     def new_file(filename, eol: :unix, encoding: nil, capacity: nil, track: true)
       if !ValidEols.include?(eol)
-        raise "'#{eol.inspect}' is an invalid eol style. Valid values: #{ValidEols.inspect}"
+        @services.jaba_error("'#{eol.inspect}' is an invalid eol style. Valid values: #{ValidEols.inspect}")
       end
       JabaFile.new(self, filename.to_absolute(clean: true), encoding, eol, capacity, track)
     end
