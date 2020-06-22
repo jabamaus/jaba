@@ -32,7 +32,7 @@ module JABA
       
       # It validates default elements respect attribute type
       #
-      check_fail "'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagD'] do
+      check_fail "'a' attribute failed validation: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagD'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a, type: :symbol do # tagD
@@ -44,7 +44,7 @@ module JABA
 
       # It validates default elements respect attribute type when block form used
       #
-      check_fail "'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagW'] do
+      check_fail "'a' attribute failed validation: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagW'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a, type: :symbol do # tagW
