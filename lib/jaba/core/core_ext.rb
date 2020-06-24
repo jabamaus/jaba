@@ -166,7 +166,7 @@ module JABACoreExt
         end
       end
       if preserve_absolute_unix && absolute_unix_path?
-        result.unshift('/')
+        result.prepend('/')
       end
       result
     end
