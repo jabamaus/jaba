@@ -134,9 +134,11 @@ module JABA
         end
       end
 
-      @set = true
-
       new_value = block_given? ? @node.eval_jdl(&block) : args.shift
+
+      attr_type = @attr_def.jaba_attr_type
+      new_value = attr_type.map_value(new_value)
+
       @flag_options = args
 
       # Take a deep copy of value_options so they are private to this attribute
@@ -179,15 +181,13 @@ module JABA
       end
 
       if validate && !new_value.nil?
-        begin
-          services.set_warn_object(@last_call_location) do
-            @attr_def.jaba_attr_type.validate_value(@attr_def, new_value)
+        services.set_warn_object(@last_call_location) do
+          begin
+            attr_type.validate_value(@attr_def, new_value)
             @attr_def.call_hook(:validate, new_value, @flag_options, **@value_options)
+          rescue JDLError => e
+            jaba_error("#{describe} failed validation: #{e.raw_message}. See #{e.backtrace[0]}") # TODO: cleanup format of backtrace[0]
           end
-        rescue JDLError => e
-          cs = [e.backtrace[0]]
-          cs << (@last_call_location ? @last_call_location : @attr_def.definition.src_loc_raw)
-          services.jaba_error("#{describe} failed validation: #{e.raw_message}", callstack: cs)
         end
       end
 
@@ -204,6 +204,9 @@ module JABA
       else
         @value.freeze # Prevents value from being changed directly after it has been returned by 'value' method
       end
+
+      @set = true
+      nil
     end
 
     ##
@@ -301,7 +304,8 @@ module JABA
       @last_call_location = api_call_loc if api_call_loc
       if !@set
         if @default_block
-          services.execute_attr_default_block(@node, @default_block)
+          val = services.execute_attr_default_block(@node, @default_block)
+          @attr_def.jaba_attr_type.map_value(val)
         elsif services.in_attr_default_block?
           jaba_error("Cannot read uninitialised #{describe}")
         else

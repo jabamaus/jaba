@@ -43,7 +43,9 @@ module JABA
       @last_call_location = api_call_loc if api_call_loc
       if !@set
         if @default_block
-          return services.execute_attr_default_block(@node, @default_block)
+          default_hash = services.execute_attr_default_block(@node, @default_block)
+          at = @attr_def.jaba_attr_type
+          return default_hash.transform_values{|e| at.map_value(e)}
         elsif services.in_attr_default_block?
           jaba_error("Cannot read uninitialised #{describe}")
         end
@@ -56,38 +58,63 @@ module JABA
     end
     
     ##
-    # TODO: handle overwriting
-    def set(*args, __api_call_loc: nil, **keyvalue_args, &block)
+    #
+    def set(*args, no_keyval: false, __api_call_loc: nil, **keyval_args, &block)
       @last_call_location = __api_call_loc if __api_call_loc
       
-      # TODO: validate only key passed if block given
-      if args.size < 2 && !block_given?
-        jaba_error("#{describe} requires a key and a value")
+      key = nil
+      val = nil
+
+      # 
+      if !no_keyval
+        if args.empty?
+          jaba_error("#{describe} requires a key/value eg \"#{defn_id} :my_key, 'my value'\"")
+        end
+        key = args.shift
+
+        # If block given, use it to evaluate value
+        #
+        val = if block_given?
+          @node.eval_jdl(&block)
+        else
+          if args.empty?
+            jaba_error("#{describe} requires a key/value eg \"#{defn_id} :my_key, 'my value'\"")
+          end
+          args.shift
+        end
       end
-      
-      key = args.shift
 
-      # If block given, use it to evaluate value
+      # If attribute has not been set and there is a default that was specified in block form 'pull' the values in
+      # and merge them into the hash. Defaults specified in blocks are handled lazily to allow the default
+      # value to make use of other attributes.
       #
-      val = block_given? ? @node.eval_jdl(&block) : args.shift
+      if !@set && @default_block
+        default_hash = services.execute_attr_default_block(@node, @default_block)
+        if !default_hash.hash?
+          jaba_error("#{describe} default requires a hash not a '#{default_hash.class}'")
+        end
+        default_hash.each do |k, v|
+          insert_key(k, v, *args, **keyval_args)
+        end
+      end
 
-      elem = JabaAttributeElement.new(@attr_def, @node)
-      elem.set(val, *args, __api_call_loc: __api_call_loc, __key: key, **keyvalue_args)
+      # Insert key after defaults to enable defaults to be overwritten if desired
+      #
+      if !no_keyval
+        insert_key(key, val, *args, **keyval_args)
+      end
 
-      @hash[key] = elem
       @set = true
+      nil
     end
     
     ##
-    # If attribute's default value was specified as a block it is executed here, after the node has been created, since
-    # default blocks can be implemented in terms of other attributes. Note that the default block is always executed regardless
-    # of whether the user added hash elements as the behaviour of hash attributes is to always merge in new values.
+    # If the attribute was never set by the user and it has a default specified in block form ensure that the default value
+    # is applied. Call set with no args to achieve this.
     #
     def finalise
-      return if !@default_block
-      val = services.execute_attr_default_block(@node, @default_block)
-      val.each do |k, v|
-        set(k, v)
+      if !@set && @default_block
+        set(no_keyval: true)
       end
     end
 
@@ -96,15 +123,11 @@ module JABA
     # just clone raw value and options. Flags will be processed after, eg stripping duplicates.
     #
     def insert_clone(other)
-      value_options = other.value_options
+      v_options = other.value_options
       f_options = other.flag_options
-      key = value_options[:__key]
+      key = v_options[:__key]
       val = Marshal.load(Marshal.dump(other.raw_value))
-
-      elem = JabaAttributeElement.new(@attr_def, @node)
-      elem.set(val, *f_options, validate: false, __resolve_ref: false, **value_options)
-      
-      @hash[key] = elem
+      insert_key(key, val, *f_options, **v_options)
     end
     
     ##
@@ -136,6 +159,23 @@ module JABA
     #
     def process_flags
       # nothing yet
+    end
+
+  private
+
+    ##
+    #
+    def insert_key(key, val, *args, **keyval_args)
+      attr = JabaAttributeElement.new(@attr_def, @node)
+      attr.set(val, *args, __api_call_loc: @last_call_location, __key: key, **keyval_args)
+
+      # Log overwrites. This behaviour could be beefed up and customised with options if necessary
+      #
+      existing = @hash[key]
+      if existing
+        services.log("Overwriting '#{key}' hash key [old=#{existing.value}, new=#{val}] in #{describe}")
+      end
+      @hash[key] = attr
     end
 
   end

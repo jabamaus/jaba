@@ -198,10 +198,10 @@ module JABA
     # which act as options. eg my_attr 'val', :export, :exclude would make args equal to ['val', :opt1, :opt2]. If
     # however the value being passed in is an array it could be eg [['val1', 'val2'], :opt1, :opt2].
     #  
-    def handle_attr(id, *args, __api_call_loc: nil, __read_only: false, **keyvalue_args, &block)
+    def handle_attr(id, *args, __api_call_loc: nil, __read_only: false, **keyval_args, &block)
       # First determine if it is a set or a get operation
       #
-      is_get = (args.empty? && keyvalue_args.empty? && !block_given?)
+      is_get = (args.empty? && keyval_args.empty? && !block_given?)
 
       if is_get
         # If its a get operation, look for attribute in this node and all parent nodes
@@ -237,7 +237,7 @@ module JABA
           jaba_error("'#{id}' attribute is read only")
         end
         
-        a.set(*args, __api_call_loc: __api_call_loc, **keyvalue_args, &block)
+        a.set(*args, __api_call_loc: __api_call_loc, **keyval_args, &block)
         return nil
       end
     end
@@ -309,8 +309,8 @@ module JABA
     
     ##
     #
-    def method_missing(attr_id, *args, **keyvalue_args, &block)
-      @node.handle_attr(attr_id, *args, __read_only: @read_only, **keyvalue_args, &block)
+    def method_missing(attr_id, *args, **keyval_args, &block)
+      @node.handle_attr(attr_id, *args, __read_only: @read_only, **keyval_args, &block)
     end
    
   end

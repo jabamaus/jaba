@@ -21,8 +21,8 @@ module JABA
 
     ##
     #
-    def method_missing(attr_id, *args, **keyvalue_args, &block)
-      @jaba_node.handle_attr(attr_id, *args, __api_call_loc: ::Kernel.caller_locations(1, 1)[0], **keyvalue_args, &block)
+    def method_missing(attr_id, *args, **keyval_args, &block)
+      @jaba_node.handle_attr(attr_id, *args, __api_call_loc: ::Kernel.caller_locations(1, 1)[0], **keyval_args, &block)
     end
 
     ##

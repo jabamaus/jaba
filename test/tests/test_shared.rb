@@ -35,9 +35,7 @@ module JABA
         end
         test :t do
           a [3, 2, 1]
-          generate do
-            attrs.a.must_equal [3, 2, 1]
-          end
+          a.must_equal [3, 2, 1]
         end
       end
     end

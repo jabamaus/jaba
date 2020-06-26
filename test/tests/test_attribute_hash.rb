@@ -4,32 +4,89 @@ module JABA
 
   class TestAttributeHash < JabaTest
 
-    it 'defaults to empty hash' do
+    it 'supports a default' do
       jaba(barebones: true) do
         define :test do
-          attr_hash :a
-        end
-        test :t do
-          a.must_equal({})
-        end
-      end
-    end
-
-    it 'can have a default' do
-      jaba(barebones: true) do
-        define :test do
+          attr :single1 do
+            default 1
+          end
+          attr :single2
           attr_hash :a do
-            default({k: :v})
+            flag_options :opt1, :opt2
+          end
+          attr_hash :b do
+            default({k: :v}) # value style default
+            flag_options :opt1, :opt2
+            value_option :vopt
+          end
+          attr_hash :c do
+            default do # block style default
+              { k1: 1, k2: 2 }
+            end
+            flag_options :opt1, :opt2
+          end
+          attr_hash :d do
+            default do # block style default that references other attributes
+              { k1: single1, k2: single2 }
+            end
+            flag_options :opt1, :opt2
           end
         end
         test :t do
-          a[:k].must_equal(:v)
+          a.must_equal({})
+          
+          b[:k].must_equal(:v)
+          b.must_equal({k: :v})
+
+          c.must_equal({k1: 1, k2: 2})
+
+          single2 2
+          d.must_equal({k1: 1, k2: 2})
+
+          # test that defaults can be overridden
+          #
+          single1 3
+          single1.must_equal(3)
+
+          a :k, :v, :opt1
           a.must_equal({k: :v})
+
+          b :k, :v3, :opt1 # keep same key but overwrite value
+          b :k2, :v2, :opt1, vopt: 1
+          b :k3, :v3, :opt2
+          b.must_equal({k: :v3, k2: :v2, k3: :v3}) # New key value gets merged in with default
+
+          c :k3, :v3, :opt1
+          c :k4, :v4, :opt2
+          c.must_equal({k1: 1, k2: 2, k3: :v3, k4: :v4}) # New key value gets merged in with default when block form used
+
+          d :k3, :v3, :opt2
+          d :k4, :v4, :opt1
+          d.must_equal({k1: 3, k2: 2, k3: :v3, k4: :v4})
+          generate do
+            a = get_attr(:a)
+            a.fetch(:k).has_flag_option?(:opt1).must_equal(true)
+            b = get_attr(:b)
+            b.fetch(:k).has_flag_option?(:opt1).must_equal(true)
+            b.fetch(:k2).has_flag_option?(:opt1).must_equal(true)
+            b.fetch(:k2).get_option_value(:vopt).must_equal(1)
+            b.fetch(:k3).has_flag_option?(:opt2).must_equal(true)
+            c = get_attr(:c)
+            c.fetch(:k1).has_flag_option?(:opt1).must_equal(true)
+            c.fetch(:k2).has_flag_option?(:opt1).must_equal(true)
+            c.fetch(:k3).has_flag_option?(:opt1).must_equal(true)
+            c.fetch(:k4).has_flag_option?(:opt2).must_equal(true)
+            d = get_attr(:d)
+            d.fetch(:k1).has_flag_option?(:opt2).must_equal(true)
+            d.fetch(:k2).has_flag_option?(:opt2).must_equal(true)
+            d.fetch(:k3).has_flag_option?(:opt2).must_equal(true)
+            d.fetch(:k4).has_flag_option?(:opt1).must_equal(true)
+          end
         end
       end
-    end
 
-    it 'validates that default is a hash' do
+      # validates that default is a hash
+      #
       check_fail "'a' attribute default must be a hash not a 'Array'", line: [__FILE__, 'tagU'] do
         jaba(barebones: true) do
           define :test do
@@ -39,26 +96,51 @@ module JABA
           end
         end
       end
-    end
 
-    it 'works with block style default' do
-      jaba(barebones: true) do
-        define :test do
-          attr :a
-          attr :b
-          attr_hash :c do
-            default do
-              {k1: a, k2: b}
+      # It validates default is a hash when block form is used
+      #
+      check_fail "'a' hash attribute default requires a hash not a 'Integer'", line: [__FILE__, 'tagO'] do
+        jaba(barebones: true) do
+          define :test do
+            attr_hash :a do # tagO
+              default do
+                1
+              end
             end
           end
-        end
-        test :t do
-          a 1
-          b 2
-          c.must_equal({k1: 1, k2: 2})
+          test :t # need an instance of test in order for block style defaults to be called
         end
       end
 
+      # It validates default elements respect attribute type
+      #
+      check_fail "'a' attribute default failed validation: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagL'] do
+        jaba(barebones: true) do
+          define :test do
+            attr_hash :a, type: :symbol do
+              default({k: 'not a symbol'}) # tagL
+            end
+          end
+        end
+      end
+
+      # It validates default elements respect attribute type when block form used
+      #
+      check_fail "'a' attribute failed validation: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagW'] do
+        jaba(barebones: true) do
+          define :test do
+            attr_hash :a, type: :symbol do # tagW
+              default do
+                {k: 'not a symbol'}
+              end
+            end
+          end
+          test :t # need an intance of test in order for block style defaults to be called
+        end
+      end
+    end
+
+    it 'checks for accessing uninitialised attributes' do
       # test with hash attr default using an unset attr
       #
       check_fail "Cannot read uninitialised 'b' attribute", line: [__FILE__, 'tagI'] do
@@ -102,6 +184,9 @@ module JABA
       jaba(barebones: true) do
         define :test do
           attr_hash :a
+          attr :b, type: :choice do
+            items [1, 2]
+          end
         end
         test :t do
           # Test basic set
@@ -119,6 +204,29 @@ module JABA
           # Add key
           a :k2, :v2
           a[:k2].must_equal(:v2)
+
+          # Value can be set in block
+          #
+          b 1
+          a :key do
+            case b
+            when 1
+              :yes
+            else
+              :no
+            end
+          end
+          a[:key].must_equal :yes
+          b 2
+          a :key do
+            case b
+            when 1
+              :yes
+            else
+              :no
+            end
+          end
+          a[:key].must_equal :no
         end
       end
     end
@@ -133,82 +241,6 @@ module JABA
           end
           test :t do
             a[:k] = :v2 # tagN
-          end
-        end
-      end
-    end
-
-    it 'considers setting to empty array as marking it as set' do
-      jaba(barebones: true) do
-        define :test do
-          attr_hash :a do
-            flags :required
-          end
-        end
-        test :t do
-          a {}
-        end
-      end  
-    end
-
-    it 'can extend default' do
-      jaba(barebones: true) do
-        define :test do
-          attr_hash :a do
-            default({k: :v})
-          end
-        end
-        test :t do
-          a :k2, :v2
-          a.must_equal({k: :v, k2: :v2})
-        end
-      end
-    end
-
-    it 'allows setting value with block' do
-      jaba(barebones: true) do
-        define :test do
-          attr_hash :a
-          attr :b, type: :choice do
-            items [1, 2, 3]
-          end
-        end
-        test :t do
-          b 1
-          a :key do
-            case b
-            when 1
-              :yes
-            else
-              :no
-            end
-          end
-          a[:key].must_equal :yes
-        end
-      end
-    end
-
-    it 'validates default element types are valid' do
-      check_fail "'not a symbol' must be a symbol but was a 'String'", line:[__FILE__, 'tagD'] do
-        jaba(barebones: true) do
-          define :test do
-            attr_hash :a, type: :symbol do # tagD
-              default({k: :v, k2: 'not a symbol'})
-            end
-          end
-        end
-      end
-    end
-
-    it 'validates element types are valid' do
-      check_fail "'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagE'] do
-        jaba(barebones: true) do
-          define :test do
-            attr_hash :a, type: :symbol
-          end
-          test :t do
-            a :k, :v
-            a :k2, 'not a symbol' # tagE
           end
         end
       end
@@ -309,14 +341,24 @@ module JABA
       end
     end
 
-    it 'validates a value is given' do
-      check_fail("'a' hash attribute requires a key and a value", line: [__FILE__, 'tagM']) do
+    it 'validates key value supplied correctly' do
+      check_fail("'a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"", line: [__FILE__, 'tagM']) do
         jaba(barebones: true) do
           define :test do
             attr_hash :a
           end
           test :t do
-            a :key # tagM
+            a key: 'val' # tagM
+          end
+        end
+      end
+      check_fail("'a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"", line: [__FILE__, 'tagZ']) do
+        jaba(barebones: true) do
+          define :test do
+            attr_hash :a
+          end
+          test :t do
+            a :key # tagZ
           end
         end
       end

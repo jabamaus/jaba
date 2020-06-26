@@ -47,6 +47,12 @@ module JABA
     def validate_value(attr_def, value)
     end
 
+    ##
+    #
+    def map_value(value)
+      value
+    end
+
   end
 
   ##
@@ -241,7 +247,7 @@ module JABA
     def validate_value(attr_def, value)
       items = attr_def.get_property(:items)
       if !items.include?(value)
-        services.jaba_error("must be one of #{items} but was '#{value}'")
+        services.jaba_error("must be one of #{items} but got '#{value}'")
       end
     end
 
@@ -367,10 +373,8 @@ module JABA
 
     ##
     #
-    def validate_value(attr_def, uuid)
-      if uuid !~ /[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}/
-        services.jaba_error('Must be an all upper case GUID in the form 0376E589-F783-4B80-DA86-705F2E05304E')
-      end
+    def map_value(value)
+      JABA.generate_guid(namespace: 'JabaAttributeTypeUUID', name: value)
     end
 
   end

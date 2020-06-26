@@ -739,6 +739,12 @@ module JABA
 
     ##
     #
+    def log_warning(msg, **options)
+      log(msg, :WARN, **options)
+    end
+
+    ##
+    #
     def term_log
       return if !@log_file
       @log_file.flush
@@ -758,7 +764,7 @@ module JABA
     ##
     #
     def jaba_warning(msg, **options)
-      log msg, :WARN
+      log_warning(msg)
       if @warn_object
         options[:callstack] = @warn_object.is_a?(JDL_Object) ? @warn_object.definition.src_loc_raw : @warn_object
       end

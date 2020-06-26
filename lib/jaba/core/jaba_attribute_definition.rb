@@ -203,15 +203,33 @@ module JABA
       when :default
         @default_set = true
         @default_block = @default.proc? ? @default : nil
+        return if @default_block
 
-        if !@default_block
-          if attr_single? && incoming.is_a?(Enumerable)
-            jaba_error("#{describe} default must be a single value not a '#{incoming.class}'")
-          elsif attr_array? && !incoming.array?
-           jaba_error("#{describe} default must be an array not a '#{incoming.class}'")
-          elsif attr_hash? && !incoming.hash?
-            jaba_error("#{describe} default must be a hash not a '#{incoming.class}'")
+        if attr_single? && incoming.is_a?(Enumerable)
+          jaba_error("#{describe} default must be a single value not a '#{incoming.class}'")
+        elsif attr_array? && !incoming.array?
+          jaba_error("#{describe} default must be an array not a '#{incoming.class}'")
+        elsif attr_hash? && !incoming.hash?
+          jaba_error("#{describe} default must be a hash not a '#{incoming.class}'")
+        end
+
+        begin
+          services.set_warn_object(self) do
+            case @variant
+            when :single
+              @jaba_attr_type.validate_value(self, @default)
+            when :array
+              incoming.each do |elem|
+                @jaba_attr_type.validate_value(self, elem)
+              end
+            when :hash
+              incoming.each_value do |elem|
+                @jaba_attr_type.validate_value(self, elem)
+              end
+            end
           end
+        rescue JDLError => e
+          jaba_error("#{describe} default failed validation: #{e.raw_message}", callstack: e.backtrace)
         end
       end
     end
@@ -224,39 +242,23 @@ module JABA
         #jaba_error("requires a title")
       end
 
-      services.set_warn_object(self) do
-        @jaba_attr_type.post_init_attr_def(self)
-      end
- 
-      if @default_set && !@default_block
+      begin
         services.set_warn_object(self) do
-          case @variant
-          when :single
-            @jaba_attr_type.validate_value(self, @default)
-          when :array
-            @default.each do |elem|
-              @jaba_attr_type.validate_value(self, elem)
+          @jaba_attr_type.post_init_attr_def(self)
+        end
+  
+        @jaba_attr_flags.each do |jaf|
+          begin
+            services.set_warn_object(self) do
+              jaf.call_hook(:compatibility, receiver: self)
             end
-          when :hash
-            @default.each_value do |elem|
-              @jaba_attr_type.validate_value(self, elem)
-            end
+          rescue JDLError => e
+            jaba_error("#{jaf.describe} is incompatible: #{e.raw_message}")
           end
         end
+      rescue JDLError => e
+        jaba_error("#{describe} failed validation: #{e.raw_message}", callstack: e.backtrace)
       end
-
-      @jaba_attr_flags.each do |jaf|
-        begin
-          services.set_warn_object(self) do
-            jaf.call_hook(:compatibility, receiver: self)
-          end
-        rescue JDLError => e
-          jaba_error("#{jaf.describe} is incompatible: #{e.raw_message}")
-        end
-      end
-      
-    rescue JDLError => e
-      jaba_error("#{describe} failed validation: #{e.raw_message}", callstack: e.backtrace)
     end
 
   end

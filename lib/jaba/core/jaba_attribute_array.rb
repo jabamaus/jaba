@@ -41,7 +41,9 @@ module JABA
       @last_call_location = api_call_loc if api_call_loc
       if !@set
         if @default_block
-          return services.execute_attr_default_block(@node, @default_block)
+          values = services.execute_attr_default_block(@node, @default_block)
+          at = @attr_def.jaba_attr_type
+          return values.map{|e| at.map_value(e)}
         elsif services.in_attr_default_block?
           jaba_error("Cannot read uninitialised #{describe}")
         end
@@ -55,17 +57,33 @@ module JABA
     
     ##
     #
-    def set(*args, __api_call_loc: nil, prefix: nil, postfix: nil, exclude: nil, **keyvalue_args, &block)
+    def set(*args, __api_call_loc: nil, prefix: nil, postfix: nil, exclude: nil, **keyval_args, &block)
       @last_call_location = __api_call_loc if __api_call_loc
-      @set = true
       
+      # It is possible for values to be nil, which happens if no args are passed. This can happen if the user
+      # wants to just set some excludes.
+      #
       values = block_given? ? @node.eval_jdl(&block) : args.shift
 
       if values && !values.array?
         jaba_error("#{describe} requires an array not a '#{values.class}'")
       end
 
-      Array(values).each do |v|
+      values = Array(values)
+
+      # If attribute has not been set and there is a default that was specified in block form 'pull' the values in
+      # and prepend them to the values passed in. Defaults specified in blocks are handled lazily to allow the default
+      # value to make use of other attributes.
+      #
+      if !@set && @default_block
+        default_values = services.execute_attr_default_block(@node, @default_block)
+        if !default_values.array?
+          jaba_error("#{describe} default requires an array not a '#{default_values.class}'")
+        end
+        values.prepend(*default_values)
+      end
+
+      values.each do |v|
         existing = nil
         if !@attr_def.has_flag?(:allow_dupes)
           existing = @elems.find{|e| e.value == v}
@@ -77,7 +95,7 @@ module JABA
         else
           elem = JabaAttributeElement.new(@attr_def, @node)
           v = apply_pre_post_fix(prefix, postfix, v)
-          elem.set(v, *args, __api_call_loc: __api_call_loc, **keyvalue_args)
+          elem.set(v, *args, __api_call_loc: __api_call_loc, **keyval_args)
           @elems << elem
         end
       end
@@ -87,17 +105,19 @@ module JABA
           @excludes << apply_pre_post_fix(prefix, postfix, e)
         end
       end
+
+      @set = true
+      nil
     end
     
     ##
-    # If attribute's default value was specified as a block it is executed here, after the node has been created, since
-    # default blocks can be implemented in terms of other attributes. Note that the default block is always executed regardless
-    # of whether the user added array elements as the behaviour of array attributes is to always append.
+    # If the attribute was never set by the user and it has a default specified in block form ensure that the default value
+    # is applied. Call set with no args to achieve this.
     #
     def finalise
-      return if !@default_block
-      val = services.execute_attr_default_block(@node, @default_block)
-      set(val)
+      if !@set && @default_block
+        set
+      end
     end
 
     ##

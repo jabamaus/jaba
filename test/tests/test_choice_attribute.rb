@@ -27,22 +27,22 @@ module JABA
     end
     
     it 'requires default to be in items' do
-      check_fail 'Must be one of [1, 2, 3]', line: [__FILE__, 'tagB'] do
+      check_fail "Must be one of [1, 2, 3] but got '4'", line: [__FILE__, 'tagB'] do
         jaba(barebones: true) do
           define :test do
-            attr :a, type: :choice do # tagB
+            attr :a, type: :choice do
               items [1, 2, 3]
-              default 4
+              default 4 # tagB
             end
           end
         end
       end
-      check_fail 'Must be one of [1, 2, 3]', line: [__FILE__, 'tagC'] do
+      check_fail "Must be one of [1, 2, 3] but got '4'", line: [__FILE__, 'tagC'] do
         jaba(barebones: true) do
           define :test do
-            attr_array :a, type: :choice do # tagC
+            attr_array :a, type: :choice do
               items [1, 2, 3]
-              default [1, 2, 4]
+              default [1, 2, 4] # tagC
             end
           end
         end

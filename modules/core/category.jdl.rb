@@ -10,8 +10,8 @@ define :category do
   
   attr :guid, type: :uuid do
     title 'Globally unique id (GUID)'
-    help 'Must be of the form \'0376E589-F783-4B80-DA86-705F2E05304E\'. Required by Visual Studio .sln files'
-    flags :required
+    help 'Seeded by <name>. Required by Visual Studio .sln files'
+    default { name }
   end
   
   attr :parent, type: :reference do
@@ -24,5 +24,4 @@ end
 
 category :App do
   name 'Apps'
-  guid '43F42D01-78C0-416E-8979-2807134DB488'
 end

@@ -19,8 +19,8 @@ module JABA
       check_fail ':bool attributes only accept [true|false] but got \'1\'', line: [__FILE__, 'tagP'] do # evaluated later so exact call line is lost
         jaba(barebones: true) do
           define :test do
-            attr :b, type: :bool do # tagP
-              default 1
+            attr :b, type: :bool do
+              default 1 # tagP
             end
           end
         end

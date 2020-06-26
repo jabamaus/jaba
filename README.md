@@ -9,10 +9,8 @@ To do:
 - Should instance definitions be able to access globals? Probably. Globals are like implicit references. If too many attrs were exposed
   it would have a performance penalty though.
 - Add 'describe' method to everything which can be used as standard in error and log messages
-- Think about attribute types that map a value. Eg a uuid attr is supplied a name and returns a uuid.
 - Remove --test from Jaba. Look into how to run tests with gemspec/bundler
 - How customise jaba output file? Subclass vcxproj or jdl definition, or something else?
-- Add uuid attribute type.
 - support for 'overriding' attribute defs when opening types
 - make_generator should be able to make subclasses of eg CppGenerator
 - make paths in jaba.output.json relative to itself. Introduce json node writing api to wrap this up and to make it robust.

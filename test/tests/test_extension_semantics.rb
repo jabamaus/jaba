@@ -63,11 +63,17 @@ module JABA
 
         test :t do
           include :s
+          a.must_equal(1)
+          b.must_equal(6)
+          c.must_equal(3)
+          d.must_equal(7)
+          e.must_equal(5)
+
           generate do
             attrs.a.must_equal(1)
-            attrs.b.must_equal(2)
+            attrs.b.must_equal(2) # b changed from 6 to 2 due to instance being opened
             attrs.c.must_equal(3)
-            attrs.d.must_equal(4)
+            attrs.d.must_equal(4) # d changed from 7 to 4 due to instance being opened
             attrs.e.must_equal(5)
           end
         end

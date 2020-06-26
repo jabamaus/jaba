@@ -5,6 +5,8 @@ module JABA
   class TestAttributeArray < JabaTest
 
     it 'supports a default' do
+      # It validates default is an array
+      #
       check_fail "'a' attribute default must be an array not a 'Integer'", line: [__FILE__, 'tagV'] do
         jaba(barebones: true) do
           define :test do
@@ -15,9 +17,9 @@ module JABA
         end
       end
 
-      # Test block form default
+      # It validates default is an array when block form is used
       #
-      check_fail "'a' array attribute requires an array not a 'Integer'", line: [__FILE__, 'tagO'] do
+      check_fail "'a' array attribute default requires an array not a 'Integer'", line: [__FILE__, 'tagO'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a do # tagO
@@ -32,11 +34,11 @@ module JABA
       
       # It validates default elements respect attribute type
       #
-      check_fail "'a' attribute failed validation: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagD'] do
+      check_fail "'a' attribute default failed validation: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagD'] do
         jaba(barebones: true) do
           define :test do
-            attr_array :a, type: :symbol do # tagD
-              default ['not a symbol'] # TODO: validate immediately to get better error line
+            attr_array :a, type: :symbol do
+              default ['not a symbol'] # tagD
             end
           end
         end
@@ -57,8 +59,10 @@ module JABA
         end
       end
 
+      # TODO: test flag/value options
       jaba(barebones: true) do
         define :test do
+          attr_array :a
           attr_array :b do
             default [1, 2, 3] # value style default
           end
@@ -77,16 +81,19 @@ module JABA
           end
         end
         test :t do
+          a.must_equal [] # defaults to empty array
           b.must_equal [1, 2, 3]
           c.must_equal [4, 5, 6]
           d.must_equal [1, 2, 3, 4, 5, 6]
-          e [9] # default array values are appended to not overwritten
+          d [7, 8, 9] # default array values are appended to not overwritten when block style used
+          d.must_equal [1, 2, 3, 4, 5, 6, 7, 8, 9]
+          e [9] # default array values are appended to not overwritten when value style used
           e.must_equal [7, 8, 9]
         end
       end
     end
 
-    it 'works with block style default' do
+    it 'checks for accessing uninitialised attributes' do
       # test with array attr default using an unset attr
       #
       check_fail "Cannot read uninitialised 'b' attribute", line: [__FILE__, 'tagI'] do
@@ -254,9 +261,7 @@ module JABA
         end
         test :t do
           a ['j', 'a', 'b', 'a'], prefix: '1', postfix: 'z'
-          generate do
-            attrs.a.must_equal ['1jz', '1az', '1bz', '1az']
-          end
+          a.must_equal ['1jz', '1az', '1bz', '1az']
         end
       end
     end
@@ -274,6 +279,7 @@ module JABA
       end
     end
     
+    # TODO: merge exclude tests
     it 'supports excluding elements' do
       jaba(barebones: true) do
         define :test do
@@ -286,7 +292,7 @@ module JABA
           a [:c, :d, :e], exclude: [:d, :e]
           b [1, 2, 3, 4]
           b exclude: [2, 3]
-          generate do
+          generate do # excludes are not processed immediately so test in generate block
             attrs.a.must_equal [:a, :b]
             attrs.b.must_equal [1, 4]
           end
