@@ -28,12 +28,12 @@ end
 
 # This can be opened in plugin modules to add extra attributes to all Visual Studio hosts
 #
-shared :vscommon do
+shared :vs_host_common do
   visual_studio? true
 end
 
 host :vs2010 do
-  include :vscommon
+  include :vs_host_common
   vs2010? true
   major_version 10
   version '10.0'
@@ -42,7 +42,7 @@ host :vs2010 do
 end
 
 host :vs2012 do
-  include :vscommon
+  include :vs_host_common
   vs2012? true
   major_version 11
   version '11.0'
@@ -51,7 +51,7 @@ host :vs2012 do
 end
 
 host :vs2013 do
-  include :vscommon
+  include :vs_host_common
   vs2013? true
   major_version 12
   version '12.0'
@@ -60,7 +60,7 @@ host :vs2013 do
 end
 
 host :vs2015 do
-  include :vscommon
+  include :vs_host_common
   vs2015? true
   major_version 14
   version '14.0'
@@ -69,7 +69,7 @@ host :vs2015 do
 end
 
 host :vs2017 do
-  include :vscommon
+  include :vs_host_common
   vs2017? true
   major_version 15
   version '15.0'
@@ -78,7 +78,7 @@ host :vs2017 do
 end
 
 host :vs2019 do
-  include :vscommon
+  include :vs_host_common
   vs2019? true
   major_version 16
   version '16.0'

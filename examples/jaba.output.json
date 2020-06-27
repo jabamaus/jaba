@@ -18,7 +18,7 @@
       ],
       "vcglobal": {
         "ProjectName": "MyApp",
-        "ProjectGuid": "{A1E4CE60-2155-53B5-BC4B-D1480CD9A7C6}",
+        "ProjectGuid": "{88ED35B9-F87F-55D9-A551-61C4953F0ABB}",
         "Keyword": "Win32Proj",
         "RootNamespace": "MyApp",
         "WindowsTargetPlatformVersion": null
@@ -98,7 +98,7 @@
       ],
       "vcglobal": {
         "ProjectName": "MyLib",
-        "ProjectGuid": "{12939F73-FBD0-52B0-AFAD-9A1726F33F06}",
+        "ProjectGuid": "{F9C317E3-B1C7-5C35-B291-064D56584555}",
         "Keyword": "Win32Proj",
         "RootNamespace": "MyLib",
         "WindowsTargetPlatformVersion": null

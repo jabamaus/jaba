@@ -2,6 +2,8 @@
 
 To do:
 
+- more error reporting testing with actual files rather than blocks
+- test opening sub types
 - Add make_definition method. Add JDL_Object#services method and stop storing @services everywhere - can be got from definition now.
 - Have a command line switch to make all error messages contain absolute paths
 - A tree view of cpp type would be useful in docs

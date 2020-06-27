@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectName>MyLib</ProjectName>
-    <ProjectGuid>{12939F73-FBD0-52B0-AFAD-9A1726F33F06}</ProjectGuid>
+    <ProjectGuid>{F9C317E3-B1C7-5C35-B291-064D56584555}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>MyLib</RootNamespace>
   </PropertyGroup>

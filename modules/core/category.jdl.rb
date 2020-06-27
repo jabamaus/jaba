@@ -8,12 +8,6 @@ define :category do
     flags :required
   end
   
-  attr :guid, type: :uuid do
-    title 'Globally unique id (GUID)'
-    help 'Seeded by <name>. Required by Visual Studio .sln files'
-    default { name }
-  end
-  
   attr :parent, type: :reference do
     title 'Parent category'
     help 'Use this to build a category hierarchy that can be used to classify projects in workspaces'

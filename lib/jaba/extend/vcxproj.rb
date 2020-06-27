@@ -11,7 +11,6 @@ module JABA
   class Vcxproj < VSProj
     
     attr_reader :vcxproj_file
-    attr_reader :guid
     
     ##
     #
@@ -20,7 +19,6 @@ module JABA
       @vcxproj_file = "#{@projroot}/#{@projname}.vcxproj"
       @vcxproj_filters_file = "#{@vcxproj_file}.filters"
       @file_type_hash = services.globals_node.get_attr(:vcfiletype).value
-      @guid = JABA.generate_guid(namespace: 'JABA', name: @projname)
 
       # Call translator for this platform to initialse project level Visual Studio-specific attributes
       # (vcglobals), based on cross platform definition.

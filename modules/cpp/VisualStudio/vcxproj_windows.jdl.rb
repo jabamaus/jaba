@@ -1,12 +1,12 @@
-translator :vcxproj_windows do |proj|
+translator :vcxproj_windows do |vcxproj|
   vcglobal :ProjectName, projname
-  vcglobal :ProjectGuid, proj.guid
+  vcglobal :ProjectGuid, guid
   vcglobal :Keyword, 'Win32Proj'
   vcglobal :RootNamespace, projname
   vcglobal :WindowsTargetPlatformVersion, winsdkver
 end
 
-translator :vcxproj_config_windows do |proj, cfg_type|
+translator :vcxproj_config_windows do |vcxproj, cfg_type|
   
   # First set of property groups
   #
@@ -40,14 +40,14 @@ translator :vcxproj_config_windows do |proj, cfg_type|
   #
   vcproperty :OutDir, group: :pg2 do
     if cfg_type == :lib
-      libdir.relative_path_from(proj.projroot, backslashes: true, trailing: true)
+      libdir.relative_path_from(vcxproj.projroot, backslashes: true, trailing: true)
     else
-      bindir.relative_path_from(proj.projroot, backslashes: true, trailing: true)
+      bindir.relative_path_from(vcxproj.projroot, backslashes: true, trailing: true)
     end
   end
 
   vcproperty :IntDir, group: :pg2 do
-    objdir.relative_path_from(proj.projroot, backslashes: true, trailing: true)
+    objdir.relative_path_from(vcxproj.projroot, backslashes: true, trailing: true)
   end
 
   vcproperty :TargetName, targetname, group: :pg2
@@ -56,7 +56,7 @@ translator :vcxproj_config_windows do |proj, cfg_type|
   # ClCompile
   #
   vcproperty :AdditionalIncludeDirectories, group: :ClCompile do
-    inc.map{|i| i.relative_path_from(proj.projroot, backslashes: true)}.vs_join_paths(inherit: '%(AdditionalIncludeDirectories)')
+    inc.map{|i| i.relative_path_from(vcxproj.projroot, backslashes: true)}.vs_join_paths(inherit: '%(AdditionalIncludeDirectories)')
   end
 
   vcproperty :AdditionalOptions, group: :ClCompile do

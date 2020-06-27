@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectName>MyApp</ProjectName>
-    <ProjectGuid>{A1E4CE60-2155-53B5-BC4B-D1480CD9A7C6}</ProjectGuid>
+    <ProjectGuid>{88ED35B9-F87F-55D9-A551-61C4953F0ABB}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>MyApp</RootNamespace>
   </PropertyGroup>
