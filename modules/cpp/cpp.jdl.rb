@@ -39,7 +39,7 @@ define :cpp do
 
   end
 
-  define :per_platform do
+  define :project do
 
     # Required attributes that the user must provide a value for.
     #

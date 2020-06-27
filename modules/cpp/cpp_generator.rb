@@ -29,7 +29,7 @@ module JABA
         end
         
         host_node.attrs.platforms.each do |p|
-          platform_node = make_node(sub_type_id: :per_platform, name: p, parent: host_node) do
+          platform_node = make_node(sub_type_id: :project, name: p, parent: host_node) do
             platform p
             platform_ref p
           end

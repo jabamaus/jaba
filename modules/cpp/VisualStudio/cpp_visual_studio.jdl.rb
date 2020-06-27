@@ -42,7 +42,7 @@ open_instance :arm64, type: :arch do
 end
 
 open_type :cpp do
-  open_type :per_platform do
+  open_type :project do
     attr :guid, type: :uuid do
       title 'Globally unique id (GUID)'
       help 'Seeded by <projname>. Required by Visual Studio project files'
