@@ -81,6 +81,7 @@ module JABA
     attr_reader :defaults_definition
     attr_reader :dependencies
     attr_reader :all_attr_defs_sorted
+    attr_reader :open_sub_type_defs
 
     ##
     #
@@ -100,13 +101,6 @@ module JABA
 
       if definition.block
         eval_jdl(&definition.block)
-      end
-
-      # Process open blocks, which could add attributes
-      #
-      @open_sub_type_defs.each do |d|
-        st = get_sub_type(d.id)
-        st.eval_jdl(&d.block)
       end
 
       validate
@@ -151,8 +145,8 @@ module JABA
 
     ##
     #
-    def open_sub_type(id, &block)
-      @open_sub_type_defs << services.make_definition(sid, block, caller_locations(2, 1)[0])
+    def open_sub_type(subtype_id, &block)
+      @open_sub_type_defs << services.make_definition(subtype_id, block, caller_locations(2, 1)[0])
     end
 
     ##

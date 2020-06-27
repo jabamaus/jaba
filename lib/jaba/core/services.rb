@@ -206,7 +206,12 @@ module JABA
       # Open top level JabaTypes so more attributes can be added
       #
       @open_type_defs.each do |d|
-        get_top_level_jaba_type(d.id, callstack: d.src_loc_raw).eval_jdl(&d.block)
+        tlt = get_top_level_jaba_type(d.id, callstack: d.src_loc_raw)
+        tlt.eval_jdl(&d.block)
+        tlt.open_sub_type_defs.each do |std|
+          st = tlt.get_sub_type(std.id)
+          st.eval_jdl(&std.block)
+        end
       end
 
       @top_level_jaba_types.each(&:post_create)
