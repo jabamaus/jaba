@@ -6,8 +6,13 @@ define :arch do
 
   SUPPORTED_ARCHS.each do |a|
     attr "#{a}?", type: :bool do
-      title 'Query target architecture type'
-      help "Returns true if current architecture is #{a}"
+      title "Returns true if current architecture is #{a}"
+      example %Q{
+        if #{a}?
+          ...
+        end
+      }
+      example "src ['arch_#{a}.cpp'] if #{a}?"
       flags :expose
     end
   end

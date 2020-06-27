@@ -2,6 +2,7 @@
 
 To do:
 
+- rename help to notes
 - more error reporting testing with actual files rather than blocks
 - test opening sub types
 - Add make_definition method. Add JDL_Object#services method and stop storing @services everywhere - can be got from definition now.

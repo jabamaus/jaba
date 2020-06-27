@@ -46,7 +46,9 @@ open_type :cpp do
     attr :guid, type: :uuid do
       title 'Globally unique id (GUID)'
       help 'Seeded by <projname>. Required by Visual Studio project files'
-      default { projname }
+      default do
+        projname
+      end
     end
 
     attr_hash :vcglobal do
@@ -82,6 +84,8 @@ open_type :category do
   attr :guid, type: :uuid do
     title 'Globally unique id (GUID)'
     help 'Seeded by <name>. Required by Visual Studio .sln files'
-    default { name }
+    default do
+      name
+    end
   end
 end

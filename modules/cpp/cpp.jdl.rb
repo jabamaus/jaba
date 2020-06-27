@@ -14,7 +14,7 @@ define :cpp do
   attr :root, type: :dir do
     title 'Root directory relative to which all other paths are specified'
     help 'Root of the project specified as a relative path to the file that contains the project definition. ' \
-         'All paths are specified relative to this. Project files will be generated here unless <projroot> is set.'
+         'All paths are specified relative to this. Project files will be generated here unless $(projroot) is set.'
     default '.'
   end
 
@@ -23,17 +23,32 @@ define :cpp do
     # Required attributes that the user must provide a value for.
     #
     attr_array :platforms, type: :choice do
+      title 'Target platforms'
       items all_instance_ids(:platform) # TODO: should only allow platforms supported by this host
       flags :required
+      example "platforms [:windows]"
+      example "platforms [:macos, :ios]"
     end
     
     # Control flow attributes
     #
     attr :host, type: :symbol do
+      title 'Target host'
+      help 'Use for querying the current target host'
       flags :read_only
+      example %q{
+        case host
+        when :vs2019
+          ...
+        when :xcode
+          ...
+        end
+      }
     end
 
     attr :host_ref, type: :reference do
+      title 'Target host as object'
+      help 'Use when access to host attributes is required'
       referenced_type :host
     end
 
@@ -44,13 +59,17 @@ define :cpp do
     # Required attributes that the user must provide a value for.
     #
     attr_array :archs, type: :choice  do
+      title 'Target architectures'
       items all_instance_ids(:arch) # TODO: should be valid_archs for current platform
       flags :required
+      example 'archs [:x86, :x86_64]'
     end
 
     attr_array :configs, type: :symbol_or_string do
+      title 'Build configurations'
       flags :required, :nosort
       flag_options :export
+      example 'configs [:Debug, :Release]'
     end
 
     # Control flow attributes
@@ -59,10 +78,18 @@ define :cpp do
       title 'Target platform'
       help 'Use for querying the current target platform'
       flags :read_only
+      example %Q{
+        case platform
+        when :windows
+          ...
+        when :macos
+          ...
+        end
+      }
     end
       
     attr :platform_ref, type: :reference do
-      title 'Target platform node'
+      title 'Target platform as an object'
       help 'Use when access to platform attributes is required'
       referenced_type :platform
     end
@@ -78,20 +105,22 @@ define :cpp do
     end
 
     attr :projroot, type: :dir do
-      help 'Directory in which projects will be generated. Specified as a relative path from <root>. If not specified ' \
-      'projects will be generated in <root>'
+      help 'Directory in which projects will be generated. Specified as a relative path from $(root). If not specified ' \
+      'projects will be generated in $(root)'
       default '.'
       flags :no_check_exist # May get created during generation
     end
     
     attr :projname, type: :string do
       title 'Base name of project files'
-      help 'Defaults to <id><projsuffix>.'
-      default { "#{id}#{projsuffix}" }
+      help 'Defaults to $(id)$(projsuffix)'
+      default do
+        "#{id}#{projsuffix}"
+      end
     end
 
     attr :projsuffix, type: :string do
-      help 'Optional suffix to be applied to <projname>. Has no effect if <projname> is set explicitly.'
+      help 'Optional suffix to be applied to $(projname). Has no effect if $(projname) is set explicitly.'
     end
 
     attr_array :src, type: :src_spec do
@@ -101,8 +130,12 @@ define :cpp do
       flag_options :force # Specify when explicitly specidied src does not exist on disk but still want to add to project
       flag_options :export
       value_option :vpath # For organising files in a generated project
-      example "src ['*']  # Add all src in <root> whose extension is in <src_ext>"
-      example "src ['jaba.jdl.rb']  # Explicitly add even though not in <src_ext>"
+      # TODO: examples for excludes
+      # TODO: add absolute path example
+      example "src ['*']  # Add all src in $(root) whose extension is in $(src_ext)"
+      example "src ['src/**/*'] # Add all src in $(root)/src whose extension is in $(src_ext), recursively"
+      example "src ['main.c', 'io.c'] # Add src explicitly"
+      example "src ['jaba.jdl.rb']  # Explicitly add even though not in $(src_ext)"
       example "src ['does_not_exist.cpp'], :force  # Force addition of file not on disk"
     end
     
@@ -170,7 +203,7 @@ define :cpp do
 
     attr :buildroot, type: :dir do
       title 'Root directory for build artifacts'
-      help 'Specified as a relative path from <root>'
+      help 'Specified as a relative path from $(root)'
       default 'build'
       flags :no_check_exist
     end
@@ -197,13 +230,15 @@ define :cpp do
     end
 
     attr_array :cflags do
-      help 'Raw compiler command line switches'
+      title 'Raw compiler command line switches'
       flag_options :export
     end
 
     attr :configname do
-      help 'Display name of config in Visual Studio. Defaults to <config>'
-      default { config }
+      help 'Display name of config in Visual Studio. Defaults to $(config)'
+      default do
+        config
+      end
     end
 
     attr :debug, type: :bool do
@@ -214,41 +249,46 @@ define :cpp do
     end
     
     attr_array :defines, type: :symbol_or_string do
-      help 'Preprocessor defines'
+      title 'Preprocessor defines'
       flag_options :export
     end
 
     attr_array :inc, type: :dir do
-      help 'Include paths'
+      title 'Include paths'
       flags :nosort
       flag_options :export
+      example "inc ['mylibrary/include']"
+      example "inc ['mylibrary/include'], :export # Export include path to dependents"
     end
 
     attr_array :nowarn do
       title 'Warnings to disable'
       help 'Placed directly into projects as is, with no validation'
       flag_options :export
+      example "nowarn [4100, 4127, 4244] if visual_studio?"
     end
 
     attr :targetname, type: :string do
       title 'Base name of output file without extension'
-      help 'Defaults to <targetprefix><targetname><projname><targetsuffix>'
-      default { "#{targetprefix}#{projname}#{targetsuffix}" }
+      help 'Defaults to $(targetprefix)$(projname)$(targetsuffix)'
+      default do
+        "#{targetprefix}#{projname}#{targetsuffix}"
+      end
     end
     
     attr :targetprefix, type: :string do
-      title 'Prefix to apply to <targetname>'
-      help 'Has no effect if <targetname> specified'
+      title 'Prefix to apply to $(targetname)'
+      help 'Has no effect if $(targetname) specified'
     end
     
     attr :targetsuffix, type: :string do
-      title 'Suffix to apply to <targetname>'
-      help 'Has no effect if <targetname> specified'
+      title 'Suffix to apply to $(targetname)'
+      help 'Has no effect if $(targetname) specified'
     end
 
     attr :targetext, type: :string do
-      title 'Extension to apply to <targetname>'
-      help 'Defaults to standard extension for <type> of project for target <platform>'
+      title 'Extension to apply to $(targetname)'
+      help 'Defaults to standard extension for $(type) of project for target $(platform)'
       default do
         case platform
         when :windows
@@ -272,7 +312,8 @@ define :cpp do
     end
 
     attr :warnerror, type: :bool do
-      help 'Enable warnings as errors. Off by default.'
+      title 'Enable warnings as errors'
+      example 'warnerror true'
     end
 
     # Not so common attributes. Often used but not fundamental.
@@ -285,18 +326,21 @@ define :cpp do
         nil
       ]
       default nil
+      example 'character_set :unicode'
     end
 
     attr :exceptions, type: :choice do
-      help 'Enables C++ exceptions. On by default.'
+      title 'Enables C++ exceptions'
       items [true, false]
       items [:structured] # Windows only
       default true
+      example 'exceptions false # disable exceptions'
     end
 
     attr :rtti, type: :bool do
-      help 'Enable runtime type information. On by default.'
+      title 'Enables runtime type information'
       default true
+      example 'rtti false # Disable rtti'
     end
 
     attr :toolset, type: :string do

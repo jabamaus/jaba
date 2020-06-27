@@ -12,7 +12,7 @@ define :workspace do
 
   attr_array :projects, type: :symbol_or_string do
     title 'Contained projects'
-    help 'Specified by id (symbol or string), or by glob matches against <projroot>'
+    help 'Specified by id (symbol or string), or by glob matches against $(projroot)'
     flags :nosort # Matches will be sorted so no need to sort spec
   end
 

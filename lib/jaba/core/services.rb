@@ -868,7 +868,7 @@ module JABA
       e.instance_variable_set(:@raw_message, msg)
       e.instance_variable_set(:@file, file)
       e.instance_variable_set(:@line, line)
-      e.set_backtrace(lines.uniq) if lines # Can contain unhelp duplicates due to loops, make unique.
+      e.set_backtrace(lines.uniq) if lines # Can contain unhelpful duplicates due to loops, make unique.
       e
     end
 
@@ -909,7 +909,7 @@ module JABA
         w << "> "
         w << "> | Property | Value  |"
         w << "> |-|-|"
-        md_row(w, :src, jt.generator.source_file)
+        md_row(w, :src, "$(jaba_install)/#{jt.definition.src_loc_describe(style: :rel_jaba_root)}")
         md_row(w, :notes, jt.help&.ensure_end_with('.'))
         w << "> "
         w << ""
@@ -923,18 +923,32 @@ module JABA
           # TODO: need to flag whether per-project/per-config etc
           md_row(w, :type, ad.type_id)
           md_row(w, :variant, ad.variant)
+          # TODO: regex default out of src
           md_row(w, :default, ad.default.proc? ? nil : ad.default)
           md_row(w, :flags, ad.flags.map(&:inspect).join(','))
           md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
-          md_row(w, :src, "<jaba_install>/#{ad.definition.src_loc_describe(style: :rel_jaba_root)}")
+          md_row(w, :src, "$(jaba_install)/#{ad.definition.src_loc_describe(style: :rel_jaba_root)}")
           md_row(w, :notes, ad.help&.ensure_end_with('.'))
-          w << "> "
-          w << ""
-          w << "```ruby"
-          ad.examples.each do |e|
-            w << e
+          if !ad.examples.empty?
+            w << ">"
+            w << "> *Examples*"
+            w << ">```ruby"
+            ad.examples.each do |e|
+              lines = e.split("\n")
+              lines.delete('')
+
+              # Clean up any leading whitespace in example strings. Can occur with multiline comments.
+              #
+              if lines[0] =~ /^(\s*)/
+                leading_whitespace = Regexp.last_match(1)
+                lines.each{|l| l.delete_prefix!(leading_whitespace)}
+              end
+              lines.each do |l|
+                w << "> #{l}"
+              end
+            end
+            w << ">```"
           end
-          w << "```"
         end
         w << ""
       end
