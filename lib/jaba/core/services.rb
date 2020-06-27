@@ -601,12 +601,14 @@ module JABA
       node.visit_attr(top_level: true) do |attr, val|
         obj[attr.defn_id] = val
       end
-      children = {}
-      obj[:children] = children
-      node.children.each do |child|
-        child_obj = {}
-        children[child.handle] = child_obj
-        write_node_json(child, child_obj)
+      if !node.children.empty?
+        children = {}
+        obj[:children] = children
+        node.children.each do |child|
+          child_obj = {}
+          children[child.handle] = child_obj
+          write_node_json(child, child_obj)
+        end
       end
     end
 

@@ -29,8 +29,6 @@
         ".asm": "MASM",
         ".rc": "ResourceCompile",
         ".natvis": "Natvis"
-      },
-      "children": {
       }
     }
   },
@@ -39,34 +37,26 @@
       "arm64?": false,
       "vsname": "Win32",
       "x86?": true,
-      "x86_64?": false,
-      "children": {
-      }
+      "x86_64?": false
     },
     "x86_64": {
       "arm64?": false,
       "vsname": "x64",
       "x86?": false,
-      "x86_64?": true,
-      "children": {
-      }
+      "x86_64?": true
     },
     "arm64": {
       "arm64?": true,
       "vsname": "ARM64",
       "x86?": false,
-      "x86_64?": false,
-      "children": {
-      }
+      "x86_64?": false
     }
   },
   "category": {
     "App": {
       "guid": "{B31F8BAD-AE23-5FC2-AA07-A8451156E1A8}",
       "name": "Apps",
-      "parent": null,
-      "children": {
-      }
+      "parent": null
     }
   },
   "host": {
@@ -83,9 +73,7 @@
       "vs2015?": false,
       "vs2017?": false,
       "vs2019?": false,
-      "xcode?": false,
-      "children": {
-      }
+      "xcode?": false
     },
     "vs2012": {
       "cpp_project_classname": "Vcxproj",
@@ -100,9 +88,7 @@
       "vs2015?": false,
       "vs2017?": false,
       "vs2019?": false,
-      "xcode?": false,
-      "children": {
-      }
+      "xcode?": false
     },
     "vs2013": {
       "cpp_project_classname": "Vcxproj",
@@ -117,9 +103,7 @@
       "vs2015?": false,
       "vs2017?": false,
       "vs2019?": false,
-      "xcode?": false,
-      "children": {
-      }
+      "xcode?": false
     },
     "vs2015": {
       "cpp_project_classname": "Vcxproj",
@@ -134,9 +118,7 @@
       "vs2015?": true,
       "vs2017?": false,
       "vs2019?": false,
-      "xcode?": false,
-      "children": {
-      }
+      "xcode?": false
     },
     "vs2017": {
       "cpp_project_classname": "Vcxproj",
@@ -151,9 +133,7 @@
       "vs2015?": false,
       "vs2017?": true,
       "vs2019?": false,
-      "xcode?": false,
-      "children": {
-      }
+      "xcode?": false
     },
     "vs2019": {
       "cpp_project_classname": "Vcxproj",
@@ -168,9 +148,7 @@
       "vs2015?": false,
       "vs2017?": false,
       "vs2019?": true,
-      "xcode?": false,
-      "children": {
-      }
+      "xcode?": false
     },
     "xcode": {
       "cpp_project_classname": "Xcodeproj",
@@ -185,9 +163,7 @@
       "vs2015?": false,
       "vs2017?": false,
       "vs2019?": false,
-      "xcode?": true,
-      "children": {
-      }
+      "xcode?": true
     }
   },
   "platform": {
@@ -201,9 +177,7 @@
         "x86_64",
         "arm64"
       ],
-      "windows?": true,
-      "children": {
-      }
+      "windows?": true
     },
     "ios": {
       "apple?": true,
@@ -213,9 +187,7 @@
       "valid_archs": [
 
       ],
-      "windows?": false,
-      "children": {
-      }
+      "windows?": false
     },
     "macos": {
       "apple?": true,
@@ -225,9 +197,7 @@
       "valid_archs": [
 
       ],
-      "windows?": false,
-      "children": {
-      }
+      "windows?": false
     }
   },
   "cpp": {
@@ -340,8 +310,6 @@
                         "TreatWarningAsError": false,
                         "SubSystem": "Console",
                         "TargetMachine": null
-                      },
-                      "children": {
                       }
                     },
                     "MyApp|vs2019|windows|x86|Release": {
@@ -395,8 +363,6 @@
                         "TreatWarningAsError": false,
                         "SubSystem": "Console",
                         "TargetMachine": null
-                      },
-                      "children": {
                       }
                     }
                   }
@@ -456,8 +422,6 @@
                         "TreatWarningAsError": false,
                         "SubSystem": "Console",
                         "TargetMachine": "MachineX64"
-                      },
-                      "children": {
                       }
                     },
                     "MyApp|vs2019|windows|x86_64|Release": {
@@ -511,8 +475,6 @@
                         "TreatWarningAsError": false,
                         "SubSystem": "Console",
                         "TargetMachine": "MachineX64"
-                      },
-                      "children": {
                       }
                     }
                   }
@@ -631,8 +593,6 @@
                         "RuntimeTypeInfo": true,
                         "TreatWarningAsError": false,
                         "TargetMachine": null
-                      },
-                      "children": {
                       }
                     },
                     "MyLib|vs2019|windows|x86|Release": {
@@ -685,8 +645,6 @@
                         "RuntimeTypeInfo": true,
                         "TreatWarningAsError": false,
                         "TargetMachine": null
-                      },
-                      "children": {
                       }
                     }
                   }
@@ -745,8 +703,6 @@
                         "RuntimeTypeInfo": true,
                         "TreatWarningAsError": false,
                         "TargetMachine": "MachineX64"
-                      },
-                      "children": {
                       }
                     },
                     "MyLib|vs2019|windows|x86_64|Release": {
@@ -799,8 +755,6 @@
                         "RuntimeTypeInfo": true,
                         "TreatWarningAsError": false,
                         "TargetMachine": "MachineX64"
-                      },
-                      "children": {
                       }
                     }
                   }
