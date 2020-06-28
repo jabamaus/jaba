@@ -7,21 +7,21 @@ module JABA
     include JDL_Common
 
     ##
-    # Set title of attribute. Required.
+    # Set title of attribute. Required. Will appear in generated reference manual.
     #
     def title(val = nil)
       @attr_def.set_property(:title, val)
     end
 
     ##
-    # Set help for the attribute.
+    # Add a help note for the attribute. Multiple can be added. Will appear in generated reference manual.
     #
-    def help(val)
-      @attr_def.set_property(:help, val)
+    def note(val)
+      @attr_def.set_property(:notes, val)
     end
     
     ##
-    # Add usage example.
+    # Add usage example. Will appear in generated reference manual.
     #
     def example(val)
       @attr_def.set_property(:examples, val)

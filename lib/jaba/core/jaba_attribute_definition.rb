@@ -18,7 +18,7 @@ module JABA
     include PropertyMethods
 
     attr_reader :title
-    attr_reader :help
+    attr_reader :notes
     attr_reader :examples
     
     attr_reader :type_id # eg :bool, :string, :file etc
@@ -46,7 +46,7 @@ module JABA
       @default_block = nil
 
       define_property(:title)
-      define_array_property(:help)
+      define_array_property(:notes)
       define_array_property(:examples)
       define_property(:default)
       define_array_property(:flags)
@@ -84,7 +84,7 @@ module JABA
       validate
       
       @title.freeze
-      @help.freeze
+      @notes.freeze
       @examples.freeze
       @default.freeze
       @flags.freeze

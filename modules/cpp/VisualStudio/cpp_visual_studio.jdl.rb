@@ -25,7 +25,7 @@ end
 open_type :arch do
   attr :vsname do
     flags :expose
-    help 'Name of target architecture (platform) as seen in Visual Studio IDE'
+    note 'Name of target architecture (platform) as seen in Visual Studio IDE'
   end
 end
 
@@ -45,20 +45,20 @@ open_type :cpp do
   open_type :project do
     attr :guid, type: :uuid do
       title 'Globally unique id (GUID)'
-      help 'Seeded by <projname>. Required by Visual Studio project files'
+      note 'Seeded by <projname>. Required by Visual Studio project files'
       default do
         projname
       end
     end
 
     attr_hash :vcglobal do
-      help 'Directly address the Globals property group in a vcxproj'
+      note 'Directly address the Globals property group in a vcxproj'
       value_option :condition
       flag_options :export
     end
 
     attr :winsdkver, type: :choice do
-      help 'Windows SDK version. Defaults to nil.'
+      note 'Windows SDK version. Defaults to nil.'
       items [
         '10.0.16299.0',  # Included in VS2017 ver.15.4
         '10.0.17134.0',  # Included in VS2017 ver.15.7
@@ -72,7 +72,7 @@ open_type :cpp do
 
   open_type :config do
     attr_hash :vcproperty do
-      help 'Address config section of a vcxproj directly'
+      note 'Address config section of a vcxproj directly'
       value_option :group, required: true
       value_option :condition
       flag_options :export
@@ -83,7 +83,7 @@ end
 open_type :category do
   attr :guid, type: :uuid do
     title 'Globally unique id (GUID)'
-    help 'Seeded by <name>. Required by Visual Studio .sln files'
+    note 'Seeded by <name>. Required by Visual Studio .sln files'
     default do
       name
     end

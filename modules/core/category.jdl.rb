@@ -4,13 +4,13 @@ define :category do
 
   attr :name do
     title 'Display name of category'
-    help 'Maps to name of solution folder in a Visual Studio solution'
+    note 'Maps to name of solution folder in a Visual Studio solution'
     flags :required
   end
   
   attr :parent, type: :reference do
     title 'Parent category'
-    help 'Use this to build a category hierarchy that can be used to classify projects in workspaces'
+    note 'Use this to build a category hierarchy that can be used to classify projects in workspaces'
     referenced_type :category
   end
   

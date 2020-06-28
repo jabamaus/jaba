@@ -24,7 +24,7 @@ module JABA
 
     ##
     #
-    def help
+    def notes
     end
 
     ##
@@ -73,7 +73,7 @@ module JABA
 
     ##
     #
-    def help
+    def notes
       'Only explicit strings will be accepted. Symbols are not valid.'
     end
 
@@ -111,7 +111,7 @@ module JABA
 
     ##
     #
-    def help
+    def notes
       'Only explicit symbols will be accepted. Strings are not valid.'
     end
 
@@ -143,7 +143,7 @@ module JABA
 
     ##
     #
-    def help
+    def notes
       'Only explicit strings or symbols will be accepted'
     end
 
@@ -175,7 +175,7 @@ module JABA
 
     ##
     #
-    def help
+    def notes
       'Accepts [true|false]. Defaults to false'
     end
 
@@ -221,7 +221,7 @@ module JABA
 
     ##
     #
-    def help
+    def notes
       'Can take exactly one of a set of unique values'
     end
 
@@ -271,7 +271,7 @@ module JABA
 
     ##
     #
-    def help
+    def notes
       'Validates that value is a string path representing a file'
     end
 
@@ -303,7 +303,7 @@ module JABA
 
     ##
     #
-    def help
+    def notes
       'Validates that value is a string path representing a directory'
     end
 
@@ -335,7 +335,7 @@ module JABA
 
     ##
     #
-    def help
+    def notes
       'Can be file glob match an explicit path or a directory'
     end
 
@@ -367,7 +367,7 @@ module JABA
 
     ##
     #
-    def help
+    def notes
       'TODO'
     end
 
@@ -397,7 +397,7 @@ module JABA
 
     ##
     #
-    def help
+    def notes
       'TODO'
     end
 

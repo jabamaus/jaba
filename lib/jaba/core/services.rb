@@ -928,7 +928,7 @@ module JABA
           md_row(w, :flags, ad.flags.map(&:inspect).join(','))
           md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
           md_row(w, :src, "$(jaba_install)/#{ad.definition.src_loc_describe(style: :rel_jaba_root)}")
-          md_row(w, :notes, ad.help.make_sentence)
+          md_row(w, :notes, ad.notes.make_sentence)
           if !ad.examples.empty?
             w << ">"
             w << "> *Examples*"

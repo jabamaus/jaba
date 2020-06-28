@@ -9,17 +9,17 @@ module JABA
     include JDL_Common
 
     ##
-    # Set title for the type. Required.
+    # Set title for the type. Required. Will appear in generated reference manual.
     #
     def title(val)
       @jaba_type.set_property(:title, val)
     end
 
     ##
-    # Set help for the type.
+    # Add a help note for this type. Multiple can be added. Will appear in generated reference manual.
     #
-    def help(val)
-      @jaba_type.set_property(:help, val)
+    def note(val)
+      @jaba_type.set_property(:notes, val)
     end
 
     ##

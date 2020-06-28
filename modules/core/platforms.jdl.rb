@@ -4,7 +4,7 @@ SUPPORTED_PLATFORMS = [:windows, :ios, :macos].freeze
 define :platform do
 
   title 'Target platform type'
-  help 'Manages attribute definitions required by platforms'
+  note 'Manages attribute definitions required by platforms'
 
   SUPPORTED_PLATFORMS.each do |p|
     attr "#{p}?", type: :bool do
@@ -26,7 +26,7 @@ define :platform do
 
   attr :apple?, type: :bool do
     title 'Returns true if current target platform is an Apple platform'
-    help 'Use only if attribute being set works across all current and future apple platforms. As such ' \
+    note 'Use only if attribute being set works across all current and future apple platforms. As such ' \
          'probably rarely used.'
     flags :expose
   end

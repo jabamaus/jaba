@@ -2,7 +2,7 @@
 
 To do:
 
-- rename help to notes
+- Move title/note/example into module and include
 - more error reporting testing with actual files rather than blocks
 - test opening sub types
 - Add make_definition method. Add JDL_Object#services method and stop storing @services everywhere - can be got from definition now.
@@ -34,7 +34,7 @@ To do:
 - Have some kind of spec for flag_options, eg
 
 flag_option :export do
-  help 'do exporting'
+  note 'do exporting'
   compatibility do
     'only works on array and hash' if !array? && !hash?
     end
@@ -47,13 +47,13 @@ Need to make it so that don't expose if attribute is not single value. Also need
 if there are multiple attrs, with a warning.
 
   attr_array :valid_archs, type: :reference do
-    help 'List of architectures supported by this platform'
+    note 'List of architectures supported by this platform'
     referenced_type :arch
     flags :required, :nosort
   end
 
   attr_array :default_archs, type: :reference do
-    help 'List of default target architectures for this platform'
+    note 'List of default target architectures for this platform'
     referenced_type :arch
     flags :required, :nosort
   end

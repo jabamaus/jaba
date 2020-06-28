@@ -13,7 +13,7 @@ define :cpp do
   
   attr :root, type: :dir do
     title 'Root directory relative to which all other paths are specified'
-    help 'Root of the project specified as an offset from the file that contains the project definition. ' \
+    note 'Root of the project specified as an offset from the file that contains the project definition. ' \
          'All paths are specified relative to this. Project files will be generated here unless $(projroot) is set. ' \
          'Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible ' \
          'in order to not damage portability'
@@ -36,7 +36,7 @@ define :cpp do
     #
     attr :host, type: :symbol do
       title 'Target host as an id'
-      help 'Query current target host'
+      note 'Query current target host'
       flags :read_only
       example %q{
         case host
@@ -50,7 +50,7 @@ define :cpp do
 
     attr :host_ref, type: :reference do
       title 'Target host as object'
-      help 'Use when access to host attributes is required'
+      note 'Use when access to host attributes is required'
       referenced_type :host
     end
 
@@ -78,7 +78,7 @@ define :cpp do
     #
     attr :platform, type: :symbol do
       title 'Target platform as an id'
-      help 'Query current target platform'
+      note 'Query current target platform'
       flags :read_only
       example %Q{
         case platform
@@ -92,7 +92,7 @@ define :cpp do
       
     attr :platform_ref, type: :reference do
       title 'Target platform as an object'
-      help 'Use when access to platform attributes is required'
+      note 'Use when access to platform attributes is required'
       referenced_type :platform
     end
   
@@ -100,7 +100,7 @@ define :cpp do
     #
     attr_array :deps, type: :reference do
       title 'Project dependencies'
-      help 'List of ids of other cpp definitions'
+      note 'List of ids of other cpp definitions'
       referenced_type :cpp
       make_handle do |id|
         "#{id}|#{host}|#{platform}"
@@ -123,8 +123,8 @@ define :cpp do
       title 'Directory in which projects will be generated'
       default '.'
       flags :no_check_exist # May get created during generation
-      help 'Specified as an offset from $(root). If not specified projects will be generated in $(root)'
-      help 'Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible ' \
+      note 'Specified as an offset from $(root). If not specified projects will be generated in $(root)'
+      note 'Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible ' \
             'in order to not damage portability'
       example %Q{
         cpp :MyApp do
@@ -136,7 +136,7 @@ define :cpp do
     
     attr :projname, type: :string do
       title 'Base name of project files'
-      help 'Defaults to $(id)$(projsuffix)'
+      note 'Defaults to $(id)$(projsuffix)'
       default do
         "#{id}#{projsuffix}"
       end
@@ -144,7 +144,7 @@ define :cpp do
 
     attr :projsuffix, type: :string do
       title 'Optional suffix to be applied to $(projname)'
-      help 'Has no effect if $(projname) is set explicitly'
+      note 'Has no effect if $(projname) is set explicitly'
     end
 
     attr_array :src, type: :src_spec do
@@ -165,7 +165,7 @@ define :cpp do
     
     attr_array :src_ext do
       title 'File extensions used when matching src files'
-      help 'Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.'
+      note 'Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.'
       flags :nosort
       flag_options :export
       default do
@@ -189,7 +189,7 @@ define :cpp do
 
     attr :arch, type: :symbol_or_string do
       title 'Target architecture as an id'
-      help 'Query current architecture being processed. Use to define control flow to set config-specific atttributes'
+      note 'Query current architecture being processed. Use to define control flow to set config-specific atttributes'
       flags :read_only
     end
 
@@ -214,14 +214,14 @@ define :cpp do
     # Control flow attributes
     #
     attr :config, type: :symbol_or_string do
-      help 'Returns current config being processed. Use to define control flow to set config-specific atttributes'
+      note 'Returns current config being processed. Use to define control flow to set config-specific atttributes'
       flags :read_only
     end
 
     # Common attributes. These are the attributes that most definitions will set/use.
     #
     attr_array :build_action, type: :string do
-      help 'Build action, eg a prebuild step'
+      note 'Build action, eg a prebuild step'
       flag_options :export
       value_option :msg
       value_option :type, required: true, items: [:PreBuild, :PreLink, :PostBuild]
@@ -229,7 +229,7 @@ define :cpp do
 
     attr :buildroot, type: :dir do
       title 'Root directory for build artifacts'
-      help 'Specified as a relative path from $(root)'
+      note 'Specified as a relative path from $(root)'
       default 'build'
       flags :no_check_exist
     end
@@ -261,14 +261,14 @@ define :cpp do
     end
 
     attr :configname do
-      help 'Display name of config in Visual Studio. Defaults to $(config)'
+      note 'Display name of config in Visual Studio. Defaults to $(config)'
       default do
         config
       end
     end
 
     attr :debug, type: :bool do
-      help 'Flags config as a debug build. Defaults to true if config id contains \'debug\''
+      note 'Flags config as a debug build. Defaults to true if config id contains \'debug\''
       default do
         config =~ /debug/i ? true : false
       end
@@ -289,14 +289,14 @@ define :cpp do
 
     attr_array :nowarn do
       title 'Warnings to disable'
-      help 'Placed directly into projects as is, with no validation'
+      note 'Placed directly into projects as is, with no validation'
       flag_options :export
       example "nowarn [4100, 4127, 4244] if visual_studio?"
     end
 
     attr :targetname, type: :string do
       title 'Base name of output file without extension'
-      help 'Defaults to $(targetprefix)$(projname)$(targetsuffix)'
+      note 'Defaults to $(targetprefix)$(projname)$(targetsuffix)'
       default do
         "#{targetprefix}#{projname}#{targetsuffix}"
       end
@@ -304,17 +304,17 @@ define :cpp do
     
     attr :targetprefix, type: :string do
       title 'Prefix to apply to $(targetname)'
-      help 'Has no effect if $(targetname) specified'
+      note 'Has no effect if $(targetname) specified'
     end
     
     attr :targetsuffix, type: :string do
       title 'Suffix to apply to $(targetname)'
-      help 'Has no effect if $(targetname) specified'
+      note 'Has no effect if $(targetname) specified'
     end
 
     attr :targetext, type: :string do
       title 'Extension to apply to $(targetname)'
-      help 'Defaults to standard extension for $(type) of project for target $(platform)'
+      note 'Defaults to standard extension for $(type) of project for target $(platform)'
       default do
         case platform
         when :windows
@@ -345,7 +345,7 @@ define :cpp do
     # Not so common attributes. Often used but not fundamental.
     #
     attr :character_set, type: :choice do
-      help 'Character set. Defaults to :unicode'
+      note 'Character set. Defaults to :unicode'
       items [
         :mbcs,    # Visual Studio only
         :unicode,

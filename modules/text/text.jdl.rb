@@ -9,7 +9,7 @@ define :text do
   
   attr :content do
     title 'Content as a single multiline string'
-    help 'Directly set content of file as a string.'
+    note 'Directly set content of file as a string.'
   end
   
   attr_array :line do

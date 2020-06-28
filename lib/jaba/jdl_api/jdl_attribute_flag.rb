@@ -7,10 +7,24 @@ module JABA
     include JDL_Common
 
     ##
-    # Set help for the attribute flag. Required.
+    # Set title of attribute flag. Required. Will appear in generated reference manual.
     #
-    def help(val)
-      @attr_flag.set_property(:help, val)
+    def title(val = nil)
+      @attr_def.set_property(:title, val)
+    end
+
+    ##
+    # Add a help note for the attribute flag. Multiple can be added. Will appear in generated reference manual.
+    #
+    def note(val)
+      @attr_flag.set_property(:notes, val)
+    end
+
+    ##
+    # Add usage example. Will appear in generated reference manual.
+    #
+    def example(val)
+      @attr_flag.set_property(:examples, val)
     end
 
     ##
