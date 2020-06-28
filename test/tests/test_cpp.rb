@@ -122,12 +122,12 @@ module JABA
           vcglobal :NewGlobal, 'g'
         end
         open_translator :vcxproj_config_windows do
-          vcproperty :NewProperty, 'p', group: :pg1
+          vcproperty 'PG1|NewProperty', 'p'
         end
       end
       proj[:vcglobal][:NewGlobal].must_equal('g')
-      proj[:configs][:Debug][:vcproperty][:NewProperty].must_equal('p')
-      proj[:configs][:Release][:vcproperty][:NewProperty].must_equal('p')
+      proj[:configs][:Debug][:vcproperty]['PG1|NewProperty'].must_equal('p')
+      proj[:configs][:Release][:vcproperty]['PG1|NewProperty'].must_equal('p')
     end
 
   end

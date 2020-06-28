@@ -51,7 +51,7 @@ module JABA
         end
 
         action_cmds.each do |group, cmds|
-          cfg.attrs.vcproperty :Command, cmds.join("\n"), group: group
+          cfg.attrs.vcproperty "#{group}|Command", cmds.join("\n")
         end
       end
     end
@@ -144,14 +144,14 @@ module JABA
         item_definition_group(@idg, condition: cfg_condition(cfg_name, platform))
 
         cfg.visit_attr(:vcproperty) do |attr, val|
-          key = attr.get_option_value(:__key)
-          group = attr.get_option_value(:group, fail_if_not_found: false)
+          location = attr.get_option_value(:__key)
+          group, key = location.split('|')
           condition = attr.get_option_value(:condition, fail_if_not_found: false)
 
           case group
-          when :pg1
+          when 'PG1'
             write_keyvalue(@pg1, key, val, condition: condition)
-          when :pg2
+          when 'PG2'
             write_keyvalue(@pg2, key, val, condition: condition)
           else
             idg = @item_def_groups[group]

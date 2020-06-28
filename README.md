@@ -2,13 +2,7 @@
 
 To do:
 
-- cannot do eg
-    vcproperty :Command, 'cmd1', group: :PreBuild
-    vcproperty :Command, 'cmd2', group: :PostBuild
-    vcproperty "PostBuildEvent|Command", 'cmd1'
-
-    as the second one overwrites the first. Uh oh.
-
+- way of validating key in hash attribute
 - test build actions
 - Move title/note/example into module and include
 - more error reporting testing with actual files rather than blocks

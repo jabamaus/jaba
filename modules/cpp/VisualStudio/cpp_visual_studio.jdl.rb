@@ -71,9 +71,9 @@ open_type :cpp do
   end
 
   open_type :config do
+    # TODO: validate key is in correct format
     attr_hash :vcproperty do
       note 'Address config section of a vcxproj directly'
-      value_option :group, required: true
       value_option :condition
       flag_options :export
     end
