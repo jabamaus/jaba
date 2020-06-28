@@ -47,11 +47,12 @@ module JABA
     
     ##
     #
-    def xml_group(w, tag, label: nil, condition: nil, close: false, depth: 1)
+    def xml_group(w, tag, label: nil, label_at_end: true, condition: nil, close: false, depth: 1)
       if !close
         w.write_raw "#{'  ' * depth}<#{tag}"
-        w.write_raw " Label=\"#{label}\"" if label
+        w.write_raw " Label=\"#{label}\"" if (label && !label_at_end)
         w.write_raw " Condition=\"#{condition}\"" if condition
+        w.write_raw " Label=\"#{label}\"" if (label && label_at_end)
         w << '>'
       end
       

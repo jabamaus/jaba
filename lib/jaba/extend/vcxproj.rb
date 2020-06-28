@@ -133,14 +133,14 @@ module JABA
         end
 
         @ps.yield_self do |w|
-          import_group(w, label: :PropertySheets, condition: cfg_condition(cfg_name, platform)) do
+          import_group(w, label: :PropertySheets, label_at_end: false, condition: cfg_condition(cfg_name, platform)) do
             w << '    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" ' \
                 'Condition="exists(\'$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props\')" Label="LocalAppDataPlatform" />'
           end
         end
 
-        property_group(@pg1, label: :Configuration, condition: cfg_condition(cfg_name, platform))
-        property_group(@pg2, label: :Configuration, condition: cfg_condition(cfg_name, platform))
+        property_group(@pg1, label: :Configuration, label_at_end: true, condition: cfg_condition(cfg_name, platform))
+        property_group(@pg2, condition: cfg_condition(cfg_name, platform))
         item_definition_group(@idg, condition: cfg_condition(cfg_name, platform))
 
         cfg.visit_attr(:vcproperty) do |attr, val|
@@ -164,8 +164,8 @@ module JABA
           end
         end
 
-        property_group(@pg1, label: :Configuration, close: true)
-        property_group(@pg2, label: :Configuration, close: true)
+        property_group(@pg1, close: true)
+        property_group(@pg2, close: true)
 
         @item_def_groups.each do |group, idg|
           idg << "    </#{group}>"
