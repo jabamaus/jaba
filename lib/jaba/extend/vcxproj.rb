@@ -51,7 +51,6 @@ module JABA
         end
 
         action_cmds.each do |group, cmds|
-          puts "#{cmds} group:#{group}"
           cfg.attrs.vcproperty :Command, cmds.join("\n"), group: group
         end
       end
