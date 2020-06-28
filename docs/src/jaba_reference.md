@@ -1058,7 +1058,7 @@
 >   ...
 > end
 >       
-> vcproperty :VS2019Specific, 'value' if vs2010?
+> vcproperty :VS2010Specific, 'value' if vs2010?
 >```
 #### vs2012?
 
@@ -1080,7 +1080,7 @@
 >   ...
 > end
 >       
-> vcproperty :VS2019Specific, 'value' if vs2012?
+> vcproperty :VS2012Specific, 'value' if vs2012?
 >```
 #### vs2013?
 
@@ -1102,7 +1102,7 @@
 >   ...
 > end
 >       
-> vcproperty :VS2019Specific, 'value' if vs2013?
+> vcproperty :VS2013Specific, 'value' if vs2013?
 >```
 #### vs2015?
 
@@ -1124,7 +1124,7 @@
 >   ...
 > end
 >       
-> vcproperty :VS2019Specific, 'value' if vs2015?
+> vcproperty :VS2015Specific, 'value' if vs2015?
 >```
 #### vs2017?
 
@@ -1146,7 +1146,7 @@
 >   ...
 > end
 >       
-> vcproperty :VS2019Specific, 'value' if vs2017?
+> vcproperty :VS2017Specific, 'value' if vs2017?
 >```
 #### vs2019?
 

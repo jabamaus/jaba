@@ -35,7 +35,7 @@ define :host do
           ...
         end
       }
-      example "vcproperty :VS2019Specific, 'value' if #{h}?"
+      example "vcproperty :VS#{vs_year}Specific, 'value' if #{h}?"
       flags :expose
     end
   end
