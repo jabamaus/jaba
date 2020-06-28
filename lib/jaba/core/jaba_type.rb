@@ -76,7 +76,6 @@ module JABA
   class TopLevelJabaType < JabaType
 
     attr_reader :title
-    attr_reader :help
     attr_reader :notes
     attr_reader :generator
     attr_reader :defaults_definition
@@ -97,9 +96,9 @@ module JABA
       @open_sub_type_defs = []
 
       define_property(:title)
+      define_array_property(:notes)
       define_array_property(:dependencies) # TODO: validate explicitly specified deps
 
-      set_property(:help, "Manages attribute definitions for '#{@defn_id}' type")
       set_property(:notes, "Manages attribute definitions for '#{@defn_id}' type")
 
       if definition.block
@@ -108,6 +107,7 @@ module JABA
 
       validate
 
+      @title.freeze
       @notes.freeze
     end
 

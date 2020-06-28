@@ -17,6 +17,7 @@ module JABA
     def initialize(definition)
       super(definition, JDL_AttributeFlag.new(self))
 
+      define_property(:title)
       define_array_property(:notes)
       define_array_property(:examples)
       define_hook(:compatibility)
@@ -27,6 +28,7 @@ module JABA
 
       # TODO: validate title supplied
       @title.freeze
+      @notes.freeze
       @examples.freeze
     end
 

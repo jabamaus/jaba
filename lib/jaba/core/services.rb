@@ -910,7 +910,7 @@ module JABA
         w << "> | Property | Value  |"
         w << "> |-|-|"
         md_row(w, :src, "$(jaba_install)/#{jt.definition.src_loc_describe(style: :rel_jaba_root)}")
-        md_row(w, :notes, jt.help.make_sentence)
+        md_row(w, :notes, jt.notes.make_sentence)
         w << "> "
         w << ""
         jt.all_attr_defs_sorted.each do |ad|
