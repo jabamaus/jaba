@@ -2,11 +2,11 @@ SUPPORTED_ARCHS = [:x86, :x86_64, :arm64].freeze
 
 define :arch do
   
-  title 'Target architecture'
+  title 'Target architecture type'
 
   SUPPORTED_ARCHS.each do |a|
     attr "#{a}?", type: :bool do
-      title "Returns true if current architecture is #{a}"
+      title "Returns true if current target architecture is #{a}"
       example %Q{
         if #{a}?
           ...

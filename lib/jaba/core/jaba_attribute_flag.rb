@@ -17,7 +17,7 @@ module JABA
     def initialize(definition)
       super(definition, JDL_AttributeFlag.new(self))
 
-      define_property(:help)
+      define_array_property(:help)
       define_hook(:compatibility)
 
       if definition.block

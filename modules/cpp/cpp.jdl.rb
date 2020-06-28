@@ -13,8 +13,10 @@ define :cpp do
   
   attr :root, type: :dir do
     title 'Root directory relative to which all other paths are specified'
-    help 'Root of the project specified as a relative path to the file that contains the project definition. ' \
-         'All paths are specified relative to this. Project files will be generated here unless $(projroot) is set.'
+    help 'Root of the project specified as an offset from the file that contains the project definition. ' \
+         'All paths are specified relative to this. Project files will be generated here unless $(projroot) is set. ' \
+         'Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible ' \
+         'in order to not damage portability'
     default '.'
   end
 
@@ -33,8 +35,8 @@ define :cpp do
     # Control flow attributes
     #
     attr :host, type: :symbol do
-      title 'Target host'
-      help 'Use for querying the current target host'
+      title 'Target host as an id'
+      help 'Query current target host'
       flags :read_only
       example %q{
         case host
@@ -75,8 +77,8 @@ define :cpp do
     # Control flow attributes
     #
     attr :platform, type: :symbol do
-      title 'Target platform'
-      help 'Use for querying the current target platform'
+      title 'Target platform as an id'
+      help 'Query current target platform'
       flags :read_only
       example %Q{
         case platform
@@ -97,18 +99,39 @@ define :cpp do
     # Common attributes
     #
     attr_array :deps, type: :reference do
-      help 'Specify project dependencies. List of ids of other cpp definitions.'
+      title 'Project dependencies'
+      help 'List of ids of other cpp definitions'
       referenced_type :cpp
       make_handle do |id|
         "#{id}|#{host}|#{platform}"
       end
+      example %Q{
+        cpp :MyApp do
+          type :app
+          ...
+          deps [:MyLib]
+        end
+        
+        cpp :MyLib do
+          type :lib
+          ...
+        end
+      }
     end
 
     attr :projroot, type: :dir do
-      help 'Directory in which projects will be generated. Specified as a relative path from $(root). If not specified ' \
-      'projects will be generated in $(root)'
+      title 'Directory in which projects will be generated'
       default '.'
       flags :no_check_exist # May get created during generation
+      help 'Specified as an offset from $(root). If not specified projects will be generated in $(root)'
+      help 'Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible ' \
+            'in order to not damage portability'
+      example %Q{
+        cpp :MyApp do
+          src ['**/*'] # Get all src in $(root), which defaults to directory of definition file
+          projroot 'projects' # Place generated projects in 'projects' directory
+        end
+      }
     end
     
     attr :projname, type: :string do
@@ -120,7 +143,8 @@ define :cpp do
     end
 
     attr :projsuffix, type: :string do
-      help 'Optional suffix to be applied to $(projname). Has no effect if $(projname) is set explicitly.'
+      title 'Optional suffix to be applied to $(projname)'
+      help 'Has no effect if $(projname) is set explicitly'
     end
 
     attr_array :src, type: :src_spec do
@@ -140,8 +164,8 @@ define :cpp do
     end
     
     attr_array :src_ext do
-      help 'File extensions that will be added when src is not specified explicitly. ' \
-           'Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.'
+      title 'File extensions used when matching src files'
+      help 'Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.'
       flags :nosort
       flag_options :export
       default do
@@ -164,11 +188,13 @@ define :cpp do
   define :per_arch do
 
     attr :arch, type: :symbol_or_string do
-      help 'Returns current arch being processed. Use to define control flow to set config-specific atttributes'
+      title 'Target architecture as an id'
+      help 'Query current architecture being processed. Use to define control flow to set config-specific atttributes'
       flags :read_only
     end
 
     attr :arch_ref, type: :reference do
+      title 'Target architecture as an object'
       referenced_type :arch
     end
 

@@ -288,6 +288,21 @@ module JABACoreExt
       self
     end
 
+    ##
+    # Used when generating code example blocks in reference manual.
+    #
+    def split_and_trim_leading_whitespace
+      lines = split("\n")
+      lines.delete('')
+
+      if lines[0] =~ /^(\s*)/
+        lw = Regexp.last_match(1)
+        lines.each do |l|
+          yield l.delete_prefix(lw)
+        end
+      end
+    end
+    
   end
 
   ##
@@ -360,6 +375,18 @@ module JABACoreExt
     #
     def vs_join_paths(**args)
       map(&:vs_quote!).vs_join(**args)&.to_backslashes!
+    end
+
+    ##
+    # Used when generating reference manual.
+    #
+    def make_sentence
+      s = String.new
+      each do |l|
+        s.concat(l.capitalize_first)
+        s.ensure_end_with!('. ')
+      end
+      s
     end
 
   end

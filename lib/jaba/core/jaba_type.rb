@@ -96,8 +96,10 @@ module JABA
       @open_sub_type_defs = []
 
       define_property(:title)
-      define_property(:help)
+      define_array_property(:help)
       define_array_property(:dependencies) # TODO: validate explicitly specified deps
+
+      set_property(:help, "Manages attribute definitions for '#{@defn_id}' type")
 
       if definition.block
         eval_jdl(&definition.block)

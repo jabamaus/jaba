@@ -910,7 +910,7 @@ module JABA
         w << "> | Property | Value  |"
         w << "> |-|-|"
         md_row(w, :src, "$(jaba_install)/#{jt.definition.src_loc_describe(style: :rel_jaba_root)}")
-        md_row(w, :notes, jt.help&.ensure_end_with('.'))
+        md_row(w, :notes, jt.help.make_sentence)
         w << "> "
         w << ""
         jt.all_attr_defs_sorted.each do |ad|
@@ -928,23 +928,14 @@ module JABA
           md_row(w, :flags, ad.flags.map(&:inspect).join(','))
           md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
           md_row(w, :src, "$(jaba_install)/#{ad.definition.src_loc_describe(style: :rel_jaba_root)}")
-          md_row(w, :notes, ad.help&.ensure_end_with('.'))
+          md_row(w, :notes, ad.help.make_sentence)
           if !ad.examples.empty?
             w << ">"
             w << "> *Examples*"
             w << ">```ruby"
             ad.examples.each do |e|
-              lines = e.split("\n")
-              lines.delete('')
-
-              # Clean up any leading whitespace in example strings. Can occur with multiline comments.
-              #
-              if lines[0] =~ /^(\s*)/
-                leading_whitespace = Regexp.last_match(1)
-                lines.each{|l| l.delete_prefix!(leading_whitespace)}
-              end
-              lines.each do |l|
-                w << "> #{l}"
+              e.split_and_trim_leading_whitespace do |line|
+                w << "> #{line}"
               end
             end
             w << ">```"

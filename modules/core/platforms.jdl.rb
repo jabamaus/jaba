@@ -3,23 +3,31 @@ SUPPORTED_PLATFORMS = [:windows, :ios, :macos].freeze
 
 define :platform do
 
-  title 'Target platform'
+  title 'Target platform type'
+  help 'Manages attribute definitions required by platforms'
 
   SUPPORTED_PLATFORMS.each do |p|
     attr "#{p}?", type: :bool do
-      title "Queries target platform"
-      help "Returns true if current platform is #{p}"
+      title "Returns true if current target platform is #{p}"
+      example %Q{
+        if #{p}?
+          ...
+        end
+      }
+      example "src ['imp_#{p}.cpp'] if #{p}?"
       flags :expose
     end
   end
   
   attr :microsoft?, type: :bool do
-    help 'Returns true if its a Microsoft platform'
+    title 'Returns true if current target platform is a Microsoft platform'
     flags :expose
   end
 
   attr :apple?, type: :bool do
-    help 'Returns true if its an Apple platform'
+    title 'Returns true if current target platform is an Apple platform'
+    help 'Use only if attribute being set works across all current and future apple platforms. As such ' \
+         'probably rarely used.'
     flags :expose
   end
   

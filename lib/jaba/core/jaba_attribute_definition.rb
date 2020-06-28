@@ -46,7 +46,7 @@ module JABA
       @default_block = nil
 
       define_property(:title)
-      define_property(:help)
+      define_array_property(:help)
       define_array_property(:examples)
       define_property(:default)
       define_array_property(:flags)
@@ -238,8 +238,7 @@ module JABA
     #
     def validate
       if @title.nil? && !JABA.running_tests?
-        # TODO: reinstate
-        #jaba_error("requires a title")
+        #jaba_error("#{describe} requires a title")
       end
 
       begin

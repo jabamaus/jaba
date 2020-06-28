@@ -108,17 +108,17 @@
 
 ## arch
 > 
-> _Target architecture_
+> _Target architecture type_
 > 
 > | Property | Value  |
 > |-|-|
 > | _src_ | $(jaba_install)/modules/core/archs.jdl.rb:3 |
-> | _notes_ |  |
+> | _notes_ | Manages attribute definitions for 'arch' type.  |
 > 
 
 #### arm64?
 
-> _Returns true if current architecture is arm64_
+> _Returns true if current target architecture is arm64_
 > 
 > | Property | Value  |
 > |-|-|
@@ -150,10 +150,10 @@
 > | _flags_ | :expose |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:26 |
-> | _notes_ | Name of target architecture (platform) as seen in Visual Studio IDE. |
+> | _notes_ | Name of target architecture (platform) as seen in Visual Studio IDE.  |
 #### x86?
 
-> _Returns true if current architecture is x86_
+> _Returns true if current target architecture is x86_
 > 
 > | Property | Value  |
 > |-|-|
@@ -175,7 +175,7 @@
 >```
 #### x86_64?
 
-> _Returns true if current architecture is x86_64_
+> _Returns true if current target architecture is x86_64_
 > 
 > | Property | Value  |
 > |-|-|
@@ -200,12 +200,12 @@
 
 ## category
 > 
-> _Project category_
+> _Project category type_
 > 
 > | Property | Value  |
 > |-|-|
 > | _src_ | $(jaba_install)/modules/core/category.jdl.rb:1 |
-> | _notes_ |  |
+> | _notes_ | Manages attribute definitions for 'category' type.  |
 > 
 
 #### guid
@@ -220,7 +220,7 @@
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:84 |
-> | _notes_ | Seeded by <name>. Required by Visual Studio .sln files. |
+> | _notes_ | Seeded by <name>. Required by Visual Studio .sln files.  |
 #### name
 
 > _Display name of category_
@@ -233,7 +233,7 @@
 > | _flags_ | :required |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/core/category.jdl.rb:5 |
-> | _notes_ | Maps to name of solution folder in a Visual Studio solution. |
+> | _notes_ | Maps to name of solution folder in a Visual Studio solution.  |
 #### parent
 
 > _Parent category_
@@ -246,7 +246,7 @@
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/core/category.jdl.rb:11 |
-> | _notes_ | Use this to build a category hierarchy that can be used to classify projects in workspaces. |
+> | _notes_ | Use this to build a category hierarchy that can be used to classify projects in workspaces.  |
 
 ---
 
@@ -257,12 +257,12 @@
 > | Property | Value  |
 > |-|-|
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:3 |
-> | _notes_ |  |
+> | _notes_ | Manages attribute definitions for 'cpp' type.  |
 > 
 
 #### arch
 
-> __
+> _Target architecture as an id_
 > 
 > | Property | Value  |
 > |-|-|
@@ -271,11 +271,11 @@
 > | _default_ |  |
 > | _flags_ | :read_only |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:166 |
-> | _notes_ | Returns current arch being processed. Use to define control flow to set config-specific atttributes. |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:190 |
+> | _notes_ | Query current architecture being processed. Use to define control flow to set config-specific atttributes.  |
 #### arch_ref
 
-> __
+> _Target architecture as an object_
 > 
 > | Property | Value  |
 > |-|-|
@@ -284,7 +284,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:171 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:196 |
 > | _notes_ |  |
 #### archs
 
@@ -297,7 +297,7 @@
 > | _default_ |  |
 > | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:61 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:63 |
 > | _notes_ |  |
 >
 > *Examples*
@@ -315,7 +315,7 @@
 > | _default_ |  |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:211 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:237 |
 > | _notes_ |  |
 #### build_action
 
@@ -328,8 +328,8 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:197 |
-> | _notes_ | Build action, eg a prebuild step. |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:223 |
+> | _notes_ | Build action, eg a prebuild step.  |
 #### buildroot
 
 > _Root directory for build artifacts_
@@ -341,8 +341,8 @@
 > | _default_ | build |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:204 |
-> | _notes_ | Specified as a relative path from $(root). |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:230 |
+> | _notes_ | Specified as a relative path from $(root).  |
 #### cflags
 
 > _Raw compiler command line switches_
@@ -354,7 +354,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:232 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:258 |
 > | _notes_ |  |
 #### character_set
 
@@ -367,8 +367,8 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:321 |
-> | _notes_ | Character set. Defaults to :unicode. |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:347 |
+> | _notes_ | Character set. Defaults to :unicode.  |
 >
 > *Examples*
 >```ruby
@@ -385,8 +385,8 @@
 > | _default_ |  |
 > | _flags_ | :read_only |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:190 |
-> | _notes_ | Returns current config being processed. Use to define control flow to set config-specific atttributes. |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:216 |
+> | _notes_ | Returns current config being processed. Use to define control flow to set config-specific atttributes.  |
 #### configname
 
 > __
@@ -398,8 +398,8 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:237 |
-> | _notes_ | Display name of config in Visual Studio. Defaults to $(config). |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:263 |
+> | _notes_ | Display name of config in Visual Studio. Defaults to $(config).  |
 #### configs
 
 > _Build configurations_
@@ -411,7 +411,7 @@
 > | _default_ |  |
 > | _flags_ | :required,:nosort |
 > | _options_ | :export |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:68 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:70 |
 > | _notes_ |  |
 >
 > *Examples*
@@ -429,8 +429,8 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:244 |
-> | _notes_ | Flags config as a debug build. Defaults to true if config id contains 'debug'. |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:270 |
+> | _notes_ | Flags config as a debug build. Defaults to true if config id contains 'debug'.  |
 #### defines
 
 > _Preprocessor defines_
@@ -442,11 +442,11 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:251 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:277 |
 > | _notes_ |  |
 #### deps
 
-> __
+> _Project dependencies_
 > 
 > | Property | Value  |
 > |-|-|
@@ -455,8 +455,23 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:99 |
-> | _notes_ | Specify project dependencies. List of ids of other cpp definitions. |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:101 |
+> | _notes_ | List of ids of other cpp definitions.  |
+>
+> *Examples*
+>```ruby
+> cpp :MyApp do
+>   type :app
+>   ...
+>   deps [:MyLib]
+> end
+> 
+> cpp :MyLib do
+>   type :lib
+>   ...
+> end
+>       
+>```
 #### exceptions
 
 > _Enables C++ exceptions_
@@ -468,7 +483,7 @@
 > | _default_ | true |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:332 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:358 |
 > | _notes_ |  |
 >
 > *Examples*
@@ -487,10 +502,10 @@
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:46 |
-> | _notes_ | Seeded by <projname>. Required by Visual Studio project files. |
+> | _notes_ | Seeded by <projname>. Required by Visual Studio project files.  |
 #### host
 
-> _Target host_
+> _Target host as an id_
 > 
 > | Property | Value  |
 > |-|-|
@@ -499,8 +514,8 @@
 > | _default_ |  |
 > | _flags_ | :read_only |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:35 |
-> | _notes_ | Use for querying the current target host. |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:37 |
+> | _notes_ | Query current target host.  |
 >
 > *Examples*
 >```ruby
@@ -523,8 +538,8 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:49 |
-> | _notes_ | Use when access to host attributes is required. |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:51 |
+> | _notes_ | Use when access to host attributes is required.  |
 #### hosts
 
 > _Target hosts_
@@ -537,7 +552,7 @@
 > | _flags_ | :required |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:7 |
-> | _notes_ | The following hosts are available as standard: vs2010, vs2012, vs2013, vs2015, vs2017, vs2019, xcode. |
+> | _notes_ | The following hosts are available as standard: vs2010, vs2012, vs2013, vs2015, vs2017, vs2019, xcode.  |
 #### inc
 
 > _Include paths_
@@ -549,7 +564,7 @@
 > | _default_ |  |
 > | _flags_ | :nosort |
 > | _options_ | :export |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:256 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:282 |
 > | _notes_ |  |
 >
 > *Examples*
@@ -568,7 +583,7 @@
 > | _default_ |  |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:218 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:244 |
 > | _notes_ |  |
 #### nowarn
 
@@ -581,8 +596,8 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:264 |
-> | _notes_ | Placed directly into projects as is, with no validation. |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:290 |
+> | _notes_ | Placed directly into projects as is, with no validation.  |
 >
 > *Examples*
 >```ruby
@@ -599,11 +614,11 @@
 > | _default_ |  |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:225 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:251 |
 > | _notes_ |  |
 #### platform
 
-> _Target platform_
+> _Target platform as an id_
 > 
 > | Property | Value  |
 > |-|-|
@@ -612,8 +627,8 @@
 > | _default_ |  |
 > | _flags_ | :read_only |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:77 |
-> | _notes_ | Use for querying the current target platform. |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:79 |
+> | _notes_ | Query current target platform.  |
 >
 > *Examples*
 >```ruby
@@ -636,8 +651,8 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:91 |
-> | _notes_ | Use when access to platform attributes is required. |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:93 |
+> | _notes_ | Use when access to platform attributes is required.  |
 #### platforms
 
 > _Target platforms_
@@ -649,7 +664,7 @@
 > | _default_ |  |
 > | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:25 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:27 |
 > | _notes_ |  |
 >
 > *Examples*
@@ -668,11 +683,11 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:114 |
-> | _notes_ | Defaults to $(id)$(projsuffix). |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:137 |
+> | _notes_ | Defaults to $(id)$(projsuffix).  |
 #### projroot
 
-> __
+> _Directory in which projects will be generated_
 > 
 > | Property | Value  |
 > |-|-|
@@ -681,11 +696,20 @@
 > | _default_ | . |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:107 |
-> | _notes_ | Directory in which projects will be generated. Specified as a relative path from $(root). If not specified projects will be generated in $(root). |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:122 |
+> | _notes_ | Specified as an offset from $(root). If not specified projects will be generated in $(root). Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible in order to not damage portability.  |
+>
+> *Examples*
+>```ruby
+> cpp :MyApp do
+>   src ['**/*'] # Get all src in $(root), which defaults to directory of definition file
+>   projroot 'projects' # Place generated projects in 'projects' directory
+> end
+>       
+>```
 #### projsuffix
 
-> __
+> _Optional suffix to be applied to $(projname)_
 > 
 > | Property | Value  |
 > |-|-|
@@ -694,8 +718,8 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:122 |
-> | _notes_ | Optional suffix to be applied to $(projname). Has no effect if $(projname) is set explicitly. |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:145 |
+> | _notes_ | Has no effect if $(projname) is set explicitly.  |
 #### root
 
 > _Root directory relative to which all other paths are specified_
@@ -708,7 +732,7 @@
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:14 |
-> | _notes_ | Root of the project specified as a relative path to the file that contains the project definition. All paths are specified relative to this. Project files will be generated here unless $(projroot) is set. |
+> | _notes_ | Root of the project specified as an offset from the file that contains the project definition. All paths are specified relative to this. Project files will be generated here unless $(projroot) is set. Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible in order to not damage portability.  |
 #### rtti
 
 > _Enables runtime type information_
@@ -720,7 +744,7 @@
 > | _default_ | true |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:340 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:366 |
 > | _notes_ |  |
 >
 > *Examples*
@@ -738,7 +762,7 @@
 > | _default_ |  |
 > | _flags_ | :required,:nosort |
 > | _options_ | :force, :export |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:126 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:150 |
 > | _notes_ |  |
 >
 > *Examples*
@@ -751,7 +775,7 @@
 >```
 #### src_ext
 
-> __
+> _File extensions used when matching src files_
 > 
 > | Property | Value  |
 > |-|-|
@@ -760,8 +784,8 @@
 > | _default_ |  |
 > | _flags_ | :nosort |
 > | _options_ | :export |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:142 |
-> | _notes_ | File extensions that will be added when src is not specified explicitly. Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes. |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:166 |
+> | _notes_ | Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes..  |
 #### targetext
 
 > _Extension to apply to $(targetname)_
@@ -773,8 +797,8 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:289 |
-> | _notes_ | Defaults to standard extension for $(type) of project for target $(platform). |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:315 |
+> | _notes_ | Defaults to standard extension for $(type) of project for target $(platform).  |
 #### targetname
 
 > _Base name of output file without extension_
@@ -786,8 +810,8 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:271 |
-> | _notes_ | Defaults to $(targetprefix)$(projname)$(targetsuffix). |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:297 |
+> | _notes_ | Defaults to $(targetprefix)$(projname)$(targetsuffix).  |
 #### targetprefix
 
 > _Prefix to apply to $(targetname)_
@@ -799,8 +823,8 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:279 |
-> | _notes_ | Has no effect if $(targetname) specified. |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:305 |
+> | _notes_ | Has no effect if $(targetname) specified.  |
 #### targetsuffix
 
 > _Suffix to apply to $(targetname)_
@@ -812,8 +836,8 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:284 |
-> | _notes_ | Has no effect if $(targetname) specified. |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:310 |
+> | _notes_ | Has no effect if $(targetname) specified.  |
 #### toolset
 
 > __
@@ -825,7 +849,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:346 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:372 |
 > | _notes_ |  |
 #### type
 
@@ -838,7 +862,7 @@
 > | _default_ |  |
 > | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:183 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:209 |
 > | _notes_ |  |
 #### vcglobal
 
@@ -852,7 +876,7 @@
 > | _flags_ |  |
 > | _options_ | :export |
 > | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:54 |
-> | _notes_ | Directly address the Globals property group in a vcxproj. |
+> | _notes_ | Directly address the Globals property group in a vcxproj.  |
 #### vcproperty
 
 > __
@@ -865,7 +889,7 @@
 > | _flags_ |  |
 > | _options_ | :export |
 > | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:74 |
-> | _notes_ | Address config section of a vcxproj directly. |
+> | _notes_ | Address config section of a vcxproj directly.  |
 #### warnerror
 
 > _Enable warnings as errors_
@@ -877,7 +901,7 @@
 > | _default_ | false |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:314 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:340 |
 > | _notes_ |  |
 >
 > *Examples*
@@ -896,7 +920,7 @@
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:60 |
-> | _notes_ | Windows SDK version. Defaults to nil. |
+> | _notes_ | Windows SDK version. Defaults to nil..  |
 
 ---
 
@@ -907,7 +931,7 @@
 > | Property | Value  |
 > |-|-|
 > | _src_ | $(jaba_install)/modules/core/globals.jdl.rb:1 |
-> | _notes_ |  |
+> | _notes_ | Manages attribute definitions for 'globals' type.  |
 > 
 
 #### vcfiletype
@@ -928,12 +952,12 @@
 
 ## host
 > 
-> _Target host_
+> _Target host type_
 > 
 > | Property | Value  |
 > |-|-|
 > | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:4 |
-> | _notes_ |  |
+> | _notes_ | Manages attribute definitions for 'host' type.  |
 > 
 
 #### cpp_project_classname
@@ -947,11 +971,11 @@
 > | _default_ |  |
 > | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:359 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:385 |
 > | _notes_ |  |
 #### major_version
 
-> __
+> _Host major version_
 > 
 > | Property | Value  |
 > |-|-|
@@ -964,7 +988,20 @@
 > | _notes_ |  |
 #### toolset
 
-> __
+> _Default toolset for host_
+> 
+> | Property | Value  |
+> |-|-|
+> | _type_ | string |
+> | _variant_ | single |
+> | _default_ |  |
+> | _flags_ |  |
+> | _options_ |  |
+> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:25 |
+> | _notes_ |  |
+#### version
+
+> _Host version string_
 > 
 > | Property | Value  |
 > |-|-|
@@ -975,22 +1012,9 @@
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:19 |
 > | _notes_ |  |
-#### version
-
-> __
-> 
-> | Property | Value  |
-> |-|-|
-> | _type_ |  |
-> | _variant_ | single |
-> | _default_ |  |
-> | _flags_ |  |
-> | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:17 |
-> | _notes_ |  |
 #### version_year
 
-> __
+> _Host version year_
 > 
 > | Property | Value  |
 > |-|-|
@@ -999,7 +1023,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:18 |
+> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:22 |
 > | _notes_ |  |
 #### visual_studio?
 
@@ -1016,7 +1040,7 @@
 > | _notes_ |  |
 #### vs2010?
 
-> __
+> _Returns true if current target host is vs2010_
 > 
 > | Property | Value  |
 > |-|-|
@@ -1025,11 +1049,20 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:22 |
+> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:31 |
 > | _notes_ |  |
+>
+> *Examples*
+>```ruby
+> if vs2010?
+>   ...
+> end
+>       
+> vcproperty :VS2019Specific, 'value' if vs2010?
+>```
 #### vs2012?
 
-> __
+> _Returns true if current target host is vs2012_
 > 
 > | Property | Value  |
 > |-|-|
@@ -1038,11 +1071,20 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:22 |
+> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:31 |
 > | _notes_ |  |
+>
+> *Examples*
+>```ruby
+> if vs2012?
+>   ...
+> end
+>       
+> vcproperty :VS2019Specific, 'value' if vs2012?
+>```
 #### vs2013?
 
-> __
+> _Returns true if current target host is vs2013_
 > 
 > | Property | Value  |
 > |-|-|
@@ -1051,11 +1093,20 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:22 |
+> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:31 |
 > | _notes_ |  |
+>
+> *Examples*
+>```ruby
+> if vs2013?
+>   ...
+> end
+>       
+> vcproperty :VS2019Specific, 'value' if vs2013?
+>```
 #### vs2015?
 
-> __
+> _Returns true if current target host is vs2015_
 > 
 > | Property | Value  |
 > |-|-|
@@ -1064,11 +1115,20 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:22 |
+> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:31 |
 > | _notes_ |  |
+>
+> *Examples*
+>```ruby
+> if vs2015?
+>   ...
+> end
+>       
+> vcproperty :VS2019Specific, 'value' if vs2015?
+>```
 #### vs2017?
 
-> __
+> _Returns true if current target host is vs2017_
 > 
 > | Property | Value  |
 > |-|-|
@@ -1077,11 +1137,20 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:22 |
+> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:31 |
 > | _notes_ |  |
+>
+> *Examples*
+>```ruby
+> if vs2017?
+>   ...
+> end
+>       
+> vcproperty :VS2019Specific, 'value' if vs2017?
+>```
 #### vs2019?
 
-> __
+> _Returns true if current target host is vs2019_
 > 
 > | Property | Value  |
 > |-|-|
@@ -1090,8 +1159,17 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:22 |
+> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:31 |
 > | _notes_ |  |
+>
+> *Examples*
+>```ruby
+> if vs2019?
+>   ...
+> end
+>       
+> vcproperty :VS2019Specific, 'value' if vs2019?
+>```
 #### xcode?
 
 > _Targeting Xcode?_
@@ -1110,17 +1188,17 @@
 
 ## platform
 > 
-> _Target platform_
+> _Target platform type_
 > 
 > | Property | Value  |
 > |-|-|
 > | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:4 |
-> | _notes_ |  |
+> | _notes_ | Manages attribute definitions for 'platform' type. Manages attribute definitions required by platforms.  |
 > 
 
 #### apple?
 
-> __
+> _Returns true if current target platform is an Apple platform_
 > 
 > | Property | Value  |
 > |-|-|
@@ -1129,11 +1207,11 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:21 |
-> | _notes_ | Returns true if its an Apple platform. |
+> | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:27 |
+> | _notes_ | Use only if attribute being set works across all current and future apple platforms. As such probably rarely used..  |
 #### ios?
 
-> _Queries target platform_
+> _Returns true if current target platform is ios_
 > 
 > | Property | Value  |
 > |-|-|
@@ -1142,11 +1220,20 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:9 |
-> | _notes_ | Returns true if current platform is ios. |
+> | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:10 |
+> | _notes_ |  |
+>
+> *Examples*
+>```ruby
+> if ios?
+>   ...
+> end
+>       
+> src ['imp_ios.cpp'] if ios?
+>```
 #### macos?
 
-> _Queries target platform_
+> _Returns true if current target platform is macos_
 > 
 > | Property | Value  |
 > |-|-|
@@ -1155,11 +1242,20 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:9 |
-> | _notes_ | Returns true if current platform is macos. |
+> | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:10 |
+> | _notes_ |  |
+>
+> *Examples*
+>```ruby
+> if macos?
+>   ...
+> end
+>       
+> src ['imp_macos.cpp'] if macos?
+>```
 #### microsoft?
 
-> __
+> _Returns true if current target platform is a Microsoft platform_
 > 
 > | Property | Value  |
 > |-|-|
@@ -1168,8 +1264,8 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:16 |
-> | _notes_ | Returns true if its a Microsoft platform. |
+> | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:22 |
+> | _notes_ |  |
 #### valid_archs
 
 > _List of architectures supported by this platform_
@@ -1181,11 +1277,11 @@
 > | _default_ |  |
 > | _flags_ | :required,:nosort |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:26 |
+> | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:34 |
 > | _notes_ |  |
 #### windows?
 
-> _Queries target platform_
+> _Returns true if current target platform is windows_
 > 
 > | Property | Value  |
 > |-|-|
@@ -1194,8 +1290,17 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:9 |
-> | _notes_ | Returns true if current platform is windows. |
+> | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:10 |
+> | _notes_ |  |
+>
+> *Examples*
+>```ruby
+> if windows?
+>   ...
+> end
+>       
+> src ['imp_windows.cpp'] if windows?
+>```
 
 ---
 
@@ -1206,7 +1311,7 @@
 > | Property | Value  |
 > |-|-|
 > | _src_ | $(jaba_install)/modules/text/text.jdl.rb:1 |
-> | _notes_ |  |
+> | _notes_ | Manages attribute definitions for 'text' type.  |
 > 
 
 #### content
@@ -1221,7 +1326,7 @@
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/text/text.jdl.rb:10 |
-> | _notes_ | Directly set content of file as a string. |
+> | _notes_ | Directly set content of file as a string..  |
 #### eol
 
 > _End of line style_
@@ -1271,7 +1376,7 @@
 > | Property | Value  |
 > |-|-|
 > | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:1 |
-> | _notes_ |  |
+> | _notes_ | Manages attribute definitions for 'workspace' type.  |
 > 
 
 #### projects
@@ -1286,7 +1391,7 @@
 > | _flags_ | :nosort |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:13 |
-> | _notes_ | Specified by id (symbol or string), or by glob matches against $(projroot). |
+> | _notes_ | Specified by id (symbol or string), or by glob matches against $(projroot).  |
 #### root
 
 > _Root directory relative to which all other paths are specified_
@@ -1299,5 +1404,5 @@
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:7 |
-> | _notes_ | Defaults to containing directory of definition source file. |
+> | _notes_ | Defaults to containing directory of definition source file.  |
 

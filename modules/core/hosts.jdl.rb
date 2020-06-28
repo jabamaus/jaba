@@ -3,7 +3,7 @@ SUPPORTED_VS_VERSIONS = [2010, 2012, 2013, 2015, 2017, 2019].freeze
 
 define :host do
 
-  title 'Target host'
+  title 'Target host type'
 
   attr :visual_studio?, type: :bool do
     title 'Targeting Visual Studio?'
@@ -13,13 +13,29 @@ define :host do
     title 'Targeting Xcode?'
     flags :expose
   end
-  attr :major_version
-  attr :version
-  attr :version_year
-  attr :toolset, type: :string
+  attr :major_version do
+    title 'Host major version'
+  end
+  attr :version, type: :string do
+    title 'Host version string'
+  end
+  attr :version_year do
+    title 'Host version year'
+  end
+  attr :toolset, type: :string do
+    title 'Default toolset for host'
+  end
 
   SUPPORTED_VS_VERSIONS.each do |vs_year|
-    attr "vs#{vs_year}?", type: :bool do
+    h = "vs#{vs_year}"
+    attr "#{h}?", type: :bool do
+      title "Returns true if current target host is #{h}"
+      example %Q{
+        if #{h}?
+          ...
+        end
+      }
+      example "vcproperty :VS2019Specific, 'value' if #{h}?"
       flags :expose
     end
   end

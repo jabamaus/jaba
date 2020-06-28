@@ -1,6 +1,6 @@
 define :category do
   
-  title 'Project category'
+  title 'Project category type'
 
   attr :name do
     title 'Display name of category'
