@@ -207,6 +207,7 @@ define :cpp do
     # Required attributes that the user must provide a value for.
     #
     attr :type, type: :choice do
+      title 'Project type'
       items [:app, :console, :lib, :dll]
       flags :required
     end
@@ -214,14 +215,16 @@ define :cpp do
     # Control flow attributes
     #
     attr :config, type: :symbol_or_string do
+      title 'Current target config as an id'
       note 'Returns current config being processed. Use to define control flow to set config-specific atttributes'
       flags :read_only
+      # TODO: examples, including regexes
     end
 
     # Common attributes. These are the attributes that most definitions will set/use.
     #
     attr_array :build_action, type: :string do
-      note 'Build action, eg a prebuild step'
+      title 'Build action'
       flag_options :export
       value_option :msg
       value_option :type, required: true, items: [:PreBuild, :PreLink, :PostBuild]

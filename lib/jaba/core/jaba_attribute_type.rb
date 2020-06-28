@@ -34,6 +34,11 @@ module JABA
 
     ##
     #
+    def doc_string(attr_def)
+    end
+
+    ##
+    #
     def init_attr_def(attr_def)
     end
 
@@ -223,6 +228,12 @@ module JABA
     #
     def notes
       'Can take exactly one of a set of unique values'
+    end
+
+    ##
+    #
+    def doc_string(attr_def)
+      "#{attr_def.get_property(:items).inspect}"
     end
 
     ##

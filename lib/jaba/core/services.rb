@@ -915,20 +915,24 @@ module JABA
         w << ""
         jt.all_attr_defs_sorted.each do |ad|
           w << "#### #{ad.defn_id}"
-          w << ""
           w << "> _#{ad.title}_"
           w << "> "
           w << "> | Property | Value  |"
           w << "> |-|-|"
           # TODO: need to flag whether per-project/per-config etc
-          md_row(w, :type, ad.type_id)
-          md_row(w, :variant, ad.variant)
+          type = String.new
+          if ad.type_id
+            type << "#{ad.type_id}"
+            type << " #{ad.variant}" if !ad.attr_single?
+            type << " #{ad.jaba_attr_type.doc_string(ad)}"
+          end
+          md_row(w, :type, type)
           # TODO: regex default out of src
-          md_row(w, :default, ad.default.proc? ? nil : ad.default)
+          md_row(w, :default, ad.default.proc? ? nil : ad.default.inspect)
           md_row(w, :flags, ad.flags.map(&:inspect).join(','))
           md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
           md_row(w, :src, "$(jaba_install)/#{ad.definition.src_loc_describe(style: :rel_jaba_root)}")
-          md_row(w, :notes, ad.notes.make_sentence)
+          md_row(w, :notes, ad.notes.make_sentence) if !ad.notes.empty?
           if !ad.examples.empty?
             w << ">"
             w << "> *Examples*"

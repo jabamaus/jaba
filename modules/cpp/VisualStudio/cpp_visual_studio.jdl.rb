@@ -45,7 +45,7 @@ open_type :cpp do
   open_type :project do
     attr :guid, type: :uuid do
       title 'Globally unique id (GUID)'
-      note 'Seeded by <projname>. Required by Visual Studio project files'
+      note 'Seeded by $(projname). Required by Visual Studio project files'
       default do
         projname
       end
@@ -83,7 +83,7 @@ end
 open_type :category do
   attr :guid, type: :uuid do
     title 'Globally unique id (GUID)'
-    note 'Seeded by <name>. Required by Visual Studio .sln files'
+    note 'Seeded by $(name). Required by Visual Studio .sln files'
     default do
       name
     end
