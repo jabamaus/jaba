@@ -263,7 +263,7 @@
                     "MyApp|vs2019|windows|x86|Debug": {
                       "type": "console",
                       "config": "Debug",
-                      "build_action": [
+                      "shell": [
 
                       ],
                       "buildroot": "C:/projects/GitHub/jaba/examples/example1/build",
@@ -316,7 +316,7 @@
                     "MyApp|vs2019|windows|x86|Release": {
                       "type": "console",
                       "config": "Release",
-                      "build_action": [
+                      "shell": [
 
                       ],
                       "buildroot": "C:/projects/GitHub/jaba/examples/example1/build",
@@ -375,7 +375,7 @@
                     "MyApp|vs2019|windows|x86_64|Debug": {
                       "type": "console",
                       "config": "Debug",
-                      "build_action": [
+                      "shell": [
 
                       ],
                       "buildroot": "C:/projects/GitHub/jaba/examples/example1/build",
@@ -428,7 +428,7 @@
                     "MyApp|vs2019|windows|x86_64|Release": {
                       "type": "console",
                       "config": "Release",
-                      "build_action": [
+                      "shell": [
 
                       ],
                       "buildroot": "C:/projects/GitHub/jaba/examples/example1/build",
@@ -548,7 +548,7 @@
                     "MyLib|vs2019|windows|x86|Debug": {
                       "type": "lib",
                       "config": "Debug",
-                      "build_action": [
+                      "shell": [
 
                       ],
                       "buildroot": "C:/projects/GitHub/jaba/examples/example2/build",
@@ -600,7 +600,7 @@
                     "MyLib|vs2019|windows|x86|Release": {
                       "type": "lib",
                       "config": "Release",
-                      "build_action": [
+                      "shell": [
 
                       ],
                       "buildroot": "C:/projects/GitHub/jaba/examples/example2/build",
@@ -658,7 +658,7 @@
                     "MyLib|vs2019|windows|x86_64|Debug": {
                       "type": "lib",
                       "config": "Debug",
-                      "build_action": [
+                      "shell": [
 
                       ],
                       "buildroot": "C:/projects/GitHub/jaba/examples/example2/build",
@@ -710,7 +710,7 @@
                     "MyLib|vs2019|windows|x86_64|Release": {
                       "type": "lib",
                       "config": "Release",
-                      "build_action": [
+                      "shell": [
 
                       ],
                       "buildroot": "C:/projects/GitHub/jaba/examples/example2/build",

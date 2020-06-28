@@ -36,21 +36,17 @@ module JABA
 
         # Build events. Standard across platforms.
         #
-        action_cmds = {}
-        cfg.visit_attr(:build_action) do |a, value|
-          msg = a.get_option_value(:msg, fail_if_not_found: false)
-          type = a.get_option_value(:type)
+        shell_cmds = {}
+        cfg.visit_attr(:shell) do |a, value|
+          type = a.get_option_value(:when)
           group = case type
           when :PreBuild, :PreLink, :PostBuild
             "#{type}Event"
           end
-          if msg
-            action_cmds.push_value(group, "echo #{msg}")
-          end
-          action_cmds.push_value(group, value)
+          shell_cmds.push_value(group, value)
         end
 
-        action_cmds.each do |group, cmds|
+        shell_cmds.each do |group, cmds|
           cfg.attrs.vcproperty "#{group}|Command", cmds.join("\n")
         end
       end

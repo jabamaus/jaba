@@ -223,11 +223,10 @@ define :cpp do
 
     # Common attributes. These are the attributes that most definitions will set/use.
     #
-    attr_array :build_action, type: :string do
-      title 'Build action'
+    attr_array :shell, type: :string do
+      title 'Shell commands to execute during build'
       flag_options :export
-      value_option :msg
-      value_option :type, required: true, items: [:PreBuild, :PreLink, :PostBuild]
+      value_option :when, required: true, items: [:PreBuild, :PreLink, :PostBuild]
     end
 
     attr :buildroot, type: :dir do
