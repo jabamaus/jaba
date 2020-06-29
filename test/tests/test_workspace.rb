@@ -32,6 +32,7 @@ module JABA
           src ['.']
         end
         workspace :w do
+          root "#{td}"
           #hosts [:vs2019]
           #platforms [:windows]
           #configs [:Debug, :Release]

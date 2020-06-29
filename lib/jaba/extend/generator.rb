@@ -15,6 +15,7 @@ module JABA
     attr_reader :type_id # eg :cpp, :text
     attr_reader :root_nodes
     attr_reader :source_file
+    attr_reader :projects
 
     ##
     #
@@ -26,6 +27,7 @@ module JABA
       @root_nodes = []
       @nodes = []
       @node_lookup = {}
+      @projects = []
       @node_to_project = {}
       @reference_attrs_to_resolve = []
       @source_file = JABA.const_source_location(self.class.name)[0]
@@ -221,6 +223,7 @@ module JABA
       klass = klass.string? ? JABA.const_get(klass) : klass
       p = klass.new(self, node, root)
       p.init
+      @projects << p
       @node_to_project[node] = p
       p
     end

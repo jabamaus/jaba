@@ -34,7 +34,7 @@ module JABA
     end
     
     it 'detects duplicate ids with definitions of the same type' do
-      [:attr_flag, :attr_type, :cpp, :defaults, :define, :shared, :text, :workspace].each do |type|
+      [:attr_flag, :cpp, :defaults, :define, :shared, :text, :workspace].each do |type|
         check_fail "':a' multiply defined. See #{__FILE__.basename}:#{find_line_number(__FILE__, 'tagX')}.", line: [__FILE__, 'tagI'] do
           jaba do
             __send__(type, :a) do # tagX
@@ -50,7 +50,7 @@ module JABA
       jaba do
         shared :a do
         end
-        workspace :a
+        attr_flag :a
       end
     end
     
