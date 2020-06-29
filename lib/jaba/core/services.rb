@@ -183,6 +183,7 @@ module JABA
       make_attr_type(JabaAttributeTypeString)
       make_attr_type(JabaAttributeTypeSymbol)
       make_attr_type(JabaAttributeTypeSymbolOrString)
+      make_attr_type(JabaAttributeTypeToS)
       make_attr_type(JabaAttributeTypeBool)
       make_attr_type(JabaAttributeTypeChoice)
       make_attr_type(JabaAttributeTypeFile)
@@ -881,6 +882,11 @@ module JABA
       w << "# Jaba Reference"
       w << ""
 
+      w << "- Attribute variants"
+      w << "  - single"
+      w << "  - array"
+      w << "  - hash"
+
       w << "- Attribute types"
       @jaba_attr_types.values.each do |at|
         w << "  - #{at.id}"
@@ -929,7 +935,7 @@ module JABA
           md_row(w, :type, type)
           # TODO: regex default out of src
           md_row(w, :default, ad.default.proc? ? nil : ad.default.inspect)
-          md_row(w, :flags, ad.flags.map(&:inspect).join(','))
+          md_row(w, :flags, ad.flags.map(&:inspect).join(', '))
           md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
           md_row(w, :src, "$(jaba_install)/#{ad.definition.src_loc_describe(style: :rel_jaba_root)}")
           md_row(w, :notes, ad.notes.make_sentence) if !ad.notes.empty?

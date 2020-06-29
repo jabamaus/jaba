@@ -291,7 +291,7 @@ module JABA
       check_fail "'group' option requires a value", line: [__FILE__, 'tagI'] do
         jaba(barebones: true) do
           define :test do
-            attr_hash :a do
+            attr_hash :a, key_type: :symbol do
               value_option :group, required: true
             end
           end
@@ -306,7 +306,7 @@ module JABA
       check_fail "In 'a' attribute invalid value ':d' passed to ':group' option. Valid values: [:a, :b, :c]", line: [__FILE__, 'tagX'] do
         jaba(barebones: true) do
           define :test do
-            attr_hash :a do
+            attr_hash :a, key_type: :symbol do
               value_option :group, items: [:a, :b, :c]
             end
           end
@@ -321,7 +321,7 @@ module JABA
       check_fail "'group' option requires a value. Valid values are [:a, :b, :c]", line: [__FILE__, 'tagO'] do
         jaba(barebones: true) do
           define :test do
-            attr_hash :a do
+            attr_hash :a, key_type: :symbol do
               value_option :group, required: true, items: [:a, :b, :c]
             end
           end

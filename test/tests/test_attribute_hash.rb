@@ -11,21 +11,21 @@ module JABA
             default 1
           end
           attr :single2
-          attr_hash :a do
+          attr_hash :a, key_type: :symbol do
             flag_options :opt1, :opt2
           end
-          attr_hash :b do
+          attr_hash :b, key_type: :symbol do
             default({k: :v}) # value style default
             flag_options :opt1, :opt2
             value_option :vopt
           end
-          attr_hash :c do
+          attr_hash :c, key_type: :symbol do
             default do # block style default
               { k1: 1, k2: 2 }
             end
             flag_options :opt1, :opt2
           end
-          attr_hash :d do
+          attr_hash :d, key_type: :symbol do
             default do # block style default that references other attributes
               { k1: single1, k2: single2 }
             end
@@ -90,7 +90,7 @@ module JABA
       check_fail "'a' attribute default must be a hash not a 'Array'", line: [__FILE__, 'tagU'] do
         jaba(barebones: true) do
           define :test do
-            attr_hash :a do
+            attr_hash :a, key_type: :symbol do
               default [] # tagU
             end
           end
@@ -102,7 +102,7 @@ module JABA
       check_fail "'a' hash attribute default requires a hash not a 'Integer'", line: [__FILE__, 'tagO'] do
         jaba(barebones: true) do
           define :test do
-            attr_hash :a do # tagO
+            attr_hash :a, key_type: :symbol do # tagO
               default do
                 1
               end
@@ -117,7 +117,7 @@ module JABA
       check_fail "'a' attribute default failed validation: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagL'] do
         jaba(barebones: true) do
           define :test do
-            attr_hash :a, type: :symbol do
+            attr_hash :a, key_type: :symbol, type: :symbol do
               default({k: 'not a symbol'}) # tagL
             end
           end
@@ -129,7 +129,7 @@ module JABA
       check_fail "'a' attribute failed validation: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagW'] do
         jaba(barebones: true) do
           define :test do
-            attr_hash :a, type: :symbol do # tagW
+            attr_hash :a, key_type: :symbol, type: :symbol do # tagW
               default do
                 {k: 'not a symbol'}
               end
@@ -148,7 +148,7 @@ module JABA
           define :test do
             attr :a
             attr :b
-            attr_hash :c do
+            attr_hash :c, key_type: :symbol do
               default do
                 {k1: a, k2: b} # tagI
               end
@@ -166,7 +166,7 @@ module JABA
       check_fail "Cannot read uninitialised 'a' hash attribute", line: [__FILE__, 'tagF'] do
         jaba(barebones: true) do
           define :test do
-            attr_hash :a
+            attr_hash :a, key_type: :symbol
             attr :b do
               default do
                 a[:k] # tagF
@@ -183,7 +183,7 @@ module JABA
     it 'can be set' do
       jaba(barebones: true) do
         define :test do
-          attr_hash :a
+          attr_hash :a, key_type: :symbol
           attr :b, type: :choice do
             items [1, 2]
           end
@@ -235,7 +235,7 @@ module JABA
       check_fail 'Cannot modify read only value', line: [__FILE__, 'tagN'] do
         jaba(barebones: true) do
           define :test do
-            attr_hash :a do
+            attr_hash :a, key_type: :symbol do
               default({k: :v})
             end
           end
@@ -251,7 +251,7 @@ module JABA
                 line: [__FILE__, 'tagQ'] do
         jaba(barebones: true) do
           define :test do
-            attr_hash :a do # tagQ
+            attr_hash :a, key_type: :symbol do # tagQ
               flags :nosort
             end
           end
@@ -264,7 +264,7 @@ module JABA
                  line: [__FILE__, 'tagP'] do
         jaba(barebones: true) do
           define :test do
-            attr_hash :a do # tagP
+            attr_hash :a, key_type: :symbol do # tagP
               flags :allow_dupes
             end
           end
@@ -275,7 +275,7 @@ module JABA
     it 'can accept flag options' do
       jaba(barebones: true) do
         define :test do
-          attr_hash :a do
+          attr_hash :a, key_type: :symbol do
             flag_options :f1, :f2, :f3
           end
         end
@@ -297,7 +297,7 @@ module JABA
     it 'can accept value options' do
       jaba(barebones: true) do
         define :test do
-          attr_hash :a do
+          attr_hash :a, key_type: :symbol do
             value_option :kv1
             value_option :kv2
           end
@@ -318,7 +318,7 @@ module JABA
     it 'can accept value and flag options' do
       jaba(barebones: true) do
         define :test do
-          attr_hash :a do
+          attr_hash :a, key_type: :symbol do
             value_option :kv1
             value_option :kv2
             flag_options [:flag_opt1, :flag_opt2, :flag_opt3]
@@ -345,7 +345,7 @@ module JABA
       check_fail("'a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"", line: [__FILE__, 'tagM']) do
         jaba(barebones: true) do
           define :test do
-            attr_hash :a
+            attr_hash :a, key_type: :symbol
           end
           test :t do
             a key: 'val' # tagM
@@ -355,7 +355,7 @@ module JABA
       check_fail("'a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"", line: [__FILE__, 'tagZ']) do
         jaba(barebones: true) do
           define :test do
-            attr_hash :a
+            attr_hash :a, key_type: :symbol
           end
           test :t do
             a :key # tagZ

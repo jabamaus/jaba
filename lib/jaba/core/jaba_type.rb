@@ -38,14 +38,18 @@ module JABA
 
     ##
     #
-    def define_attr(id, variant, type: nil, &block)
+    def define_attr(id, variant, type: nil, key_type: nil, &block)
       services.log "  Defining '#{id}' attribute [variant=#{variant}, type=#{type}]"
+      
+      if key_type && variant != :hash
+        jaba_error("Only attr_hash supports :key_type argument")
+      end
       
       validate_id(id)
       id = id.to_sym
       
       db = services.make_definition(id, block, caller_locations(2, 1)[0])
-      ad = JabaAttributeDefinition.new(db, type, variant, self)
+      ad = JabaAttributeDefinition.new(db, type, key_type, variant, self)
       
       @attribute_defs << ad
 

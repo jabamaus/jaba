@@ -24,6 +24,7 @@ module JABA
     attr_reader :type_id # eg :bool, :string, :file etc
     attr_reader :variant # :single, :array, :hash
     attr_reader :jaba_attr_type # JabaAttributeType object
+    attr_reader :jaba_attr_key_type # JabaAttributeType object. Used by hash attribute.
     attr_reader :jaba_type
 
     attr_reader :default
@@ -34,10 +35,11 @@ module JABA
     
     ##
     #
-    def initialize(definition, type_id, variant, jaba_type)
+    def initialize(definition, type_id, key_type_id, variant, jaba_type)
       super(definition, JDL_AttributeDefinition.new(self))
       
       @type_id = type_id
+      @key_type_id = key_type_id # Only used with hash attributes
       @variant = variant
       @jaba_type = jaba_type
       @value_options = []
@@ -55,6 +57,24 @@ module JABA
       define_hook(:validate)
       
       @jaba_attr_type = services.get_attribute_type(@type_id)
+      @jaba_attr_key_type = nil
+
+      # Custom hash attribute setup
+      #
+      if attr_hash?
+        case @key_type_id
+        when :symbol, :string
+          @jaba_attr_key_type = services.get_attribute_type(@key_type_id)
+        else
+          jaba_error("#{describe} :key_type must be set to either :symbol or :string")
+        end
+
+        # Attributes that are stored as values in a hash have their corresponding key stored in their options. This is
+        # used when cloning attributes. Store as __key to indicate it is internal and to stop it clashing with any user
+        # defined option.
+        #
+        add_value_option(:__key, false, [])
+      end
       
       services.set_warn_object(self) do
         @jaba_attr_type.init_attr_def(self)
@@ -71,14 +91,6 @@ module JABA
       attr_type_default = @jaba_attr_type.default
       if !attr_type_default.nil? && attr_single? && !default_set? && !has_flag?(:required)
         set_property(:default, attr_type_default)
-      end
-
-      # Attributes that are stored as values in a hash have their corresponding key stored in their options. This is
-      # used when cloning attributes. Store as __key to indicate it is internal and to stop it clashing with any user
-      # defined option.
-      #
-      if attr_hash?
-        add_value_option(:__key, false, [])
       end
 
       validate
@@ -223,8 +235,9 @@ module JABA
                 @jaba_attr_type.validate_value(self, elem)
               end
             when :hash
-              incoming.each_value do |elem|
-                @jaba_attr_type.validate_value(self, elem)
+              incoming.each do |key, val|
+                @jaba_attr_key_type.validate_value(self, key)
+                @jaba_attr_type.validate_value(self, val)
               end
             end
           end

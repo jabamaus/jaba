@@ -1,5 +1,5 @@
 open_type :globals do
-  attr_hash :vcfiletype, type: :symbol do
+  attr_hash :vcfiletype, key_type: :string, type: :symbol do
     flags :required
   end
 end
@@ -23,7 +23,7 @@ open_shared :vs_host_common do
 end
 
 open_type :arch do
-  attr :vsname do
+  attr :vsname, type: :string do
     flags :expose
     note 'Name of target architecture (platform) as seen in Visual Studio IDE'
   end
@@ -51,7 +51,7 @@ open_type :cpp do
       end
     end
 
-    attr_hash :vcglobal do
+    attr_hash :vcglobal, key_type: :symbol, type: :to_s do
       note 'Directly address the Globals property group in a vcxproj'
       value_option :condition
       flag_options :export
@@ -72,7 +72,7 @@ open_type :cpp do
 
   open_type :config do
     # TODO: validate key is in correct format
-    attr_hash :vcproperty do
+    attr_hash :vcproperty, key_type: :string, type: :to_s do
       note 'Address config section of a vcxproj directly'
       value_option :condition
       flag_options :export

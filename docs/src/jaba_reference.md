@@ -1,9 +1,14 @@
 # Jaba Reference
 
+- Attribute variants
+  - single
+  - array
+  - hash
 - Attribute types
   - string
   - symbol
   - symbol_or_string
+  - to_s
   - bool
   - choice
   - file
@@ -33,7 +38,6 @@
     - arch_ref
     - archs
     - bindir
-    - build_action
     - buildroot
     - cflags
     - character_set
@@ -60,6 +64,7 @@
     - projsuffix
     - root
     - rtti
+    - shell
     - src
     - src_ext
     - targetext
@@ -140,8 +145,8 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ |  |
-> | _default_ | nil |
+> | _type_ | string  |
+> | _default_ | "" |
 > | _flags_ | :expose |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:26 |
@@ -288,17 +293,7 @@
 > | _default_ |  |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:240 |
-#### build_action
-> _Build action_
-> 
-> | Property | Value  |
-> |-|-|
-> | _type_ | string array  |
-> | _default_ | nil |
-> | _flags_ |  |
-> | _options_ | :export |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:226 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:239 |
 #### buildroot
 > _Root directory for build artifacts_
 > 
@@ -308,7 +303,7 @@
 > | _default_ | "build" |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:233 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:232 |
 > | _notes_ | Specified as a relative path from $(root).  |
 #### cflags
 > _Raw compiler command line switches_
@@ -319,7 +314,7 @@
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ | :export |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:261 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:260 |
 #### character_set
 > __
 > 
@@ -329,7 +324,7 @@
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:350 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:349 |
 > | _notes_ | Character set. Defaults to :unicode.  |
 >
 > *Examples*
@@ -356,7 +351,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:266 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:265 |
 > | _notes_ | Display name of config in Visual Studio. Defaults to $(config).  |
 #### configs
 > _Build configurations_
@@ -365,7 +360,7 @@
 > |-|-|
 > | _type_ | symbol_or_string array  |
 > | _default_ | nil |
-> | _flags_ | :required,:nosort |
+> | _flags_ | :required, :nosort |
 > | _options_ | :export |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:70 |
 >
@@ -382,7 +377,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:273 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:272 |
 > | _notes_ | Flags config as a debug build. Defaults to true if config id contains 'debug'.  |
 #### defines
 > _Preprocessor defines_
@@ -393,7 +388,7 @@
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ | :export |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:280 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:279 |
 #### deps
 > _Project dependencies_
 > 
@@ -429,7 +424,7 @@
 > | _default_ | true |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:361 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:360 |
 >
 > *Examples*
 >```ruby
@@ -499,7 +494,7 @@
 > | _default_ | nil |
 > | _flags_ | :nosort |
 > | _options_ | :export |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:285 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:284 |
 >
 > *Examples*
 >```ruby
@@ -515,7 +510,7 @@
 > | _default_ |  |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:247 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:246 |
 #### nowarn
 > _Warnings to disable_
 > 
@@ -525,7 +520,7 @@
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ | :export |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:293 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:292 |
 > | _notes_ | Placed directly into projects as is, with no validation.  |
 >
 > *Examples*
@@ -541,7 +536,7 @@
 > | _default_ |  |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:254 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:253 |
 #### platform
 > _Target platform as an id_
 > 
@@ -653,12 +648,22 @@
 > | _default_ | true |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:369 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:368 |
 >
 > *Examples*
 >```ruby
 > rtti false # Disable rtti
 >```
+#### shell
+> _Shell commands to execute during build_
+> 
+> | Property | Value  |
+> |-|-|
+> | _type_ | string array  |
+> | _default_ | nil |
+> | _flags_ |  |
+> | _options_ | :export |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:226 |
 #### src
 > _Source file specification_
 > 
@@ -666,7 +671,7 @@
 > |-|-|
 > | _type_ | src_spec array  |
 > | _default_ | nil |
-> | _flags_ | :required,:nosort |
+> | _flags_ | :required, :nosort |
 > | _options_ | :force, :export |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:150 |
 >
@@ -698,7 +703,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:318 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:317 |
 > | _notes_ | Defaults to standard extension for $(type) of project for target $(platform).  |
 #### targetname
 > _Base name of output file without extension_
@@ -709,7 +714,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:300 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:299 |
 > | _notes_ | Defaults to $(targetprefix)$(projname)$(targetsuffix).  |
 #### targetprefix
 > _Prefix to apply to $(targetname)_
@@ -720,7 +725,7 @@
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:308 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:307 |
 > | _notes_ | Has no effect if $(targetname) specified.  |
 #### targetsuffix
 > _Suffix to apply to $(targetname)_
@@ -731,7 +736,7 @@
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:313 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:312 |
 > | _notes_ | Has no effect if $(targetname) specified.  |
 #### toolset
 > __
@@ -742,7 +747,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:375 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:374 |
 #### type
 > _Project type_
 > 
@@ -758,7 +763,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ |  |
+> | _type_ | to_s hash  |
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ | :export |
@@ -769,11 +774,11 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ |  |
+> | _type_ | to_s hash  |
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ | :export |
-> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:74 |
+> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:75 |
 > | _notes_ | Address config section of a vcxproj directly.  |
 #### warnerror
 > _Enable warnings as errors_
@@ -784,7 +789,7 @@
 > | _default_ | false |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:343 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:342 |
 >
 > *Examples*
 >```ruby
@@ -846,7 +851,7 @@
 > | _default_ | nil |
 > | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:388 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:387 |
 #### major_version
 > _Host major version_
 > 
@@ -1100,7 +1105,7 @@
 > |-|-|
 > | _type_ | choice array [:x86, :x86_64, :arm64] |
 > | _default_ | nil |
-> | _flags_ | :required,:nosort |
+> | _flags_ | :required, :nosort |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:34 |
 #### windows?
@@ -1173,7 +1178,7 @@
 > |-|-|
 > | _type_ |  |
 > | _default_ | nil |
-> | _flags_ | :allow_dupes,:nosort |
+> | _flags_ | :allow_dupes, :nosort |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/text/text.jdl.rb:15 |
 

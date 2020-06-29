@@ -163,7 +163,7 @@ define :cpp do
       example "src ['does_not_exist.cpp'], :force  # Force addition of file not on disk"
     end
     
-    attr_array :src_ext do
+    attr_array :src_ext, type: :string do
       title 'File extensions used when matching src files'
       note 'Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.'
       flags :nosort
@@ -257,12 +257,12 @@ define :cpp do
       flags :no_check_exist
     end
 
-    attr_array :cflags do
+    attr_array :cflags, type: :string do
       title 'Raw compiler command line switches'
       flag_options :export
     end
 
-    attr :configname do
+    attr :configname, type: :symbol_or_string do
       note 'Display name of config in Visual Studio. Defaults to $(config)'
       default do
         config
@@ -384,7 +384,7 @@ end
 # implemented.
 #
 open_type :host do
-  attr :cpp_project_classname do
+  attr :cpp_project_classname, type: :string do
     flags :required
   end
 end

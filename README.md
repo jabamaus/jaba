@@ -2,6 +2,8 @@
 
 To do:
 
+- Add integer type
+- Make it so that all attributes have to have a type?
 - way of validating key in hash attribute
 - test build actions
 - Move title/note/example into module and include

@@ -2,7 +2,7 @@ define :category do
   
   title 'Project category type'
 
-  attr :name do
+  attr :name, type: :string do
     title 'Display name of category'
     note 'Maps to name of solution folder in a Visual Studio solution'
     flags :required

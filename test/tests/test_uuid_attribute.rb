@@ -30,10 +30,10 @@ module JABA
             end
             flags :nosort
           end
-          attr_hash :e, type: :uuid do
+          attr_hash :e, key_type: :symbol, type: :uuid do
             default({k1: 'a', k2: 'b'})
           end
-          attr_hash :f, type: :uuid do
+          attr_hash :f, key_type: :symbol, type: :uuid do
             default do # block form
               {k1: 'a', k2: 'b'}
             end

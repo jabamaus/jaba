@@ -38,6 +38,7 @@ module JABA
     end
 
     ##
+    # If an attribute type requires additional properties (eg choice attribute requires items), override this.
     #
     def init_attr_def(attr_def)
     end
@@ -157,6 +158,39 @@ module JABA
     def validate_value(attr_def, value)
       if !value.symbol? && !value.string?
         services.jaba_error("'#{value}' must be a symbol or a string but was a '#{value.class}'")
+      end
+    end
+    
+  end
+
+    ##
+  #
+  class JabaAttributeTypeToS < JabaAttributeType
+    
+    ##
+    #
+    def id
+      :to_s
+    end
+
+    ##
+    #
+    def title
+      'to_s attribute type'
+    end
+
+    ##
+    #
+    def notes
+      'Any object that supports that can be converted to a string with to_s will be accepted. This is very permissive as ' \
+      'in practice this is just about anything in ruby - this type is here to make that intention explcit.'
+    end
+
+    ##
+    #
+    def validate_value(attr_def, value)
+      if !value.respond_to?(:to_s)
+        services.jaba_error("'#{value}' must respond to 'to_s' method but '#{value.class}' did not")
       end
     end
     

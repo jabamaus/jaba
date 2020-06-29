@@ -7,12 +7,12 @@ define :text do
     flags :required
   end
   
-  attr :content do
+  attr :content, type: :to_s do
     title 'Content as a single multiline string'
     note 'Directly set content of file as a string.'
   end
   
-  attr_array :line do
+  attr_array :line, type: :to_s do
     title 'Adds a line of content to file'
     flags :allow_dupes, :nosort
   end
