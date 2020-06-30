@@ -239,9 +239,9 @@ module JABA
     ##
     # Call this from subclass but using the wrapper defined by Generator.work_with.
     #
-    def make_host_object(klass, node, root)
+    def make_host_object(klass, node)
       klass = klass.string? ? JABA.const_get(klass) : klass
-      ho = klass.new(self, node, root)
+      ho = klass.new(self, node)
       ho.init
       @host_objects << ho
       @node_to_host_object[node] = ho

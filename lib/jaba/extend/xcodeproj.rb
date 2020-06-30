@@ -15,6 +15,9 @@ module JABA
     ##
     #
     def init
+      @root = @attrs.root
+      @projroot = @attrs.projroot
+      @projname = @attrs.projname
       @host = @attrs.host_ref
     end
 

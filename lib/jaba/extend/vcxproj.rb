@@ -16,6 +16,7 @@ module JABA
     #
     def init
       super
+      @projname = @attrs.projname
       @vcxproj_file = "#{@projroot}/#{@projname}.vcxproj"
       @vcxproj_filters_file = "#{@vcxproj_file}.filters"
       @file_type_hash = services.globals_node.get_attr(:vcfiletype).value

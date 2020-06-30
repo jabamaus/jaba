@@ -12,12 +12,15 @@ module JABA
   
     include SrcFileSupport
     
+    attr_reader :projroot
     attr_reader :host
     attr_reader :platform # In theory multiple platforms need to be supported...
 
     ##
     #
     def init
+      @root = @attrs.root
+      @projroot = @attrs.projroot
       @host = @attrs.host_ref
       @platform = @attrs.platform_ref
     end

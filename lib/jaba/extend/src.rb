@@ -8,7 +8,7 @@ module JABA
   
   SourceFile = Struct.new(:absolute_path, :projroot_rel, :vpath, :file_type)
   
-  # Include in projects that require src files.
+  # Include in projects that require src files. Requires @node, @root and @projroot to be set
   #
   module SrcFileSupport
 
@@ -30,6 +30,17 @@ module JABA
     # Builds sorted array of absolute src paths and stores in @<src_attr_id> instance variable.
     #
     def process_src(src_attr_id, src_ext_attr_id)
+      if !defined?(@node)
+        raise "process_src requires @node instance variable to be set"
+      end
+      services = @node.services
+      if !defined?(@root)
+        services.jaba_error("process_src requires @root instance variable to be set")
+      end
+      if !defined?(@projroot)
+        services.jaba_error("process_src requires @projroot instance variable to be set")
+      end
+
       src_attr = @node.get_attr(src_attr_id)
       extensions = @node.get_attr(src_ext_attr_id).value
 

@@ -104,7 +104,7 @@ module JABA
         end
 
         klass = pn.attrs.host_ref.attrs.cpp_project_classname
-        proj = make_project(klass, pn, root)
+        proj = make_project(klass, pn)
         proj.process_src(:src, :src_ext)
       end
     end
