@@ -15,8 +15,7 @@ module JABA
     ##
     #
     def init
-      @root = @attrs.root
-      @projroot = @attrs.projroot
+      @projdir = @attrs.projdir
       @projname = @attrs.projname
       @host = @attrs.host_ref
     end
@@ -30,7 +29,7 @@ module JABA
     ##
     #
     def build_jaba_output(p_root, out_dir)
-      p_root[:projroot] = @projroot.relative_path_from(out_dir)
+      p_root[:projdir] = @projdir.relative_path_from(out_dir)
       p_root[:projname] = @projname
       p_root[:host] = @host.defn_id
       p_root[:platform] = @attrs.platform_ref.defn_id

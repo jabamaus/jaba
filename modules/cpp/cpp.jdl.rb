@@ -14,7 +14,7 @@ define :cpp do
   attr :root, type: :dir do
     title 'Root directory relative to which all other paths are specified'
     note 'Root of the project specified as an offset from the file that contains the project definition. ' \
-         'All paths are specified relative to this. Project files will be generated here unless $(projroot) is set. ' \
+         'All paths are specified relative to this. Project files will be generated here unless $(projdir) is set. ' \
          'Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible ' \
          'in order to not damage portability'
     default '.'
@@ -119,7 +119,7 @@ define :cpp do
       }
     end
 
-    attr :projroot, type: :dir do
+    attr :projdir, type: :dir do
       title 'Directory in which projects will be generated'
       default '.'
       flags :no_check_exist # May get created during generation
@@ -129,7 +129,7 @@ define :cpp do
       example %Q{
         cpp :MyApp do
           src ['**/*'] # Get all src in $(root), which defaults to directory of definition file
-          projroot 'projects' # Place generated projects in 'projects' directory
+          projdir 'projects' # Place generated projects in 'projects' directory
         end
       }
     end

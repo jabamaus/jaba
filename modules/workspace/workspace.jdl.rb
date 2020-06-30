@@ -10,9 +10,16 @@ define :workspace do
     default '.'
   end
 
+  attr :workspacedir, type: :dir do
+    title 'Directory in which workspaces will be generated'
+    default '.'
+    flags :no_check_exist # May get created during generation
+  end
+
   attr_array :projects, type: :symbol_or_string do
     title 'Contained projects'
-    note 'Specified by id (symbol or string), or by glob matches against $(projroot)'
+    note 'Specified by id (symbol or string), or by glob matches against $(projdir)'
+    flags :required
     flags :nosort # Matches will be sorted so no need to sort spec
     # TODO: default to '**/*' ? Would need to overwrite default
   end

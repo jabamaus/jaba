@@ -228,7 +228,7 @@
               "deps": [
 
               ],
-              "projroot": "C:/projects/GitHub/jaba/examples/example1",
+              "projdir": "C:/projects/GitHub/jaba/examples/example1",
               "projname": "MyApp",
               "projsuffix": "",
               "src": [
@@ -513,7 +513,7 @@
               "deps": [
 
               ],
-              "projroot": "C:/projects/GitHub/jaba/examples/example2",
+              "projdir": "C:/projects/GitHub/jaba/examples/example2",
               "projname": "MyLib",
               "projsuffix": "",
               "src": [

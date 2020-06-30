@@ -6,9 +6,9 @@ module JABA
 
   using JABACoreExt
   
-  SourceFile = Struct.new(:absolute_path, :projroot_rel, :vpath, :file_type)
+  SourceFile = Struct.new(:absolute_path, :projdir_rel, :vpath, :file_type)
   
-  # Include in projects that require src files. Requires @node, @root and @projroot to be set
+  # Include in projects that require src files. Requires @node, @root and @projdir to be set
   #
   module SrcFileSupport
 
@@ -37,8 +37,8 @@ module JABA
       if !defined?(@root)
         services.jaba_error("process_src requires @root instance variable to be set")
       end
-      if !defined?(@projroot)
-        services.jaba_error("process_src requires @projroot instance variable to be set")
+      if !defined?(@projdir)
+        services.jaba_error("process_src requires @projdir instance variable to be set")
       end
 
       src_attr = @node.get_attr(src_attr_id)
@@ -95,12 +95,12 @@ module JABA
           else
             # vpath must not actually contain any ..
             #
-            f.dirname.relative_path_from(@projroot, backslashes: bs, nil_if_dot: true, no_dot_dot: true)
+            f.dirname.relative_path_from(@projdir, backslashes: bs, nil_if_dot: true, no_dot_dot: true)
           end
 
           sf = SourceFile.new
           sf.absolute_path = f
-          sf.projroot_rel = f.relative_path_from(@projroot, backslashes: bs)
+          sf.projdir_rel = f.relative_path_from(@projdir, backslashes: bs)
           sf.vpath = vpath
           sf.file_type = file_type_from_extension(f.extname)
 

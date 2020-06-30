@@ -242,6 +242,9 @@ module JABA
     def make_host_object(klass, node)
       klass = klass.string? ? JABA.const_get(klass) : klass
       ho = klass.new(self, node)
+      if !ho.respond_to?(:init)
+        jaba_error("#{klass} must implement 'init' method and do any instance variable initialisation there")
+      end
       ho.init
       @host_objects << ho
       @node_to_host_object[node] = ho
@@ -256,6 +259,27 @@ module JABA
         jaba_error("'#{ho}' not found")
       end
       ho
+    end
+    
+    ##
+    #
+    def make_node_paths_absolute(node)
+      # Turn root into absolute path
+      #
+      root = node.get_attr(:root, search: true).map_value! do |r|
+        r.absolute_path? ? r : "#{node.definition.source_dir}/#{r}".cleanpath
+      end
+
+      # Make all file/dir/path attributes into absolute paths based on root
+      #
+      node.visit_node(visit_self: true) do |n|
+        n.visit_attr(type: [:file, :dir], skip_attr: :root) do |a|
+          a.map_value! do |p|
+            p.absolute_path? ? p : "#{root}/#{p}".cleanpath
+          end
+        end
+      end
+      root
     end
     
     ##

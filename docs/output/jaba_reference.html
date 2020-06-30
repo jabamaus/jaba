@@ -85,8 +85,8 @@
 <li>platform</li>
 <li>platform_ref</li>
 <li>platforms</li>
+<li>projdir</li>
 <li>projname</li>
-<li>projroot</li>
 <li>projsuffix</li>
 <li>root</li>
 <li>rtti</li>
@@ -152,6 +152,7 @@
 <li>primary</li>
 <li>projects</li>
 <li>root</li>
+<li>workspacedir</li>
 </ul>
 </li>
 </ul>
@@ -1436,45 +1437,7 @@
 <pre style="color:#272822;background-color:#fafafa"><span style="color:#111">platforms</span> <span style="color:#f92672">[</span><span style="color:#d88200">:windows</span><span style="color:#f92672">]</span>
 <span style="color:#111">platforms</span> <span style="color:#f92672">[</span><span style="color:#d88200">:macos</span><span style="color:#111">,</span> <span style="color:#d88200">:ios</span><span style="color:#f92672">]</span>
 </pre></blockquote>
-<h4>projname</h4>
-<blockquote>
-<p><em>Base name of project files</em></p>
-<table>
-<thead>
-<tr>
-<th>Property</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>type</em></td>
-<td>string</td>
-</tr>
-<tr>
-<td><em>default</em></td>
-<td></td>
-</tr>
-<tr>
-<td><em>flags</em></td>
-<td></td>
-</tr>
-<tr>
-<td><em>options</em></td>
-<td></td>
-</tr>
-<tr>
-<td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:137</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Defaults to $(id)$(projsuffix).</td>
-</tr>
-</tbody>
-</table>
-</blockquote>
-<h4>projroot</h4>
+<h4>projdir</h4>
 <blockquote>
 <p><em>Directory in which projects will be generated</em></p>
 <table>
@@ -1514,10 +1477,48 @@
 <p><em>Examples</em></p>
 <pre style="color:#272822;background-color:#fafafa"><span style="color:#111">cpp</span> <span style="color:#d88200">:MyApp</span> <span style="color:#00a8c8">do</span>
   <span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;**/*&#39;</span><span style="color:#f92672">]</span> <span style="color:#75715e"># Get all src in $(root), which defaults to directory of definition file</span>
-  <span style="color:#111">projroot</span> <span style="color:#d88200">&#39;projects&#39;</span> <span style="color:#75715e"># Place generated projects in &#39;projects&#39; directory</span>
+  <span style="color:#111">projdir</span> <span style="color:#d88200">&#39;projects&#39;</span> <span style="color:#75715e"># Place generated projects in &#39;projects&#39; directory</span>
 <span style="color:#00a8c8">end</span>
       
 </pre></blockquote>
+<h4>projname</h4>
+<blockquote>
+<p><em>Base name of project files</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>string</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>src</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:137</td>
+</tr>
+<tr>
+<td><em>notes</em></td>
+<td>Defaults to $(id)$(projsuffix).</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
 <h4>projsuffix</h4>
 <blockquote>
 <p><em>Optional suffix to be applied to $(projname)</em></p>
@@ -1589,7 +1590,7 @@
 </tr>
 <tr>
 <td><em>notes</em></td>
-<td>Root of the project specified as an offset from the file that contains the project definition. All paths are specified relative to this. Project files will be generated here unless $(projroot) is set. Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible in order to not damage portability.</td>
+<td>Root of the project specified as an offset from the file that contains the project definition. All paths are specified relative to this. Project files will be generated here unless $(projdir) is set. Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible in order to not damage portability.</td>
 </tr>
 </tbody>
 </table>
@@ -3130,7 +3131,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/workspace/workspace.jdl.rb:20</td>
+<td>$(jaba_install)/modules/workspace/workspace.jdl.rb:27</td>
 </tr>
 </tbody>
 </table>
@@ -3164,7 +3165,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/workspace/workspace.jdl.rb:27</td>
+<td>$(jaba_install)/modules/workspace/workspace.jdl.rb:34</td>
 </tr>
 <tr>
 <td><em>notes</em></td>
@@ -3202,7 +3203,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/workspace/workspace.jdl.rb:32</td>
+<td>$(jaba_install)/modules/workspace/workspace.jdl.rb:39</td>
 </tr>
 </tbody>
 </table>
@@ -3228,7 +3229,7 @@
 </tr>
 <tr>
 <td><em>flags</em></td>
-<td>:nosort</td>
+<td>:required, :nosort</td>
 </tr>
 <tr>
 <td><em>options</em></td>
@@ -3236,11 +3237,11 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/workspace/workspace.jdl.rb:13</td>
+<td>$(jaba_install)/modules/workspace/workspace.jdl.rb:19</td>
 </tr>
 <tr>
 <td><em>notes</em></td>
-<td>Specified by id (symbol or string), or by glob matches against $(projroot).</td>
+<td>Specified by id (symbol or string), or by glob matches against $(projdir).</td>
 </tr>
 </tbody>
 </table>
@@ -3279,6 +3280,40 @@
 <tr>
 <td><em>notes</em></td>
 <td>Defaults to containing directory of definition source file.</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<h4>workspacedir</h4>
+<blockquote>
+<p><em>Directory in which workspaces will be generated</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>dir</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;.&quot;</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td>:no_check_exist</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>src</em></td>
+<td>$(jaba_install)/modules/workspace/workspace.jdl.rb:13</td>
 </tr>
 </tbody>
 </table>

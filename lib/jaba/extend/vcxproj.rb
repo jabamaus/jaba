@@ -17,7 +17,7 @@ module JABA
     def init
       super
       @projname = @attrs.projname
-      @vcxproj_file = "#{@projroot}/#{@projname}.vcxproj"
+      @vcxproj_file = "#{@projdir}/#{@projname}.vcxproj"
       @vcxproj_filters_file = "#{@vcxproj_file}.filters"
       @file_type_hash = services.globals_node.get_attr(:vcfiletype).value
 
@@ -78,7 +78,7 @@ module JABA
     ##
     #
     def build_jaba_output(p_root, out_dir)
-      p_root[:projroot] = @projroot.relative_path_from(out_dir)
+      p_root[:projdir] = @projdir.relative_path_from(out_dir)
       p_root[:projname] = @projname
       p_root[:host] = @host.defn_id
       p_root[:platform] = @attrs.platform_ref.defn_id
@@ -108,7 +108,6 @@ module JABA
       services.log "Generating #{@vcxproj_file}", section: true
       
       file = services.file_manager.new_file(@vcxproj_file, eol: :windows, encoding: 'UTF-8', capacity: 128 * 1024)
-      
       w = file.writer
       c = 32 * 1024
       @pc = file.work_area(capacity: c)
@@ -202,7 +201,7 @@ module JABA
       
       item_group(w) do
         @src.each do |sf|
-          w << "    <#{sf.file_type} Include=\"#{sf.projroot_rel}\" />"
+          w << "    <#{sf.file_type} Include=\"#{sf.projdir_rel}\" />"
         end
       end
       
@@ -211,7 +210,7 @@ module JABA
         item_group(w) do
           deps.each do |dep|
             proj_ref = @generator.project_from_node(dep)
-            w << "    <ProjectReference Include=\"#{proj_ref.vcxproj_file.relative_path_from(projroot, backslashes: true)}\">"
+            w << "    <ProjectReference Include=\"#{proj_ref.vcxproj_file.relative_path_from(projdir, backslashes: true)}\">"
             w << "      <Project>#{proj_ref.attrs.guid}</Project>"
             # TODO: reference properties
             w << '    </ProjectReference>'
@@ -272,11 +271,11 @@ module JABA
       item_group(w) do
         @src.each do |sf|
           if sf.vpath
-            w << "    <#{sf.file_type} Include=\"#{sf.projroot_rel}\">"
+            w << "    <#{sf.file_type} Include=\"#{sf.projdir_rel}\">"
             w << "      <Filter>#{sf.vpath}</Filter>"
             w << "    </#{sf.file_type}>"
           else
-            w << "    <#{sf.file_type} Include=\"#{sf.projroot_rel}\" />"
+            w << "    <#{sf.file_type} Include=\"#{sf.projdir_rel}\" />"
           end
         end
       end

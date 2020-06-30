@@ -10,10 +10,11 @@ module JABA
   #
   class WorkspaceGenerator < Generator
     
+    Generator.work_with(:workspace)
+
     ##
     #
     def init
-      @workspaces = []
       @workspace_nodes = []
     end
 
@@ -23,9 +24,7 @@ module JABA
       root_node = make_node
       @workspace_nodes << root_node
 
-      @root = root_node.get_attr(:root).map_value! do |r|
-        r.absolute_path? ? r : "#{root_node.definition.source_dir}/#{r}".cleanpath
-      end
+      @root = make_node_paths_absolute(root_node)
 
       # TODO: pass this in
       cpp_gen = get_generator(:cpp)
@@ -33,11 +32,12 @@ module JABA
       @candidate_projects = cpp_gen.get_projects
       @projects = []
 
-      project_specs = root_node.attrs.projects
-      get_matching_projects(project_specs)
+      projects_attr = root_node.get_attr(:projects)
+      project_specs = projects_attr.value
+      get_matching_projects(project_specs, callstack: projects_attr.last_call_location)
 
       if @projects.empty?
-        jaba_error("No matching projects")
+        jaba_error("No projects matched specs", callstack: projects_attr.last_call_location)
       end
 
       all_hosts = {}
@@ -61,21 +61,21 @@ module JABA
     end
     
     ##
-    # For use by workspace generator. spec is either a defn_id or a wildcard match against projroot.
+    # For use by workspace generator. spec is either a defn_id or a wildcard match against projdir.
     # 
-    def get_matching_projects(specs)
+    def get_matching_projects(specs, callstack:)
       specs.each do |spec|
         if spec.string? && spec.wildcard?
           abs_spec = "#{@root}/#{spec}"
-          matches = @candidate_projects.select{|p| File.fnmatch?(abs_spec, p.projroot)}
+          matches = @candidate_projects.select{|p| File.fnmatch?(abs_spec, p.projdir)}
           if matches.empty?
-            jaba_warning("Could not find any projects matching spec '#{spec.inspect_unquoted}'")
+            jaba_warning("No projects matching spec '#{spec.inspect_unquoted}' found", callstack: callstack)
           end
           @projects.concat(matches)
         else # its an id
           matches = @candidate_projects.select{|p| p.handle.start_with?("#{spec}|")}
           if matches.empty?
-            jaba_error("Could not find any projects matching spec '#{spec.inspect_unquoted}'")
+            jaba_error("No projects matching spec '#{spec.inspect_unquoted}' found", callstack: callstack)
           end
           @projects.concat(matches)
         end
@@ -84,13 +84,16 @@ module JABA
 
     ##
     #
-    def make_projects
+    def make_host_objects
+      @workspace_nodes.each do |ws|
+        make_workspace('Sln', ws)
+      end
     end
 
     ##
     #
     def generate
-      #@workspaces.each(&:generate)
+      each_workspace(&:generate)
     end
     
     ##

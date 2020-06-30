@@ -59,8 +59,8 @@
     - platform
     - platform_ref
     - platforms
+    - projdir
     - projname
-    - projroot
     - projsuffix
     - root
     - rtti
@@ -111,6 +111,7 @@
     - primary
     - projects
     - root
+    - workspacedir
 
 ---
 
@@ -586,18 +587,7 @@
 > platforms [:windows]
 > platforms [:macos, :ios]
 >```
-#### projname
-> _Base name of project files_
-> 
-> | Property | Value  |
-> |-|-|
-> | _type_ | string  |
-> | _default_ |  |
-> | _flags_ |  |
-> | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:137 |
-> | _notes_ | Defaults to $(id)$(projsuffix).  |
-#### projroot
+#### projdir
 > _Directory in which projects will be generated_
 > 
 > | Property | Value  |
@@ -613,10 +603,21 @@
 >```ruby
 > cpp :MyApp do
 >   src ['**/*'] # Get all src in $(root), which defaults to directory of definition file
->   projroot 'projects' # Place generated projects in 'projects' directory
+>   projdir 'projects' # Place generated projects in 'projects' directory
 > end
 >       
 >```
+#### projname
+> _Base name of project files_
+> 
+> | Property | Value  |
+> |-|-|
+> | _type_ | string  |
+> | _default_ |  |
+> | _flags_ |  |
+> | _options_ |  |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:137 |
+> | _notes_ | Defaults to $(id)$(projsuffix).  |
 #### projsuffix
 > _Optional suffix to be applied to $(projname)_
 > 
@@ -638,7 +639,7 @@
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:14 |
-> | _notes_ | Root of the project specified as an offset from the file that contains the project definition. All paths are specified relative to this. Project files will be generated here unless $(projroot) is set. Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible in order to not damage portability.  |
+> | _notes_ | Root of the project specified as an offset from the file that contains the project definition. All paths are specified relative to this. Project files will be generated here unless $(projdir) is set. Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible in order to not damage portability.  |
 #### rtti
 > _Enables runtime type information_
 > 
@@ -1202,7 +1203,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:20 |
+> | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:27 |
 #### namesuffix
 > _Optional suffix to be applied to $(name)_
 > 
@@ -1212,7 +1213,7 @@
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:27 |
+> | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:34 |
 > | _notes_ | Has no effect if $(name) is set explicitly.  |
 #### primary
 > _Primary project_
@@ -1223,7 +1224,7 @@
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:32 |
+> | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:39 |
 #### projects
 > _Contained projects_
 > 
@@ -1231,10 +1232,10 @@
 > |-|-|
 > | _type_ | symbol_or_string array  |
 > | _default_ | nil |
-> | _flags_ | :nosort |
+> | _flags_ | :required, :nosort |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:13 |
-> | _notes_ | Specified by id (symbol or string), or by glob matches against $(projroot).  |
+> | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:19 |
+> | _notes_ | Specified by id (symbol or string), or by glob matches against $(projdir).  |
 #### root
 > _Root directory relative to which all other paths are specified_
 > 
@@ -1246,4 +1247,14 @@
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:7 |
 > | _notes_ | Defaults to containing directory of definition source file.  |
+#### workspacedir
+> _Directory in which workspaces will be generated_
+> 
+> | Property | Value  |
+> |-|-|
+> | _type_ | dir  |
+> | _default_ | "." |
+> | _flags_ | :no_check_exist |
+> | _options_ |  |
+> | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:13 |
 

@@ -40,14 +40,14 @@ translator :vcxproj_config_windows do |vcxproj, cfg_type|
   #
   vcproperty 'PG2|OutDir' do
     if cfg_type == :lib
-      libdir.relative_path_from(vcxproj.projroot, backslashes: true, trailing: true)
+      libdir.relative_path_from(vcxproj.projdir, backslashes: true, trailing: true)
     else
-      bindir.relative_path_from(vcxproj.projroot, backslashes: true, trailing: true)
+      bindir.relative_path_from(vcxproj.projdir, backslashes: true, trailing: true)
     end
   end
 
   vcproperty 'PG2|IntDir' do
-    objdir.relative_path_from(vcxproj.projroot, backslashes: true, trailing: true)
+    objdir.relative_path_from(vcxproj.projdir, backslashes: true, trailing: true)
   end
 
   vcproperty 'PG2|TargetName', targetname
@@ -56,7 +56,7 @@ translator :vcxproj_config_windows do |vcxproj, cfg_type|
   # ClCompile
   #
   vcproperty 'ClCompile|AdditionalIncludeDirectories' do
-    inc.map{|i| i.relative_path_from(vcxproj.projroot, backslashes: true)}.vs_join_paths(inherit: '%(AdditionalIncludeDirectories)')
+    inc.map{|i| i.relative_path_from(vcxproj.projdir, backslashes: true)}.vs_join_paths(inherit: '%(AdditionalIncludeDirectories)')
   end
 
   vcproperty 'ClCompile|AdditionalOptions' do

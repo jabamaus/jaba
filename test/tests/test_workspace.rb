@@ -54,6 +54,38 @@ module JABA
       #ws.modules[1].id.must_equal(:b)
       #ws.modules[2].id.must_equal(:d)
       #ws.modules[3].id.must_equal(:e)
+
+      check_fail "No projects matching spec 'b' found", line: [__FILE__, 'tagL'] do
+        jaba do
+          workspace :a do
+            projects ['b'] # tagL
+          end
+        end
+      end
+
+      # Wildcard matches issue a warning if no projects matched
+      #
+      check_warn "No projects matching spec 'b/**/*' found", __FILE__, 'tagR' do
+        jaba(cpp_app: true, dry_run: true) do
+          cpp :app do
+            src ['a.cpp'], :force
+          end
+          workspace :a do
+            projects [:app]
+            projects ['b/**/*'] # tagR
+          end
+        end
+      end
+
+      # If spec only contains wildcard matches and none match, fail
+      #
+      check_fail 'No projects matched specs', line: [__FILE__, 'tagZ'] do
+        jaba do
+          workspace :a do
+            projects ['*', 'b/*'] # tagZ
+          end
+        end
+      end
     end
 
     it 'only allows valid project types' do

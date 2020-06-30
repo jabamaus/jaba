@@ -22,6 +22,7 @@ module JABA
       @generator = generator
       @node = node
       @attrs = node.attrs
+      @root = @attrs.root
     end
     
     ##

@@ -26,6 +26,7 @@ require_relative '../extend/project'
 require_relative '../extend/src'
 require_relative '../extend/vsproj'
 require_relative '../extend/vcxproj'
+require_relative '../extend/workspace'
 require_relative '../extend/xcodeproj'
 
 ##
@@ -692,6 +693,7 @@ module JABA
       require_relative '../../../modules/text/text_generator.rb'
       require_relative '../../../modules/cpp/cpp_generator.rb'
       require_relative '../../../modules/workspace/workspace_generator.rb'
+      require_relative '../../../modules/workspace/VisualStudio/Sln.rb'
 
       # Load core type definitions
       #

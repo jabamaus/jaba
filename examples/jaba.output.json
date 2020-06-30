@@ -8,7 +8,7 @@
   ],
   "cpp": {
     "MyApp|vs2019|windows": {
-      "projroot": "example1",
+      "projdir": "example1",
       "projname": "MyApp",
       "host": "vs2019",
       "platform": "windows",
@@ -87,7 +87,7 @@
       }
     },
     "MyLib|vs2019|windows": {
-      "projroot": "example2",
+      "projdir": "example2",
       "projname": "MyLib",
       "host": "vs2019",
       "platform": "windows",

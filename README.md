@@ -2,6 +2,7 @@
 
 To do:
 
+- add error_line or similar to jaba_error. 'callstack' is cumbersome
 - Use ruby metaprogramming to allow generator to eg make_projects or make_workspaces as appropriate
 - Add integer type
 - Make it so that all attributes have to have a type?

@@ -87,21 +87,7 @@ module JABA
       end
 
       @platform_nodes.each do |pn|
-        # Turn root into absolute path
-        #
-        root = pn.get_attr(:root, search: true).map_value! do |r|
-          r.absolute_path? ? r : "#{pn.definition.source_dir}/#{r}".cleanpath
-        end
-
-        # Make all file/dir/path attributes into absolute paths based on root
-        #
-        pn.visit_node(visit_self: true) do |node|
-          node.visit_attr(type: [:file, :dir], skip_attr: :root) do |a|
-            a.map_value! do |p|
-              p.absolute_path? ? p : "#{root}/#{p}".cleanpath
-            end
-          end
-        end
+        make_node_paths_absolute(pn)
 
         klass = pn.attrs.host_ref.attrs.cpp_project_classname
         proj = make_project(klass, pn)
