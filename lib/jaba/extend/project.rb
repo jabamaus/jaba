@@ -6,8 +6,6 @@ module JABA
 
   using JABACoreExt
   
-  SourceFile = Struct.new(:absolute_path, :projroot_rel, :vpath, :file_type)
-
   ##
   # Base class for instances of projects, eg a Visual Studio project/Xcode project/makefile etc.
   #

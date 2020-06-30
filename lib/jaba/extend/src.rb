@@ -6,6 +6,8 @@ module JABA
 
   using JABACoreExt
   
+  SourceFile = Struct.new(:absolute_path, :projroot_rel, :vpath, :file_type)
+  
   # Include in projects that require src files.
   #
   module SrcFileSupport
