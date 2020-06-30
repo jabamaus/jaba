@@ -10,6 +10,8 @@ module JABA
   #
   class Xcodeproj < Project
   
+    include SrcFileSupport
+    
     ##
     #
     def init

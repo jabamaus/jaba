@@ -10,6 +10,8 @@ module JABA
   #
   class VSProj < Project
   
+    include SrcFileSupport
+    
     attr_reader :host
     attr_reader :platform # In theory multiple platforms need to be supported...
 
