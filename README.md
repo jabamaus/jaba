@@ -2,6 +2,7 @@
 
 To do:
 
+- Use ruby metaprogramming to allow generator to eg make_projects or make_workspaces as appropriate
 - Add integer type
 - Make it so that all attributes have to have a type?
 - way of validating key in hash attribute
