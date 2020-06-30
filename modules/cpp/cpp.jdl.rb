@@ -237,6 +237,7 @@ define :cpp do
     end
 
     attr :bindir, type: :dir do
+      title 'Output directory for executables'
       default do
         "#{buildroot}/bin/#{config}"
       end
@@ -244,6 +245,7 @@ define :cpp do
     end
 
     attr :libdir, type: :dir do
+      title 'Output directory for libs'
       default do
         "#{buildroot}/lib/#{config}"
       end
@@ -251,6 +253,7 @@ define :cpp do
     end
 
     attr :objdir, type: :dir do
+      title 'Output directory for object files'
       default do
         "#{buildroot}/obj/#{config}/#{projname}"
       end
@@ -263,14 +266,15 @@ define :cpp do
     end
 
     attr :configname, type: :symbol_or_string do
-      note 'Display name of config in Visual Studio. Defaults to $(config)'
+      title 'Display name of config as seen in IDE'
       default do
         config
       end
     end
 
     attr :debug, type: :bool do
-      note 'Flags config as a debug build. Defaults to true if config id contains \'debug\''
+      title 'Flags config as a debug config'
+      notes'Defaults to true if config id contains \'debug\''
       default do
         config =~ /debug/i ? true : false
       end
@@ -347,7 +351,7 @@ define :cpp do
     # Not so common attributes. Often used but not fundamental.
     #
     attr :character_set, type: :choice do
-      note 'Character set. Defaults to :unicode'
+      title 'Character set'
       items [
         :mbcs,    # Visual Studio only
         :unicode,
@@ -372,6 +376,8 @@ define :cpp do
     end
 
     attr :toolset, type: :string do
+      title 'Toolset version to use'
+      note 'Defaults to host\'s default toolset'
       default { host_ref.toolset }
     end
 
@@ -379,12 +385,10 @@ define :cpp do
 
 end
 
-# Each host (eg Visual Studio, Xcode etc) must provide a class name which will be used in project
-# creation. If plugging in a new cpp host generator then a new subclass of 'Project' should be
-# implemented.
-#
 open_type :host do
   attr :cpp_project_classname, type: :string do
+    title 'Class name of host-specific Project subclass'
+    note 'For example Vcxproj, Xcodeproj. Use when implementing a new project type.'
     flags :required
   end
 end

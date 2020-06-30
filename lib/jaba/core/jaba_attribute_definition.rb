@@ -251,7 +251,7 @@ module JABA
     #
     def validate
       if @title.nil? && !JABA.running_tests?
-        #jaba_error("#{describe} requires a title")
+        jaba_error("#{describe} requires a title")
       end
 
       begin

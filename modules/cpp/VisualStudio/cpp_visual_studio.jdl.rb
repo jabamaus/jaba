@@ -1,5 +1,6 @@
 open_type :globals do
   attr_hash :vcfiletype, key_type: :string, type: :symbol do
+    title 'Visual C++ file types'
     flags :required
   end
 end
@@ -24,8 +25,8 @@ end
 
 open_type :arch do
   attr :vsname, type: :string do
+    title 'Name of target architecture (platform) as seen in Visual Studio IDE'
     flags :expose
-    note 'Name of target architecture (platform) as seen in Visual Studio IDE'
   end
 end
 
@@ -52,13 +53,13 @@ open_type :cpp do
     end
 
     attr_hash :vcglobal, key_type: :symbol, type: :to_s do
-      note 'Directly address the Globals property group in a vcxproj'
+      title 'Address Globals property group in a vcxproj directly'
       value_option :condition
       flag_options :export
     end
 
     attr :winsdkver, type: :choice do
-      note 'Windows SDK version. Defaults to nil.'
+      title 'Windows SDK version'
       items [
         '10.0.16299.0',  # Included in VS2017 ver.15.4
         '10.0.17134.0',  # Included in VS2017 ver.15.7
@@ -73,7 +74,7 @@ open_type :cpp do
   open_type :config do
     # TODO: validate key is in correct format
     attr_hash :vcproperty, key_type: :string, type: :to_s do
-      note 'Address config section of a vcxproj directly'
+      title 'Address per-configuration sections of a vcxproj directly'
       value_option :condition
       flag_options :export
     end

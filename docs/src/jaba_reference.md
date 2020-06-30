@@ -106,6 +106,9 @@
     - filename
     - line
   - workspace
+    - name
+    - namesuffix
+    - primary
     - projects
     - root
 
@@ -141,7 +144,7 @@
 > src ['arch_arm64.cpp'] if arm64?
 >```
 #### vsname
-> __
+> _Name of target architecture (platform) as seen in Visual Studio IDE_
 > 
 > | Property | Value  |
 > |-|-|
@@ -149,8 +152,7 @@
 > | _default_ | "" |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:26 |
-> | _notes_ | Name of target architecture (platform) as seen in Visual Studio IDE.  |
+> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:27 |
 #### x86?
 > _Returns true if current target architecture is x86_
 > 
@@ -211,14 +213,14 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:84 |
+> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:85 |
 > | _notes_ | Seeded by $(name). Required by Visual Studio .sln files.  |
 #### name
 > _Display name of category_
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ |  |
+> | _type_ | string  |
 > | _default_ | nil |
 > | _flags_ | :required |
 > | _options_ |  |
@@ -285,7 +287,7 @@
 > archs [:x86, :x86_64]
 >```
 #### bindir
-> __
+> _Output directory for executables_
 > 
 > | Property | Value  |
 > |-|-|
@@ -310,13 +312,13 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ |  |
+> | _type_ | string array  |
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ | :export |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:260 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:263 |
 #### character_set
-> __
+> _Character set_
 > 
 > | Property | Value  |
 > |-|-|
@@ -324,8 +326,7 @@
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:349 |
-> | _notes_ | Character set. Defaults to :unicode.  |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:353 |
 >
 > *Examples*
 >```ruby
@@ -343,16 +344,15 @@
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:217 |
 > | _notes_ | Returns current config being processed. Use to define control flow to set config-specific atttributes.  |
 #### configname
-> __
+> _Display name of config as seen in IDE_
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ |  |
+> | _type_ | symbol_or_string  |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:265 |
-> | _notes_ | Display name of config in Visual Studio. Defaults to $(config).  |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:268 |
 #### configs
 > _Build configurations_
 > 
@@ -369,7 +369,7 @@
 > configs [:Debug, :Release]
 >```
 #### debug
-> __
+> _Flags config as a debug config_
 > 
 > | Property | Value  |
 > |-|-|
@@ -377,8 +377,8 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:272 |
-> | _notes_ | Flags config as a debug build. Defaults to true if config id contains 'debug'.  |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:275 |
+> | _notes_ | Defaults to true if config id contains 'debug'.  |
 #### defines
 > _Preprocessor defines_
 > 
@@ -388,7 +388,7 @@
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ | :export |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:279 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:283 |
 #### deps
 > _Project dependencies_
 > 
@@ -424,7 +424,7 @@
 > | _default_ | true |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:360 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:364 |
 >
 > *Examples*
 >```ruby
@@ -439,7 +439,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:46 |
+> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:47 |
 > | _notes_ | Seeded by $(projname). Required by Visual Studio project files.  |
 #### host
 > _Target host as an id_
@@ -494,7 +494,7 @@
 > | _default_ | nil |
 > | _flags_ | :nosort |
 > | _options_ | :export |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:284 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:288 |
 >
 > *Examples*
 >```ruby
@@ -502,7 +502,7 @@
 > inc ['mylibrary/include'], :export # Export include path to dependents
 >```
 #### libdir
-> __
+> _Output directory for libs_
 > 
 > | Property | Value  |
 > |-|-|
@@ -510,7 +510,7 @@
 > | _default_ |  |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:246 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:247 |
 #### nowarn
 > _Warnings to disable_
 > 
@@ -520,7 +520,7 @@
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ | :export |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:292 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:296 |
 > | _notes_ | Placed directly into projects as is, with no validation.  |
 >
 > *Examples*
@@ -528,7 +528,7 @@
 > nowarn [4100, 4127, 4244] if visual_studio?
 >```
 #### objdir
-> __
+> _Output directory for object files_
 > 
 > | Property | Value  |
 > |-|-|
@@ -536,7 +536,7 @@
 > | _default_ |  |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:253 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:255 |
 #### platform
 > _Target platform as an id_
 > 
@@ -648,7 +648,7 @@
 > | _default_ | true |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:368 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:372 |
 >
 > *Examples*
 >```ruby
@@ -688,7 +688,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ |  |
+> | _type_ | string array  |
 > | _default_ |  |
 > | _flags_ | :nosort |
 > | _options_ | :export |
@@ -703,7 +703,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:317 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:321 |
 > | _notes_ | Defaults to standard extension for $(type) of project for target $(platform).  |
 #### targetname
 > _Base name of output file without extension_
@@ -714,7 +714,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:299 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:303 |
 > | _notes_ | Defaults to $(targetprefix)$(projname)$(targetsuffix).  |
 #### targetprefix
 > _Prefix to apply to $(targetname)_
@@ -725,7 +725,7 @@
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:307 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:311 |
 > | _notes_ | Has no effect if $(targetname) specified.  |
 #### targetsuffix
 > _Suffix to apply to $(targetname)_
@@ -736,10 +736,10 @@
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:312 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:316 |
 > | _notes_ | Has no effect if $(targetname) specified.  |
 #### toolset
-> __
+> _Toolset version to use_
 > 
 > | Property | Value  |
 > |-|-|
@@ -747,7 +747,8 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:374 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:378 |
+> | _notes_ | Defaults to host's default toolset.  |
 #### type
 > _Project type_
 > 
@@ -759,7 +760,7 @@
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:209 |
 #### vcglobal
-> __
+> _Address Globals property group in a vcxproj directly_
 > 
 > | Property | Value  |
 > |-|-|
@@ -767,10 +768,9 @@
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ | :export |
-> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:54 |
-> | _notes_ | Directly address the Globals property group in a vcxproj.  |
+> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:55 |
 #### vcproperty
-> __
+> _Address per-configuration sections of a vcxproj directly_
 > 
 > | Property | Value  |
 > |-|-|
@@ -778,8 +778,7 @@
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ | :export |
-> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:75 |
-> | _notes_ | Address config section of a vcxproj directly.  |
+> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:76 |
 #### warnerror
 > _Enable warnings as errors_
 > 
@@ -789,14 +788,14 @@
 > | _default_ | false |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:342 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:346 |
 >
 > *Examples*
 >```ruby
 > warnerror true
 >```
 #### winsdkver
-> __
+> _Windows SDK version_
 > 
 > | Property | Value  |
 > |-|-|
@@ -804,8 +803,7 @@
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:60 |
-> | _notes_ | Windows SDK version. Defaults to nil..  |
+> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:61 |
 
 ---
 
@@ -820,7 +818,7 @@
 > 
 
 #### vcfiletype
-> __
+> _Visual C++ file types_
 > 
 > | Property | Value  |
 > |-|-|
@@ -843,15 +841,16 @@
 > 
 
 #### cpp_project_classname
-> __
+> _Class name of host-specific Project subclass_
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ |  |
+> | _type_ | string  |
 > | _default_ | nil |
 > | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:387 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:389 |
+> | _notes_ | For example Vcxproj, Xcodeproj. Use when implementing a new project type..  |
 #### major_version
 > _Host major version_
 > 
@@ -1145,7 +1144,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ |  |
+> | _type_ | to_s  |
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ |  |
@@ -1176,7 +1175,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ |  |
+> | _type_ | to_s array  |
 > | _default_ | nil |
 > | _flags_ | :allow_dupes, :nosort |
 > | _options_ |  |
@@ -1194,6 +1193,37 @@
 > | _notes_ | Manages attribute definitions for 'workspace' type.  |
 > 
 
+#### name
+> _Base name of workspace files_
+> 
+> | Property | Value  |
+> |-|-|
+> | _type_ | string  |
+> | _default_ |  |
+> | _flags_ |  |
+> | _options_ |  |
+> | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:20 |
+#### namesuffix
+> _Optional suffix to be applied to $(name)_
+> 
+> | Property | Value  |
+> |-|-|
+> | _type_ | string  |
+> | _default_ | "" |
+> | _flags_ |  |
+> | _options_ |  |
+> | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:27 |
+> | _notes_ | Has no effect if $(name) is set explicitly.  |
+#### primary
+> _Primary project_
+> 
+> | Property | Value  |
+> |-|-|
+> | _type_ |  |
+> | _default_ | nil |
+> | _flags_ |  |
+> | _options_ |  |
+> | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:32 |
 #### projects
 > _Contained projects_
 > 
