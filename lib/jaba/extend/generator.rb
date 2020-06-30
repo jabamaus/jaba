@@ -11,11 +11,31 @@ module JABA
   #
   class Generator
     
+    # Define wrappers so that Generator subclass can work with the kind of objects it wants and not have to
+    # call everything a 'host_object' which would get very confusing. Using :project here would be very 
+    # common but the WorkspaceGenerator uses :workspace, for example.
+    #
+    def self.work_with(type)
+      class_eval %Q{
+        def make_#{type}(...)
+          make_host_object(...)
+        end
+        def #{type}_from_node(...)
+          host_object_from_node(...)
+        end
+        def each_#{type}(&block)
+          @host_objects.each(&block)
+        end
+        def get_#{type}s
+          @host_objects
+        end
+      }, __FILE__, __LINE__
+    end
+
     attr_reader :services
     attr_reader :type_id # eg :cpp, :text
     attr_reader :root_nodes
     attr_reader :source_file
-    attr_reader :projects
 
     ##
     #
@@ -27,8 +47,8 @@ module JABA
       @root_nodes = []
       @nodes = []
       @node_lookup = {}
-      @projects = []
-      @node_to_project = {}
+      @host_objects = []
+      @node_to_host_object = {}
       @reference_attrs_to_resolve = []
       @source_file = JABA.const_source_location(self.class.name)[0]
       init
@@ -48,7 +68,7 @@ module JABA
         end
       end
 
-      make_projects
+      make_host_objects
       
       @nodes.each do |n|
         n.each_attr do |a|
@@ -213,29 +233,29 @@ module JABA
     ##
     # Override this in subclass
     #
-    def make_projects
+    def make_host_objects
     end
 
     ##
-    # Call this from subclass
+    # Call this from subclass but using the wrapper defined by Generator.work_with.
     #
-    def make_project(klass, node, root)
+    def make_host_object(klass, node, root)
       klass = klass.string? ? JABA.const_get(klass) : klass
-      p = klass.new(self, node, root)
-      p.init
-      @projects << p
-      @node_to_project[node] = p
-      p
+      ho = klass.new(self, node, root)
+      ho.init
+      @host_objects << ho
+      @node_to_host_object[node] = ho
+      ho
     end
 
     ##
     #
-    def project_from_node(node, fail_if_not_found: true)
-      p = @node_to_project[node]
-      if !p && fail_if_not_found
-        jaba_error("'#{node}' not found")
+    def host_object_from_node(node, fail_if_not_found: true)
+      ho = @node_to_host_object[node]
+      if !ho && fail_if_not_found
+        jaba_error("'#{ho}' not found")
       end
-      p
+      ho
     end
     
     ##

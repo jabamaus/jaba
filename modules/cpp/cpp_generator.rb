@@ -10,6 +10,8 @@ module JABA
   #
   class CppGenerator < Generator
     
+    Generator.work_with(:project)
+     
     ##
     #
     def init
@@ -54,7 +56,7 @@ module JABA
 
     ##
     #
-    def make_projects
+    def make_host_objects
       @platform_nodes.sort_topological! do |n, &b|
         n.attrs.deps.each(&b)
       end
@@ -110,13 +112,13 @@ module JABA
     ##
     #
     def generate
-      @projects.each(&:generate)
+      each_project(&:generate)
     end
     
     ##
     # 
     def build_jaba_output(g_root, out_dir)
-      @projects.each do |p|
+      each_project do |p|
         p_root = {}
         g_root[p.handle] = p_root
         p.build_jaba_output(p_root, out_dir)

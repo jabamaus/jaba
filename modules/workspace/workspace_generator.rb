@@ -30,7 +30,7 @@ module JABA
       # TODO: pass this in
       cpp_gen = get_generator(:cpp)
       
-      @candidate_projects = cpp_gen.projects
+      @candidate_projects = cpp_gen.get_projects
       @projects = []
 
       project_specs = root_node.attrs.projects
