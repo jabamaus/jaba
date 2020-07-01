@@ -29,6 +29,7 @@ module JABA
       @projects.each do |proj|
         path = proj.vcxproj_file.relative_path_from(@workspacedir, backslashes: true)
         w << "Project(\"{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}\") = \"#{proj.projname}\", \"#{path}\", \"#{proj.guid}\""
+        w << 'EndProject'
       end
 
       w << 'Global'

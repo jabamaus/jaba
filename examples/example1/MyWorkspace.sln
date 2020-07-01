@@ -1,6 +1,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio version 16
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MyApp", "MyApp.vcxproj", "{88ED35B9-F87F-55D9-A551-61C4953F0ABB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
