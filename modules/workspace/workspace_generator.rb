@@ -40,6 +40,7 @@ module JABA
         jaba_error("No projects matched specs", callstack: projects_attr.last_call_location)
       end
 
+      @configs = {}
       @projects.each do |p|
         p.each_config do |cfg|
           cfg_id = cfg.attrs.config
@@ -49,6 +50,7 @@ module JABA
         end
       end
       @configs = @configs.values
+=begin
       all_hosts = {}
       all_platforms = {}
 
@@ -65,6 +67,7 @@ module JABA
 
       all_hosts = all_hosts.keys
       all_platforms = all_platforms.keys
+=end
       root_node
     end
     
