@@ -47,3 +47,11 @@ define :workspace do
   end
 
 end
+
+open_type :host do
+  attr :workspace_classname, type: :string do
+    title 'Class name of host-specific Workspace subclass'
+    note 'For example Sln, XcodeWorkspace. Use when implementing a new workspace type.'
+    flags :required
+  end
+end

@@ -50,24 +50,7 @@ module JABA
         end
       end
       @configs = @configs.values
-=begin
-      all_hosts = {}
-      all_platforms = {}
 
-      @projects.each do |p|
-        host = p.host
-        platform = p.platform
-        if !all_hosts.key?(host)
-          all_hosts[host] = nil
-        end
-        if !all_platforms.key?(platform)
-          all_platforms[platform] = nil
-        end
-      end
-
-      all_hosts = all_hosts.keys
-      all_platforms = all_platforms.keys
-=end
       root_node
     end
     
@@ -96,8 +79,9 @@ module JABA
     ##
     #
     def make_host_objects
-      @workspace_nodes.each do |ws|
-        make_workspace('Sln', ws, @projects, @configs)
+      @workspace_nodes.each do |wsn|
+        #klass = wsn.attrs.host_ref.attrs.workspace_classname
+        make_workspace('Sln', wsn, @projects, @configs)
       end
     end
 

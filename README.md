@@ -2,6 +2,7 @@
 
 To do:
 
+- add slnproperty which can address sln sections. Particularly useful when used with ExtensibilityGlobals
 - disband VSProj in favour of VSUtilities module
 - add error_line or similar to jaba_error. 'callstack' is cumbersome
 - Add integer type

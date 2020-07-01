@@ -7,11 +7,13 @@
     "C:/projects/GitHub/jaba/modules/core/hosts.jdl.rb",
     "C:/projects/GitHub/jaba/modules/core/platforms.jdl.rb",
     "C:/projects/GitHub/jaba/modules/cpp/cpp.jdl.rb",
-    "C:/projects/GitHub/jaba/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb",
+    "C:/projects/GitHub/jaba/modules/cpp/VisualStudio/cpp_vs.jdl.rb",
     "C:/projects/GitHub/jaba/modules/cpp/VisualStudio/vcxproj_windows.jdl.rb",
-    "C:/projects/GitHub/jaba/modules/cpp/Xcode/cpp_xcode.jdl.rb",
+    "C:/projects/GitHub/jaba/modules/cpp/Xcode/cpp_xc.jdl.rb",
     "C:/projects/GitHub/jaba/modules/text/text.jdl.rb",
+    "C:/projects/GitHub/jaba/modules/workspace/VisualStudio/workspace_vs.jdl.rb",
     "C:/projects/GitHub/jaba/modules/workspace/workspace.jdl.rb",
+    "C:/projects/GitHub/jaba/modules/workspace/Xcode/workspace_xc.jdl.rb",
     "C:/projects/GitHub/jaba/examples/example1/example1.jdl.rb",
     "C:/projects/GitHub/jaba/examples/example2/example2.jdl.rb"
   ],
@@ -73,6 +75,7 @@
       "vs2015?": false,
       "vs2017?": false,
       "vs2019?": false,
+      "workspace_classname": "Sln",
       "xcode?": false
     },
     "vs2012": {
@@ -88,6 +91,7 @@
       "vs2015?": false,
       "vs2017?": false,
       "vs2019?": false,
+      "workspace_classname": "Sln",
       "xcode?": false
     },
     "vs2013": {
@@ -103,6 +107,7 @@
       "vs2015?": false,
       "vs2017?": false,
       "vs2019?": false,
+      "workspace_classname": "Sln",
       "xcode?": false
     },
     "vs2015": {
@@ -118,6 +123,7 @@
       "vs2015?": true,
       "vs2017?": false,
       "vs2019?": false,
+      "workspace_classname": "Sln",
       "xcode?": false
     },
     "vs2017": {
@@ -133,6 +139,7 @@
       "vs2015?": false,
       "vs2017?": true,
       "vs2019?": false,
+      "workspace_classname": "Sln",
       "xcode?": false
     },
     "vs2019": {
@@ -148,6 +155,7 @@
       "vs2015?": false,
       "vs2017?": false,
       "vs2019?": true,
+      "workspace_classname": "Sln",
       "xcode?": false
     },
     "xcode": {
@@ -163,6 +171,7 @@
       "vs2015?": false,
       "vs2017?": false,
       "vs2019?": false,
+      "workspace_classname": "Xcworkspace",
       "xcode?": true
     }
   },
