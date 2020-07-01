@@ -15,6 +15,7 @@ module JABA
     attr_reader :projdir
     attr_reader :host
     attr_reader :platform # In theory multiple platforms need to be supported...
+    attr_reader :guid
 
     ##
     #
@@ -22,6 +23,7 @@ module JABA
       @projdir = @attrs.projdir
       @host = @attrs.host_ref
       @platform = @attrs.platform_ref
+      @guid = @attrs.guid
     end
     
     ##

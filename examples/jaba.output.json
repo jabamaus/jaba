@@ -4,7 +4,8 @@
     "example1/MyApp.vcxproj",
     "example1/MyApp.vcxproj.filters",
     "example2/MyLib.vcxproj",
-    "example2/MyLib.vcxproj.filters"
+    "example2/MyLib.vcxproj.filters",
+    "example1/MyWorkspace.sln"
   ],
   "cpp": {
     "MyApp|vs2019|windows": {
@@ -163,6 +164,10 @@
           }
         }
       }
+    }
+  },
+  "workspace": {
+    "MyWorkspace": {
     }
   }
 }

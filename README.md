@@ -2,8 +2,8 @@
 
 To do:
 
+- disband VSProj in favour of VSUtilities module
 - add error_line or similar to jaba_error. 'callstack' is cumbersome
-- Use ruby metaprogramming to allow generator to eg make_projects or make_workspaces as appropriate
 - Add integer type
 - Make it so that all attributes have to have a type?
 - way of validating key in hash attribute
@@ -36,7 +36,7 @@ To do:
 - In defaults block are paths relative to the defaults file or the file of the definition being instanced?
 - Consider something like  base: :__dir__ option on :dir attribute types to force a path to be relative to source definition file and not root
 - Test __dir__
-- Allow 'axes' of configs
+- Allow 'axes' of configs. Bear in mind that platforms can be any string.
 - Have some kind of spec for flag_options, eg
 
 flag_option :export do

@@ -6,3 +6,7 @@ cpp :MyApp do
   configs [:Debug, :Release]
   src ['.']
 end
+
+workspace :MyWorkspace do
+  projects [:MyApp]
+end

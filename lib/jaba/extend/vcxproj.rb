@@ -10,6 +10,7 @@ module JABA
   #
   class Vcxproj < VSProj
     
+    attr_reader :projname
     attr_reader :vcxproj_file
     
     ##
@@ -211,7 +212,7 @@ module JABA
           deps.each do |dep|
             proj_ref = @generator.project_from_node(dep)
             w << "    <ProjectReference Include=\"#{proj_ref.vcxproj_file.relative_path_from(projdir, backslashes: true)}\">"
-            w << "      <Project>#{proj_ref.attrs.guid}</Project>"
+            w << "      <Project>#{proj_ref.guid}</Project>"
             # TODO: reference properties
             w << '    </ProjectReference>'
           end

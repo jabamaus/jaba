@@ -771,5 +771,18 @@
   "text": {
   },
   "workspace": {
+    "MyWorkspace": {
+      "configs": [
+
+      ],
+      "name": "MyWorkspace",
+      "namesuffix": "",
+      "primary": null,
+      "projects": [
+        "MyApp"
+      ],
+      "root": "C:/projects/GitHub/jaba/examples/example1",
+      "workspacedir": "C:/projects/GitHub/jaba/examples/example1"
+    }
   }
 }

@@ -40,6 +40,15 @@ module JABA
         jaba_error("No projects matched specs", callstack: projects_attr.last_call_location)
       end
 
+      @projects.each do |p|
+        p.each_config do |cfg|
+          cfg_id = cfg.attrs.config
+          if !@configs.key?(cfg_id)
+            @configs[cfg_id] = [cfg.attrs.configname, cfg.attrs.arch_ref.attrs.vsname]
+          end
+        end
+      end
+      @configs = @configs.values
       all_hosts = {}
       all_platforms = {}
 
@@ -56,7 +65,6 @@ module JABA
 
       all_hosts = all_hosts.keys
       all_platforms = all_platforms.keys
-
       root_node
     end
     
@@ -86,7 +94,7 @@ module JABA
     #
     def make_host_objects
       @workspace_nodes.each do |ws|
-        make_workspace('Sln', ws)
+        make_workspace('Sln', ws, @projects, @configs)
       end
     end
 

@@ -239,13 +239,13 @@ module JABA
     ##
     # Call this from subclass but using the wrapper defined by Generator.work_with.
     #
-    def make_host_object(klass, node)
+    def make_host_object(klass, node, *args, **keyval_args)
       klass = klass.string? ? JABA.const_get(klass) : klass
       ho = klass.new(self, node)
       if !ho.respond_to?(:init)
         jaba_error("#{klass} must implement 'init' method and do any instance variable initialisation there")
       end
-      ho.init
+      ho.init(*args, **keyval_args)
       @host_objects << ho
       @node_to_host_object[node] = ho
       ho

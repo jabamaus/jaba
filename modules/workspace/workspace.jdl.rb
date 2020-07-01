@@ -40,4 +40,10 @@ define :workspace do
     title 'Primary project'
   end
 
+  # TODO: Make VS-specific?
+  attr_array :configs, type: :symbol_or_string do
+    title 'Solution configurations'
+    flags :nosort
+  end
+
 end
