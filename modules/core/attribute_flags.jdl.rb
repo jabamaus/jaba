@@ -10,7 +10,7 @@ end
 attr_flag :read_only do
   note 'Specifies that the attribute can only be read and not set from user definitions. The value will be initialised inside Jaba'
   compatibility do
-    warn 'reference attribute does not need to be flagged with :read_only as they always are' if type == :reference
+    warn 'Reference attribute does not need to be flagged with :read_only as they always are' if type == :reference
   end
 end
 

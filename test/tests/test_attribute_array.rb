@@ -19,7 +19,7 @@ module JABA
 
       # It validates default is an array when block form is used
       #
-      check_fail "'a' array attribute default requires an array not a 'Integer'", line: [__FILE__, 'tagO'] do
+      check_fail "'t.a' array attribute default requires an array not a 'Integer'", line: [__FILE__, 'tagO'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a do # tagO
@@ -46,7 +46,7 @@ module JABA
 
       # It validates default elements respect attribute type when block form used
       #
-      check_fail "'a' attribute failed validation: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagW'] do
+      check_fail "'t.a' attribute failed validation: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagW'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a, type: :symbol do # tagW
@@ -96,7 +96,7 @@ module JABA
     it 'checks for accessing uninitialised attributes' do
       # test with array attr default using an unset attr
       #
-      check_fail "Cannot read uninitialised 'b' attribute", line: [__FILE__, 'tagI'] do
+      check_fail "Cannot read uninitialised 't.b' attribute", line: [__FILE__, 'tagI'] do
         jaba(barebones: true) do
           define :test do
             attr :a
@@ -116,7 +116,7 @@ module JABA
 
       # test with another attr using unset array attr
       #
-      check_fail "Cannot read uninitialised 'a' array attribute", line: [__FILE__, 'tagF'] do
+      check_fail "Cannot read uninitialised 't.a' array attribute", line: [__FILE__, 'tagF'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a
@@ -186,7 +186,7 @@ module JABA
     end
 
     it 'handles duplicates' do
-      check_warn("When setting 'a' array attribute stripping duplicate value '5'", __FILE__, 'tagU') do
+      check_warn("When setting 't.a' array attribute stripping duplicate value '5'", __FILE__, 'tagU') do
         jaba(barebones: true) do
           define :test do
             attr_array :a # Duplicates will be stripped by default
@@ -267,7 +267,7 @@ module JABA
     end
     
     it 'only allows prefix/postfix on string elements' do
-      check_fail "When setting 'a' array attribute prefix/postfix option can only be used with string arrays", line: [__FILE__, 'tagQ'] do
+      check_fail "When setting 't.a' array attribute prefix/postfix option can only be used with string arrays", line: [__FILE__, 'tagQ'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a
@@ -333,7 +333,7 @@ module JABA
     end
     
     it 'fails if excluding with regex on non-strings' do
-      check_fail "When setting 'a' array attribute exclude regex can only operate on strings", line: [__FILE__, 'tagR'] do
+      check_fail "When setting 't.a' array attribute exclude regex can only operate on strings", line: [__FILE__, 'tagR'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a
@@ -415,7 +415,7 @@ module JABA
     end
 
     it 'catches invalid args to wipe' do
-      check_fail "'b' attribute not found", line: [__FILE__, 'tagS'] do
+      check_fail "'t.b' attribute not found", line: [__FILE__, 'tagS'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a

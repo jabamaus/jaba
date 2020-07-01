@@ -99,7 +99,7 @@ module JABA
 
       # It validates default is a hash when block form is used
       #
-      check_fail "'a' hash attribute default requires a hash not a 'Integer'", line: [__FILE__, 'tagO'] do
+      check_fail "'t.a' hash attribute default requires a hash not a 'Integer'", line: [__FILE__, 'tagO'] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a, key_type: :symbol do # tagO
@@ -126,7 +126,7 @@ module JABA
 
       # It validates default elements respect attribute type when block form used
       #
-      check_fail "'a' attribute failed validation: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagW'] do
+      check_fail "'t.a' attribute failed validation: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagW'] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a, key_type: :symbol, type: :symbol do # tagW
@@ -143,7 +143,7 @@ module JABA
     it 'checks for accessing uninitialised attributes' do
       # test with hash attr default using an unset attr
       #
-      check_fail "Cannot read uninitialised 'b' attribute", line: [__FILE__, 'tagI'] do
+      check_fail "Cannot read uninitialised 't.b' attribute", line: [__FILE__, 'tagI'] do
         jaba(barebones: true) do
           define :test do
             attr :a
@@ -163,7 +163,7 @@ module JABA
 
       # test with another attr using unset hash attr
       #
-      check_fail "Cannot read uninitialised 'a' hash attribute", line: [__FILE__, 'tagF'] do
+      check_fail "Cannot read uninitialised 't.a' hash attribute", line: [__FILE__, 'tagF'] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a, key_type: :symbol
@@ -342,7 +342,7 @@ module JABA
     end
 
     it 'validates key value supplied correctly' do
-      check_fail("'a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"", line: [__FILE__, 'tagM']) do
+      check_fail("'t.a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"", line: [__FILE__, 'tagM']) do
         jaba(barebones: true) do
           define :test do
             attr_hash :a, key_type: :symbol
@@ -352,7 +352,7 @@ module JABA
           end
         end
       end
-      check_fail("'a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"", line: [__FILE__, 'tagZ']) do
+      check_fail("'t.a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"", line: [__FILE__, 'tagZ']) do
         jaba(barebones: true) do
           define :test do
             attr_hash :a, key_type: :symbol

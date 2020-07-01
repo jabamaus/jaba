@@ -292,7 +292,7 @@ module JABA
     def validate_value(attr_def, value)
       items = attr_def.get_property(:items)
       if !items.include?(value)
-        services.jaba_error("must be one of #{items} but got '#{value}'")
+        services.jaba_error("Must be one of #{items} but got '#{value}'")
       end
     end
 

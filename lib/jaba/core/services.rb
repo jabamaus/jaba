@@ -408,7 +408,7 @@ module JABA
     #
     def define_shared(id, &block)
       jaba_error("id is required") if id.nil?
-      jaba_error("a block is required") if !block_given?
+      jaba_error("A block is required") if !block_given?
 
       log "  Defining shared definition [id=#{id}]"
       validate_id(id)
@@ -538,7 +538,7 @@ module JABA
     #
     def open(what, id, type=nil, &block)
       jaba_error("id is required") if id.nil?
-      jaba_error("a block is required") if !block_given?
+      jaba_error("A block is required") if !block_given?
       call_loc = caller_locations(2, 1)[0]
 
       case what
@@ -799,8 +799,6 @@ module JABA
     # 3) From core library code. 
     #
     def make_jaba_error(msg, syntax: false, callstack: nil, warn: false, include_api: false)
-      msg = msg.capitalize_first if msg.split.first !~ /_/
-      
       error_line = nil
 
       if syntax

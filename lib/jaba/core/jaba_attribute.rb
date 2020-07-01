@@ -46,7 +46,7 @@ module JABA
     # Used in error messages.
     #
     def describe
-      "'#{@attr_def.defn_id}' attribute"
+      "'#{@node.defn_id}.#{@attr_def.defn_id}' attribute"
     end
 
     ##
@@ -231,7 +231,7 @@ module JABA
       @attr_def.get_value_option(key)
       if !@value_options.key?(key)
         if fail_if_not_found
-          jaba_error("option key '#{key}' not found in #{describe}")
+          jaba_error("Option key '#{key}' not found in #{describe}")
         else
           return nil
         end

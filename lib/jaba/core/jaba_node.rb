@@ -64,7 +64,7 @@ module JABA
     # Used in error messages.
     #
     def describe
-      "'#{@defn_id}' attribute"
+      "'#{@defn_id}' node"
     end
 
     ##
@@ -101,7 +101,7 @@ module JABA
           end
         end
         if fail_if_not_found
-          jaba_error("'#{attr_id}' attribute not found in #{describe}")
+          jaba_error("'#{@defn_id}.#{attr_id}' attribute not found")
         end
       end
       a
@@ -228,13 +228,13 @@ module JABA
           if !attr_def
             jaba_error("'#{id}' attribute not defined")
           elsif attr_def.jaba_type.definition != @jaba_type.definition
-            jaba_error("cannot change referenced '#{id}' attribute")
+            jaba_error("Cannot change referenced '#{id}' attribute")
           end
           return nil
         end
 
         if __read_only || @read_only
-          jaba_error("'#{id}' attribute is read only")
+          jaba_error("#{a.describe} is read only")
         end
         
         a.set(*args, __api_call_loc: __api_call_loc, **keyval_args, &block)

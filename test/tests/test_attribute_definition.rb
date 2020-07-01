@@ -181,7 +181,7 @@ module JABA
     end
 
     it 'fails if default block references an unset attribute that does not have a default block' do
-      check_fail "Cannot read uninitialised 'a' attribute", line: [__FILE__, 'tagP'] do
+      check_fail "Cannot read uninitialised 't.a' attribute", line: [__FILE__, 'tagP'] do
         jaba(barebones: true) do
           define :test do
             attr :a
@@ -207,7 +207,7 @@ module JABA
     # TODO: also check for circularity in default blocks
     
     it 'supports specifying a validator' do
-      check_fail "'a' attribute failed validation: Val must not be 2. See #{__FILE__}:#{find_line_number(__FILE__, 'tagT')}",
+      check_fail "'t.a' attribute failed validation: Val must not be 2. See #{__FILE__}:#{find_line_number(__FILE__, 'tagT')}",
          line: [__FILE__, 'tagS'] do
         jaba(barebones: true) do
           define :test do
@@ -303,7 +303,7 @@ module JABA
     end
 
     it 'supports specifying a valid set of values for value option' do
-      check_fail "In 'a' attribute invalid value ':d' passed to ':group' option. Valid values: [:a, :b, :c]", line: [__FILE__, 'tagX'] do
+      check_fail "In 't.a' attribute invalid value ':d' passed to ':group' option. Valid values: [:a, :b, :c]", line: [__FILE__, 'tagX'] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a, key_type: :symbol do

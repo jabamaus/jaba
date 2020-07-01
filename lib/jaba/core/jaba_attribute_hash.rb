@@ -33,7 +33,7 @@ module JABA
     # Used in error messages.
     #
     def describe
-      "'#{@attr_def.defn_id}' hash attribute"
+      "'#{@node.defn_id}.#{@attr_def.defn_id}' hash attribute"
     end
 
     ##

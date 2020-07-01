@@ -187,7 +187,7 @@ module JABA
     #
     def validate
       if @title.nil? && !JABA.running_tests?
-        jaba_error("requires a title", callstack: @definition.src_loc_raw)
+        jaba_error("Requires a title", callstack: @definition.src_loc_raw)
       end
 
     rescue JDLError => e
