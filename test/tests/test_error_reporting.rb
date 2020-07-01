@@ -69,7 +69,7 @@ module JABA
       check_fail 'Error msg', line: [__FILE__, 'tagW'] do
         jaba(barebones: true) do
           define :test do
-            fail "error msg" # tagW
+            fail "Error msg" # tagW
           end
         end
       end

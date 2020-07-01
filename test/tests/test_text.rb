@@ -62,7 +62,7 @@ module JABA
     end
 
     it 'fails if no filename specified' do
-      check_fail "'filename' attribute requires a value. See #{TEXT_JDL_FILE.basename}:#{find_line_number(TEXT_JDL_FILE, 'attr :filename')}", line: [__FILE__, 'tagY'] do
+      check_fail "'t.filename' attribute requires a value. See #{TEXT_JDL_FILE.basename}:#{find_line_number(TEXT_JDL_FILE, 'attr :filename')}", line: [__FILE__, 'tagY'] do
         jaba do
           text :t # tagY
         end

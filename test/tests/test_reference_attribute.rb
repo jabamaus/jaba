@@ -179,7 +179,7 @@ module JABA
     end
     
     it 'treats references read only when caled through object' do
-      check_fail "'length' attribute is read only", line: [__FILE__, 'tagD'] do
+      check_fail "'a.length' attribute is read only", line: [__FILE__, 'tagD'] do
         jaba(barebones: true) do
           define :line do
             attr :length
