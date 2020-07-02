@@ -12,7 +12,7 @@ require_relative 'file_manager'
 require_relative 'property'
 require_relative 'jdl_object'
 require_relative 'jaba_attribute_type'
-require_relative 'jaba_attribute_flag'
+require_relative 'jaba_attribute_definition_flag'
 require_relative 'jaba_attribute_definition'
 require_relative 'jaba_attribute'
 require_relative 'jaba_attribute_array'
@@ -105,8 +105,9 @@ module JABA
       @shared_def_lookup = {}
 
       @jaba_attr_types = []
-      @jaba_attr_types_lookup = {}
+      @jaba_attr_type_lookup = {}
       @jaba_attr_flags = []
+      @jaba_attr_flag_lookup = {}
       @top_level_jaba_types = []
       @jaba_type_lookup = {}
       @translators = {}
@@ -203,9 +204,15 @@ module JABA
 
       # Create attribute flags, which are used in attribute definitions
       #
-      @attr_flag_defs.each do |d|
-        @jaba_attr_flags << JabaAttributeFlag.new(d)
-      end
+      # TODO: genericise
+      make_attr_flag(JabaAttributeDefinitionFlagRequired)
+      make_attr_flag(JabaAttributeDefinitionFlagReadOnly)
+      make_attr_flag(JabaAttributeDefinitionFlagExpose)
+      make_attr_flag(JabaAttributeDefinitionFlagAllowDupes)
+      make_attr_flag(JabaAttributeDefinitionFlagNoSort)
+      make_attr_flag(JabaAttributeDefinitionFlagNoCheckExist)
+
+      @jaba_attr_flags.sort_by!(&:id)
 
       # Create JabaTypes and any associated Generators
       #
@@ -317,8 +324,18 @@ module JABA
       at = klass.new
       at.instance_variable_set(:@services, self)
       @jaba_attr_types << at
-      @jaba_attr_types_lookup[at.id] = at
+      @jaba_attr_type_lookup[at.id] = at
       at
+    end
+
+    ##
+    #
+    def make_attr_flag(klass)
+      af = klass.new
+      af.instance_variable_set(:@services, self)
+      @jaba_attr_flags << af
+      @jaba_attr_flag_lookup[af.id] = af
+      af
     end
 
     ##
@@ -362,7 +379,7 @@ module JABA
       if id.nil?
         return @null_attr_type
       end
-      t = @jaba_attr_types_lookup[id]
+      t = @jaba_attr_type_lookup[id]
       if !t
         jaba_error("'#{id}' attribute type is undefined. Valid types: [#{@jaba_attr_types.map{|at| at.id.inspect}.join(', ')}]")
       end
@@ -371,24 +388,10 @@ module JABA
 
     ##
     #
-    def define_attr_flag(id, &block)
-      jaba_error("id is required") if id.nil?
-      log "  Defining attr flag [id=#{id}]"
-      validate_id(id)
-      existing = @attr_flag_defs.find{|d| d.id == id}
-      if existing
-        jaba_error("Attribute flag '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_describe}.")
-      end
-      @attr_flag_defs << make_definition(id, block, caller_locations(2, 1)[0])
-      nil
-    end
-
-    ##
-    #
     def get_attribute_flag(id)
-      f = @jaba_attr_flags.find {|af| af.defn_id == id}
+      f = @jaba_attr_flag_lookup[id]
       if !f
-        jaba_error("'#{id.inspect_unquoted}' is an invalid flag. Valid flags: #{@jaba_attr_flags.map(&:defn_id)}")
+        jaba_error("'#{id.inspect_unquoted}' is an invalid flag. Valid flags: [#{@jaba_attr_flags.map{|at| at.id.inspect}.join(', ')}]")
       end
       f
     end
@@ -696,11 +699,7 @@ module JABA
 
       # Load core type definitions
       #
-      if input.barebones?
-        [:attribute_flags].each do |d|
-          @jdl_files << "#{modules_dir}/core/#{d}.jdl.rb"
-        end
-      else
+      if !input.barebones?
         @jdl_files.concat(@file_manager.glob("#{modules_dir}/**/*.jdl.rb"))
       end
       
@@ -894,7 +893,7 @@ module JABA
 
       w << "- Attribute flags"
       @jaba_attr_flags.each do |af|
-        w << "  - #{af.defn_id}"
+        w << "  - #{af.id}"
       end
       
       w << "- Types"

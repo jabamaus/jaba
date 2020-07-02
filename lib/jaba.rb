@@ -5,7 +5,6 @@ end
 
 require_relative 'jaba/core/services'
 require_relative 'jaba/jdl_api/jdl_common'
-require_relative 'jaba/jdl_api/jdl_attribute_flag'
 require_relative 'jaba/jdl_api/jdl_attribute_definition'
 require_relative 'jaba/jdl_api/jdl_node'
 require_relative 'jaba/jdl_api/jdl_top_level'

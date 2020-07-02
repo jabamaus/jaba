@@ -262,10 +262,10 @@ module JABA
         @jaba_attr_flags.each do |jaf|
           begin
             services.set_warn_object(self) do
-              jaf.call_hook(:compatibility, receiver: self)
+              jaf.compatible?(self)
             end
           rescue JDLError => e
-            jaba_error("#{jaf.describe} is incompatible: #{e.raw_message}")
+            jaba_error("'#{jaf.id.inspect_unquoted}' flag is incompatible: #{e.raw_message}")
           end
         end
       rescue JDLError => e

@@ -47,7 +47,6 @@ flag_option :export do
   end
 end
 
-- Rename attr_flags to attr_def_flags
 - Having two arrays that reference the same type causes problems with :expose. Need to resolve this.
 Need to make it so that don't expose if attribute is not single value. Also need to prevent exposing
 if there are multiple attrs, with a warning.

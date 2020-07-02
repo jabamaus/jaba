@@ -18,12 +18,12 @@
   - to_s
   - uuid
 - Attribute flags
-  - required
-  - read_only
-  - expose
   - allow_dupes
-  - nosort
+  - expose
   - no_check_exist
+  - nosort
+  - read_only
+  - required
 - Types
   - arch
     - arm64?

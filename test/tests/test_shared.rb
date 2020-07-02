@@ -7,7 +7,7 @@ module JABA
     it 'allows inclusion of shared definitions in any object' do
       # check that all types support include directive
       #
-      [:text, :workspace, :category, :define, :attr_flag].each do |type|
+      [:text, :workspace, :category, :define].each do |type|
         check_fail 'Included', line: [__FILE__, "fail 'Included'"], trace: [__FILE__, 'tagG'] do
           jaba do
             shared :a do

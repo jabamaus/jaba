@@ -93,17 +93,7 @@ module JABA
     end
     
     it 'supports defining new attribute flags' do
-      jaba(barebones: true) do
-        attr_flag :foo
-        attr_flag :bar
-        
-        define :test do
-          attr :a do
-            flags :foo, :bar
-          end
-        end
-      end
-      # TODO: test something
+      # TODO
     end
 
     it 'supports dependencies between types' do

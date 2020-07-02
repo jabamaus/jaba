@@ -34,7 +34,7 @@ module JABA
     end
     
     it 'detects duplicate ids with definitions of the same type' do
-      [:attr_flag, :cpp, :defaults, :define, :shared, :text, :workspace].each do |type|
+      [:cpp, :defaults, :define, :shared, :text, :workspace].each do |type|
         check_fail "':a' multiply defined. See #{__FILE__.basename}:#{find_line_number(__FILE__, 'tagX')}.", line: [__FILE__, 'tagI'] do
           jaba do
             __send__(type, :a) do # tagX
@@ -47,18 +47,20 @@ module JABA
     end
 
     it 'allows different types to have the same id' do
-      jaba do
+      jaba(cpp_app: true, dry_run: true) do
         shared :a do
         end
-        attr_flag :a
+        cpp :app do
+          src ['a.cpp'], :force
+        end
+        workspace :a do
+          projects [:app]
+        end
       end
     end
     
     it 'allows definition id to be accessed from all definitions' do
       jaba(barebones: true) do
-        attr_flag :f do
-          id.must_equal(:f)
-        end
         define :test do
           id.must_equal(:test)
           attr :b do
