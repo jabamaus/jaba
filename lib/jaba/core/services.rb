@@ -209,7 +209,7 @@ module JABA
       # Open top level JabaTypes so more attributes can be added
       #
       @open_type_defs.each do |d|
-        tlt = get_top_level_jaba_type(d.id, callstack: d.src_loc_raw)
+        tlt = get_top_level_jaba_type(d.id, errline: d.src_loc_raw)
         tlt.eval_jdl(&d.block)
         tlt.open_sub_type_defs.each do |std|
           st = tlt.get_sub_type(std.id)
@@ -233,7 +233,7 @@ module JABA
         @top_level_jaba_types.sort_topological!(:dependencies)
       rescue TSort::Cyclic => e
         err_type = e.instance_variable_get(:@err_obj)
-        jaba_error("'#{err_type}' contains a cyclic dependency", callstack: err_type.definition.src_loc_raw)
+        jaba_error("'#{err_type}' contains a cyclic dependency", errline: err_type.definition.src_loc_raw)
       end
 
       log 'Initialisation of JabaTypes complete'
@@ -245,14 +245,14 @@ module JABA
       # Process instance definitions and assign them to a generator
       #
       @instance_defs.each do |d|
-        jt = get_top_level_jaba_type(d.jaba_type_id, callstack: d.src_loc_raw)
+        jt = get_top_level_jaba_type(d.jaba_type_id, errline: d.src_loc_raw)
         jt.generator.register_instance_definition(d)
       end
 
       # Register instance open defs
       #
       @open_instance_defs.each do |d|
-        inst_def = get_instance_definition(d.instance_variable_get(:@jaba_type_id), d.id, callstack: d.src_loc_raw)
+        inst_def = get_instance_definition(d.instance_variable_get(:@jaba_type_id), d.id, errline: d.src_loc_raw)
         inst_def.add_open_def(d)
       end
 
@@ -331,10 +331,10 @@ module JABA
 
     ##
     #
-    def get_top_level_jaba_type(id, fail_if_not_found: true, callstack: nil)
+    def get_top_level_jaba_type(id, fail_if_not_found: true, errline: nil)
       jt = @jaba_type_lookup[id]
       if !jt && fail_if_not_found
-        jaba_error("'#{id}' type not defined", callstack: callstack)
+        jaba_error("'#{id}' type not defined", errline: errline)
       end
       jt
     end
@@ -455,11 +455,11 @@ module JABA
     
     ##
     #
-    def get_instance_definition(type_id, id, fail_if_not_found: true, callstack: nil)
+    def get_instance_definition(type_id, id, fail_if_not_found: true, errline: nil)
       defs = @instance_def_lookup[type_id]
       d = defs&.find {|dd| dd.id == id}
       if !d && fail_if_not_found
-        jaba_error("'#{id}' instance not defined", callstack: callstack)
+        jaba_error("'#{id}' instance not defined", errline: errline)
       end
       d
     end
@@ -812,7 +812,7 @@ module JABA
       else
         # Clean up callstack which could be in 'caller' form or 'caller_locations' form.
         #
-        backtrace = Array(callstack || caller).map do |l|
+        backtrace = Array(errline || callstack || caller).map do |l|
           if l.is_a?(::Thread::Backtrace::Location)
             "#{l.absolute_path}:#{l.lineno}"
           else

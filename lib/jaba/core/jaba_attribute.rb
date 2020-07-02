@@ -72,14 +72,14 @@ module JABA
     #
     def jaba_warning(msg)
       cs = @last_call_location ? @last_call_location : @attr_def.definition.src_loc_raw
-      services.jaba_warning(msg, callstack: cs)
+      services.jaba_warning(msg, errline: cs)
     end
 
     ##
     #
     def jaba_error(msg)
       cs = @last_call_location ? @last_call_location : @attr_def.definition.src_loc_raw
-      services.jaba_error(msg, callstack: cs)
+      services.jaba_error(msg, errline: cs)
     end
     
   end

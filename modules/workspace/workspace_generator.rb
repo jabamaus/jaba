@@ -34,10 +34,10 @@ module JABA
 
       projects_attr = root_node.get_attr(:projects)
       project_specs = projects_attr.value
-      get_matching_projects(project_specs, callstack: projects_attr.last_call_location)
+      get_matching_projects(project_specs, errline: projects_attr.last_call_location)
 
       if @projects.empty?
-        jaba_error("No projects matched specs", callstack: projects_attr.last_call_location)
+        jaba_error("No projects matched specs", errline: projects_attr.last_call_location)
       end
 
       @configs = {}
@@ -57,19 +57,19 @@ module JABA
     ##
     # For use by workspace generator. spec is either a defn_id or a wildcard match against projdir.
     # 
-    def get_matching_projects(specs, callstack:)
+    def get_matching_projects(specs, errline:)
       specs.each do |spec|
         if spec.string? && spec.wildcard?
           abs_spec = "#{@root}/#{spec}"
           matches = @candidate_projects.select{|p| File.fnmatch?(abs_spec, p.projdir)}
           if matches.empty?
-            jaba_warning("No projects matching spec '#{spec.inspect_unquoted}' found", callstack: callstack)
+            jaba_warning("No projects matching spec '#{spec.inspect_unquoted}' found", errline: errline)
           end
           @projects.concat(matches)
         else # its an id
           matches = @candidate_projects.select{|p| p.handle.start_with?("#{spec}|")}
           if matches.empty?
-            jaba_error("No projects matching spec '#{spec.inspect_unquoted}' found", callstack: callstack)
+            jaba_error("No projects matching spec '#{spec.inspect_unquoted}' found", errline: errline)
           end
           @projects.concat(matches)
         end

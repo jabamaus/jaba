@@ -166,10 +166,10 @@ module JABA
 
     ##
     #
-    def node_from_handle(handle, fail_if_not_found: true, callstack: nil)
+    def node_from_handle(handle, fail_if_not_found: true, errline: nil)
       n = @node_lookup[handle]
       if !n && fail_if_not_found
-        jaba_error("Node with handle '#{handle}' not found", callstack: callstack)
+        jaba_error("Node with handle '#{handle}' not found", errline: errline)
       end
       n
     end
@@ -192,7 +192,7 @@ module JABA
       else
         "#{ref_node_id}"
       end
-      ref_node = rjt.generator.node_from_handle(handle, callstack: attr.last_call_location)
+      ref_node = rjt.generator.node_from_handle(handle, errline: attr.last_call_location)
       
       # Don't need to track node references when resolving references between the same types as this
       # happens after all the nodes have been set up, by which time the functionality is not needed.
