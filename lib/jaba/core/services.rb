@@ -898,7 +898,7 @@ module JABA
       
       w << "- Types"
       @top_level_jaba_types.each do |jt|
-        w << "  - #{jt.defn_id}"
+        w << "  - [#{jt.defn_id}](##{jt.defn_id})"
         jt.all_attr_defs_sorted.each do |ad|
           w << "    - #{ad.defn_id}"
         end

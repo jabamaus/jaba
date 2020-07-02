@@ -25,16 +25,16 @@
   - read_only
   - required
 - Types
-  - arch
+  - [arch](#arch)
     - arm64?
     - vsname
     - x86?
     - x86_64?
-  - category
+  - [category](#category)
     - guid
     - name
     - parent
-  - cpp
+  - [cpp](#cpp)
     - arch
     - arch_ref
     - archs
@@ -78,9 +78,9 @@
     - vcproperty
     - warnerror
     - winsdkver
-  - globals
+  - [globals](#globals)
     - vcfiletype
-  - host
+  - [host](#host)
     - cpp_project_classname
     - major_version
     - toolset
@@ -95,19 +95,19 @@
     - vs2019?
     - workspace_classname
     - xcode?
-  - platform
+  - [platform](#platform)
     - apple?
     - ios?
     - macos?
     - microsoft?
     - valid_archs
     - windows?
-  - text
+  - [text](#text)
     - content
     - eol
     - filename
     - line
-  - workspace
+  - [workspace](#workspace)
     - configs
     - name
     - namesuffix
