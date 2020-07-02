@@ -80,7 +80,7 @@ module JABA
     ##
     #
     def notes
-      'Only explicit strings will be accepted. Symbols are not valid.'
+      'Only explicit strings will be accepted. Symbols are not valid. Defaults to empty string unless value must be specified by user.'
     end
 
     ##
@@ -198,6 +198,44 @@ module JABA
 
   ##
   #
+  class JabaAttributeTypeInt < JabaAttributeType
+  
+    ##
+    #
+    def id
+      :int
+    end
+
+    ##
+    #
+    def title
+      'Integer attribute type'
+    end
+
+    ##
+    #
+    def note
+      'Defaults to 0 unless value must be specified by user'
+    end
+    
+    ##
+    #
+    def default
+      0
+    end
+
+    ##
+    #
+    def validate_value(attr_def, value)
+      if !value.integer?
+        services.jaba_error(":int attributes only accept integer values but got [value=#{value}, class=#{value.class}]")
+      end
+    end
+
+  end
+
+  ##
+  #
   class JabaAttributeTypeBool < JabaAttributeType
     
     ##
@@ -215,7 +253,7 @@ module JABA
     ##
     #
     def notes
-      'Accepts [true|false]. Defaults to false'
+      'Accepts [true|false]. Defaults to false unless value must be supplied by user.'
     end
 
     ##

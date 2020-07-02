@@ -104,7 +104,8 @@ module JABA
       @instance_def_lookup = {}
       @shared_def_lookup = {}
 
-      @jaba_attr_types = {}
+      @jaba_attr_types = []
+      @jaba_attr_types_lookup = {}
       @jaba_attr_flags = []
       @top_level_jaba_types = []
       @jaba_type_lookup = {}
@@ -186,6 +187,7 @@ module JABA
       make_attr_type(JabaAttributeTypeSymbol)
       make_attr_type(JabaAttributeTypeSymbolOrString)
       make_attr_type(JabaAttributeTypeToS)
+      make_attr_type(JabaAttributeTypeInt)
       make_attr_type(JabaAttributeTypeBool)
       make_attr_type(JabaAttributeTypeChoice)
       make_attr_type(JabaAttributeTypeFile)
@@ -193,6 +195,8 @@ module JABA
       make_attr_type(JabaAttributeTypeSrcSpec)
       make_attr_type(JabaAttributeTypeUUID)
       make_attr_type(JabaAttributeTypeReference)
+      
+      @jaba_attr_types.sort_by!(&:id)
 
       # Create attribute flags, which are used in attribute definitions
       #
@@ -309,7 +313,8 @@ module JABA
     def make_attr_type(klass)
       at = klass.new
       at.instance_variable_set(:@services, self)
-      @jaba_attr_types[at.id] = at
+      @jaba_attr_types << at
+      @jaba_attr_types_lookup[at.id] = at
       at
     end
 
@@ -354,9 +359,9 @@ module JABA
       if id.nil?
         return @null_attr_type
       end
-      t = @jaba_attr_types[id]
+      t = @jaba_attr_types_lookup[id]
       if !t
-        jaba_error("'#{id}' attribute type is undefined. Valid types: #{@jaba_attr_types.values}")
+        jaba_error("'#{id}' attribute type is undefined. Valid types: [#{@jaba_attr_types.map{|at| at.id.inspect}.join(', ')}]")
       end
       t
     end
@@ -798,7 +803,7 @@ module JABA
     # 2) From user definitions using the 'fail' API.
     # 3) From core library code. 
     #
-    def make_jaba_error(msg, syntax: false, callstack: nil, warn: false, include_api: false)
+    def make_jaba_error(msg, syntax: false, callstack: nil, errline: nil, warn: false, include_api: false)
       error_line = nil
 
       if syntax
@@ -889,7 +894,7 @@ module JABA
       w << "  - hash"
 
       w << "- Attribute types"
-      @jaba_attr_types.values.each do |at|
+      @jaba_attr_types.each do |at|
         w << "  - #{at.id}"
       end
 

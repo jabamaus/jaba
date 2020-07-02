@@ -2,9 +2,9 @@
 
 To do:
 
+- trim down on empty test temp dirs. 
 - add slnproperty which can address sln sections. Particularly useful when used with ExtensibilityGlobals
 - disband VSProj in favour of VSUtilities module
-- Add integer type
 - Make it so that all attributes have to have a type?
 - way of validating key in hash attribute
 - test build actions

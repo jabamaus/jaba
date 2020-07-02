@@ -33,9 +33,9 @@ module JABA
         c.jdl_paths = jdl_paths
         c.definitions(&block) if block_given?
         c.barebones = barebones
-        td = temp_dir
-        c.jaba_output_file = "#{td}/jaba.output.json"
         if cpp_app || cpp_defaults
+          td = temp_dir(create: false)
+
           # force dump output to ensure that output paths are made relative to the temp_dir and therefore the
           # root, for easy testing. If the output is not written to disk the paths are left as absolute.
           dump_output = true
@@ -51,6 +51,7 @@ module JABA
           end
         end
         c.dump_output = dump_output
+        c.jaba_output_file = "#{temp_dir}/jaba.output.json" if dump_output
         c.dry_run = dry_run
       end
       warnings = op[:warnings]
@@ -70,10 +71,10 @@ module JABA
     
     ##
     #
-    def temp_dir
+    def temp_dir(create: true)
       # TODO: this does not work well with describe statements
       dir = "#{JabaTest.temp_root}/#{self.class.name_no_namespace}/#{name.delete(':')}"
-      if !File.exist?(dir)
+      if create && !File.exist?(dir)
         FileUtils.makedirs(dir)
       end
       dir

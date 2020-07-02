@@ -43,6 +43,12 @@ module JABACoreExt
     
     ##
     #
+    def integer?
+      is_a?(Integer)
+    end
+    
+    ##
+    #
     def string?
       is_a?(String)
     end

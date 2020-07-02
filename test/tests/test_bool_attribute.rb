@@ -16,7 +16,7 @@ module JABA
     end
 
     it 'requires default to be true or false' do
-      check_fail ':bool attributes only accept [true|false] but got \'1\'', line: [__FILE__, 'tagP'] do # evaluated later so exact call line is lost
+      check_fail ':bool attributes only accept [true|false] but got \'1\'', line: [__FILE__, 'tagP'] do
         jaba(barebones: true) do
           define :test do
             attr :b, type: :bool do

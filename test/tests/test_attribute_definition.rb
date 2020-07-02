@@ -51,6 +51,18 @@ module JABA
       end
     end
 
+    it 'checks for invalid attribute types' do
+      check_fail "'not_a_type' attribute type is undefined. " \
+                 "Valid types: [:bool, :choice, :dir, :file, :int, :reference, :src_spec, :string, :symbol, :symbol_or_string, :to_s, :uuid]",
+                 line: [__FILE__, 'tagY'] do
+        jaba(barebones: true) do
+          define :test do
+            attr :a, type: :not_a_type # tagY
+          end
+        end
+      end
+    end
+
     it 'checks for duplicate flags' do
       check_warn("Duplicate flag ':read_only' specified", __FILE__, 'tagH') do
         jaba(barebones: true) do

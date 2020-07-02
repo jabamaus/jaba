@@ -18,17 +18,18 @@
 </li>
 <li>Attribute types
 <ul>
+<li>bool</li>
+<li>choice</li>
+<li>dir</li>
+<li>file</li>
+<li>int</li>
+<li>reference</li>
+<li>src_spec</li>
 <li>string</li>
 <li>symbol</li>
 <li>symbol_or_string</li>
 <li>to_s</li>
-<li>bool</li>
-<li>choice</li>
-<li>file</li>
-<li>dir</li>
-<li>src_spec</li>
 <li>uuid</li>
-<li>reference</li>
 </ul>
 </li>
 <li>Attribute flags
@@ -124,6 +125,7 @@
 <li>vs2015?</li>
 <li>vs2017?</li>
 <li>vs2019?</li>
+<li>workspace_classname</li>
 <li>xcode?</li>
 </ul>
 </li>
@@ -147,6 +149,7 @@
 </li>
 <li>workspace
 <ul>
+<li>configs</li>
 <li>name</li>
 <li>namesuffix</li>
 <li>primary</li>
@@ -250,7 +253,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:27</td>
+<td>$(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jdl.rb:27</td>
 </tr>
 </tbody>
 </table>
@@ -387,7 +390,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:85</td>
+<td>$(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jdl.rb:85</td>
 </tr>
 <tr>
 <td><em>notes</em></td>
@@ -524,7 +527,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:190</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:191</td>
 </tr>
 <tr>
 <td><em>notes</em></td>
@@ -562,7 +565,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:196</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:197</td>
 </tr>
 </tbody>
 </table>
@@ -632,7 +635,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:239</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:241</td>
 </tr>
 </tbody>
 </table>
@@ -666,7 +669,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:232</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:234</td>
 </tr>
 <tr>
 <td><em>notes</em></td>
@@ -704,7 +707,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:263</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:265</td>
 </tr>
 </tbody>
 </table>
@@ -738,7 +741,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:353</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:355</td>
 </tr>
 </tbody>
 </table>
@@ -774,7 +777,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:217</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:218</td>
 </tr>
 <tr>
 <td><em>notes</em></td>
@@ -812,7 +815,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:268</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:270</td>
 </tr>
 </tbody>
 </table>
@@ -882,7 +885,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:275</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:277</td>
 </tr>
 <tr>
 <td><em>notes</em></td>
@@ -920,7 +923,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:283</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:285</td>
 </tr>
 </tbody>
 </table>
@@ -1004,7 +1007,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:364</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:366</td>
 </tr>
 </tbody>
 </table>
@@ -1040,7 +1043,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:47</td>
+<td>$(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jdl.rb:47</td>
 </tr>
 <tr>
 <td><em>notes</em></td>
@@ -1200,7 +1203,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:288</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:290</td>
 </tr>
 </tbody>
 </table>
@@ -1237,7 +1240,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:247</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:249</td>
 </tr>
 </tbody>
 </table>
@@ -1271,7 +1274,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:296</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:298</td>
 </tr>
 <tr>
 <td><em>notes</em></td>
@@ -1311,7 +1314,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:255</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:257</td>
 </tr>
 </tbody>
 </table>
@@ -1624,7 +1627,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:372</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:374</td>
 </tr>
 </tbody>
 </table>
@@ -1660,7 +1663,11 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:226</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:227</td>
+</tr>
+<tr>
+<td><em>notes</em></td>
+<td>Maps to build events in Visual Studio.</td>
 </tr>
 </tbody>
 </table>
@@ -1772,7 +1779,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:321</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:323</td>
 </tr>
 <tr>
 <td><em>notes</em></td>
@@ -1810,7 +1817,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:303</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:305</td>
 </tr>
 <tr>
 <td><em>notes</em></td>
@@ -1848,7 +1855,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:311</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:313</td>
 </tr>
 <tr>
 <td><em>notes</em></td>
@@ -1886,7 +1893,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:316</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:318</td>
 </tr>
 <tr>
 <td><em>notes</em></td>
@@ -1924,7 +1931,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:378</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:380</td>
 </tr>
 <tr>
 <td><em>notes</em></td>
@@ -1962,7 +1969,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:209</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:210</td>
 </tr>
 </tbody>
 </table>
@@ -1996,7 +2003,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:55</td>
+<td>$(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jdl.rb:55</td>
 </tr>
 </tbody>
 </table>
@@ -2030,7 +2037,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:76</td>
+<td>$(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jdl.rb:76</td>
 </tr>
 </tbody>
 </table>
@@ -2064,7 +2071,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:346</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:348</td>
 </tr>
 </tbody>
 </table>
@@ -2100,7 +2107,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:61</td>
+<td>$(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jdl.rb:61</td>
 </tr>
 </tbody>
 </table>
@@ -2157,7 +2164,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/VisualStudio/cpp_visual_studio.jdl.rb:2</td>
+<td>$(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jdl.rb:2</td>
 </tr>
 </tbody>
 </table>
@@ -2214,7 +2221,7 @@
 </tr>
 <tr>
 <td><em>src</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:389</td>
+<td>$(jaba_install)/modules/cpp/cpp.jdl.rb:391</td>
 </tr>
 <tr>
 <td><em>notes</em></td>
@@ -2633,6 +2640,44 @@
       
 <span style="color:#111">vcproperty</span> <span style="color:#d88200">:VS2019Specific</span><span style="color:#111">,</span> <span style="color:#d88200">&#39;value&#39;</span> <span style="color:#00a8c8">if</span> <span style="color:#111">vs2019?</span>
 </pre></blockquote>
+<h4>workspace_classname</h4>
+<blockquote>
+<p><em>Class name of host-specific Workspace subclass</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>string</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>nil</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td>:required</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>src</em></td>
+<td>$(jaba_install)/modules/workspace/workspace.jdl.rb:52</td>
+</tr>
+<tr>
+<td><em>notes</em></td>
+<td>For example Sln, XcodeWorkspace. Use when implementing a new workspace type..</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
 <h4>xcode?</h4>
 <blockquote>
 <p><em>Targeting Xcode?</em></p>
@@ -3098,6 +3143,40 @@
 <tr>
 <td><em>notes</em></td>
 <td>Manages attribute definitions for 'workspace' type.</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<h4>configs</h4>
+<blockquote>
+<p><em>Solution configurations</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>symbol_or_string array</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>nil</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td>:nosort</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>src</em></td>
+<td>$(jaba_install)/modules/workspace/workspace.jdl.rb:44</td>
 </tr>
 </tbody>
 </table>

@@ -170,6 +170,7 @@ define :cpp do
       flag_options :export
       default do
         ext = ['.cpp', '.h', '.inl', '.c', '.cc', '.cxx', '.hpp']
+        # TODO: delegate to host/platform default extensions
         if visual_studio?
           ext << '.natvis'
         elsif xcode?
@@ -225,6 +226,7 @@ define :cpp do
     #
     attr_array :shell, type: :string do
       title 'Shell commands to execute during build'
+      note 'Maps to build events in Visual Studio'
       flag_options :export
       value_option :when, required: true, items: [:PreBuild, :PreLink, :PostBuild]
     end
