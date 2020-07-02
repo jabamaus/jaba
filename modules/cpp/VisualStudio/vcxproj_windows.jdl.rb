@@ -1,3 +1,7 @@
+open_instance :windows, type: :platform do
+  cpp_src_ext ['.def', '.rc']
+end
+
 translator :vcxproj_windows do |vcxproj|
   vcglobal :ProjectName, projname
   vcglobal :ProjectGuid, guid

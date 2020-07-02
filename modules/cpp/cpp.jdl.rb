@@ -170,16 +170,8 @@ define :cpp do
       flag_options :export
       default do
         ext = ['.cpp', '.h', '.inl', '.c', '.cc', '.cxx', '.hpp']
-        # TODO: delegate to host/platform default extensions
-        if visual_studio?
-          ext << '.natvis'
-        elsif xcode?
-          ext << '.xcconfig'
-        end
-        case platform
-        when :windows
-          ext << '.def' << '.rc'
-        end
+        ext.concat(host_ref.cpp_src_ext)
+        ext.concat(platform_ref.cpp_src_ext)
         ext
       end
     end
@@ -392,5 +384,21 @@ open_type :host do
     title 'Class name of host-specific Project subclass'
     note 'For example Vcxproj, Xcodeproj. Use when implementing a new project type.'
     flags :required
+  end
+
+  attr_array :cpp_src_ext, type: :string do
+    title 'Default src file extensions for C++ projects'
+    notes 'Any host-specific extensions specified are in addition to the Core C/C+ file types specified in $(cpp#src_ext)'
+    flags :no_sort
+    default []
+  end
+end
+
+open_type :platform do
+  attr_array :cpp_src_ext, type: :string do
+    title 'Default src file extensions for C++ projects'
+    notes 'Any platform-specific extensions specified are in addition to the Core C/C+ file types specified in $(cpp#src_ext)'
+    flags :no_sort
+    default []
   end
 end

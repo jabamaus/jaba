@@ -21,6 +21,7 @@ end
 
 open_shared :vs_host_common do
   cpp_project_classname 'Vcxproj'
+  cpp_src_ext ['.natvis']
 end
 
 open_type :arch do
