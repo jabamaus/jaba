@@ -22,13 +22,13 @@ module JABA
           end
           attr_array :c, type: :uuid do
             default ['a', 'b']
-            flags :nosort
+            flags :no_sort
           end
           attr_array :d, type: :uuid do
             default do  # block form
               ['a', 'b']
             end
-            flags :nosort
+            flags :no_sort
           end
           attr_hash :e, key_type: :symbol, type: :uuid do
             default({k1: 'a', k2: 'b'})

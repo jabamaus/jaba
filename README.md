@@ -2,7 +2,6 @@
 
 To do:
 
-- trim down on empty test temp dirs. 
 - add slnproperty which can address sln sections. Particularly useful when used with ExtensibilityGlobals
 - disband VSProj in favour of VSUtilities module
 - Make it so that all attributes have to have a type?
@@ -11,7 +10,6 @@ To do:
 - Move title/note/example into module and include
 - more error reporting testing with actual files rather than blocks
 - test opening sub types
-- Add make_definition method. Add JDL_Object#services method and stop storing @services everywhere - can be got from definition now.
 - Have a command line switch to make all error messages contain absolute paths
 - A tree view of cpp type would be useful in docs
 - Sort jaba input/output files
@@ -27,7 +25,7 @@ To do:
 - Have a way of globally setting default for :platforms, :hosts and :configs (and for clearing)
 - make file/dir attrs cleanpath
 - sortable arrays must be of same type
-- Make :no_check_exists do something
+- Make :nocheckexists do something
 - check that only arrays and hashes can be exported
 - test different default values and different validation for different platforms
 - Think more about project 'skus'. Also, platforms support specific hosts. Where is that info stored?
@@ -54,13 +52,13 @@ if there are multiple attrs, with a warning.
   attr_array :valid_archs, type: :reference do
     note 'List of architectures supported by this platform'
     referenced_type :arch
-    flags :required, :nosort
+    flags :required, :no_sort
   end
 
   attr_array :default_archs, type: :reference do
     note 'List of default target architectures for this platform'
     referenced_type :arch
-    flags :required, :nosort
+    flags :required, :no_sort
   end
 
   - check for duplicate filenames at generator level, with proper error reporting

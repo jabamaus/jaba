@@ -34,7 +34,7 @@ define :platform do
   attr_array :valid_archs, type: :choice do
     title 'List of architectures supported by this platform'
     items all_instance_ids(:arch)
-    flags :required, :nosort
+    flags :required, :no_sort
   end
 
 end

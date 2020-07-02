@@ -216,7 +216,7 @@ module JABA
           attr_array :d
           attr_array :e, type: :bool
           attr_array :f do
-            flags :nosort
+            flags :no_sort
           end
         end
         test :t do
@@ -232,7 +232,7 @@ module JABA
             attrs.b.must_equal [:a, 'a', 'A', 'c', :C, 'e']
             attrs.c.must_equal [-1, 0.01, 3, 10.34, 800.1]
             attrs.d.must_equal [:a, :A, :c, :C, :e]
-            attrs.f.must_equal [5, 4, 3, 2, 1] # unsorted due to :nosort
+            attrs.f.must_equal [5, 4, 3, 2, 1] # unsorted due to :no_sort
           end
         end
       end
@@ -256,7 +256,7 @@ module JABA
       jaba(barebones: true) do
         define :test do
           attr_array :a do
-            flags :nosort, :allow_dupes
+            flags :no_sort, :allow_dupes
           end
         end
         test :t do
@@ -304,7 +304,7 @@ module JABA
       jaba(barebones: true) do
         define :test do
           attr_array :a do
-            flags :nosort
+            flags :no_sort
           end
         end
         test :t do

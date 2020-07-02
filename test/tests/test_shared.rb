@@ -22,7 +22,7 @@ module JABA
       
       jaba(barebones: true) do
         shared :attr_setup do
-          flags :nosort
+          flags :no_sort
         end
         
         shared :attrs do

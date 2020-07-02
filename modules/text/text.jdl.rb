@@ -14,7 +14,7 @@ define :text do
   
   attr_array :line, type: :to_s do
     title 'Adds a line of content to file'
-    flags :allow_dupes, :nosort
+    flags :allow_dupes, :no_sort
   end
   
   attr :eol, type: :choice do

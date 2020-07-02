@@ -20,7 +20,7 @@ define :workspace do
     title 'Contained projects'
     note 'Specified by id (symbol or string), or by glob matches against $(projdir)'
     flags :required
-    flags :nosort # Matches will be sorted so no need to sort spec
+    flags :no_sort # Matches will be sorted so no need to sort spec
     # TODO: default to '**/*' ? Would need to overwrite default
   end
 
@@ -43,7 +43,7 @@ define :workspace do
   # TODO: Make VS-specific?
   attr_array :configs, type: :symbol_or_string do
     title 'Solution configurations'
-    flags :nosort
+    flags :no_sort
   end
 
 end

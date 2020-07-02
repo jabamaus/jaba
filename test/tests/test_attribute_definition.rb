@@ -98,7 +98,7 @@ module JABA
     end
 
     it 'checks for invalid flags' do
-      check_fail "':invalid' is an invalid flag. Valid flags: [:allow_dupes, :expose, :no_check_exist, :nosort, :read_only, :required]", line: [__FILE__, 'tagE'] do
+      check_fail "':invalid' is an invalid flag. Valid flags: [:allow_dupes, :expose, :no_check_exist, :no_sort, :read_only, :required]", line: [__FILE__, 'tagE'] do
         jaba(barebones: true) do
           define :test do
             attr :a do

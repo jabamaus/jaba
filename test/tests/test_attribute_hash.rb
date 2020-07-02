@@ -246,13 +246,13 @@ module JABA
       end
     end
 
-    it 'disallows :nosort' do
-      check_fail "'a' attribute failed validation: ':nosort' flag is incompatible: :nosort is only allowed on array attributes",
+    it 'disallows :no_sort' do
+      check_fail "'a' attribute failed validation: ':no_sort' flag is incompatible: :no_sort is only allowed on array attributes",
                 line: [__FILE__, 'tagQ'] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a, key_type: :symbol do # tagQ
-              flags :nosort
+              flags :no_sort
             end
           end
         end

@@ -187,7 +187,7 @@ module JABA
           end
         end
       end
-      if !@attr_def.has_flag?(:nosort)
+      if !@attr_def.has_flag?(:no_sort)
         begin
           @elems.stable_sort!
         rescue StandardError

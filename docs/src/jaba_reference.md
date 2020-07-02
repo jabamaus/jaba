@@ -21,7 +21,7 @@
   - allow_dupes
   - expose
   - no_check_exist
-  - nosort
+  - no_sort
   - read_only
   - required
 - Types
@@ -364,7 +364,7 @@
 > |-|-|
 > | _type_ | symbol_or_string array  |
 > | _default_ | nil |
-> | _flags_ | :required, :nosort |
+> | _flags_ | :required, :no_sort |
 > | _options_ | :export |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:70 |
 >
@@ -496,7 +496,7 @@
 > |-|-|
 > | _type_ | dir array  |
 > | _default_ | nil |
-> | _flags_ | :nosort |
+> | _flags_ | :no_sort |
 > | _options_ | :export |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:290 |
 >
@@ -676,7 +676,7 @@
 > |-|-|
 > | _type_ | src_spec array  |
 > | _default_ | nil |
-> | _flags_ | :required, :nosort |
+> | _flags_ | :required, :no_sort |
 > | _options_ | :force, :export |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:150 |
 >
@@ -695,7 +695,7 @@
 > |-|-|
 > | _type_ | string array  |
 > | _default_ |  |
-> | _flags_ | :nosort |
+> | _flags_ | :no_sort |
 > | _options_ | :export |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:166 |
 > | _notes_ | Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes..  |
@@ -1120,7 +1120,7 @@
 > |-|-|
 > | _type_ | choice array [:x86, :x86_64, :arm64] |
 > | _default_ | nil |
-> | _flags_ | :required, :nosort |
+> | _flags_ | :required, :no_sort |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:34 |
 #### windows?
@@ -1193,7 +1193,7 @@
 > |-|-|
 > | _type_ | to_s array  |
 > | _default_ | nil |
-> | _flags_ | :allow_dupes, :nosort |
+> | _flags_ | :allow_dupes, :no_sort |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/text/text.jdl.rb:15 |
 
@@ -1216,7 +1216,7 @@
 > |-|-|
 > | _type_ | symbol_or_string array  |
 > | _default_ | nil |
-> | _flags_ | :nosort |
+> | _flags_ | :no_sort |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:44 |
 #### name
@@ -1257,7 +1257,7 @@
 > |-|-|
 > | _type_ | symbol_or_string array  |
 > | _default_ | nil |
-> | _flags_ | :required, :nosort |
+> | _flags_ | :required, :no_sort |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:19 |
 > | _notes_ | Specified by id (symbol or string), or by glob matches against $(projdir).  |

@@ -69,7 +69,7 @@ define :cpp do
 
     attr_array :configs, type: :symbol_or_string do
       title 'Build configurations'
-      flags :required, :nosort
+      flags :required, :no_sort
       flag_options :export
       example 'configs [:Debug, :Release]'
     end
@@ -150,7 +150,7 @@ define :cpp do
     attr_array :src, type: :src_spec do
       title 'Source file specification'
       flags :required # Must be specified by user
-      flags :nosort # Final source will be sorted so no need to sort this
+      flags :no_sort # Final source will be sorted so no need to sort this
       flag_options :force # Specify when explicitly specidied src does not exist on disk but still want to add to project
       flag_options :export
       value_option :vpath # For organising files in a generated project
@@ -166,7 +166,7 @@ define :cpp do
     attr_array :src_ext, type: :string do
       title 'File extensions used when matching src files'
       note 'Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.'
-      flags :nosort
+      flags :no_sort
       flag_options :export
       default do
         ext = ['.cpp', '.h', '.inl', '.c', '.cc', '.cxx', '.hpp']
@@ -289,7 +289,7 @@ define :cpp do
 
     attr_array :inc, type: :dir do
       title 'Include paths'
-      flags :nosort
+      flags :no_sort
       flag_options :export
       example "inc ['mylibrary/include']"
       example "inc ['mylibrary/include'], :export # Export include path to dependents"

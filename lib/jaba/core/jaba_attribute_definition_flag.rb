@@ -168,7 +168,7 @@ module JABA
     ##
     #
     def id
-      :nosort
+      :no_sort
     end
 
     ##
@@ -187,7 +187,7 @@ module JABA
     #
     def compatible?(attr_def)
       if !attr_def.attr_array?
-        services.jaba_error(':nosort is only allowed on array attributes')
+        services.jaba_error(':no_sort is only allowed on array attributes')
       end
     end
 
