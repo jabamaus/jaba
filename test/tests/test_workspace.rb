@@ -10,7 +10,7 @@ module JABA
       make_file('a/a.cpp', 'b/b.cpp', 'c/d/d.cpp', 'c/e/e.cpp')
       td = temp_dir
       
-      op = jaba(cpp_defaults: true) do
+      op = jaba(cpp_defaults: true, dry_run: true) do
         cpp :a do
           type :app
           root "#{td}/a"

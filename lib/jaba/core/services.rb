@@ -135,20 +135,23 @@ module JABA
       duration = JABA.milli_timer do
         do_run
 
-        log 'Building output...'
-        build_jaba_output
+        if !input.barebones?
+          log 'Building output...'
+          build_jaba_output
+        end
       end
 
-      summary = String.new "Generated #{@generated.size} files, #{@added.size} added, #{@modified.size} modified in #{duration}"
-      summary << " [dry run]" if input.dry_run?
+      if !input.barebones?
+        summary = String.new "Generated #{@generated.size} files, #{@added.size} added, #{@modified.size} modified in #{duration}"
+        summary << " [dry run]" if input.dry_run?
 
-      log summary
+        log summary
+        log "Done! (#{duration})"
 
-      @output[:summary] = summary
+        @output[:summary] = summary
+      end
+
       @output[:warnings] = @warnings.uniq # Strip duplicate warnings
-
-      log "Done! (#{duration})"
-
       @output
     ensure
       term_log
@@ -631,25 +634,21 @@ module JABA
       out_file = input.jaba_output_file
       out_dir = out_file.dirname
 
-      @generated = @file_manager.generated
-      
-      if input.dump_output?
-        @generated = @generated.map{|f| f.relative_path_from(out_dir)}
-      end
+      @generated = @file_manager.generated.map{|f| f.relative_path_from(out_dir)}
 
       @output[:version] = '1.0'
       @output[:generated] = @generated
 
-      if input.dump_output?
-        @generators.each do |g|
-          next if g.is_a?(DefaultGenerator)
-          g_root = {}
-          g.build_jaba_output(g_root, out_dir)
-          if !g_root.empty?
-            @output[g.type_id] = g_root
-          end
+      @generators.each do |g|
+        next if g.is_a?(DefaultGenerator)
+        g_root = {}
+        g.build_jaba_output(g_root, out_dir)
+        if !g_root.empty?
+          @output[g.type_id] = g_root
         end
+      end
 
+      if input.dump_output?
         json = JSON.pretty_generate(@output)
         file = @file_manager.new_file(out_file, eol: :native)
         w = file.writer
@@ -657,13 +656,8 @@ module JABA
         file.write
       end
       
-      @added = @file_manager.added
-      @modified = @file_manager.modified
-      
-      if input.dump_output?
-        @added = @added.map{|f| f.relative_path_from(out_dir)}
-        @modified = @modified.map{|f| f.relative_path_from(out_dir)}
-      end
+      @added = @file_manager.added.map{|f| f.relative_path_from(out_dir)}
+      @modified = @file_manager.modified.map{|f| f.relative_path_from(out_dir)}
 
       # These are not included in the output file but are returned to outer context
       #
