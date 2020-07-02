@@ -898,9 +898,9 @@ module JABA
       
       w << "- Types"
       @top_level_jaba_types.each do |jt|
-        w << "  - [#{jt.defn_id}](##{jt.defn_id})"
+        w << "  - [#{jt.defn_id}](##{jt.defn_id}-type)"
         jt.all_attr_defs_sorted.each do |ad|
-          w << "    - #{ad.defn_id}"
+          w << "    - [#{ad.defn_id}](##{jt.defn_id}-#{ad.defn_id})"
         end
       end
 
@@ -908,6 +908,7 @@ module JABA
       @top_level_jaba_types.each do |jt|
         w << "---"
         w << ""
+        w << "<a id=\"#{jt.defn_id}-type\"></a>" # anchor for the type
         w << "## #{jt.defn_id}"
         w << "> "
         w << "> _#{jt.title}_"
@@ -919,6 +920,7 @@ module JABA
         w << "> "
         w << ""
         jt.all_attr_defs_sorted.each do |ad|
+          w << "<a id=\"#{jt.defn_id}-#{ad.defn_id}\"></a>" # anchor for the attribute eg cpp-src
           w << "#### #{ad.defn_id}"
           w << "> _#{ad.title}_"
           w << "> "
@@ -937,9 +939,9 @@ module JABA
           md_row(w, :flags, ad.flags.map(&:inspect).join(', '))
           md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
           md_row(w, :src, "$(jaba_install)/#{ad.definition.src_loc_describe(style: :rel_jaba_root)}")
-          md_row(w, :notes, ad.notes.make_sentence) if !ad.notes.empty?
+          md_row(w, :notes, ad.notes.make_sentence.to_markdown_links) if !ad.notes.empty?
+          w << ">"
           if !ad.examples.empty?
-            w << ">"
             w << "> *Examples*"
             w << ">```ruby"
             ad.examples.each do |e|

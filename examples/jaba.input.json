@@ -63,6 +63,9 @@
   "host": {
     "vs2010": {
       "cpp_project_classname": "Vcxproj",
+      "cpp_src_ext": [
+        ".natvis"
+      ],
       "major_version": 10,
       "toolset": "v100",
       "version": "10.0",
@@ -79,6 +82,9 @@
     },
     "vs2012": {
       "cpp_project_classname": "Vcxproj",
+      "cpp_src_ext": [
+        ".natvis"
+      ],
       "major_version": 11,
       "toolset": "v110",
       "version": "11.0",
@@ -95,6 +101,9 @@
     },
     "vs2013": {
       "cpp_project_classname": "Vcxproj",
+      "cpp_src_ext": [
+        ".natvis"
+      ],
       "major_version": 12,
       "toolset": "v120",
       "version": "12.0",
@@ -111,6 +120,9 @@
     },
     "vs2015": {
       "cpp_project_classname": "Vcxproj",
+      "cpp_src_ext": [
+        ".natvis"
+      ],
       "major_version": 14,
       "toolset": "v140",
       "version": "14.0",
@@ -127,6 +139,9 @@
     },
     "vs2017": {
       "cpp_project_classname": "Vcxproj",
+      "cpp_src_ext": [
+        ".natvis"
+      ],
       "major_version": 15,
       "toolset": "v141",
       "version": "15.0",
@@ -143,6 +158,9 @@
     },
     "vs2019": {
       "cpp_project_classname": "Vcxproj",
+      "cpp_src_ext": [
+        ".natvis"
+      ],
       "major_version": 16,
       "toolset": "v142",
       "version": "16.0",
@@ -159,6 +177,9 @@
     },
     "xcode": {
       "cpp_project_classname": "Xcodeproj",
+      "cpp_src_ext": [
+        ".xcconfig"
+      ],
       "major_version": null,
       "toolset": null,
       "version": "",
@@ -177,6 +198,10 @@
   "platform": {
     "windows": {
       "apple?": false,
+      "cpp_src_ext": [
+        ".def",
+        ".rc"
+      ],
       "ios?": false,
       "macos?": false,
       "microsoft?": true,
@@ -189,6 +214,9 @@
     },
     "ios": {
       "apple?": true,
+      "cpp_src_ext": [
+
+      ],
       "ios?": true,
       "macos?": false,
       "microsoft?": false,
@@ -199,6 +227,9 @@
     },
     "macos": {
       "apple?": true,
+      "cpp_src_ext": [
+
+      ],
       "ios?": false,
       "macos?": true,
       "microsoft?": false,
@@ -249,10 +280,7 @@
                 ".c",
                 ".cc",
                 ".cxx",
-                ".hpp",
-                ".natvis",
-                ".def",
-                ".rc"
+                ".hpp"
               ],
               "guid": "{88ED35B9-F87F-55D9-A551-61C4953F0ABB}",
               "vcglobal": {
@@ -534,10 +562,7 @@
                 ".c",
                 ".cc",
                 ".cxx",
-                ".hpp",
-                ".natvis",
-                ".def",
-                ".rc"
+                ".hpp"
               ],
               "guid": "{F9C317E3-B1C7-5C35-B291-064D56584555}",
               "vcglobal": {

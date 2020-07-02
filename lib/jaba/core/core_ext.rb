@@ -309,6 +309,15 @@ module JABACoreExt
       end
     end
     
+    # Convert all variables specified as $(cpp#varname) (which themselves reference attribute names) into markdown links
+    # eg [$(cpp#varname)](#cpp-varname).
+    #
+    def to_markdown_links
+      gsub(/(\$\((.*?)\))/) do
+        "[#{$1}](##{$2.sub('#', '-')})"
+      end
+    end
+
   end
 
   ##
