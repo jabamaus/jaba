@@ -34,7 +34,8 @@ module JABA
 
     ##
     #
-    def doc_string(attr_def)
+    def get_reference_manual_rows(attr_def)
+      nil
     end
 
     ##
@@ -304,10 +305,10 @@ module JABA
 
     ##
     #
-    def doc_string(attr_def)
-      "#{attr_def.get_property(:items).inspect}"
+    def get_reference_manual_rows(attr_def)
+      { items: attr_def.get_property(:items).inspect }
     end
-
+    
     ##
     #
     def init_attr_def(attr_def)
@@ -482,6 +483,12 @@ module JABA
     #
     def notes
       'TODO'
+    end
+
+    ##
+    #
+    def get_reference_manual_rows(attr_def)
+      { referenced_type: attr_def.get_property(:referenced_type).inspect }
     end
 
     ##

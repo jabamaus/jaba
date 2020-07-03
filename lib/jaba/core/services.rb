@@ -878,7 +878,7 @@ module JABA
       docs_dir = "#{JABA.jaba_root_dir}/docs"
       file = @file_manager.new_file("#{docs_dir}/src/jaba_reference.md", capacity: 16 * 1024)
       w = file.writer
-      w << "# Jaba Reference"
+      w << "# Jaba Definition Language Reference"
       w << ""
 
       w << "- Attribute variants"
@@ -931,10 +931,11 @@ module JABA
           if ad.type_id
             type << "#{ad.type_id}"
             type << " #{ad.variant}" if !ad.attr_single?
-            type << " #{ad.jaba_attr_type.doc_string(ad)}"
           end
           md_row(w, :type, type)
-          # TODO: regex default out of src
+          ad.jaba_attr_type.get_reference_manual_rows(ad)&.each do |id, value|
+            md_row(w, id, value)
+          end
           md_row(w, :default, ad.default.proc? ? nil : ad.default.inspect)
           md_row(w, :flags, ad.flags.map(&:inspect).join(', '))
           md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))

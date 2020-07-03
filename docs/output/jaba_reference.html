@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="mamd.css">
     </head>
     <body>
-        <h1 id="jaba-reference">Jaba Reference</h1>
+        <h1 id="jaba-definition-language-reference">Jaba Definition Language Reference</h1>
 <ul>
 <li>Attribute variants
 <ul>
@@ -425,10 +425,6 @@
 <td>string</td>
 </tr>
 <tr>
-<td><em>default</em></td>
-<td>nil</td>
-</tr>
-<tr>
 <td><em>flags</em></td>
 <td>:required</td>
 </tr>
@@ -462,6 +458,10 @@
 <tr>
 <td><em>type</em></td>
 <td>reference</td>
+</tr>
+<tr>
+<td><em>referenced_type</em></td>
+<td>:category</td>
 </tr>
 <tr>
 <td><em>default</em></td>
@@ -566,6 +566,10 @@
 <td>reference</td>
 </tr>
 <tr>
+<td><em>referenced_type</em></td>
+<td>:arch</td>
+</tr>
+<tr>
 <td><em>default</em></td>
 <td>nil</td>
 </tr>
@@ -598,11 +602,11 @@
 <tbody>
 <tr>
 <td><em>type</em></td>
-<td>choice array [:x86, :x86_64, :arm64]</td>
+<td>choice array</td>
 </tr>
 <tr>
-<td><em>default</em></td>
-<td>nil</td>
+<td><em>items</em></td>
+<td>[:x86, :x86_64, :arm64]</td>
 </tr>
 <tr>
 <td><em>flags</em></td>
@@ -744,7 +748,11 @@
 <tbody>
 <tr>
 <td><em>type</em></td>
-<td>choice [:mbcs, :unicode, nil]</td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>items</em></td>
+<td>[:mbcs, :unicode, nil]</td>
 </tr>
 <tr>
 <td><em>default</em></td>
@@ -858,10 +866,6 @@
 <td>symbol_or_string array</td>
 </tr>
 <tr>
-<td><em>default</em></td>
-<td>nil</td>
-</tr>
-<tr>
 <td><em>flags</em></td>
 <td>:required, :no_sort</td>
 </tr>
@@ -969,6 +973,10 @@
 <td>reference array</td>
 </tr>
 <tr>
+<td><em>referenced_type</em></td>
+<td>:cpp</td>
+</tr>
+<tr>
 <td><em>default</em></td>
 <td>nil</td>
 </tr>
@@ -1017,7 +1025,11 @@
 <tbody>
 <tr>
 <td><em>type</em></td>
-<td>choice [true, false, :structured]</td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>items</em></td>
+<td>[true, false, :structured]</td>
 </tr>
 <tr>
 <td><em>default</em></td>
@@ -1143,6 +1155,10 @@
 <td>reference</td>
 </tr>
 <tr>
+<td><em>referenced_type</em></td>
+<td>:host</td>
+</tr>
+<tr>
 <td><em>default</em></td>
 <td>nil</td>
 </tr>
@@ -1179,11 +1195,11 @@
 <tbody>
 <tr>
 <td><em>type</em></td>
-<td>choice array [:vs2010, :vs2012, :vs2013, :vs2015, :vs2017, :vs2019, :xcode]</td>
+<td>choice array</td>
 </tr>
 <tr>
-<td><em>default</em></td>
-<td>nil</td>
+<td><em>items</em></td>
+<td>[:vs2010, :vs2012, :vs2013, :vs2015, :vs2017, :vs2019, :xcode]</td>
 </tr>
 <tr>
 <td><em>flags</em></td>
@@ -1417,6 +1433,10 @@
 <td>reference</td>
 </tr>
 <tr>
+<td><em>referenced_type</em></td>
+<td>:platform</td>
+</tr>
+<tr>
 <td><em>default</em></td>
 <td>nil</td>
 </tr>
@@ -1453,11 +1473,11 @@
 <tbody>
 <tr>
 <td><em>type</em></td>
-<td>choice array [:windows, :ios, :macos]</td>
+<td>choice array</td>
 </tr>
 <tr>
-<td><em>default</em></td>
-<td>nil</td>
+<td><em>items</em></td>
+<td>[:windows, :ios, :macos]</td>
 </tr>
 <tr>
 <td><em>flags</em></td>
@@ -1732,10 +1752,6 @@
 <td>src_spec array</td>
 </tr>
 <tr>
-<td><em>default</em></td>
-<td>nil</td>
-</tr>
-<tr>
 <td><em>flags</em></td>
 <td>:required, :no_sort</td>
 </tr>
@@ -2004,11 +2020,11 @@
 <tbody>
 <tr>
 <td><em>type</em></td>
-<td>choice [:app, :console, :lib, :dll]</td>
+<td>choice</td>
 </tr>
 <tr>
-<td><em>default</em></td>
-<td>nil</td>
+<td><em>items</em></td>
+<td>[:app, :console, :lib, :dll]</td>
 </tr>
 <tr>
 <td><em>flags</em></td>
@@ -2146,7 +2162,11 @@
 <tbody>
 <tr>
 <td><em>type</em></td>
-<td>choice [&quot;10.0.16299.0&quot;, &quot;10.0.17134.0&quot;, &quot;10.0.17763.0&quot;, &quot;10.0.18362.0&quot;, nil]</td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>items</em></td>
+<td>[&quot;10.0.16299.0&quot;, &quot;10.0.17134.0&quot;, &quot;10.0.17763.0&quot;, &quot;10.0.18362.0&quot;, nil]</td>
 </tr>
 <tr>
 <td><em>default</em></td>
@@ -2208,10 +2228,6 @@
 <td>symbol hash</td>
 </tr>
 <tr>
-<td><em>default</em></td>
-<td>nil</td>
-</tr>
-<tr>
 <td><em>flags</em></td>
 <td>:required</td>
 </tr>
@@ -2265,10 +2281,6 @@
 <tr>
 <td><em>type</em></td>
 <td>string</td>
-</tr>
-<tr>
-<td><em>default</em></td>
-<td>nil</td>
 </tr>
 <tr>
 <td><em>flags</em></td>
@@ -2766,10 +2778,6 @@
 <td>string</td>
 </tr>
 <tr>
-<td><em>default</em></td>
-<td>nil</td>
-</tr>
-<tr>
 <td><em>flags</em></td>
 <td>:required</td>
 </tr>
@@ -3056,11 +3064,11 @@
 <tbody>
 <tr>
 <td><em>type</em></td>
-<td>choice array [:x86, :x86_64, :arm64]</td>
+<td>choice array</td>
 </tr>
 <tr>
-<td><em>default</em></td>
-<td>nil</td>
+<td><em>items</em></td>
+<td>[:x86, :x86_64, :arm64]</td>
 </tr>
 <tr>
 <td><em>flags</em></td>
@@ -3195,7 +3203,11 @@
 <tbody>
 <tr>
 <td><em>type</em></td>
-<td>choice [:lf, :crlf, :native]</td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>items</em></td>
+<td>[:lf, :crlf, :native]</td>
 </tr>
 <tr>
 <td><em>default</em></td>
@@ -3231,10 +3243,6 @@
 <tr>
 <td><em>type</em></td>
 <td>file</td>
-</tr>
-<tr>
-<td><em>default</em></td>
-<td>nil</td>
 </tr>
 <tr>
 <td><em>flags</em></td>
@@ -3469,10 +3477,6 @@
 <tr>
 <td><em>type</em></td>
 <td>symbol_or_string array</td>
-</tr>
-<tr>
-<td><em>default</em></td>
-<td>nil</td>
 </tr>
 <tr>
 <td><em>flags</em></td>

@@ -280,7 +280,10 @@
                 ".c",
                 ".cc",
                 ".cxx",
-                ".hpp"
+                ".hpp",
+                ".natvis",
+                ".def",
+                ".rc"
               ],
               "guid": "{88ED35B9-F87F-55D9-A551-61C4953F0ABB}",
               "vcglobal": {
@@ -562,7 +565,10 @@
                 ".c",
                 ".cc",
                 ".cxx",
-                ".hpp"
+                ".hpp",
+                ".natvis",
+                ".def",
+                ".rc"
               ],
               "guid": "{F9C317E3-B1C7-5C35-B291-064D56584555}",
               "vcglobal": {

@@ -1,4 +1,4 @@
-# Jaba Reference
+# Jaba Definition Language Reference
 
 - Attribute variants
   - single
@@ -137,7 +137,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool  |
+> | _type_ | bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -157,7 +157,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string  |
+> | _type_ | string |
 > | _default_ | "" |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -169,7 +169,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool  |
+> | _type_ | bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -189,7 +189,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool  |
+> | _type_ | bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -223,7 +223,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | uuid  |
+> | _type_ | uuid |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
@@ -236,8 +236,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string  |
-> | _default_ | nil |
+> | _type_ | string |
 > | _flags_ | :required |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/core/category.jdl.rb:5 |
@@ -249,7 +248,8 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | reference  |
+> | _type_ | reference |
+> | _referenced_type_ | :category |
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ |  |
@@ -276,7 +276,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | symbol_or_string  |
+> | _type_ | symbol_or_string |
 > | _default_ | nil |
 > | _flags_ | :read_only |
 > | _options_ |  |
@@ -289,7 +289,8 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | reference  |
+> | _type_ | reference |
+> | _referenced_type_ | :arch |
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ |  |
@@ -301,8 +302,8 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | choice array [:x86, :x86_64, :arm64] |
-> | _default_ | nil |
+> | _type_ | choice array |
+> | _items_ | [:x86, :x86_64, :arm64] |
 > | _flags_ | :required |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:63 |
@@ -317,7 +318,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | dir  |
+> | _type_ | dir |
 > | _default_ |  |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
@@ -329,7 +330,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | dir  |
+> | _type_ | dir |
 > | _default_ | "build" |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
@@ -342,7 +343,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string array  |
+> | _type_ | string array |
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ | :export |
@@ -354,7 +355,8 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | choice [:mbcs, :unicode, nil] |
+> | _type_ | choice |
+> | _items_ | [:mbcs, :unicode, nil] |
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ |  |
@@ -370,7 +372,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | symbol_or_string  |
+> | _type_ | symbol_or_string |
 > | _default_ | nil |
 > | _flags_ | :read_only |
 > | _options_ |  |
@@ -383,7 +385,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | symbol_or_string  |
+> | _type_ | symbol_or_string |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
@@ -395,8 +397,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | symbol_or_string array  |
-> | _default_ | nil |
+> | _type_ | symbol_or_string array |
 > | _flags_ | :required, :no_sort |
 > | _options_ | :export |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:70 |
@@ -411,7 +412,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool  |
+> | _type_ | bool |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
@@ -424,7 +425,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | symbol_or_string array  |
+> | _type_ | symbol_or_string array |
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ | :export |
@@ -436,7 +437,8 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | reference array  |
+> | _type_ | reference array |
+> | _referenced_type_ | :cpp |
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ |  |
@@ -463,7 +465,8 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | choice [true, false, :structured] |
+> | _type_ | choice |
+> | _items_ | [true, false, :structured] |
 > | _default_ | true |
 > | _flags_ |  |
 > | _options_ |  |
@@ -479,7 +482,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | uuid  |
+> | _type_ | uuid |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
@@ -492,7 +495,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | symbol  |
+> | _type_ | symbol |
 > | _default_ | nil |
 > | _flags_ | :read_only |
 > | _options_ |  |
@@ -515,7 +518,8 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | reference  |
+> | _type_ | reference |
+> | _referenced_type_ | :host |
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ |  |
@@ -528,8 +532,8 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | choice array [:vs2010, :vs2012, :vs2013, :vs2015, :vs2017, :vs2019, :xcode] |
-> | _default_ | nil |
+> | _type_ | choice array |
+> | _items_ | [:vs2010, :vs2012, :vs2013, :vs2015, :vs2017, :vs2019, :xcode] |
 > | _flags_ | :required |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:7 |
@@ -541,7 +545,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | dir array  |
+> | _type_ | dir array |
 > | _default_ | nil |
 > | _flags_ | :no_sort |
 > | _options_ | :export |
@@ -558,7 +562,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | dir  |
+> | _type_ | dir |
 > | _default_ |  |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
@@ -587,7 +591,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | dir  |
+> | _type_ | dir |
 > | _default_ |  |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
@@ -599,7 +603,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | symbol  |
+> | _type_ | symbol |
 > | _default_ | nil |
 > | _flags_ | :read_only |
 > | _options_ |  |
@@ -622,7 +626,8 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | reference  |
+> | _type_ | reference |
+> | _referenced_type_ | :platform |
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ |  |
@@ -635,8 +640,8 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | choice array [:windows, :ios, :macos] |
-> | _default_ | nil |
+> | _type_ | choice array |
+> | _items_ | [:windows, :ios, :macos] |
 > | _flags_ | :required |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:27 |
@@ -652,7 +657,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | dir  |
+> | _type_ | dir |
 > | _default_ | "." |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
@@ -673,7 +678,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string  |
+> | _type_ | string |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
@@ -686,7 +691,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string  |
+> | _type_ | string |
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
@@ -699,7 +704,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | dir  |
+> | _type_ | dir |
 > | _default_ | "." |
 > | _flags_ |  |
 > | _options_ |  |
@@ -712,7 +717,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool  |
+> | _type_ | bool |
 > | _default_ | true |
 > | _flags_ |  |
 > | _options_ |  |
@@ -728,7 +733,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string array  |
+> | _type_ | string array |
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ | :export |
@@ -741,8 +746,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | src_spec array  |
-> | _default_ | nil |
+> | _type_ | src_spec array |
 > | _flags_ | :required, :no_sort |
 > | _options_ | :force, :export |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:150 |
@@ -761,7 +765,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string array  |
+> | _type_ | string array |
 > | _default_ |  |
 > | _flags_ | :no_sort |
 > | _options_ | :export |
@@ -774,7 +778,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string  |
+> | _type_ | string |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
@@ -787,7 +791,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string  |
+> | _type_ | string |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
@@ -800,7 +804,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string  |
+> | _type_ | string |
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
@@ -813,7 +817,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string  |
+> | _type_ | string |
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
@@ -826,7 +830,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string  |
+> | _type_ | string |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
@@ -839,8 +843,8 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | choice [:app, :console, :lib, :dll] |
-> | _default_ | nil |
+> | _type_ | choice |
+> | _items_ | [:app, :console, :lib, :dll] |
 > | _flags_ | :required |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:202 |
@@ -851,7 +855,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | to_s hash  |
+> | _type_ | to_s hash |
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ | :export |
@@ -863,7 +867,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | to_s hash  |
+> | _type_ | to_s hash |
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ | :export |
@@ -875,7 +879,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool  |
+> | _type_ | bool |
 > | _default_ | false |
 > | _flags_ |  |
 > | _options_ |  |
@@ -891,7 +895,8 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | choice ["10.0.16299.0", "10.0.17134.0", "10.0.17763.0", "10.0.18362.0", nil] |
+> | _type_ | choice |
+> | _items_ | ["10.0.16299.0", "10.0.17134.0", "10.0.17763.0", "10.0.18362.0", nil] |
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ |  |
@@ -917,8 +922,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | symbol hash  |
-> | _default_ | nil |
+> | _type_ | symbol hash |
 > | _flags_ | :required |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jdl.rb:2 |
@@ -943,8 +947,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string  |
-> | _default_ | nil |
+> | _type_ | string |
 > | _flags_ | :required |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:383 |
@@ -956,7 +959,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string array  |
+> | _type_ | string array |
 > | _default_ | [] |
 > | _flags_ | :no_sort |
 > | _options_ |  |
@@ -981,7 +984,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string  |
+> | _type_ | string |
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
@@ -993,7 +996,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string  |
+> | _type_ | string |
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
@@ -1017,7 +1020,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool  |
+> | _type_ | bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -1029,7 +1032,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool  |
+> | _type_ | bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -1049,7 +1052,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool  |
+> | _type_ | bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -1069,7 +1072,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool  |
+> | _type_ | bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -1089,7 +1092,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool  |
+> | _type_ | bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -1109,7 +1112,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool  |
+> | _type_ | bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -1129,7 +1132,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool  |
+> | _type_ | bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -1149,8 +1152,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string  |
-> | _default_ | nil |
+> | _type_ | string |
 > | _flags_ | :required |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:52 |
@@ -1162,7 +1164,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool  |
+> | _type_ | bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -1188,7 +1190,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool  |
+> | _type_ | bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -1201,7 +1203,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string array  |
+> | _type_ | string array |
 > | _default_ | [] |
 > | _flags_ | :no_sort |
 > | _options_ |  |
@@ -1214,7 +1216,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool  |
+> | _type_ | bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -1234,7 +1236,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool  |
+> | _type_ | bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -1254,7 +1256,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool  |
+> | _type_ | bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -1266,8 +1268,8 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | choice array [:x86, :x86_64, :arm64] |
-> | _default_ | nil |
+> | _type_ | choice array |
+> | _items_ | [:x86, :x86_64, :arm64] |
 > | _flags_ | :required, :no_sort |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:34 |
@@ -1278,7 +1280,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool  |
+> | _type_ | bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -1312,7 +1314,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | to_s  |
+> | _type_ | to_s |
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ |  |
@@ -1325,7 +1327,8 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | choice [:lf, :crlf, :native] |
+> | _type_ | choice |
+> | _items_ | [:lf, :crlf, :native] |
 > | _default_ | :native |
 > | _flags_ |  |
 > | _options_ |  |
@@ -1337,8 +1340,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | file  |
-> | _default_ | nil |
+> | _type_ | file |
 > | _flags_ | :required |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/text/text.jdl.rb:5 |
@@ -1349,7 +1351,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | to_s array  |
+> | _type_ | to_s array |
 > | _default_ | nil |
 > | _flags_ | :allow_dupes, :no_sort |
 > | _options_ |  |
@@ -1375,7 +1377,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | symbol_or_string array  |
+> | _type_ | symbol_or_string array |
 > | _default_ | nil |
 > | _flags_ | :no_sort |
 > | _options_ |  |
@@ -1387,7 +1389,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string  |
+> | _type_ | string |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
@@ -1399,7 +1401,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string  |
+> | _type_ | string |
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
@@ -1424,8 +1426,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | symbol_or_string array  |
-> | _default_ | nil |
+> | _type_ | symbol_or_string array |
 > | _flags_ | :required, :no_sort |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:19 |
@@ -1437,7 +1438,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | dir  |
+> | _type_ | dir |
 > | _default_ | "." |
 > | _flags_ |  |
 > | _options_ |  |
@@ -1450,7 +1451,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | dir  |
+> | _type_ | dir |
 > | _default_ | "." |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
