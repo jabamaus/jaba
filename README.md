@@ -73,7 +73,6 @@ if there are multiple attrs, with a warning.
   should use eg "#{__dir__}/main.cpp"?
 - Add check for re-entrancy when evaluating default blocks
 - consistent method names across tests and consistent brackets on must_equal
-- Test cpp json output
 - Create a table of attr mappings from jaba->premake->cmake
 - Bring back boolean reader, eg if debug?
 - Add 'underlying type' to attribute types? eg file.dir/src_spec are strings. Use this for extra

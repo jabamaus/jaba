@@ -230,6 +230,11 @@ module JABA
       @dependencies.map! {|dep| services.get_top_level_jaba_type(dep)}
     end
 
+    ##
+    #
+    def reference_manual_page(ext: '.html')
+      "jaba_type_#{defn_id}#{ext}"
+    end
 
   end
 

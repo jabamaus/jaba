@@ -875,9 +875,9 @@ module JABA
     ##
     #
     def generate_reference_doc
-      docs_dir = "#{JABA.jaba_root_dir}/docs"
-      file = @file_manager.new_file("#{docs_dir}/src/jaba_reference.md", capacity: 16 * 1024)
-      w = file.writer
+      @docs_dir = "#{JABA.jaba_root_dir}/docs"
+      main_page = @file_manager.new_file("#{@docs_dir}/src/jaba_reference.md", capacity: 16 * 1024)
+      w = main_page.writer
       w << "# Jaba Definition Language Reference"
       w << ""
 
@@ -898,62 +898,68 @@ module JABA
       
       w << "- Types"
       @top_level_jaba_types.each do |jt|
-        w << "  - [#{jt.defn_id}](##{jt.defn_id}-type)"
+        w << "  - [#{jt.defn_id}](#{jt.reference_manual_page})"
         jt.all_attr_defs_sorted.each do |ad|
-          w << "    - [#{ad.defn_id}](##{jt.defn_id}-#{ad.defn_id})"
+          w << "    - [#{ad.defn_id}](#{jt.reference_manual_page}##{ad.defn_id})"
         end
       end
 
       w.newline
       @top_level_jaba_types.each do |jt|
-        w << "---"
-        w << ""
-        w << "<a id=\"#{jt.defn_id}-type\"></a>" # anchor for the type
-        w << "## #{jt.defn_id}"
-        w << "> "
-        w << "> _#{jt.title}_"
+        generate_jaba_type_reference(jt)
+      end
+      main_page.write
+    end
+
+    ##
+    #
+    def generate_jaba_type_reference(jt)
+      file = @file_manager.new_file("#{@docs_dir}/src/#{jt.reference_manual_page(ext: '.md')}", capacity: 16 * 1024)
+      w = file.writer
+      w << "## #{jt.defn_id}"
+      w << "> "
+      w << "> _#{jt.title}_"
+      w << "> "
+      w << "> | Property | Value  |"
+      w << "> |-|-|"
+      md_row(w, :src, "$(jaba_install)/#{jt.definition.src_loc_describe(style: :rel_jaba_root)}")
+      md_row(w, :notes, jt.notes.make_sentence)
+      w << "> "
+      w << ""
+      jt.all_attr_defs_sorted.each do |ad|
+        w << "<a id=\"#{ad.defn_id}\"></a>" # anchor for the attribute eg cpp-src
+        w << "#### #{ad.defn_id}"
+        w << "> _#{ad.title}_"
         w << "> "
         w << "> | Property | Value  |"
         w << "> |-|-|"
-        md_row(w, :src, "$(jaba_install)/#{jt.definition.src_loc_describe(style: :rel_jaba_root)}")
-        md_row(w, :notes, jt.notes.make_sentence)
-        w << "> "
-        w << ""
-        jt.all_attr_defs_sorted.each do |ad|
-          w << "<a id=\"#{jt.defn_id}-#{ad.defn_id}\"></a>" # anchor for the attribute eg cpp-src
-          w << "#### #{ad.defn_id}"
-          w << "> _#{ad.title}_"
-          w << "> "
-          w << "> | Property | Value  |"
-          w << "> |-|-|"
-          # TODO: need to flag whether per-project/per-config etc
-          type = String.new
-          if ad.type_id
-            type << "#{ad.type_id}"
-            type << " #{ad.variant}" if !ad.attr_single?
-          end
-          md_row(w, :type, type)
-          ad.jaba_attr_type.get_reference_manual_rows(ad)&.each do |id, value|
-            md_row(w, id, value)
-          end
-          md_row(w, :default, ad.default.proc? ? nil : ad.default.inspect)
-          md_row(w, :flags, ad.flags.map(&:inspect).join(', '))
-          md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
-          md_row(w, :src, "$(jaba_install)/#{ad.definition.src_loc_describe(style: :rel_jaba_root)}")
-          md_row(w, :notes, ad.notes.make_sentence.to_markdown_links) if !ad.notes.empty?
-          w << ">"
-          if !ad.examples.empty?
-            w << "> *Examples*"
-            w << ">```ruby"
-            ad.examples.each do |e|
-              e.split_and_trim_leading_whitespace do |line|
-                w << "> #{line}"
-              end
-            end
-            w << ">```"
-          end
+        # TODO: need to flag whether per-project/per-config etc
+        type = String.new
+        if ad.type_id
+          type << "#{ad.type_id}"
+          type << " #{ad.variant}" if !ad.attr_single?
         end
-        w << ""
+        md_row(w, :type, type)
+        ad.jaba_attr_type.get_reference_manual_rows(ad)&.each do |id, value|
+          md_row(w, id, value)
+        end
+        md_row(w, :default, ad.default.proc? ? nil : ad.default.inspect)
+        md_row(w, :flags, ad.flags.map(&:inspect).join(', '))
+        md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
+        md_row(w, :src, "$(jaba_install)/#{ad.definition.src_loc_describe(style: :rel_jaba_root)}")
+        # TODO: make $(cpp#src_ext) links work again
+        md_row(w, :notes, ad.notes.make_sentence.to_markdown_links) if !ad.notes.empty?
+        w << ">"
+        if !ad.examples.empty?
+          w << "> *Examples*"
+          w << ">```ruby"
+          ad.examples.each do |e|
+            e.split_and_trim_leading_whitespace do |line|
+              w << "> #{line}"
+            end
+          end
+          w << ">```"
+        end
       end
       file.write
     end
