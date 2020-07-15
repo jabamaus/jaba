@@ -13,9 +13,7 @@ module JABA
     it 'supports defaults' do
       op = jaba(dry_run: true) do
         defaults :cpp do
-          hosts [:vs2019]
-          platforms [:windows]
-          archs [:x86]
+          hosts [:vs2019], platforms: [:windows_x86]
           configs [:debug, :release]
           rtti false
         end

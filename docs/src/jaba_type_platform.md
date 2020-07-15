@@ -31,7 +31,7 @@
 > | _default_ | [] |
 > | _flags_ | :no_sort |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:398 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:370 |
 > | _notes_ | Any platform-specific extensions specified are in addition to the Core C/C+ file types specified in [$(cpp#src_ext)](#cpp-src_ext).  |
 >
 <a id="ios?"></a>

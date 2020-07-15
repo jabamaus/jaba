@@ -246,279 +246,264 @@
       ],
       "root": "C:/projects/GitHub/jaba/examples/example1",
       "children": {
-        "MyApp|vs2019": {
-          "platforms": [
-            "windows"
-          ],
+        "MyApp|vs2019|windows": {
           "host": "vs2019",
           "host_ref": "vs2019",
+          "platform": "windows",
+          "platform_ref": "windows",
+          "configs": [
+            "Debug",
+            "Release"
+          ],
+          "deps": [
+
+          ],
+          "projdir": "C:/projects/GitHub/jaba/examples/example1",
+          "projname": "MyApp",
+          "projsuffix": "",
+          "src": [
+            "."
+          ],
+          "src_ext": [
+            ".cpp",
+            ".h",
+            ".inl",
+            ".c",
+            ".cc",
+            ".cxx",
+            ".hpp",
+            ".natvis",
+            ".def",
+            ".rc"
+          ],
+          "guid": "{88ED35B9-F87F-55D9-A551-61C4953F0ABB}",
+          "vcglobal": {
+            "ProjectName": "MyApp",
+            "ProjectGuid": "{88ED35B9-F87F-55D9-A551-61C4953F0ABB}",
+            "Keyword": "Win32Proj",
+            "RootNamespace": "MyApp",
+            "WindowsTargetPlatformVersion": null
+          },
+          "winsdkver": null,
           "children": {
-            "MyApp|vs2019|windows": {
-              "archs": [
-                "x86",
-                "x86_64"
-              ],
-              "configs": [
-                "Debug",
-                "Release"
-              ],
-              "platform": "windows",
-              "platform_ref": "windows",
-              "deps": [
+            "MyApp|vs2019|windows|x86|Debug": {
+              "arch": "x86",
+              "arch_ref": "x86",
+              "type": "console",
+              "config": "Debug",
+              "shell": [
 
               ],
-              "projdir": "C:/projects/GitHub/jaba/examples/example1",
-              "projname": "MyApp",
-              "projsuffix": "",
-              "src": [
-                "."
+              "buildroot": "C:/projects/GitHub/jaba/examples/example1/build",
+              "bindir": "C:/projects/GitHub/jaba/examples/example1/build/bin/Debug",
+              "libdir": "C:/projects/GitHub/jaba/examples/example1/build/lib/Debug",
+              "objdir": "C:/projects/GitHub/jaba/examples/example1/build/obj/Debug/MyApp",
+              "cflags": [
+
               ],
-              "src_ext": [
-                ".cpp",
-                ".h",
-                ".inl",
-                ".c",
-                ".cc",
-                ".cxx",
-                ".hpp",
-                ".natvis",
-                ".def",
-                ".rc"
+              "configname": "Debug",
+              "debug": true,
+              "defines": [
+
               ],
-              "guid": "{88ED35B9-F87F-55D9-A551-61C4953F0ABB}",
-              "vcglobal": {
-                "ProjectName": "MyApp",
-                "ProjectGuid": "{88ED35B9-F87F-55D9-A551-61C4953F0ABB}",
-                "Keyword": "Win32Proj",
-                "RootNamespace": "MyApp",
-                "WindowsTargetPlatformVersion": null
-              },
-              "winsdkver": null,
-              "children": {
-                "MyApp|vs2019|windows|x86": {
-                  "arch": "x86",
-                  "arch_ref": "x86",
-                  "children": {
-                    "MyApp|vs2019|windows|x86|Debug": {
-                      "type": "console",
-                      "config": "Debug",
-                      "shell": [
+              "inc": [
 
-                      ],
-                      "buildroot": "C:/projects/GitHub/jaba/examples/example1/build",
-                      "bindir": "C:/projects/GitHub/jaba/examples/example1/build/bin/Debug",
-                      "libdir": "C:/projects/GitHub/jaba/examples/example1/build/lib/Debug",
-                      "objdir": "C:/projects/GitHub/jaba/examples/example1/build/obj/Debug/MyApp",
-                      "cflags": [
+              ],
+              "nowarn": [
 
-                      ],
-                      "configname": "Debug",
-                      "debug": true,
-                      "defines": [
+              ],
+              "targetname": "MyApp",
+              "targetprefix": "",
+              "targetsuffix": "",
+              "targetext": ".exe",
+              "warnerror": false,
+              "character_set": null,
+              "exceptions": true,
+              "rtti": true,
+              "toolset": "v142",
+              "vcproperty": {
+                "PG1|ConfigurationType": "Application",
+                "PG1|UseDebugLibraries": true,
+                "PG1|CharacterSet": null,
+                "PG1|PlatformToolset": "v142",
+                "PG2|OutDir": "build\\bin\\Debug\\",
+                "PG2|IntDir": "build\\obj\\Debug\\MyApp\\",
+                "PG2|TargetName": "MyApp",
+                "PG2|TargetExt": ".exe",
+                "ClCompile|AdditionalIncludeDirectories": null,
+                "ClCompile|AdditionalOptions": null,
+                "ClCompile|DisableSpecificWarnings": null,
+                "ClCompile|ExceptionHandling": "Sync",
+                "ClCompile|PreprocessorDefinitions": null,
+                "ClCompile|RuntimeTypeInfo": true,
+                "ClCompile|TreatWarningAsError": false,
+                "Link|SubSystem": "Console",
+                "Link|TargetMachine": null
+              }
+            },
+            "MyApp|vs2019|windows|x86_64|Debug": {
+              "arch": "x86_64",
+              "arch_ref": "x86_64",
+              "type": "console",
+              "config": "Debug",
+              "shell": [
 
-                      ],
-                      "inc": [
+              ],
+              "buildroot": "C:/projects/GitHub/jaba/examples/example1/build",
+              "bindir": "C:/projects/GitHub/jaba/examples/example1/build/bin/Debug",
+              "libdir": "C:/projects/GitHub/jaba/examples/example1/build/lib/Debug",
+              "objdir": "C:/projects/GitHub/jaba/examples/example1/build/obj/Debug/MyApp",
+              "cflags": [
 
-                      ],
-                      "nowarn": [
+              ],
+              "configname": "Debug",
+              "debug": true,
+              "defines": [
 
-                      ],
-                      "targetname": "MyApp",
-                      "targetprefix": "",
-                      "targetsuffix": "",
-                      "targetext": ".exe",
-                      "warnerror": false,
-                      "character_set": null,
-                      "exceptions": true,
-                      "rtti": true,
-                      "toolset": "v142",
-                      "vcproperty": {
-                        "PG1|ConfigurationType": "Application",
-                        "PG1|UseDebugLibraries": true,
-                        "PG1|CharacterSet": null,
-                        "PG1|PlatformToolset": "v142",
-                        "PG2|OutDir": "build\\bin\\Debug\\",
-                        "PG2|IntDir": "build\\obj\\Debug\\MyApp\\",
-                        "PG2|TargetName": "MyApp",
-                        "PG2|TargetExt": ".exe",
-                        "ClCompile|AdditionalIncludeDirectories": null,
-                        "ClCompile|AdditionalOptions": null,
-                        "ClCompile|DisableSpecificWarnings": null,
-                        "ClCompile|ExceptionHandling": "Sync",
-                        "ClCompile|PreprocessorDefinitions": null,
-                        "ClCompile|RuntimeTypeInfo": true,
-                        "ClCompile|TreatWarningAsError": false,
-                        "Link|SubSystem": "Console",
-                        "Link|TargetMachine": null
-                      }
-                    },
-                    "MyApp|vs2019|windows|x86|Release": {
-                      "type": "console",
-                      "config": "Release",
-                      "shell": [
+              ],
+              "inc": [
 
-                      ],
-                      "buildroot": "C:/projects/GitHub/jaba/examples/example1/build",
-                      "bindir": "C:/projects/GitHub/jaba/examples/example1/build/bin/Release",
-                      "libdir": "C:/projects/GitHub/jaba/examples/example1/build/lib/Release",
-                      "objdir": "C:/projects/GitHub/jaba/examples/example1/build/obj/Release/MyApp",
-                      "cflags": [
+              ],
+              "nowarn": [
 
-                      ],
-                      "configname": "Release",
-                      "debug": false,
-                      "defines": [
+              ],
+              "targetname": "MyApp",
+              "targetprefix": "",
+              "targetsuffix": "",
+              "targetext": ".exe",
+              "warnerror": false,
+              "character_set": null,
+              "exceptions": true,
+              "rtti": true,
+              "toolset": "v142",
+              "vcproperty": {
+                "PG1|ConfigurationType": "Application",
+                "PG1|UseDebugLibraries": true,
+                "PG1|CharacterSet": null,
+                "PG1|PlatformToolset": "v142",
+                "PG2|OutDir": "build\\bin\\Debug\\",
+                "PG2|IntDir": "build\\obj\\Debug\\MyApp\\",
+                "PG2|TargetName": "MyApp",
+                "PG2|TargetExt": ".exe",
+                "ClCompile|AdditionalIncludeDirectories": null,
+                "ClCompile|AdditionalOptions": null,
+                "ClCompile|DisableSpecificWarnings": null,
+                "ClCompile|ExceptionHandling": "Sync",
+                "ClCompile|PreprocessorDefinitions": null,
+                "ClCompile|RuntimeTypeInfo": true,
+                "ClCompile|TreatWarningAsError": false,
+                "Link|SubSystem": "Console",
+                "Link|TargetMachine": "MachineX64"
+              }
+            },
+            "MyApp|vs2019|windows|x86|Release": {
+              "arch": "x86",
+              "arch_ref": "x86",
+              "type": "console",
+              "config": "Release",
+              "shell": [
 
-                      ],
-                      "inc": [
+              ],
+              "buildroot": "C:/projects/GitHub/jaba/examples/example1/build",
+              "bindir": "C:/projects/GitHub/jaba/examples/example1/build/bin/Release",
+              "libdir": "C:/projects/GitHub/jaba/examples/example1/build/lib/Release",
+              "objdir": "C:/projects/GitHub/jaba/examples/example1/build/obj/Release/MyApp",
+              "cflags": [
 
-                      ],
-                      "nowarn": [
+              ],
+              "configname": "Release",
+              "debug": false,
+              "defines": [
 
-                      ],
-                      "targetname": "MyApp",
-                      "targetprefix": "",
-                      "targetsuffix": "",
-                      "targetext": ".exe",
-                      "warnerror": false,
-                      "character_set": null,
-                      "exceptions": true,
-                      "rtti": true,
-                      "toolset": "v142",
-                      "vcproperty": {
-                        "PG1|ConfigurationType": "Application",
-                        "PG1|UseDebugLibraries": false,
-                        "PG1|CharacterSet": null,
-                        "PG1|PlatformToolset": "v142",
-                        "PG2|OutDir": "build\\bin\\Release\\",
-                        "PG2|IntDir": "build\\obj\\Release\\MyApp\\",
-                        "PG2|TargetName": "MyApp",
-                        "PG2|TargetExt": ".exe",
-                        "ClCompile|AdditionalIncludeDirectories": null,
-                        "ClCompile|AdditionalOptions": null,
-                        "ClCompile|DisableSpecificWarnings": null,
-                        "ClCompile|ExceptionHandling": "Sync",
-                        "ClCompile|PreprocessorDefinitions": null,
-                        "ClCompile|RuntimeTypeInfo": true,
-                        "ClCompile|TreatWarningAsError": false,
-                        "Link|SubSystem": "Console",
-                        "Link|TargetMachine": null
-                      }
-                    }
-                  }
-                },
-                "MyApp|vs2019|windows|x86_64": {
-                  "arch": "x86_64",
-                  "arch_ref": "x86_64",
-                  "children": {
-                    "MyApp|vs2019|windows|x86_64|Debug": {
-                      "type": "console",
-                      "config": "Debug",
-                      "shell": [
+              ],
+              "inc": [
 
-                      ],
-                      "buildroot": "C:/projects/GitHub/jaba/examples/example1/build",
-                      "bindir": "C:/projects/GitHub/jaba/examples/example1/build/bin/Debug",
-                      "libdir": "C:/projects/GitHub/jaba/examples/example1/build/lib/Debug",
-                      "objdir": "C:/projects/GitHub/jaba/examples/example1/build/obj/Debug/MyApp",
-                      "cflags": [
+              ],
+              "nowarn": [
 
-                      ],
-                      "configname": "Debug",
-                      "debug": true,
-                      "defines": [
+              ],
+              "targetname": "MyApp",
+              "targetprefix": "",
+              "targetsuffix": "",
+              "targetext": ".exe",
+              "warnerror": false,
+              "character_set": null,
+              "exceptions": true,
+              "rtti": true,
+              "toolset": "v142",
+              "vcproperty": {
+                "PG1|ConfigurationType": "Application",
+                "PG1|UseDebugLibraries": false,
+                "PG1|CharacterSet": null,
+                "PG1|PlatformToolset": "v142",
+                "PG2|OutDir": "build\\bin\\Release\\",
+                "PG2|IntDir": "build\\obj\\Release\\MyApp\\",
+                "PG2|TargetName": "MyApp",
+                "PG2|TargetExt": ".exe",
+                "ClCompile|AdditionalIncludeDirectories": null,
+                "ClCompile|AdditionalOptions": null,
+                "ClCompile|DisableSpecificWarnings": null,
+                "ClCompile|ExceptionHandling": "Sync",
+                "ClCompile|PreprocessorDefinitions": null,
+                "ClCompile|RuntimeTypeInfo": true,
+                "ClCompile|TreatWarningAsError": false,
+                "Link|SubSystem": "Console",
+                "Link|TargetMachine": null
+              }
+            },
+            "MyApp|vs2019|windows|x86_64|Release": {
+              "arch": "x86_64",
+              "arch_ref": "x86_64",
+              "type": "console",
+              "config": "Release",
+              "shell": [
 
-                      ],
-                      "inc": [
+              ],
+              "buildroot": "C:/projects/GitHub/jaba/examples/example1/build",
+              "bindir": "C:/projects/GitHub/jaba/examples/example1/build/bin/Release",
+              "libdir": "C:/projects/GitHub/jaba/examples/example1/build/lib/Release",
+              "objdir": "C:/projects/GitHub/jaba/examples/example1/build/obj/Release/MyApp",
+              "cflags": [
 
-                      ],
-                      "nowarn": [
+              ],
+              "configname": "Release",
+              "debug": false,
+              "defines": [
 
-                      ],
-                      "targetname": "MyApp",
-                      "targetprefix": "",
-                      "targetsuffix": "",
-                      "targetext": ".exe",
-                      "warnerror": false,
-                      "character_set": null,
-                      "exceptions": true,
-                      "rtti": true,
-                      "toolset": "v142",
-                      "vcproperty": {
-                        "PG1|ConfigurationType": "Application",
-                        "PG1|UseDebugLibraries": true,
-                        "PG1|CharacterSet": null,
-                        "PG1|PlatformToolset": "v142",
-                        "PG2|OutDir": "build\\bin\\Debug\\",
-                        "PG2|IntDir": "build\\obj\\Debug\\MyApp\\",
-                        "PG2|TargetName": "MyApp",
-                        "PG2|TargetExt": ".exe",
-                        "ClCompile|AdditionalIncludeDirectories": null,
-                        "ClCompile|AdditionalOptions": null,
-                        "ClCompile|DisableSpecificWarnings": null,
-                        "ClCompile|ExceptionHandling": "Sync",
-                        "ClCompile|PreprocessorDefinitions": null,
-                        "ClCompile|RuntimeTypeInfo": true,
-                        "ClCompile|TreatWarningAsError": false,
-                        "Link|SubSystem": "Console",
-                        "Link|TargetMachine": "MachineX64"
-                      }
-                    },
-                    "MyApp|vs2019|windows|x86_64|Release": {
-                      "type": "console",
-                      "config": "Release",
-                      "shell": [
+              ],
+              "inc": [
 
-                      ],
-                      "buildroot": "C:/projects/GitHub/jaba/examples/example1/build",
-                      "bindir": "C:/projects/GitHub/jaba/examples/example1/build/bin/Release",
-                      "libdir": "C:/projects/GitHub/jaba/examples/example1/build/lib/Release",
-                      "objdir": "C:/projects/GitHub/jaba/examples/example1/build/obj/Release/MyApp",
-                      "cflags": [
+              ],
+              "nowarn": [
 
-                      ],
-                      "configname": "Release",
-                      "debug": false,
-                      "defines": [
-
-                      ],
-                      "inc": [
-
-                      ],
-                      "nowarn": [
-
-                      ],
-                      "targetname": "MyApp",
-                      "targetprefix": "",
-                      "targetsuffix": "",
-                      "targetext": ".exe",
-                      "warnerror": false,
-                      "character_set": null,
-                      "exceptions": true,
-                      "rtti": true,
-                      "toolset": "v142",
-                      "vcproperty": {
-                        "PG1|ConfigurationType": "Application",
-                        "PG1|UseDebugLibraries": false,
-                        "PG1|CharacterSet": null,
-                        "PG1|PlatformToolset": "v142",
-                        "PG2|OutDir": "build\\bin\\Release\\",
-                        "PG2|IntDir": "build\\obj\\Release\\MyApp\\",
-                        "PG2|TargetName": "MyApp",
-                        "PG2|TargetExt": ".exe",
-                        "ClCompile|AdditionalIncludeDirectories": null,
-                        "ClCompile|AdditionalOptions": null,
-                        "ClCompile|DisableSpecificWarnings": null,
-                        "ClCompile|ExceptionHandling": "Sync",
-                        "ClCompile|PreprocessorDefinitions": null,
-                        "ClCompile|RuntimeTypeInfo": true,
-                        "ClCompile|TreatWarningAsError": false,
-                        "Link|SubSystem": "Console",
-                        "Link|TargetMachine": "MachineX64"
-                      }
-                    }
-                  }
-                }
+              ],
+              "targetname": "MyApp",
+              "targetprefix": "",
+              "targetsuffix": "",
+              "targetext": ".exe",
+              "warnerror": false,
+              "character_set": null,
+              "exceptions": true,
+              "rtti": true,
+              "toolset": "v142",
+              "vcproperty": {
+                "PG1|ConfigurationType": "Application",
+                "PG1|UseDebugLibraries": false,
+                "PG1|CharacterSet": null,
+                "PG1|PlatformToolset": "v142",
+                "PG2|OutDir": "build\\bin\\Release\\",
+                "PG2|IntDir": "build\\obj\\Release\\MyApp\\",
+                "PG2|TargetName": "MyApp",
+                "PG2|TargetExt": ".exe",
+                "ClCompile|AdditionalIncludeDirectories": null,
+                "ClCompile|AdditionalOptions": null,
+                "ClCompile|DisableSpecificWarnings": null,
+                "ClCompile|ExceptionHandling": "Sync",
+                "ClCompile|PreprocessorDefinitions": null,
+                "ClCompile|RuntimeTypeInfo": true,
+                "ClCompile|TreatWarningAsError": false,
+                "Link|SubSystem": "Console",
+                "Link|TargetMachine": "MachineX64"
               }
             }
           }
@@ -531,275 +516,260 @@
       ],
       "root": "C:/projects/GitHub/jaba/examples/example2",
       "children": {
-        "MyLib|vs2019": {
-          "platforms": [
-            "windows"
-          ],
+        "MyLib|vs2019|windows": {
           "host": "vs2019",
           "host_ref": "vs2019",
+          "platform": "windows",
+          "platform_ref": "windows",
+          "configs": [
+            "Debug",
+            "Release"
+          ],
+          "deps": [
+
+          ],
+          "projdir": "C:/projects/GitHub/jaba/examples/example2",
+          "projname": "MyLib",
+          "projsuffix": "",
+          "src": [
+            "."
+          ],
+          "src_ext": [
+            ".cpp",
+            ".h",
+            ".inl",
+            ".c",
+            ".cc",
+            ".cxx",
+            ".hpp",
+            ".natvis",
+            ".def",
+            ".rc"
+          ],
+          "guid": "{F9C317E3-B1C7-5C35-B291-064D56584555}",
+          "vcglobal": {
+            "ProjectName": "MyLib",
+            "ProjectGuid": "{F9C317E3-B1C7-5C35-B291-064D56584555}",
+            "Keyword": "Win32Proj",
+            "RootNamespace": "MyLib",
+            "WindowsTargetPlatformVersion": null
+          },
+          "winsdkver": null,
           "children": {
-            "MyLib|vs2019|windows": {
-              "archs": [
-                "x86",
-                "x86_64"
-              ],
-              "configs": [
-                "Debug",
-                "Release"
-              ],
-              "platform": "windows",
-              "platform_ref": "windows",
-              "deps": [
+            "MyLib|vs2019|windows|x86|Debug": {
+              "arch": "x86",
+              "arch_ref": "x86",
+              "type": "lib",
+              "config": "Debug",
+              "shell": [
 
               ],
-              "projdir": "C:/projects/GitHub/jaba/examples/example2",
-              "projname": "MyLib",
-              "projsuffix": "",
-              "src": [
-                "."
+              "buildroot": "C:/projects/GitHub/jaba/examples/example2/build",
+              "bindir": "C:/projects/GitHub/jaba/examples/example2/build/bin/Debug",
+              "libdir": "C:/projects/GitHub/jaba/examples/example2/build/lib/Debug",
+              "objdir": "C:/projects/GitHub/jaba/examples/example2/build/obj/Debug/MyLib",
+              "cflags": [
+
               ],
-              "src_ext": [
-                ".cpp",
-                ".h",
-                ".inl",
-                ".c",
-                ".cc",
-                ".cxx",
-                ".hpp",
-                ".natvis",
-                ".def",
-                ".rc"
+              "configname": "Debug",
+              "debug": true,
+              "defines": [
+
               ],
-              "guid": "{F9C317E3-B1C7-5C35-B291-064D56584555}",
-              "vcglobal": {
-                "ProjectName": "MyLib",
-                "ProjectGuid": "{F9C317E3-B1C7-5C35-B291-064D56584555}",
-                "Keyword": "Win32Proj",
-                "RootNamespace": "MyLib",
-                "WindowsTargetPlatformVersion": null
-              },
-              "winsdkver": null,
-              "children": {
-                "MyLib|vs2019|windows|x86": {
-                  "arch": "x86",
-                  "arch_ref": "x86",
-                  "children": {
-                    "MyLib|vs2019|windows|x86|Debug": {
-                      "type": "lib",
-                      "config": "Debug",
-                      "shell": [
+              "inc": [
 
-                      ],
-                      "buildroot": "C:/projects/GitHub/jaba/examples/example2/build",
-                      "bindir": "C:/projects/GitHub/jaba/examples/example2/build/bin/Debug",
-                      "libdir": "C:/projects/GitHub/jaba/examples/example2/build/lib/Debug",
-                      "objdir": "C:/projects/GitHub/jaba/examples/example2/build/obj/Debug/MyLib",
-                      "cflags": [
+              ],
+              "nowarn": [
 
-                      ],
-                      "configname": "Debug",
-                      "debug": true,
-                      "defines": [
+              ],
+              "targetname": "MyLib",
+              "targetprefix": "",
+              "targetsuffix": "",
+              "targetext": ".lib",
+              "warnerror": false,
+              "character_set": null,
+              "exceptions": true,
+              "rtti": true,
+              "toolset": "v142",
+              "vcproperty": {
+                "PG1|ConfigurationType": "StaticLibrary",
+                "PG1|UseDebugLibraries": true,
+                "PG1|CharacterSet": null,
+                "PG1|PlatformToolset": "v142",
+                "PG2|OutDir": "build\\lib\\Debug\\",
+                "PG2|IntDir": "build\\obj\\Debug\\MyLib\\",
+                "PG2|TargetName": "MyLib",
+                "PG2|TargetExt": ".lib",
+                "ClCompile|AdditionalIncludeDirectories": null,
+                "ClCompile|AdditionalOptions": null,
+                "ClCompile|DisableSpecificWarnings": null,
+                "ClCompile|ExceptionHandling": "Sync",
+                "ClCompile|PreprocessorDefinitions": null,
+                "ClCompile|RuntimeTypeInfo": true,
+                "ClCompile|TreatWarningAsError": false,
+                "Lib|TargetMachine": null
+              }
+            },
+            "MyLib|vs2019|windows|x86_64|Debug": {
+              "arch": "x86_64",
+              "arch_ref": "x86_64",
+              "type": "lib",
+              "config": "Debug",
+              "shell": [
 
-                      ],
-                      "inc": [
+              ],
+              "buildroot": "C:/projects/GitHub/jaba/examples/example2/build",
+              "bindir": "C:/projects/GitHub/jaba/examples/example2/build/bin/Debug",
+              "libdir": "C:/projects/GitHub/jaba/examples/example2/build/lib/Debug",
+              "objdir": "C:/projects/GitHub/jaba/examples/example2/build/obj/Debug/MyLib",
+              "cflags": [
 
-                      ],
-                      "nowarn": [
+              ],
+              "configname": "Debug",
+              "debug": true,
+              "defines": [
 
-                      ],
-                      "targetname": "MyLib",
-                      "targetprefix": "",
-                      "targetsuffix": "",
-                      "targetext": ".lib",
-                      "warnerror": false,
-                      "character_set": null,
-                      "exceptions": true,
-                      "rtti": true,
-                      "toolset": "v142",
-                      "vcproperty": {
-                        "PG1|ConfigurationType": "StaticLibrary",
-                        "PG1|UseDebugLibraries": true,
-                        "PG1|CharacterSet": null,
-                        "PG1|PlatformToolset": "v142",
-                        "PG2|OutDir": "build\\lib\\Debug\\",
-                        "PG2|IntDir": "build\\obj\\Debug\\MyLib\\",
-                        "PG2|TargetName": "MyLib",
-                        "PG2|TargetExt": ".lib",
-                        "ClCompile|AdditionalIncludeDirectories": null,
-                        "ClCompile|AdditionalOptions": null,
-                        "ClCompile|DisableSpecificWarnings": null,
-                        "ClCompile|ExceptionHandling": "Sync",
-                        "ClCompile|PreprocessorDefinitions": null,
-                        "ClCompile|RuntimeTypeInfo": true,
-                        "ClCompile|TreatWarningAsError": false,
-                        "Lib|TargetMachine": null
-                      }
-                    },
-                    "MyLib|vs2019|windows|x86|Release": {
-                      "type": "lib",
-                      "config": "Release",
-                      "shell": [
+              ],
+              "inc": [
 
-                      ],
-                      "buildroot": "C:/projects/GitHub/jaba/examples/example2/build",
-                      "bindir": "C:/projects/GitHub/jaba/examples/example2/build/bin/Release",
-                      "libdir": "C:/projects/GitHub/jaba/examples/example2/build/lib/Release",
-                      "objdir": "C:/projects/GitHub/jaba/examples/example2/build/obj/Release/MyLib",
-                      "cflags": [
+              ],
+              "nowarn": [
 
-                      ],
-                      "configname": "Release",
-                      "debug": false,
-                      "defines": [
+              ],
+              "targetname": "MyLib",
+              "targetprefix": "",
+              "targetsuffix": "",
+              "targetext": ".lib",
+              "warnerror": false,
+              "character_set": null,
+              "exceptions": true,
+              "rtti": true,
+              "toolset": "v142",
+              "vcproperty": {
+                "PG1|ConfigurationType": "StaticLibrary",
+                "PG1|UseDebugLibraries": true,
+                "PG1|CharacterSet": null,
+                "PG1|PlatformToolset": "v142",
+                "PG2|OutDir": "build\\lib\\Debug\\",
+                "PG2|IntDir": "build\\obj\\Debug\\MyLib\\",
+                "PG2|TargetName": "MyLib",
+                "PG2|TargetExt": ".lib",
+                "ClCompile|AdditionalIncludeDirectories": null,
+                "ClCompile|AdditionalOptions": null,
+                "ClCompile|DisableSpecificWarnings": null,
+                "ClCompile|ExceptionHandling": "Sync",
+                "ClCompile|PreprocessorDefinitions": null,
+                "ClCompile|RuntimeTypeInfo": true,
+                "ClCompile|TreatWarningAsError": false,
+                "Lib|TargetMachine": "MachineX64"
+              }
+            },
+            "MyLib|vs2019|windows|x86|Release": {
+              "arch": "x86",
+              "arch_ref": "x86",
+              "type": "lib",
+              "config": "Release",
+              "shell": [
 
-                      ],
-                      "inc": [
+              ],
+              "buildroot": "C:/projects/GitHub/jaba/examples/example2/build",
+              "bindir": "C:/projects/GitHub/jaba/examples/example2/build/bin/Release",
+              "libdir": "C:/projects/GitHub/jaba/examples/example2/build/lib/Release",
+              "objdir": "C:/projects/GitHub/jaba/examples/example2/build/obj/Release/MyLib",
+              "cflags": [
 
-                      ],
-                      "nowarn": [
+              ],
+              "configname": "Release",
+              "debug": false,
+              "defines": [
 
-                      ],
-                      "targetname": "MyLib",
-                      "targetprefix": "",
-                      "targetsuffix": "",
-                      "targetext": ".lib",
-                      "warnerror": false,
-                      "character_set": null,
-                      "exceptions": true,
-                      "rtti": true,
-                      "toolset": "v142",
-                      "vcproperty": {
-                        "PG1|ConfigurationType": "StaticLibrary",
-                        "PG1|UseDebugLibraries": false,
-                        "PG1|CharacterSet": null,
-                        "PG1|PlatformToolset": "v142",
-                        "PG2|OutDir": "build\\lib\\Release\\",
-                        "PG2|IntDir": "build\\obj\\Release\\MyLib\\",
-                        "PG2|TargetName": "MyLib",
-                        "PG2|TargetExt": ".lib",
-                        "ClCompile|AdditionalIncludeDirectories": null,
-                        "ClCompile|AdditionalOptions": null,
-                        "ClCompile|DisableSpecificWarnings": null,
-                        "ClCompile|ExceptionHandling": "Sync",
-                        "ClCompile|PreprocessorDefinitions": null,
-                        "ClCompile|RuntimeTypeInfo": true,
-                        "ClCompile|TreatWarningAsError": false,
-                        "Lib|TargetMachine": null
-                      }
-                    }
-                  }
-                },
-                "MyLib|vs2019|windows|x86_64": {
-                  "arch": "x86_64",
-                  "arch_ref": "x86_64",
-                  "children": {
-                    "MyLib|vs2019|windows|x86_64|Debug": {
-                      "type": "lib",
-                      "config": "Debug",
-                      "shell": [
+              ],
+              "inc": [
 
-                      ],
-                      "buildroot": "C:/projects/GitHub/jaba/examples/example2/build",
-                      "bindir": "C:/projects/GitHub/jaba/examples/example2/build/bin/Debug",
-                      "libdir": "C:/projects/GitHub/jaba/examples/example2/build/lib/Debug",
-                      "objdir": "C:/projects/GitHub/jaba/examples/example2/build/obj/Debug/MyLib",
-                      "cflags": [
+              ],
+              "nowarn": [
 
-                      ],
-                      "configname": "Debug",
-                      "debug": true,
-                      "defines": [
+              ],
+              "targetname": "MyLib",
+              "targetprefix": "",
+              "targetsuffix": "",
+              "targetext": ".lib",
+              "warnerror": false,
+              "character_set": null,
+              "exceptions": true,
+              "rtti": true,
+              "toolset": "v142",
+              "vcproperty": {
+                "PG1|ConfigurationType": "StaticLibrary",
+                "PG1|UseDebugLibraries": false,
+                "PG1|CharacterSet": null,
+                "PG1|PlatformToolset": "v142",
+                "PG2|OutDir": "build\\lib\\Release\\",
+                "PG2|IntDir": "build\\obj\\Release\\MyLib\\",
+                "PG2|TargetName": "MyLib",
+                "PG2|TargetExt": ".lib",
+                "ClCompile|AdditionalIncludeDirectories": null,
+                "ClCompile|AdditionalOptions": null,
+                "ClCompile|DisableSpecificWarnings": null,
+                "ClCompile|ExceptionHandling": "Sync",
+                "ClCompile|PreprocessorDefinitions": null,
+                "ClCompile|RuntimeTypeInfo": true,
+                "ClCompile|TreatWarningAsError": false,
+                "Lib|TargetMachine": null
+              }
+            },
+            "MyLib|vs2019|windows|x86_64|Release": {
+              "arch": "x86_64",
+              "arch_ref": "x86_64",
+              "type": "lib",
+              "config": "Release",
+              "shell": [
 
-                      ],
-                      "inc": [
+              ],
+              "buildroot": "C:/projects/GitHub/jaba/examples/example2/build",
+              "bindir": "C:/projects/GitHub/jaba/examples/example2/build/bin/Release",
+              "libdir": "C:/projects/GitHub/jaba/examples/example2/build/lib/Release",
+              "objdir": "C:/projects/GitHub/jaba/examples/example2/build/obj/Release/MyLib",
+              "cflags": [
 
-                      ],
-                      "nowarn": [
+              ],
+              "configname": "Release",
+              "debug": false,
+              "defines": [
 
-                      ],
-                      "targetname": "MyLib",
-                      "targetprefix": "",
-                      "targetsuffix": "",
-                      "targetext": ".lib",
-                      "warnerror": false,
-                      "character_set": null,
-                      "exceptions": true,
-                      "rtti": true,
-                      "toolset": "v142",
-                      "vcproperty": {
-                        "PG1|ConfigurationType": "StaticLibrary",
-                        "PG1|UseDebugLibraries": true,
-                        "PG1|CharacterSet": null,
-                        "PG1|PlatformToolset": "v142",
-                        "PG2|OutDir": "build\\lib\\Debug\\",
-                        "PG2|IntDir": "build\\obj\\Debug\\MyLib\\",
-                        "PG2|TargetName": "MyLib",
-                        "PG2|TargetExt": ".lib",
-                        "ClCompile|AdditionalIncludeDirectories": null,
-                        "ClCompile|AdditionalOptions": null,
-                        "ClCompile|DisableSpecificWarnings": null,
-                        "ClCompile|ExceptionHandling": "Sync",
-                        "ClCompile|PreprocessorDefinitions": null,
-                        "ClCompile|RuntimeTypeInfo": true,
-                        "ClCompile|TreatWarningAsError": false,
-                        "Lib|TargetMachine": "MachineX64"
-                      }
-                    },
-                    "MyLib|vs2019|windows|x86_64|Release": {
-                      "type": "lib",
-                      "config": "Release",
-                      "shell": [
+              ],
+              "inc": [
 
-                      ],
-                      "buildroot": "C:/projects/GitHub/jaba/examples/example2/build",
-                      "bindir": "C:/projects/GitHub/jaba/examples/example2/build/bin/Release",
-                      "libdir": "C:/projects/GitHub/jaba/examples/example2/build/lib/Release",
-                      "objdir": "C:/projects/GitHub/jaba/examples/example2/build/obj/Release/MyLib",
-                      "cflags": [
+              ],
+              "nowarn": [
 
-                      ],
-                      "configname": "Release",
-                      "debug": false,
-                      "defines": [
-
-                      ],
-                      "inc": [
-
-                      ],
-                      "nowarn": [
-
-                      ],
-                      "targetname": "MyLib",
-                      "targetprefix": "",
-                      "targetsuffix": "",
-                      "targetext": ".lib",
-                      "warnerror": false,
-                      "character_set": null,
-                      "exceptions": true,
-                      "rtti": true,
-                      "toolset": "v142",
-                      "vcproperty": {
-                        "PG1|ConfigurationType": "StaticLibrary",
-                        "PG1|UseDebugLibraries": false,
-                        "PG1|CharacterSet": null,
-                        "PG1|PlatformToolset": "v142",
-                        "PG2|OutDir": "build\\lib\\Release\\",
-                        "PG2|IntDir": "build\\obj\\Release\\MyLib\\",
-                        "PG2|TargetName": "MyLib",
-                        "PG2|TargetExt": ".lib",
-                        "ClCompile|AdditionalIncludeDirectories": null,
-                        "ClCompile|AdditionalOptions": null,
-                        "ClCompile|DisableSpecificWarnings": null,
-                        "ClCompile|ExceptionHandling": "Sync",
-                        "ClCompile|PreprocessorDefinitions": null,
-                        "ClCompile|RuntimeTypeInfo": true,
-                        "ClCompile|TreatWarningAsError": false,
-                        "Lib|TargetMachine": "MachineX64"
-                      }
-                    }
-                  }
-                }
+              ],
+              "targetname": "MyLib",
+              "targetprefix": "",
+              "targetsuffix": "",
+              "targetext": ".lib",
+              "warnerror": false,
+              "character_set": null,
+              "exceptions": true,
+              "rtti": true,
+              "toolset": "v142",
+              "vcproperty": {
+                "PG1|ConfigurationType": "StaticLibrary",
+                "PG1|UseDebugLibraries": false,
+                "PG1|CharacterSet": null,
+                "PG1|PlatformToolset": "v142",
+                "PG2|OutDir": "build\\lib\\Release\\",
+                "PG2|IntDir": "build\\obj\\Release\\MyLib\\",
+                "PG2|TargetName": "MyLib",
+                "PG2|TargetExt": ".lib",
+                "ClCompile|AdditionalIncludeDirectories": null,
+                "ClCompile|AdditionalOptions": null,
+                "ClCompile|DisableSpecificWarnings": null,
+                "ClCompile|ExceptionHandling": "Sync",
+                "ClCompile|PreprocessorDefinitions": null,
+                "ClCompile|RuntimeTypeInfo": true,
+                "ClCompile|TreatWarningAsError": false,
+                "Lib|TargetMachine": "MachineX64"
               }
             }
           }

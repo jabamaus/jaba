@@ -16,6 +16,7 @@ module JABA
     #
     def init
       @platform_nodes = []
+      @project_nodes = []
     end
 
     ##
@@ -23,29 +24,34 @@ module JABA
     def make_nodes
       root_node = make_node
 
-      root_node.attrs.hosts.each do |h|
-        host_node = make_node(sub_type_id: :per_host, name: h, parent: root_node) do
-          host h
-          host_ref h
+      hosts_attr = root_node.get_attr(:hosts)
+      hosts_attr.visit_attr do |host_attr, target_host|
+        target_platform_to_archs = {}
+        platforms = host_attr.get_option_value(:platforms)
+        platforms.each do |pspec|
+          if pspec !~ /^(.*?)_(.*)/
+            jaba_error("Cannot extract platform and architecture from '#{pspec}'")
+          end
+          platform = Regexp.last_match(1).to_sym
+          arch = Regexp.last_match(2).to_sym
+          target_platform_to_archs.push_value(platform, arch)
         end
-        
-        host_node.attrs.platforms.each do |p|
-          platform_node = make_node(sub_type_id: :project, name: p, parent: host_node) do
-            platform p
-            platform_ref p
+
+        target_platform_to_archs.each do |target_platform, target_archs|
+          project_node = make_node(sub_type_id: :project, name: "#{target_host}|#{target_platform}", parent: root_node) do
+            host target_host
+            host_ref target_host
+            platform target_platform
+            platform_ref target_platform
           end
 
-          @platform_nodes << platform_node
 
-          platform_node.attrs.archs.each do |a|
-            arch_node = make_node(sub_type_id: :per_arch, name: a, parent: platform_node) do
-              arch a
-              arch_ref a
-            end
-          
-            arch_node.attrs.configs.each do |cfg|
-              make_node(sub_type_id: :config, name: cfg, parent: arch_node) do
+          project_node.attrs.configs.each do |cfg|
+            target_archs.each do |target_arch|
+              make_node(sub_type_id: :config, name: "#{target_arch}|#{cfg}", parent: project_node) do
                 config cfg
+                arch target_arch
+                arch_ref target_arch
               end
             end
           end
@@ -57,11 +63,11 @@ module JABA
     ##
     #
     def make_host_objects
-      @platform_nodes.sort_topological! do |n, &b|
+      @project_nodes.sort_topological! do |n, &b|
         n.attrs.deps.each(&b)
       end
       
-      @platform_nodes.reverse_each do |node|
+      @project_nodes.reverse_each do |node|
         node.attrs.deps.each do |dep_node|
           # Skip single value attributes as they cannot export. The reason for this is that exporting it would simply
           # overwrite the destination attribute creating a conflict. Which node should control the value? For this
@@ -86,7 +92,7 @@ module JABA
         end
       end
 
-      @platform_nodes.each do |pn|
+      @project_nodes.each do |pn|
         make_node_paths_absolute(pn)
 
         klass = pn.attrs.host_ref.attrs.cpp_project_classname

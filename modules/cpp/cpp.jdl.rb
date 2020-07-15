@@ -9,6 +9,7 @@ define :cpp do
     note "The following hosts are available as standard: #{all_instance_ids(:host).join(', ')}"
     items all_instance_ids(:host)
     flags :required
+    value_option :platforms, required: true
   end
   
   attr :root, type: :dir do
@@ -20,18 +21,8 @@ define :cpp do
     default '.'
   end
 
-  define :per_host do
+  define :project do
 
-    # Required attributes that the user must provide a value for.
-    #
-    attr_array :platforms, type: :choice do
-      title 'Target platforms'
-      items all_instance_ids(:platform) # TODO: should only allow platforms supported by this host
-      flags :required
-      example "platforms [:windows]"
-      example "platforms [:macos, :ios]"
-    end
-    
     # Control flow attributes
     #
     attr :host, type: :symbol do
@@ -54,28 +45,6 @@ define :cpp do
       referenced_type :host
     end
 
-  end
-
-  define :project do
-
-    # Required attributes that the user must provide a value for.
-    #
-    attr_array :archs, type: :choice  do
-      title 'Target architectures'
-      items all_instance_ids(:arch) # TODO: should be valid_archs for current platform
-      flags :required
-      example 'archs [:x86, :x86_64]'
-    end
-
-    attr_array :configs, type: :symbol_or_string do
-      title 'Build configurations'
-      flags :required, :no_sort
-      flag_options :export
-      example 'configs [:Debug, :Release]'
-    end
-
-    # Control flow attributes
-    #
     attr :platform, type: :symbol do
       title 'Target platform as an id'
       note 'Query current target platform'
@@ -98,6 +67,13 @@ define :cpp do
   
     # Common attributes
     #
+    attr_array :configs, type: :symbol_or_string do
+      title 'Build configurations'
+      flags :required, :no_sort
+      flag_options :export
+      example 'configs [:Debug, :Release]'
+    end
+    
     attr_array :deps, type: :reference do
       title 'Project dependencies'
       note 'List of ids of other cpp definitions'
@@ -178,7 +154,9 @@ define :cpp do
 
   end
 
-  define :per_arch do
+  # Sub-grouping of attributes that pertain to a build configuration
+  #
+  define :config do
 
     attr :arch, type: :symbol_or_string do
       title 'Target architecture as an id'
@@ -190,12 +168,6 @@ define :cpp do
       title 'Target architecture as an object'
       referenced_type :arch
     end
-
-  end
-
-  # Sub-grouping of attributes that pertain to a build configuration
-  #
-  define :config do
 
     # Required attributes that the user must provide a value for.
     #

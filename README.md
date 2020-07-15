@@ -2,6 +2,9 @@
 
 To do:
 
+- validate platforms and architecture specs
+- cpp attrs need to be split into project and config in reference manual
+- tag attrs as control flow attrs somehow for benefit of docs
 - add slnproperty which can address sln sections. Particularly useful when used with ExtensibilityGlobals
 - disband VSProj in favour of VSUtilities module
 - Make it so that all attributes have to have a type?

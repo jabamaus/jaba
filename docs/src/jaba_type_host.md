@@ -18,7 +18,7 @@
 > | _default_ | nil |
 > | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:383 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:355 |
 > | _notes_ | For example Vcxproj, Xcodeproj. Use when implementing a new project type..  |
 >
 <a id="cpp_src_ext"></a>
@@ -31,7 +31,7 @@
 > | _default_ | [] |
 > | _flags_ | :no_sort |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:389 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:361 |
 > | _notes_ | Any host-specific extensions specified are in addition to the Core C/C+ file types specified in [$(cpp#src_ext)](#cpp-src_ext).  |
 >
 <a id="major_version"></a>
