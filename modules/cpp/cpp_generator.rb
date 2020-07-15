@@ -15,7 +15,6 @@ module JABA
     ##
     #
     def init
-      @platform_nodes = []
       @project_nodes = []
     end
 
@@ -45,6 +44,7 @@ module JABA
             platform_ref target_platform
           end
 
+          @project_nodes << project_node
 
           project_node.attrs.configs.each do |cfg|
             target_archs.each do |target_arch|
