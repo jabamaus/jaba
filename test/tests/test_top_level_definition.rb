@@ -140,6 +140,10 @@ module JABA
       end
     end
 
+    it 'supports include statement' do
+      # TODO
+    end
+    
   end
 
 end

@@ -82,12 +82,12 @@ module JABA
       
       @log_file = nil
       
-      @jdl_backtrace_files = [] # Files to include in jdl level error backtraces. Includes jdl files and api files.
-      @jdl_backtrace_files_with_api = []
       @warnings = []
       @warn_object = nil
       
       @jdl_files = []
+      @jdl_includes = []
+      @jdl_file_lookup = {}
       
       @attr_type_defs = []
       @attr_flag_defs = []
@@ -163,26 +163,6 @@ module JABA
     def do_run
       load_modules
 
-      @jdl_backtrace_files.concat(@jdl_files)
-      
-      Array(input.definitions).each do |block|
-        @jdl_backtrace_files << block.source_location[0]
-      end
-
-      @jdl_backtrace_files_with_api.concat(@jdl_backtrace_files)
-      @jdl_backtrace_files_with_api.concat($LOADED_FEATURES.select{|f| f =~ /jaba\/lib\/jaba\/jdl_api/})
-      
-      @jdl_files.each do |f|
-        execute_jdl(f)
-      end
-
-      # Definitions can also be provided in a block associated with the main 'jaba' entry point.
-      # Execute if it was supplied.
-      #
-      Array(input.definitions).each do |block|
-        execute_jdl(&block)
-      end
-      
       # Create attribute types
       #
       # TODO: genericise
@@ -669,6 +649,16 @@ module JABA
     end
 
     ##
+    #
+    def include_jdl_file(filename)
+      if !filename.absolute_path?
+        call_loc = caller_locations(2, 1)[0]
+        filename = "#{call_loc.absolute_path.dirname}/#{filename}"
+      end
+      @jdl_includes << filename
+    end
+
+    ##
     # This will cause a series of calls to eg define_attr_type, define_type, define_instance (see further
     # down in this file). These calls will come from user definitions via the api files.
     #
@@ -700,28 +690,66 @@ module JABA
       # Load core type definitions
       #
       if !input.barebones?
-        @jdl_files.concat(@file_manager.glob("#{modules_dir}/**/*.jdl.rb"))
+        @file_manager.glob("#{modules_dir}/**/*.jdl.rb").each do |f|
+          process_jdl_file(f)
+        end
       end
       
+      # TODO: rename to jdl_module_paths
       Array(input.jdl_paths).each do |p|
-        p = p.to_absolute(clean: true)
-
-        if !File.exist?(p)
-          jaba_error("#{p} does not exist")
-        end
-
-        if File.directory?(p)
-          files = @file_manager.glob("#{p}/**/*.jdl.rb")
-          if files.empty?
-            jaba_warning("No definition files found in #{p}")
-          else
-            @jdl_files.concat(files)
-          end
-        else
-          @jdl_files << p
-        end
+        # TODO: also need to load extension files
+        process_load_path(p)
       end
-      @jdl_files.uniq!
+
+      # Definitions can also be provided in a block form
+      #
+      Array(input.definitions).each do |block|
+        @jdl_files << block.source_location[0]
+        execute_jdl(&block)
+      end
+
+      # Process include directives, accounting for included files including other files.
+      #
+      while !@jdl_includes.empty?
+        last = @jdl_includes.pop
+        process_load_path(last)
+      end
+    end
+
+    ##
+    #
+    def process_load_path(p)
+      p = p.to_absolute(clean: true)
+
+      if !File.exist?(p)
+        jaba_error("#{p} does not exist")
+      end
+
+      if File.directory?(p)
+        files = @file_manager.glob("#{p}/*.jdl.rb")
+        if files.empty?
+          jaba_warning("No definition files found in #{p}")
+        else
+          files.each do |f|
+            process_jdl_file(f)
+          end
+        end
+      else
+        process_jdl_file(p)
+      end
+    end
+
+    ##
+    #
+    def process_jdl_file(f)
+      # TODO: warn on dupes
+      # TODO: convert to absolute here?
+      if @jdl_file_lookup.has_key?(f)
+        jaba_error("'#{f}' multiply included")
+      end
+      @jdl_file_lookup[f] = nil
+      @jdl_files << f
+      execute_jdl(f)
     end
 
     ##
@@ -818,7 +846,7 @@ module JABA
           end
         end
 
-        files = include_api ? @jdl_backtrace_files_with_api : @jdl_backtrace_files
+        files = include_api ? @jdl_files + $LOADED_FEATURES.select{|f| f =~ /jaba\/lib\/jaba\/jdl_api/} : @jdl_files
 
         # Extract any lines in the callstack that contain references to definition source files.
         #

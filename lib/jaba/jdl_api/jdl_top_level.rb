@@ -5,6 +5,13 @@ module JABA
   class JDL_TopLevel < BasicObject
     
     ##
+    # Include another jdl file.
+    #
+    def include(filename)
+      @services.include_jdl_file(filename)
+    end
+
+    ##
     # Define a cpp project.
     #
     def cpp(id, &block)

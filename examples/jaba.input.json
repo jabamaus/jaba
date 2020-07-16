@@ -13,8 +13,9 @@
     "C:/projects/GitHub/jaba/modules/workspace/VisualStudio/workspace_vs.jdl.rb",
     "C:/projects/GitHub/jaba/modules/workspace/workspace.jdl.rb",
     "C:/projects/GitHub/jaba/modules/workspace/Xcode/workspace_xc.jdl.rb",
-    "C:/projects/GitHub/jaba/examples/example1/example1.jdl.rb",
-    "C:/projects/GitHub/jaba/examples/example2/example2.jdl.rb"
+    "C:/projects/GitHub/jaba/examples/examples.jdl.rb",
+    "C:/projects/GitHub/jaba/examples/example2/example2.jdl.rb",
+    "C:/projects/GitHub/jaba/examples/example1/example1.jdl.rb"
   ],
   "globals": {
     "globals": {
@@ -34,6 +35,12 @@
     }
   },
   "arch": {
+    "arm64": {
+      "arm64?": true,
+      "vsname": "ARM64",
+      "x86?": false,
+      "x86_64?": false
+    },
     "x86": {
       "arm64?": false,
       "vsname": "Win32",
@@ -45,12 +52,6 @@
       "vsname": "x64",
       "x86?": false,
       "x86_64?": true
-    },
-    "arm64": {
-      "arm64?": true,
-      "vsname": "ARM64",
-      "x86?": false,
-      "x86_64?": false
     }
   },
   "category": {
@@ -196,22 +197,6 @@
     }
   },
   "platform": {
-    "windows": {
-      "apple?": false,
-      "cpp_src_ext": [
-        ".def",
-        ".rc"
-      ],
-      "ios?": false,
-      "macos?": false,
-      "microsoft?": true,
-      "valid_archs": [
-        "x86",
-        "x86_64",
-        "arm64"
-      ],
-      "windows?": true
-    },
     "ios": {
       "apple?": true,
       "cpp_src_ext": [
@@ -237,6 +222,22 @@
 
       ],
       "windows?": false
+    },
+    "windows": {
+      "apple?": false,
+      "cpp_src_ext": [
+        ".def",
+        ".rc"
+      ],
+      "ios?": false,
+      "macos?": false,
+      "microsoft?": true,
+      "valid_archs": [
+        "x86",
+        "x86_64",
+        "arm64"
+      ],
+      "windows?": true
     }
   },
   "cpp": {
