@@ -4,7 +4,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _src_ | $(jaba_install)/modules/core/category.jdl.rb:1 |
+> | _src_ | $(jaba_install)/modules/core/category.jaba:1 |
 > | _notes_ | Manages attribute definitions for 'category' type.  |
 > 
 
@@ -18,7 +18,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jdl.rb:86 |
+> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:86 |
 > | _notes_ | Seeded by [$(name)](#name). Required by Visual Studio .sln files.  |
 >
 <a id="name"></a>
@@ -31,7 +31,7 @@
 > | _default_ | nil |
 > | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/category.jdl.rb:5 |
+> | _src_ | $(jaba_install)/modules/core/category.jaba:5 |
 > | _notes_ | Maps to name of solution folder in a Visual Studio solution.  |
 >
 <a id="parent"></a>
@@ -45,6 +45,6 @@
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/category.jdl.rb:11 |
+> | _src_ | $(jaba_install)/modules/core/category.jaba:11 |
 > | _notes_ | Use this to build a category hierarchy that can be used to classify projects in workspaces.  |
 >

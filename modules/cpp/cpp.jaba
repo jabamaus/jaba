@@ -135,7 +135,7 @@ define :cpp do
       example "src ['*']  # Add all src in $(root) whose extension is in $(src_ext)"
       example "src ['src/**/*'] # Add all src in $(root)/src whose extension is in $(src_ext), recursively"
       example "src ['main.c', 'io.c'] # Add src explicitly"
-      example "src ['jaba.jdl.rb']  # Explicitly add even though not in $(src_ext)"
+      example "src ['build.jaba']  # Explicitly add even though not in $(src_ext)"
       example "src ['does_not_exist.cpp'], :force  # Force addition of file not on disk"
     end
     

@@ -1,21 +1,21 @@
 {
   "jdl_files": [
-    "C:/projects/GitHub/jaba/modules/core/archs.jdl.rb",
-    "C:/projects/GitHub/jaba/modules/core/category.jdl.rb",
-    "C:/projects/GitHub/jaba/modules/core/globals.jdl.rb",
-    "C:/projects/GitHub/jaba/modules/core/hosts.jdl.rb",
-    "C:/projects/GitHub/jaba/modules/core/platforms.jdl.rb",
-    "C:/projects/GitHub/jaba/modules/cpp/cpp.jdl.rb",
-    "C:/projects/GitHub/jaba/modules/cpp/VisualStudio/cpp_vs.jdl.rb",
-    "C:/projects/GitHub/jaba/modules/cpp/VisualStudio/vcxproj_windows.jdl.rb",
-    "C:/projects/GitHub/jaba/modules/cpp/Xcode/cpp_xc.jdl.rb",
-    "C:/projects/GitHub/jaba/modules/text/text.jdl.rb",
-    "C:/projects/GitHub/jaba/modules/workspace/VisualStudio/workspace_vs.jdl.rb",
-    "C:/projects/GitHub/jaba/modules/workspace/workspace.jdl.rb",
-    "C:/projects/GitHub/jaba/modules/workspace/Xcode/workspace_xc.jdl.rb",
-    "C:/projects/GitHub/jaba/examples/examples.jdl.rb",
-    "C:/projects/GitHub/jaba/examples/example2/example2.jdl.rb",
-    "C:/projects/GitHub/jaba/examples/example1/example1.jdl.rb"
+    "C:/projects/GitHub/jaba/modules/core/archs.jaba",
+    "C:/projects/GitHub/jaba/modules/core/category.jaba",
+    "C:/projects/GitHub/jaba/modules/core/globals.jaba",
+    "C:/projects/GitHub/jaba/modules/core/hosts.jaba",
+    "C:/projects/GitHub/jaba/modules/core/platforms.jaba",
+    "C:/projects/GitHub/jaba/modules/cpp/cpp.jaba",
+    "C:/projects/GitHub/jaba/modules/cpp/VisualStudio/cpp_vs.jaba",
+    "C:/projects/GitHub/jaba/modules/cpp/VisualStudio/vcxproj_windows.jaba",
+    "C:/projects/GitHub/jaba/modules/cpp/Xcode/cpp_xc.jaba",
+    "C:/projects/GitHub/jaba/modules/text/text.jaba",
+    "C:/projects/GitHub/jaba/modules/workspace/VisualStudio/workspace_vs.jaba",
+    "C:/projects/GitHub/jaba/modules/workspace/workspace.jaba",
+    "C:/projects/GitHub/jaba/modules/workspace/Xcode/workspace_xc.jaba",
+    "C:/projects/GitHub/jaba/examples/examples.jaba",
+    "C:/projects/GitHub/jaba/examples/example2/example2.jaba",
+    "C:/projects/GitHub/jaba/examples/example1/example1.jaba"
   ],
   "globals": {
     "globals": {

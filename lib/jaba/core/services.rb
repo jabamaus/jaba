@@ -690,7 +690,7 @@ module JABA
       # Load core type definitions
       #
       if !input.barebones?
-        @file_manager.glob("#{modules_dir}/**/*.jdl.rb").each do |f|
+        @file_manager.glob("#{modules_dir}/**/*.jaba").each do |f|
           process_jdl_file(f)
         end
       end
@@ -726,7 +726,7 @@ module JABA
       end
 
       if File.directory?(p)
-        files = @file_manager.glob("#{p}/*.jdl.rb")
+        files = @file_manager.glob("#{p}/*.jaba")
         if files.empty?
           jaba_warning("No definition files found in #{p}")
         else

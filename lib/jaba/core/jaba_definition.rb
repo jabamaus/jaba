@@ -38,7 +38,7 @@ module JABA
     ##
     # Returns source location as a Thread::Backtrace::Location. See https://ruby-doc.org/core-2.7.1/Thread/Backtrace/Location.html.
     # Use this to pass to the callstack argument in jaba_error/jaba_warning. Do not embed in jaba_error/warning messages themselves
-    # as it will appear as eg "C:/projects/GitHub/jaba/modules/cpp/cpp.jdl.rb:49:in `block (2 levels) in execute_jdl'" - the "in `block`"
+    # as it will appear as eg "C:/projects/GitHub/jaba/modules/cpp/cpp.jaba:49:in `block (2 levels) in execute_jdl'" - the "in `block`"
     # is not wanted in user level error messages. Instead use the src_loc_describe method.
     #
     def src_loc_raw

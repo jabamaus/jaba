@@ -4,7 +4,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:1 |
+> | _src_ | $(jaba_install)/modules/workspace/workspace.jaba:1 |
 > | _notes_ | Manages attribute definitions for 'workspace' type.  |
 > 
 
@@ -18,7 +18,7 @@
 > | _default_ | nil |
 > | _flags_ | :no_sort |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:44 |
+> | _src_ | $(jaba_install)/modules/workspace/workspace.jaba:44 |
 >
 <a id="name"></a>
 #### name
@@ -30,7 +30,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:27 |
+> | _src_ | $(jaba_install)/modules/workspace/workspace.jaba:27 |
 >
 <a id="namesuffix"></a>
 #### namesuffix
@@ -42,7 +42,7 @@
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:34 |
+> | _src_ | $(jaba_install)/modules/workspace/workspace.jaba:34 |
 > | _notes_ | Has no effect if [$(name)](#name) is set explicitly.  |
 >
 <a id="primary"></a>
@@ -55,7 +55,7 @@
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:39 |
+> | _src_ | $(jaba_install)/modules/workspace/workspace.jaba:39 |
 >
 <a id="projects"></a>
 #### projects
@@ -67,7 +67,7 @@
 > | _default_ | nil |
 > | _flags_ | :required, :no_sort |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:19 |
+> | _src_ | $(jaba_install)/modules/workspace/workspace.jaba:19 |
 > | _notes_ | Specified by id (symbol or string), or by glob matches against [$(projdir)](#projdir).  |
 >
 <a id="root"></a>
@@ -80,7 +80,7 @@
 > | _default_ | "." |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:7 |
+> | _src_ | $(jaba_install)/modules/workspace/workspace.jaba:7 |
 > | _notes_ | Defaults to containing directory of definition source file.  |
 >
 <a id="workspacedir"></a>
@@ -93,5 +93,5 @@
 > | _default_ | "." |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:13 |
+> | _src_ | $(jaba_install)/modules/workspace/workspace.jaba:13 |
 >

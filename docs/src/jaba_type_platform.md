@@ -4,7 +4,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:4 |
+> | _src_ | $(jaba_install)/modules/core/platforms.jaba:4 |
 > | _notes_ | Manages attribute definitions for 'platform' type. Manages attribute definitions required by platforms.  |
 > 
 
@@ -18,7 +18,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:27 |
+> | _src_ | $(jaba_install)/modules/core/platforms.jaba:27 |
 > | _notes_ | Use only if attribute being set works across all current and future apple platforms. As such probably rarely used..  |
 >
 <a id="cpp_src_ext"></a>
@@ -31,7 +31,7 @@
 > | _default_ | [] |
 > | _flags_ | :no_sort |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:370 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:370 |
 > | _notes_ | Any platform-specific extensions specified are in addition to the Core C/C+ file types specified in [$(cpp#src_ext)](#cpp-src_ext).  |
 >
 <a id="ios?"></a>
@@ -44,7 +44,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:10 |
+> | _src_ | $(jaba_install)/modules/core/platforms.jaba:10 |
 >
 > *Examples*
 >```ruby
@@ -64,7 +64,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:10 |
+> | _src_ | $(jaba_install)/modules/core/platforms.jaba:10 |
 >
 > *Examples*
 >```ruby
@@ -84,7 +84,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:22 |
+> | _src_ | $(jaba_install)/modules/core/platforms.jaba:22 |
 >
 <a id="valid_archs"></a>
 #### valid_archs
@@ -97,7 +97,7 @@
 > | _default_ | nil |
 > | _flags_ | :required, :no_sort |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:34 |
+> | _src_ | $(jaba_install)/modules/core/platforms.jaba:34 |
 >
 <a id="windows?"></a>
 #### windows?
@@ -109,7 +109,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/platforms.jdl.rb:10 |
+> | _src_ | $(jaba_install)/modules/core/platforms.jaba:10 |
 >
 > *Examples*
 >```ruby

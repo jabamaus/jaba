@@ -4,7 +4,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:4 |
+> | _src_ | $(jaba_install)/modules/core/hosts.jaba:4 |
 > | _notes_ | Manages attribute definitions for 'host' type.  |
 > 
 
@@ -18,7 +18,7 @@
 > | _default_ | nil |
 > | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:355 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:355 |
 > | _notes_ | For example Vcxproj, Xcodeproj. Use when implementing a new project type..  |
 >
 <a id="cpp_src_ext"></a>
@@ -31,7 +31,7 @@
 > | _default_ | [] |
 > | _flags_ | :no_sort |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jdl.rb:361 |
+> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:361 |
 > | _notes_ | Any host-specific extensions specified are in addition to the Core C/C+ file types specified in [$(cpp#src_ext)](#cpp-src_ext).  |
 >
 <a id="major_version"></a>
@@ -44,7 +44,7 @@
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:16 |
+> | _src_ | $(jaba_install)/modules/core/hosts.jaba:16 |
 >
 <a id="toolset"></a>
 #### toolset
@@ -56,7 +56,7 @@
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:25 |
+> | _src_ | $(jaba_install)/modules/core/hosts.jaba:25 |
 >
 <a id="version"></a>
 #### version
@@ -68,7 +68,7 @@
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:19 |
+> | _src_ | $(jaba_install)/modules/core/hosts.jaba:19 |
 >
 <a id="version_year"></a>
 #### version_year
@@ -80,7 +80,7 @@
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:22 |
+> | _src_ | $(jaba_install)/modules/core/hosts.jaba:22 |
 >
 <a id="visual_studio?"></a>
 #### visual_studio?
@@ -92,7 +92,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:8 |
+> | _src_ | $(jaba_install)/modules/core/hosts.jaba:8 |
 >
 <a id="vs2010?"></a>
 #### vs2010?
@@ -104,7 +104,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:31 |
+> | _src_ | $(jaba_install)/modules/core/hosts.jaba:31 |
 >
 > *Examples*
 >```ruby
@@ -124,7 +124,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:31 |
+> | _src_ | $(jaba_install)/modules/core/hosts.jaba:31 |
 >
 > *Examples*
 >```ruby
@@ -144,7 +144,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:31 |
+> | _src_ | $(jaba_install)/modules/core/hosts.jaba:31 |
 >
 > *Examples*
 >```ruby
@@ -164,7 +164,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:31 |
+> | _src_ | $(jaba_install)/modules/core/hosts.jaba:31 |
 >
 > *Examples*
 >```ruby
@@ -184,7 +184,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:31 |
+> | _src_ | $(jaba_install)/modules/core/hosts.jaba:31 |
 >
 > *Examples*
 >```ruby
@@ -204,7 +204,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:31 |
+> | _src_ | $(jaba_install)/modules/core/hosts.jaba:31 |
 >
 > *Examples*
 >```ruby
@@ -224,7 +224,7 @@
 > | _default_ | nil |
 > | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/workspace/workspace.jdl.rb:52 |
+> | _src_ | $(jaba_install)/modules/workspace/workspace.jaba:52 |
 > | _notes_ | For example Sln, XcodeWorkspace. Use when implementing a new workspace type..  |
 >
 <a id="xcode?"></a>
@@ -237,5 +237,5 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jdl.rb:12 |
+> | _src_ | $(jaba_install)/modules/core/hosts.jaba:12 |
 >

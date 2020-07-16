@@ -4,7 +4,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _src_ | $(jaba_install)/modules/core/archs.jdl.rb:3 |
+> | _src_ | $(jaba_install)/modules/core/archs.jaba:3 |
 > | _notes_ | Manages attribute definitions for 'arch' type.  |
 > 
 
@@ -18,7 +18,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/archs.jdl.rb:8 |
+> | _src_ | $(jaba_install)/modules/core/archs.jaba:8 |
 >
 > *Examples*
 >```ruby
@@ -38,7 +38,7 @@
 > | _default_ | "" |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jdl.rb:28 |
+> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:28 |
 >
 <a id="x86?"></a>
 #### x86?
@@ -50,7 +50,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/archs.jdl.rb:8 |
+> | _src_ | $(jaba_install)/modules/core/archs.jaba:8 |
 >
 > *Examples*
 >```ruby
@@ -70,7 +70,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/archs.jdl.rb:8 |
+> | _src_ | $(jaba_install)/modules/core/archs.jaba:8 |
 >
 > *Examples*
 >```ruby
