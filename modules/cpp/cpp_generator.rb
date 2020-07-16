@@ -63,6 +63,7 @@ module JABA
     ##
     #
     def make_host_objects
+      @project_nodes.sort!{|x, y| x.handle.casecmp(y.handle)}
       @project_nodes.sort_topological! do |n, &b|
         n.attrs.deps.each(&b)
       end

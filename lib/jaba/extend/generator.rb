@@ -79,6 +79,7 @@ module JABA
         #
         n.make_read_only
       end
+      @root_nodes.sort!{|x, y| x.handle.casecmp(y.handle)}
     end
 
     ##
