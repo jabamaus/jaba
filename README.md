@@ -2,6 +2,10 @@
 
 To do:
 
+- jaba.input.json/jaba.output.json should go in buildroot. Trouble is there isn't just one buildroot...
+- think about how buildroot is set
+- think about how control whether projdir is based of root or off buildroot (in-src build files versus out of src build files)
+- there could be a directive on include statements that runs inlcuded file in new jaba instance
 - validate platforms and architecture specs
 - cpp attrs need to be split into project and config in reference manual
 - tag attrs as control flow attrs somehow for benefit of docs

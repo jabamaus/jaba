@@ -5,7 +5,3 @@ cpp :BasicApp do
   configs [:Debug, :Release]
   src ['.']
 end
-
-#workspace :MyWorkspace do
-#  projects [:MyApp]
-#end
