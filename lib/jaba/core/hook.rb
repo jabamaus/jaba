@@ -48,7 +48,11 @@ module JABA
         end
         return nil
       else
-        receiver.eval_jdl(*args, **keyval_args, &block)
+        if receiver.is_a?(JDL_Object) # TODO: HACK
+          receiver.eval_jdl(*args, **keyval_args, &block)
+        else
+          receiver.instance_exec(*args, **keyval_args, &block)
+        end
       end
     end
 

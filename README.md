@@ -2,6 +2,7 @@
 
 To do:
 
+- consider putting config attrs inside a block. It is a bit nasty doing multiple passes and ignoring attrs.
 - jaba.input.json/jaba.output.json should go in buildroot. Trouble is there isn't just one buildroot...
 - think about how buildroot is set
 - think about how control whether projdir is based of root or off buildroot (in-src build files versus out of src build files)

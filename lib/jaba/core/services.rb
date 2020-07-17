@@ -8,6 +8,7 @@ require 'tsort'
 
 require_relative 'core_ext'
 require_relative 'hook'
+require_relative 'fsm'
 require_relative 'utils'
 require_relative 'file_manager'
 require_relative 'property'
