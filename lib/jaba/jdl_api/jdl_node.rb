@@ -25,13 +25,6 @@ module JABA
       @jaba_node.handle_attr(attr_id, *args, __api_call_loc: ::Kernel.caller_locations(1, 1)[0], **keyval_args, &block)
     end
 
-    ##
-    # The directory this definition is in.
-    #
-    def __dir__
-      @jaba_node.definition.source_dir
-    end
-
     private
 
     ##
