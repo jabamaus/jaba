@@ -215,7 +215,7 @@ module JABA
 
     ##
     #
-    def note
+    def notes
       'Defaults to 0 unless value must be specified by user'
     end
     
