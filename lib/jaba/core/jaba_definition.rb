@@ -55,7 +55,7 @@ module JABA
       when :basename
         "#{@source_file.basename}:#{@source_line}"
       when :rel_jaba_root
-        "#{@source_file.relative_path_from(JABA.jaba_root_dir)}:#{@source_line}"
+        "#{@source_file.relative_path_from(JABA.jaba_install_dir)}:#{@source_line}"
       else
         services.jaba_error("Unsupported style '#{style}'")
       end

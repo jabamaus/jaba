@@ -52,8 +52,8 @@ module JABA
   
   ##
   #
-  def self.jaba_root_dir
-    @@jaba_root_dir ||= "#{__dir__}/../../..".cleanpath
+  def self.jaba_install_dir
+    @@jaba_install_dir ||= "#{__dir__}/../../..".cleanpath
   end
 
   ##
@@ -682,7 +682,7 @@ module JABA
     ##
     #
     def load_modules
-      modules_dir = "#{JABA.jaba_root_dir}/modules"
+      modules_dir = "#{JABA.jaba_install_dir}/modules"
       require_relative '../../../modules/text/text_generator.rb'
       require_relative '../../../modules/cpp/cpp_generator.rb'
       require_relative '../../../modules/workspace/workspace_generator.rb'
@@ -904,7 +904,7 @@ module JABA
     ##
     #
     def generate_reference_doc
-      @docs_dir = "#{JABA.jaba_root_dir}/docs"
+      @docs_dir = "#{JABA.jaba_install_dir}/docs"
       main_page = @file_manager.new_file("#{@docs_dir}/src/jaba_reference.md", capacity: 16 * 1024)
       w = main_page.writer
       w << "# Jaba Definition Language Reference"
