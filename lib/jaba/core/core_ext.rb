@@ -93,10 +93,19 @@ module JABACoreExt
   refine String do
 
     ##
+    #
+    def validate_path
+      raise 'block expected' if !block_given?
+      if include?('\\')
+        yield 'contains backslashes'
+      end
+    end
+
+    ##
     # Cleans path by removing all extraneous ., .. and slashes. Supports windows and UNIX style absolute paths
     # and UNC paths.
     #
-    def cleanpath(validate: false)
+    def cleanpath
       path = split_path.join('/')
 
       # Preserve leading slash(es) if its a UNC path or UNIX style absolute path
@@ -111,12 +120,7 @@ module JABACoreExt
         path[0] = path[0].chr.upcase # Capitalise drive letter
       end
 
-      if validate
-        raise 'block expected' if !block_given?
-        yield path if path != self
-      else
-        path
-      end
+      path
     end
 
     ##

@@ -362,8 +362,8 @@ module JABA
     ##
     #
     def validate_value(attr_def, file)
-      file.cleanpath(validate: true) do |clean|
-        services.jaba_warning("File '#{file}' not specified cleanly. Should be '#{clean}'.")
+      file.validate_path do |msg|
+        services.jaba_warning("File '#{file}' not specified cleanly: #{msg}")
       end
     end
 
@@ -400,8 +400,8 @@ module JABA
     ##
     #
     def validate_value(attr_def, dir)
-      dir.cleanpath(validate: true) do |clean|
-        services.jaba_warning("Directory '#{dir}' not specified cleanly. Should be '#{clean}'.")
+      dir.validate_path do |msg|
+        services.jaba_warning("Directory '#{dir}' not specified cleanly: #{msg}")
       end
     end
 
@@ -432,8 +432,8 @@ module JABA
     ##
     #
     def validate_value(attr_def, src_spec)
-      src_spec.cleanpath(validate: true) do |clean|
-        services.jaba_warning("Src spec '#{src_spec}' not specified cleanly. Should be '#{clean}'.")
+      src_spec.validate_path do |msg|
+        services.jaba_warning("Src spec '#{src_spec}' not specified cleanly: #{msg}")
       end
     end
 

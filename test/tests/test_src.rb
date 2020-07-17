@@ -7,11 +7,11 @@ module JABA
     # TODO: test case sensitivity
 
     it 'warns if src not specified cleanly' do
-      make_file('a.cpp')
-      check_warn "Src spec 'a/../b/c/../../' not specified cleanly. Should be '.'", __FILE__, 'tagW' do
+      make_file('a/b.cpp')
+      check_warn "Src spec 'a\\b.cpp' not specified cleanly: contains backslashes", __FILE__, 'tagW' do
         jaba(cpp_app: true, dry_run: true) do
           cpp :app do
-            src ['a.cpp', 'a/../b/c/../../'] # tagW
+            src ['a\\b.cpp'] # tagW
           end
         end
       end

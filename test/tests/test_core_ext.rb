@@ -68,9 +68,6 @@ module JABA
         '$(ENV_VAR)'.cleanpath.must_equal('$(ENV_VAR)')
         '//'.cleanpath.must_equal('//') # UNC, albeit invalid
         '//a////b//'.cleanpath.must_equal('//a/b') # UNC
-        'a//b'.cleanpath(validate: true) do |clean|
-          clean.must_equal('a/b')
-        end
       end
 
       it 'supports relative_path_from' do
