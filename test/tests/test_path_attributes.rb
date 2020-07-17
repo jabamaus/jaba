@@ -4,7 +4,7 @@ module JABA
 
   class TestPathAttributes < JabaTest
 
-    it 'fails if dir is not clean' do
+    it 'warns if dir not clean' do
       check_warn "'a\\b' not specified cleanly. Should be 'a/b'", __FILE__, 'tagA' do
         jaba(barebones: true) do
           define :test do
