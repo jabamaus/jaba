@@ -49,6 +49,12 @@ module  JABA
     end
 
     ##
+    #
+    def __cwd__
+      JABA.cwd
+    end
+
+    ##
     # Returns all the ids of all defined instances of the given type. Can be useful when populating choice attribute items.
     # The type must be defined before this is called, which can be achieved by adding a dependency.
     #
