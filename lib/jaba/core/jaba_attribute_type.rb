@@ -393,6 +393,12 @@ module JABA
 
     ##
     #
+    def default
+      '.'
+    end
+
+    ##
+    #
     def validate_value(attr_def, dir)
       dir.cleanpath(validate: true) do |clean|
         services.jaba_warning("Directory '#{dir}' not specified cleanly. Should be '#{clean}'.")
