@@ -21,7 +21,6 @@ module JABA
       @current = initial ? get_state(initial) : @states.first
       @current.call_hook(:on_enter)
       instance_eval(&@on_run) if @on_run
-      @current.call_hook(:on_exit)
     end
 
     ##
