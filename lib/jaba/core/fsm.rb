@@ -19,7 +19,7 @@ module JABA
       @on_run = nil
       yield self if block_given?
       @current = initial ? get_state(initial) : @states.first
-      @current.call_hook(:on_enter)
+      @current.send_event(:enter)
     end
 
     ##
@@ -30,27 +30,25 @@ module JABA
 
     ##
     #
-    def goto(id, *args)
-      @current.call_hook(:on_exit)
-      @current = get_state(id)
-      @current.call_hook(:on_enter, *args)
-    end
-
-    ##
-    #
     def send_event(id, *args)
-      @current.call_hook("on_#{id}".to_sym, *args)
+      @current.send_event(id, *args)
     end
 
   private
 
     ##
     #
+    def goto(id, *args)
+      @current.send_event(:exit)
+      @current = get_state(id)
+      @current.send_event(:enter, *args)
+    end
+
+    ##
+    #
     def get_state(id)
       s = @states.find{|s| s.id == id}
-      if !s
-        raise "'#{id}' state not defined"
-      end
+      raise "'#{id}' state not defined" if !s
       s
     end
 
@@ -70,26 +68,36 @@ module JABA
       super()
       @fsm = fsm
       @id = id
-      define_hook(:on_init)
-      define_hook(:on_enter)
-      define_hook(:on_exit)
+      define_event(:init)
+      define_event(:enter)
+      define_event(:exit)
       events.each do |event|
-        define_hook("on_#{event}".to_sym)
+        define_event(event)
       end
       instance_eval(&block)
-      call_hook(:on_init)
+      send_event(:init)
+    end
+
+    ##
+    #
+    def define_event(event)
+      id = "on_#{event}".to_sym
+      define_hook(id)
+      define_singleton_method(id) do |&block|
+        set_hook(id, &block)
+      end
+    end
+
+    ##
+    #
+    def send_event(id, *args)
+      call_hook("on_#{id}".to_sym, *args)
     end
 
     ##
     #
     def goto(id, *args)
-      @fsm.goto(id, *args)
-    end
-
-    ##
-    #
-    def method_missing(id, &block)
-      set_hook(id, &block)
+      @fsm.send(:goto, id, *args)
     end
 
   end
