@@ -53,11 +53,7 @@ module JABA
     #
     def eval_jdl(*args, use_api: true, **keyval_args, &block)
       receiver = use_api ? @api : self
-      if args.empty? && keyval_args.empty?
-        receiver.instance_eval(&block)
-      else
-        receiver.instance_exec(*args, **keyval_args, &block)
-      end
+      receiver.instance_exec(*args, **keyval_args, &block)
     end
     
     ##
