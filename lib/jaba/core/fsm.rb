@@ -20,19 +20,12 @@ module JABA
       yield self if block_given?
       @current = initial ? get_state(initial) : @states.first
       @current.call_hook(:on_enter)
-      instance_eval(&@on_run) if @on_run
     end
 
     ##
     #
     def state(id, &block)
       @states << FSMState.new(self, id, @events, &block)
-    end
-
-    ##
-    #
-    def on_run(&block)
-      @on_run = block
     end
 
     ##

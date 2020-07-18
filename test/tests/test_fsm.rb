@@ -66,7 +66,7 @@ module JABA
 
     it 'supports events' do
       assert_output 'a:on_enter|a:on_event1(0)|a:on_event1(1)|a:on_exit|b:on_enter|b:on_event1(1)|b:on_event1(0)|b:on_exit|a:on_enter|' do
-        FSM.new(events: [:event1]) do |fsm|
+        fsm = FSM.new(events: [:event1]) do |fsm|
           fsm.state :a do
             on_enter  do
               print 'a:on_enter|'
@@ -91,13 +91,11 @@ module JABA
               goto :a if n == 0
             end
           end
-          fsm.on_run do
-            send_event(:event1, 0)
-            send_event(:event1, 1)
-            send_event(:event1, 1)
-            send_event(:event1, 0)
-          end
         end
+        fsm.send_event(:event1, 0)
+        fsm.send_event(:event1, 1)
+        fsm.send_event(:event1, 1)
+        fsm.send_event(:event1, 0)
       end
     end
 
