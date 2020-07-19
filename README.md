@@ -2,6 +2,7 @@
 
 To do:
 
+- put simple type verification system into Property
 - consider putting config attrs inside a block. It is a bit nasty doing multiple passes and ignoring attrs.
 - jaba.input.json/jaba.output.json should go in buildroot. Trouble is there isn't just one buildroot...
 - think about how buildroot is set

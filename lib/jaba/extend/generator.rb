@@ -34,6 +34,7 @@ module JABA
 
     attr_reader :services
     attr_reader :type_id # eg :cpp, :text
+    attr_reader :top_level_jaba_type
     attr_reader :root_nodes
     attr_reader :source_file
 
@@ -312,19 +313,6 @@ module JABA
   ##
   # The default generator for a JabaType if none exists. Does no generation.
   #
-  class DefaultGenerator < Generator
-  end
-
-  ##
-  # TODO: improve
-  class GlobalsGenerator < DefaultGenerator
-
-    # TODO: extra checking.
-    def process
-      super
-      services.instance_variable_set(:@globals_node, @root_nodes.first)
-    end
-
-  end
+  class DefaultGenerator < Generator ; end
 
 end

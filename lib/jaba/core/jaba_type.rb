@@ -81,6 +81,7 @@ module JABA
 
     attr_reader :title
     attr_reader :notes
+    attr_reader :singleton
     attr_reader :generator
     attr_reader :defaults_definition
     attr_reader :dependencies
@@ -101,6 +102,7 @@ module JABA
 
       define_property(:title)
       define_array_property(:notes)
+      define_property(:singleton)
       define_array_property(:dependencies) # TODO: validate explicitly specified deps
 
       set_property(:notes, "Manages attribute definitions for '#{@defn_id}' type")
@@ -113,6 +115,7 @@ module JABA
 
       @title.freeze
       @notes.freeze
+      @singleton.freeze
     end
 
     ##

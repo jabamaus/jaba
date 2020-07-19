@@ -16,6 +16,13 @@ module JABA
     end
 
     ##
+    # Flag type as singleton.
+    #
+    def singleton(val)
+      @jaba_type.set_property(:singleton, val)
+    end
+
+    ##
     # Add a help note for this type. Multiple can be added. Will appear in generated reference manual.
     #
     def note(val)

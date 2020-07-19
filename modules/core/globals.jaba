@@ -1,7 +1,6 @@
 define :globals do
   title 'Global attribute definitions'
+  singleton true
 end
 
-globals :globals do
-end
-  
+globals :globals  

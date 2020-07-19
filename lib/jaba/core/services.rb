@@ -63,7 +63,6 @@ module JABA
 
     attr_reader :input
     attr_reader :file_manager
-    attr_reader :globals_node
 
     ##
     #
@@ -116,7 +115,6 @@ module JABA
 
       @generators = []
 
-      @globals_node = nil
       @null_nodes = {}
       
       @in_attr_default_block = false
@@ -278,6 +276,22 @@ module JABA
       @generators.each do |g|
         log "Processing #{g.type_id} generator", section: true
         g.process
+
+        # Handle singletons
+        #
+        if g.top_level_jaba_type.singleton
+          if g.root_nodes.size == 0
+            jaba_error("singleton type '#{g.type_id}' must be instantiated exactly once", errline: g.top_level_jaba_type.definition.src_loc_raw)
+          elsif g.root_nodes.size > 1
+            jaba_error("singleton type '#{g.type_id}' must be instantiated exactly once", errline: g.root_nodes.last.definition.src_loc_raw)
+          end
+          
+          # Generate acceessor, eg to access globals node do eg 'services.globals_singleton.attrs'
+          #
+          define_singleton_method "#{g.type_id}_singleton".to_sym do
+            g.root_nodes.first
+          end
+        end
       end
      
       # Output definition input data as a json file, before generation. This is raw data as generated from the definitions.

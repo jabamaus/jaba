@@ -20,7 +20,7 @@ module JABA
       @projname = @attrs.projname
       @vcxproj_file = "#{@projdir}/#{@projname}.vcxproj"
       @vcxproj_filters_file = "#{@vcxproj_file}.filters"
-      @file_type_hash = services.globals_node.get_attr(:vcfiletype).value
+      @file_type_hash = services.globals_singleton.attrs.vcfiletype
 
       # Call translator for this platform to initialse project level Visual Studio-specific attributes
       # (vcglobals), based on cross platform definition.
