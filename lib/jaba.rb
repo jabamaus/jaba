@@ -39,6 +39,11 @@ module JABA
     attr_block :definitions
     
     ##
+    # Pass command line in manually. Used in testing.
+    #
+    attr_accessor :argv
+
+    ##
     # Name/path of file to contain a raw dump of all the input data to Jaba, that is to say all the definition data. Mostly
     # useful for debugging and testing but could be useful as a second way of tracking definition changes in source control.
     # The file is written before any file generation occurs, and can be considered a specification of the final data.

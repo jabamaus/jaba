@@ -11,6 +11,7 @@ require_relative 'hook'
 require_relative 'fsm'
 require_relative 'utils'
 require_relative 'file_manager'
+require_relative 'input_manager'
 require_relative 'property'
 require_relative 'jdl_object'
 require_relative 'jaba_attribute_type'
@@ -68,6 +69,7 @@ module JABA
     #
     def initialize
       @input = Input.new
+      @input.instance_variable_set(:@argv, ARGV)
       @input.instance_variable_set(:@definitions, [])
       @input.instance_variable_set(:@jaba_input_file, 'jaba.input.json')
       @input.instance_variable_set(:@dump_input, false)
@@ -121,6 +123,7 @@ module JABA
 
       @top_level_api = JDL_TopLevel.new(self)
       @file_manager = FileManager.new(self)
+      @input_manager = InputManager.new(self)
     end
 
     ##
@@ -293,7 +296,7 @@ module JABA
           end
         end
       end
-     
+
       # Output definition input data as a json file, before generation. This is raw data as generated from the definitions.
       # Can be used for debugging and testing.
       #
