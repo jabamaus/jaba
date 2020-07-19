@@ -14,10 +14,11 @@ module JABA
     #
     def initialize(initial: nil, events: nil)
       super()
+      raise 'block required' if !block_given?
       @states = []
       @events = Array(events)
       @on_run = nil
-      yield self if block_given?
+      yield self
       @current = initial ? get_state(initial) : @states.first
       @current.send_event(:enter)
     end
