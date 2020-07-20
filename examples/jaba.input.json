@@ -20,6 +20,7 @@
   "globals": {
     "globals": {
       "dry_run": false,
+      "dump_input": false,
       "dump_output": false,
       "enable_logging": false,
       "generate_reference_doc": false,
