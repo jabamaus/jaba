@@ -15,13 +15,13 @@ module JABA
 
     end
 
-    it 'can populate an instance from command line' do
+    it 'can populate globals from command line' do
       jaba(argv: [
-        '--a_bool',
-        '--a_string', 'str',
-        '--string_array', 'a', 'b', 'c',
-        '--an_int', '1',
-        '--a_symbol', 'symbol'
+        '--a-bool',
+        '--a-string', 'str',
+        '--string-array', 'a', 'b', 'c',
+        '--an-int', '1',
+        '--a-symbol', 'symbol'
         ]) do
         open_type :globals do
           attr :a_bool, type: :bool

@@ -18,6 +18,12 @@ module JABA
 
     ##
     #
+    def attrs
+      @services.globals_singleton.attrs
+    end
+
+    ##
+    #
     def process
       services = @services
       globals_node = services.globals_singleton
@@ -32,8 +38,11 @@ module JABA
             if arg !~ /--(.*)/
               services.jaba_error("Invalid option format '#{arg}'")
             end
-            name = Regexp.last_match(1).to_sym
+            name = Regexp.last_match(1).sub('-', '_').to_sym
             attr = globals_node.get_attr(name, fail_if_not_found: false)
+            if !attr
+              services.jaba_error("'#{arg}' option unrecognised")
+            end
             variant = attr.attr_def.variant
             type_id = attr.attr_def.type_id
             case variant
