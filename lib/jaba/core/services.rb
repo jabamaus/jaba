@@ -294,6 +294,9 @@ module JABA
           define_singleton_method "#{g.type_id}_singleton".to_sym do
             g.root_nodes.first
           end
+          if g.type_id == :input
+            @input_manager.process
+          end
         end
       end
 
@@ -708,7 +711,9 @@ module JABA
 
       # Load core type definitions
       #
-      if !input.barebones?
+      if input.barebones?
+        process_jdl_file("#{modules_dir}/core/input.jaba")
+      else
         @file_manager.glob("#{modules_dir}/**/*.jaba").each do |f|
           process_jdl_file(f)
         end

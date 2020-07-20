@@ -7,11 +7,17 @@ module JABA
     include JDL_Common
 
     ##
+    #
+    def jaba_input
+      @jaba_node.services.input_singleton.api
+    end
+
+    ##
     # Clears any previously set values. Sets single attribute values to nil and clears array attributes.
     #
     def wipe(*attr_ids)
       @jaba_node.wipe_attrs(attr_ids)
-    end
+    end 
 
     ##
     #
