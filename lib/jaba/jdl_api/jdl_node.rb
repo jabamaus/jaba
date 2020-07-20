@@ -7,9 +7,10 @@ module JABA
     include JDL_Common
 
     ##
+    # Access the attributes of the globals node.
     #
-    def jaba_input
-      @jaba_node.services.input_singleton.api
+    def globals
+      @jaba_node.services.globals_singleton.api
     end
 
     ##

@@ -4,7 +4,6 @@
     "C:/projects/GitHub/jaba/modules/core/category.jaba",
     "C:/projects/GitHub/jaba/modules/core/globals.jaba",
     "C:/projects/GitHub/jaba/modules/core/hosts.jaba",
-    "C:/projects/GitHub/jaba/modules/core/input.jaba",
     "C:/projects/GitHub/jaba/modules/core/platforms.jaba",
     "C:/projects/GitHub/jaba/modules/cpp/cpp.jaba",
     "C:/projects/GitHub/jaba/modules/cpp/VisualStudio/cpp_vs.jaba",
@@ -20,6 +19,12 @@
   ],
   "globals": {
     "globals": {
+      "dry_run": false,
+      "dump_output": false,
+      "enable_logging": false,
+      "generate_reference_doc": false,
+      "jaba_input_file": "jaba.input.json",
+      "jaba_output_file": "jaba.output.json",
       "vcfiletype": {
         ".h": "ClInclude",
         ".inl": "ClInclude",
@@ -195,16 +200,6 @@
       "vs2019?": false,
       "workspace_classname": "Xcworkspace",
       "xcode?": true
-    }
-  },
-  "input": {
-    "input": {
-      "dry_run": false,
-      "dump_output": false,
-      "enable_logging": false,
-      "generate_reference_doc": false,
-      "jaba_input_file": "jaba.input.json",
-      "jaba_output_file": "jaba.output.json"
     }
   },
   "platform": {

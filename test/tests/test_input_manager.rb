@@ -16,14 +16,14 @@ module JABA
     end
 
     it 'can populate an instance from command line' do
-      jaba(barebones: true, argv: [
+      jaba(argv: [
         '--a_bool',
         '--a_string', 'str',
         '--string_array', 'a', 'b', 'c',
         '--an_int', '1',
         '--a_symbol', 'symbol'
         ]) do
-        open_type :input do
+        open_type :globals do
           attr :a_bool, type: :bool
           attr :a_string, type: :string
           attr_array :string_array, type: :string
@@ -32,11 +32,11 @@ module JABA
         end
         define :test
         test :t do
-          jaba_input.a_bool.must_equal(true)
-          jaba_input.a_string.must_equal('str')
-          jaba_input.string_array.must_equal(['a', 'b', 'c'])
-          jaba_input.an_int.must_equal(1)
-          jaba_input.a_symbol.must_equal(:symbol)
+          globals.a_bool.must_equal(true)
+          globals.a_string.must_equal('str')
+          globals.string_array.must_equal(['a', 'b', 'c'])
+          globals.an_int.must_equal(1)
+          globals.a_symbol.must_equal(:symbol)
         end
       end
     end

@@ -20,13 +20,12 @@ module JABA
     #
     def process
       services = @services
-      input_node = services.input_singleton
+      globals_node = services.globals_singleton
       argv = services.input.argv
       if !argv.array?
         jaba_error("'argv' must be an array")
       end
       
-      # TODO: don't like how globals are handled
       FSM.new(events: [:process_arg]) do
         state :default do
           on_process_arg do |arg|
@@ -34,7 +33,7 @@ module JABA
               services.jaba_error("Invalid option format '#{arg}'")
             end
             name = Regexp.last_match(1).to_sym
-            attr = input_node.get_attr(name, fail_if_not_found: false)
+            attr = globals_node.get_attr(name, fail_if_not_found: false)
             variant = attr.attr_def.variant
             type_id = attr.attr_def.type_id
             case variant
