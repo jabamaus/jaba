@@ -12,21 +12,29 @@ module JABA
 
     ##
     #
-    def initialize(initial: nil, events: nil)
+    def initialize(initial: nil, events: nil, &block)
       super()
       raise 'block required' if !block_given?
       @states = []
       @events = Array(events)
       @on_run = nil
-      yield self
+      instance_eval(&block)
       @current = initial ? get_state(initial) : @states.first
       @current.send_event(:enter)
+      instance_eval(&@on_run) if @on_run
+      @current.send_event(:exit)
     end
 
     ##
     #
     def state(id, &block)
       @states << FSMState.new(self, id, @events, &block)
+    end
+
+    ##
+    #
+    def on_run(&block)
+      @on_run = block
     end
 
     ##
