@@ -9,6 +9,10 @@ define :globals do
     default 'jaba.input.json'
   end
 
+  attr :dump_input, type: :bool do
+    title 'Controls generation of $(jaba_input_file)'
+  end
+
   attr :jaba_output_file, type: :file do
     title 'Name/path of file to contain Jaba output in json format'
     note 'Jaba output can be later used by another process (eg the build process) to do things like looking up paths by id rather ' \
