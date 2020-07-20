@@ -34,6 +34,12 @@ module JABA
 
     ##
     #
+    def from_string(str)
+      raise 'Must be implemented'
+    end
+
+    ##
+    #
     def get_reference_manual_rows(attr_def)
       nil
     end
@@ -92,6 +98,12 @@ module JABA
 
     ##
     #
+    def from_string(str)
+      str
+    end
+
+    ##
+    #
     def validate_value(attr_def, value)
       if !value.string?
         services.jaba_error("'#{value}' must be a string but was a '#{value.class}'")
@@ -120,6 +132,12 @@ module JABA
     #
     def notes
       'Only explicit symbols will be accepted. Strings are not valid.'
+    end
+
+    ##
+    #
+    def from_string(str)
+      str.to_sym
     end
 
     ##
@@ -156,6 +174,12 @@ module JABA
 
     ##
     #
+    def from_string(str)
+      str
+    end
+
+    ##
+    #
     def validate_value(attr_def, value)
       if !value.symbol? && !value.string?
         services.jaba_error("'#{value}' must be a symbol or a string but was a '#{value.class}'")
@@ -185,6 +209,12 @@ module JABA
     def notes
       'Any object that supports that can be converted to a string with to_s will be accepted. This is very permissive as ' \
       'in practice this is just about anything in ruby - this type is here to make that intention explcit.'
+    end
+
+    ##
+    #
+    def from_string(str)
+      str
     end
 
     ##
@@ -227,6 +257,12 @@ module JABA
 
     ##
     #
+    def from_string(str)
+      str.to_i
+    end
+
+    ##
+    #
     def validate_value(attr_def, value)
       if !value.integer?
         services.jaba_error(":int attributes only accept integer values but got [value=#{value}, class=#{value.class}]")
@@ -261,6 +297,19 @@ module JABA
     #
     def default
       false
+    end
+
+    ##
+    #
+    def from_string(str)
+      case str
+      when 'true'
+        true
+      when 'false'
+        false
+      else
+        services.jaba_error("Invalid value '#{str}' passed to JabaAttributeTypeBool#from_string")
+      end
     end
 
     ##
@@ -317,6 +366,12 @@ module JABA
 
     ##
     #
+    def from_string(str)
+      str
+    end
+
+    ##
+    #
     def post_init_attr_def(attr_def)
       items = attr_def.get_property(:items)
       if items.empty?
@@ -361,6 +416,12 @@ module JABA
 
     ##
     #
+    def from_string(str)
+      str
+    end
+
+    ##
+    #
     def validate_value(attr_def, file)
       file.validate_path do |msg|
         services.jaba_warning("File '#{file}' not specified cleanly: #{msg}")
@@ -399,6 +460,12 @@ module JABA
 
     ##
     #
+    def from_string(str)
+      str
+    end
+
+    ##
+    #
     def validate_value(attr_def, dir)
       dir.validate_path do |msg|
         services.jaba_warning("Directory '#{dir}' not specified cleanly: #{msg}")
@@ -431,6 +498,12 @@ module JABA
 
     ##
     #
+    def from_string(str)
+      str
+    end
+
+    ##
+    #
     def validate_value(attr_def, src_spec)
       src_spec.validate_path do |msg|
         services.jaba_warning("Src spec '#{src_spec}' not specified cleanly: #{msg}")
@@ -459,6 +532,12 @@ module JABA
     #
     def notes
       'TODO'
+    end
+
+    ##
+    #
+    def from_string(str)
+      str
     end
 
     ##
