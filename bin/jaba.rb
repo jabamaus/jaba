@@ -13,7 +13,6 @@ opts = OpenStruct.new(
   enable_logging: nil,
   dry_run: nil,
   enable_profiling: nil,
-  run_tests: nil,
   generate_ref: nil
 )
 
@@ -27,7 +26,6 @@ OptionParser.new do |op|
   op.on('--log', 'Enable logging') { opts.enable_logging = true}
   op.on('--dry-run', 'Dry run') { opts.dry_run = true }
   op.on('--profile', 'Profile jaba with ruby-prof gem') { opts.enable_profiling = true }
-  op.on('-t', '--test', 'Run tests') { opts.run_tests = true }
   op.on('--gen-ref', 'Generate reference doc') { opts.generate_ref = true }
   op.separator ''
 end.parse!
@@ -61,18 +59,6 @@ def profile(enabled)
   IO.write(file, str)
 end
 
-if opts.run_tests
-  total = JABA.milli_timer do
-    require_relative "../test/test_jaba"
-    JABA.init_tests
-    profile(opts.enable_profiling) do
-      JABA.run_tests
-    end
-  end
-  puts "Tests took #{total}"
-  exit
-end
-  
 begin
   output = nil
   profile(opts.enable_profiling) do

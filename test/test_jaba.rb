@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative '../lib/jaba'
 require 'minitest'
 require 'minitest/spec'
 
@@ -10,17 +11,13 @@ module JABA
   ##
   #
   def self.run_tests
-    @@running_tests = true
-    ::Minitest.run(ARGV + ["--no-plugins"])
-  end
-
-  ##
-  def self.init_tests
+    Dir.glob("#{__dir__}/tests/*.rb").each {|f| require f}
     if File.exist?(JabaTest.temp_root)
       FileUtils.remove_dir(JabaTest.temp_root)
     end
+    @@running_tests = true
+    ::Minitest.run(ARGV + ["--no-plugins"])
   end
-
 
   class JabaTest < Minitest::Spec
     
@@ -166,4 +163,4 @@ module JABA
   
 end
 
-Dir.glob("#{__dir__}/tests/*.rb").each {|f| require f}
+JABA.run_tests
