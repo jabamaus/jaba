@@ -2,6 +2,11 @@
 
 To do:
 
+- Have a 'jaba clean' command
+- Enforce a maximum title length
+- If generating more than one file with same basename, differentiate in output
+- validate that build_root is not allowed to be src_root
+- first time jaba is run it creates a jaba.config file in src_root and in build_root. The one in src_root can be optionally checked in.
 - put simple type verification system into Property
 - consider putting config attrs inside a block. It is a bit nasty doing multiple passes and ignoring attrs.
 - jaba.input.json/jaba.output.json should go in buildroot. Trouble is there isn't just one buildroot...

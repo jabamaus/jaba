@@ -684,9 +684,11 @@ module JABA
     # This will cause a series of calls to eg define_attr_type, define_type, define_instance (see further
     # down in this file). These calls will come from user definitions via the api files.
     #
-    def execute_jdl(file = nil, &block)
-      if file
-        log "Executing #{file}"
+    def execute_jdl(file: nil, str: nil, &block)
+      log "Executing #{file}" if file
+      if str
+        @top_level_api.instance_eval(str, file)
+      elsif file
         @top_level_api.instance_eval(file_manager.read_file(file), file)
       end
       if block_given?
@@ -771,7 +773,18 @@ module JABA
       end
       @jdl_file_lookup[f] = nil
       @jdl_files << f
-      execute_jdl(f)
+
+      # Special handling for config.jaba
+      #
+      if f.basename == 'config.jaba'
+        content = @file_manager.read_file(f, freeze: false)
+        log "Executing #{f}"
+        content.prepend("open_instance :globals, type: :globals do\n")
+        content << "end"
+        execute_jdl(file: f, str: content)
+      else
+        execute_jdl(file: f)
+      end
     end
 
     ##

@@ -133,7 +133,7 @@ module JABA
     end
 
     ##
-    #
+    # TODO: lose _file
     def write_file(file)
       fn = file.filename
 
@@ -182,7 +182,7 @@ module JABA
 
     ##
     #
-    def read_file(filename, encoding: nil, fail_if_not_found: false)
+    def read_file(filename, encoding: nil, fail_if_not_found: false, freeze: true)
       fn = filename.to_absolute(clean: true)
       str = file_read_cache[fn]
       if str.nil?
@@ -196,7 +196,7 @@ module JABA
           services.log "Reading #{fn}"
           str = IO.binread(fn)
           str.force_encoding(encoding) if encoding
-          str.freeze # Don't want cache entries being inadvertently modified
+          str.freeze if freeze # Don't want cache entries being inadvertently modified
           file_read_cache[fn] = str
         end
       end

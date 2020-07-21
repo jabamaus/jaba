@@ -113,7 +113,7 @@ module JABA
       fm = s.file_manager
       f = fm.new_file(fn)
       f.write
-      s.instance_variable_get(:@warnings)[0].must_equal("'#{fn}' is empty")
+      s.instance_variable_get(:@warnings)[0].must_equal("Warning: '#{fn}' is empty")
       File.exist?(fn).must_equal(true)
       IO.read(fn).must_equal("")
     end

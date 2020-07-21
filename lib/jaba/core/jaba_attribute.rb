@@ -43,6 +43,24 @@ module JABA
     end
     
     ##
+    #
+    def single?
+      @attr_def.attr_single?
+    end
+
+    ##
+    #
+    def array?
+      @attr_def.attr_array?
+    end
+
+    ##
+    #
+    def hash?
+      @attr_def.attr_hash?
+    end
+
+    ##
     # Used in error messages.
     #
     def describe

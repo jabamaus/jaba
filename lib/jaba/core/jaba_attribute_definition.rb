@@ -159,7 +159,7 @@ module JABA
     end
 
     ##
-    #
+    # TODO: rename to just single?
     def attr_single?
       @variant == :single
     end
