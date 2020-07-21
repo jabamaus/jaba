@@ -1,7 +1,6 @@
 {
   "version": "1.0",
   "generated": [
-    "config.jaba",
     "projects/BasicApp.vcxproj",
     "projects/BasicApp.vcxproj.filters",
     "projects/BasicLib.vcxproj",
