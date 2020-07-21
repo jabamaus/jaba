@@ -19,6 +19,7 @@
   ],
   "globals": {
     "globals": {
+      "build_root": "C:/projects/GitHub/jaba/examples/../examples-build",
       "dry_run": false,
       "dump_input": false,
       "dump_output": false,
@@ -26,6 +27,7 @@
       "generate_reference_doc": false,
       "jaba_input_file": "jaba.input.json",
       "jaba_output_file": "jaba.output.json",
+      "src_root": "C:/projects/GitHub/jaba/examples",
       "vcfiletype": {
         ".h": "ClInclude",
         ".inl": "ClInclude",
@@ -255,7 +257,7 @@
       "root": "C:/projects/GitHub/jaba/examples/ExampleApp",
       "children": {
         "BasicApp|vs2019|windows": {
-          "buildroot": "C:/projects/GitHub/jaba/examples/../examples-build",
+          "build_root": "C:/projects/GitHub/jaba/examples/../examples-build",
           "host": "vs2019",
           "host_ref": "vs2019",
           "platform": "windows",
@@ -522,7 +524,7 @@
       "root": "C:/projects/GitHub/jaba/examples/ExampleLib1",
       "children": {
         "BasicLib|vs2019|windows": {
-          "buildroot": "C:/projects/GitHub/jaba/examples/../examples-build",
+          "build_root": "C:/projects/GitHub/jaba/examples/../examples-build",
           "host": "vs2019",
           "host_ref": "vs2019",
           "platform": "windows",

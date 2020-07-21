@@ -23,10 +23,12 @@ define :cpp do
 
   define :project do
 
-    attr :buildroot, type: :dir do
+    attr :build_root, type: :dir do
       title 'Root directory for build artifacts'
       note 'Specified as a relative path from $(root)'
-      default 'build'
+      default do
+        globals.build_root
+      end
       flags :no_check_exist
     end
     
@@ -104,7 +106,9 @@ define :cpp do
 
     attr :projdir, type: :dir do
       title 'Directory in which projects will be generated'
-      default '.'
+      default do
+        build_root
+      end
       flags :no_check_exist # May get created during generation
       note 'Specified as an offset from $(root). If not specified projects will be generated in $(root)'
       note 'Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible ' \
@@ -205,7 +209,7 @@ define :cpp do
     attr :bindir, type: :dir do
       title 'Output directory for executables'
       default do
-        "#{buildroot}/bin/#{config}"
+        "#{build_root}/bin/#{config}"
       end
       flags :no_check_exist
     end
@@ -213,7 +217,7 @@ define :cpp do
     attr :libdir, type: :dir do
       title 'Output directory for libs'
       default do
-        "#{buildroot}/lib/#{config}"
+        "#{build_root}/lib/#{config}"
       end
       flags :no_check_exist
     end
@@ -221,7 +225,7 @@ define :cpp do
     attr :objdir, type: :dir do
       title 'Output directory for object files'
       default do
-        "#{buildroot}/obj/#{config}/#{projname}"
+        "#{build_root}/obj/#{config}/#{projname}"
       end
       flags :no_check_exist
     end

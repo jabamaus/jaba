@@ -8,7 +8,6 @@ module JABA
 
   ##
   # TODO: support for short options
-  # TODO: support for required attrs
   #
   class InputManager
 

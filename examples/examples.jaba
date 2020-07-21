@@ -1,10 +1,5 @@
 include '01-basic'
 
-defaults :cpp do
-  buildroot "#{__cwd__}/../#{__cwd__.basename}-build"
-  projdir buildroot
-end
-
 workspace :examples do
   workspacedir "#{__cwd__}/../#{__cwd__.basename}-build"
   projects ['*']
