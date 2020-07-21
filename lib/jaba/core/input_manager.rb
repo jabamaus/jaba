@@ -7,6 +7,8 @@ module JABA
   using JABACoreExt
 
   ##
+  # TODO: support for short options
+  # TODO: support for required attrs
   #
   class InputManager
 
@@ -43,15 +45,9 @@ module JABA
             if !attr
               services.jaba_error("'#{arg}' option unrecognised")
             end
-            variant = attr.attr_def.variant
-            type_id = attr.attr_def.type_id
-            case variant
+            case attr.attr_def.variant
             when :single
-              if type_id == :bool
-                attr.set(true)
-              else
-                goto :single, attr
-              end
+              goto :single, attr
             when :array
               goto :array, attr
             when :hash
@@ -66,7 +62,13 @@ module JABA
           end
           on_process_arg do |arg|
             if arg.start_with?('-')
-              services.jaba_error("No value provided for '#{arg}'")
+              if @attr.attr_def.type_id == :bool
+                @attr.set(true)
+                argv.unshift(arg)
+                goto :default
+              else
+                services.jaba_error("No value provided for '#{arg}'")
+              end
             else
               val = @type.from_string(arg)
               @attr.set(val)
