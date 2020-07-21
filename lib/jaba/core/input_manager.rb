@@ -144,20 +144,24 @@ module JABA
       w = file.writer
 
       @globals_node.visit_attr(top_level: true) do |attr, value|
-        # TODO: wrapping
-        comment = "#{attr.attr_def.title}. #{attr.attr_def.notes.join("\n")}"
+        attr_def = attr.attr_def
+
+        comment = String.new("#{attr_def.title}. #{attr_def.notes.join("\n")}")
+        comment.wrap!(130, prefix: '# ')
+
         w << "##"
-        w << "# #{comment}"
+        w << comment
         w << "#"
         if attr.hash?
           value.each do |k, v|
-            w << "#{attr.attr_def.defn_id} #{k.inspect}, #{v.inspect}"
+            w << "#{attr_def.defn_id} #{k.inspect}, #{v.inspect}"
           end
         else
-          w << "#{attr.attr_def.defn_id} #{value.inspect}"
+          w << "#{attr_def.defn_id} #{value.inspect}"
         end
         w << ''
       end
+      w.chomp!
 
       file.write
     end
