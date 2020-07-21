@@ -883,6 +883,9 @@ module JABA
         # context of the error was not passed in the 'callstack' option. Assume the former.
         #
         if lines.empty?
+          if warn
+            msg = "Warning: #{msg}"
+          end
           e = RuntimeError.new(msg)
           e.set_backtrace(backtrace)
           return e
