@@ -140,7 +140,7 @@ module JABA
     ##
     #
     def make_jaba_config(config_file)
-      file = @services.file_manager.new_file(config_file, eol: :native)
+      file = @services.file_manager.new_file(config_file, track: false, eol: :native)
       w = file.writer
 
       @globals_node.visit_attr(top_level: true) do |attr, value|

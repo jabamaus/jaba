@@ -118,9 +118,10 @@ module JABA
     def initialize(services)
       @services = services
       @generated = []
-      @generated_tracker = {}
+      @generated_lookup = {}
       @added = []
       @modified = []
+      @untracked = []
     end
 
     ##
@@ -141,26 +142,28 @@ module JABA
         services.jaba_warning("'#{fn}' is empty")
       end
 
-      status = nil
+      if @generated_lookup.key?(fn)
+        services.jaba_error("Duplicate filename '#{fn}' detected")
+      end
+
+      existing = read(fn, encoding: file.encoding)
+
+      status = if existing.nil?
+        @added << fn
+        :ADDED
+      elsif existing != file.str
+        @modified << fn
+        :MODIFIED
+      else
+        :UNCHANGED
+      end
 
       if file.track?
-        existing = read(fn, encoding: file.encoding)
-        if existing.nil?
-          status = :ADDED
-          @added << fn
-        elsif existing != file.str
-          status = :MODIFIED
-          @modified << fn
-        else
-          status = :UNCHANGED
-        end
-
-        if @generated_tracker.key?(fn)
-          services.jaba_error("Duplicate filename '#{fn}' detected")
-        end
         @generated << fn
-        @generated_tracker[fn] = nil
+      else
+        @untracked << fn
       end
+      @generated_lookup[fn] = nil
 
       if services.input.dry_run?
         services.log "Not writing #{fn} [dry run]"
@@ -178,6 +181,12 @@ module JABA
 
         IO.binwrite(fn, file.str)
       end
+    end
+
+    ##
+    #
+    def include_untracked
+      @generated.concat(@untracked)
     end
 
     ##

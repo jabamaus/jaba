@@ -68,6 +68,7 @@ module JABA
 
     attr_reader :input
     attr_reader :file_manager
+    attr_reader :input_manager
 
     ##
     #
@@ -614,7 +615,7 @@ module JABA
         end
       end
       json = JSON.pretty_generate(root)
-      file = @file_manager.new_file(input.jaba_input_file, eol: :native, track: false)
+      file = @file_manager.new_file(input_manager.attrs.jaba_input_file, eol: :native, track: false)
       w = file.writer
       w.write_raw(json)
       file.write
@@ -640,7 +641,7 @@ module JABA
     ##
     #
     def build_jaba_output
-      out_file = input.jaba_output_file
+      out_file = input_manager.attrs.jaba_output_file
       out_dir = out_file.dirname
 
       @generated = @file_manager.generated.map{|f| f.relative_path_from(out_dir)}
@@ -664,9 +665,16 @@ module JABA
         w.write_raw(json)
         file.write
       end
-      
-      @added = @file_manager.added.map{|f| f.relative_path_from(out_dir)}
-      @modified = @file_manager.modified.map{|f| f.relative_path_from(out_dir)}
+
+      # Include all generated files for the purpose of reporting back to the user.
+      #
+      @file_manager.include_untracked
+
+      # Now make files that will be reported back to the user relative to cwd
+      #
+      @generated = @file_manager.generated.map{|f| f.relative_path_from(JABA.cwd)}
+      @added = @file_manager.added.map{|f| f.relative_path_from(JABA.cwd)}.sort_no_case!
+      @modified = @file_manager.modified.map{|f| f.relative_path_from(JABA.cwd)}.sort_no_case!
 
       # These are not included in the output file but are returned to outer context
       #
