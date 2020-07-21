@@ -107,7 +107,7 @@ define :cpp do
     attr :projdir, type: :dir do
       title 'Directory in which projects will be generated'
       default do
-        build_root
+        "#{build_root}/projects"
       end
       flags :no_check_exist # May get created during generation
       note 'Specified as an offset from $(root). If not specified projects will be generated in $(root)'

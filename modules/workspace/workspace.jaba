@@ -12,7 +12,9 @@ define :workspace do
 
   attr :workspacedir, type: :dir do
     title 'Directory in which workspaces will be generated'
-    default '.'
+    default do
+      "#{globals.build_root}/projects"
+    end
     flags :no_check_exist # May get created during generation
   end
 

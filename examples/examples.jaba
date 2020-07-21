@@ -1,6 +1,5 @@
 include '01-basic'
 
 workspace :examples do
-  workspacedir "#{__cwd__}/../#{__cwd__.basename}-build"
   projects ['*']
 end

@@ -8,10 +8,10 @@
     <Filter Include="examples\ExampleLib1\src" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\examples\ExampleLib1\include\ExampleLib1\ExampleLib1.h">
+    <ClInclude Include="..\..\examples\ExampleLib1\include\ExampleLib1\ExampleLib1.h">
       <Filter>examples\ExampleLib1\include\ExampleLib1</Filter>
     </ClInclude>
-    <ClCompile Include="..\examples\ExampleLib1\src\ExampleLib1.cpp">
+    <ClCompile Include="..\..\examples\ExampleLib1\src\ExampleLib1.cpp">
       <Filter>examples\ExampleLib1\src</Filter>
     </ClCompile>
   </ItemGroup>

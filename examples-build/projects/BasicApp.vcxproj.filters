@@ -5,7 +5,7 @@
     <Filter Include="examples" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\examples\ExampleApp\main.cpp">
+    <ClCompile Include="..\..\examples\ExampleApp\main.cpp">
       <Filter>examples\ExampleApp</Filter>
     </ClCompile>
   </ItemGroup>
