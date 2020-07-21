@@ -1,0 +1,174 @@
+{
+  "version": "1.0",
+  "generated": [
+    "config.jaba",
+    "projects/BasicApp.vcxproj",
+    "projects/BasicApp.vcxproj.filters",
+    "projects/BasicLib.vcxproj",
+    "projects/BasicLib.vcxproj.filters",
+    "projects/examples.sln"
+  ],
+  "cpp": {
+    "BasicApp|vs2019|windows": {
+      "projdir": "projects",
+      "projname": "BasicApp",
+      "host": "vs2019",
+      "platform": "windows",
+      "vcxproj": "projects/BasicApp.vcxproj",
+      "src": [
+        "../examples/ExampleApp/main.cpp"
+      ],
+      "vcglobal": {
+        "ProjectName": "BasicApp",
+        "ProjectGuid": "{9A89DF9C-BBA0-503A-B0EF-69C023DFE619}",
+        "Keyword": "Win32Proj",
+        "RootNamespace": "BasicApp",
+        "WindowsTargetPlatformVersion": null
+      },
+      "configs": {
+        "Debug": {
+          "arch": "x86_64",
+          "name": "Debug",
+          "defines": [
+
+          ],
+          "inc": [
+
+          ],
+          "rtti": true,
+          "vcproperty": {
+            "PG1|ConfigurationType": "Application",
+            "PG1|UseDebugLibraries": true,
+            "PG1|CharacterSet": null,
+            "PG1|PlatformToolset": "v142",
+            "PG2|OutDir": "..\\bin\\Debug\\",
+            "PG2|IntDir": "..\\obj\\Debug\\BasicApp\\",
+            "PG2|TargetName": "BasicApp",
+            "PG2|TargetExt": ".exe",
+            "ClCompile|AdditionalIncludeDirectories": null,
+            "ClCompile|AdditionalOptions": null,
+            "ClCompile|DisableSpecificWarnings": null,
+            "ClCompile|ExceptionHandling": "Sync",
+            "ClCompile|PreprocessorDefinitions": null,
+            "ClCompile|RuntimeTypeInfo": true,
+            "ClCompile|TreatWarningAsError": false,
+            "Link|SubSystem": "Console",
+            "Link|TargetMachine": "MachineX64"
+          }
+        },
+        "Release": {
+          "arch": "x86_64",
+          "name": "Release",
+          "defines": [
+
+          ],
+          "inc": [
+
+          ],
+          "rtti": true,
+          "vcproperty": {
+            "PG1|ConfigurationType": "Application",
+            "PG1|UseDebugLibraries": false,
+            "PG1|CharacterSet": null,
+            "PG1|PlatformToolset": "v142",
+            "PG2|OutDir": "..\\bin\\Release\\",
+            "PG2|IntDir": "..\\obj\\Release\\BasicApp\\",
+            "PG2|TargetName": "BasicApp",
+            "PG2|TargetExt": ".exe",
+            "ClCompile|AdditionalIncludeDirectories": null,
+            "ClCompile|AdditionalOptions": null,
+            "ClCompile|DisableSpecificWarnings": null,
+            "ClCompile|ExceptionHandling": "Sync",
+            "ClCompile|PreprocessorDefinitions": null,
+            "ClCompile|RuntimeTypeInfo": true,
+            "ClCompile|TreatWarningAsError": false,
+            "Link|SubSystem": "Console",
+            "Link|TargetMachine": "MachineX64"
+          }
+        }
+      }
+    },
+    "BasicLib|vs2019|windows": {
+      "projdir": "projects",
+      "projname": "BasicLib",
+      "host": "vs2019",
+      "platform": "windows",
+      "vcxproj": "projects/BasicLib.vcxproj",
+      "src": [
+        "../examples/ExampleLib1/include/ExampleLib1/ExampleLib1.h",
+        "../examples/ExampleLib1/src/ExampleLib1.cpp"
+      ],
+      "vcglobal": {
+        "ProjectName": "BasicLib",
+        "ProjectGuid": "{72A8EC2C-C2F6-55A1-91D0-3D786BE1F53D}",
+        "Keyword": "Win32Proj",
+        "RootNamespace": "BasicLib",
+        "WindowsTargetPlatformVersion": null
+      },
+      "configs": {
+        "Debug": {
+          "arch": "x86_64",
+          "name": "Debug",
+          "defines": [
+
+          ],
+          "inc": [
+
+          ],
+          "rtti": true,
+          "vcproperty": {
+            "PG1|ConfigurationType": "StaticLibrary",
+            "PG1|UseDebugLibraries": true,
+            "PG1|CharacterSet": null,
+            "PG1|PlatformToolset": "v142",
+            "PG2|OutDir": "..\\lib\\Debug\\",
+            "PG2|IntDir": "..\\obj\\Debug\\BasicLib\\",
+            "PG2|TargetName": "BasicLib",
+            "PG2|TargetExt": ".lib",
+            "ClCompile|AdditionalIncludeDirectories": null,
+            "ClCompile|AdditionalOptions": null,
+            "ClCompile|DisableSpecificWarnings": null,
+            "ClCompile|ExceptionHandling": "Sync",
+            "ClCompile|PreprocessorDefinitions": null,
+            "ClCompile|RuntimeTypeInfo": true,
+            "ClCompile|TreatWarningAsError": false,
+            "Lib|TargetMachine": "MachineX64"
+          }
+        },
+        "Release": {
+          "arch": "x86_64",
+          "name": "Release",
+          "defines": [
+
+          ],
+          "inc": [
+
+          ],
+          "rtti": true,
+          "vcproperty": {
+            "PG1|ConfigurationType": "StaticLibrary",
+            "PG1|UseDebugLibraries": false,
+            "PG1|CharacterSet": null,
+            "PG1|PlatformToolset": "v142",
+            "PG2|OutDir": "..\\lib\\Release\\",
+            "PG2|IntDir": "..\\obj\\Release\\BasicLib\\",
+            "PG2|TargetName": "BasicLib",
+            "PG2|TargetExt": ".lib",
+            "ClCompile|AdditionalIncludeDirectories": null,
+            "ClCompile|AdditionalOptions": null,
+            "ClCompile|DisableSpecificWarnings": null,
+            "ClCompile|ExceptionHandling": "Sync",
+            "ClCompile|PreprocessorDefinitions": null,
+            "ClCompile|RuntimeTypeInfo": true,
+            "ClCompile|TreatWarningAsError": false,
+            "Lib|TargetMachine": "MachineX64"
+          }
+        }
+      }
+    }
+  },
+  "workspace": {
+    "examples": {
+    }
+  }
+}
