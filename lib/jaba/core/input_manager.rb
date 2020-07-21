@@ -20,28 +20,13 @@ module JABA
 
     ##
     #
-    def project_config_file
-      "#{@globals.src_root}/config.jaba"
-    end
-
-    ##
-    #
-    def user_config_file
-      "#{@globals.build_root}/config.jaba"
-    end
-
-    ##
-    #
     def process
       @globals = @services.globals
       process_cmd_line
 
       # TODO: automatically patch in new attrs
       if !JABA.running_tests?
-        if !File.exist?(project_config_file)
-          make_jaba_config(project_config_file)
-        end
-
+        user_config_file = "#{@globals.build_root}/config.jaba"
         if !File.exist?(user_config_file)
           make_jaba_config(user_config_file)
         end
