@@ -68,7 +68,8 @@ module JABA
 
     attr_reader :input
     attr_reader :file_manager
-    attr_reader :input_manager
+    attr_reader :globals
+    attr_reader :globals_node
 
     ##
     #
@@ -122,6 +123,8 @@ module JABA
 
       @generators = []
 
+      @globals = nil
+      @globals_node = nil
       @null_nodes = {}
       
       @in_attr_default_block = false
@@ -294,13 +297,16 @@ module JABA
             jaba_error("singleton type '#{g.type_id}' must be instantiated exactly once", errline: g.root_nodes.last.definition.src_loc_raw)
           end
           
-          # Generate acceessor, eg to access globals node do eg 'services.globals_singleton.attrs'
-          #
-          define_singleton_method "#{g.type_id}_singleton".to_sym do
-            g.root_nodes.first
-          end
           if g.type_id == :globals
+            @globals_node = g.root_nodes.first
+            @globals = @globals_node.attrs
             @input_manager.process
+          else
+            # Generate acceessor
+            #
+            define_singleton_method "#{g.type_id}_singleton".to_sym do
+              g.root_nodes.first
+            end
           end
         end
       end
@@ -615,7 +621,7 @@ module JABA
         end
       end
       json = JSON.pretty_generate(root)
-      file = @file_manager.new_file(input_manager.attrs.jaba_input_file, eol: :native, track: false)
+      file = @file_manager.new_file(globals.jaba_input_file, eol: :native, track: false)
       w = file.writer
       w.write_raw(json)
       file.write
@@ -641,7 +647,7 @@ module JABA
     ##
     #
     def build_jaba_output
-      out_file = input_manager.attrs.jaba_output_file
+      out_file = globals.jaba_output_file
       out_dir = out_file.dirname
 
       @generated = @file_manager.generated.map{|f| f.relative_path_from(out_dir)}

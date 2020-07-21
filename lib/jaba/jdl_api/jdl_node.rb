@@ -10,7 +10,7 @@ module JABA
     # Access the attributes of the globals node.
     #
     def globals
-      @jaba_node.services.globals_singleton.api
+      @jaba_node.services.globals_node.api
     end
 
     ##

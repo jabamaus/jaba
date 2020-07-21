@@ -20,26 +20,20 @@ module JABA
 
     ##
     #
-    def attrs
-      @globals_node.attrs
-    end
-
-    ##
-    #
     def project_config_file
-      "#{attrs.src_root}/config.jaba"
+      "#{@globals.src_root}/config.jaba"
     end
 
     ##
     #
     def user_config_file
-      "#{attrs.build_root}/config.jaba"
+      "#{@globals.build_root}/config.jaba"
     end
 
     ##
     #
     def process
-      @globals_node = @services.globals_singleton
+      @globals = @services.globals
       process_cmd_line
 
       # TODO: automatically patch in new attrs
@@ -58,7 +52,7 @@ module JABA
     #
     def process_cmd_line
       services = @services
-      globals_node = @globals_node
+      globals = @globals
       argv = services.input.argv
       if !argv.array?
         jaba_error("'argv' must be an array")
@@ -71,7 +65,7 @@ module JABA
               services.jaba_error("Invalid option format '#{arg}'")
             end
             name = Regexp.last_match(1).sub('-', '_').to_sym
-            attr = globals_node.get_attr(name, fail_if_not_found: false)
+            attr = globals.get_attr(name, fail_if_not_found: false)
             if !attr
               services.jaba_error("'#{arg}' option unrecognised")
             end
@@ -143,7 +137,7 @@ module JABA
       file = @services.file_manager.new_file(config_file, track: false, eol: :native)
       w = file.writer
 
-      @globals_node.visit_attr(top_level: true) do |attr, value|
+      @services.globals_node.visit_attr(top_level: true) do |attr, value|
         attr_def = attr.attr_def
 
         comment = String.new("#{attr_def.title}. #{attr_def.notes.join("\n")}")
