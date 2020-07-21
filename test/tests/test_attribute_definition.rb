@@ -109,6 +109,18 @@ module JABA
       end  
     end
 
+    it 'enforces max title length' do
+      check_fail "Title must be 100 characters or less but was 166", line: [__FILE__, 'tagF'] do
+        jaba(barebones: true) do
+          define :test do
+            attr :a do
+              title 'This title exceeds the max attribute title length that Jaba allows. If titles were allowed to be this long it would look bad in command line help and reference manual' # tagF
+            end
+          end
+        end
+      end
+    end
+
     it 'supports adding properties' do
       jaba(barebones: true) do
         define :test do

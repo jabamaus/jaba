@@ -244,6 +244,10 @@ module JABA
         rescue JDLError => e
           jaba_error("#{describe} default failed validation: #{e.raw_message}", callstack: e.backtrace)
         end
+      when :title
+        if incoming.size > MAX_TITLE_CHARS
+          jaba_error("Title must be #{MAX_TITLE_CHARS} characters or less but was #{incoming.size}")
+        end
       end
     end
 

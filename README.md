@@ -3,7 +3,6 @@
 To do:
 
 - Have a 'jaba clean' command
-- Enforce a maximum title length
 - If generating more than one file with same basename, differentiate in output
 - validate that build_root is not allowed to be src_root
 - first time jaba is run it creates a jaba.config file in src_root and in build_root. The one in src_root can be optionally checked in.

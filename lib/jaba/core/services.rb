@@ -39,6 +39,10 @@ module JABA
   using JABACoreExt
 
   @@running_tests = false
+
+  # Maximum length of attribute etc title string.
+  #
+  MAX_TITLE_CHARS = 100
   
   ##
   #
