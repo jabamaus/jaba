@@ -97,7 +97,7 @@ module JABA
       if (@eol == :windows) || ((@eol == :native) && OS.windows?)
         @writer.str.gsub!("\n", "\r\n")
       end
-      @file_manager.write_file(self, **options)
+      @file_manager.write(self, **options)
     end
 
   end
@@ -133,8 +133,8 @@ module JABA
     end
 
     ##
-    # TODO: lose _file
-    def write_file(file)
+    #
+    def write(file)
       fn = file.filename
 
       if file.str.empty?
@@ -144,7 +144,7 @@ module JABA
       status = nil
 
       if file.track?
-        existing = read_file(fn, encoding: file.encoding)
+        existing = read(fn, encoding: file.encoding)
         if existing.nil?
           status = :ADDED
           @added << fn
@@ -182,7 +182,7 @@ module JABA
 
     ##
     #
-    def read_file(filename, encoding: nil, fail_if_not_found: false, freeze: true)
+    def read(filename, encoding: nil, fail_if_not_found: false, freeze: true)
       fn = filename.to_absolute(clean: true)
       str = file_read_cache[fn]
       if str.nil?

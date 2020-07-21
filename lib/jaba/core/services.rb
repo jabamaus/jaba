@@ -689,7 +689,7 @@ module JABA
       if str
         @top_level_api.instance_eval(str, file)
       elsif file
-        @top_level_api.instance_eval(file_manager.read_file(file), file)
+        @top_level_api.instance_eval(file_manager.read(file), file)
       end
       if block_given?
         @top_level_api.instance_eval(&block)
@@ -777,7 +777,7 @@ module JABA
       # Special handling for config.jaba
       #
       if f.basename == 'config.jaba'
-        content = @file_manager.read_file(f, freeze: false)
+        content = @file_manager.read(f, freeze: false)
         log "Executing #{f}"
         content.prepend("open_instance :globals, type: :globals do\n")
         content << "end"
