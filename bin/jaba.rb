@@ -4,8 +4,6 @@ require_relative '../lib/jaba'
 require 'optparse'
 require 'ostruct'
 
-using JABACoreExt
-
 opts = OpenStruct.new(
   jdl_paths: nil,
   dump_input: nil,
@@ -38,20 +36,6 @@ begin
     j.enable_logging = opts.enable_logging if opts.enable_logging
     j.generate_reference_doc = opts.generate_ref if opts.generate_ref
   end
-
-  added = output[:added]
-  modified = output[:modified]
-  warnings = output[:warnings]
-
-  puts output[:summary]
-  
-  added.each do |f|
-    puts "  #{f} [A]"
-  end
-  modified.each do |f|
-    puts "  #{f} [M]"
-  end
-  puts warnings if warnings
 rescue JABA::JDLError => e
   puts e.message
 
@@ -70,3 +54,18 @@ rescue => e
   puts(e.backtrace.map {|line| "  #{line}"})
   exit 1
 end
+
+puts output[:summary]
+
+output[:added].each do |f|
+  puts "  #{f} [A]"
+end
+
+output[:modified].each do |f|
+  puts "  #{f} [M]"
+end
+
+if output[:warnings]
+  puts output[:warnings]
+end
+
