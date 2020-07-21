@@ -49,4 +49,33 @@ module JABA
     "#{millis}ms"
   end
 
+  ##
+  #
+  def self.profile(enabled)
+    if !enabled
+      yield
+      return
+    end
+
+    begin
+      require 'ruby-prof'
+    rescue LoadError
+      puts "ruby-prof gem is required to run with --profile. Could not be loaded."
+      exit 1
+    end
+
+    puts 'Invoking ruby-prof...'
+    RubyProf.start
+    yield
+    result = RubyProf.stop
+    file = 'jaba.profile'.to_absolute
+    str = String.new
+    puts "Write profiling results to #{file}..."
+    [RubyProf::FlatPrinter, RubyProf::GraphPrinter].each do |p|
+      printer = p.new(result)
+      printer.print(str)
+    end
+    IO.write(file, str)
+  end
+
 end

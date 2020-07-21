@@ -145,11 +145,13 @@ module JABA
       end
 
       duration = JABA.milli_timer do
-        do_run
+        JABA.profile(ARGV.delete('--profile')) do
+          do_run
 
-        if !input.barebones?
-          log 'Building output...'
-          build_jaba_output
+          if !input.barebones?
+            log 'Building output...'
+            build_jaba_output
+          end
         end
       end
 

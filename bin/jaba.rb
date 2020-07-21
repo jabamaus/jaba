@@ -12,7 +12,6 @@ opts = OpenStruct.new(
   no_dump_output: nil,
   enable_logging: nil,
   dry_run: nil,
-  enable_profiling: nil,
   generate_ref: nil
 )
 
@@ -25,51 +24,19 @@ OptionParser.new do |op|
   op.on('--no-dump-output', 'Disables dumping of jaba output') { opts.no_dump_output = true }
   op.on('--log', 'Enable logging') { opts.enable_logging = true}
   op.on('--dry-run', 'Dry run') { opts.dry_run = true }
-  op.on('--profile', 'Profile jaba with ruby-prof gem') { opts.enable_profiling = true }
+  op.on('--profile', 'Profile jaba with ruby-prof gem')
   op.on('--gen-ref', 'Generate reference doc') { opts.generate_ref = true }
   op.separator ''
-end.parse!
-
-##
-#
-def profile(enabled)
-  if !enabled
-    yield
-    return
-  end
-
-  begin
-    require 'ruby-prof'
-  rescue LoadError
-    puts "'gem install ruby-prof' is required to run with --profile"
-    exit 1
-  end
-
-  puts 'Invoking ruby-prof...'
-  RubyProf.start
-  yield
-  result = RubyProf.stop
-  file = 'jaba.profile'.to_absolute
-  str = String.new
-  puts "Write profiling results to #{file}..."
-  [RubyProf::FlatPrinter, RubyProf::GraphPrinter].each do |p|
-    printer = p.new(result)
-    printer.print(str)
-  end
-  IO.write(file, str)
-end
+end.parse
 
 begin
-  output = nil
-  profile(opts.enable_profiling) do
-    output = JABA.run do |j|
-      j.jdl_paths = opts.jdl_paths if opts.jdl_paths
-      j.dump_input = opts.dump_input if opts.dump_input
-      j.dump_output = false if opts.no_dump_output
-      j.dry_run = opts.dry_run if opts.dry_run
-      j.enable_logging = opts.enable_logging if opts.enable_logging
-      j.generate_reference_doc = opts.generate_ref if opts.generate_ref
-    end
+  output = JABA.run do |j|
+    j.jdl_paths = opts.jdl_paths if opts.jdl_paths
+    j.dump_input = opts.dump_input if opts.dump_input
+    j.dump_output = false if opts.no_dump_output
+    j.dry_run = opts.dry_run if opts.dry_run
+    j.enable_logging = opts.enable_logging if opts.enable_logging
+    j.generate_reference_doc = opts.generate_ref if opts.generate_ref
   end
 
   added = output[:added]
