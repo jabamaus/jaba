@@ -79,7 +79,7 @@ module JABA
       @input.instance_variable_set(:@definitions, [])
       @input.instance_variable_set(:@dry_run, false)
       @input.instance_variable_set(:@barebones, false)
-      @input.instance_variable_set(:@jdl_paths, [JABA.cwd])
+      @input.instance_variable_set(:@src_root, nil)
 
       @output = {}
       
@@ -164,6 +164,27 @@ module JABA
     ##
     #
     def do_run
+      @src_root = input.src_root
+
+      if @src_root.nil? && !JABA.running_tests?
+        if File.exist?('config.jaba')
+          content = IO.read('config.jaba')
+          if content !~ /src_root "(.*)"/
+            jaba_error("Could not read src_root from config.jaba")
+          end
+          @src_root = Regexp.last_match(1)
+        elsif i = ARGV.index('--src-root')
+          @src_root = ARGV[i + 1]
+        else
+          $stderr.puts "Could not read src_root from config.jaba or from --src-root"
+          exit! # TODO: not sure about this
+        end
+      end
+
+      @src_root = @src_root.to_absolute(clean: true)
+
+      log "src_root=#{@src_root}"
+
       load_modules
 
       # Create attribute types
@@ -730,11 +751,9 @@ module JABA
           process_jdl_file(f)
         end
       end
-      
-      # TODO: rename to jdl_module_paths
-      Array(input.jdl_paths).each do |p|
-        # TODO: also need to load extension files
-        process_load_path(p)
+
+      if !JABA.running_tests? || (JABA.running_tests? && File.exist?(@src_root))
+        process_load_path(@src_root)
       end
 
       # Definitions can also be provided in a block form

@@ -76,6 +76,9 @@ module JABA
             if @value.nil?
               services.jaba_error("No value provided for '#{arg}'")
             end
+            if @attr.type_id == :file || @attr.type_id == :dir
+              @value = @value.to_absolute(clean: true)
+            end
             @attr.set(@value)
           end
           on_process_arg do |arg|

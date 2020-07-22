@@ -30,9 +30,8 @@ module JABA
   class Input
     
     ##
-    # One or more filenames and/or directories from which to load Jaba Definition Language definitions.
     #
-    attr_accessor :jdl_paths
+    attr_accessor :src_root
     
     ##
     #

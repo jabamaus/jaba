@@ -23,7 +23,7 @@ module JABA
       e = check_fail "Error at test.jaba:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric " \
                      "string or symbol",
                      line: [fullpath, line] do
-        jaba(barebones: true, jdl_paths: fullpath)
+        jaba(barebones: true)
       end
       e.cause.must_be_nil
     end
@@ -44,7 +44,7 @@ module JABA
       fullpath = "#{temp_dir}/test.jaba"
       IO.write(fullpath, "\n\n&*^^\n")
       e = check_fail 'Syntax error at test.jaba:3: unexpected &' do
-        jaba(barebones: true, jdl_paths: fullpath)
+        jaba(barebones: true)
       end
       e.cause.wont_be_nil
     end

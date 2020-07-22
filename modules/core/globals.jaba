@@ -4,14 +4,11 @@ define :globals do
 
   attr :src_root, type: :dir do
     title 'Root of source tree'
-    default __cwd__
   end
 
   attr :build_root, type: :dir do
     title 'Root of build tree'
-    default do
-      "#{src_root}/../#{src_root.basename}-build"
-    end
+    default __cwd__
   end
 
   attr :jaba_input_file, type: :file do

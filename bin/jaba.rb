@@ -5,7 +5,6 @@ require 'optparse'
 require 'ostruct'
 
 opts = OpenStruct.new(
-  jdl_paths: nil,
   dry_run: nil
 )
 
@@ -13,14 +12,12 @@ OptionParser.new do |op|
   op.banner = 'Welcome to JABA'
   op.separator ''
   op.separator 'Options:'
-  op.on('--jdl-path P', "JDL paths") {|lp| opts.jdl_paths = p }
   op.on('--dry-run', 'Dry run') { opts.dry_run = true }
   op.separator ''
 end.parse
 
 begin
   output = JABA.run do |j|
-    j.jdl_paths = opts.jdl_paths if opts.jdl_paths
     j.dry_run = opts.dry_run if opts.dry_run
   end
 rescue JABA::JDLError => e
