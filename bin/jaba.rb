@@ -17,7 +17,6 @@ OptionParser.new do |op|
   op.on('--jdl-path P', "JDL paths") {|lp| opts.jdl_paths = p }
   op.on('--log', 'Enable logging') { opts.enable_logging = true}
   op.on('--dry-run', 'Dry run') { opts.dry_run = true }
-  op.on('--profile', 'Profile jaba with ruby-prof gem')
   op.separator ''
 end.parse
 
