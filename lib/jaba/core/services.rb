@@ -77,7 +77,6 @@ module JABA
       @input = Input.new
       @input.instance_variable_set(:@argv, ARGV)
       @input.instance_variable_set(:@definitions, [])
-      @input.instance_variable_set(:@dump_output, true)
       @input.instance_variable_set(:@dry_run, false)
       @input.instance_variable_set(:@enable_logging, false)
       @input.instance_variable_set(:@barebones, false)
@@ -292,7 +291,6 @@ module JABA
             @input_manager.process
 
             if @globals.generate_reference_doc
-              input.instance_variable_set(:@dump_output, false)
               @top_level_jaba_types.sort_by! {|jt| jt.defn_id}
               generate_reference_doc
               return
@@ -660,7 +658,7 @@ module JABA
         end
       end
 
-      if input.dump_output?
+      if globals.dump_output && !globals.generate_reference_doc
         json = JSON.pretty_generate(@output)
         file = @file_manager.new_file(out_file, eol: :native)
         w = file.writer

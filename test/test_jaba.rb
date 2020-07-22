@@ -44,10 +44,10 @@ module JABA
         end
         c.definitions do
           open_instance :globals, type: :globals do
+            dump_output dump_output
             jaba_output_file "#{td}/jaba.output.json"
           end
         end
-        c.dump_output = dump_output
         c.dry_run = dry_run
       end
       warnings = op[:warnings]

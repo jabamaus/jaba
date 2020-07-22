@@ -6,7 +6,6 @@ require 'ostruct'
 
 opts = OpenStruct.new(
   jdl_paths: nil,
-  no_dump_output: nil,
   enable_logging: nil,
   dry_run: nil
 )
@@ -16,7 +15,6 @@ OptionParser.new do |op|
   op.separator ''
   op.separator 'Options:'
   op.on('--jdl-path P', "JDL paths") {|lp| opts.jdl_paths = p }
-  op.on('--no-dump-output', 'Disables dumping of jaba output') { opts.no_dump_output = true }
   op.on('--log', 'Enable logging') { opts.enable_logging = true}
   op.on('--dry-run', 'Dry run') { opts.dry_run = true }
   op.on('--profile', 'Profile jaba with ruby-prof gem')
@@ -26,7 +24,6 @@ end.parse
 begin
   output = JABA.run do |j|
     j.jdl_paths = opts.jdl_paths if opts.jdl_paths
-    j.dump_output = false if opts.no_dump_output
     j.dry_run = opts.dry_run if opts.dry_run
     j.enable_logging = opts.enable_logging if opts.enable_logging
   end
