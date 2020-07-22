@@ -44,26 +44,6 @@ module JABA
     attr_accessor :argv
 
     ##
-    # Name/path of file to contain a raw dump of all the input data to Jaba, that is to say all the definition data. Mostly
-    # useful for debugging and testing but could be useful as a second way of tracking definition changes in source control.
-    # The file is written before any file generation occurs, and can be considered a specification of the final data.
-    # Defaults to 'jaba.input.json', which will be created in cwd. By default this is disabled.
-    #
-    attr_accessor :jaba_input_file
-
-    ##
-    # Controls generation of :jaba_input_file. Off by default.
-    #
-    attr_bool :dump_input
-
-    ##
-    # Name/path of file to contain Jaba output in json format. Defaults to 'jaba.output.json', which will be created in cwd.
-    # Jaba output can be later used by another process (eg the build process) to do things like looking up paths by id rather
-    # than embedding them in code, iterating over all defined unit tests and invoking them, etc.
-    #
-    attr_accessor :jaba_output_file
-
-    ##
     # Controls generation of :jaba_output_file. On by default.
     #
     attr_bool :dump_output

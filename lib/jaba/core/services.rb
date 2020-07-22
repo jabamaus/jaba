@@ -77,9 +77,6 @@ module JABA
       @input = Input.new
       @input.instance_variable_set(:@argv, ARGV)
       @input.instance_variable_set(:@definitions, [])
-      @input.instance_variable_set(:@jaba_input_file, 'jaba.input.json')
-      @input.instance_variable_set(:@dump_input, false)
-      @input.instance_variable_set(:@jaba_output_file, 'jaba.output.json'.to_absolute)
       @input.instance_variable_set(:@dump_output, true)
       @input.instance_variable_set(:@dry_run, false)
       @input.instance_variable_set(:@enable_logging, false)
@@ -153,6 +150,7 @@ module JABA
       if !input.barebones?
         summary = String.new "Generated #{@generated.size} files, #{@added.size} added, #{@modified.size} modified in #{duration}"
         summary << " [dry run]" if input.dry_run?
+        # TODO: verbose mode prints all generated
 
         log summary
         log "Done! (#{duration})"
@@ -312,7 +310,7 @@ module JABA
       # Output definition input data as a json file, before generation. This is raw data as generated from the definitions.
       # Can be used for debugging and testing.
       #
-      if input.dump_input?
+      if globals.dump_input
         dump_jaba_input
       end
 
@@ -729,7 +727,9 @@ module JABA
 
       # Load core type definitions
       #
-      if !input.barebones?
+      if input.barebones?
+        process_jdl_file("#{modules_dir}/core/globals.jaba") # globals always needs loading
+      else
         @file_manager.glob("#{modules_dir}/**/*.jaba").each do |f|
           process_jdl_file(f)
         end

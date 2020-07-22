@@ -29,7 +29,7 @@ module JABA
       td = temp_dir(create: false)
       op = JABA.run do |c|
         c.jdl_paths = jdl_paths
-        c.argv = argv if argv
+        c.argv = Array(argv) if argv
         c.definitions(&block) if block_given?
         c.barebones = barebones
         if cpp_app || cpp_defaults
@@ -43,7 +43,8 @@ module JABA
           end
         end
         c.dump_output = dump_output
-        c.jaba_output_file = "#{td}/jaba.output.json"
+
+        c.argv << '--jaba-output-file' << "#{td}/jaba.output.json"
         c.dry_run = dry_run
       end
       warnings = op[:warnings]
