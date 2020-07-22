@@ -46,6 +46,7 @@ module JABA
           open_instance :globals, type: :globals do
             dump_output dump_output
             jaba_output_file "#{td}/jaba.output.json"
+            build_root "#{td}/build"
           end
         end
         c.dry_run = dry_run
