@@ -20,10 +20,11 @@ define :workspace do
 
   attr_array :projects, type: :symbol_or_string do
     title 'Contained projects'
-    note 'Specified by id (symbol or string), or by glob matches against $(projdir)'
+    note 'Specified by id (symbol or string), or by glob matches against project $(root). Dependencies will be automatically pulled in.'
     flags :required
     flags :no_sort # Matches will be sorted so no need to sort spec
-    # TODO: default to '**/*' ? Would need to overwrite default
+    example 'projects [:proj1, :proj2, :proj3] # Add 3 projects explicitly by id'
+    example "projects ['examples/**/*'] # Make a workspace containing all examples. Matches on $($root) of each project."
   end
 
   attr :name, type: :string do

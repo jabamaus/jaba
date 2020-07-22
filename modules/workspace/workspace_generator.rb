@@ -61,7 +61,7 @@ module JABA
       specs.each do |spec|
         if spec.string? && spec.wildcard?
           abs_spec = "#{@root}/#{spec}"
-          matches = @candidate_projects.select{|p| File.fnmatch?(abs_spec, p.projdir)}
+          matches = @candidate_projects.select{|p| File.fnmatch?(abs_spec, p.root)}
           if matches.empty?
             jaba_warning("No projects matching spec '#{spec.inspect_unquoted}' found", errline: errline)
           end
