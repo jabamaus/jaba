@@ -51,7 +51,7 @@ module JABA
             name = Regexp.last_match(1).gsub('-', '_').to_sym
             attr = services.globals_node.get_attr(name, fail_if_not_found: false)
             if !attr
-              services.jaba_error("'#{arg}' option unrecognised")
+              services.jaba_error("'#{arg}' option not recognised")
             end
             case attr.attr_def.variant
             when :single
