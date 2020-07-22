@@ -85,7 +85,6 @@ module JABA
       @input.instance_variable_set(:@enable_logging, false)
       @input.instance_variable_set(:@barebones, false)
       @input.instance_variable_set(:@jdl_paths, [JABA.cwd])
-      @input.instance_variable_set(:@generate_reference_doc, false)
 
       @output = {}
       
@@ -139,10 +138,6 @@ module JABA
     def run
       init_log if input.enable_logging?
       log 'Starting Jaba', section: true
-
-      if input.generate_reference_doc?
-        input.instance_variable_set(:@dump_output, false)
-      end
 
       duration = JABA.milli_timer do
         JABA.profile(ARGV.delete('--profile')) do
@@ -226,12 +221,6 @@ module JABA
 
       @top_level_jaba_types.each(&:post_create)
 
-      if input.generate_reference_doc?
-        @top_level_jaba_types.sort_by! {|jt| jt.defn_id}
-        generate_reference_doc
-        return
-      end
-
       # When an attribute defined in a JabaType will reference a differernt JabaType a dependency on that
       # type is added. JabaTypes are dependency order sorted to ensure that referenced JabaNodes are created
       # before the JabaNode that are referencing it.
@@ -303,6 +292,13 @@ module JABA
             @globals_node = g.root_nodes.first
             @globals = @globals_node.attrs
             @input_manager.process
+
+            if @globals.generate_reference_doc
+              input.instance_variable_set(:@dump_output, false)
+              @top_level_jaba_types.sort_by! {|jt| jt.defn_id}
+              generate_reference_doc
+              return
+            end
           else
             # Generate acceessor
             #

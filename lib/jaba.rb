@@ -82,11 +82,6 @@ module JABA
     # Used during testing. Only loads the bare minimum definitions. Jaba will not be able to generate any projects in this mode. 
     #
     attr_bool :barebones
-
-    ##
-    # Generate reference documentation in markdown format
-    #
-    attr_bool :generate_reference_doc
   end
 
   ##

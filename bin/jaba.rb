@@ -9,8 +9,7 @@ opts = OpenStruct.new(
   dump_input: nil,
   no_dump_output: nil,
   enable_logging: nil,
-  dry_run: nil,
-  generate_ref: nil
+  dry_run: nil
 )
 
 OptionParser.new do |op|
@@ -23,7 +22,6 @@ OptionParser.new do |op|
   op.on('--log', 'Enable logging') { opts.enable_logging = true}
   op.on('--dry-run', 'Dry run') { opts.dry_run = true }
   op.on('--profile', 'Profile jaba with ruby-prof gem')
-  op.on('--gen-ref', 'Generate reference doc') { opts.generate_ref = true }
   op.separator ''
 end.parse
 
@@ -34,7 +32,6 @@ begin
     j.dump_output = false if opts.no_dump_output
     j.dry_run = opts.dry_run if opts.dry_run
     j.enable_logging = opts.enable_logging if opts.enable_logging
-    j.generate_reference_doc = opts.generate_ref if opts.generate_ref
   end
 rescue JABA::JDLError => e
   puts e.message
