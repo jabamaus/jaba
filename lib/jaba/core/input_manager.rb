@@ -67,21 +67,24 @@ module JABA
           on_enter do |attr|
             @attr = attr
             @type = attr.attr_def.jaba_attr_type
+            @value = nil
+            if @attr.type_id == :bool
+              @value = true
+            end
+          end
+          on_exit do
+            if @value.nil?
+              services.jaba_error("No value provided for '#{arg}'")
+            end
+            @attr.set(@value)
           end
           on_process_arg do |arg|
             if arg.start_with?('-')
-              if @attr.type_id == :bool
-                @attr.set(true)
-                argv.unshift(arg)
-                goto :default
-              else
-                services.jaba_error("No value provided for '#{arg}'")
-              end
+              argv.unshift(arg)
             else
-              val = @type.from_string(arg)
-              @attr.set(val)
-              goto :default
+              @value = @type.from_string(arg)
             end
+            goto :default
           end
         end
         state :array do

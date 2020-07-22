@@ -16,6 +16,15 @@ module JABA
     end
 
     it 'can populate globals from command line' do
+      jaba(argv: ['--bool']) do
+        open_type :globals do
+          attr :bool, type: :bool
+        end
+        define :test
+        test :t do
+          globals.bool.must_equal(true)
+        end
+      end
       jaba(argv: [
         '--bool1',
         '--bool2', 'false',
