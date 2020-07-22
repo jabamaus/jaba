@@ -96,7 +96,7 @@ module JABA
         cfg[:arch] = attrs.arch_ref.defn_id
         cfg[:name] = attrs.configname
         cfg[:defines] = attrs.defines
-        cfg[:inc] = attrs.inc
+        cfg[:inc] = attrs.inc.map{|f| f.relative_path_from(out_dir)}
         cfg[:rtti] = attrs.rtti
         cfg[:vcproperty] = attrs.vcproperty
       end

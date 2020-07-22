@@ -35,6 +35,7 @@ define :globals do
 
   attr :dump_output, type: :bool do
     title 'Controls generation of $(jaba_output_file)'
+    default true
   end
 
   attr :jaba_log_file, type: :file do

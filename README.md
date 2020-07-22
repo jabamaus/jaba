@@ -2,6 +2,7 @@
 
 To do:
 
+- Combine jaba.input.json and jaba.output.json into just the latter. 
 - should be able to run jaba in examples and then again in examples-build and it should do the same thing
 - process config.jaba first
 - Have a 'jaba clean' command
@@ -146,3 +147,5 @@ A: Because Jaba cares a lot about a clean build, and about deterministic minimum
 
 Q: Why is Jaba library code style not very 'ruby'?
 A: The code is written in a style that is the easiest to step through in an IDE debugger, which is an essential tool in the development process
+
+https://rix0r.nl/blog/2015/08/13/cmake-guide/

@@ -77,12 +77,14 @@ module JABA
     it 'supports exporting array attributes to dependents' do
       proj = jaba(dry_run: true, cpp_app: true) do
         cpp :app do
+          root 'app'
           deps [:lib]
           vcglobal :BoolAttr, true
           defines ['F', 'A']
           src ['main.cpp'], :force
         end
         cpp :lib do
+          root 'lib'
           type :lib
           src ['main.cpp'], :force
           vcglobal :StringAttr, 's'
@@ -93,6 +95,7 @@ module JABA
           defines ['C', 'B'], :export
           defines ['R'], :export if config == :Release
           defines ['E']
+          inc ['include'], :export
           # TODO: test vcproperty
         end
       end
@@ -105,6 +108,7 @@ module JABA
       cfg_release = proj[:configs][:Release]
       cfg_release.wont_be_nil
       cfg_release[:defines].must_equal ['A', 'B', 'C', 'F', 'R']
+      cfg_debug[:inc].must_equal ['../lib/include']
     end
 
     it 'only allows :export on array and hash properties' do

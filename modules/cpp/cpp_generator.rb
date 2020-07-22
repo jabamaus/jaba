@@ -67,38 +67,57 @@ module JABA
       @project_nodes.sort_topological! do |n, &b|
         n.attrs.deps.each(&b)
       end
+
+      @project_nodes.each do |pn|
+        make_node_paths_absolute(pn)
+      end
       
       @project_nodes.reverse_each do |node|
         node.attrs.deps.each do |dep_node|
-          # Skip single value attributes as they cannot export. The reason for this is that exporting it would simply
-          # overwrite the destination attribute creating a conflict. Which node should control the value? For this
-          # reason disallow.
-          #
-          dep_node.visit_attr(top_level: true, skip_variant: :single) do |dep_attr|
-            attr = nil
-
-            # visit all attribute elements in array/hash
-            #
-            dep_attr.visit_attr do |elem|
-              if elem.has_flag_option?(:export)
-
-                # Get the corresponding attr in this project node. Only consider this node so don't set search: true.
-                # This will always be a hash or an array.
-                #
-                attr = node.get_attr(elem.defn_id) if !attr
-                attr.insert_clone(elem)
-              end
+          process_node_exports(node, dep_node)
+          dep_node.children.each do |dep_cfg|
+            # TODO: This is pretty nasty. Improve.
+            dep_cfg_handle = dep_cfg.handle[/^.*?\|(.*)/, 1]
+            cfg = node.children.find do |c|
+              c.handle[/^.*?\|(.*)/, 1] == dep_cfg_handle
             end
+            if !cfg
+              jaba_error("Could not find config in #{node.describe} to match #{dep_cfg.describe}")
+            end
+            process_node_exports(cfg, dep_cfg)
           end
         end
       end
 
       @project_nodes.each do |pn|
-        make_node_paths_absolute(pn)
-
         klass = pn.attrs.host_ref.attrs.cpp_project_classname
         proj = make_project(klass, pn)
         proj.process_src(:src, :src_ext)
+      end
+    end
+
+    ##
+    #
+    def process_node_exports(target_node, dep_node)
+      # Skip single value attributes as they cannot export. The reason for this is that exporting it would simply
+      # overwrite the destination attribute creating a conflict. Which node should control the value? For this
+      # reason disallow.
+      #
+      dep_node.visit_attr(top_level: true, skip_variant: :single) do |dep_attr|
+        attr = nil
+
+        # visit all attribute elements in array/hash
+        #
+        dep_attr.visit_attr do |elem|
+          if elem.has_flag_option?(:export)
+
+            # Get the corresponding attr in this project node. Only consider this node so don't set search: true.
+            # This will always be a hash or an array.
+            #
+            attr = target_node.get_attr(elem.defn_id) if !attr
+            attr.insert_clone(elem)
+          end
+        end
       end
     end
 
