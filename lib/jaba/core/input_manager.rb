@@ -48,7 +48,7 @@ module JABA
             if arg !~ /--(.*)/
               services.jaba_error("Invalid option format '#{arg}'")
             end
-            name = Regexp.last_match(1).sub('-', '_').to_sym
+            name = Regexp.last_match(1).gsub('-', '_').to_sym
             attr = services.globals_node.get_attr(name, fail_if_not_found: false)
             if !attr
               services.jaba_error("'#{arg}' option unrecognised")
