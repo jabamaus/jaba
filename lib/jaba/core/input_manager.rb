@@ -25,9 +25,9 @@ module JABA
 
       # TODO: automatically patch in new attrs
       if !JABA.running_tests?
-        user_config_file = "#{@services.globals.build_root}/config.jaba"
-        if !File.exist?(user_config_file)
-          make_jaba_config(user_config_file)
+        config_file = "#{@services.globals.build_root}/config.jaba"
+        if !File.exist?(config_file)
+          make_jaba_config(config_file)
         end
       end
     end
