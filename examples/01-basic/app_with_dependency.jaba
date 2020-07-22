@@ -1,9 +1,9 @@
-# Demonstrates the minimum required to create a console app
-#
-cpp :BasicApp do
+cpp :BasicAppWithDependency do
   root '../ExampleApp'
   type :console
   hosts [:vs2019], platforms: [:windows_x86, :windows_x86_64]
   configs [:Debug, :Release]
   src ['main.cpp']
+  deps [:BasicStaticLib]
+  defines ['WITH_BASIC_LIB']
 end

@@ -2,7 +2,8 @@
 
 To do:
 
-- Combine jaba.input.json and jaba.output.json into just the latter. 
+- config.jaba is not actually being executed!
+- Combine jaba.input.json and jaba.output.json into just the latter?
 - should be able to run jaba in examples and then again in examples-build and it should do the same thing
 - process config.jaba first
 - Have a 'jaba clean' command
