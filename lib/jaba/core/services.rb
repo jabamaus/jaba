@@ -181,7 +181,7 @@ module JABA
         end
       end
 
-      @src_root = @src_root.to_absolute(clean: true)
+      @src_root = @src_root.to_absolute(clean: true) if @src_root
 
       log "src_root=#{@src_root}"
 
@@ -752,7 +752,7 @@ module JABA
         end
       end
 
-      if !JABA.running_tests? || (JABA.running_tests? && File.exist?(@src_root))
+      if @src_root
         process_load_path(@src_root)
       end
 
