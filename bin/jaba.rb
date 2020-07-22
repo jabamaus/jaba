@@ -24,21 +24,21 @@ begin
     j.dry_run = opts.dry_run if opts.dry_run
   end
 rescue JABA::JDLError => e
-  puts e.message
+  $stderr.puts e.message
 
   # If there is a backtrace skip the first item as file and line info is included in main message
   #
   if e.backtrace.size > 1
-    puts 'Backtrace:'
+    $stderr.puts 'Backtrace:'
     bt = e.backtrace
     bt.shift
-    puts(bt.map {|line| "  #{line}"})
+    $stderr.puts(bt.map {|line| "  #{line}"})
   end
   exit 1
 rescue => e
-  puts "Internal error: #{e.message}"
-  puts 'Backtrace:'
-  puts(e.backtrace.map {|line| "  #{line}"})
+  $stderr.puts "Internal error: #{e.message}"
+  $stderr.puts 'Backtrace:'
+  $stderr.puts(e.backtrace.map {|line| "  #{line}"})
   exit 1
 end
 
