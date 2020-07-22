@@ -78,13 +78,12 @@ module JABA
       @input.instance_variable_set(:@argv, ARGV)
       @input.instance_variable_set(:@definitions, [])
       @input.instance_variable_set(:@dry_run, false)
-      @input.instance_variable_set(:@enable_logging, false)
       @input.instance_variable_set(:@barebones, false)
       @input.instance_variable_set(:@jdl_paths, [JABA.cwd])
 
       @output = {}
       
-      @log_file = nil
+      @log_msgs = JABA.running_tests? ? nil : [] # Disable logging when running tests
       
       @warnings = []
       @warn_object = nil
@@ -132,8 +131,7 @@ module JABA
     ##
     #
     def run
-      init_log if input.enable_logging?
-      log 'Starting Jaba', section: true
+      log "Starting Jaba at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}", section: true
 
       duration = JABA.milli_timer do
         JABA.profile(ARGV.delete('--profile')) do
@@ -803,24 +801,14 @@ module JABA
 
     ##
     #
-    def init_log
-      log_fn = 'jaba.log'.to_absolute
-      puts "Logging to #{log_fn}..."
-      
-      File.delete(log_fn) if File.exist?(log_fn)
-      @log_file = File.open(log_fn, 'a')
-    end
-
-    ##
-    #
     def log(msg, severity = :INFO, section: false)
-      return if !@log_file
+      return if !@log_msgs
       line = msg
       if section
         n = ((96 - msg.size)/2).round
         line = "#{'=' * n} #{msg} #{'=' * n}"
       end
-      @log_file.puts("#{Time.now.strftime("%Y-%m-%d %H:%M:%S")} #{severity} #{line}")
+      @log_msgs << "#{severity} #{line}"
     end
 
     ##
@@ -832,9 +820,10 @@ module JABA
     ##
     #
     def term_log
-      return if !@log_file
-      @log_file.flush
-      @log_file.close
+      return if !@log_msgs
+      log_fn = globals ? globals.jaba_log_file : 'jaba.log'
+      File.delete(log_fn) if File.exist?(log_fn)
+      IO.write(log_fn, @log_msgs.join("\n"))
     end
 
     ##

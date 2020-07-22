@@ -127,6 +127,7 @@ module JABA
       @services.globals_node.visit_attr(top_level: true) do |attr, value|
         attr_def = attr.attr_def
 
+        # TODO: include ref manual type docs, eg type, definition location etc
         comment = String.new("#{attr_def.title}. #{attr_def.notes.join("\n")}")
         comment.wrap!(130, prefix: '# ')
 

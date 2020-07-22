@@ -49,11 +49,6 @@ module JABA
     attr_bool :dump_output
 
     ##
-    # Enable logging. 'jaba.log' will be written to cwd. Off by default.
-    #
-    attr_bool :enable_logging
-
-    ##
     # Execute as normal but don't write any files.
     #
     attr_bool :dry_run

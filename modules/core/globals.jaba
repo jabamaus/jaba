@@ -40,8 +40,11 @@ define :globals do
     title 'Controls generation of $(jaba_output_file)'
   end
 
-  attr :enable_logging, type: :bool do
-    title 'Write jaba.log to current working directory'
+  attr :jaba_log_file, type: :file do
+    title 'Jaba log file location'
+    default do
+      "#{build_root}/jaba.log"
+    end
   end
 
   attr :dry_run, type: :bool do
