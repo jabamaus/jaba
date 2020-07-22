@@ -64,7 +64,7 @@ module JABA
     # Used in error messages.
     #
     def describe
-      "'#{@defn_id}' node"
+      "'#{@handle}' node"
     end
 
     ##
