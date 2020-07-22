@@ -21,12 +21,11 @@ module JABA
     ##
     #
     def process
-      @globals = @services.globals
       process_cmd_line
 
       # TODO: automatically patch in new attrs
       if !JABA.running_tests?
-        user_config_file = "#{@globals.build_root}/config.jaba"
+        user_config_file = "#{@services.globals.build_root}/config.jaba"
         if !File.exist?(user_config_file)
           make_jaba_config(user_config_file)
         end
@@ -37,8 +36,8 @@ module JABA
     #
     def process_cmd_line
       services = @services
-      globals = @globals
       argv = services.input.argv
+
       if !argv.array?
         jaba_error("'argv' must be an array")
       end
@@ -50,7 +49,7 @@ module JABA
               services.jaba_error("Invalid option format '#{arg}'")
             end
             name = Regexp.last_match(1).sub('-', '_').to_sym
-            attr = globals.get_attr(name, fail_if_not_found: false)
+            attr = services.globals_node.get_attr(name, fail_if_not_found: false)
             if !attr
               services.jaba_error("'#{arg}' option unrecognised")
             end
