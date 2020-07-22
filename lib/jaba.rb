@@ -44,11 +44,6 @@ module JABA
     attr_accessor :argv
 
     ##
-    # Controls generation of :jaba_output_file. On by default.
-    #
-    attr_bool :dump_output
-
-    ##
     # Execute as normal but don't write any files.
     #
     attr_bool :dry_run
@@ -57,6 +52,7 @@ module JABA
     # Used during testing. Only loads the bare minimum definitions. Jaba will not be able to generate any projects in this mode. 
     #
     attr_bool :barebones
+    
   end
 
   ##
