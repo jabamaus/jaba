@@ -93,9 +93,10 @@ module JABA
           vpath = if vpath_option
             vpath_option
           else
-            # vpath must not actually contain any ..
+            # If no specified vpath then preserve the structure of the src files/folders. 
+            # It is important that vpath does not start with ..
             #
-            f.dirname.relative_path_from(@projdir, backslashes: bs, nil_if_dot: true, no_dot_dot: true)
+            f.dirname.relative_path_from(@root, backslashes: bs, nil_if_dot: true, no_dot_dot: true)
           end
 
           sf = SourceFile.new
