@@ -1,0 +1,11 @@
+cpp :BasicDll do
+  root '../ExampleDll'
+  type :dll
+  hosts [:vs2019], platforms: [:windows_x86, :windows_x86_64]
+  configs [:Debug, :Release]
+  src ['.']
+  inc ['include'], :export
+  defines ['WITH_EXAMPLE_DLL'], :export
+  defines ['DLL_EXPORT']
+  defines ['_USRDLL', '_WINDLL', '_WINDOWS'] # TODO: Move into jaba
+end
