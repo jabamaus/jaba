@@ -2,6 +2,8 @@
 
 To do:
 
+- Use did_you_mean? Eg
+  Error at basic_dll.jaba:8: 'define' attribute not defined. Did you mean 'defines'?
 - config.jaba is not actually being executed!
 - Combine jaba.input.json and jaba.output.json into just the latter?
 - should be able to run jaba in examples and then again in examples-build and it should do the same thing

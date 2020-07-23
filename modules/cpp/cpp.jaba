@@ -263,6 +263,14 @@ define :cpp do
       example "inc ['mylibrary/include'], :export # Export include path to dependents"
     end
 
+    attr :importlib do
+      title 'Name of import lib for use will dlls'
+      note 'Defaults to $(projname)$(targetsuffix).lib'
+      default do
+        "#{projname}#{targetsuffix}.lib"
+      end
+    end
+
     attr_array :nowarn do
       title 'Warnings to disable'
       note 'Placed directly into projects as is, with no validation'

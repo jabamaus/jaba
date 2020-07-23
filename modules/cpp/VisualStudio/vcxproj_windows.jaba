@@ -94,7 +94,13 @@ translator :vcxproj_config_windows do |vcxproj, cfg_type|
 
   # Link
   #
-  if cfg_type != :lib
+  # TODO
+  vcproperty 'Link|AdditionalDependencies' do
+    #(libs + syslibs).vc_join_paths('%(AdditionalDependencies)')
+  end
+
+  case cfg_type
+  when :app, :dll
     vcproperty 'Link|SubSystem' do
       case cfg_type
       when :console
@@ -103,6 +109,14 @@ translator :vcxproj_config_windows do |vcxproj, cfg_type|
         :Windows
       else
         fail "'#{type}' unhandled"
+      end
+    end
+    if cfg_type == :dll
+      il = importlib
+      if il
+        vcproperty 'Link|ImportLibrary' do
+          "#{libdir}/#{importlib}".relative_path_from(vcxproj.projdir, backslashes: true)
+        end
       end
     end
   end
