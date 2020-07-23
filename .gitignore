@@ -12,3 +12,4 @@
 .vscode*
 bench.rb
 examples-build/
+docs/
