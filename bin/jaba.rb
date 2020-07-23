@@ -1,28 +1,11 @@
-# frozen_string_literal: true
-
 require_relative '../lib/jaba'
-require 'optparse'
-require 'ostruct'
-
-opts = OpenStruct.new(
-  dry_run: nil
-)
-
-OptionParser.new do |op|
-  op.banner = 'Welcome to JABA'
-  op.separator ''
-  op.separator 'Options:'
-  op.on('--dry-run', 'Dry run') { opts.dry_run = true }
-  op.separator ''
-end.parse
 
 begin
-  output = JABA.run do |j|
-    j.dry_run = opts.dry_run if opts.dry_run
-  end
+  output = JABA.run
 rescue JABA::JDLError => e
   $stderr.puts e.message
 
+  # TODO: nasty
   # If there is a backtrace skip the first item as file and line info is included in main message
   #
   if e.backtrace.size > 1
