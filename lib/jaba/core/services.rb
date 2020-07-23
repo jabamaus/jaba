@@ -77,7 +77,7 @@ module JABA
       @input = Input.new
       @input.instance_variable_set(:@argv, ARGV)
       @input.instance_variable_set(:@definitions, [])
-      @input.instance_variable_set(:@dry_run, false)
+      @input.instance_variable_set(:@dry_run, ARGV.delete('--dry-run')) # TODO
       @input.instance_variable_set(:@barebones, false)
       @input.instance_variable_set(:@src_root, nil)
 
