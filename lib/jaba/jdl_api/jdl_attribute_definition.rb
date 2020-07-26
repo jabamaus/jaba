@@ -105,20 +105,20 @@ module JABA
 
     ##
     #
-    def attr_single?
-      @attr_def.attr_single?
+    def single?
+      @attr_def.single?
     end
 
     ##
     #
-    def attr_array?
-      @attr_def.attr_array?
+    def array?
+      @attr_def.array?
     end
 
     ##
     #
-    def attr_hash?
-      @attr_def.attr_hash?
+    def hash?
+      @attr_def.hash?
     end
 
     ##

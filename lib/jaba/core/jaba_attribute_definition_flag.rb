@@ -154,7 +154,7 @@ module JABA
     ##
     #
     def compatible?(attr_def)
-      if !attr_def.attr_array?
+      if !attr_def.array?
         services.jaba_error(':allow_dupes is only allowed on array attributes')
       end
     end
@@ -186,7 +186,7 @@ module JABA
     ##
     #
     def compatible?(attr_def)
-      if !attr_def.attr_array?
+      if !attr_def.array?
         services.jaba_error(':no_sort is only allowed on array attributes')
       end
     end

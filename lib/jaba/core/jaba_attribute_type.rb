@@ -315,7 +315,7 @@ module JABA
     ##
     #
     def post_init_attr_def(attr_def)
-      if attr_def.attr_array?
+      if attr_def.array?
         attr_def.set_property(:flags, [:no_sort, :allow_dupes])
       end
     end

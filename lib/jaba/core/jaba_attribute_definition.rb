@@ -61,7 +61,7 @@ module JABA
 
       # Custom hash attribute setup
       #
-      if attr_hash?
+      if hash?
         case @key_type_id
         when :symbol, :string
           @jaba_attr_key_type = services.get_attribute_type(@key_type_id)
@@ -89,7 +89,7 @@ module JABA
       # the user must supply the value in definitions.
       #
       attr_type_default = @jaba_attr_type.default
-      if !attr_type_default.nil? && attr_single? && !default_set? && !has_flag?(:required)
+      if !attr_type_default.nil? && single? && !default_set? && !has_flag?(:required)
         set_property(:default, attr_type_default)
       end
 
@@ -159,20 +159,20 @@ module JABA
     end
 
     ##
-    # TODO: rename to just single?
-    def attr_single?
+    #
+    def single?
       @variant == :single
     end
 
     ##
     #
-    def attr_array?
+    def array?
       @variant == :array
     end
 
     ##
     #
-    def attr_hash?
+    def hash?
       @variant == :hash
     end
 
@@ -217,11 +217,11 @@ module JABA
         @default_block = @default.proc? ? @default : nil
         return if @default_block
 
-        if attr_single? && incoming.is_a?(Enumerable)
+        if single? && incoming.is_a?(Enumerable)
           jaba_error("#{describe} default must be a single value not a '#{incoming.class}'")
-        elsif attr_array? && !incoming.array?
+        elsif array? && !incoming.array?
           jaba_error("#{describe} default must be an array not a '#{incoming.class}'")
-        elsif attr_hash? && !incoming.hash?
+        elsif hash? && !incoming.hash?
           jaba_error("#{describe} default must be a hash not a '#{incoming.class}'")
         end
 

@@ -1025,7 +1025,7 @@ module JABA
         type = String.new
         if ad.type_id
           type << "#{ad.type_id}"
-          type << " #{ad.variant}" if !ad.attr_single?
+          type << " #{ad.variant}" if !ad.single?
         end
         md_row(w, :type, type)
         ad.jaba_attr_type.get_reference_manual_rows(ad)&.each do |id, value|
