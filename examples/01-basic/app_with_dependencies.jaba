@@ -5,5 +5,4 @@ cpp :BasicAppWithDependencies do
   configs [:Debug, :Release]
   src ['main.cpp']
   deps [:BasicStaticLib, :BasicDll]
-  defines ['_CONSOLE'] # TODO into jaba
 end
