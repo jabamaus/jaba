@@ -6,5 +6,4 @@ cpp :BasicStaticLib do
   src ['.']
   inc ['include'], :export
   defines ['WITH_EXAMPLE_LIB'], :export
-  defines ['_LIB'] # TODO move into jaba
 end

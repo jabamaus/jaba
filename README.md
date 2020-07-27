@@ -2,6 +2,7 @@
 
 To do:
 
+- How to conttrol if :export should also apply to exporting module? Maybe have :public/:private and both could be specified.
 - Use did_you_mean? Eg
   Error at basic_dll.jaba:8: 'define' attribute not defined. Did you mean 'defines'?
 - config.jaba is not actually being executed!
