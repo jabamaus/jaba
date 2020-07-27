@@ -209,7 +209,7 @@ define :cpp do
     attr :bindir, type: :dir do
       title 'Output directory for executables'
       default do
-        "#{build_root}/bin/#{config}"
+        "#{build_root}/bin/#{arch}/#{config}"
       end
       flags :no_check_exist
     end
@@ -217,7 +217,7 @@ define :cpp do
     attr :libdir, type: :dir do
       title 'Output directory for libs'
       default do
-        "#{build_root}/lib/#{config}"
+        "#{build_root}/lib/#{arch}/#{config}"
       end
       flags :no_check_exist
     end
@@ -225,7 +225,7 @@ define :cpp do
     attr :objdir, type: :dir do
       title 'Output directory for object files'
       default do
-        "#{build_root}/obj/#{config}/#{projname}"
+        "#{build_root}/obj/#{arch}/#{config}/#{projname}"
       end
       flags :no_check_exist
     end
