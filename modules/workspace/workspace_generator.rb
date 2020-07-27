@@ -43,7 +43,7 @@ module JABA
       @configs = {}
       @projects.each do |p|
         p.each_config do |cfg|
-          cfg_id = cfg.attrs.config
+          cfg_id = cfg.handle[/^.*?\|(.*)/, 1] # TODO: nasty
           if !@configs.key?(cfg_id)
             @configs[cfg_id] = [cfg.attrs.configname, cfg.attrs.arch_ref.attrs.vsname]
           end
