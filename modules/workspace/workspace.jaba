@@ -43,12 +43,6 @@ define :workspace do
     title 'Primary project'
   end
 
-  # TODO: Make VS-specific?
-  attr_array :configs, type: :symbol_or_string do
-    title 'Solution configurations'
-    flags :no_sort
-  end
-
 end
 
 open_type :host do
