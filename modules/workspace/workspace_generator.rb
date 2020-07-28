@@ -11,17 +11,6 @@ module JABA
   class WorkspaceGenerator < Generator
     
     Generator.work_with(:workspace)
-
-    ##
-    #
-    def init
-    end
-
-    ##
-    #
-    def make_nodes
-      make_node
-    end
     
     ##
     # For use by workspace generator. spec is either a defn_id or a wildcard match against projdir.
@@ -30,13 +19,17 @@ module JABA
       specs.each do |spec|
         if spec.string? && spec.wildcard?
           abs_spec = "#{root}/#{spec}"
-          matches = @candidate_projects.select{|p| File.fnmatch?(abs_spec, p.root)}
+          matches = @candidate_projects.select do |p|
+            File.fnmatch?(abs_spec, p.root)
+           end
           if matches.empty?
             jaba_warning("No projects matching spec '#{spec.inspect_unquoted}' found", errline: errline)
           end
           projects.concat(matches)
         else # its an id
-          matches = @candidate_projects.select{|p| p.handle.start_with?("#{spec}|")}
+          matches = @candidate_projects.select do |p|
+            p.handle.start_with?("#{spec}|")
+          end
           if matches.empty?
             jaba_error("No projects matching spec '#{spec.inspect_unquoted}' found", errline: errline)
           end

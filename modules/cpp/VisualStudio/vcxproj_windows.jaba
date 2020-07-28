@@ -60,7 +60,9 @@ translator :vcxproj_config_windows do |vcxproj, cfg_type|
   # ClCompile
   #
   vcproperty 'ClCompile|AdditionalIncludeDirectories' do
-    inc.map{|i| i.relative_path_from(vcxproj.projdir, backslashes: true)}.vs_join_paths(inherit: '%(AdditionalIncludeDirectories)')
+    inc.map do |i|
+      i.relative_path_from(vcxproj.projdir, backslashes: true)
+    end.vs_join_paths(inherit: '%(AdditionalIncludeDirectories)')
   end
 
   vcproperty 'ClCompile|AdditionalOptions' do
@@ -94,9 +96,8 @@ translator :vcxproj_config_windows do |vcxproj, cfg_type|
 
   # Link
   #
-  # TODO
   vcproperty 'Link|AdditionalDependencies' do
-    #(libs + syslibs).vc_join_paths('%(AdditionalDependencies)')
+    (libs + syslibs).vs_join_paths(inherit: '%(AdditionalDependencies)')
   end
 
   if cfg_type != :lib
@@ -110,13 +111,14 @@ translator :vcxproj_config_windows do |vcxproj, cfg_type|
         fail "'#{type}' unhandled"
       end
     end
+    vcproperty 'ProjectReference|LinkLibraryDependencies', false
   end
-  
+
   if cfg_type == :dll
     il = importlib
     if il
       vcproperty 'Link|ImportLibrary' do
-        "#{libdir}/#{importlib}".relative_path_from(vcxproj.projdir, backslashes: true)
+        "#{libdir}/#{il}".relative_path_from(vcxproj.projdir, backslashes: true)
       end
     end
   end

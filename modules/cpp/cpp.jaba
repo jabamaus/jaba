@@ -230,6 +230,16 @@ define :cpp do
       flags :no_check_exist
     end
 
+    attr_array :libs, type: :file do
+      title 'Paths to required non-system libs'
+      flags :no_sort, :no_check_exist
+    end
+
+    attr_array :syslibs, type: :string do
+      title 'System libs'
+      flags :no_sort
+    end
+
     attr_array :cflags, type: :string do
       title 'Raw compiler command line switches'
       flag_options :export
