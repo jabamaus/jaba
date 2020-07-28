@@ -3,3 +3,6 @@ include '01-basic'
 workspace :examples do
   projects ['*']
 end
+
+# TODO:
+# - plugin example

@@ -97,7 +97,8 @@ translator :vcxproj_config_windows do |vcxproj, cfg_type|
   # Link
   #
   vcproperty 'Link|AdditionalDependencies' do
-    (libs + syslibs).vs_join_paths(inherit: '%(AdditionalDependencies)')
+    all_libs = libs.map{|l| l.relative_path_from(vcxproj.projdir, backslashes: true)} + syslibs
+    all_libs.vs_join_paths(inherit: '%(AdditionalDependencies)')
   end
 
   if cfg_type != :lib

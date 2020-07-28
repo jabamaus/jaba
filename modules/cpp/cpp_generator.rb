@@ -99,6 +99,22 @@ module JABA
     ##
     #
     def process_node_exports(target_node, dep_node)
+      dep_attrs = dep_node.attrs
+
+      case dep_attrs.type
+      when :lib
+        if target_node.attrs.type != :lib
+          target_node.attrs.libs ["#{dep_attrs.libdir}/#{dep_attrs.targetname}#{dep_attrs.targetext}"]
+        end
+      when :dll
+        if target_node.attrs.type != :lib
+          il = dep_attrs.importlib
+          if il # dlls don't always have import libs - eg plugins
+            target_node.attrs.libs ["#{dep_attrs.libdir}/#{il}"]
+          end
+        end
+      end
+
       # Skip single value attributes as they cannot export. The reason for this is that exporting it would simply
       # overwrite the destination attribute creating a conflict. Which node should control the value? For this
       # reason disallow.
