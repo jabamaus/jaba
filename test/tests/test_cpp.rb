@@ -74,19 +74,29 @@ module JABA
     end
 
     # TODO: test exporting references
+    # Note that exported items are deleted from exported module by default
+    #
     it 'supports exporting array attributes to dependents' do
-      proj = jaba(dry_run: true, cpp_app: true) do
+      td = temp_dir
+      make_file("app/main.cpp")
+      make_file("lib/main.cpp")
+      op = jaba(dump_output: true) do
+        defaults :cpp do
+          hosts [:vs2019], platforms: [:windows_x86, :windows_x86_64]
+          configs [:Debug, :Release]
+        end
         cpp :app do
-          root 'app'
+          root "#{td}/app"
+          type :console
           deps [:lib]
           vcglobal :BoolAttr, true
           defines ['F', 'A']
-          src ['main.cpp'], :force
+          src ['main.cpp']
         end
         cpp :lib do
-          root 'lib'
+          root "#{td}/lib"
           type :lib
-          src ['main.cpp'], :force
+          src ['main.cpp']
           vcglobal :StringAttr, 's'
           vcglobal :StringAttr2, 's2', :export
           vcglobal :StringAttr3, 's3', :export
@@ -99,16 +109,21 @@ module JABA
           # TODO: test vcproperty
         end
       end
-      proj[:vcglobal][:BoolAttr].must_equal(true)
-      proj[:vcglobal][:StringAttr2].must_equal('s2')
-      proj[:vcglobal][:StringAttr3].must_equal('s3')
-      cfg_debug = proj[:configs][:Debug]
-      cfg_debug.wont_be_nil
-      cfg_debug[:defines].must_equal ['A', 'B', 'C', 'F']
-      cfg_release = proj[:configs][:Release]
-      cfg_release.wont_be_nil
-      cfg_release[:defines].must_equal ['A', 'B', 'C', 'F', 'R']
-      cfg_debug[:inc].must_equal ['../lib/include']
+      app = op[:cpp]['app|vs2019|windows']
+      app[:vcglobal][:BoolAttr].must_equal(true)
+      app[:vcglobal][:StringAttr2].must_equal('s2')
+      app[:vcglobal][:StringAttr3].must_equal('s3')
+      app[:configs][:Debug][:defines].must_equal ['A', 'B', 'C', 'F']
+      app[:configs][:Release][:defines].must_equal ['A', 'B', 'C', 'F', 'R']
+      app[:configs][:Debug][:inc].must_equal ['lib/include']
+      app[:configs][:Release][:inc].must_equal ['lib/include']
+
+      lib = op[:cpp]['lib|vs2019|windows']
+      lib[:vcglobal][:StringAttr].must_equal('s')
+      lib[:vcglobal].has_key?(:StringAttr2).must_equal(false)
+      lib[:vcglobal].has_key?(:StringAttr3).must_equal(false)
+      lib[:configs][:Debug][:defines].must_equal ['D', 'E']
+      lib[:configs][:Release][:defines].must_equal ['D', 'E']
     end
 
     it 'only allows :export on array and hash properties' do

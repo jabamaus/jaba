@@ -152,7 +152,9 @@ module JABA
     ##
     #
     def visit_attr(&block)
-      @hash.each_value{|attr| attr.visit_attr(&block)}
+      @hash.delete_if do |key, attr|
+        attr.visit_attr(&block) == :delete ? true : false
+      end
     end
      
     ##

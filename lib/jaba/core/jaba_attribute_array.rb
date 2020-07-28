@@ -164,7 +164,9 @@ module JABA
     ##
     #
     def visit_attr(&block)
-      @elems.each{|attr| attr.visit_attr(&block)}
+      @elems.delete_if do |attr|
+        attr.visit_attr(&block) == :delete ? true : false
+      end
     end
 
     ##
