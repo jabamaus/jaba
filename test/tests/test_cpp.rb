@@ -99,7 +99,7 @@ module JABA
           src ['main.cpp']
           vcglobal :StringAttr, 's'
           vcglobal :StringAttr2, 's2', :export
-          vcglobal :StringAttr3, 's3', :export
+          vcglobal :StringAttr3, 's3', :export, :no_delete
           # TODO: what happens if export :BoolAttr, false ? will it overwrite? Probably fail. Warn if same value.
           defines ['D']
           defines ['C', 'B'], :export
@@ -121,7 +121,7 @@ module JABA
       lib = op[:cpp]['lib|vs2019|windows']
       lib[:vcglobal][:StringAttr].must_equal('s')
       lib[:vcglobal].has_key?(:StringAttr2).must_equal(false)
-      lib[:vcglobal].has_key?(:StringAttr3).must_equal(false)
+      lib[:vcglobal][:StringAttr3].must_equal('s3')
       lib[:configs][:Debug][:defines].must_equal ['D', 'E']
       lib[:configs][:Release][:defines].must_equal ['D', 'E']
     end

@@ -116,7 +116,10 @@ module JABA
             #
             attr = target_node.get_attr(elem.defn_id) if !attr
             attr.insert_clone(elem)
-            :delete # Exported items are deleted from the exporting module by default.
+
+            # Exported items are deleted from the exporting module by default, unless :no_delete specified
+            #
+            :delete if !elem.has_flag_option?(:no_delete)
           end
         end
       end
