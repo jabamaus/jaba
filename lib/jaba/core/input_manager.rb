@@ -6,6 +6,8 @@ module JABA
 
   using JABACoreExt
 
+  CmdLineOption = Struct.new(:long, :short, :help)
+
   ##
   # TODO: support for short options
   # TODO: rename to JabaConfigurationManager or similar?
@@ -16,6 +18,21 @@ module JABA
     #
     def initialize(services)
       @services = services
+      @options = []
+      register_option(long: '--define', short: '-D', help: 'Set global attribute value')
+      register_option(long: '--dry-run', help: 'Perform a dry run')
+    end
+
+    ##
+    #
+    def register_option(long:, short: '', help:)
+      if long !~ /^--[a-zA-Z0-9\-]/
+        @services.jaba_error("Invalid long option format '#{long}' specified. Must be of form --my-long-option")
+      end
+      if !short.empty? && short !~ /^-[a-zA-Z]$/
+        @services.jaba_error("Invalid short option format '#{short}' specified. Must be of form -O")
+      end
+      @options << CmdLineOption.new(long, short, help)
     end
 
     ##
@@ -33,9 +50,11 @@ module JABA
     end
 
     ##
-    #
+    # TODO: don't use jaba_error
     def process_cmd_line
       services = @services
+      options = @options
+
       argv = services.input.argv
 
       if !argv.array?
@@ -45,19 +64,49 @@ module JABA
       FSM.new(events: [:process_arg]) do
         state :default do
           on_process_arg do |arg|
-            if arg !~ /--(.*)/
-              services.jaba_error("Invalid option format '#{arg}'")
+            opt = options.find do |o|
+              arg.start_with?(o.long) || arg.start_with?(o.short)
             end
-            name = Regexp.last_match(1).gsub('-', '_').to_sym
-            attr = services.globals_node.get_attr(name, fail_if_not_found: false)
-            if !attr
+
+            if opt.nil?
               services.jaba_error("'#{arg}' option not recognised")
             end
-            case attr.attr_def.variant
+
+            # See if value was tacked on the end. If so, split and start again
+            #
+            if arg =~ /^((#{opt.long})|(#{opt.short}))(.+)$/
+              argv.unshift(Regexp.last_match(4))
+              argv.unshift(Regexp.last_match(1))
+              next
+            end
+
+            case opt.long
+            when '--define'
+              goto :attribute_name
+            else
+
+            end
+          end
+        end
+        state :attribute_name do
+          on_enter do
+            @attr = nil
+          end
+          on_exit do
+            if @attr.nil?
+              services.jaba_error('No attribute name supplied')
+            end
+          end
+          on_process_arg do |arg|
+            @attr = services.globals_node.get_attr(arg.to_sym, fail_if_not_found: false)
+            if !@attr
+              services.jaba_error("'#{arg}' attribute not defined in :globals type")
+            end
+            case @attr.attr_def.variant
             when :single
-              goto :single, attr
+              goto :single, @attr
             when :array
-              goto :array, attr
+              goto :array, @attr
             when :hash
               raise 'not yet supported'
             end

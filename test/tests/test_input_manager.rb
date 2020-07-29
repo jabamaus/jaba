@@ -16,7 +16,7 @@ module JABA
     end
 
     it 'can populate globals from command line' do
-      jaba(argv: ['--bool']) do
+      jaba(argv: ['-Dbool']) do
         open_type :globals do
           attr :bool, type: :bool
         end
@@ -26,13 +26,13 @@ module JABA
         end
       end
       jaba(argv: [
-        '--bool1',
-        '--bool2', 'false',
-        '--bool3', 'true',
-        '--a-string', 'str',
-        '--string-array', 'a', 'b', 'c',
-        '--an-int', '1',
-        '--a-symbol', 'symbol'
+        '-D', 'bool1',
+        '-D', 'bool2', 'false',
+        '-Dbool3', 'true',
+        '-Da_string', 'str',
+        '-Dstring_array', 'a', 'b', 'c',
+        '-Dan_int', '1',
+        '-Da_symbol', 'symbol'
         ]) do
         open_type :globals do
           attr :bool1, type: :bool
