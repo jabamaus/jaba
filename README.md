@@ -30,12 +30,8 @@ To do:
 - more error reporting testing with actual files rather than blocks
 - test opening sub types
 - Have a command line switch to make all error messages contain absolute paths
-- A tree view of cpp type would be useful in docs
 - Sort jaba input/output files
-- Should instance definitions be able to access globals? Probably. Globals are like implicit references. If too many attrs were exposed
-  it would have a performance penalty though.
 - Add 'describe' method to everything which can be used as standard in error and log messages
-- Remove --test from Jaba. Look into how to run tests with gemspec/bundler
 - How customise jaba output file? Subclass vcxproj or jdl definition, or something else?
 - support for 'overriding' attribute defs when opening types
 - make_generator should be able to make subclasses of eg CppGenerator
@@ -98,9 +94,7 @@ if there are multiple attrs, with a warning.
   validation and also to sort using casecmp
 - resolve issues around sorting with mixed type elements
 - Add an init callback to definitions?
-- Make sure only one globals can be created
 - Add wildcard validation to dir property
-- Allow jaba.input.json/jaba.output.json to be configured in jdl file
 - jdl_exclude system
 
 - Think about a 'configure' system. Eg could have a configure block eg for ruby jaba file it might be
