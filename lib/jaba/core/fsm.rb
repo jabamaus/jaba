@@ -67,8 +67,6 @@ module JABA
   #
   class FSMState
     
-    include HookMethods
-
     attr_reader :id
 
     ##
@@ -77,6 +75,7 @@ module JABA
       super()
       @fsm = fsm
       @id = id
+      @event_to_block = {}
       define_event(:init)
       define_event(:enter)
       define_event(:exit)
@@ -91,16 +90,18 @@ module JABA
     #
     def define_event(event)
       id = "on_#{event}".to_sym
-      define_hook(id)
       define_singleton_method(id) do |&block|
-        set_hook(id, &block)
+        @event_to_block[event] = block
       end
     end
 
     ##
     #
     def send_event(id, *args)
-      call_hook("on_#{id}".to_sym, *args)
+      block = @event_to_block[id]
+      if block
+        block.call(*args)
+      end
     end
 
     ##
