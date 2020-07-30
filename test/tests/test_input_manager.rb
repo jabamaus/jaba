@@ -32,7 +32,8 @@ module JABA
         '-Da_string', 'str',
         '-Dstring_array', 'a', 'b', 'c',
         '-Dan_int', '1',
-        '-Da_symbol', 'symbol'
+        '-Da_symbol', 'symbol',
+        '--define', 'hash', 'key1', 'value1', 'key2', 'value2', '-Dhash', 'key3', 'value3'
         ]) do
         open_type :globals do
           attr :bool1, type: :bool
@@ -42,6 +43,7 @@ module JABA
           attr_array :string_array, type: :string
           attr :an_int, type: :int
           attr :a_symbol, type: :symbol
+          attr_hash :hash, key_type: :symbol, type: :string
         end
         define :test
         test :t do
@@ -52,6 +54,7 @@ module JABA
           globals.string_array.must_equal(['a', 'b', 'c'])
           globals.an_int.must_equal(1)
           globals.a_symbol.must_equal(:symbol)
+          globals.hash.must_equal({key1: 'value1', key2: 'value2', key3: 'value3'})
         end
       end
     end

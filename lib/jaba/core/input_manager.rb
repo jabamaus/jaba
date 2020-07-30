@@ -150,7 +150,7 @@ module JABA
             when :array
               goto :array, @attr
             when :hash
-              raise 'not yet supported'
+              goto :hash, @attr
             end
           end
         end
@@ -201,6 +201,36 @@ module JABA
             end
             val = @type.from_string(arg)
             @elems << val
+          end
+        end
+        state :hash do
+          on_enter do |attr|
+            @attr = attr
+            @key_type = attr.attr_def.jaba_attr_key_type
+            @type = attr.attr_def.jaba_attr_type
+            @key = nil
+            @elems = {}
+          end
+          on_exit do
+            @elems.each do |k, v|
+              @attr.set(k, v)
+            end
+          end
+          on_process_arg do |arg|
+            if arg.start_with?('-')
+              if @elems.empty?
+                services.jaba_error("No valued provided for '#{arg}'")
+              else
+                argv.unshift(arg)
+                goto :default
+              end
+            end
+            if @key.nil?
+              @key = @key_type.from_string(arg)
+            else
+              @elems[@key] = @type.from_string(arg)
+              @key = nil
+            end
           end
         end
         on_run do
