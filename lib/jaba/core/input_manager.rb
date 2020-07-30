@@ -6,39 +6,53 @@ module JABA
 
   using JABACoreExt
 
-  CmdLineOption = Struct.new(:long, :short, :help)
+  CmdLineOption = Struct.new(:long, :short, :help, :type, :var, :hidden)
 
   ##
-  # TODO: support for short options
-  # TODO: rename to JabaConfigurationManager or similar?
   #
   class InputManager
+
+    attr_reader :input
 
     ##
     #
     def initialize(services)
       @services = services
       @options = []
+
+      @input = Input.new
+      @input.instance_variable_set(:@argv, ARGV)
+      @input.instance_variable_set(:@definitions, [])
+      @input.instance_variable_set(:@src_root, nil)
+
+      register_option(long: '--help', help: 'Show help')
       register_option(long: '--define', short: '-D', help: 'Set global attribute value')
-      register_option(long: '--dry-run', help: 'Perform a dry run')
+      register_option(long: '--dry-run', help: 'Perform a dry run', type: :flag, var: :@dry_run)
+      register_option(long: '--barebones', help: 'Runs in barebones mode', type: :flag, var: :@barebones, hidden: true)
     end
 
     ##
     #
-    def register_option(long:, short: '', help:)
+    def register_option(long:, short: nil, help:, type: nil, var: nil, hidden: false)
       if long !~ /^--[a-zA-Z0-9\-]/
         @services.jaba_error("Invalid long option format '#{long}' specified. Must be of form --my-long-option")
       end
-      if !short.empty? && short !~ /^-[a-zA-Z]$/
+      if short && short !~ /^-[a-zA-Z]$/
         @services.jaba_error("Invalid short option format '#{short}' specified. Must be of form -O")
       end
-      @options << CmdLineOption.new(long, short, help)
+      @options << CmdLineOption.new(long, short, help, type, var, hidden)
+      if var
+        case type
+        when :flag
+          @input.instance_variable_set(var, false)
+        end
+      end
     end
 
     ##
     #
     def process
-      process_cmd_line
+      process_cmd_line(phase: 2)
 
       # TODO: automatically patch in new attrs
       if !JABA.running_tests?
@@ -51,11 +65,15 @@ module JABA
 
     ##
     # TODO: don't use jaba_error
-    def process_cmd_line
+    def process_cmd_line(phase: 1)
       services = @services
       options = @options
+      input = @input
+      input_manager = self
 
-      argv = services.input.argv
+      # Take a copy because cmd line is parsed twice
+      #
+      argv = services.input.argv.dup
 
       if !argv.array?
         jaba_error("'argv' must be an array")
@@ -65,7 +83,7 @@ module JABA
         state :default do
           on_process_arg do |arg|
             opt = options.find do |o|
-              arg.start_with?(o.long) || arg.start_with?(o.short)
+              arg.start_with?(o.long) || (o.short && arg.start_with?(o.short))
             end
 
             if opt.nil?
@@ -74,21 +92,41 @@ module JABA
 
             # See if value was tacked on the end. If so, split and start again
             #
-            if arg =~ /^((#{opt.long})|(#{opt.short}))(.+)$/
-              argv.unshift(Regexp.last_match(4))
+            if arg =~ /^(#{opt.long})(.+)$/ || (opt.short && arg =~ /^(#{opt.short})(.+)$/)
+              argv.unshift(Regexp.last_match(2))
               argv.unshift(Regexp.last_match(1))
               next
             end
 
             case opt.long
+            when '--help'
+              if phase == 2
+                input_manager.show_help
+              end
             when '--define'
-              goto :attribute_name
+              if phase == 1
+                goto :ignore # Ignore global attribute definition in phase 1 as globals not set up yet
+              else
+                goto :attribute
+              end
             else
-
+              if phase == 2
+                goto :ignore
+              elsif opt.type == :flag
+                input.instance_variable_set(opt.var, true)
+              end
             end
           end
         end
-        state :attribute_name do
+        state :ignore do
+          on_process_arg do |arg|
+            if arg.start_with?('-')
+              argv.unshift(arg)
+              goto :default
+            end
+          end
+        end
+        state :attribute do
           on_enter do
             @attr = nil
           end
@@ -198,6 +236,17 @@ module JABA
       w.chomp!
 
       file.write
+    end
+
+    ##
+    #
+    def show_help
+      @max_width = 120
+      w = StringWriter.new
+      w << "Welcome to Jaba"
+
+      puts w
+      exit
     end
 
   end

@@ -74,13 +74,6 @@ module JABA
     ##
     #
     def initialize
-      @input = Input.new
-      @input.instance_variable_set(:@argv, ARGV)
-      @input.instance_variable_set(:@definitions, [])
-      @input.instance_variable_set(:@dry_run, ARGV.delete('--dry-run')) # TODO
-      @input.instance_variable_set(:@barebones, false)
-      @input.instance_variable_set(:@src_root, nil)
-
       @output = {}
       
       @log_msgs = JABA.running_tests? ? nil : [] # Disable logging when running tests
@@ -126,12 +119,15 @@ module JABA
       @top_level_api = JDL_TopLevel.new(self)
       @file_manager = FileManager.new(self)
       @input_manager = InputManager.new(self)
+      @input = @input_manager.input
     end
 
     ##
     #
     def run
       log "Starting Jaba at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}", section: true
+      
+      @input_manager.process_cmd_line
 
       duration = JABA.milli_timer do
         JABA.profile(ARGV.delete('--profile')) do
