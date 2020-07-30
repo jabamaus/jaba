@@ -44,15 +44,6 @@ define :globals do
       "#{build_root}/jaba.log"
     end
   end
-
-  attr :dry_run, type: :bool do
-    title 'Perform a dry run'
-    note "Execute as normal but don't write any files"
-  end
-
-  attr :generate_reference_doc, type: :bool do
-    title 'Generate reference documentation in markdown format'
-  end
   
 end
 

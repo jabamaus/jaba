@@ -305,7 +305,7 @@ module JABA
             @globals = @globals_node.attrs
             @input_manager.process
 
-            if @globals.generate_reference_doc
+            if input.generate_reference_doc
               @top_level_jaba_types.sort_by! {|jt| jt.defn_id}
               generate_reference_doc
               return
@@ -673,7 +673,7 @@ module JABA
         end
       end
 
-      if globals.dump_output && !globals.generate_reference_doc
+      if globals.dump_output && !input.generate_reference_doc
         json = JSON.pretty_generate(@output)
         file = @file_manager.new_file(out_file, eol: :native)
         w = file.writer

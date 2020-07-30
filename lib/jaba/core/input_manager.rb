@@ -27,8 +27,9 @@ module JABA
 
       register_option(long: '--help', help: 'Show help')
       register_option(long: '--define', short: '-D', help: 'Set global attribute value')
-      register_option(long: '--dry-run', help: 'Perform a dry run', type: :flag, var: :@dry_run)
-      register_option(long: '--barebones', help: 'Runs in barebones mode', type: :flag, var: :@barebones, hidden: true)
+      register_option(long: '--dry-run', help: 'Perform a dry run', type: :flag, var: :dry_run)
+      register_option(long: '--barebones', help: 'Runs in barebones mode', type: :flag, var: :barebones, hidden: true)
+      register_option(long: '--gen-ref', help: 'Generates reference doc', type: :flag, var: :generate_reference_doc, hidden: true)
     end
 
     ##
@@ -42,9 +43,12 @@ module JABA
       end
       @options << CmdLineOption.new(long, short, help, type, var, hidden)
       if var
+        @input.define_singleton_method(var) do
+          instance_variable_get("@#{var}")
+        end
         case type
         when :flag
-          @input.instance_variable_set(var, false)
+          @input.instance_variable_set("@#{var}", false)
         end
       end
     end
@@ -113,7 +117,7 @@ module JABA
               if phase == 2
                 goto :ignore
               elsif opt.type == :flag
-                input.instance_variable_set(opt.var, true)
+                input.instance_variable_set("@#{opt.var}", true)
               end
             end
           end
