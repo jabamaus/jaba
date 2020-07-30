@@ -23,9 +23,9 @@ module JABA
       @input = Input.new
       @input.instance_variable_set(:@argv, ARGV)
       @input.instance_variable_set(:@definitions, [])
-      @input.instance_variable_set(:@src_root, nil)
 
       register_option(long: '--help', help: 'Show help')
+      register_option(long: '--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root)
       register_option(long: '--define', short: '-D', help: 'Set global attribute value')
       register_option(long: '--dry-run', help: 'Perform a dry run', type: :flag, var: :dry_run)
       register_option(long: '--barebones', help: 'Runs in barebones mode', type: :flag, var: :barebones, hidden: true)
@@ -49,6 +49,8 @@ module JABA
         case type
         when :flag
           @input.instance_variable_set("@#{var}", false)
+        when :value
+          @input.instance_variable_set("@#{var}", nil)
         end
       end
     end
@@ -118,6 +120,8 @@ module JABA
                 goto :ignore
               elsif opt.type == :flag
                 input.instance_variable_set("@#{opt.var}", true)
+              elsif opt.type == :value
+                goto :value, opt
               end
             end
           end
@@ -126,6 +130,27 @@ module JABA
           on_process_arg do |arg|
             if arg.start_with?('-')
               argv.unshift(arg)
+              goto :default
+            end
+          end
+        end
+        state :value do
+          on_enter do |opt|
+            @opt = opt
+            @val = nil
+          end
+          on_exit do
+            if @val.nil?
+              services.jaba_error("#{opt.long} expects a value")
+            end
+            input.instance_variable_set("@#{opt.var}", @val)
+          end
+          on_process_arg do |arg|
+            if arg.start_with?('-') # TODO: could ask 'is this an option?' Would allow values to start with -
+              argv.unshift(arg)
+              goto :default
+            else
+              @val = arg
               goto :default
             end
           end
@@ -188,19 +213,19 @@ module JABA
             @elems = []
           end
           on_exit do
+            if @elems.empty?
+              services.jaba_error("No valued provided for '#{arg}'")
+            end
             @attr.set(@elems)
           end
           on_process_arg do |arg|
             if arg.start_with?('-')
-              if @elems.empty?
-                services.jaba_error("No valued provided for '#{arg}'")
-              else
-                argv.unshift(arg)
-                goto :default
-              end
+              argv.unshift(arg)
+              goto :default
+            else
+              val = @type.from_string(arg)
+              @elems << val
             end
-            val = @type.from_string(arg)
-            @elems << val
           end
         end
         state :hash do
