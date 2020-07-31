@@ -141,9 +141,9 @@ module JABA
           end
           on_exit do
             if @val.nil?
-              services.jaba_error("#{opt.long} expects a value")
+              services.jaba_error("#{@opt.long} expects a value")
             end
-            input.instance_variable_set("@#{opt.var}", @val)
+            input.instance_variable_set("@#{@opt.var}", @val)
           end
           on_process_arg do |arg|
             if arg.start_with?('-') # TODO: could ask 'is this an option?' Would allow values to start with -
