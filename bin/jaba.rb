@@ -24,15 +24,8 @@ end
 
 puts output[:summary]
 
-output[:added].each do |f|
-  puts "  #{f} [A]"
-end
+output[:added].each {|f| puts "  #{f} [A]"}
+output[:modified].each {|f| puts "  #{f} [M]"}
 
-output[:modified].each do |f|
-  puts "  #{f} [M]"
-end
-
-if output[:warnings]
-  puts output[:warnings]
-end
+puts output[:warnings] if output[:warnings]
 
