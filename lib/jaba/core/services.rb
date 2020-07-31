@@ -169,15 +169,12 @@ module JABA
             jaba_error("Could not read src_root from config.jaba")
           end
           @src_root = Regexp.last_match(1)
-        elsif i = ARGV.index('--src-root')
-          @src_root = ARGV[i + 1]
-        else
+        end
+        if @src_root.nil?
           $stderr.puts "Could not read src_root from config.jaba or from --src-root"
           exit! # TODO: not sure about this
         end
       end
-
-      @src_root = @src_root.to_absolute(clean: true) if @src_root
 
       log "src_root=#{@src_root}"
 
@@ -430,7 +427,7 @@ module JABA
       end
       d = make_definition(id, block, caller_locations(2, 1)[0])
       if id == :globals
-        @jaba_type_defs.prepend(d)
+        @jaba_type_defs.prepend(d) # TODO: does this guarantee globals is first?
       else
         @jaba_type_defs << d
       end

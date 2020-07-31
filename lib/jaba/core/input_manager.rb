@@ -64,6 +64,9 @@ module JABA
       if !JABA.running_tests?
         config_file = "#{@services.globals.build_root}/config.jaba"
         if !File.exist?(config_file)
+          @services.globals_node.allow_set_read_only_attrs do
+            @services.globals.src_root @input.src_root
+          end
           make_jaba_config(config_file)
         end
       end
