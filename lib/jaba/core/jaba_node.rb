@@ -233,7 +233,7 @@ module JABA
           return nil
         end
 
-        if __read_only || @read_only
+        if (__read_only || @read_only) && !@allow_set_read_only_attrs
           jaba_error("#{a.describe} is read only")
         end
         
