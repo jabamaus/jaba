@@ -89,8 +89,7 @@ module JABA
     ##
     #
     def define_event(event)
-      id = "on_#{event}".to_sym
-      define_singleton_method(id) do |&block|
+      define_singleton_method("on_#{event}") do |&block|
         @event_to_block[event] = block
       end
     end
