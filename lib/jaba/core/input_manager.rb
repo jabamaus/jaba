@@ -6,7 +6,7 @@ module JABA
 
   using JABACoreExt
 
-  CmdLineOption = Struct.new(:long, :short, :help, :type, :var, :hidden)
+  CmdLineOption = Struct.new(:long, :short, :help, :type, :var, :hidden, :phase)
 
   ##
   #
@@ -24,24 +24,24 @@ module JABA
       @input.instance_variable_set(:@argv, ARGV)
       @input.instance_variable_set(:@definitions, [])
 
-      register_option(long: '--help', help: 'Show help')
-      register_option(long: '--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root)
-      register_option(long: '--define', short: '-D', help: 'Set global attribute value')
-      register_option(long: '--dry-run', help: 'Perform a dry run', type: :flag, var: :dry_run)
-      register_option(long: '--barebones', help: 'Runs in barebones mode', type: :flag, var: :barebones, hidden: true)
-      register_option(long: '--gen-ref', help: 'Generates reference doc', type: :flag, var: :generate_reference_doc, hidden: true)
+      register_option(long: '--help', help: 'Show help', phase: 2)
+      register_option(long: '--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root, phase: 1)
+      register_option(long: '--define', short: '-D', help: 'Set global attribute value', phase: 2)
+      register_option(long: '--dry-run', help: 'Perform a dry run', type: :flag, var: :dry_run, phase: 1)
+      register_option(long: '--barebones', help: 'Runs in barebones mode', type: :flag, var: :barebones, hidden: true, phase: 1)
+      register_option(long: '--gen-ref', help: 'Generates reference doc', type: :flag, var: :generate_reference_doc, hidden: true, phase: 2)
     end
 
     ##
     #
-    def register_option(long:, short: nil, help:, type: nil, var: nil, hidden: false)
+    def register_option(long:, short: nil, help:, type: nil, var: nil, hidden: false, phase:)
       if long !~ /^--[a-zA-Z0-9\-]/
         @services.jaba_error("Invalid long option format '#{long}' specified. Must be of form --my-long-option")
       end
       if short && short !~ /^-[a-zA-Z]$/
         @services.jaba_error("Invalid short option format '#{short}' specified. Must be of form -O")
       end
-      @options << CmdLineOption.new(long, short, help, type, var, hidden)
+      @options << CmdLineOption.new(long, short, help, type, var, hidden, phase)
       if var
         @input.define_singleton_method(var) do
           instance_variable_get("@#{var}")
@@ -107,23 +107,21 @@ module JABA
               next
             end
 
+            if phase != opt.phase
+              goto :ignore
+              next
+            end
+
             case opt.long
             when '--help'
-              if phase == 2
-                input_manager.show_help
-              end
+              input_manager.show_help
             when '--define'
-              if phase == 1
-                goto :ignore # Ignore global attribute definition in phase 1 as globals not set up yet
-              else
-                goto :attribute
-              end
+              goto :attribute
             else
-              if phase == 2
-                goto :ignore
-              elsif opt.type == :flag
+              case opt.type
+              when :flag
                 input.instance_variable_set("@#{opt.var}", true)
-              elsif opt.type == :value
+              when :value
                 goto :value, opt
               end
             end
