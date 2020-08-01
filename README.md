@@ -2,12 +2,12 @@
 
 To do:
 
+- Consider adding support for attribute arrays to hash attribute
 - Nasty that :export flag option always needs :no_delete
 - Use did_you_mean? Eg
   Error at basic_dll.jaba:8: 'define' attribute not defined. Did you mean 'defines'?
 - config.jaba is not actually being executed!
 - Combine jaba.input.json and jaba.output.json into just the latter?
-- should be able to run jaba in examples and then again in examples-build and it should do the same thing
 - process config.jaba first
 - Have a 'jaba clean' command
 - validate that build_root is not allowed to be src_root
