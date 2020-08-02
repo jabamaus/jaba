@@ -130,7 +130,7 @@ module JABA
       @input_manager.process_cmd_line
 
       duration = JABA.milli_timer do
-        JABA.profile(ARGV.delete('--profile')) do
+        JABA.profile(input.profile) do
           do_run
 
           if !input.barebones?

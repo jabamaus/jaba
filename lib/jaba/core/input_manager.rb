@@ -30,6 +30,7 @@ module JABA
       register_option(long: '--dry-run', help: 'Perform a dry run', type: :flag, var: :dry_run, phase: 1)
       register_option(long: '--barebones', help: 'Runs in barebones mode', type: :flag, var: :barebones, hidden: true, phase: 1)
       register_option(long: '--gen-ref', help: 'Generates reference doc', type: :flag, var: :generate_reference_doc, hidden: true, phase: 2)
+      register_option(long: '--profile', help: 'Profiles with ruby-prof', type: :flag, var: :profile, hidden: true, phase: 1)
     end
 
     ##
