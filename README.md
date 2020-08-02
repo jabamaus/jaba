@@ -2,6 +2,7 @@
 
 To do:
 
+- Better logging of exception errors. Never return a backtrace to cmd line - ugly.
 - Consider adding support for attribute arrays to hash attribute
 - Nasty that :export flag option always needs :no_delete
 - Use did_you_mean? Eg

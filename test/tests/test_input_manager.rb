@@ -4,15 +4,20 @@ module JABA
 
   class TestInputManager < JabaTest
 
-    describe 'failure conditions' do
-      
-      # TODO: should duplicate array options be allowed?
-      it 'detects duplicate options' do
-        #check_fail '--dry-run specified more than once' do
-          #jaba(barebones: true, argv: ['--dry-run', '--dry-run'])
-        #end
-      end
+    # TODO: should duplicate array options be allowed?
+    it 'detects duplicate options' do
+      #check_fail '--dry-run specified more than once' do
+        #jaba(barebones: true, argv: ['--dry-run', '--dry-run'])
+      #end
+    end
 
+    it 'detects unknown options' do
+      check_fail "'--unknown' option not recognised", exception: CommandLineUsageError do
+        jaba(argv: ['--unknown'])
+      end
+    end
+
+    it 'supports options with values' do
     end
 
     it 'can populate globals from command line' do

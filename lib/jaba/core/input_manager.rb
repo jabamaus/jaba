@@ -23,7 +23,14 @@ module JABA
       @input = Input.new
       @input.instance_variable_set(:@argv, ARGV)
       @input.instance_variable_set(:@definitions, [])
+      
+      register_options
+    end
 
+    ##
+    #
+    def register_options
+      # TODO: think about mutual exclusivity
       register_option(long: '--help', help: 'Show help', phase: 2)
       register_option(long: '--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root, phase: 1)
       register_option(long: '--define', short: '-D', help: 'Set global attribute value', phase: 2)
@@ -36,7 +43,7 @@ module JABA
     ##
     #
     def register_option(long:, short: nil, help:, type: nil, var: nil, hidden: false, phase:)
-      if long !~ /^--[a-zA-Z0-9\-]/
+      if long !~ /^--[a-zA-Z0-9\-]+$/
         @services.jaba_error("Invalid long option format '#{long}' specified. Must be of form --my-long-option")
       end
       if short && short !~ /^-[a-zA-Z]$/
@@ -55,6 +62,13 @@ module JABA
         end
       end
     end
+
+    ##
+    #
+    def usage_error(msg)
+      raise CommandLineUsageError, msg
+    end
+
 
     ##
     #
@@ -79,7 +93,7 @@ module JABA
       services = @services
       options = @options
       input = @input
-      input_manager = self
+      im = self
 
       # Take a copy because cmd line is parsed twice
       #
@@ -97,7 +111,7 @@ module JABA
             end
 
             if opt.nil?
-              services.jaba_error("'#{arg}' option not recognised")
+              im.usage_error("'#{arg}' option not recognised")
             end
 
             # See if value was tacked on the end. If so, split and start again
@@ -115,7 +129,7 @@ module JABA
 
             case opt.long
             when '--help'
-              input_manager.show_help
+              im.show_help
             when '--define'
               goto :attribute
             else
@@ -143,7 +157,7 @@ module JABA
           end
           on_exit do
             if @val.nil?
-              services.jaba_error("#{@opt.long} expects a value")
+              im.usage_error("#{@opt.long} expects a value")
             end
             input.instance_variable_set("@#{@opt.var}", @val)
           end
@@ -163,13 +177,13 @@ module JABA
           end
           on_exit do
             if @attr.nil?
-              services.jaba_error('No attribute name supplied')
+              im.usage_error('No attribute name supplied')
             end
           end
           on_process_arg do |arg|
             @attr = services.globals_node.get_attr(arg.to_sym, fail_if_not_found: false)
             if !@attr
-              services.jaba_error("'#{arg}' attribute not defined in :globals type")
+              im.usage_error("'#{arg}' attribute not defined in :globals type")
             end
             case @attr.attr_def.variant
             when :single
@@ -192,7 +206,7 @@ module JABA
           end
           on_exit do
             if @value.nil?
-              services.jaba_error("No value provided for '#{arg}'")
+              im.usage_error("No value provided for '#{arg}'")
             end
             if @attr.type_id == :file || @attr.type_id == :dir
               @value = @value.to_absolute(clean: true)
@@ -216,7 +230,7 @@ module JABA
           end
           on_exit do
             if @elems.empty?
-              services.jaba_error("No valued provided for '#{arg}'")
+              im.usage_error("No valued provided for '#{arg}'")
             end
             @attr.set(@elems)
           end
@@ -246,7 +260,7 @@ module JABA
           on_process_arg do |arg|
             if arg.start_with?('-')
               if @elems.empty?
-                services.jaba_error("No valued provided for '#{arg}'")
+                im.usage_error("No valued provided for '#{arg}'")
               else
                 argv.unshift(arg)
                 goto :default

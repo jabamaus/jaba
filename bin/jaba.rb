@@ -2,6 +2,9 @@ require_relative '../lib/jaba'
 
 begin
   output = JABA.run
+rescue JABA::CommandLineUsageError => e
+  $stderr.puts e
+  exit 1
 rescue JABA::JDLError => e
   $stderr.puts e.message
 
