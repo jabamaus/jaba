@@ -1,6 +1,6 @@
 @echo off
 echo Running jaba...
-call jaba.bat --generate-reference-doc
+call jaba.bat --gen-ref
 
 IF %ERRORLEVEL% EQU 0 (
   pushd C:\projects\GitHub\MaMD\_builds

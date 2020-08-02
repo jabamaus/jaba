@@ -81,6 +81,7 @@ module JABA
       @warnings = []
       @warn_object = nil
       
+      @src_root = nil
       @jdl_files = []
       @jdl_includes = []
       @jdl_file_lookup = {}
@@ -160,23 +161,25 @@ module JABA
     ##
     #
     def do_run
-      @src_root = input.src_root
+      if !input.generate_reference_doc
+        @src_root = input.src_root
 
-      if @src_root.nil? && !JABA.running_tests?
-        if File.exist?('config.jaba')
-          content = IO.read('config.jaba')
-          if content !~ /src_root "(.*)"/
-            jaba_error("Could not read src_root from config.jaba")
+        if @src_root.nil? && !JABA.running_tests?
+          if File.exist?('config.jaba')
+            content = IO.read('config.jaba')
+            if content !~ /src_root "(.*)"/
+              jaba_error("Could not read src_root from config.jaba")
+            end
+            @src_root = Regexp.last_match(1)
           end
-          @src_root = Regexp.last_match(1)
+          if @src_root.nil?
+            $stderr.puts "Could not read src_root from config.jaba or from --src-root"
+            exit! # TODO: not sure about this
+          end
         end
-        if @src_root.nil?
-          $stderr.puts "Could not read src_root from config.jaba or from --src-root"
-          exit! # TODO: not sure about this
-        end
-      end
 
-      log "src_root=#{@src_root}"
+        log "src_root=#{@src_root}"
+      end
 
       load_modules
 
