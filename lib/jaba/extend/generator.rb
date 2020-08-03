@@ -52,12 +52,19 @@ module JABA
       @node_to_host_object = {}
       @reference_attrs_to_resolve = []
       @source_file = JABA.const_source_location(self.class.name)[0]
-      init
+    end
+
+    ##
+    #
+    def describe
+      "'#{@type_id}'' generator"
     end
 
     ##
     #
     def process
+      services.log "Processing #{describe}", section: true
+
       @definitions.each do |d|
         @current_definition = d
         @root_nodes << make_nodes
@@ -93,6 +100,12 @@ module JABA
     #
     def get_generator(top_level_type_id)
       services.get_generator(top_level_type_id)
+    end
+
+    ##
+    #
+    def register_cmdline_option(opt, **args)
+      services.input_manager.register_option(opt, phase: 2, **args)
     end
 
     ##
@@ -220,6 +233,7 @@ module JABA
 
     ##
     # Override this in subclass.
+    # register_cmdline_option can be called from here
     #
     def init
       # nothing

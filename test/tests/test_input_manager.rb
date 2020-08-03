@@ -2,6 +2,26 @@
 
 module JABA
 
+  class Test_imVGenerator < Generator
+    def init
+      register_cmdline_option('--value-opt', short: '-v', help: 'value opt', var: :value_opt, type: :value)
+    end
+
+    def generate
+      print services.input.value_opt
+    end
+  end
+
+  class Test_imAGenerator < Generator
+    def init
+      register_cmdline_option('--array-opt', short: '-a', help: 'array opt', var: :array_opt, type: :array)
+    end
+
+    def generate
+      print services.input.array_opt
+    end
+  end
+
   class TestInputManager < JabaTest
 
     # TODO: should duplicate array options be allowed?
@@ -12,16 +32,58 @@ module JABA
     end
 
     it 'detects unknown options' do
-      check_fail "'--unknown' option not recognised", exception: CommandLineUsageError do
-        jaba(argv: ['--unknown'])
+      check_fail "--unknown option not recognised", exception: CommandLineUsageError do
+        jaba(barebones: true, argv: ['--unknown'])
+      end
+      check_fail "-Z option not recognised", exception: CommandLineUsageError do
+        jaba(barebones: true, argv: ['-Z'])
       end
     end
 
-    it 'supports options with values' do
+    it 'supports value options' do
+      assert_output 'value' do
+        jaba(barebones: true, argv: ['--value-opt', 'value']) do
+          define :test_imV
+        end
+      end
+      
+      # test that values can be anything, even something that looks like an option (unless it is actually an option)
+      #
+      assert_output '--value' do
+        jaba(barebones: true, argv: ['--value-opt', '--value']) do
+          define :test_imV
+        end
+      end
+      check_fail "--value-opt/-v expects a value", exception: CommandLineUsageError do
+        jaba(barebones: true, argv: ['--value-opt']) do
+          define :test_imV
+        end
+      end
     end
 
+    it 'supports array options' do
+      assert_output '["e1", "e2", "e3"]' do
+        jaba(barebones: true, argv: ['--array-opt', 'e1', 'e2', 'e3']) do
+          define :test_imA
+        end
+      end
+      # test that values can be anything, even something that looks like an option (unless it is actually an option)
+      #
+      assert_output '["--e1", "--e2", "--e3"]' do
+        jaba(barebones: true, argv: ['--array-opt', '--e1', '--e2', '--e3']) do
+          define :test_imA
+        end
+      end
+      check_fail "--array-opt/-a expects 1 or more values", exception: CommandLineUsageError do
+        jaba(barebones: true, argv: ['--array-opt']) do
+          define :test_imA
+        end
+      end
+    end
+
+    # TODO: check failure cases, eg when no value/s provided
     it 'can populate globals from command line' do
-      jaba(argv: ['-Dbool']) do
+      jaba(barebones: true, argv: ['-Dbool']) do
         open_type :globals do
           attr :bool, type: :bool
         end

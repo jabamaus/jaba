@@ -67,6 +67,7 @@ module JABA
   class Services
 
     attr_reader :input
+    attr_reader :input_manager
     attr_reader :file_manager
     attr_reader :globals
     attr_reader :globals_node
@@ -111,8 +112,10 @@ module JABA
 
       @generators = []
 
+      @globals_type_def = nil
       @globals = nil
       @globals_node = nil
+
       @null_nodes = {}
       
       @in_attr_default_block = false
@@ -128,7 +131,7 @@ module JABA
     def run
       log "Starting Jaba at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}", section: true
       
-      @input_manager.process_cmd_line
+      @input_manager.process(phase: 1)
 
       duration = JABA.milli_timer do
         JABA.profile(input.profile) do
@@ -214,6 +217,10 @@ module JABA
 
       @jaba_attr_flags.sort_by!(&:id)
 
+      # Prepend globals type definition so globals are processed first, allowing everything else to access them
+      #
+      @jaba_type_defs.prepend(@globals_type_def)
+
       # Create JabaTypes and any associated Generators
       #
       @jaba_type_defs.each do |d|
@@ -285,10 +292,30 @@ module JABA
         sd.add_open_def(d)
       end
 
+      if input.generate_reference_doc
+        @top_level_jaba_types.sort_by! {|jt| jt.defn_id}
+        generate_reference_doc
+        return
+      end
+
+      # Init all generators. Generators can register cmd line options with input manager here
+      #
+      @generators.each do |g|
+        g.init
+      end
+
+      # Globals generator is the first one. Remove it as it is handled explicitly.
+      #
+      globals_generator = @generators.shift
+      globals_generator.process
+      @globals_node = globals_generator.root_nodes.first
+      @globals = @globals_node.attrs
+
+      @input_manager.process(phase: 2)
+
       # Process generators
       #
       @generators.each do |g|
-        log "Processing #{g.type_id} generator", section: true
         g.process
 
         # Handle singletons
@@ -300,22 +327,10 @@ module JABA
             jaba_error("singleton type '#{g.type_id}' must be instantiated exactly once", errline: g.root_nodes.last.definition.src_loc_raw)
           end
           
-          if g.type_id == :globals
-            @globals_node = g.root_nodes.first
-            @globals = @globals_node.attrs
-            @input_manager.process
-
-            if input.generate_reference_doc
-              @top_level_jaba_types.sort_by! {|jt| jt.defn_id}
-              generate_reference_doc
-              return
-            end
-          else
-            # Generate acceessor
-            #
-            define_singleton_method "#{g.type_id}_singleton".to_sym do
-              g.root_nodes.first
-            end
+          # Generate acceessor
+          #
+          define_singleton_method "#{g.type_id}_singleton".to_sym do
+            g.root_nodes.first
           end
         end
       end
@@ -430,7 +445,7 @@ module JABA
       end
       d = make_definition(id, block, caller_locations(2, 1)[0])
       if id == :globals
-        @jaba_type_defs.prepend(d) # TODO: does this guarantee globals is first?
+        @globals_type_def = d
       else
         @jaba_type_defs << d
       end

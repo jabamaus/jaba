@@ -6,7 +6,7 @@ module JABA
 
   using JABACoreExt
 
-  CmdLineOption = Struct.new(:long, :short, :help, :type, :var, :hidden, :phase)
+  CmdLineOption = Struct.new(:long, :short, :help, :type, :inst_var, :hidden, :phase)
 
   ##
   #
@@ -31,35 +31,56 @@ module JABA
     #
     def register_options
       # TODO: think about mutual exclusivity
-      register_option(long: '--help', help: 'Show help', phase: 2)
-      register_option(long: '--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root, phase: 1)
-      register_option(long: '--define', short: '-D', help: 'Set global attribute value', phase: 2)
-      register_option(long: '--dry-run', help: 'Perform a dry run', type: :flag, var: :dry_run, phase: 1)
-      register_option(long: '--barebones', help: 'Runs in barebones mode', type: :flag, var: :barebones, hidden: true, phase: 1)
-      register_option(long: '--gen-ref', help: 'Generates reference doc', type: :flag, var: :generate_reference_doc, hidden: true, phase: 2)
-      register_option(long: '--profile', help: 'Profiles with ruby-prof', type: :flag, var: :profile, hidden: true, phase: 1)
+      register_option('--help', help: 'Show help', phase: 2)
+      register_option('--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root)
+      register_option('--define', short: '-D', help: 'Set global attribute value', phase: 2)
+      register_option('--dry-run', help: 'Perform a dry run', type: :flag, var: :dry_run)
+      register_option('--barebones', help: 'Runs in barebones mode', type: :flag, var: :barebones, hidden: true)
+      register_option('--gen-ref', help: 'Generates reference doc', type: :flag, var: :generate_reference_doc, hidden: true, phase: 2)
+      register_option('--profile', help: 'Profiles with ruby-prof', type: :flag, var: :profile, hidden: true)
     end
 
     ##
     #
-    def register_option(long:, short: nil, help:, type: nil, var: nil, hidden: false, phase:)
+    def register_option(long, short: nil, help:, type: nil, var: nil, hidden: false, phase: 1)
       if long !~ /^--[a-zA-Z0-9\-]+$/
         @services.jaba_error("Invalid long option format '#{long}' specified. Must be of form --my-long-option")
       end
       if short && short !~ /^-[a-zA-Z]$/
         @services.jaba_error("Invalid short option format '#{short}' specified. Must be of form -O")
       end
-      @options << CmdLineOption.new(long, short, help, type, var, hidden, phase)
+      
+      o = CmdLineOption.new
+      o.long = long
+      o.short = short
+      o.help = help
+      o.type = type
+      o.inst_var = var ? "@#{var}" : nil
+      o.hidden = hidden
+      o.phase = phase
+      o.define_singleton_method :describe do
+        d = String.new(long)
+        d << "/#{short}" if short
+        d
+      end
+      
+      @options << o
+
       if var
         @input.define_singleton_method(var) do
-          instance_variable_get("@#{var}")
+          instance_variable_get(o.inst_var)
         end
-        case type
+        val = case type
         when :flag
-          @input.instance_variable_set("@#{var}", false)
+          false
         when :value
-          @input.instance_variable_set("@#{var}", nil)
+          nil
+        when :array
+          []
+        else
+          raise "Unhandled type '#{type}'"
         end
+        @input.instance_variable_set(o.inst_var, val)
       end
     end
 
@@ -69,49 +90,66 @@ module JABA
       raise CommandLineUsageError, msg
     end
 
-
     ##
     #
-    def process
-      process_cmd_line(phase: 2)
+    def process(phase:)
+      process_cmd_line(phase)
 
       # TODO: automatically patch in new attrs
-      if !JABA.running_tests?
-        config_file = "#{@services.globals.build_root}/config.jaba"
-        if !File.exist?(config_file)
-          @services.globals_node.allow_set_read_only_attrs do
-            @services.globals.src_root @input.src_root
+      if phase == 2
+        if !JABA.running_tests?
+          config_file = "#{@services.globals.build_root}/config.jaba"
+          if !File.exist?(config_file)
+            @services.globals_node.allow_set_read_only_attrs do
+              @services.globals.src_root @input.src_root
+            end
+            make_jaba_config(config_file)
           end
-          make_jaba_config(config_file)
         end
       end
     end
 
     ##
-    # TODO: don't use jaba_error
-    def process_cmd_line(phase: 1)
-      services = @services
-      options = @options
+    #
+    def get_option(arg)
+      @options.find do |o|
+        arg.start_with?(o.long) || (o.short && arg.start_with?(o.short))
+      end
+    end
+
+    ##
+    #
+    def option_defined?(arg)
+      get_option(arg) != nil
+    end
+
+    private
+
+    ##
+    #
+    def process_cmd_line(phase)
+      globals_node = @services.globals_node
       input = @input
       im = self
 
       # Take a copy because cmd line is parsed twice
       #
-      argv = services.input.argv.dup
+      argv = Array(input.argv).dup
 
-      if !argv.array?
-        jaba_error("'argv' must be an array")
-      end
-      
       FSM.new(events: [:process_arg]) do
         state :default do
           on_process_arg do |arg|
-            opt = options.find do |o|
-              arg.start_with?(o.long) || (o.short && arg.start_with?(o.short))
-            end
+            opt = im.get_option(arg)
 
             if opt.nil?
-              im.usage_error("'#{arg}' option not recognised")
+              # Phase 2 options may not have had the chance to register yet so ignore unkown options
+              #
+              if phase == 1
+                goto :ignore
+                next
+              else
+                im.usage_error("#{arg} option not recognised")
+              end
             end
 
             # See if value was tacked on the end. If so, split and start again
@@ -131,20 +169,22 @@ module JABA
             when '--help'
               im.show_help
             when '--define'
-              goto :attribute
+              goto :global_attr
             else
               case opt.type
               when :flag
-                input.instance_variable_set("@#{opt.var}", true)
+                input.instance_variable_set(opt.inst_var, true)
               when :value
                 goto :value, opt
+              when :array
+                goto :array, opt
               end
             end
           end
         end
         state :ignore do
           on_process_arg do |arg|
-            if arg.start_with?('-')
+            if im.option_defined?(arg)
               argv.unshift(arg)
               goto :default
             end
@@ -157,12 +197,12 @@ module JABA
           end
           on_exit do
             if @val.nil?
-              im.usage_error("#{@opt.long} expects a value")
+              im.usage_error("#{@opt.describe} expects a value")
             end
-            input.instance_variable_set("@#{@opt.var}", @val)
+            input.instance_variable_set(@opt.inst_var, @val)
           end
           on_process_arg do |arg|
-            if arg.start_with?('-') # TODO: could ask 'is this an option?' Would allow values to start with -
+            if im.option_defined?(arg)
               argv.unshift(arg)
               goto :default
             else
@@ -171,7 +211,28 @@ module JABA
             end
           end
         end
-        state :attribute do
+        state :array do
+          on_enter do |opt|
+            @opt = opt
+            @elems = []
+          end
+          on_exit do
+            if @elems.empty?
+              im.usage_error("#{@opt.describe} expects 1 or more values")
+            end
+            ary = input.instance_variable_get(@opt.inst_var)
+            ary.concat(@elems)
+          end
+          on_process_arg do |arg|
+            if im.option_defined?(arg)
+              argv.unshift(arg)
+              goto :default
+            else
+              @elems << arg
+            end
+          end
+        end
+        state :global_attr do
           on_enter do
             @attr = nil
           end
@@ -181,21 +242,21 @@ module JABA
             end
           end
           on_process_arg do |arg|
-            @attr = services.globals_node.get_attr(arg.to_sym, fail_if_not_found: false)
+            @attr = globals_node.get_attr(arg.to_sym, fail_if_not_found: false)
             if !@attr
               im.usage_error("'#{arg}' attribute not defined in :globals type")
             end
             case @attr.attr_def.variant
             when :single
-              goto :single, @attr
+              goto :global_attr_single, @attr
             when :array
-              goto :array, @attr
+              goto :global_attr_array, @attr
             when :hash
-              goto :hash, @attr
+              goto :global_attr_hash, @attr
             end
           end
         end
-        state :single do
+        state :global_attr_single do
           on_enter do |attr|
             @attr = attr
             @type = attr.attr_def.jaba_attr_type
@@ -214,7 +275,7 @@ module JABA
             @attr.set(@value)
           end
           on_process_arg do |arg|
-            if arg.start_with?('-')
+            if im.option_defined?(arg)
               argv.unshift(arg)
             else
               @value = @type.from_string(arg)
@@ -222,7 +283,7 @@ module JABA
             goto :default
           end
         end
-        state :array do
+        state :global_attr_array do
           on_enter do |attr|
             @attr = attr
             @type = attr.attr_def.jaba_attr_type
@@ -230,12 +291,12 @@ module JABA
           end
           on_exit do
             if @elems.empty?
-              im.usage_error("No valued provided for '#{arg}'")
+              im.usage_error("No values provided for '#{arg}'")
             end
             @attr.set(@elems)
           end
           on_process_arg do |arg|
-            if arg.start_with?('-')
+            if im.option_defined?(arg)
               argv.unshift(arg)
               goto :default
             else
@@ -244,7 +305,7 @@ module JABA
             end
           end
         end
-        state :hash do
+        state :global_attr_hash do
           on_enter do |attr|
             @attr = attr
             @key_type = attr.attr_def.jaba_attr_key_type
@@ -258,7 +319,7 @@ module JABA
             end
           end
           on_process_arg do |arg|
-            if arg.start_with?('-')
+            if im.option_defined?(arg)
               if @elems.empty?
                 im.usage_error("No valued provided for '#{arg}'")
               else
@@ -319,6 +380,12 @@ module JABA
       @max_width = 120
       w = StringWriter.new
       w << "Welcome to Jaba"
+
+      @options.each do |o|
+        if !o.hidden
+          w << "#{o.long}   #{o.help}"
+        end
+      end
 
       puts w
       exit
