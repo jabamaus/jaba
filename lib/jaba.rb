@@ -3,6 +3,7 @@ if __FILE__ == $PROGRAM_NAME
   exit 1
 end
 
+require_relative 'jaba/version'
 require_relative 'jaba/core/services'
 require_relative 'jaba/jdl_api/jdl_common'
 require_relative 'jaba/jdl_api/jdl_attribute_definition'
