@@ -123,8 +123,6 @@ module JABA
       get_option(arg) != nil
     end
 
-    private
-
     ##
     #
     def process_cmd_line(phase)
