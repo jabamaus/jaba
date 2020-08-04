@@ -76,6 +76,12 @@ module JABA
 
   ##
   #
+  def self.config_file
+    "#{JABA.temp_dir}/jaba.config"
+  end
+
+  ##
+  #
   class Services
 
     attr_reader :input

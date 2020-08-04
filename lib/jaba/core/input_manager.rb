@@ -6,6 +6,7 @@ module JABA
 
   using JABACoreExt
 
+  CmdLineAction = Struct.new(:name, :options)
   CmdLineOption = Struct.new(:long, :short, :help, :type, :inst_var, :hidden, :phase)
 
   ##
@@ -19,30 +20,45 @@ module JABA
     def initialize(services)
       @services = services
       @options = []
+      @actions = []
 
       @input = Input.new
       @input.instance_variable_set(:@argv, ARGV)
       @input.instance_variable_set(:@definitions, [])
+      @input.instance_variable_set(:@barebones, false)
       
       register_options
     end
 
     ##
     #
+    def register_action(name)
+      a = CmdLineAction.new
+      a.name = name
+      a.options = []
+      @actions << a
+    end
+
+    ##
+    #
     def register_options
+      register_action(:gen)
+      register_action(:build)
+      register_action(:clean)
+      register_action(:genref)
+
       # TODO: think about mutual exclusivity
-      register_option('--help', help: 'Show help', phase: 2)
-      register_option('--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root)
-      register_option('--define', short: '-D', help: 'Set global attribute value', phase: 2)
+      register_option('--help', help: 'Show help', phase: 2, hidden: true)
+      register_option('--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root, action: :gen)
+      register_option('--define', short: '-D', help: 'Set global attribute value', phase: 2, action: :gen)
       register_option('--dry-run', help: 'Perform a dry run', type: :flag, var: :dry_run)
-      register_option('--barebones', help: 'Runs in barebones mode', type: :flag, var: :barebones, hidden: true)
       register_option('--gen-ref', help: 'Generates reference doc', type: :flag, var: :generate_reference_doc, hidden: true, phase: 2)
       register_option('--profile', help: 'Profiles with ruby-prof', type: :flag, var: :profile, hidden: true)
     end
 
     ##
     #
-    def register_option(long, short: nil, help:, type: nil, var: nil, hidden: false, phase: 1)
+    def register_option(long, short: nil, help:, type: nil, var: nil, hidden: false, phase: 1, action: nil)
       if long !~ /^--[a-zA-Z0-9\-]+$/
         @services.jaba_error("Invalid long option format '#{long}' specified. Must be of form --my-long-option")
       end
@@ -64,6 +80,11 @@ module JABA
         d
       end
       
+      if action
+        a = get_action(action)
+        a.options << o
+      end
+
       @options << o
 
       if var
@@ -86,27 +107,12 @@ module JABA
 
     ##
     #
-    def usage_error(msg)
-      raise CommandLineUsageError, msg
-    end
-
-    ##
-    #
-    def process(phase:)
-      process_cmd_line(phase)
-
-      # TODO: automatically patch in new attrs
-      if phase == 2
-        if !JABA.running_tests?
-          config_file = "#{@services.globals.build_root}/config.jaba"
-          if !File.exist?(config_file)
-            @services.globals_node.allow_set_read_only_attrs do
-              @services.globals.src_root @input.src_root
-            end
-            make_jaba_config(config_file)
-          end
-        end
+    def get_action(name)
+      a = @actions.find{|a| a.name == name}
+      if !a
+        @services.jaba_error("'#{name}' action not defined")
       end
+      a
     end
 
     ##
@@ -121,6 +127,35 @@ module JABA
     #
     def option_defined?(arg)
       get_option(arg) != nil
+    end
+
+    ##
+    #
+    def usage_error(msg)
+      raise CommandLineUsageError, msg
+    end
+
+    ##
+    #
+    def process(phase:)
+      process_cmd_line(phase)
+
+      # TODO: automatically patch in new attrs
+      if phase == 2
+        if !JABA.running_tests?
+          # Only create config.jaba for out of src builds
+          #
+          #if @services.globals.build_root.to_absolute != input.src_root.to_absolute
+            config_file = JABA.config_file
+            if !File.exist?(config_file)
+              @services.globals_node.allow_set_read_only_attrs do
+                @services.globals.src_root input.src_root
+              end
+              make_jaba_config(config_file)
+            end
+          #end
+        end
+      end
     end
 
     ##
@@ -377,13 +412,24 @@ module JABA
     def show_help
       @max_width = 120
       w = StringWriter.new
-      w << "Welcome to Jaba"
+      w << "jaba v#{VERSION}"
+      w << ""
+      w << "Usage: jaba [options] cmd [cmd options]"
+      w << ""
 
       @options.each do |o|
         if !o.hidden
           w << "#{o.long}   #{o.help}"
         end
       end
+
+      w << ""
+      
+      @actions.each do |a|
+        w << "#{a.name}"
+      end
+
+      w << ""
 
       puts w
       exit
