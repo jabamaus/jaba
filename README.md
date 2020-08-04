@@ -2,6 +2,7 @@
 
 To do:
 
+- validate when --src-root can be specified. Should be required if no .jaba files in cwd and disallowed if there are.
 - rename $(root) to $(spec_root)?
 - Check attribute validators when parsing cmd line.
 - Should jaba target one 'language' (type) per run? Eg C++, C#
@@ -12,13 +13,8 @@ To do:
   Error at basic_dll.jaba:8: 'define' attribute not defined. Did you mean 'defines'?
 - Combine jaba.input.json and jaba.output.json into just the latter?
 - Have a 'jaba clean' command
-- validate that build_root is not allowed to be src_root
-- first time jaba is run it creates a jaba.config file in src_root and in build_root. The one in src_root can be optionally checked in.
 - put simple type verification system into Property
 - consider putting config attrs inside a block. It is a bit nasty doing multiple passes and ignoring attrs.
-- jaba.input.json/jaba.output.json should go in buildroot. Trouble is there isn't just one buildroot...
-- think about how buildroot is set
-- think about how control whether projdir is based of root or off buildroot (in-src build files versus out of src build files)
 - there could be a directive on include statements that runs inlcuded file in new jaba instance
 - validate platforms and architecture specs
 - cpp attrs need to be split into project and config in reference manual

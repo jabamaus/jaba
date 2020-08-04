@@ -145,7 +145,7 @@ module JABA
         if !JABA.running_tests?
           # Only create config.jaba for out of src builds
           #
-          #if @services.globals.build_root.to_absolute != input.src_root.to_absolute
+          if input.src_root
             config_file = JABA.config_file
             if !File.exist?(config_file)
               @services.globals_node.allow_set_read_only_attrs do
@@ -153,7 +153,7 @@ module JABA
               end
               make_jaba_config(config_file)
             end
-          #end
+          end
         end
       end
     end
