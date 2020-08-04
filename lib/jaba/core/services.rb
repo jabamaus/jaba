@@ -657,7 +657,7 @@ module JABA
         end
       end
       json = JSON.pretty_generate(root)
-      file = @file_manager.new_file(globals.jaba_input_file, eol: :native, track: false)
+      file = @file_manager.new_file(globals.jaba_input_file.to_absolute(clean: true), eol: :native, track: false)
       w = file.writer
       w.write_raw(json)
       file.write
@@ -683,7 +683,7 @@ module JABA
     ##
     #
     def build_jaba_output
-      out_file = globals.jaba_output_file
+      out_file = globals.jaba_output_file.to_absolute(clean: true)
       out_dir = out_file.dirname
 
       @generated = @file_manager.generated.map{|f| f.relative_path_from(out_dir)}
