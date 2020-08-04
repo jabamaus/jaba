@@ -12,17 +12,17 @@ define :cpp do
     value_option :platforms, required: true
   end
   
-  attr :root, type: :dir do
-    title 'Root directory relative to which all other paths are specified'
-    note 'Root of the project specified as an offset from the file that contains the project definition. ' \
-         'All paths are specified relative to this. Project files will be generated here unless $(projdir) is set. ' \
-         'Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible ' \
-         'in order to not damage portability'
-    default '.'
-  end
-
   define :project do
 
+    attr :root, type: :dir do
+      title 'Root directory relative to which all other paths are specified'
+      note 'Root of the project specified as an offset from the file that contains the project definition. ' \
+           'All paths are specified relative to this. Project files will be generated here unless $(projdir) is set. ' \
+           'Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible ' \
+           'in order to not damage portability'
+      default '.'
+    end
+    
     # Control flow attributes
     #
     attr :host, type: :symbol do
@@ -203,7 +203,7 @@ define :cpp do
       flags :no_check_exist
       flags :base_on_cwd # Not relative to $(root)
     end
-    
+
     attr :bindir, type: :dir do
       title 'Output directory for executables'
       default do
