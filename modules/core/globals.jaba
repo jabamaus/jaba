@@ -37,13 +37,6 @@ define :globals do
     title 'Controls generation of $(jaba_output_file)'
     default true
   end
-
-  attr :jaba_log_file, type: :file do
-    title 'Jaba log file location'
-    default do
-      "#{build_root}/.jaba/jaba.log"
-    end
-  end
   
 end
 

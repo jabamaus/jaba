@@ -64,6 +64,18 @@ module JABA
 
   ##
   #
+  def self.temp_dir
+    '.jaba'
+  end
+
+  ##
+  #
+  def self.log_file
+    "#{JABA.temp_dir}/jaba.log"
+  end
+
+  ##
+  #
   class Services
 
     attr_reader :input
@@ -855,8 +867,12 @@ module JABA
     #
     def term_log
       return if !@log_msgs
-      log_fn = globals ? globals.jaba_log_file : 'jaba.log'
-      File.delete(log_fn) if File.exist?(log_fn)
+      log_fn = JABA.log_file
+      if File.exist?(log_fn)
+        File.delete(log_fn)
+      else
+        FileUtils.makedirs(log_fn.dirname)
+      end
       IO.write(log_fn, @log_msgs.join("\n"))
     end
 
