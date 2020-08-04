@@ -16,7 +16,7 @@ define :globals do
     note 'Mostly useful for debugging and testing but could be useful as a second way of tracking definition changes in source control. ' \
          'The file is written before any file generation occurs, and can be considered a specification of the final data. '
     default do
-      "#{build_root}/jaba.input.json"
+      "#{build_root}/.jaba/jaba.input.json"
     end
   end
 
@@ -29,7 +29,7 @@ define :globals do
     note 'Jaba output can be later used by another process (eg the build process) to do things like looking up paths by id rather ' \
          'than embedding them in code, iterating over all defined unit tests and invoking them, etc.'
     default do
-      "#{build_root}/jaba.output.json"
+      "#{build_root}/.jaba/jaba.output.json"
     end
   end
 
@@ -41,7 +41,7 @@ define :globals do
   attr :jaba_log_file, type: :file do
     title 'Jaba log file location'
     default do
-      "#{build_root}/jaba.log"
+      "#{build_root}/.jaba/jaba.log"
     end
   end
   

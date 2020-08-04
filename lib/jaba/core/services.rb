@@ -176,8 +176,7 @@ module JABA
             @src_root = Regexp.last_match(1)
           end
           if @src_root.nil?
-            $stderr.puts "Could not read src_root from config.jaba or from --src-root"
-            exit! # TODO: not sure about this
+            @src_root = JABA.cwd
           end
         end
 
@@ -214,6 +213,7 @@ module JABA
       make_attr_flag(JabaAttributeDefinitionFlagAllowDupes)
       make_attr_flag(JabaAttributeDefinitionFlagNoSort)
       make_attr_flag(JabaAttributeDefinitionFlagNoCheckExist)
+      make_attr_flag(JabaAttributeDefinitionFlagBaseOnCwd)
 
       @jaba_attr_flags.sort_by!(&:id)
 
@@ -764,7 +764,7 @@ module JABA
       end
 
       if @src_root
-        process_load_path(@src_root)
+        process_load_path(@src_root, fail_if_empty: true)
       end
 
       # Definitions can also be provided in a block form
@@ -784,7 +784,7 @@ module JABA
 
     ##
     #
-    def process_load_path(p)
+    def process_load_path(p, fail_if_empty: false)
       p = p.to_absolute(clean: true)
 
       if !File.exist?(p)
@@ -794,7 +794,11 @@ module JABA
       if File.directory?(p)
         files = @file_manager.glob("#{p}/*.jaba")
         if files.empty?
-          jaba_warning("No definition files found in #{p}")
+          if fail_if_empty
+            jaba_error("No .jaba files found in #{p}")
+          else
+            jaba_warning("No .jaba files found in #{p}")
+          end
         else
           files.each do |f|
             process_jdl_file(f)
@@ -835,7 +839,7 @@ module JABA
       return if !@log_msgs
       line = msg
       if section
-        n = ((96 - msg.size)/2).round
+        n = ((130 - msg.size)/2).round # TODO: handle overflow
         line = "#{'=' * n} #{msg} #{'=' * n}"
       end
       @log_msgs << "#{severity} #{line}"

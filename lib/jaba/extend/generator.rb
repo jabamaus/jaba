@@ -286,12 +286,13 @@ module JABA
         r.absolute_path? ? r : "#{node.definition.source_dir}/#{r}".cleanpath
       end
 
-      # Make all file/dir/path attributes into absolute paths based on root
+      # Make all file/dir/path attributes into absolute paths based on root, unless :not_relative_to_spec_root specified
       #
       node.visit_node(visit_self: true) do |n|
         n.visit_attr(type: [:file, :dir], skip_attr: :root) do |a|
+          base = a.attr_def.has_flag?(:base_on_cwd) ? JABA.cwd : root
           a.map_value! do |p|
-            p.absolute_path? ? p : "#{root}/#{p}".cleanpath
+            p.absolute_path? ? p : "#{base}/#{p}".cleanpath
           end
         end
       end

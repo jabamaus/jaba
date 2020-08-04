@@ -2,6 +2,9 @@
 
 To do:
 
+- rename $(root) to $(spec_root)?
+- Check attribute validators when parsing cmd line.
+- Should jaba target one 'language' (type) per run? Eg C++, C#
 - Better logging of exception errors. Never return a backtrace to cmd line - ugly.
 - Consider adding support for attribute arrays to hash attribute
 - Nasty that :export flag option always needs :no_delete

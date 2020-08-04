@@ -23,15 +23,6 @@ define :cpp do
 
   define :project do
 
-    attr :build_root, type: :dir do
-      title 'Root directory for build artifacts'
-      note 'Specified as a relative path from $(root)'
-      default do
-        globals.build_root
-      end
-      flags :no_check_exist
-    end
-    
     # Control flow attributes
     #
     attr :host, type: :symbol do
@@ -106,10 +97,9 @@ define :cpp do
 
     attr :projdir, type: :dir do
       title 'Directory in which projects will be generated'
-      default do
-        "#{build_root}/projects"
-      end
+      default 'projects'
       flags :no_check_exist # May get created during generation
+      flags :base_on_cwd
       note 'Specified as an offset from $(root). If not specified projects will be generated in $(root)'
       note 'Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible ' \
             'in order to not damage portability'
@@ -206,12 +196,21 @@ define :cpp do
       value_option :when, required: true, items: [:PreBuild, :PreLink, :PostBuild]
     end
 
+    attr :build_root, type: :dir do
+      title 'Root directory for build artifacts'
+      note 'Specified as a relative path from main build root'
+      default 'build'
+      flags :no_check_exist
+      flags :base_on_cwd # Not relative to $(root)
+    end
+    
     attr :bindir, type: :dir do
       title 'Output directory for executables'
       default do
         "#{build_root}/bin/#{arch}/#{config}"
       end
       flags :no_check_exist
+      flags :base_on_cwd
     end
 
     attr :libdir, type: :dir do
@@ -220,6 +219,7 @@ define :cpp do
         "#{build_root}/lib/#{arch}/#{config}"
       end
       flags :no_check_exist
+      flags :base_on_cwd
     end
 
     attr :objdir, type: :dir do
@@ -228,6 +228,7 @@ define :cpp do
         "#{build_root}/obj/#{arch}/#{config}/#{projname}"
       end
       flags :no_check_exist
+      flags :base_on_cwd
     end
 
     attr_array :libs, type: :file do
