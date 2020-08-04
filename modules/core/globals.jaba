@@ -6,11 +6,6 @@ define :globals do
     title 'Root of source tree'
   end
 
-  attr :build_root, type: :dir do
-    title 'Root of build tree'
-    default __cwd__
-  end
-
   attr :jaba_input_file, type: :file do
     title 'Name/path of file to contain a raw dump of all the input data to Jaba'
     note 'Mostly useful for debugging and testing but could be useful as a second way of tracking definition changes in source control. ' \
