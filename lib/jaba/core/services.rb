@@ -77,7 +77,7 @@ module JABA
   ##
   #
   def self.config_file
-    "#{JABA.temp_dir}/jaba.config"
+    "#{JABA.temp_dir}/config.jaba"
   end
 
   ##
@@ -186,10 +186,10 @@ module JABA
         @src_root = input.src_root
 
         if @src_root.nil? && !JABA.running_tests?
-          if File.exist?('config.jaba')
-            content = IO.read('config.jaba')
+          if File.exist?(JABA.config_file)
+            content = IO.read(JABA.config_file)
             if content !~ /src_root "(.*)"/
-              jaba_error("Could not read src_root from config.jaba")
+              jaba_error("Could not read src_root from #{JABA.config_file}")
             end
             @src_root = Regexp.last_match(1)
           end
@@ -779,6 +779,10 @@ module JABA
         @file_manager.glob("#{modules_dir}/**/*.jaba").each do |f|
           process_jdl_file(f)
         end
+      end
+
+      if File.exist?(JABA.config_file) && !JABA.running_tests?
+        process_jdl_file(JABA.config_file)
       end
 
       if @src_root

@@ -10,9 +10,7 @@ To do:
 - Nasty that :export flag option always needs :no_delete
 - Use did_you_mean? Eg
   Error at basic_dll.jaba:8: 'define' attribute not defined. Did you mean 'defines'?
-- config.jaba is not actually being executed!
 - Combine jaba.input.json and jaba.output.json into just the latter?
-- process config.jaba first
 - Have a 'jaba clean' command
 - validate that build_root is not allowed to be src_root
 - first time jaba is run it creates a jaba.config file in src_root and in build_root. The one in src_root can be optionally checked in.
