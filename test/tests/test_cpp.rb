@@ -80,7 +80,7 @@ module JABA
       td = temp_dir
       make_file("app/main.cpp")
       make_file("lib/main.cpp")
-      op = jaba(dump_output: true) do
+      op = jaba do
         defaults :cpp do
           hosts [:vs2019], platforms: [:windows_x86, :windows_x86_64]
           configs [:Debug, :Release]
