@@ -2,23 +2,15 @@
 
 module JABA
 
-  class Test_imVGenerator < Generator
+  class Test_imGenerator < Generator
     def init
       register_cmdline_option('--value-opt', short: '-v', help: 'value opt', var: :value_opt, type: :value)
-    end
-
-    def generate
-      print services.input.value_opt
-    end
-  end
-
-  class Test_imAGenerator < Generator
-    def init
       register_cmdline_option('--array-opt', short: '-a', help: 'array opt', var: :array_opt, type: :array)
     end
 
     def generate
-      print services.input.array_opt
+      print services.input.value_opt if services.input.value_opt
+      print services.input.array_opt if !services.input.array_opt.empty?
     end
   end
 
@@ -43,7 +35,7 @@ module JABA
     it 'supports value options' do
       assert_output 'value' do
         jaba(barebones: true, argv: ['--value-opt', 'value']) do
-          define :test_imV
+          define :test_im
         end
       end
       
@@ -51,12 +43,12 @@ module JABA
       #
       assert_output '--value' do
         jaba(barebones: true, argv: ['--value-opt', '--value']) do
-          define :test_imV
+          define :test_im
         end
       end
-      check_fail "--value-opt/-v expects a value", exception: CommandLineUsageError do
+      check_fail "-v [--value-opt] expects a value", exception: CommandLineUsageError do
         jaba(barebones: true, argv: ['--value-opt']) do
-          define :test_imV
+          define :test_im
         end
       end
     end
@@ -64,19 +56,19 @@ module JABA
     it 'supports array options' do
       assert_output '["e1", "e2", "e3"]' do
         jaba(barebones: true, argv: ['--array-opt', 'e1', 'e2', 'e3']) do
-          define :test_imA
+          define :test_im
         end
       end
       # test that values can be anything, even something that looks like an option (unless it is actually an option)
       #
       assert_output '["--e1", "--e2", "--e3"]' do
         jaba(barebones: true, argv: ['--array-opt', '--e1', '--e2', '--e3']) do
-          define :test_imA
+          define :test_im
         end
       end
-      check_fail "--array-opt/-a expects 1 or more values", exception: CommandLineUsageError do
+      check_fail "-a [--array-opt] expects 1 or more values", exception: CommandLineUsageError do
         jaba(barebones: true, argv: ['--array-opt']) do
-          define :test_imA
+          define :test_im
         end
       end
     end
