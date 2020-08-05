@@ -186,8 +186,8 @@ module JABA
         @src_root = input.src_root
 
         if @src_root.nil? && !JABA.running_tests?
-          if File.exist?(JABA.config_file)
-            content = IO.read(JABA.config_file)
+          if file_manager.exist?(JABA.config_file)
+            content = file_manager.read(JABA.config_file, freeze: false)
             if content !~ /src_root "(.*)"/
               jaba_error("Could not read src_root from #{JABA.config_file}")
             end
@@ -845,7 +845,7 @@ module JABA
       # Special handling for config.jaba
       #
       if f.basename == 'config.jaba'
-        content = @file_manager.read(f, freeze: false)
+        content = @file_manager.read(f)
         log "Executing #{f}"
         content.prepend("open_instance :globals, type: :globals do\n")
         content << "end"
