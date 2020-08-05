@@ -10,7 +10,7 @@ module JABA
   #
   class InputManager
 
-    Cmd = Struct.new(:name, :options)
+    Cmd = Struct.new(:name, :options, :dev_cmd)
     CmdLineOption = Struct.new(:long, :short, :spec, :help, :type, :inst_var, :dev_option, :phase, :cmd)
 
     attr_reader :input
@@ -33,10 +33,11 @@ module JABA
 
     ##
     #
-    def register_cmd(name)
+    def register_cmd(name, dev_cmd: false)
       c = Cmd.new
       c.name = name
       c.options = []
+      c.dev_cmd = dev_cmd
       @commands << c
     end
 
@@ -46,7 +47,7 @@ module JABA
       register_cmd(:gen)
       register_cmd(:build)
       register_cmd(:clean)
-      register_cmd(:genref)
+      register_cmd(:genref, dev_cmd: true)
 
       register_option('--help', help: 'Show help', phase: 2)
 
@@ -419,14 +420,17 @@ module JABA
     def show_help
       @max_width = 120
       w = StringWriter.new
-      w << "jaba v#{VERSION}"
+      w << "jaba build system generator v#{VERSION}"
       w << ""
-      w << "Usage: jaba cmd [options]"
+      w << "Usage:"
+      w << ""
+      w << "  jaba cmd [options]"
       w << ""
       w << "Commands:"
       w << ""
       
       @commands.each do |a|
+        next if a.dev_cmd
         w << "  #{a.name}"
         opts = a.options.select{|o| !o.dev_option}
         print_options(w, 4, opts)
