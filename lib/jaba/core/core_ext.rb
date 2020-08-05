@@ -324,7 +324,13 @@ module JABACoreExt
 
     ##
     #
-    def wrap!(max_width, prefix: nil)
+    def wrap(...)
+      dup.wrap!(...)
+    end
+
+    ##
+    #
+    def wrap!(max_width, prefix: nil, trim_leading_prefix: false)
       indent = prefix ? prefix.size : 0
       width = max_width - indent
       eol = end_with?("\n")
@@ -332,6 +338,9 @@ module JABACoreExt
         "#{prefix}#{$1}#{$3}\n"
       end
       chop! if (!eol && end_with?("\n"))
+      if trim_leading_prefix
+        sub!(prefix, '')
+      end
       self
     end
 

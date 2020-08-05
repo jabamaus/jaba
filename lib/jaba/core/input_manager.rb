@@ -6,12 +6,12 @@ module JABA
 
   using JABACoreExt
 
-  CmdLineAction = Struct.new(:name, :options)
-  CmdLineOption = Struct.new(:long, :short, :help, :type, :inst_var, :hidden, :phase)
-
   ##
   #
   class InputManager
+
+    Cmd = Struct.new(:name, :options)
+    CmdLineOption = Struct.new(:long, :short, :spec, :help, :type, :inst_var, :dev_option, :phase, :cmd)
 
     attr_reader :input
 
@@ -20,7 +20,7 @@ module JABA
     def initialize(services)
       @services = services
       @options = []
-      @actions = []
+      @commands = []
 
       @input = Input.new
       @input.instance_variable_set(:@dest_root, JABA.cwd)
@@ -33,33 +33,34 @@ module JABA
 
     ##
     #
-    def register_action(name)
-      a = CmdLineAction.new
-      a.name = name
-      a.options = []
-      @actions << a
+    def register_cmd(name)
+      c = Cmd.new
+      c.name = name
+      c.options = []
+      @commands << c
     end
 
     ##
     #
     def register_options
-      register_action(:gen)
-      register_action(:build)
-      register_action(:clean)
-      register_action(:genref)
+      register_cmd(:gen)
+      register_cmd(:build)
+      register_cmd(:clean)
+      register_cmd(:genref)
 
-      # TODO: think about mutual exclusivity
-      register_option('--help', help: 'Show help', phase: 2, hidden: true)
-      register_option('--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root, action: :gen)
-      register_option('--define', short: '-D', help: 'Set global attribute value', phase: 2, action: :gen)
+      register_option('--help', help: 'Show help', phase: 2)
+
+      register_option('--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root, cmd: :gen)
+      register_option('--define', short: '-D', help: 'Set global attribute value', phase: 2, cmd: :gen)
+      
       register_option('--dry-run', help: 'Perform a dry run', type: :flag, var: :dry_run)
-      register_option('--gen-ref', help: 'Generates reference doc', type: :flag, var: :generate_reference_doc, hidden: true, phase: 2)
-      register_option('--profile', help: 'Profiles with ruby-prof', type: :flag, var: :profile, hidden: true)
+      register_option('--gen-ref', help: 'Generates reference doc', type: :flag, var: :generate_reference_doc, dev_option: true, phase: 2)
+      register_option('--profile', help: 'Profiles with ruby-prof', type: :flag, var: :profile, dev_option: true)
     end
 
     ##
     #
-    def register_option(long, short: nil, help:, type: nil, var: nil, hidden: false, phase: 1, action: nil)
+    def register_option(long, short: nil, help:, type: nil, var: nil, dev_option: false, phase: 1, cmd: nil)
       if long !~ /^--[a-zA-Z0-9\-]+$/
         @services.jaba_error("Invalid long option format '#{long}' specified. Must be of form --my-long-option")
       end
@@ -73,17 +74,22 @@ module JABA
       o.help = help
       o.type = type
       o.inst_var = var ? "@#{var}" : nil
-      o.hidden = hidden
+      o.dev_option = dev_option
       o.phase = phase
+      o.cmd = cmd
+      o.spec = if short
+        "#{short} [#{long}]"
+      else
+        long
+      end
+
       o.define_singleton_method :describe do
-        d = String.new(long)
-        d << "/#{short}" if short
-        d
+        o.spec
       end
       
-      if action
-        a = get_action(action)
-        a.options << o
+      if cmd
+        c = get_cmd(cmd)
+        c.options << o
       end
 
       @options << o
@@ -108,12 +114,12 @@ module JABA
 
     ##
     #
-    def get_action(name)
-      a = @actions.find{|a| a.name == name}
-      if !a
-        @services.jaba_error("'#{name}' action not defined")
+    def get_cmd(name)
+      c = @commands.find{|a| a.name == name}
+      if !c
+        @services.jaba_error("'#{name}' command not defined")
       end
-      a
+      c
     end
 
     ##
@@ -415,25 +421,39 @@ module JABA
       w = StringWriter.new
       w << "jaba v#{VERSION}"
       w << ""
-      w << "Usage: jaba [options] cmd [cmd options]"
+      w << "Usage: jaba cmd [options]"
       w << ""
-
-      @options.each do |o|
-        if !o.hidden
-          w << "#{o.long}   #{o.help}"
-        end
-      end
-
+      w << "Commands:"
       w << ""
       
-      @actions.each do |a|
-        w << "#{a.name}"
+      @commands.each do |a|
+        w << "  #{a.name}"
+        opts = a.options.select{|o| !o.dev_option}
+        print_options(w, 4, opts)
+        w << ""
       end
+
+      w << "General options:"
+      w << ""
+      opts = @options.select{|o| !o.cmd && !o.dev_option && o.long != '--help'}
+      print_options(w, 2, opts)
 
       w << ""
 
       puts w
       exit
+    end
+
+    ##
+    #
+    def print_options(w, indent, opts)
+      return if opts.empty?
+      max_len = opts.map{|o| o.spec.length}.max
+      help_start = max_len + indent + 2
+
+      opts.each do |o|
+        w << "#{' ' * indent}#{o.spec}#{' ' * (max_len - o.spec.size)}  #{o.help.wrap(130, prefix: (' ' * help_start), trim_leading_prefix: true)}"
+      end
     end
 
   end
