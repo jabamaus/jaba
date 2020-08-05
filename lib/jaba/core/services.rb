@@ -182,7 +182,7 @@ module JABA
     ##
     #
     def do_run
-      if !input.generate_reference_doc
+      if !input_manager.cmd_specified?(:genref)
         @src_root = input.src_root
 
         if @src_root.nil? && !JABA.running_tests?
@@ -310,12 +310,6 @@ module JABA
         sd.add_open_def(d)
       end
 
-      if input.generate_reference_doc
-        @top_level_jaba_types.sort_by! {|jt| jt.defn_id}
-        generate_reference_doc
-        return
-      end
-
       # Init all generators. Generators can register cmd line options with input manager here
       #
       @generators.each do |g|
@@ -331,6 +325,12 @@ module JABA
 
       @input_manager.process(phase: 2)
 
+      if input_manager.cmd_specified?(:genref)
+        @top_level_jaba_types.sort_by! {|jt| jt.defn_id}
+        generate_reference_doc
+        return
+      end
+      
       # Process generators
       #
       @generators.each do |g|
@@ -706,7 +706,7 @@ module JABA
         end
       end
 
-      if globals.dump_output && !input.generate_reference_doc
+      if globals.dump_output && !input_manager.cmd_specified?(:genref)
         json = JSON.pretty_generate(@output)
         file = @file_manager.new_file(out_file, eol: :native)
         w = file.writer
@@ -845,7 +845,7 @@ module JABA
       # Special handling for config.jaba
       #
       if f.basename == 'config.jaba'
-        content = @file_manager.read(f)
+        content = @file_manager.read(f, freeze: false)
         log "Executing #{f}"
         content.prepend("open_instance :globals, type: :globals do\n")
         content << "end"

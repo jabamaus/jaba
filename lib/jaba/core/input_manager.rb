@@ -10,8 +10,8 @@ module JABA
   #
   class InputManager
 
-    Cmd = Struct.new(:name, :options, :dev_cmd)
-    CmdLineOption = Struct.new(:long, :short, :spec, :help, :type, :inst_var, :dev_option, :phase, :cmd)
+    Cmd = Struct.new(:id, :options, :dev_cmd)
+    CmdLineOption = Struct.new(:long, :short, :describe, :help, :type, :inst_var, :dev_option, :phase, :cmd)
 
     attr_reader :input
 
@@ -20,43 +20,43 @@ module JABA
     def initialize(services)
       @services = services
       @options = []
-      @commands = []
+      @cmds = []
 
       @input = Input.new
       @input.instance_variable_set(:@dest_root, JABA.cwd)
       @input.instance_variable_set(:@argv, ARGV)
       @input.instance_variable_set(:@definitions, [])
       @input.instance_variable_set(:@barebones, false)
-      
-      register_options
-    end
+      @input.instance_variable_set(:@cmd, nil)
 
-    ##
-    #
-    def register_cmd(name, dev_cmd: false)
-      c = Cmd.new
-      c.name = name
-      c.options = []
-      c.dev_cmd = dev_cmd
-      @commands << c
-    end
-
-    ##
-    #
-    def register_options
-      register_cmd(:gen)
-      register_cmd(:build)
-      register_cmd(:clean)
-      register_cmd(:genref, dev_cmd: true)
-
+      # General non-cmd-specific options
+      #
       register_option('--help', help: 'Show help', phase: 2)
+      register_option('--dry-run', help: 'Perform a dry run', type: :flag, var: :dry_run)
+      register_option('--profile', help: 'Profiles with ruby-prof', type: :flag, var: :profile, dev_option: true)
 
+      @default_cmd = register_cmd(:gen)
       register_option('--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root, cmd: :gen)
       register_option('--define', short: '-D', help: 'Set global attribute value', phase: 2, cmd: :gen)
       
-      register_option('--dry-run', help: 'Perform a dry run', type: :flag, var: :dry_run)
-      register_option('--gen-ref', help: 'Generates reference doc', type: :flag, var: :generate_reference_doc, dev_option: true, phase: 2)
-      register_option('--profile', help: 'Profiles with ruby-prof', type: :flag, var: :profile, dev_option: true)
+      register_cmd(:build)
+      register_cmd(:clean)
+      register_cmd(:genref, dev_cmd: true)
+    end
+
+    ##
+    #
+    def register_cmd(id, dev_cmd: false)
+      raise "cmd id must be a symbol" if !id.symbol?
+      if id !~ /^[a-zA-Z0-9\-]+$/
+        @services.jaba_error("Invalid cmd id '#{id}' specified. Can only contain [a-zA-Z0-9-]")
+      end
+      c = Cmd.new
+      c.id = id
+      c.options = []
+      c.dev_cmd = dev_cmd
+      @cmds << c
+      c
     end
 
     ##
@@ -78,18 +78,10 @@ module JABA
       o.dev_option = dev_option
       o.phase = phase
       o.cmd = cmd
-      o.spec = if short
-        "#{short} [#{long}]"
-      else
-        long
-      end
-
-      o.define_singleton_method :describe do
-        o.spec
-      end
+      o.describe = short ? "#{short} [#{long}]" : long
       
       if cmd
-        c = get_cmd(cmd)
+        c = get_cmd(cmd, fail_if_not_found: true)
         c.options << o
       end
 
@@ -111,36 +103,7 @@ module JABA
         end
         @input.instance_variable_set(o.inst_var, val)
       end
-    end
-
-    ##
-    #
-    def get_cmd(name)
-      c = @commands.find{|a| a.name == name}
-      if !c
-        @services.jaba_error("'#{name}' command not defined")
-      end
-      c
-    end
-
-    ##
-    #
-    def get_option(arg)
-      @options.find do |o|
-        arg.start_with?(o.long) || (o.short && arg.start_with?(o.short))
-      end
-    end
-
-    ##
-    #
-    def option_defined?(arg)
-      get_option(arg) != nil
-    end
-
-    ##
-    #
-    def usage_error(msg)
-      raise CommandLineUsageError, msg
+      o
     end
 
     ##
@@ -168,17 +131,71 @@ module JABA
 
     ##
     #
+    def cmd_specified?(id)
+      get_cmd(id, fail_if_not_found: true) # Validate cmd exists
+      input.instance_variable_get(:@cmd) == id
+    end
+
+    ##
+    #
+    def get_cmd(id, fail_if_not_found: true)
+      c = @cmds.find{|c| c.id == id}
+      if !c && fail_if_not_found
+        @services.jaba_error("#{id} command not recognised")
+      end
+      c
+    end
+
+    ##
+    #
+    def get_option(arg)
+      @options.find do |o|
+        arg.start_with?(o.long) || (o.short && arg.start_with?(o.short))
+      end
+    end
+
+    ##
+    #
+    def option_defined?(arg)
+      get_option(arg) != nil
+    end
+
+    ##
+    #
+    def usage_error(msg)
+      raise CommandLineUsageError, msg
+    end
+
+    ##
+    #
     def process_cmd_line(phase)
       globals_node = @services.globals_node
       input = @input
       im = self
+      default_cmd = @default_cmd
 
       # Take a copy because cmd line is parsed twice
       #
       argv = Array(input.argv).dup
 
       FSM.new(events: [:process_arg]) do
-        state :default do
+        state :want_cmd do
+          on_process_arg do |arg|
+            cmd = nil
+            if arg.start_with?('-')
+              cmd = default_cmd
+              argv.unshift(arg)
+            else
+              cmd = im.get_cmd(arg.to_sym, fail_if_not_found: false)
+              if cmd.nil?
+                im.usage_error("#{arg} command not recognised")
+              end
+            end
+            input.instance_variable_set(:@cmd, cmd.id)
+            goto :want_option
+          end
+        end
+        state :want_option do
           on_process_arg do |arg|
             opt = im.get_option(arg)
 
@@ -227,7 +244,7 @@ module JABA
           on_process_arg do |arg|
             if im.option_defined?(arg)
               argv.unshift(arg)
-              goto :default
+              goto :want_option
             end
           end
         end
@@ -245,10 +262,10 @@ module JABA
           on_process_arg do |arg|
             if im.option_defined?(arg)
               argv.unshift(arg)
-              goto :default
+              goto :want_option
             else
               @val = arg
-              goto :default
+              goto :want_option
             end
           end
         end
@@ -267,7 +284,7 @@ module JABA
           on_process_arg do |arg|
             if im.option_defined?(arg)
               argv.unshift(arg)
-              goto :default
+              goto :want_option
             else
               @elems << arg
             end
@@ -321,7 +338,7 @@ module JABA
             else
               @value = @type.from_string(arg)
             end
-            goto :default
+            goto :want_option
           end
         end
         state :global_attr_array do
@@ -339,7 +356,7 @@ module JABA
           on_process_arg do |arg|
             if im.option_defined?(arg)
               argv.unshift(arg)
-              goto :default
+              goto :want_option
             else
               val = @type.from_string(arg)
               @elems << val
@@ -365,7 +382,7 @@ module JABA
                 im.usage_error("No valued provided for '#{arg}'")
               else
                 argv.unshift(arg)
-                goto :default
+                goto :want_option
               end
             end
             if @key.nil?
@@ -429,10 +446,14 @@ module JABA
       w << "Commands:"
       w << ""
       
-      @commands.each do |a|
-        next if a.dev_cmd
-        w << "  #{a.name}"
-        opts = a.options.select{|o| !o.dev_option}
+      @cmds.each do |c|
+        next if c.dev_cmd
+        if c == @default_cmd
+          w << "  #{c.id} (default)"
+        else
+          w << "  #{c.id}"
+        end
+        opts = c.options.select{|o| !o.dev_option}
         print_options(w, 4, opts)
         w << ""
       end
@@ -452,11 +473,11 @@ module JABA
     #
     def print_options(w, indent, opts)
       return if opts.empty?
-      max_len = opts.map{|o| o.spec.length}.max
+      max_len = opts.map{|o| o.describe.length}.max
       help_start = max_len + indent + 2
 
       opts.each do |o|
-        w << "#{' ' * indent}#{o.spec}#{' ' * (max_len - o.spec.size)}  #{o.help.wrap(130, prefix: (' ' * help_start), trim_leading_prefix: true)}"
+        w << "#{' ' * indent}#{o.describe}#{' ' * (max_len - o.describe.size)}  #{o.help.wrap(@max_width, prefix: (' ' * help_start), trim_leading_prefix: true)}"
       end
     end
 
