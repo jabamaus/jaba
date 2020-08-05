@@ -2,12 +2,14 @@
 
 To do:
 
+- Should to_absolute base off JABA.cwd or dest_root? I think the latter...
+- Remove src_root from globals and put into jaba.cache file
+- consider having a globals per-type (eg cpp globals)
 - validate when --src-root can be specified. Should be required if no .jaba files in cwd and disallowed if there are.
 - rename $(root) to $(spec_root)?
 - Check attribute validators when parsing cmd line.
 - Should jaba target one 'language' (type) per run? Eg C++, C#
 - Better logging of exception errors. Never return a backtrace to cmd line - ugly.
-- Consider adding support for attribute arrays to hash attribute
 - Nasty that :export flag option always needs :no_delete
 - Use did_you_mean? Eg
   Error at basic_dll.jaba:8: 'define' attribute not defined. Did you mean 'defines'?

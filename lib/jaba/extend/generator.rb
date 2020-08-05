@@ -290,7 +290,7 @@ module JABA
       #
       node.visit_node(visit_self: true) do |n|
         n.visit_attr(type: [:file, :dir], skip_attr: :root) do |a|
-          base = a.attr_def.has_flag?(:base_on_cwd) ? JABA.cwd : root
+          base = a.attr_def.has_flag?(:base_on_cwd) ? services.input.dest_root : root
           a.map_value! do |p|
             p.absolute_path? ? p : "#{base}/#{p}".cleanpath
           end

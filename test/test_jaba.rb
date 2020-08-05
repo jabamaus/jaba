@@ -29,6 +29,7 @@ module JABA
       td = temp_dir(create: false)
       op = JABA.run do |c|
         c.src_root = src_root
+        c.dest_root = td
         c.argv = Array(argv) if argv
         c.definitions(&block) if block_given?
         c.barebones = barebones

@@ -23,6 +23,7 @@ module JABA
       @actions = []
 
       @input = Input.new
+      @input.instance_variable_set(:@dest_root, JABA.cwd)
       @input.instance_variable_set(:@argv, ARGV)
       @input.instance_variable_set(:@definitions, [])
       @input.instance_variable_set(:@barebones, false)
