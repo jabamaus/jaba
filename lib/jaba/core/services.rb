@@ -90,6 +90,9 @@ module JABA
     attr_reader :globals
     attr_reader :globals_node
 
+    @@module_ruby_files_loaded = false
+    @@module_jaba_files = []
+
     ##
     #
     def initialize
@@ -100,6 +103,7 @@ module JABA
       @warnings = []
       @warn_object = nil
       
+      @modules_root = "#{JABA.jaba_install_dir}/modules"
       @src_root = nil
       @jdl_files = []
       @jdl_includes = []
@@ -181,6 +185,7 @@ module JABA
     ##
     #
     def do_run
+      load_module_ruby_files
       create_core_objects
       
       @input_manager.process(phase: 1)
@@ -204,7 +209,7 @@ module JABA
         log "src_root=#{@src_root}"
       end
 
-      load_modules
+      load_module_jaba_files
 
       # Prepend globals type definition so globals are processed first, allowing everything else to access them
       #
@@ -757,19 +762,33 @@ module JABA
 
     ##
     #
-    def load_modules
-      modules_dir = "#{JABA.jaba_install_dir}/modules"
-      require_relative '../../../modules/text/text_generator.rb'
-      require_relative '../../../modules/cpp/cpp_generator.rb'
-      require_relative '../../../modules/workspace/workspace_generator.rb'
-      require_relative '../../../modules/workspace/VisualStudio/Sln.rb'
-
-      # Load core type definitions
+    def load_module_ruby_files
+      # Only loaded once in a given process even if jaba invoked multiple times. Helps with effiency of tests.
       #
+      return if @@module_ruby_files_loaded
+      @@module_ruby_files_loaded = true
+      plugin_files = []
+
+      Dir.glob("#{@modules_root}/**/*").each do |f|
+        case f.extname
+        when '.rb'
+          plugin_files << f
+        when '.jaba'
+          @@module_jaba_files << f
+        end
+      end
+      plugin_files.each do |f|
+        require f
+      end
+    end
+
+    ##
+    #
+    def load_module_jaba_files
       if input.barebones?
-        process_jdl_file("#{modules_dir}/core/globals.jaba") # globals always needs loading
+        process_jdl_file("#{@modules_root}/core/globals.jaba") # globals always needs loading
       else
-        @file_manager.glob("#{modules_dir}/**/*.jaba").each do |f|
+        @@module_jaba_files.each do |f|
           process_jdl_file(f)
         end
       end
