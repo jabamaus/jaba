@@ -134,6 +134,7 @@ module JABA
       @globals = nil
       @globals_node = nil
 
+      @null_attr_type = JabaAttributeType.new
       @null_nodes = {}
       
       @in_attr_default_block = false
@@ -149,8 +150,6 @@ module JABA
     def run
       log "Starting Jaba at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}", section: true
       
-      @input_manager.process(phase: 1)
-
       duration = JABA.milli_timer do
         JABA.profile(input.profile) do
           do_run
@@ -182,6 +181,10 @@ module JABA
     ##
     #
     def do_run
+      create_core_objects
+      
+      @input_manager.process(phase: 1)
+
       if !input_manager.cmd_specified?(:genref)
         @src_root = input.src_root
 
@@ -202,38 +205,6 @@ module JABA
       end
 
       load_modules
-
-      # Create attribute types
-      #
-      # TODO: genericise
-      @null_attr_type = JabaAttributeType.new
-      make_attr_type(JabaAttributeTypeString)
-      make_attr_type(JabaAttributeTypeSymbol)
-      make_attr_type(JabaAttributeTypeSymbolOrString)
-      make_attr_type(JabaAttributeTypeToS)
-      make_attr_type(JabaAttributeTypeInt)
-      make_attr_type(JabaAttributeTypeBool)
-      make_attr_type(JabaAttributeTypeChoice)
-      make_attr_type(JabaAttributeTypeFile)
-      make_attr_type(JabaAttributeTypeDir)
-      make_attr_type(JabaAttributeTypeSrcSpec)
-      make_attr_type(JabaAttributeTypeUUID)
-      make_attr_type(JabaAttributeTypeReference)
-      
-      @jaba_attr_types.sort_by!(&:id)
-
-      # Create attribute flags, which are used in attribute definitions
-      #
-      # TODO: genericise
-      make_attr_flag(JabaAttributeDefinitionFlagRequired)
-      make_attr_flag(JabaAttributeDefinitionFlagReadOnly)
-      make_attr_flag(JabaAttributeDefinitionFlagExpose)
-      make_attr_flag(JabaAttributeDefinitionFlagAllowDupes)
-      make_attr_flag(JabaAttributeDefinitionFlagNoSort)
-      make_attr_flag(JabaAttributeDefinitionFlagNoCheckExist)
-      make_attr_flag(JabaAttributeDefinitionFlagBaseOnCwd)
-
-      @jaba_attr_flags.sort_by!(&:id)
 
       # Prepend globals type definition so globals are processed first, allowing everything else to access them
       #
@@ -369,14 +340,27 @@ module JABA
     
     ##
     #
-    def make_definition(id, block, call_loc)
-      JabaDefinition.new(self, id, block, call_loc)
+    def create_core_objects
+      constants = JABA.constants(false) # Don't iterate directly as constants get created inside loop
+      constants.each do |c|
+        case c
+        when /^JabaAttributeType./
+          make_attr_type(JABA.const_get(c))
+        when /^JabaAttributeDefinitionFlag./
+          make_attr_flag(JABA.const_get(c))
+        end
+      end
+      @jaba_attr_types.sort_by!(&:id)
+      @jaba_attr_flags.sort_by!(&:id)
     end
 
     ##
     #
     def make_attr_type(klass)
       at = klass.new
+      if @jaba_attr_type_lookup.has_key?(at.id)
+        jaba_error("Attribute type multiply defined [id=#{at.id}, class=#{klass}]")
+      end
       at.instance_variable_set(:@services, self)
       @jaba_attr_types << at
       @jaba_attr_type_lookup[at.id] = at
@@ -387,10 +371,19 @@ module JABA
     #
     def make_attr_flag(klass)
       af = klass.new
+      if @jaba_attr_flag_lookup.has_key?(af.id)
+        jaba_error("Attribute flag multiply defined [id=#{af.id}, class=#{klass}]")
+      end
       af.instance_variable_set(:@services, self)
       @jaba_attr_flags << af
       @jaba_attr_flag_lookup[af.id] = af
       af
+    end
+
+    ##
+    #
+    def make_definition(id, block, call_loc)
+      JabaDefinition.new(self, id, block, call_loc)
     end
 
     ##
