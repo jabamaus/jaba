@@ -109,6 +109,12 @@ module JABA
 
     ##
     #
+    def register_cmdline_cmd(opt, **args)
+      services.input_manager.register_cmd(opt, **args)
+    end
+
+    ##
+    #
     def register_cmdline_option(opt, **args)
       services.input_manager.register_option(opt, phase: 2, **args)
     end

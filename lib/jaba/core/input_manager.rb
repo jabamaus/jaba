@@ -31,7 +31,7 @@ module JABA
 
       # General non-cmd-specific options
       #
-      register_option('--help', help: 'Show help', phase: 2)
+      register_option('--help', help: 'Show help')
       register_option('--dry-run', help: 'Perform a dry run', type: :flag, var: :dry_run)
       register_option('--profile', help: 'Profiles with ruby-prof', type: :flag, var: :profile, dev_option: true)
 
@@ -200,14 +200,7 @@ module JABA
             opt = im.get_option(arg)
 
             if opt.nil?
-              # Phase 2 options may not have had the chance to register yet so ignore unkown options
-              #
-              if phase == 1
-                goto :ignore
-                next
-              else
-                im.usage_error("#{arg} option not recognised")
-              end
+              im.usage_error("#{arg} option not recognised")
             end
 
             # See if value was tacked on the end. If so, split and start again

@@ -3,25 +3,34 @@
 module JABA
 
   class Test_imGenerator < Generator
-    def init
-      services.input_manager.register_cmd(:testcmd1)
-      services.input_manager.register_cmd(:testcmd2)
+    def register
+      # General options, available to all commands
+      #
       register_cmdline_option('--value-opt', short: '-v', help: 'value opt', var: :value_opt, type: :value)
       register_cmdline_option('--array-opt', short: '-a', help: 'array opt', var: :array_opt, type: :array)
+
+      register_cmdline_cmd(:cmd1)
+      register_cmdline_cmd(:cmd2)
     end
 
     def generate
-      print services.input.value_opt if services.input.value_opt
-      print services.input.array_opt if !services.input.array_opt.empty?
+      i = services.input
+      print i.value_opt if i.value_opt
+      print i.array_opt if !i.array_opt.empty?
+      if services.input_manager.cmd_specified?(:cmd1)
+        print 'cmd1'
+      end
     end
   end
 
   class TestInputManager < JabaTest
 
     it 'supports commands' do
-      #jaba(barebones: true, argv: ['--value-opt', 'value']) do
-      #  define :test_im
-      #end
+      assert_output 'cmd1' do
+        jaba(barebones: true, argv: ['cmd1']) do
+          define :test_im
+        end
+      end
     end
 
     # TODO: should duplicate array options be allowed?
