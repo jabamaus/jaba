@@ -90,10 +90,10 @@ module JABA
 
     ##
     #
-    def initialize(definition, handle)
+    def initialize(definition, handle, generator)
       super(definition, handle, self)
 
-      init_generator
+      @generator = generator
       @defaults_definition = services.get_defaults_definition(@defn_id)
 
       @all_attr_defs = {}
@@ -116,24 +116,6 @@ module JABA
       @title.freeze
       @notes.freeze
       @singleton.freeze
-    end
-
-    ##
-    #
-    def init_generator
-      gen_classname = "#{@defn_id.to_s.capitalize_first}Generator"
-      
-      klass = if !JABA.const_defined?(gen_classname)
-        DefaultGenerator
-      else
-        JABA.const_get(gen_classname)
-      end
-
-      if !klass.ancestors.include?(Generator)
-        jaba_error "#{klass} must be a subclass of Generator class"
-      end
-
-      @generator = klass.new(services, self)
     end
 
     ##

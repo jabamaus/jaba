@@ -133,6 +133,7 @@ module JABA
       @translators = {}
 
       @generators = []
+      @generator_lookup = {}
 
       @globals_type_def = nil
       @globals = nil
@@ -286,12 +287,6 @@ module JABA
         sd.add_open_def(d)
       end
 
-      # Init all generators. Generators can register cmd line options with input manager here
-      #
-      @generators.each do |g|
-        g.init
-      end
-
       # Globals generator is the first one. Remove it as it is handled explicitly.
       #
       globals_generator = @generators.shift
@@ -353,6 +348,18 @@ module JABA
           make_attr_type(JABA.const_get(c))
         when /^JabaAttributeDefinitionFlag./
           make_attr_flag(JABA.const_get(c))
+        when /^(.+)Generator$/
+          # Create non-default generators up front (eg CppGenerator, WorkspaceGenerator). There will only be one instance
+          # of each of these. DefaultGenerators will be created later as there will be one created for each jaba type that
+          # has not defined its own generator. Creating generators up front allows generators to register early with the
+          # system.
+          #
+          next if c == :DefaultGenerator
+          id = Regexp.last_match(1)
+          klass = JABA.const_get(c)
+          g = klass.new(self)
+          g.register
+          @generator_lookup[id] = g
         end
       end
       @jaba_attr_types.sort_by!(&:id)
@@ -400,11 +407,20 @@ module JABA
         jaba_error("'#{handle}' jaba type multiply defined")
       end
 
-      jt = TopLevelJabaType.new(definition, handle)
+      generator_id = definition.id.to_s.capitalize_first
+      generator = @generator_lookup[generator_id]
+      if generator.nil?
+        generator = DefaultGenerator.new(self)
+      end
 
-      @top_level_jaba_types  << jt
-      @jaba_type_lookup[handle] = jt
-      jt
+      tlt = TopLevelJabaType.new(definition, handle, generator)
+      generator.set_top_level_type(tlt)
+      generator.init
+
+      @top_level_jaba_types  << tlt
+      @jaba_type_lookup[handle] = tlt
+
+      tlt
     end
 
     ##

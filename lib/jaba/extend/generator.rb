@@ -40,10 +40,8 @@ module JABA
 
     ##
     #
-    def initialize(services, top_level_jaba_type)
+    def initialize(services)
       @services = services
-      @top_level_jaba_type = top_level_jaba_type
-      @type_id = @top_level_jaba_type.defn_id
       @definitions = []
       @root_nodes = []
       @nodes = []
@@ -52,6 +50,13 @@ module JABA
       @node_to_host_object = {}
       @reference_attrs_to_resolve = []
       @source_file = JABA.const_source_location(self.class.name)[0]
+    end
+
+    ##
+    #
+    def set_top_level_type(tlt)
+      @top_level_jaba_type = tlt
+      @type_id = tlt.defn_id
     end
 
     ##
@@ -232,8 +237,14 @@ module JABA
     end
 
     ##
-    # Override this in subclass.
-    # register_cmdline_option can be called from here
+    # Override this in subclass to register items with the system, eg cmd line cmds and options.
+    #
+    def register
+      # nothing
+    end
+
+    ##
+    # Override this in subclass. Called at construction time. Same role as initialize().
     #
     def init
       # nothing

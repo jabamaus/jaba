@@ -244,27 +244,27 @@ module JABA
             children[0].children[0].attrs.path.must_equal("x86/2019")
           end
         end
-
-        class ::TestprojGenerator < Generator
-          
-          def make_nodes
-            platforms_node = make_node
-            
-            platforms_node.attrs.platforms.each do |p|
-              hosts_node = make_node(sub_type_id: :platform, name: p, parent: platforms_node) do
-                platform p
-              end
-              hosts_node.attrs.hosts.each do |h|
-                make_node(sub_type_id: :main, name: h, parent: hosts_node) do 
-                  host h
-                end
-              end
-            end
-            platforms_node
-          end
-        end
       end
     end
   end
- 
+
+  class TestprojGenerator < Generator
+          
+    def make_nodes
+      platforms_node = make_node
+      
+      platforms_node.attrs.platforms.each do |p|
+        hosts_node = make_node(sub_type_id: :platform, name: p, parent: platforms_node) do
+          platform p
+        end
+        hosts_node.attrs.hosts.each do |h|
+          make_node(sub_type_id: :main, name: h, parent: hosts_node) do 
+            host h
+          end
+        end
+      end
+      platforms_node
+    end
+  end
+
 end
