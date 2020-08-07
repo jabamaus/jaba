@@ -2,8 +2,8 @@
 
 # The only ruby library files that Jaba core depends on
 require 'digest/sha1'
-require 'fileutils'
 require 'json'
+require_relative '../../../jabaruby/fileutils'
 require_relative '../../../jabaruby/tsort'
 
 require_relative 'core_ext'
