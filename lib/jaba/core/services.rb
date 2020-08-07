@@ -4,7 +4,7 @@
 require 'digest/sha1'
 require 'fileutils'
 require 'json'
-require 'tsort'
+require_relative '../../../jabaruby/tsort'
 
 require_relative 'core_ext'
 require_relative 'hook'
