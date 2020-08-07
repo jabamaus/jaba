@@ -21,6 +21,7 @@ module JABA
       @vcxproj_file = "#{@projdir}/#{@projname}.vcxproj"
       @vcxproj_filters_file = "#{@vcxproj_file}.filters"
       @file_type_hash = services.globals.vcfiletype
+      @masm_required = false
 
       # Call translator for this platform to initialse project level Visual Studio-specific attributes
       # (vcglobals), based on cross platform definition.
@@ -187,8 +188,20 @@ module JABA
       w.write_raw(@pg1)
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />'
       
+      src_area = file.work_area(capacity: c)
+      @src.each do |sf|
+        ft = sf.file_type
+        src_area << "    <#{ft} Include=\"#{sf.projdir_rel}\" />"
+        if ft == :MASM
+          @masm_required = true
+        end
+      end
+      
       import_group(w, label: :ExtensionSettings) do
         # TODO: ExtensionSettings
+        if @masm_required
+          w << '  <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />'
+        end
       end
       
       each_config do |cfg|
@@ -201,9 +214,7 @@ module JABA
       w.write_raw(@idg)
       
       item_group(w) do
-        @src.each do |sf|
-          w << "    <#{sf.file_type} Include=\"#{sf.projdir_rel}\" />"
-        end
+        w.write_raw(src_area)
       end
       
       deps = @attrs.deps
@@ -223,6 +234,9 @@ module JABA
       
       import_group(w, label: :ExtensionTargets) do
         # TODO: extension targets
+        if @masm_required
+          w << '    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />'
+        end
       end
       
       each_config do |cfg|
