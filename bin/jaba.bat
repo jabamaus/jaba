@@ -1,3 +1,3 @@
 @echo off
-ruby --disable=gems,rubyopt,did_you_mean -w %~dp0jaba.rb %*
+jabaruby --disable=rubyopt,did_you_mean -w %~dp0jaba.rb %*
 

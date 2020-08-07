@@ -17,13 +17,11 @@
 # TODO: generate id.c
 # TODO: generate vm_call_iseq_optimized.inc
 # TODO: generate trace_point.rbinc
-# TODO: assemble coroutine/win64/Context.asm
 # TODO: generate enc/trans/newline.c
 #           converter for universal_newline
 #           converter for crlf_newline
 #           converter for cr_newline
 # TODO: turn off edit and continue
-# TODO: investigate -O2sy
 # TODO: investigate -Zm600. Related to large link size
 # TODO: runtime library static
 cpp :jabaruby do
@@ -32,106 +30,34 @@ cpp :jabaruby do
   hosts [:vs2019], platforms: [:windows_x86_64]
   configs [:Debug, :Release]
   src [
-    'main.c',
-    'dmydln.c',
-    'miniinit.c',
-    'dmyext.c',
-    #'probes.d',
-    'array.c',
-    'ast.c',
-    'bignum.c',
-    'class.c',
-    'compar.c',
-    'compile.c',
-    'complex.c',
-    'cont.c',
-    'debug.c',
-    'debug_counter.c',
-    'dir.c',
-    'dln_find.c',
-    'encoding.c',
-    'enum.c',
-    'enumerator.c',
-    'error.c',
-    'eval.c',
-    'file.c',
-    'gc.c',
-    'hash.c',
-    'inits.c',
-    'io.c',
-    'iseq.c',
-    'load.c',
-    'marshal.c',
-    'math.c',
-    'mjit.c',
-    'mjit_compile.c',
-    'node.c',
-    'numeric.c',
-    'object.c',
-    'pack.c',
-    'parse.c',
-    'proc.c',
-    'process.c',
-    'random.c',
-    'range.c',
-    'rational.c',
-    're.c',
-    'regcomp.c',
-    'regenc.c',
-    'regerror.c',
-    'regexec.c',
-    'regparse.c',
-    'regsyntax.c',
-    'ruby.c',
-    'safe.c',
-    'signal.c',
-    'sprintf.c',
-    'st.c',
-    'strftime.c',
-    'string.c',
-    'struct.c',
-    'symbol.c',
-    'thread.c',
-    'time.c',
-    'transcode.c',
-    'transient_heap.c',
-    'util.c',
-    'variable.c',
-    'version.c',
-    'vm.c',
-    'vm_backtrace.c',
-    'vm_dump.c',
-    'vm_trace.c',
-    'coroutine/win64/Context.asm',
-    'enc/ascii.c',
-    'enc/us_ascii.c',
-    'enc/unicode.c',
-    'enc/utf_8.c',
-    'enc/trans/newline.c',
-    'missing/crypt.c',
-    'missing/ffs.c',
-    'missing/langinfo.c',
-    'missing/lgamma_r.c',
-    'missing/strlcat.c',
-    'missing/strlcpy.c',
-    'win32/win32.c',
-    'win32/file.c',
-    'missing/setproctitle.c',
-    'missing/explicit_bzero.c'
+    "#{__dir__}/jaba_ext.c", 'main.c', 'dmydln.c', 'miniinit.c', 'array.c', 'ast.c', 'bignum.c', 'class.c', 'compar.c', 'compile.c',
+    'complex.c', 'cont.c', 'debug.c', 'debug_counter.c', 'dir.c', 'dln_find.c', 'encoding.c', 'enum.c', 'enumerator.c', 'error.c',
+    'eval.c', 'file.c', 'gc.c', 'hash.c', 'inits.c', 'io.c', 'iseq.c', 'load.c', 'marshal.c', 'math.c', 'mjit.c', 'mjit_compile.c',
+    'node.c', 'numeric.c', 'object.c', 'pack.c', 'parse.c', 'proc.c', 'process.c', 'random.c', 'range.c', 'rational.c', 're.c',
+    'regcomp.c', 'regenc.c', 'regerror.c', 'regexec.c', 'regparse.c', 'regsyntax.c', 'ruby.c', 'safe.c', 'signal.c', 'sprintf.c',
+    'st.c', 'strftime.c', 'string.c', 'struct.c', 'symbol.c', 'thread.c', 'time.c', 'transcode.c', 'transient_heap.c', 'util.c',
+    'variable.c', 'version.c', 'vm.c', 'vm_backtrace.c', 'vm_dump.c', 'vm_trace.c'
   ]
-  src ['ext/digest/digest.*']
-  src ['ext/digest/sha1']
-  src ['*.h']
-  src ['include']
+  #src ['probes.d']
+  src ['coroutine/win64/Context.asm']
+  src ['enc/ascii.c', 'enc/us_ascii.c', 'enc/unicode.c', 'enc/utf_8.c', 'enc/trans/newline.c']
+  src ['crypt.c', 'ffs.c', 'langinfo.c', 'lgamma_r.c', 'strlcat.c',
+       'strlcpy.c', 'setproctitle.c', 'explicit_bzero.c'], prefix: 'missing/'
+  src ['win32/win32.c', 'win32/file.c']
+  src ['ext/digest/digest.*', 'ext/digest/sha1']
+  src ['*.h', 'include']
   inc ['.', 'include', '.ext/include/x64-mswin64_140', 'enc/unicode/12.1.0']
-  defines ['RUBY_EXPORT', 'CANONICALIZATION_FOR_MATHN', '_WIN32_WINNT=0x0600']
-  syslibs ['user32.lib', 'advapi32.lib', 'shell32.lib', 'ws2_32.lib', 'iphlpapi.lib', 'imagehlp.lib', 'shlwapi.lib']
-  #warnlevel 2
 
-  # Had to add this as vm.c has an inline function and I couldn't get it to build
-  vcproperty 'ClCompile|InlineFunctionExpansion', :Disabled if !debug
-  vcproperty 'ClCompile|RuntimeLibrary', :MultiThreaded if !debug
+  defines ['RUBY_EXPORT', 'CANONICALIZATION_FOR_MATHN', 'DISABLE_RUBYGEMS=1','_WIN32_WINNT=0x0600']
+  syslibs ['imagehlp.lib', 'iphlpapi.lib', 'ws2_32.lib']
   bindir '../bin'
+
+  if debug
+    targetname 'jabaruby_debug'
+  else
+    vcproperty 'Link|OptimizeReferences', true
+    vcproperty 'Link|EnableCOMDATFolding', true
+  end
 end
 
 workspace :jabaruby do
