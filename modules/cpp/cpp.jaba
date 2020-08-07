@@ -360,8 +360,7 @@ define :cpp do
 
     attr :rtti, type: :bool do
       title 'Enables runtime type information'
-      default true
-      example 'rtti false # Disable rtti'
+      example 'rtti true'
     end
 
     attr :toolset, type: :string do

@@ -77,7 +77,7 @@ translator :vcxproj_config_windows do |vcxproj, cfg_type|
   vcproperty 'ClCompile|ExceptionHandling' do
     case exceptions
     when true
-      :Sync
+      nil # Visual Studio enables exception handling by default so don't add to vcxproj
     when false
       false
     when :structured
@@ -91,9 +91,9 @@ translator :vcxproj_config_windows do |vcxproj, cfg_type|
     defines.vs_join(inherit: '%(PreprocessorDefinitions)')
   end
 
-  vcproperty 'ClCompile|RuntimeTypeInfo', rtti
+  vcproperty 'ClCompile|RuntimeTypeInfo', true if rtti
 
-  vcproperty 'ClCompile|TreatWarningAsError', warnerror
+  vcproperty 'ClCompile|TreatWarningAsError', true if warnerror
 
   # Link
   #
