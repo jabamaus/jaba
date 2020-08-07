@@ -8,6 +8,7 @@ translator :vcxproj_windows do |vcxproj|
   vcglobal :Keyword, 'Win32Proj'
   vcglobal :RootNamespace, projname
   vcglobal :WindowsTargetPlatformVersion, winsdkver
+  vcglobal :IgnoreWarnCompileDuplicatedFilename, true
 end
 
 translator :vcxproj_config_windows do |vcxproj, cfg_type|
