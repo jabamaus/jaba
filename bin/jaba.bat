@@ -1,3 +1,3 @@
 @echo off
-jabaruby --disable=rubyopt,did_you_mean -w %~dp0jaba.rb %*
+jabaruby.exe --disable=rubyopt -I%~dp0ruby -w %~dp0jaba.rb %*
 

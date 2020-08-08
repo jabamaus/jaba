@@ -44,17 +44,28 @@ cpp :jabaruby do
   src ['crypt.c', 'ffs.c', 'langinfo.c', 'lgamma_r.c', 'strlcat.c',
        'strlcpy.c', 'setproctitle.c', 'explicit_bzero.c'], prefix: 'missing/'
   src ['win32/win32.c', 'win32/file.c']
+  
+  # Statically link in extensions that jaba requires
+  #
   src ['ext/digest/digest.*', 'ext/digest/sha1']
+  src ['ext/json']
+  defines ['JSON_GENERATOR']
+
   src ['*.h', 'include']
   inc ['.', 'include', '.ext/include/x64-mswin64_140', 'enc/unicode/12.1.0']
 
+  # TODO: try USE_MJIT=0
+  defines ['LOAD_RELATIVE']
   defines ['RUBY_EXPORT', 'CANONICALIZATION_FOR_MATHN', 'DISABLE_RUBYGEMS=1','_WIN32_WINNT=0x0600']
   syslibs ['imagehlp.lib', 'iphlpapi.lib', 'ws2_32.lib']
-  bindir '../bin'
+  objdir "obj/#{config}"
+
+  vcproperty 'Link|LinkIncremental', false
 
   if debug
     targetname 'jabaruby_debug'
   else
+    bindir '../bin'
     vcproperty 'Link|OptimizeReferences', true
     vcproperty 'Link|EnableCOMDATFolding', true
   end

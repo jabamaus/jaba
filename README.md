@@ -2,6 +2,11 @@
 
 To do:
 
+- RUBY LICENSE REQUIREMENTS
+- is it possible to write a 3rd party jaba file that is stored in jaba itself and then moved into the project with no, or very minimal changes?
+- rethink root property. Maybe rename to srcroot and only have certain things based off it. Or maybe even remove.
+- add per-file property support
+- rename defines to define
 - Should to_absolute base off JABA.cwd or dest_root? I think the latter...
 - Remove src_root from globals and put into jaba.cache file
 - consider having a globals per-type (eg cpp globals)
