@@ -10,6 +10,6 @@
 *.vcxproj.user
 .vs/
 .vscode*
-bench.rb
 examples-build/
 docs/
+.jaba/
