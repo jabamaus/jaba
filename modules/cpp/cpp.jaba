@@ -261,7 +261,7 @@ define :cpp do
       end
     end
     
-    attr_array :defines, type: :symbol_or_string do
+    attr_array :define, type: :symbol_or_string do
       title 'Preprocessor defines'
       flag_options :export, :no_delete
     end

@@ -5,6 +5,6 @@ cpp :BasicDll do
   configs [:Debug, :Release]
   src ['.']
   inc ['include'], :export, :no_delete
-  defines ['WITH_EXAMPLE_DLL'], :export
-  defines ['DLL_EXPORT']
+  define ['WITH_EXAMPLE_DLL'], :export
+  define ['DLL_EXPORT']
 end

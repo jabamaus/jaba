@@ -6,7 +6,6 @@ To do:
 - is it possible to write a 3rd party jaba file that is stored in jaba itself and then moved into the project with no, or very minimal changes?
 - rethink root property. Maybe rename to srcroot and only have certain things based off it. Or maybe even remove.
 - add per-file property support
-- rename defines to define
 - Should to_absolute base off JABA.cwd or dest_root? I think the latter...
 - Remove src_root from globals and put into jaba.cache file
 - consider having a globals per-type (eg cpp globals)
@@ -17,7 +16,7 @@ To do:
 - Better logging of exception errors. Never return a backtrace to cmd line - ugly.
 - Nasty that :export flag option always needs :no_delete
 - Use did_you_mean? Eg
-  Error at basic_dll.jaba:8: 'define' attribute not defined. Did you mean 'defines'?
+  Error at basic_dll.jaba:8: 'defines' attribute not defined. Did you mean 'define'?
 - Combine jaba.input.json and jaba.output.json into just the latter?
 - Have a 'jaba clean' command
 - put simple type verification system into Property

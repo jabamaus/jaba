@@ -96,7 +96,7 @@ module JABA
         # TODO: organise by group. Build at the same time is generating
         cfg[:arch] = attrs.arch_ref.defn_id
         cfg[:name] = attrs.configname
-        cfg[:defines] = attrs.defines
+        cfg[:define] = attrs.define
         cfg[:inc] = attrs.inc.map{|f| f.relative_path_from(out_dir)}
         cfg[:rtti] = attrs.rtti
         cfg[:vcproperty] = attrs.vcproperty

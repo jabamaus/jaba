@@ -88,7 +88,7 @@ translator :vcxproj_config_windows do |vcxproj, cfg_type|
   end
 
   vcproperty 'ClCompile|PreprocessorDefinitions' do
-    defines.vs_join(inherit: '%(PreprocessorDefinitions)')
+    define.vs_join(inherit: '%(PreprocessorDefinitions)')
   end
 
   vcproperty 'ClCompile|RuntimeTypeInfo', true if rtti

@@ -90,7 +90,7 @@ module JABA
           type :console
           deps [:lib]
           vcglobal :BoolAttr, true
-          defines ['F', 'A']
+          define ['F', 'A']
           src ['main.cpp']
         end
         cpp :lib do
@@ -101,10 +101,10 @@ module JABA
           vcglobal :StringAttr2, 's2', :export
           vcglobal :StringAttr3, 's3', :export, :no_delete
           # TODO: what happens if export :BoolAttr, false ? will it overwrite? Probably fail. Warn if same value.
-          defines ['D']
-          defines ['C', 'B'], :export
-          defines ['R'], :export if config == :Release
-          defines ['E']
+          define ['D']
+          define ['C', 'B'], :export
+          define ['R'], :export if config == :Release
+          define ['E']
           inc ['include'], :export
           # TODO: test vcproperty
         end
@@ -113,8 +113,8 @@ module JABA
       app[:vcglobal][:BoolAttr].must_equal(true)
       app[:vcglobal][:StringAttr2].must_equal('s2')
       app[:vcglobal][:StringAttr3].must_equal('s3')
-      app[:configs][:Debug][:defines].must_equal ['A', 'B', 'C', 'F']
-      app[:configs][:Release][:defines].must_equal ['A', 'B', 'C', 'F', 'R']
+      app[:configs][:Debug][:define].must_equal ['A', 'B', 'C', 'F']
+      app[:configs][:Release][:define].must_equal ['A', 'B', 'C', 'F', 'R']
       app[:configs][:Debug][:inc].must_equal ['lib/include']
       app[:configs][:Release][:inc].must_equal ['lib/include']
 
@@ -122,8 +122,8 @@ module JABA
       lib[:vcglobal][:StringAttr].must_equal('s')
       lib[:vcglobal].has_key?(:StringAttr2).must_equal(false)
       lib[:vcglobal][:StringAttr3].must_equal('s3')
-      lib[:configs][:Debug][:defines].must_equal ['D', 'E']
-      lib[:configs][:Release][:defines].must_equal ['D', 'E']
+      lib[:configs][:Debug][:define].must_equal ['D', 'E']
+      lib[:configs][:Release][:define].must_equal ['D', 'E']
     end
 
     it 'only allows :export on array and hash properties' do

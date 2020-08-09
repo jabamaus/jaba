@@ -42,7 +42,7 @@ module JABA
         cfg_root[attrs.config] = cfg
         cfg[:arch] = attrs.arch_ref.defn_id
         cfg[:name] = attrs.configname
-        cfg[:defines] = attrs.defines
+        cfg[:define] = attrs.define
         cfg[:inc] = attrs.inc
         cfg[:rtti] = attrs.rtti
       end

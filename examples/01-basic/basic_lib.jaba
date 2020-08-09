@@ -5,5 +5,5 @@ cpp :BasicStaticLib do
   configs [:Debug, :Release]
   src ['.']
   inc ['include'], :export, :no_delete
-  defines ['WITH_EXAMPLE_LIB'], :export
+  define ['WITH_EXAMPLE_LIB'], :export
 end
