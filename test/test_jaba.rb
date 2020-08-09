@@ -16,7 +16,9 @@ module JABA
       FileUtils.remove_dir(JabaTest.temp_root)
     end
     @@running_tests = true
-    ::Minitest.run(ARGV + ["--no-plugins"])
+    args_index = ARGV.index('--')
+    argv = args_index.nil? ? [] : ARGV[args_index+1..-1]
+    ::Minitest.run(argv + ["--no-plugins"])
   end
 
   class JabaTest < Minitest::Spec

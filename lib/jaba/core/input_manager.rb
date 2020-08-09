@@ -389,6 +389,7 @@ module JABA
         on_run do
           while !argv.empty?
             arg = argv.shift
+            break if arg == '--'
             send_event(:process_arg, arg)
           end
         end
