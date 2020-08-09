@@ -40,7 +40,7 @@ module JABA
     end
 
     # TODO: test different approaches to root/projdir
-    it 'supports vcproperty' do
+    it 'supports vcprop' do
       
     end
 
@@ -106,7 +106,7 @@ module JABA
           define ['R'], :export if config == :Release
           define ['E']
           inc ['include'], :export
-          # TODO: test vcproperty
+          # TODO: test vcprop
         end
       end
       app = op[:cpp]['app|vs2019|windows']
@@ -139,12 +139,12 @@ module JABA
           vcglobal :NewGlobal, 'g'
         end
         open_translator :vcxproj_config_windows do
-          vcproperty 'PG1|NewProperty', 'p'
+          vcprop 'PG1|NewProperty', 'p'
         end
       end
       proj[:vcglobal][:NewGlobal].must_equal('g')
-      proj[:configs][:Debug][:vcproperty]['PG1|NewProperty'].must_equal('p')
-      proj[:configs][:Release][:vcproperty]['PG1|NewProperty'].must_equal('p')
+      proj[:configs][:Debug][:vcprop]['PG1|NewProperty'].must_equal('p')
+      proj[:configs][:Release][:vcprop]['PG1|NewProperty'].must_equal('p')
     end
 
   end

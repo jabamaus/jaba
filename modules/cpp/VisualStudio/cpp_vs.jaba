@@ -74,7 +74,7 @@ open_type :cpp do
 
   open_type :config do
     # TODO: validate key is in correct format
-    attr_hash :vcproperty, key_type: :string, type: :to_s do
+    attr_hash :vcprop, key_type: :string, type: :to_s do
       title 'Address per-configuration sections of a vcxproj directly'
       value_option :condition
       flag_options :export, :no_delete

@@ -60,14 +60,14 @@ cpp :jabaruby do
   syslibs ['imagehlp.lib', 'iphlpapi.lib', 'ws2_32.lib']
   objdir "obj/#{config}"
 
-  vcproperty 'Link|LinkIncremental', false
+  vcprop 'Link|LinkIncremental', false
 
   if debug
     targetname 'jabaruby_debug'
   else
     bindir '../bin'
-    vcproperty 'Link|OptimizeReferences', true
-    vcproperty 'Link|EnableCOMDATFolding', true
+    vcprop 'Link|OptimizeReferences', true
+    vcprop 'Link|EnableCOMDATFolding', true
   end
 end
 

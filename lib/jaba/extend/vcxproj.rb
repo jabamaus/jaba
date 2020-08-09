@@ -30,7 +30,7 @@ module JABA
       t = services.get_translator("vcxproj_#{platform}".to_sym)
       t.execute(node: @node, args: [self])
       
-      # Call translator to initialise configuration level Visual Studio-specific attributes (vcproperty)
+      # Call translator to initialise configuration level Visual Studio-specific attributes (vcprop)
       # based on cross platform definition.
       #
       each_config do |cfg|
@@ -50,7 +50,7 @@ module JABA
         end
 
         shell_cmds.each do |group, cmds|
-          cfg.attrs.vcproperty "#{group}|Command", cmds.join("\n")
+          cfg.attrs.vcprop "#{group}|Command", cmds.join("\n")
         end
       end
     end
@@ -99,7 +99,7 @@ module JABA
         cfg[:define] = attrs.define
         cfg[:inc] = attrs.inc.map{|f| f.relative_path_from(out_dir)}
         cfg[:rtti] = attrs.rtti
-        cfg[:vcproperty] = attrs.vcproperty
+        cfg[:vcprop] = attrs.vcprop
       end
     end
 
@@ -141,7 +141,7 @@ module JABA
         property_group(@pg2, condition: cfg_condition(cfg_name, platform))
         item_definition_group(@idg, condition: cfg_condition(cfg_name, platform))
 
-        cfg.visit_attr(:vcproperty) do |attr, val|
+        cfg.visit_attr(:vcprop) do |attr, val|
           location = attr.get_option_value(:__key)
           group, key = location.split('|')
           condition = attr.get_option_value(:condition, fail_if_not_found: false)
