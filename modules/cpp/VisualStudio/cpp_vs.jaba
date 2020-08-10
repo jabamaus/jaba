@@ -78,8 +78,7 @@ open_type :cpp do
       value_option :condition
       flag_options :export, :no_delete
       validate_key do |key|
-        # TODO: validate only alphanumeric
-        if key !~ /^[^|]+\|{1}[^|]+/
+        if key !~ /^[A-Za-z0-9_-]+\|{1}[A-Za-z0-9_-]+/
           fail "Must be of form <group>|<property> but was '#{key}'"
         end
       end
@@ -89,7 +88,7 @@ open_type :cpp do
       title 'Add per-configuration per-file property'
       flag_options :export, :no_delete
       validate_key do |key|
-        if key !~ /^[^|]+\|{1}[^|]+/
+        if key !~ /^[^|]+\|{1}[A-Za-z0-9_-]+/
           fail "Must be of form <src file>|<property> but was '#{key}'"
         end
       end
