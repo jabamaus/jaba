@@ -287,10 +287,25 @@ module JABA
         sd.add_open_def(d)
       end
 
-      # Globals generator is the first one. Remove it as it is handled explicitly.
+      # Globals can be set via the command line so need to partition generators into those up to and
+      # including the globals type and the rest, processing the command line in between.
       #
-      globals_generator = @generators.shift
-      globals_generator.process
+      globals_generator = nil
+      globals_and_deps, post_globals = @generators.partition do |g|
+        if !globals_generator
+          if g.type_id == :globals
+            globals_generator = g
+          end
+          true
+        else
+          false
+        end
+      end
+
+      globals_and_deps.each do |g|
+        g.process
+      end
+
       @globals_node = globals_generator.root_nodes.first
       @globals = @globals_node.attrs
 
@@ -301,10 +316,8 @@ module JABA
         generate_reference_doc
         return
       end
-      
-      # Process generators
-      #
-      @generators.each do |g|
+
+      post_globals.each do |g|
         g.process
       end
 
