@@ -286,7 +286,7 @@ module JABA
           a [2], condition: :b
         end
       end
-      check_fail "Invalid value option ':undefined'. Valid 'a' attribute options: [:group, :condition]", line: [__FILE__, 'tagA'] do
+      check_fail "Invalid value option ':undefined'. Valid 'a' array attribute options: [:group, :condition]", line: [__FILE__, 'tagA'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a do
@@ -299,7 +299,7 @@ module JABA
           end
         end
       end
-      check_fail "Invalid value option ':undefined' - no options defined in 'a' attribute", line: [__FILE__, 'tagB'] do
+      check_fail "Invalid value option ':undefined' - no options defined in 'a' array attribute", line: [__FILE__, 'tagB'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a
@@ -327,7 +327,7 @@ module JABA
     end
 
     it 'supports specifying a valid set of values for value option' do
-      check_fail "In 't.a' attribute invalid value ':d' passed to ':group' option. Valid values: [:a, :b, :c]", line: [__FILE__, 'tagX'] do
+      check_fail "In 't.a' hash attribute invalid value ':d' passed to ':group' option. Valid values: [:a, :b, :c]", line: [__FILE__, 'tagX'] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a, key_type: :symbol do

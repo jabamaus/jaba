@@ -13,7 +13,7 @@ module JABA
     ##
     #
     def initialize(attr_def, node)
-      super
+      super(attr_def, node, self)
       @hash = {}
       if attr_def.default_set? && !@default_block
         attr_def.default.each do |k, v|
@@ -32,7 +32,7 @@ module JABA
     ##
     # Used in error messages.
     #
-    def describe
+    def do_describe
       "'#{@node.defn_id}.#{@attr_def.defn_id}' hash attribute"
     end
 
@@ -127,7 +127,7 @@ module JABA
       f_options = other.flag_options
       key = v_options[:__key]
       val = Marshal.load(Marshal.dump(other.raw_value))
-      insert_key(key, val, *f_options, **v_options)
+      insert_key(key, val, *f_options, validate: false, **v_options)
     end
     
     ##
@@ -167,9 +167,16 @@ module JABA
 
     ##
     #
-    def insert_key(key, val, *args, **keyval_args)
-      attr = JabaAttributeElement.new(@attr_def, @node)
-      attr.set(val, *args, __api_call_loc: @last_call_location, __key: key, **keyval_args)
+    def insert_key(key, val, *args, validate: true, **keyval_args)
+      attr = JabaAttributeElement.new(@attr_def, @node, self)
+
+      if validate
+        call_validators do
+          @attr_def.call_hook(:validate_key, key)
+        end
+      end
+
+      attr.set(val, *args, validate: validate, __api_call_loc: @last_call_location, __key: key, **keyval_args)
 
       # Log overwrites. This behaviour could be beefed up and customised with options if necessary
       #

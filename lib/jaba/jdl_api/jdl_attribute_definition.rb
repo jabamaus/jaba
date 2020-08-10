@@ -78,6 +78,13 @@ module JABA
     end
     
     ##
+    # Use to validate the key of a hash attribute. Cannot be used with single value of array attributes.
+    #
+    def validate_key(&block)
+      @attr_def.set_hook(:validate_key, &block)
+    end
+
+    ##
     #
     def define_property(id, val = nil)
       @attr_def.define_property(id, val)

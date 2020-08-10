@@ -28,7 +28,6 @@ To do:
 - add slnproperty which can address sln sections. Particularly useful when used with ExtensibilityGlobals
 - disband VSProj in favour of VSUtilities module
 - Make it so that all attributes have to have a type?
-- way of validating key in hash attribute
 - test build actions
 - Move title/note/example into module and include
 - more error reporting testing with actual files rather than blocks

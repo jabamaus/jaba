@@ -89,7 +89,7 @@ module JABA
 
       # validates that default is a hash
       #
-      check_fail "'a' attribute default must be a hash not a 'Array'", line: [__FILE__, 'tagU'] do
+      check_fail "'a' hash attribute default must be a hash not a 'Array'", line: [__FILE__, 'tagU'] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a, key_type: :symbol do
@@ -116,7 +116,7 @@ module JABA
 
       # It validates default elements respect attribute type
       #
-      check_fail "'a' attribute default failed validation: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagL'] do
+      check_fail "'a' hash attribute default failed validation: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagL'] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a, key_type: :symbol, type: :symbol do
@@ -126,9 +126,10 @@ module JABA
         end
       end
 
+      # TODO: validate key format
       # It validates default elements respect attribute type when block form used
       #
-      check_fail "'t.a' attribute failed validation: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagW'] do
+      check_fail "'t.a' hash attribute failed validation: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagW'] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a, key_type: :symbol, type: :symbol do # tagW
@@ -249,7 +250,7 @@ module JABA
     end
 
     it 'disallows :no_sort' do
-      check_fail "'a' attribute failed validation: ':no_sort' flag is incompatible: :no_sort is only allowed on array attributes",
+      check_fail "'a' hash attribute failed validation: ':no_sort' flag is incompatible: :no_sort is only allowed on array attributes",
                 line: [__FILE__, 'tagQ'] do
         jaba(barebones: true) do
           define :test do
@@ -262,7 +263,7 @@ module JABA
     end
     
     it 'disallows :allow_dupes' do
-      check_fail "'a' attribute failed validation: ':allow_dupes' flag is incompatible: :allow_dupes is only allowed on array attributes",
+      check_fail "'a' hash attribute failed validation: ':allow_dupes' flag is incompatible: :allow_dupes is only allowed on array attributes",
                  line: [__FILE__, 'tagP'] do
         jaba(barebones: true) do
           define :test do
@@ -367,17 +368,48 @@ module JABA
     end
 
     it 'supports setting a validator' do
-      check_fail 'failed', line: [__FILE__, 'tagB'] do
+      check_fail "'a' array attribute cannot specify 'validate_key' - only supported by hash attributes", line: [__FILE__, 'tagD'] do
         jaba(barebones: true) do
           define :test do
-            attr_hash :a, key_type: :symbol do
-              validate do |val|
-                fail 'failed'
+            attr_array :a do
+              validate_key do |key| # tagD
+              end
+            end
+          end
+        end
+      end
+      check_fail "'t.a' hash attribute failed validation: failed", line: [__FILE__, 'tagC'] do
+        jaba(barebones: true) do
+          define :test do
+            attr_hash :a, key_type: :string do
+              validate_key do |key|
+                if key == 'invalid'
+                  fail 'failed'
+                end
               end
             end
           end
           test :t do
-            a :k, :v # tagB
+            a 'k1', :v
+            a 'invalid', :v # tagC
+          end
+        end
+      end
+
+      check_fail "'t.a' hash attribute failed validation: failed", line: [__FILE__, 'tagB'] do
+        jaba(barebones: true) do
+          define :test do
+            attr_hash :a, key_type: :symbol do
+              validate do |val|
+                if val == 'invalid'
+                  fail 'failed'
+                end
+              end
+            end
+          end
+          test :t do
+            a :k, :v
+            a :k, 'invalid' # tagB
           end
         end
       end

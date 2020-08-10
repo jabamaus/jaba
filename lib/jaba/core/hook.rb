@@ -29,10 +29,17 @@ module JABA
 
     ##
     #
+    def hook_defined?(id)
+      @hooks.key?(id)
+    end
+
+    ##
+    #
     def set_hook(id, &block)
-      if !@hooks.key?(id)
+      if !hook_defined?(id)
         jaba_error("'#{id}' hook not defined")
       end
+      on_hook_defined(id)
       @hooks[id] = block
     end
 
@@ -52,6 +59,11 @@ module JABA
       end
     end
 
+    ##
+    #
+    def on_hook_defined(id)
+    end
+    
   end
 
 end

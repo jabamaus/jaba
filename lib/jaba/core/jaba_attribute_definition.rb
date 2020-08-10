@@ -55,6 +55,7 @@ module JABA
       define_array_property(:flag_options)
       
       define_hook(:validate)
+      define_hook(:validate_key)
       
       @jaba_attr_type = services.get_attribute_type(@type_id)
       @jaba_attr_key_type = nil
@@ -115,7 +116,7 @@ module JABA
     # Used in error messages.
     #
     def describe
-      "'#{@defn_id}' attribute"
+      "'#{@defn_id}' #{@variant == :single ? "" : "#{@variant} "}attribute"
     end
 
     ##
@@ -225,28 +226,35 @@ module JABA
           jaba_error("#{describe} default must be a hash not a '#{incoming.class}'")
         end
 
-        begin
-          services.set_warn_object(self) do
-            case @variant
-            when :single
-              @jaba_attr_type.validate_value(self, @default)
-            when :array
-              incoming.each do |elem|
-                @jaba_attr_type.validate_value(self, elem)
-              end
-            when :hash
-              incoming.each do |key, val|
-                @jaba_attr_key_type.validate_value(self, key)
-                @jaba_attr_type.validate_value(self, val)
-              end
+        call_validators("#{describe} default") do
+          case @variant
+          when :single
+            @jaba_attr_type.validate_value(self, @default)
+          when :array
+            incoming.each do |elem|
+              @jaba_attr_type.validate_value(self, elem)
+            end
+          when :hash
+            incoming.each do |key, val|
+              @jaba_attr_key_type.validate_value(self, key)
+              @jaba_attr_type.validate_value(self, val)
             end
           end
-        rescue JDLError => e
-          jaba_error("#{describe} default failed validation: #{e.raw_message}", callstack: e.backtrace)
         end
       when :title
         if incoming.size > MAX_TITLE_CHARS
           jaba_error("Title must be #{MAX_TITLE_CHARS} characters or less but was #{incoming.size}")
+        end
+      end
+    end
+
+    ##
+    #
+    def on_hook_defined(hook)
+      case hook
+      when :validate_key
+        if !hash?
+          jaba_error("#{describe} cannot specify 'validate_key' - only supported by hash attributes")
         end
       end
     end
@@ -258,22 +266,28 @@ module JABA
         jaba_error("#{describe} requires a title")
       end
 
-      begin
-        services.set_warn_object(self) do
-          @jaba_attr_type.post_init_attr_def(self)
-        end
+      call_validators(describe) do
+        @jaba_attr_type.post_init_attr_def(self)
   
         @jaba_attr_flags.each do |jaf|
           begin
-            services.set_warn_object(self) do
-              jaf.compatible?(self)
-            end
+            jaf.compatible?(self)
           rescue JDLError => e
             jaba_error("'#{jaf.id.inspect_unquoted}' flag is incompatible: #{e.raw_message}")
           end
         end
-      rescue JDLError => e
-        jaba_error("#{describe} failed validation: #{e.raw_message}", callstack: e.backtrace)
+      end
+    end
+
+    ##
+    #
+    def call_validators(what)
+      services.set_warn_object(self) do
+        begin
+          yield
+        rescue JDLError => e
+          jaba_error("#{what} failed validation: #{e.raw_message}", callstack: e.backtrace)
+        end
       end
     end
 

@@ -40,8 +40,24 @@ module JABA
     end
 
     # TODO: test different approaches to root/projdir
+
     it 'supports vcprop' do
-      
+      # Test that keys always contain exactly 1 | character with something either side
+      #
+      invalid_keys = ['PG1_CharacterSet', '|PG1|CharacterSet', '|', 'A||B', 'win32/file.c/ObjectFileName']
+      invalid_keys.each do |key|
+        check_fail "'app.vcprop' hash attribute failed validation: Must be of form <val>|<val> but was '#{key}'", line: [__FILE__, 'tagJ'] do
+          jaba(dry_run: true) do
+            cpp :app do
+              hosts [:vs2019], platforms: [:windows_x86_64]
+              configs [:Release]
+              src ['main.cpp'], :force
+              vcprop key, 'val' # tagJ
+              type :console
+            end
+          end
+        end
+      end
     end
 
     it 'reports errors correctly with subtype attributes' do

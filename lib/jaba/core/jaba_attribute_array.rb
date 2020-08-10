@@ -13,7 +13,7 @@ module JABA
     ##
     #
     def initialize(attr_def, node)
-      super
+      super(attr_def, node, self)
       @elems = []
       @excludes = []
       if attr_def.default_set? && !@default_block
@@ -31,7 +31,7 @@ module JABA
     ##
     # Used in error messages.
     #
-    def describe
+    def do_describe
       "'#{@node.defn_id}.#{@attr_def.defn_id}' array attribute"
     end
 
@@ -83,20 +83,18 @@ module JABA
         values.prepend(*default_values)
       end
 
-      values.each do |v|
+      values.each do |val|
         existing = nil
         if !@attr_def.has_flag?(:allow_dupes)
-          existing = @elems.find{|e| e.value == v}
+          existing = @elems.find{|e| e.value == val}
         end
 
         if existing
-          jaba_warning("When setting #{describe} stripping duplicate value '#{v.inspect_unquoted}'. See previous at #{existing.last_call_loc_basename}. " \
+          jaba_warning("When setting #{describe} stripping duplicate value '#{val.inspect_unquoted}'. See previous at #{existing.last_call_loc_basename}. " \
             "Flag with :allow_dupes to allow.")
         else
-          elem = JabaAttributeElement.new(@attr_def, @node)
-          v = apply_pre_post_fix(prefix, postfix, v)
-          elem.set(v, *args, __api_call_loc: __api_call_loc, **keyval_args)
-          @elems << elem
+          val = apply_pre_post_fix(prefix, postfix, val)
+          add_elem(val, *args, **keyval_args)
         end
       end
       
@@ -110,6 +108,14 @@ module JABA
       nil
     end
     
+    ##
+    #
+    def add_elem(val, *args, **keyval_args)
+      e = JabaAttributeElement.new(@attr_def, @node, self)
+      e.set(val, *args, __api_call_loc: @last_call_location, **keyval_args)
+      @elems << e
+    end
+
     ##
     # If the attribute was never set by the user and it has a default specified in block form ensure that the default value
     # is applied. Call set with no args to achieve this.
@@ -128,11 +134,7 @@ module JABA
       value_options = other.value_options
       f_options = other.flag_options
       val = Marshal.load(Marshal.dump(other.raw_value))
-
-      elem = JabaAttributeElement.new(@attr_def, @node)
-      elem.set(val, *f_options, validate: false, __resolve_ref: false, **value_options)
-      
-      @elems << elem
+      add_elem(val, *f_options, validate: false, __resolve_ref: false, **value_options)
     end
 
     ##

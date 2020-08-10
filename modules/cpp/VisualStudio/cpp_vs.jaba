@@ -73,11 +73,15 @@ open_type :cpp do
   end
 
   open_type :config do
-    # TODO: validate key is in correct format
     attr_hash :vcprop, key_type: :string, type: :to_s do
       title 'Address per-configuration sections of a vcxproj directly'
       value_option :condition
       flag_options :export, :no_delete
+      validate_key do |key|
+        if key !~ /^[^|]+\|{1}[^|]+/
+          fail "Must be of form <val>|<val> but was '#{key}'"
+        end
+      end
     end
   end
 end

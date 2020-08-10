@@ -7,7 +7,7 @@ module JABA
     it 'supports a default' do
       # It validates default is an array
       #
-      check_fail "'a' attribute default must be an array not a 'Integer'", line: [__FILE__, 'tagV'] do
+      check_fail "'a' array attribute default must be an array not a 'Integer'", line: [__FILE__, 'tagV'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a do
@@ -34,7 +34,7 @@ module JABA
       
       # It validates default elements respect attribute type
       #
-      check_fail "'a' attribute default failed validation: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagD'] do
+      check_fail "'a' array attribute default failed validation: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagD'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a, type: :symbol do
@@ -46,7 +46,7 @@ module JABA
 
       # It validates default elements respect attribute type when block form used
       #
-      check_fail "'t.a' attribute failed validation: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagW'] do
+      check_fail "'t.a' array attribute failed validation: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagW'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a, type: :symbol do # tagW
@@ -487,17 +487,20 @@ module JABA
     end
     
     it 'supports setting a validator' do
-      check_fail 'failed', line: [__FILE__, 'tagB'] do
+      check_fail "'t.a' array attribute failed validation: failed", line: [__FILE__, 'tagB'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a do
               validate do |val|
-                fail 'failed'
+                if val == 'invalid'
+                  fail 'failed'
+                end
               end
             end
           end
           test :t do
-            a ['val'] # tagB
+            a ['val']
+            a ['invalid'] # tagB
           end
         end
       end

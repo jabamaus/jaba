@@ -16,9 +16,10 @@ module JABA
     
     ##
     #
-    def initialize(attr_def, node)
+    def initialize(attr_def, node, outer_attr)
       @attr_def = attr_def
       @node = node
+      @outer_attr = outer_attr
       @last_call_location = nil
       @set = false
       @default_block = @attr_def.default_block
@@ -64,7 +65,7 @@ module JABA
     # Used in error messages.
     #
     def describe
-      "'#{@node.defn_id}.#{@attr_def.defn_id}' attribute"
+      @outer_attr.do_describe
     end
 
     ##
@@ -100,6 +101,18 @@ module JABA
       services.jaba_error(msg, errline: cs)
     end
     
+    ##
+    #
+    def call_validators
+      services.set_warn_object(@last_call_location) do
+        begin
+          yield
+        rescue JDLError => e
+          jaba_error("#{describe} failed validation: #{e.raw_message}. See #{e.backtrace[0]}") # TODO: cleanup format of backtrace[0]
+        end
+      end
+    end
+
   end
 
   ##
@@ -111,7 +124,7 @@ module JABA
 
     ##
     #
-    def initialize(attr_def, node)
+    def initialize(attr_def, node, parent)
       super
       @value = nil
       @flag_options = nil
@@ -199,13 +212,9 @@ module JABA
       end
 
       if validate && !new_value.nil?
-        services.set_warn_object(@last_call_location) do
-          begin
-            attr_type.validate_value(@attr_def, new_value)
-            @attr_def.call_hook(:validate, new_value, @flag_options, **@value_options)
-          rescue JDLError => e
-            jaba_error("#{describe} failed validation: #{e.raw_message}. See #{e.backtrace[0]}") # TODO: cleanup format of backtrace[0]
-          end
+        call_validators do
+          attr_type.validate_value(@attr_def, new_value)
+          @attr_def.call_hook(:validate, new_value, @flag_options, **@value_options)
         end
       end
 
@@ -296,11 +305,17 @@ module JABA
     ##
     #
     def initialize(attr_def, node)
-      super
+      super(attr_def, node, self)
       
       if attr_def.default_set? && !@default_block
         set(attr_def.default)
       end
+    end
+
+    ##
+    #
+    def do_describe
+      "'#{@node.defn_id}.#{@attr_def.defn_id}' attribute"
     end
 
     ##
