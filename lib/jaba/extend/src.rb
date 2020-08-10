@@ -6,8 +6,6 @@ module JABA
 
   using JABACoreExt
   
-  SourceFile = Struct.new(:absolute_path, :projdir_rel, :vpath, :file_type)
-  
   # Include in projects that require src files. Requires @node, @root and @projdir to be set
   #
   module SrcFileSupport
@@ -99,7 +97,7 @@ module JABA
             f.dirname.relative_path_from(@root, backslashes: bs, nil_if_dot: true, no_dot_dot: true)
           end
 
-          sf = SourceFile.new
+          sf = OpenStruct.new
           sf.absolute_path = f
           sf.projdir_rel = f.relative_path_from(@projdir, backslashes: bs)
           sf.vpath = vpath
