@@ -32,7 +32,7 @@ cpp :jabaruby do
   src [
     "#{__dir__}/jaba_ext.c", 'main.c', 'dmydln.c', 'miniinit.c', 'array.c', 'ast.c', 'bignum.c', 'class.c', 'compar.c', 'compile.c',
     'complex.c', 'cont.c', 'debug.c', 'debug_counter.c', 'dir.c', 'dln_find.c', 'encoding.c', 'enum.c', 'enumerator.c', 'error.c',
-    'eval.c', 'file.c', 'gc.c', 'hash.c', 'inits.c', 'io.c', 'iseq.c', 'load.c', 'marshal.c', 'math.c', 'mjit.c', 'mjit_compile.c',
+    'eval.c', 'file.c', 'gc.c', 'hash.c', 'inits.c', 'io.c', 'iseq.c', 'load.c', 'marshal.c', 'math.c',
     'node.c', 'numeric.c', 'object.c', 'pack.c', 'parse.c', 'proc.c', 'process.c', 'random.c', 'range.c', 'rational.c', 're.c',
     'regcomp.c', 'regenc.c', 'regerror.c', 'regexec.c', 'regparse.c', 'regsyntax.c', 'ruby.c', 'safe.c', 'signal.c', 'sprintf.c',
     'st.c', 'strftime.c', 'string.c', 'struct.c', 'symbol.c', 'thread.c', 'time.c', 'transcode.c', 'transient_heap.c', 'util.c',
@@ -44,6 +44,9 @@ cpp :jabaruby do
   src ['crypt.c', 'ffs.c', 'langinfo.c', 'lgamma_r.c', 'strlcat.c',
        'strlcpy.c', 'setproctitle.c', 'explicit_bzero.c'], prefix: 'missing/'
   src ['win32/win32.c', 'win32/file.c']
+
+  # TODO: make jaba do something like this automatically when duplicate found
+  #vcprop 'win32/file.c|ObjectFileName', '$(IntDir)win32\file.obj'
   
   # Statically link in extensions that jaba requires
   #
@@ -54,7 +57,6 @@ cpp :jabaruby do
   src ['*.h', 'include']
   inc ['.', 'include', '.ext/include/x64-mswin64_140', 'enc/unicode/12.1.0']
 
-  # TODO: try USE_MJIT=0
   define ['LOAD_RELATIVE']
   define ['RUBY_EXPORT', 'CANONICALIZATION_FOR_MATHN', 'DISABLE_RUBYGEMS=1','_WIN32_WINNT=0x0600']
   syslibs ['imagehlp.lib', 'iphlpapi.lib', 'ws2_32.lib']
