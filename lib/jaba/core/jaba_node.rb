@@ -211,7 +211,7 @@ module JABA
         if !a
           attr_def = @jaba_type.top_level_type.get_attr_def(id)
           if !attr_def
-            jaba_error("'#{id}' attribute not defined")
+            jaba_error("'#{id}' attribute not defined in #{describe}")
           elsif attr_def.reference?
             null_node = services.get_null_node(attr_def.referenced_type)
             return null_node.attrs_read_only
