@@ -96,8 +96,7 @@ module JABA
         cpp :app do
           type :app
           root td
-          hosts [:vs2019], platforms: [:windows_x86, :windows_x86_64]
-          hosts [:xcode], platforms: [:ios_arm64]
+          platforms [:windows_x86, :windows_x86_64, :ios_arm64]
           configs [:Debug, :Release]
           src ['*']
         end

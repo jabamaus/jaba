@@ -23,19 +23,18 @@ module JABA
     def make_nodes
       root_node = make_node
 
-      hosts_attr = root_node.get_attr(:hosts)
-      hosts_attr.visit_attr do |host_attr, target_host|
-        target_platform_to_archs = {}
-        platforms = host_attr.get_option_value(:platforms)
-        platforms.each do |pspec|
-          if pspec !~ /^(.*?)_(.*)/
-            jaba_error("Cannot extract platform and architecture from '#{pspec}'")
-          end
-          platform = Regexp.last_match(1).to_sym
-          arch = Regexp.last_match(2).to_sym
-          target_platform_to_archs.push_value(platform, arch)
+      target_platform_to_archs = {}
+      root_node.attrs.platforms.each do |pspec|
+        if pspec !~ /^(.*?)_(.*)/
+          jaba_error("Cannot extract platform and architecture from '#{pspec}'")
         end
+        platform = Regexp.last_match(1).to_sym
+        arch = Regexp.last_match(2).to_sym
+        target_platform_to_archs.push_value(platform, arch)
+      end
 
+      services.globals.cpp_hosts.each do |target_host|
+        #supported_platforms = target_host.attrs.cpp_supported_platforms
         target_platform_to_archs.each do |target_platform, target_archs|
           project_node = make_node(sub_type_id: :project, name: "#{target_host}|#{target_platform}", parent: root_node) do
             host target_host

@@ -27,7 +27,7 @@
 cpp :jabaruby do
   type :console
   root '../../ruby'
-  hosts [:vs2019], platforms: [:windows_x86_64]
+  platforms [:windows_x86_64]
   configs [:Debug, :Release]
   src [
     "#{__dir__}/jaba_ext.c", 'main.c', 'dmydln.c', 'miniinit.c', 'array.c', 'ast.c', 'bignum.c', 'class.c', 'compar.c', 'compile.c',

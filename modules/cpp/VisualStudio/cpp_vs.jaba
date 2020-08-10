@@ -20,6 +20,7 @@ open_instance :globals, type: :globals do
 end
 
 open_shared :vs_host_common do
+  cpp_supported_platforms [:windows_x86, :windows_x86_64, :windows_arm64]
   cpp_project_classname 'Vcxproj'
   cpp_src_ext ['.natvis']
 end

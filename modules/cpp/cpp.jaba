@@ -4,12 +4,9 @@ define :cpp do
 
   title 'Cross platform C++ project definition'
 
-   attr_array :hosts, type: :choice do
-    title 'Target hosts'
-    note "The following hosts are available as standard: #{all_instance_ids(:host).join(', ')}"
-    items all_instance_ids(:host)
+   attr_array :platforms do
+    title 'Target platforms'
     flags :required
-    value_option :platforms, required: true
   end
   
   define :project do
@@ -374,6 +371,11 @@ define :cpp do
 end
 
 open_type :host do
+
+  attr_array :cpp_supported_platforms do
+    title 'Valid target platforms for this host'
+  end
+
   attr :cpp_project_classname, type: :string do
     title 'Class name of host-specific Project subclass'
     note 'For example Vcxproj, Xcodeproj. Use when implementing a new project type.'
@@ -386,6 +388,7 @@ open_type :host do
     flags :no_sort
     default []
   end
+
 end
 
 open_type :platform do
@@ -395,4 +398,16 @@ open_type :platform do
     flags :no_sort
     default []
   end
+end
+
+open_type :globals do
+  attr_array :cpp_hosts, type: :choice do
+    title 'Target hosts'
+    items all_instance_ids(:host)
+    flags :required
+  end
+end
+
+open_instance :globals, type: :globals do
+  cpp_hosts [:vs2019] # TODO: for now...
 end

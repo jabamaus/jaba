@@ -13,7 +13,7 @@ module JABA
     it 'supports defaults' do
       op = jaba(dry_run: true) do
         defaults :cpp do
-          hosts [:vs2019], platforms: [:windows_x86]
+          platforms [:windows_x86]
           configs [:debug, :release]
           rtti false
         end
@@ -49,21 +49,12 @@ module JABA
         check_fail "'app.vcprop' hash attribute failed validation: Must be of form <group>|<property> but was '#{key}'", line: [__FILE__, 'tagJ'] do
           jaba(dry_run: true) do
             cpp :app do
-              hosts [:vs2019], platforms: [:windows_x86_64]
+              platforms [:windows_x86_64]
               configs [:Release]
               src ['main.cpp'], :force
               vcprop key, 'val' # tagJ
               type :console
             end
-          end
-        end
-      end
-    end
-
-    it 'reports errors correctly with subtype attributes' do
-      check_fail "'app.hosts' array attribute requires a value", line: [__FILE__, 'tagY'] do
-        jaba do
-          cpp :app do # tagY
           end
         end
       end
@@ -98,7 +89,7 @@ module JABA
       make_file("lib/main.cpp")
       op = jaba do
         defaults :cpp do
-          hosts [:vs2019], platforms: [:windows_x86, :windows_x86_64]
+          platforms [:windows_x86, :windows_x86_64]
           configs [:Debug, :Release]
         end
         cpp :app do

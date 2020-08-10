@@ -2,6 +2,8 @@
 
 To do:
 
+- Maybe add open_globals_type and open_globals_inst?
+- Allow default values to take options?
 - RUBY LICENSE REQUIREMENTS
 - is it possible to write a 3rd party jaba file that is stored in jaba itself and then moved into the project with no, or very minimal changes?
 - rethink root property. Maybe rename to srcroot and only have certain things based off it. Or maybe even remove.
