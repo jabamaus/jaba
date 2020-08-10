@@ -114,6 +114,13 @@ module JABA
       src.sort!{|x, y| x.absolute_path.casecmp(y.absolute_path)}
     end
 
+    ##
+    #
+    def get_matching_src_obj(spec, src_list)
+      abs_spec = !spec.absolute_path? ? "#{@root}/#{spec}" : spec
+      src_list.find{|s| s.absolute_path == abs_spec}
+    end
+
   end
 
 end

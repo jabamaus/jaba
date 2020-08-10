@@ -78,8 +78,19 @@ open_type :cpp do
       value_option :condition
       flag_options :export, :no_delete
       validate_key do |key|
+        # TODO: validate only alphanumeric
         if key !~ /^[^|]+\|{1}[^|]+/
-          fail "Must be of form <val>|<val> but was '#{key}'"
+          fail "Must be of form <group>|<property> but was '#{key}'"
+        end
+      end
+    end
+
+    attr_hash :vcfprop, key_type: :string, type: :to_s do
+      title 'Add per-configuration per-file property'
+      flag_options :export, :no_delete
+      validate_key do |key|
+        if key !~ /^[^|]+\|{1}[^|]+/
+          fail "Must be of form <src file>|<property> but was '#{key}'"
         end
       end
     end

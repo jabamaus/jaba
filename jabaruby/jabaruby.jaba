@@ -46,7 +46,7 @@ cpp :jabaruby do
   src ['win32/win32.c', 'win32/file.c']
 
   # TODO: make jaba do something like this automatically when duplicate found
-  #vcprop 'win32/file.c|ObjectFileName', '$(IntDir)win32\file.obj'
+  vcfprop 'win32/file.c|ObjectFileName', '$(IntDir)win32_file.obj'
   
   # Statically link in extensions that jaba requires
   #

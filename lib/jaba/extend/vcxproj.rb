@@ -22,6 +22,7 @@ module JABA
       @vcxproj_filters_file = "#{@vcxproj_file}.filters"
       @file_type_hash = services.globals.vcfiletype
       @masm_required = false
+      @per_file_props = {}
 
       # Call translator for this platform to initialse project level Visual Studio-specific attributes
       # (vcglobals), based on cross platform definition.
@@ -142,8 +143,7 @@ module JABA
         item_definition_group(@idg, condition: cfg_condition(cfg_name, platform))
 
         cfg.visit_attr(:vcprop) do |attr, val|
-          location = attr.get_option_value(:__key)
-          group, key = location.split('|')
+          group, key = attr.get_option_value(:__key).split('|')
           condition = attr.get_option_value(:condition, fail_if_not_found: false)
 
           case group
@@ -159,6 +159,16 @@ module JABA
               idg << "    <#{group}>"
             end
             write_keyvalue(idg, key, val, condition: condition, depth: 3)
+          end
+        end
+
+        cfg.visit_attr(:vcfprop) do |attr, val|
+          file_with_prop, prop = attr.get_option_value(:__key).split('|')
+          sf = get_matching_src_obj(file_with_prop, @src)
+          if sf
+            @per_file_props.push_value(sf, [prop, cfg_name, platform, val])
+          else
+            attr.jaba_error("'#{file_with_prop}' src file not in project")
           end
         end
 
@@ -191,7 +201,17 @@ module JABA
       src_area = file.work_area(capacity: c)
       @src.each do |sf|
         ft = sf.file_type
-        src_area << "    <#{ft} Include=\"#{sf.projdir_rel}\" />"
+        file_props = @per_file_props[sf]
+        src_area.write_raw("    <#{ft} Include=\"#{sf.projdir_rel}\"")
+        if file_props
+          src_area << ">"
+          file_props.each_slice(4) do |a|
+            src_area << "      <#{a[0]} Condition=\"#{cfg_condition(a[1], a[2])}\">#{a[3]}</#{a[0]}>"
+          end
+          src_area << "    </#{ft}>"
+        else
+          src_area << " />"
+        end
         if ft == :MASM
           @masm_required = true
         end
