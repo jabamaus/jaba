@@ -486,6 +486,23 @@ module JABA
       end
     end
     
+    it 'supports setting a validator' do
+      check_fail 'failed', line: [__FILE__, 'tagB'] do
+        jaba(barebones: true) do
+          define :test do
+            attr_array :a do
+              validate do |val|
+                fail 'failed'
+              end
+            end
+          end
+          test :t do
+            a ['val'] # tagB
+          end
+        end
+      end
+    end
+
   end
 
 end
