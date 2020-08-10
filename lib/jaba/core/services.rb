@@ -306,22 +306,6 @@ module JABA
       #
       @generators.each do |g|
         g.process
-
-        # Handle singletons
-        #
-        if g.top_level_jaba_type.singleton
-          if g.root_nodes.size == 0
-            jaba_error("singleton type '#{g.type_id}' must be instantiated exactly once", errline: g.top_level_jaba_type.definition.src_loc_raw)
-          elsif g.root_nodes.size > 1
-            jaba_error("singleton type '#{g.type_id}' must be instantiated exactly once", errline: g.root_nodes.last.definition.src_loc_raw)
-          end
-          
-          # Generate acceessor
-          #
-          define_singleton_method "#{g.type_id}_singleton".to_sym do
-            g.root_nodes.first
-          end
-        end
       end
 
       # Output definition input data as a json file, before generation. This is raw data as generated from the definitions.
