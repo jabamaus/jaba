@@ -1077,6 +1077,7 @@ module JABA
       w << "> |-|-|"
       md_row(w, :src, "$(jaba_install)/#{jt.definition.src_loc_describe(style: :rel_jaba_root)}")
       md_row(w, :notes, jt.notes.make_sentence)
+      md_row(w, 'depends on', jt.dependencies.join(", ")) # TODO: make into links
       w << "> "
       w << ""
       jt.all_attr_defs_sorted.each do |ad|
