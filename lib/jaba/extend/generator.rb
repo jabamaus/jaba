@@ -75,6 +75,14 @@ module JABA
         @root_nodes << make_nodes
       end
       
+      if @top_level_jaba_type.singleton
+        if @root_nodes.size == 0
+          jaba_error("singleton type '#{type_id}' must be instantiated exactly once", errline: @top_level_jaba_type.definition.src_loc_raw)
+        elsif @root_nodes.size > 1
+          jaba_error("singleton type '#{type_id}' must be instantiated exactly once", errline: @root_nodes.last.definition.src_loc_raw)
+        end
+      end
+
       @reference_attrs_to_resolve.each do |a|
         a.map_value! do |ref|
           resolve_reference(a, ref)
@@ -91,14 +99,6 @@ module JABA
         # Make all nodes read only from this point, to help catch mistakes
         #
         n.make_read_only
-      end
-
-      if @top_level_jaba_type.singleton
-        if @root_nodes.size == 0
-          jaba_error("singleton type '#{type_id}' must be instantiated exactly once", errline: @top_level_jaba_type.definition.src_loc_raw)
-        elsif @root_nodes.size > 1
-          jaba_error("singleton type '#{type_id}' must be instantiated exactly once", errline: @root_nodes.last.definition.src_loc_raw)
-        end
       end
 
       @root_nodes.sort!{|x, y| x.handle.casecmp(y.handle)}
