@@ -34,10 +34,11 @@ module JABA
       end
 
       services.globals.cpp_hosts.each do |target_host|
-        #supported_platforms = target_host.attrs.cpp_supported_platforms
+        supported_platforms = target_host.attrs.cpp_supported_platforms
         target_platform_to_archs.each do |target_platform, target_archs|
-          project_node = make_node(sub_type_id: :project, name: "#{target_host}|#{target_platform}", parent: root_node) do
-            host target_host
+          next if !supported_platforms.include?(target_platform)
+          project_node = make_node(sub_type_id: :project, name: "#{target_host.defn_id}|#{target_platform}", parent: root_node) do
+            host target_host.defn_id
             host_ref target_host
             platform target_platform
             platform_ref target_platform

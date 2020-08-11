@@ -35,7 +35,7 @@ module JABA
     ##
     #
     def from_string(str)
-      raise 'Must be implemented'
+      raise "from_string(str) must be implemented in #{self.class}"
     end
 
     ##
@@ -568,6 +568,12 @@ module JABA
     #
     def notes
       'TODO'
+    end
+
+    ##
+    #
+    def from_string(str)
+      str
     end
 
     ##

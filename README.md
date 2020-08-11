@@ -2,6 +2,7 @@
 
 To do:
 
+- Disallow globals from referencing itself
 - Maybe add open_globals_type and open_globals_inst?
 - Allow default values to take options?
 - RUBY LICENSE REQUIREMENTS

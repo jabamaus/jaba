@@ -401,9 +401,9 @@ open_type :platform do
 end
 
 open_type :globals do
-  attr_array :cpp_hosts, type: :choice do
+  attr_array :cpp_hosts, type: :reference do
     title 'Target hosts'
-    items all_instance_ids(:host)
+    referenced_type :host
     flags :required
   end
 end

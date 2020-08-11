@@ -116,6 +116,7 @@ module JABA
         if !JABA.running_tests?
           # Only create config.jaba for out of src builds
           #
+          # TODO: automatically patch in new attrs
           if input.src_root
             config_file = JABA.config_file
             if !File.exist?(config_file)
@@ -321,7 +322,7 @@ module JABA
               im.usage_error("No value provided for '#{arg}'")
             end
             if @attr.type_id == :file || @attr.type_id == :dir
-              @value = @value.to_absolute(clean: true)
+              @value = @value.to_absolute(clean: true) # TODO: need to do this for array/hash elems too
             end
             @attr.set(@value)
           end
@@ -344,6 +345,11 @@ module JABA
             if @elems.empty?
               im.usage_error("No values provided for '#{arg}'")
             end
+
+            # Normal jaba array behaviour is always to concat to the existing value but when setting from the command
+            # line the behaviour is to replace the existing value.
+            #
+            @attr.clear
             @attr.set(@elems)
           end
           on_process_arg do |arg|

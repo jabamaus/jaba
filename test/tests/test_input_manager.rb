@@ -107,9 +107,10 @@ module JABA
         '-D', 'bool2', 'false',
         '-Dbool3', 'true',
         '-Da_string', 'str',
-        '-Dstring_array', 'a', 'b', 'c',
         '-Dan_int', '1',
         '-Da_symbol', 'symbol',
+        '-Dstring_array', 'a', 'b', 'c',
+        '-Dstring_array_with_default', 'd', 'e', 'f',
         '--define', 'hash1', 'key1', 'value1', 'key2', 'value2', '-Dhash1', 'key3', 'value3',
         '--define', 'hash2', 'key1', 'value1', 'key2', 'value2', '-Dhash2', 'key3', 'value3'
         ]) do
@@ -118,9 +119,13 @@ module JABA
           attr :bool2, type: :bool
           attr :bool3, type: :bool
           attr :a_string, type: :string
-          attr_array :string_array, type: :string
           attr :an_int, type: :int
           attr :a_symbol, type: :symbol
+          # TODO: test reference attrs
+          attr_array :string_array, type: :string
+          attr_array :string_array_with_default, type: :string do
+            default ['a', 'b', 'c']
+          end
           attr_hash :hash1, key_type: :symbol, type: :string
           attr_hash :hash2, key_type: :string, type: :symbol
         end
@@ -130,9 +135,16 @@ module JABA
           globals.bool2.must_equal(false)
           globals.bool3.must_equal(true)
           globals.a_string.must_equal('str')
-          globals.string_array.must_equal(['a', 'b', 'c'])
           globals.an_int.must_equal(1)
           globals.a_symbol.must_equal(:symbol)
+
+          globals.string_array.must_equal(['a', 'b', 'c'])
+
+          # Normal jaba array behaviour is always to concat to the existing value but when setting from the command
+          # line the behaviour is to replace the existing value.
+          #
+          globals.string_array_with_default.must_equal(['d', 'e', 'f'])
+
           globals.hash1.must_equal({key1: 'value1', key2: 'value2', key3: 'value3'})
           globals.hash2.must_equal({'key1' => :value1, 'key2' => :value2, 'key3' => :value3})
         end
