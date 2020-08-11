@@ -312,7 +312,6 @@ module JABA
       @input_manager.process(phase: 2)
 
       if input_manager.cmd_specified?(:genref)
-        @top_level_jaba_types.sort_by! {|jt| jt.defn_id}
         generate_reference_doc
         return
       end
@@ -1051,7 +1050,7 @@ module JABA
       end
       
       w << "- Types"
-      @top_level_jaba_types.each do |jt|
+      @top_level_jaba_types.sort_by {|jt| jt.defn_id}.each do |jt|
         w << "  - [#{jt.defn_id}](#{jt.reference_manual_page})"
         jt.all_attr_defs_sorted.each do |ad|
           w << "    - [#{ad.defn_id}](#{jt.reference_manual_page}##{ad.defn_id})"
