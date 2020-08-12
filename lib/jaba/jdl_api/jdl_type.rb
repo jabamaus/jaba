@@ -32,22 +32,22 @@ module JABA
     ##
     # Define a new attribute.
     #
-    def attr(id, **options, &block)
-      @jaba_type.define_attr(id, :single, **options, &block)
+    def attr(id, type: nil, &block)
+      @jaba_type.define_attr(id, :single, type: type, &block)
     end
     
     ##
     # Define a new array attribute.
     #
-    def attr_array(id, **options, &block)
-      @jaba_type.define_attr(id, :array, **options, &block)
+    def attr_array(id, type: nil, &block)
+      @jaba_type.define_attr(id, :array, type: type, &block)
     end
     
     ##
     # Define a new hash attribute.
     #
-    def attr_hash(id, **options, &block)
-      @jaba_type.define_attr(id, :hash, **options, &block)
+    def attr_hash(id, type: nil, key_type: nil, &block)
+      @jaba_type.define_attr(id, :hash, type: type, key_type: key_type, &block)
     end
 
     ##
