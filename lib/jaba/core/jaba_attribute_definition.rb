@@ -31,7 +31,7 @@ module JABA
     attr_reader :default_block
     attr_reader :flags
     attr_reader :flag_options
-    attr_reader :referenced_type # Defined and used by reference attribute type but give access here for efficiency
+    attr_reader :object_type # Defined and used by object_ref attribute type but give access here for efficiency
     
     ##
     #

@@ -579,22 +579,22 @@ module JABA
     ##
     #
     def get_reference_manual_rows(attr_def)
-      { referenced_type: attr_def.get_property(:referenced_type).inspect }
+      { object_type: attr_def.get_property(:object_type).inspect }
     end
 
     ##
     # TODO: remove. Do in core to save all the property setting and getting
     def init_attr_def(attr_def)
-      attr_def.define_property(:referenced_type)
+      attr_def.define_property(:object_type)
       attr_def.define_property(:make_handle) # TODO: flag as block or validate as such
     end
 
     ##
     #
     def post_init_attr_def(attr_def)
-      rt = attr_def.get_property(:referenced_type)
+      rt = attr_def.get_property(:object_type)
       if rt.nil?
-        services.jaba_error("'referenced_type' must be set")
+        services.jaba_error("'object_type' must be set")
       end
       if attr_def.jaba_type.defn_id != rt
         attr_def.jaba_type.top_level_type.set_property(:dependencies, rt)

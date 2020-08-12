@@ -5,7 +5,7 @@ module JABA
   class TestObjectRefAttribute < JabaTest
     
     it 'requires referent type to be specified' do
-      check_fail "'b' attribute failed validation: 'referenced_type' must be set", line: [__FILE__, 'tagP'] do
+      check_fail "'b' attribute failed validation: 'object_type' must be set", line: [__FILE__, 'tagP'] do
         jaba(barebones: true) do
           define :a do
             attr :b, type: :object_ref # tagP
@@ -21,7 +21,7 @@ module JABA
       jaba(barebones: true) do
         define :type_a do
           attr :type_b, type: :object_ref do
-            referenced_type :type_b
+            object_type :type_b
           end
         end
         define :type_b do
@@ -49,7 +49,7 @@ module JABA
         jaba(barebones: true) do
           define :type_a do
             attr :ref, type: :object_ref do
-              referenced_type :type_b
+              object_type :type_b
             end
           end
           define :type_b
@@ -64,10 +64,10 @@ module JABA
       jaba(barebones: true) do
         define :type_a do
           attr :ref, type: :object_ref do
-            referenced_type :type_a
+            object_type :type_a
           end
           attr_array :ref_array, type: :object_ref do
-            referenced_type :type_a
+            object_type :type_a
           end
         end
         type_a :a1 do
@@ -97,7 +97,7 @@ module JABA
         jaba(barebones: true) do
           define :a do
             attr :b, type: :object_ref do
-              referenced_type :a
+              object_type :a
             end
           end
           a :t do
@@ -111,7 +111,7 @@ module JABA
       jaba do
         define :type_a do
           attr :host, type: :object_ref do
-            referenced_type :host
+            object_type :host
             default :vs2019
           end
         end
@@ -139,7 +139,7 @@ module JABA
           end
           define :has_square do
             attr :square, type: :object_ref do
-              referenced_type :square
+              object_type :square
             end
           end
           has_square :t do
@@ -167,7 +167,7 @@ module JABA
           end
           define :has_line do
             attr :line, type: :object_ref do
-              referenced_type :line
+              object_type :line
             end
           end
           has_line :t do
@@ -189,7 +189,7 @@ module JABA
           end
           define :has_line do
             attr :line, type: :object_ref do
-              referenced_type :line
+              object_type :line
             end
           end
           has_line :t do
@@ -205,7 +205,7 @@ module JABA
         jaba do
           define :test do
             attr :platform, type: :object_ref do # tagX
-              referenced_type :platform
+              object_type :platform
               flags :read_only
             end
           end
@@ -224,13 +224,13 @@ module JABA
           attr_array :platforms
           define :platform do
             attr :platform, type: :object_ref do
-              referenced_type :platform
+              object_type :platform
             end
             attr_array :hosts
           end
           define :main do
             attr :host, type: :object_ref do
-              referenced_type :host
+              object_type :host
             end
             attr :path
           end

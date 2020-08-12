@@ -39,7 +39,7 @@ define :cpp do
     attr :host_ref, type: :object_ref do
       title 'Target host as object'
       note 'Use when access to host attributes is required'
-      referenced_type :host
+      object_type :host
     end
 
     attr :platform, type: :symbol do
@@ -59,7 +59,7 @@ define :cpp do
     attr :platform_ref, type: :object_ref do
       title 'Target platform as an object'
       note 'Use when access to platform attributes is required'
-      referenced_type :platform
+      object_type :platform
     end
   
     # Common attributes
@@ -74,7 +74,7 @@ define :cpp do
     attr_array :deps, type: :object_ref do
       title 'Project dependencies'
       note 'List of ids of other cpp definitions'
-      referenced_type :cpp
+      object_type :cpp
       make_handle do |id|
         "#{id}|#{host}|#{platform}"
       end
@@ -164,7 +164,7 @@ define :cpp do
 
     attr :arch_ref, type: :object_ref do
       title 'Target architecture as an object'
-      referenced_type :arch
+      object_type :arch
     end
 
     # Required attributes that the user must provide a value for.
@@ -184,7 +184,7 @@ define :cpp do
       # TODO: examples, including regexes
     end
 
-    #attr_hash :buildtool, key_type: :src_spec, type: object_ref, object_type: :buildtool do
+    #attr_hash :buildtool, key_type: :src_spec, type: object, object_type: :buildtool do
     #  title 'Custom build tool'
     #end
 
@@ -407,7 +407,7 @@ end
 open_type :globals do
   attr_array :cpp_hosts, type: :object_ref do
     title 'Target hosts'
-    referenced_type :host
+    object_type :host
     flags :required
   end
 end
