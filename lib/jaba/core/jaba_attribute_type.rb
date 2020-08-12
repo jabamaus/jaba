@@ -355,7 +355,7 @@ module JABA
     ##
     #
     def get_reference_manual_rows(attr_def)
-      { items: attr_def.get_items.inspect }
+      { items: attr_def.items.inspect }
     end
     
     ##
@@ -373,7 +373,7 @@ module JABA
     ##
     #
     def post_init_attr_def(attr_def)
-      items = attr_def.get_items
+      items = attr_def.items
       if items.empty?
         services.jaba_error("'items' must be set")
       elsif items.uniq!
@@ -384,7 +384,7 @@ module JABA
     ##
     #
     def validate_value(attr_def, value)
-      items = attr_def.get_items
+      items = attr_def.items
       if !items.include?(value)
         services.jaba_error("Must be one of #{items} but got '#{value}'")
       end

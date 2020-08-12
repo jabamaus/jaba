@@ -221,7 +221,7 @@ module JABA
         @reference_attrs_to_resolve << attr
         return ref_node_id
       end
-      make_handle_block = attr_def.get_make_handle
+      make_handle_block = attr_def.make_handle
       handle = if make_handle_block
         "#{node.eval_jdl(ref_node_id, &make_handle_block)}"
       else

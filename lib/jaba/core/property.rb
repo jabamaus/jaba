@@ -39,8 +39,14 @@ module JABA
       @properties[p_id] = nil
       var = PropertyMethods.get_var(p_id)
       instance_variable_set(var, val)
-      define_singleton_method "get_#{p_id}" do
-        instance_variable_get(var)
+
+      # Core classes like JabaAttributeDefinition define their own attr_reader methods to retrieve property values
+      # in the most efficient way possible. If one has not been defined dynamically define an accessor.
+      #
+      if !respond_to?(p_id)
+        define_singleton_method p_id do
+          instance_variable_get(var)
+        end
       end
     end
 
