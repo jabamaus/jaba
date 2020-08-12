@@ -37,10 +37,31 @@ cpp :jabaruby do
     'regcomp.c', 'regenc.c', 'regerror.c', 'regexec.c', 'regparse.c', 'regsyntax.c', 'ruby.c', 'safe.c', 'signal.c', 'sprintf.c',
     'st.c', 'strftime.c', 'string.c', 'struct.c', 'symbol.c', 'thread.c', 'time.c', 'transcode.c', 'transient_heap.c', 'util.c',
     'variable.c', 'version.c', 'vm.c', 'vm_backtrace.c', 'vm_dump.c', 'vm_trace.c'
-  ]
-  #src ['probes.d']
+  ], :force
+  
+  src ['probes.d']
+  vcfprop 'probes.d|FileType', :Document
+  vcfprop 'probes.d|Command', "ruby ..\\..\\..\\ruby\\tool\\gen_dummy_probes.rb %(Identity) &gt;..\\..\\..\\ruby\\probes.dmyh"
+  vcfprop 'probes.d|Outputs', '..\..\..\ruby\probes.dmyh'
+  vcfprop 'probes.d|Message', 'Generating probes.dmyh'
+
+=begin
+  buildtool 'probes.d' do
+    op = 'probes.dmyh'
+    command "ruby ..\\..\\..\\ruby\\tool\\gen_dummy_probes.rb %(Identity) &gt;..\\..\\..\\ruby\\probes.dmyh"
+    outputs ['..\..\..\ruby\probes.dmyh']
+    message 'Generating probes.dmyh'
+  end
+
+  buildtool '*.d', do |f|
+    op = "#{f}myh"
+    outputs [op]
+    command "ruby ..\\..\\..\\ruby\\tool\\gen_dummy_probes.rb #{f} #{op}"
+    message "Generating #{op}"
+  end
+=end
   src ['coroutine/win64/Context.asm']
-  src ['enc/ascii.c', 'enc/us_ascii.c', 'enc/unicode.c', 'enc/utf_8.c', 'enc/trans/newline.c']
+  src ['enc/ascii.c', 'enc/us_ascii.c', 'enc/unicode.c', 'enc/utf_8.c', 'enc/trans/newline.c'], :force
   src ['crypt.c', 'ffs.c', 'langinfo.c', 'lgamma_r.c', 'strlcat.c',
        'strlcpy.c', 'setproctitle.c', 'explicit_bzero.c'], prefix: 'missing/'
   src ['win32/win32.c', 'win32/file.c']
@@ -78,3 +99,6 @@ workspace :jabaruby do
 end
 
 
+open_instance :globals, type: :globals do
+  vcfiletype '.d', :CustomBuild # TODO: remove
+end

@@ -2,6 +2,8 @@
 
 To do:
 
+- Add support for hash attribute having a node rather than attribute as value.
+- Investigate Error at jabaruby.jaba:57: 'parse.c' does not exist on disk. Use :force to add anyway. Wrong line was being reported.
 - Disallow globals from referencing itself
 - Maybe add open_globals_type and open_globals_inst?
 - Allow default values to take options?
@@ -152,3 +154,15 @@ Q: Why is Jaba library code style not very 'ruby'?
 A: The code is written in a style that is the easiest to step through in an IDE debugger, which is an essential tool in the development process
 
 https://rix0r.nl/blog/2015/08/13/cmake-guide/
+
+
+    <CustomBuild Include="..\..\..\ruby\probes.d">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ruby ..\..\..\ruby\tool/gen_dummy_probes.rb %(Identity) &gt;..\..\..\ruby\probes.dmyh</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\ruby\probes.dmyh</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Generating probes.dmyh</Message>
+    </CustomBuild>
+
+
+  https://www.gamedev.net/blogs/entry/2266894-fully-featured-custom-build-targets-in-visual-c/
+  http://reedbeta.com/blog/custom-toolchain-with-msbuild/

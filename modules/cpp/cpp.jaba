@@ -184,6 +184,10 @@ define :cpp do
       # TODO: examples, including regexes
     end
 
+    #attr_hash :buildtool, key_type: :src_spec, object_type: :buildtool do
+    #  title 'Custom build tool'
+    #end
+
     # Common attributes. These are the attributes that most definitions will set/use.
     #
     attr_array :shell, type: :string do

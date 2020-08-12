@@ -1,0 +1,17 @@
+define :buildtool do
+
+  title 'Custom build tool'
+  
+  attr :message, type: :string do
+    title 'Build message'
+  end
+
+  attr_array :outputs, type: :file do
+    title 'Build tool output files'
+  end
+
+  attr :command, type: :string do
+    title 'Build tool command line invocation'
+  end
+
+end
