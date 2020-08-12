@@ -53,7 +53,7 @@ module JABA
 
     it 'checks for invalid attribute types' do
       check_fail "'not_a_type' attribute type is undefined. " \
-                 "Valid types: [:bool, :choice, :dir, :file, :int, :reference, :src_spec, :string, :symbol, :symbol_or_string, :to_s, :uuid]",
+                 "Valid types: [:bool, :choice, :dir, :file, :int, :object_ref, :src_spec, :string, :symbol, :symbol_or_string, :to_s, :uuid]",
                  line: [__FILE__, 'tagY'] do
         jaba(barebones: true) do
           define :test do

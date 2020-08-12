@@ -180,7 +180,7 @@ module JABA
     ##
     #
     def reference?
-      @type_id == :reference
+      @type_id == :object_ref
     end
     
     ##

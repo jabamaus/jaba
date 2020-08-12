@@ -36,7 +36,7 @@ define :cpp do
       }
     end
 
-    attr :host_ref, type: :reference do
+    attr :host_ref, type: :object_ref do
       title 'Target host as object'
       note 'Use when access to host attributes is required'
       referenced_type :host
@@ -56,7 +56,7 @@ define :cpp do
       }
     end
       
-    attr :platform_ref, type: :reference do
+    attr :platform_ref, type: :object_ref do
       title 'Target platform as an object'
       note 'Use when access to platform attributes is required'
       referenced_type :platform
@@ -71,7 +71,7 @@ define :cpp do
       example 'configs [:Debug, :Release]'
     end
     
-    attr_array :deps, type: :reference do
+    attr_array :deps, type: :object_ref do
       title 'Project dependencies'
       note 'List of ids of other cpp definitions'
       referenced_type :cpp
@@ -162,7 +162,7 @@ define :cpp do
       flags :read_only
     end
 
-    attr :arch_ref, type: :reference do
+    attr :arch_ref, type: :object_ref do
       title 'Target architecture as an object'
       referenced_type :arch
     end
@@ -184,7 +184,7 @@ define :cpp do
       # TODO: examples, including regexes
     end
 
-    #attr_hash :buildtool, key_type: :src_spec, object_type: :buildtool do
+    #attr_hash :buildtool, key_type: :src_spec, type: object_ref, object_type: :buildtool do
     #  title 'Custom build tool'
     #end
 
@@ -405,7 +405,7 @@ open_type :platform do
 end
 
 open_type :globals do
-  attr_array :cpp_hosts, type: :reference do
+  attr_array :cpp_hosts, type: :object_ref do
     title 'Target hosts'
     referenced_type :host
     flags :required

@@ -550,18 +550,18 @@ module JABA
 
   ##
   #
-  class JabaAttributeTypeReference < JabaAttributeType
+  class JabaAttributeTypeObjectRef < JabaAttributeType
     
     ##
     #
     def id
-      :reference
+      :object_ref
     end
 
     ##
     #
     def title
-      'Reference attribute type'
+      'Objectt reference attribute type'
     end
 
     ##
