@@ -355,7 +355,7 @@ module JABA
     ##
     #
     def get_reference_manual_rows(attr_def)
-      { items: attr_def.get_property(:items).inspect }
+      { items: attr_def.get_items.inspect }
     end
     
     ##
@@ -373,7 +373,7 @@ module JABA
     ##
     #
     def post_init_attr_def(attr_def)
-      items = attr_def.get_property(:items)
+      items = attr_def.get_items
       if items.empty?
         services.jaba_error("'items' must be set")
       elsif items.uniq!
@@ -384,7 +384,7 @@ module JABA
     ##
     #
     def validate_value(attr_def, value)
-      items = attr_def.get_property(:items)
+      items = attr_def.get_items
       if !items.include?(value)
         services.jaba_error("Must be one of #{items} but got '#{value}'")
       end
@@ -561,7 +561,7 @@ module JABA
     ##
     #
     def title
-      'Objectt reference attribute type'
+      'Object reference attribute type'
     end
 
     ##
@@ -579,7 +579,7 @@ module JABA
     ##
     #
     def get_reference_manual_rows(attr_def)
-      { object_type: attr_def.get_property(:object_type).inspect }
+      { object_type: attr_def.object_type.inspect }
     end
 
     ##
@@ -592,12 +592,68 @@ module JABA
     ##
     #
     def post_init_attr_def(attr_def)
-      rt = attr_def.get_property(:object_type)
-      if rt.nil?
+      t = attr_def.object_type
+      if t.nil?
         services.jaba_error("'object_type' must be set")
       end
-      if attr_def.jaba_type.defn_id != rt
-        attr_def.jaba_type.top_level_type.set_property(:dependencies, rt)
+      if attr_def.jaba_type.defn_id != t
+        attr_def.jaba_type.top_level_type.set_property(:dependencies, t)
+      end
+    end
+
+  end
+
+  ##
+  #
+  class JabaAttributeTypeObject < JabaAttributeType
+    
+    ##
+    #
+    def id
+      :object
+    end
+
+    ##
+    #
+    def title
+      'Object attribute type'
+    end
+
+    ##
+    #
+    def notes
+      'TODO'
+    end
+
+    ##
+    #
+    def from_string(str)
+      str
+    end
+
+    ##
+    #
+    def get_reference_manual_rows(attr_def)
+      { object_type: attr_def.object_type.inspect }
+    end
+
+    ##
+    #
+    def init_attr_def(attr_def)
+      attr_def.define_property(:object_type)
+    end
+
+    ##
+    #
+    def post_init_attr_def(attr_def)
+      t = attr_def.object_type
+      if t.nil?
+        services.jaba_error("'object_type' must be set")
+      end
+      if attr_def.jaba_type.defn_id == t
+        services.jaba_error("object_type attribute cannot be set to owning type")
+      else
+        attr_def.jaba_type.top_level_type.set_property(:dependencies, t)
       end
     end
 

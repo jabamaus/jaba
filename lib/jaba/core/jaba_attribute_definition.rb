@@ -17,16 +17,15 @@ module JABA
 
     include PropertyMethods
 
-    attr_reader :title
-    attr_reader :notes
-    attr_reader :examples
-    
     attr_reader :type_id # eg :bool, :string, :file etc
     attr_reader :variant # :single, :array, :hash
     attr_reader :jaba_attr_type # JabaAttributeType object
     attr_reader :jaba_attr_key_type # JabaAttributeType object. Used by hash attribute.
     attr_reader :jaba_type
 
+    attr_reader :title
+    attr_reader :notes
+    attr_reader :examples
     attr_reader :default
     attr_reader :default_block
     attr_reader :flags

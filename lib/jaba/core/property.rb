@@ -37,7 +37,11 @@ module JABA
         services.jaba_error("'#{p_id}' property multiply defined")
       end
       @properties[p_id] = nil
-      instance_variable_set(PropertyMethods.get_var(p_id), val)
+      var = PropertyMethods.get_var(p_id)
+      instance_variable_set(var, val)
+      define_singleton_method "get_#{p_id}" do
+        instance_variable_get(var)
+      end
     end
 
     ##

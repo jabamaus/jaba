@@ -85,18 +85,6 @@ module JABA
     end
 
     ##
-    #
-    def define_property(id, val = nil)
-      @attr_def.define_property(id, val)
-    end
-
-    ##
-    #
-    def define_array_property(id, val = [])
-      @attr_def.define_array_property(id, val)
-    end
-
-    ##
     # Returns attribute type id, eg :bool, :string, :choice, :object_ref, :file etc
     #
     def type

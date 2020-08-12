@@ -52,9 +52,7 @@ module JABA
     end
 
     it 'checks for invalid attribute types' do
-      check_fail "'not_a_type' attribute type is undefined. " \
-                 "Valid types: [:bool, :choice, :dir, :file, :int, :object_ref, :src_spec, :string, :symbol, :symbol_or_string, :to_s, :uuid]",
-                 line: [__FILE__, 'tagY'] do
+      check_fail "'not_a_type' attribute type is undefined", line: [__FILE__, 'tagY'] do
         jaba(barebones: true) do
           define :test do
             attr :a, type: :not_a_type # tagY
@@ -73,7 +71,7 @@ module JABA
           end
           test :t do
             generate do
-              get_attr(:a).attr_def.get_property(:flags).must_equal [:read_only]
+              get_attr(:a).attr_def.flags.must_equal [:read_only]
             end
           end
         end
@@ -90,7 +88,7 @@ module JABA
           end
           test :t do
             generate do
-              get_attr(:a).attr_def.get_property(:flag_options).must_equal [:export]
+              get_attr(:a).attr_def.flag_options.must_equal [:export]
             end
           end
         end
@@ -115,61 +113,6 @@ module JABA
           define :test do
             attr :a do
               title 'This title exceeds the max attribute title length that Jaba allows. If titles were allowed to be this long it would look bad in command line help and reference manual' # tagF
-            end
-          end
-        end
-      end
-    end
-
-    it 'supports adding properties' do
-      jaba(barebones: true) do
-        define :test do
-          attr :a do
-            define_property :b, 'b'
-            define_property :c, 1
-            define_array_property :d
-            define_property :e
-            define_property :f do
-            end
-            b.must_equal('b')
-            c.must_equal(1)
-            d.must_equal([])
-            e.must_be_nil
-            b 'c'
-            c 2
-            d [:d, :e]
-            e :g
-            b.must_equal('c')
-            c.must_equal(2)
-            d.must_equal [:d, :e]
-            d [:f]
-            d :g
-            d.must_equal [:d, :e, :f, :g]
-            e.must_equal(:g)
-          end
-        end
-      end
-    end
-    
-    it 'detects multiply defined properties' do
-      check_fail "'a' property multiply defined", line: [__FILE__, 'tagR'] do
-        jaba(barebones: true) do
-          define :test do
-            attr :a do
-              define_property :a
-              define_property :a # tagR
-            end
-          end
-        end
-      end
-    end
-
-    it 'fails if property does not exist' do
-      check_fail "Failed to set undefined 'undefined' property", line: [__FILE__, 'tagZ'] do
-        jaba(barebones: true) do
-          define :test do
-            attr :a do
-              undefined 1 # tagZ
             end
           end
         end
