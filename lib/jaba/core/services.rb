@@ -159,24 +159,18 @@ module JABA
       duration = JABA.milli_timer do
         JABA.profile(input.profile) do
           do_run
-
-          if !input.barebones?
-            log 'Building output...'
-            build_jaba_output
-          end
+          build_jaba_output
         end
       end
 
-      if !input.barebones?
-        summary = String.new "Generated #{@generated.size} files, #{@added.size} added, #{@modified.size} modified in #{duration}"
-        summary << " [dry run]" if input.dry_run?
-        # TODO: verbose mode prints all generated
+      summary = String.new "Generated #{@generated.size} files, #{@added.size} added, #{@modified.size} modified in #{duration}"
+      summary << " [dry run]" if input.dry_run?
+      # TODO: verbose mode prints all generated
 
-        log summary
-        log "Done! (#{duration})"
+      log summary
+      log "Done! (#{duration})"
 
-        @output[:summary] = summary
-      end
+      @output[:summary] = summary
 
       @output[:warnings] = @warnings.uniq # Strip duplicate warnings
       @output
@@ -712,6 +706,7 @@ module JABA
     ##
     #
     def build_jaba_output
+      log 'Building output...'
       out_file = globals.jaba_output_file.to_absolute(clean: true)
       out_dir = out_file.dirname
 
