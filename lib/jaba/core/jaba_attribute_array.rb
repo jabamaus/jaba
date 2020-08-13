@@ -63,7 +63,23 @@ module JABA
       # It is possible for values to be nil, which happens if no args are passed. This can happen if the user
       # wants to just set some excludes.
       #
-      values = block_given? ? @node.eval_jdl(&block) : args.shift
+      values = nil
+      if block_given?
+        if @attr_def.node_by_value?
+          node_type = @attr_def.object_type
+          g = services.get_generator(node_type)
+          g.push_definition(services.make_definition(@attr_def.defn_id, block, __api_call_loc)) do
+            values = Array(g.make_node(name: "#{@attr_def.defn_id}[#{@elems.size}]", parent: @node))
+          end
+        else
+          values = @node.eval_jdl(&block)
+        end
+      else
+        if @attr_def.node_by_value?
+          jaba_error("Node attributes require a block")
+        end
+        values = args.shift
+      end
 
       if values && !values.array?
         jaba_error("#{describe} requires an array not a '#{values.class}'")
@@ -85,7 +101,7 @@ module JABA
 
       values.each do |val|
         existing = nil
-        if !@attr_def.has_flag?(:allow_dupes)
+        if !@attr_def.has_flag?(:allow_dupes) && !@attr_def.node_by_value?
           existing = @elems.find{|e| e.value == val}
         end
 

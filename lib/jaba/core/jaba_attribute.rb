@@ -171,14 +171,13 @@ module JABA
           node_type = @attr_def.object_type
           g = services.get_generator(node_type)
           g.push_definition(services.make_definition(@attr_def.defn_id, block, __api_call_loc)) do
-            # TODO: what should name be?
             new_value = g.make_node(name: "#{@attr_def.defn_id}", parent: @node)
           end
         else
           new_value = @node.eval_jdl(&block)
         end
       else
-        if @attr_def.node_by_value?
+        if @attr_def.node_by_value? && !@outer_attr
           jaba_error("Node attributes require a block")
         end
         new_value = args.shift
