@@ -74,6 +74,7 @@ module JABA
         @current_definition = d
         @root_nodes << make_nodes
       end
+      @current_definition = nil
       
       if @top_level_jaba_type.singleton
         if @root_nodes.size == 0

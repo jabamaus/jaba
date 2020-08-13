@@ -165,7 +165,20 @@ module JABA
         end
       end
 
-      new_value = block_given? ? @node.eval_jdl(&block) : args.shift
+      new_value = if block_given?
+        if @attr_def.node_by_value?
+          node_type = @attr_def.object_type
+          g = services.get_generator(node_type)
+          g.make_node(name: @attr_def.definition.id, parent: @node)
+        else
+          @node.eval_jdl(&block)
+        end
+      else
+        if @attr_def.node_by_value?
+          jaba_error("Node attributes require a block")
+        end
+        args.shift
+      end
 
       attr_type = @attr_def.jaba_attr_type
       new_value = attr_type.map_value(new_value)

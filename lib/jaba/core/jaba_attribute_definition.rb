@@ -181,6 +181,12 @@ module JABA
     def reference?
       @type_id == :object_ref
     end
+
+    ##
+    #
+    def node_by_value?
+      @type_id == :object
+    end
     
     ##
     #

@@ -2,7 +2,8 @@
 
 To do:
 
-- Add support for hash attribute having a node rather than attribute as value.
+- Rename object/object_ref to node/node_ref
+- Support for node-by-value attribute
 - Investigate Error at jabaruby.jaba:57: 'parse.c' does not exist on disk. Use :force to add anyway. Wrong line was being reported.
 - Disallow globals from referencing itself
 - Maybe add open_globals_type and open_globals_inst?
