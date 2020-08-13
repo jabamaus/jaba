@@ -165,19 +165,23 @@ module JABA
         end
       end
 
-      new_value = if block_given?
+      new_value = nil
+      if block_given?
         if @attr_def.node_by_value?
           node_type = @attr_def.object_type
           g = services.get_generator(node_type)
-          g.make_node(name: @attr_def.definition.id, parent: @node)
+          g.push_definition(services.make_definition(@attr_def.defn_id, block, __api_call_loc)) do
+            # TODO: what should name be?
+            new_value = g.make_node(name: "#{@attr_def.defn_id}", parent: @node)
+          end
         else
-          @node.eval_jdl(&block)
+          new_value = @node.eval_jdl(&block)
         end
       else
         if @attr_def.node_by_value?
           jaba_error("Node attributes require a block")
         end
-        args.shift
+        new_value = args.shift
       end
 
       attr_type = @attr_def.jaba_attr_type

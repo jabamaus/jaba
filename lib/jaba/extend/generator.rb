@@ -71,10 +71,10 @@ module JABA
       services.log "Processing #{describe}", section: true
 
       @definitions.each do |d|
-        @current_definition = d
-        @root_nodes << make_nodes
+        push_definition(d) do
+          @root_nodes << make_nodes
+        end
       end
-      @current_definition = nil
       
       if @top_level_jaba_type.singleton
         if @root_nodes.size == 0
@@ -130,6 +130,14 @@ module JABA
     end
 
     ##
+    #
+    def push_definition(d)
+      @definition = d
+      yield
+      @definition = nil
+    end
+
+    ##
     # Call this from subclass
     #
     def make_node(sub_type_id: nil, name: nil, parent: nil, &block)
@@ -145,7 +153,7 @@ module JABA
         depth = parent.depth + 1
       else
         jaba_error('name not required for root nodes') if name
-        handle = "#{@current_definition.id}"
+        handle = "#{@definition.id}"
       end
 
       services.log "#{'  ' * depth}Instancing node [type=#{type_id}, handle=#{handle}]"
@@ -160,7 +168,7 @@ module JABA
         @top_level_jaba_type
       end
 
-      jn = JabaNode.new(@services, @current_definition.id, @current_definition.src_loc, jt, handle, parent, depth)
+      jn = JabaNode.new(@services, @definition.id, @definition.src_loc, jt, handle, parent, depth)
 
       @nodes << jn
       @node_lookup[handle] = jn
@@ -183,11 +191,11 @@ module JABA
           jn.eval_jdl(&defaults.block)
         end
 
-        if @current_definition.block
-          jn.eval_jdl(&@current_definition.block)
+        if @definition.block
+          jn.eval_jdl(&@definition.block)
         end
 
-        @current_definition.open_defs.each do |d|
+        @definition.open_defs.each do |d|
           jn.eval_jdl(&d.block)
         end
         

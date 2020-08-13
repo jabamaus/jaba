@@ -17,7 +17,6 @@ module JABA
           attr_hash :c, key_type: :symbol
         end
         test :t do
-=begin
           obj do
             a 'a'
             b ['c', 'd']
@@ -26,7 +25,6 @@ module JABA
           obj.a.must_equal('a')
           obj.b.must_equal ['c', 'd']
           obj.c.must_equal({e: 'f'})
-=end
         end
       end
     end
