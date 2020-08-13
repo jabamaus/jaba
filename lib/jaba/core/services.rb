@@ -20,7 +20,6 @@ require_relative 'jaba_attribute_definition'
 require_relative 'jaba_attribute'
 require_relative 'jaba_attribute_array'
 require_relative 'jaba_attribute_hash'
-require_relative 'jaba_definition'
 require_relative 'jaba_node'
 require_relative 'jaba_translator'
 require_relative 'jaba_type'
@@ -93,6 +92,8 @@ module JABA
     @@module_ruby_files_loaded = false
     @@module_jaba_files = []
 
+    DefinitionInfo = Struct.new(:id, :block, :src_loc, :open_defs, :jaba_type_id)
+    
     ##
     #
     def initialize
@@ -225,7 +226,7 @@ module JABA
       # Open top level JabaTypes so more attributes can be added
       #
       @open_type_defs.each do |d|
-        tlt = get_top_level_jaba_type(d.id, errline: d.src_loc_raw)
+        tlt = get_top_level_jaba_type(d.id, errline: d.src_loc)
         tlt.eval_jdl(&d.block)
         tlt.open_sub_type_defs.each do |std|
           st = tlt.get_sub_type(std.id)
@@ -243,7 +244,7 @@ module JABA
         @top_level_jaba_types.sort_topological!(:dependencies)
       rescue TSort::Cyclic => e
         err_type = e.instance_variable_get(:@err_obj)
-        jaba_error("'#{err_type}' contains a cyclic dependency", errline: err_type.definition.src_loc_raw)
+        jaba_error("'#{err_type}' contains a cyclic dependency", errline: err_type.src_loc)
       end
 
       log 'Initialisation of JabaTypes complete'
@@ -255,36 +256,36 @@ module JABA
       # Process instance definitions and assign them to a generator
       #
       @instance_defs.each do |d|
-        jt = get_top_level_jaba_type(d.jaba_type_id, errline: d.src_loc_raw)
+        jt = get_top_level_jaba_type(d.jaba_type_id, errline: d.src_loc)
         jt.generator.register_instance_definition(d)
       end
 
       # Register instance open defs
       #
       @open_instance_defs.each do |d|
-        inst_def = get_instance_definition(d.instance_variable_get(:@jaba_type_id), d.id, errline: d.src_loc_raw)
-        inst_def.add_open_def(d)
-      end
-
-      # Create translators
-      #
-      @translator_defs.each do |d|
-        t = Translator.new(d)
-        @translators[d.id] = t
+        inst_def = get_instance_definition(d.jaba_type_id, d.id, errline: d.src_loc)
+        inst_def.open_defs << d
       end
 
       # Register translator open defs
       #
       @open_translator_defs.each do |d|
-        t = get_translator(d.id)
-        t.definition.add_open_def(d)
+        tdef = get_translator_definition(d.id)
+        tdef.open_defs << d
+      end
+
+      # Create translators
+      #
+      @translator_defs.each do |d|
+        t = Translator.new(self, d.id, d.src_loc, d.block)
+        @translators[d.id] = t
       end
 
       # Register shared definition open blocks
       #
       @open_shared_defs.each do |d|
         sd = get_shared_definition(d.id)
-        sd.add_open_def(d)
+        sd.open_defs << d
       end
 
       # Globals can be set via the command line so need to partition generators into those up to and
@@ -390,26 +391,26 @@ module JABA
 
     ##
     #
-    def make_definition(id, block, call_loc)
-      JabaDefinition.new(self, id, block, call_loc)
+    def make_definition(id, block, src_loc)
+      DefinitionInfo.new(id, block, src_loc, [], nil)
     end
 
     ##
     #
-    def make_top_level_type(handle, definition)
+    def make_top_level_type(handle, dfn)
       log "Instancing top level JabaType [handle=#{handle}]"
 
       if @jaba_type_lookup.key?(handle)
         jaba_error("'#{handle}' jaba type multiply defined")
       end
 
-      generator_id = definition.id.to_s.capitalize_first
+      generator_id = dfn.id.to_s.capitalize_first
       generator = @generator_lookup[generator_id]
       if generator.nil?
         generator = DefaultGenerator.new(self)
       end
 
-      tlt = TopLevelJabaType.new(definition, handle, generator)
+      tlt = TopLevelJabaType.new(self, dfn.id, dfn.src_loc, dfn.block, handle, generator)
       generator.set_top_level_type(tlt)
       generator.init
 
@@ -469,7 +470,7 @@ module JABA
       validate_id(id)
       existing = @jaba_type_defs.find{|d| d.id == id}
       if existing
-        jaba_error("Type '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_describe}.")
+        jaba_error("Type '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc.describe}.")
       end
       d = make_definition(id, block, caller_locations(2, 1)[0])
       if id == :globals
@@ -491,7 +492,7 @@ module JABA
 
       existing = get_shared_definition(id, fail_if_not_found: false)
       if existing
-        jaba_error("Shared definition '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_describe}.")
+        jaba_error("Shared definition '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc.describe}.")
       end
 
       @shared_def_lookup[id] = make_definition(id, block, caller_locations(2, 1)[0])
@@ -520,10 +521,12 @@ module JABA
 
       existing = get_instance_definition(type_id, id, fail_if_not_found: false)
       if existing
-        jaba_error("Type instance '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_describe}.")
+        jaba_error("Type instance '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc.describe}.")
       end
       
-      d = JabaInstanceDefinition.new(self, id, type_id, block, caller_locations(2, 1)[0])
+      d = make_definition(id, block, caller_locations(2, 1)[0])
+      d.jaba_type_id = type_id
+
       @instance_def_lookup.push_value(type_id, d)
       @instance_defs << d
       nil
@@ -557,7 +560,7 @@ module JABA
       log "  Defining defaults [id=#{id}]"
       existing = @default_defs.find {|d| d.id == id}
       if existing
-        jaba_error("Defaults block '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_describe}.")
+        jaba_error("Defaults block '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc.describe}.")
       end
       @default_defs << make_definition(id, block, caller_locations(2, 1)[0])
       nil
@@ -592,12 +595,22 @@ module JABA
     def define_translator(id, &block)
       jaba_error("id is required") if id.nil?
       log "  Defining translator [id=#{id}]"
-      existing = @translator_defs.find {|d| d.id == id}
+      existing = get_translator_definition(id, fail_if_not_found: false)
       if existing
-        jaba_error("Translator block '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc_describe}.")
+        jaba_error("Translator block '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc.describe}.")
       end
       @translator_defs << make_definition(id, block, caller_locations(2, 1)[0])
       nil
+    end
+
+    ##
+    #
+    def get_translator_definition(id, fail_if_not_found: true)
+      td = @translator_defs.find {|d| d.id == id}
+      if !td && fail_if_not_found
+        jaba_error("'#{id.inspect_unquoted}' translator not found")
+      end
+      td
     end
 
     ##
@@ -615,24 +628,24 @@ module JABA
     def open(what, id, type=nil, &block)
       jaba_error("id is required") if id.nil?
       jaba_error("A block is required") if !block_given?
-      call_loc = caller_locations(2, 1)[0]
+      src_loc = caller_locations(2, 1)[0]
 
       case what
       when :type
         log "  Opening type [id=#{id}]"
-        @open_type_defs << make_definition(id, block, call_loc)
+        @open_type_defs << make_definition(id, block, src_loc)
       when :instance
         log "  Opening instance [id=#{id} type=#{type}]"
         jaba_error("type is required") if type.nil?
-        d = make_definition(id, block, call_loc)
-        d.instance_variable_set(:@jaba_type_id, type)
+        d = make_definition(id, block, src_loc)
+        d.jaba_type_id = type
         @open_instance_defs << d
       when :translator
         log "  Opening translator [id=#{id}]"
-        @open_translator_defs << make_definition(id, block, call_loc)
+        @open_translator_defs << make_definition(id, block, src_loc)
       when :shared
         log "  Opening shared definition [id=#{id}]"
-        @open_shared_defs << make_definition(id, block, call_loc)
+        @open_shared_defs << make_definition(id, block, src_loc)
       end
       nil
     end
@@ -651,7 +664,7 @@ module JABA
       nn = @null_nodes[type_id]
       if !nn
         jt = get_top_level_jaba_type(type_id)
-        nn = JabaNode.new(jt.definition, jt, "Null#{jt.defn_id}", nil, 0)
+        nn = JabaNode.new(self, jt.defn_id, jt.src_loc, jt, "Null#{jt.defn_id}", nil, 0)
         @null_nodes[type_id] = nn
       end
       nn
@@ -744,8 +757,8 @@ module JABA
     #
     def include_jdl_file(filename)
       if !filename.absolute_path?
-        call_loc = caller_locations(2, 1)[0]
-        filename = "#{call_loc.absolute_path.dirname}/#{filename}"
+        src_loc = caller_locations(2, 1)[0]
+        filename = "#{src_loc.absolute_path.dirname}/#{filename}"
       end
       @jdl_includes << filename
     end
@@ -925,7 +938,7 @@ module JABA
     def jaba_warning(msg, **options)
       log_warning(msg)
       if @warn_object
-        options[:callstack] = @warn_object.is_a?(JDL_Object) ? @warn_object.definition.src_loc_raw : @warn_object
+        options[:callstack] = @warn_object.is_a?(JDL_Object) ? @warn_object.src_loc : @warn_object
       end
       @warnings << make_jaba_error(msg, warn: true, **options).message
       nil
@@ -1075,7 +1088,7 @@ module JABA
       w << "> "
       w << "> | Property | Value  |"
       w << "> |-|-|"
-      md_row(w, :src, "$(jaba_install)/#{jt.definition.src_loc_describe(style: :rel_jaba_root)}")
+      md_row(w, :src, "$(jaba_install)/#{jt.src_loc.describe(style: :rel_jaba_root)}")
       md_row(w, :notes, jt.notes.make_sentence)
       md_row(w, 'depends on', jt.dependencies.join(", ")) # TODO: make into links
       w << "> "
@@ -1100,7 +1113,7 @@ module JABA
         md_row(w, :default, ad.default.proc? ? nil : ad.default.inspect)
         md_row(w, :flags, ad.flags.map(&:inspect).join(', '))
         md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
-        md_row(w, :src, "$(jaba_install)/#{ad.definition.src_loc_describe(style: :rel_jaba_root)}")
+        md_row(w, :src, "$(jaba_install)/#{ad.src_loc.describe(style: :rel_jaba_root)}")
         # TODO: make $(cpp#src_ext) links work again
         md_row(w, :notes, ad.notes.make_sentence.to_markdown_links) if !ad.notes.empty?
         w << ">"

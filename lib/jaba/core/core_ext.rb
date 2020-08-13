@@ -449,4 +449,24 @@ module JABACoreExt
     
   end
 
+  refine Thread::Backtrace::Location do
+    
+    ##
+    # Formats source location for use in user level messages.
+    #
+    def describe(style: :basename)
+      case style
+      when :absolute
+        "#{path}:#{lineno}"
+      when :basename
+        "#{path.basename}:#{lineno}"
+      when :rel_jaba_root
+        "#{path.relative_path_from(JABA.jaba_install_dir)}:#{lineno}"
+      else
+        raise "Unsupported style '#{style}'"
+      end
+    end
+
+  end
+
 end

@@ -78,9 +78,9 @@ module JABA
       
       if @top_level_jaba_type.singleton
         if @root_nodes.size == 0
-          jaba_error("singleton type '#{type_id}' must be instantiated exactly once", errline: @top_level_jaba_type.definition.src_loc_raw)
+          jaba_error("singleton type '#{type_id}' must be instantiated exactly once", errline: @top_level_jaba_type.src_loc)
         elsif @root_nodes.size > 1
-          jaba_error("singleton type '#{type_id}' must be instantiated exactly once", errline: @root_nodes.last.definition.src_loc_raw)
+          jaba_error("singleton type '#{type_id}' must be instantiated exactly once", errline: @root_nodes.last.src_loc)
         end
       end
 
@@ -161,7 +161,7 @@ module JABA
         @top_level_jaba_type
       end
 
-      jn = JabaNode.new(@current_definition, jt, handle, parent, depth)
+      jn = JabaNode.new(@services, @current_definition.id, @current_definition.src_loc, jt, handle, parent, depth)
 
       @nodes << jn
       @node_lookup[handle] = jn
@@ -310,7 +310,7 @@ module JABA
       # Turn root into absolute path
       #
       root = node.get_attr(:root, search: true).map_value! do |r|
-        r.absolute_path? ? r : "#{node.definition.source_dir}/#{r}".cleanpath
+        r.absolute_path? ? r : "#{node.source_dir}/#{r}".cleanpath
       end
 
       # Make all file/dir/path attributes into absolute paths based on root, unless :not_relative_to_spec_root specified
@@ -333,7 +333,7 @@ module JABA
       #
       @root_nodes.each do |n|
         # TODO: review again. should it use api?
-        n.definition.call_hook(:generate, receiver: n, use_api: false)
+        n.call_hook(:generate, receiver: n, use_api: false)
       end
       generate
     end

@@ -36,7 +36,7 @@ module JABA
       #
       each_config do |cfg|
         t = services.get_translator("vcxproj_config_#{platform}".to_sym)
-        t.execute(node: cfg, args: [self, cfg.attrs.type], &t.definition.block)
+        t.execute(node: cfg, args: [self, cfg.attrs.type])
 
         # Build events. Standard across platforms.
         #

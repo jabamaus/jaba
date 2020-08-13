@@ -14,13 +14,14 @@ module JABA
     attr_reader :handle
     attr_reader :attrs
     attr_reader :attrs_read_only
+    attr_reader :parent
     attr_reader :children
     attr_reader :depth
     
     ##
     #
-    def initialize(definition, jaba_type, handle, parent, depth)
-      super(definition, JDL_Node.new(self))
+    def initialize(services, defn_id, src_loc, jaba_type, handle, parent, depth)
+      super(services, defn_id, src_loc, JDL_Node.new(self))
 
       @jaba_type = jaba_type # Won't always be the same as the JabaType in definition
       @handle = handle
@@ -52,6 +53,8 @@ module JABA
         @attributes << a
         @attribute_lookup[attr_def.defn_id] = a
       end
+
+      define_hook(:generate)
     end
 
     ##
@@ -183,7 +186,7 @@ module JABA
     def post_create
       @attributes.each do |a|
         if !a.set? && a.required?
-          jaba_error("#{a.describe} requires a value. See #{a.attr_def.definition.src_loc_describe}", errline: @definition.src_loc_raw)
+          jaba_error("#{a.describe} requires a value. See #{a.attr_def.src_loc.describe}", errline: src_loc)
         end
       
         a.finalise
@@ -227,7 +230,7 @@ module JABA
           attr_def = @jaba_type.top_level_type.get_attr_def(id)
           if !attr_def
             jaba_error("'#{id}' attribute not defined")
-          elsif attr_def.jaba_type.definition != @jaba_type.definition
+          elsif attr_def.jaba_type.defn_id != @jaba_type.defn_id
             jaba_error("Cannot change referenced '#{id}' attribute")
           end
           return nil

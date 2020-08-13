@@ -22,8 +22,8 @@ module JABA
 
     ##
     #
-    def initialize(definition, handle, top_level_type)
-      super(definition, JDL_Type.new(self))
+    def initialize(services, defn_id, src_loc, handle, top_level_type)
+      super(services, defn_id, src_loc, JDL_Type.new(self))
 
       @handle = handle
       @top_level_type = top_level_type
@@ -48,9 +48,7 @@ module JABA
       validate_id(id)
       id = id.to_sym
       
-      db = services.make_definition(id, block, caller_locations(2, 1)[0])
-      ad = JabaAttributeDefinition.new(db, type, key_type, variant, self)
-      
+      ad = JabaAttributeDefinition.new(@services, id, caller_locations(2, 1)[0], block, type, key_type, variant, self)
       @attribute_defs << ad
 
       top_level_type.register_attr_def(id, ad)
@@ -90,8 +88,8 @@ module JABA
 
     ##
     #
-    def initialize(definition, handle, generator)
-      super(definition, handle, self)
+    def initialize(services, defn_id, src_loc, block, handle, generator)
+      super(services, defn_id, src_loc, handle, self)
 
       @generator = generator
       @defaults_definition = services.get_defaults_definition(@defn_id)
@@ -107,8 +105,8 @@ module JABA
 
       set_property(:notes, "Manages attribute definitions for '#{@defn_id}' type")
 
-      if definition.block
-        eval_jdl(&definition.block)
+      if block
+        eval_jdl(&block)
       end
 
       validate
@@ -128,7 +126,7 @@ module JABA
       # When something wants to ask it its definition id it is more helpful to return the id of the
       # top level definition than its local id, which nothing external to JabaType is interested in.
       #
-      st = JabaType.new(@definition, id, self)
+      st = JabaType.new(@services, defn_id, caller_locations(2, 1)[0], id, self)
       if block_given?
         st.eval_jdl(&block)
       end
@@ -172,7 +170,7 @@ module JABA
     #
     def validate
       if @title.nil? && !JABA.running_tests?
-        jaba_error("Requires a title", errline: @definition.src_loc_raw)
+        jaba_error("Requires a title", errline: src_loc)
       end
 
     rescue JDLError => e

@@ -12,29 +12,38 @@ module JABA
     
     include HookMethods
     
-    attr_reader :definition
+    attr_reader :services
     attr_reader :api
     attr_reader :defn_id # As specified by user in definition files.
 
     ##
+    # Returns source location as a Thread::Backtrace::Location. See https://ruby-doc.org/core-2.7.1/Thread/Backtrace/Location.html.
+    # Use this to pass to the callstack argument in jaba_error/jaba_warning. Do not embed in jaba_error/warning messages themselves
+    # as it will appear as eg "C:/projects/GitHub/jaba/modules/cpp/cpp.jaba:49:in `block (2 levels) in execute_jdl'" - the "in `block`"
+    # is not wanted in user level error messages. Instead use src_loc.describe.
     #
-    def initialize(definition, api_object)
-      super()
-      @definition = definition
-      @defn_id = definition.id
-      @api = api_object
-    end
+    attr_reader :src_loc
 
     ##
     #
-    def services
-      @definition.services
+    def initialize(services, defn_id, src_loc, api_object)
+      super()
+      @services = services
+      @defn_id = defn_id
+      @src_loc = src_loc
+      @api = api_object
     end
 
     ##
     #
     def to_s
       @defn_id.to_s
+    end
+
+    ##
+    #
+    def source_dir
+      @src_loc.path.dirname
     end
 
     ##

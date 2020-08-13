@@ -45,7 +45,7 @@ module  JABA
     # The directory this definition is in.
     #
     def __dir__
-      @obj.definition.source_dir
+      @obj.source_dir
     end
 
     ##

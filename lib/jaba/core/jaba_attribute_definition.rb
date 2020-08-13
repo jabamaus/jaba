@@ -34,8 +34,8 @@ module JABA
     
     ##
     #
-    def initialize(definition, type_id, key_type_id, variant, jaba_type)
-      super(definition, JDL_AttributeDefinition.new(self))
+    def initialize(services, defn_id, src_loc, block, type_id, key_type_id, variant, jaba_type)
+      super(services, defn_id, src_loc, JDL_AttributeDefinition.new(self))
       
       @type_id = type_id
       @key_type_id = key_type_id # Only used with hash attributes
@@ -80,8 +80,8 @@ module JABA
         @jaba_attr_type.init_attr_def(self)
       end
 
-      if @definition.block
-        eval_jdl(&@definition.block)
+      if block
+        eval_jdl(&block)
       end
 
       # If default not specified by the user (single value attributes only), fall back to default for the attribute
