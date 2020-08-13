@@ -145,7 +145,6 @@ module JABA
         depth = parent.depth + 1
       else
         jaba_error('name not required for root nodes') if name
-        depth = 0
         handle = "#{@current_definition.id}"
       end
 
