@@ -26,7 +26,6 @@ module JABA
       @input.instance_variable_set(:@dest_root, JABA.cwd)
       @input.instance_variable_set(:@argv, ARGV)
       @input.instance_variable_set(:@definitions, [])
-      @input.instance_variable_set(:@barebones, false)
       @input.instance_variable_set(:@cmd, nil)
 
       # General non-cmd-specific options
@@ -34,6 +33,7 @@ module JABA
       register_option('--help', help: 'Show help')
       register_option('--dry-run', help: 'Perform a dry run', type: :flag, var: :dry_run)
       register_option('--profile', help: 'Profiles with ruby-prof', type: :flag, var: :profile, dev_option: true)
+      register_option('--barebones', help: 'Loads minimal modules', type: :flag, var: :barebones, dev_option: true)
 
       @default_cmd = register_cmd(:gen)
       register_option('--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root, cmd: :gen)
