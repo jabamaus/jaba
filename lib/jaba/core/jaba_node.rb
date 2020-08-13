@@ -54,7 +54,11 @@ module JABA
         @attribute_lookup[attr_def.defn_id] = a
       end
 
-      define_hook(:generate)
+      # Define a generate hook on root node only
+      #
+      if !parent
+        define_hook(:generate)
+      end
     end
 
     ##
