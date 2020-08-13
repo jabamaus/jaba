@@ -169,7 +169,10 @@ module JABA
     ##
     #
     def validate
-      if @title.nil? && !JABA.running_tests?
+      # Insist on the attribute having a title, unless running unit tests or in barebones mode. Barebones mode
+      # is useful for testing little jaba snippets where adding titles would be cumbersome.
+      #
+      if @title.nil? && !JABA.running_tests? && !services.input.barebones
         jaba_error("Requires a title", errline: src_loc)
       end
 
