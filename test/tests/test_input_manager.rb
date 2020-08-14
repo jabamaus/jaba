@@ -93,7 +93,7 @@ module JABA
 
     # TODO: check failure cases, eg when no value/s provided
     it 'can populate globals from command line' do
-      jaba(barebones: true, argv: ['-Dbool']) do
+      jaba(barebones: true, argv: ['-D', 'bool']) do
         open_type :globals do
           attr :bool, type: :bool
         end
@@ -105,14 +105,13 @@ module JABA
       jaba(argv: [
         '-D', 'bool1',
         '-D', 'bool2', 'false',
-        '-Dbool3', 'true',
-        '-Da_string', 'str',
-        '-Dan_int', '1',
-        '-Da_symbol', 'symbol',
-        '-Dstring_array', 'a', 'b', 'c',
-        '-Dstring_array_with_default', 'd', 'e', 'f',
-        '--define', 'hash1', 'key1', 'value1', 'key2', 'value2', '-Dhash1', 'key3', 'value3',
-        '--define', 'hash2', 'key1', 'value1', 'key2', 'value2', '-Dhash2', 'key3', 'value3'
+        '-D', 'a_string', 'str',
+        '-D', 'an_int', '1',
+        '-D', 'a_symbol', 'symbol',
+        '-D', 'string_array', 'a', 'b', 'c',
+        '-D', 'string_array_with_default', 'd', 'e', 'f',
+        '--define', 'hash1', 'key1', 'value1', 'key2', 'value2', '-D', 'hash1', 'key3', 'value3',
+        '--define', 'hash2', 'key1', 'value1', 'key2', 'value2', '-D','hash2', 'key3', 'value3'
         ]) do
         open_type :globals do
           attr :bool1, type: :bool
@@ -133,7 +132,6 @@ module JABA
         test :t do
           globals.bool1.must_equal(true)
           globals.bool2.must_equal(false)
-          globals.bool3.must_equal(true)
           globals.a_string.must_equal('str')
           globals.an_int.must_equal(1)
           globals.a_symbol.must_equal(:symbol)

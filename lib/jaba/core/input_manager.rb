@@ -151,7 +151,7 @@ module JABA
     #
     def get_option(arg)
       @options.find do |o|
-        arg.start_with?(o.long) || (o.short && arg.start_with?(o.short))
+        arg == o.long || arg == o.short
       end
     end
 
@@ -202,14 +202,6 @@ module JABA
 
             if opt.nil?
               im.usage_error("#{arg} option not recognised")
-            end
-
-            # See if value was tacked on the end. If so, split and start again
-            #
-            if arg =~ /^(#{opt.long})(.+)$/ || (opt.short && arg =~ /^(#{opt.short})(.+)$/)
-              argv.unshift(Regexp.last_match(2))
-              argv.unshift(Regexp.last_match(1))
-              next
             end
 
             if phase != opt.phase
