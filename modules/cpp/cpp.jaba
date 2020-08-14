@@ -36,7 +36,7 @@ define :cpp do
       }
     end
 
-    attr :host_ref, type: :object_ref do
+    attr :host_ref, type: :node_ref do
       title 'Target host as object'
       note 'Use when access to host attributes is required'
       object_type :host
@@ -56,7 +56,7 @@ define :cpp do
       }
     end
       
-    attr :platform_ref, type: :object_ref do
+    attr :platform_ref, type: :node_ref do
       title 'Target platform as an object'
       note 'Use when access to platform attributes is required'
       object_type :platform
@@ -71,7 +71,7 @@ define :cpp do
       example 'configs [:Debug, :Release]'
     end
     
-    attr_array :deps, type: :object_ref do
+    attr_array :deps, type: :node_ref do
       title 'Project dependencies'
       note 'List of ids of other cpp definitions'
       object_type :cpp
@@ -162,7 +162,7 @@ define :cpp do
       flags :read_only
     end
 
-    attr :arch_ref, type: :object_ref do
+    attr :arch_ref, type: :node_ref do
       title 'Target architecture as an object'
       object_type :arch
     end
@@ -405,7 +405,7 @@ open_type :platform do
 end
 
 open_type :globals do
-  attr_array :cpp_hosts, type: :object_ref do
+  attr_array :cpp_hosts, type: :node_ref do
     title 'Target hosts'
     object_type :host
     flags :required

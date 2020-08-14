@@ -8,7 +8,7 @@ define :category do
     flags :required
   end
   
-  attr :parent, type: :object_ref do
+  attr :parent, type: :node_ref do
     title 'Parent category'
     note 'Use this to build a category hierarchy that can be used to classify projects in workspaces'
     object_type :category

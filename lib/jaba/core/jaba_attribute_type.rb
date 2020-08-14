@@ -555,7 +555,7 @@ module JABA
     ##
     #
     def id
-      :object_ref
+      :node_ref
     end
 
     ##

@@ -2,13 +2,13 @@
 
 module JABA
 
-  class TestObjectRefAttribute < JabaTest
+  class TestNodeRefAttribute < JabaTest
     
     it 'requires referent type to be specified' do
       check_fail "'b' attribute failed validation: 'object_type' must be set", line: [__FILE__, 'tagP'] do
         jaba(barebones: true) do
           define :a do
-            attr :b, type: :object_ref # tagP
+            attr :b, type: :node_ref # tagP
           end
         end
       end
@@ -20,7 +20,7 @@ module JABA
     it 'resolves references to different types immediately' do
       jaba(barebones: true) do
         define :type_a do
-          attr :type_b, type: :object_ref do
+          attr :type_b, type: :node_ref do
             object_type :type_b
           end
         end
@@ -48,7 +48,7 @@ module JABA
       check_fail 'Node with handle \'undefined\' not found', line: [__FILE__, 'tagW'] do
         jaba(barebones: true) do
           define :type_a do
-            attr :ref, type: :object_ref do
+            attr :ref, type: :node_ref do
               object_type :type_b
             end
           end
@@ -63,10 +63,10 @@ module JABA
     it 'resolves references to same type later' do
       jaba(barebones: true) do
         define :type_a do
-          attr :ref, type: :object_ref do
+          attr :ref, type: :node_ref do
             object_type :type_a
           end
-          attr_array :ref_array, type: :object_ref do
+          attr_array :ref_array, type: :node_ref do
             object_type :type_a
           end
         end
@@ -96,7 +96,7 @@ module JABA
       check_fail 'Node with handle \'undefined\' not found', line: [__FILE__, 'tagQ'] do
         jaba(barebones: true) do
           define :a do
-            attr :b, type: :object_ref do
+            attr :b, type: :node_ref do
               object_type :a
             end
           end
@@ -110,7 +110,7 @@ module JABA
     it 'works with a default' do
       jaba do
         define :type_a do
-          attr :host, type: :object_ref do
+          attr :host, type: :node_ref do
             object_type :host
             default :vs2019
           end
@@ -138,7 +138,7 @@ module JABA
             height 2
           end
           define :has_square do
-            attr :square, type: :object_ref do
+            attr :square, type: :node_ref do
               object_type :square
             end
           end
@@ -166,7 +166,7 @@ module JABA
             length 1
           end
           define :has_line do
-            attr :line, type: :object_ref do
+            attr :line, type: :node_ref do
               object_type :line
             end
           end
@@ -188,7 +188,7 @@ module JABA
             length 1
           end
           define :has_line do
-            attr :line, type: :object_ref do
+            attr :line, type: :node_ref do
               object_type :line
             end
           end
@@ -204,7 +204,7 @@ module JABA
       check_warn 'Object reference attribute does not need to be flagged with :read_only as they always are', __FILE__, 'tagX' do
         jaba do
           define :test do
-            attr :platform, type: :object_ref do # tagX
+            attr :platform, type: :node_ref do # tagX
               object_type :platform
               flags :read_only
             end
@@ -223,13 +223,13 @@ module JABA
         define :testproj do
           attr_array :platforms
           define :platform do
-            attr :platform, type: :object_ref do
+            attr :platform, type: :node_ref do
               object_type :platform
             end
             attr_array :hosts
           end
           define :main do
-            attr :host, type: :object_ref do
+            attr :host, type: :node_ref do
               object_type :host
             end
             attr :path

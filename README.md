@@ -2,7 +2,6 @@
 
 To do:
 
-- Rename object/object_ref to node/node_ref
 - Support for node-by-value attribute
 - Investigate Error at jabaruby.jaba:57: 'parse.c' does not exist on disk. Use :force to add anyway. Wrong line was being reported.
 - Disallow globals from referencing itself
@@ -72,13 +71,13 @@ end
 Need to make it so that don't expose if attribute is not single value. Also need to prevent exposing
 if there are multiple attrs, with a warning.
 
-  attr_array :valid_archs, type: :object_ref do
+  attr_array :valid_archs, type: :node_ref do
     note 'List of architectures supported by this platform'
     object_type :arch
     flags :required, :no_sort
   end
 
-  attr_array :default_archs, type: :object_ref do
+  attr_array :default_archs, type: :node_ref do
     note 'List of default target architectures for this platform'
     object_type :arch
     flags :required, :no_sort
