@@ -892,12 +892,13 @@ module JABA
     #
     def log(msg, severity = :INFO, section: false)
       return if !@log_msgs
-      line = msg
       if section
         n = ((130 - msg.size)/2).round # TODO: handle overflow
-        line = "#{'=' * n} #{msg} #{'=' * n}"
+        msg = "#{'=' * n} #{msg} #{'=' * n}"
       end
-      @log_msgs << "#{severity} #{line}"
+      Array(msg).each do |line|
+        @log_msgs << "#{severity} #{line}"
+      end
     end
 
     ##
