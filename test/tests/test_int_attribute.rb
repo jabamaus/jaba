@@ -4,46 +4,42 @@ module JABA
 
   class TestIntAttribute < JabaTest
 
-    describe 'failure conditions' do
-
-      it 'validates default' do
-        check_fail ':int attributes only accept integer values', line: [__FILE__, 'tagP'] do
-          jaba(barebones: true) do
-            define :test do
-              attr :a, type: :int do
-                default 'not an int' # tagP
-              end
+    it 'validates default' do
+      check_fail ':int attributes only accept integer values', line: [__FILE__, 'tagP'] do
+        jaba(barebones: true) do
+          define :test do
+            attr :a, type: :int do
+              default 'not an int' # tagP
             end
           end
         end
       end
+    end
 
-      it 'validates value' do
-        check_fail ':int attributes only accept integer values', line: [__FILE__, 'tagW'] do
-          jaba(barebones: true) do
-            define :test do
-              attr :a, type: :int
-            end
-            test :t do
-              a true # tagW
-            end
+    it 'validates value' do
+      check_fail ':int attributes only accept integer values', line: [__FILE__, 'tagW'] do
+        jaba(barebones: true) do
+          define :test do
+            attr :a, type: :int
+          end
+          test :t do
+            a true # tagW
           end
         end
       end
+    end
 
-      it 'fails if value not supplied when :required flag specified' do
-        check_fail "'t.a' attribute requires a value", line: [__FILE__, 'tagY'] do
-          jaba(barebones: true) do
-            define :test do
-              attr :a, type: :bool do
-                flags :required
-              end
+    it 'fails if value not supplied when :required flag specified' do
+      check_fail "'t.a' attribute requires a value", line: [__FILE__, 'tagY'] do
+        jaba(barebones: true) do
+          define :test do
+            attr :a, type: :bool do
+              flags :required
             end
-            test :t # tagY
           end
+          test :t # tagY
         end
       end
-
     end
 
     it 'supports standard ops' do
