@@ -167,7 +167,7 @@ module JABA
                 flags :read_only
               end
               attr :platform_ref, type: :node_ref do
-                object_type :platform
+                node_type :platform
               end
               attr :src
               attr_array :configs do

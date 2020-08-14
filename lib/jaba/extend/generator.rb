@@ -223,8 +223,8 @@ module JABA
     def resolve_reference(attr, ref_node_id, ignore_if_same_type: false)
       attr_def = attr.attr_def
       node = attr.node
-      rt = attr_def.object_type
-      rjt = services.get_top_level_jaba_type(rt) # TOO: improve. Maybe expand object_type into a JabaType earlier
+      rt = attr_def.node_type
+      rjt = services.get_top_level_jaba_type(rt) # TOO: improve. Maybe expand node_type into a JabaType earlier
       if ignore_if_same_type && rt == node.jaba_type.defn_id
         @reference_attrs_to_resolve << attr
         return ref_node_id

@@ -73,13 +73,13 @@ if there are multiple attrs, with a warning.
 
   attr_array :valid_archs, type: :node_ref do
     note 'List of architectures supported by this platform'
-    object_type :arch
+    node_type :arch
     flags :required, :no_sort
   end
 
   attr_array :default_archs, type: :node_ref do
     note 'List of default target architectures for this platform'
-    object_type :arch
+    node_type :arch
     flags :required, :no_sort
   end
 

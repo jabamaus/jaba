@@ -30,7 +30,7 @@ module JABA
     attr_reader :default_block
     attr_reader :flags
     attr_reader :flag_options
-    attr_reader :object_type # Defined and used by node_ref attribute type but give access here for efficiency
+    attr_reader :node_type # Defined and used by node_ref/node attribute types but give access here for efficiency
     
     ##
     #

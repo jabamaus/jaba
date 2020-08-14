@@ -66,7 +66,7 @@ module JABA
       values = nil
       if block_given?
         if @attr_def.node_by_value?
-          node_type = @attr_def.object_type
+          node_type = @attr_def.node_type
           g = services.get_generator(node_type)
           g.push_definition(services.make_definition(@attr_def.defn_id, block, __api_call_loc)) do
             values = Array(g.make_node(name: "#{@attr_def.defn_id}[#{@elems.size}]", parent: @node))

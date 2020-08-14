@@ -13,7 +13,7 @@ module JABA
       jaba(barebones: true) do
         define :test do
           attr :obj, type: :object do
-            object_type :obj
+            node_type :obj
           end
         end
         define :obj do
@@ -21,7 +21,7 @@ module JABA
           attr_array :b
           attr_hash :c, key_type: :symbol
           attr :d, type: :object do
-            object_type :obj2
+            node_type :obj2
           end
         end
         define :obj2 do
@@ -49,7 +49,7 @@ module JABA
       jaba(barebones: true) do
         define :test do
           attr_array :obj, type: :object do
-            object_type :obj
+            node_type :obj
           end
         end
         define :obj do

@@ -579,22 +579,22 @@ module JABA
     ##
     #
     def get_reference_manual_rows(attr_def)
-      { object_type: attr_def.object_type.inspect }
+      { node_type: attr_def.node_type.inspect }
     end
 
     ##
     # TODO: remove. Do in core to save all the property setting and getting
     def init_attr_def(attr_def)
-      attr_def.define_property(:object_type)
+      attr_def.define_property(:node_type)
       attr_def.define_property(:make_handle) # TODO: flag as block or validate as such
     end
 
     ##
     #
     def post_init_attr_def(attr_def)
-      t = attr_def.object_type
+      t = attr_def.node_type
       if t.nil?
-        services.jaba_error("'object_type' must be set")
+        services.jaba_error("'node_type' must be set")
       end
       if attr_def.jaba_type.defn_id != t
         attr_def.jaba_type.top_level_type.set_property(:dependencies, t)
@@ -634,24 +634,24 @@ module JABA
     ##
     #
     def get_reference_manual_rows(attr_def)
-      { object_type: attr_def.object_type.inspect }
+      { node_type: attr_def.node_type.inspect }
     end
 
     ##
     #
     def init_attr_def(attr_def)
-      attr_def.define_property(:object_type)
+      attr_def.define_property(:node_type)
     end
 
     ##
     #
     def post_init_attr_def(attr_def)
-      t = attr_def.object_type
+      t = attr_def.node_type
       if t.nil?
-        services.jaba_error("'object_type' must be set")
+        services.jaba_error("'node_type' must be set")
       end
       if attr_def.jaba_type.defn_id == t
-        services.jaba_error("object_type attribute cannot be set to owning type")
+        services.jaba_error("node_type attribute cannot be set to owning type")
       else
         attr_def.jaba_type.top_level_type.set_property(:dependencies, t)
       end
