@@ -29,7 +29,7 @@ module JABA
     #
     def jaba(barebones: false, src_root: nil, argv: nil, dry_run: false, dump_output: false, cpp_app: false, cpp_defaults: false, &block)
       td = temp_dir(create: false)
-      op = JABA.run do |c|
+      op = JABA.run(handle_exceptions: false) do |c|
         c.src_root = src_root
         c.dest_root = td
         c.argv = Array(argv) if argv

@@ -1,27 +1,9 @@
 require_relative '../lib/jaba'
 
-begin
-  output = JABA.run
-rescue JABA::CommandLineUsageError => e
-  $stderr.puts e
-  exit 1
-rescue JABA::JDLError => e
-  $stderr.puts e.message
+output = JABA.run
 
-  # TODO: nasty
-  # If there is a backtrace skip the first item as file and line info is included in main message
-  #
-  if e.backtrace.size > 1
-    $stderr.puts 'Backtrace:'
-    bt = e.backtrace
-    bt.shift
-    $stderr.puts(bt.map {|line| "  #{line}"})
-  end
-  exit 1
-rescue => e
-  $stderr.puts "Internal error: #{e.message}"
-  $stderr.puts 'Backtrace:'
-  $stderr.puts(e.backtrace.map {|line| "  #{line}"})
+if output[:error]
+  $stderr.puts output[:error]
   exit 1
 end
 

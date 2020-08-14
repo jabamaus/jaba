@@ -96,7 +96,8 @@ module JABA
     
     ##
     #
-    def initialize
+    def initialize(handle_exceptions = false)
+      @handle_exceptions = handle_exceptions
       @output = {}
       
       @log_msgs = JABA.running_tests? ? nil : [] # Disable logging when running tests
