@@ -35,18 +35,15 @@ module JABA
 
     # TODO: should duplicate array options be allowed?
     it 'detects duplicate options' do
-      #check_fail '--dry-run specified more than once' do
-        #jaba(barebones: true, argv: ['--dry-run', '--dry-run'])
-      #end
     end
 
     it 'detects unknown options' do
-      check_fail "--unknown option not recognised", exception: CommandLineUsageError do
+      assert_raises CommandLineUsageError do
         jaba(barebones: true, argv: ['--unknown'])
-      end
-      check_fail "-Z option not recognised", exception: CommandLineUsageError do
+      end.message.must_equal("--unknown option not recognised")
+      assert_raises CommandLineUsageError do
         jaba(barebones: true, argv: ['-Z'])
-      end
+      end.message.must_equal("-Z option not recognised")
     end
 
     it 'supports value options' do
@@ -63,11 +60,11 @@ module JABA
           define :test_im
         end
       end
-      check_fail "-v [--value-opt] expects a value", exception: CommandLineUsageError do
+      assert_raises CommandLineUsageError  do
         jaba(barebones: true, argv: ['--value-opt']) do
           define :test_im
         end
-      end
+      end.message.must_equal("-v [--value-opt] expects a value")
       # TODO: check that only one value supplied
     end
 
@@ -84,11 +81,11 @@ module JABA
           define :test_im
         end
       end
-      check_fail "-a [--array-opt] expects 1 or more values", exception: CommandLineUsageError do
+      assert_raises CommandLineUsageError do
         jaba(barebones: true, argv: ['--array-opt']) do
           define :test_im
         end
-      end
+      end.message.must_equal("-a [--array-opt] expects 1 or more values")
     end
 
     # TODO: check failure cases, eg when no value/s provided

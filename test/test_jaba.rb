@@ -55,10 +55,6 @@ module JABA
       end
       warnings = op[:warnings]
       puts warnings if warnings
-      if cpp_app
-        op = op[:cpp]['app|vs2019|windows']
-        op.wont_be_nil
-      end
       op
     end
     
@@ -117,19 +113,17 @@ module JABA
 
     ##
     #
-    def check_fail(msg, exception: JDLError, line: nil, trace: nil)
-      e = assert_raises exception do
-        yield
-      end
-      
-      e.message.must_match(msg)
+    def check_fail(msg, line: nil, trace: nil)
+      output = yield
+      err = output[:error]
+      err.wont_be_nil
+      err[:msg].must_match(msg)
 
       if line
         file = line[0]
         line = find_line_number(file, line[1])
-        
-        e.file.must_equal(file)
-        e.line.must_equal(line)
+        err[:file].must_equal(file)
+        err[:line].must_equal(line)
       end
 
       if trace
@@ -137,9 +131,8 @@ module JABA
         trace.each_slice(2) do |elem|
           backtrace << "#{elem[0]}:#{find_line_number(elem[0], elem[1])}"
         end
-        e.backtrace.slice(1, backtrace.size).must_equal(backtrace)
+        err[:trace].slice(1, backtrace.size).must_equal(backtrace)
       end
-      e
     end
     
     ##

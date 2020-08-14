@@ -96,8 +96,7 @@ module JABA
     
     ##
     #
-    def initialize(handle_exceptions = false)
-      @handle_exceptions = handle_exceptions
+    def initialize
       @output = {}
       
       @log_msgs = JABA.running_tests? ? nil : [] # Disable logging when running tests
@@ -155,28 +154,38 @@ module JABA
     ##
     #
     def run
-      log "Starting Jaba at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}", section: true
-      
-      duration = JABA.milli_timer do
-        JABA.profile(input.profile) do
-          do_run
-          build_jaba_output
+      begin
+        log "Starting Jaba at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}", section: true
+        
+        duration = JABA.milli_timer do
+          JABA.profile(input.profile) do
+            do_run
+            build_jaba_output
+          end
         end
+
+        summary = String.new "Generated #{@generated.size} files, #{@added.size} added, #{@modified.size} modified in #{duration}"
+        summary << " [dry run]" if input.dry_run?
+        # TODO: verbose mode prints all generated
+
+        log summary
+        log "Done! (#{duration})"
+
+        @output[:summary] = summary
+
+        @output[:warnings] = @warnings.uniq # Strip duplicate warnings
+        @output
+      rescue JDLError => e
+        log e.message, :ERROR
+        log e.backtrace, :ERROR
+        @output
+      rescue => e
+        log e.message, :ERROR
+        log e.backtrace, :ERROR
+        raise
+      ensure
+        term_log
       end
-
-      summary = String.new "Generated #{@generated.size} files, #{@added.size} added, #{@modified.size} modified in #{duration}"
-      summary << " [dry run]" if input.dry_run?
-      # TODO: verbose mode prints all generated
-
-      log summary
-      log "Done! (#{duration})"
-
-      @output[:summary] = summary
-
-      @output[:warnings] = @warnings.uniq # Strip duplicate warnings
-      @output
-    ensure
-      term_log
     end
 
     ##
@@ -944,8 +953,14 @@ module JABA
     ##
     #
     def jaba_error(msg, **options)
-      log msg, :ERROR
-      raise make_jaba_error(msg, **options)
+      e = make_jaba_error(msg, **options)
+      err = {}
+      err[:msg] = e.message
+      err[:file] = e.file
+      err[:line] = e.line
+      err[:trace] = e.backtrace
+      @output[:error] = err
+      raise e
     end
 
     ##
@@ -998,7 +1013,11 @@ module JABA
           end
           e = RuntimeError.new(msg)
           e.set_backtrace(backtrace)
-          return e
+          if warn
+            return e
+          else
+            raise e
+          end
         end
         
         error_line = lines[0]

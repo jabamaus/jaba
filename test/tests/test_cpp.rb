@@ -61,13 +61,13 @@ module JABA
     end
 
     it 'prevents nil access when attributes not set up yet' do
-      proj = jaba(dry_run: true, cpp_app: true) do
+      op = jaba(dry_run: true, cpp_app: true) do
         cpp :app do
           projname "app_#{host&.upcase}" # TODO: remove safe call
           src ['main.cpp'], :force
         end
       end
-      proj[:projname].must_equal('app_VS2019')
+      op[:cpp]['app|vs2019|windows'][:projname].must_equal('app_VS2019')
     end
 
     # TODO. Test that can control whether multiple platforms can be combined into one project or not
@@ -138,7 +138,7 @@ module JABA
     end
 
     it 'supports opening translators' do
-      proj = jaba(dry_run: true, cpp_app: true) do
+      op = jaba(dry_run: true, cpp_app: true) do
         cpp :app do
           src ['main.cpp'], :force
         end
@@ -149,6 +149,7 @@ module JABA
           vcprop 'PG1|NewProperty', 'p'
         end
       end
+      proj = op[:cpp]['app|vs2019|windows']
       proj[:vcglobal][:NewGlobal].must_equal('g')
       proj[:configs][:Debug][:vcprop]['PG1|NewProperty'].must_equal('p')
       proj[:configs][:Release][:vcprop]['PG1|NewProperty'].must_equal('p')

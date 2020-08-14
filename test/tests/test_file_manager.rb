@@ -91,9 +91,9 @@ module JABA
       f = fm.new_file(fn)
       w = f.writer
       w << 'b'
-      check_fail(/Duplicate filename '.*' detected/, exception: RuntimeError) do
+      assert_raises RuntimeError do
         f.write
-      end
+      end.message.must_match(/Duplicate filename '.*' detected/)
     end
 
     it 'creates directories as necessary' do
