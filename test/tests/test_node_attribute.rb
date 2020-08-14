@@ -2,7 +2,7 @@
 
 module JABA
 
-  class TestObjectAttribute < JabaTest
+  class TestNodeAttribute < JabaTest
 
     # TODO: test with default blocks
     # TODO: test with references
@@ -12,7 +12,7 @@ module JABA
     it 'works with single attribute' do
       jaba(barebones: true) do
         define :test do
-          attr :obj, type: :object do
+          attr :obj, type: :node do
             node_type :obj
           end
         end
@@ -20,7 +20,7 @@ module JABA
           attr :a
           attr_array :b
           attr_hash :c, key_type: :symbol
-          attr :d, type: :object do
+          attr :d, type: :node do
             node_type :obj2
           end
         end
@@ -48,7 +48,7 @@ module JABA
     it 'works with array attribute' do
       jaba(barebones: true) do
         define :test do
-          attr_array :obj, type: :object do
+          attr_array :obj, type: :node do
             node_type :obj
           end
         end

@@ -610,7 +610,7 @@ module JABA
     ##
     #
     def id
-      :object
+      :node
     end
 
     ##

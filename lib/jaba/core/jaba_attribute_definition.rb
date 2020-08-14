@@ -185,7 +185,7 @@ module JABA
     ##
     #
     def node_by_value?
-      @type_id == :object
+      @type_id == :node
     end
     
     ##
