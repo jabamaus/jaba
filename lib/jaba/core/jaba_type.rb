@@ -189,7 +189,7 @@ module JABA
       #
       to_register = []
       @all_attr_defs.each do |id, attr_def|
-        if attr_def.reference?
+        if attr_def.node_by_reference?
           rt_id = attr_def.node_type
           if rt_id != defn_id
             jt = attr_def.services.get_top_level_jaba_type(rt_id)

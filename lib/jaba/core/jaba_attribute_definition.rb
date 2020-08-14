@@ -178,7 +178,7 @@ module JABA
 
     ##
     #
-    def reference?
+    def node_by_reference?
       @type_id == :node_ref
     end
 

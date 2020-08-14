@@ -236,7 +236,7 @@ module JABA
 
       @value = new_value
 
-      if @attr_def.reference?
+      if @attr_def.node_by_reference?
         if __resolve_ref
           # Only resolve reference immediately if referencing a different type to this node's type. This is because not all nodes
           # of the same type will have been created by this point whereas nodes of a different type will all have been created
