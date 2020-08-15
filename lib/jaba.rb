@@ -77,10 +77,6 @@ module JABA
   class JDLError < StandardError
     
     ##
-    #
-    attr_reader :raw_message
-    
-    ##
     # The definition file the error occurred in.
     #
     attr_reader :file

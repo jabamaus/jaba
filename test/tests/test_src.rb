@@ -19,12 +19,12 @@ module JABA
 
     it 'can be specified explicitly even if extension is not in src_ext' do
       make_file('a.cpp', 'b.z')
-      op = jaba(cpp_app: true, dry_run: true) do
+      proj = jaba(cpp_app: true, dry_run: true) do
         cpp :app do
           src ['a.cpp', 'b.z']
         end
       end
-      op[:cpp]['app|vs2019|windows'][:src].must_equal(['a.cpp', 'b.z'])
+      proj[:src].must_equal(['a.cpp', 'b.z'])
     end
 
     it 'fails if explicitly specified files do not exist unless forced' do
@@ -35,12 +35,12 @@ module JABA
           end
         end
       end
-      op = jaba(cpp_app: true, dry_run: true) do
+      proj = jaba(cpp_app: true, dry_run: true) do
         cpp :app do
           src ['main.cpp'], :force
         end
       end
-      op[:cpp]['app|vs2019|windows'][:src].must_equal(['main.cpp'])
+      proj[:src].must_equal(['main.cpp'])
     end
 
     it 'disallows wildcards when force adding src' do
@@ -58,35 +58,35 @@ module JABA
     it 'supports adding files beginning with dot but only explicitly' do
       make_file('.a', 'b/.cpp')
       check_warn "'b/*' did not match any src files", __FILE__, 'tagF' do
-        op = jaba(cpp_app: true, dry_run: true) do
+        proj = jaba(cpp_app: true, dry_run: true) do
           cpp :app do
             src ['.a', 'b/*'] # tagF
           end
         end
-        op[:cpp]['app|vs2019|windows'][:src].must_equal(['.a'])
+        proj[:src].must_equal(['.a'])
       end
     end
 
     it 'supports adding src with absolute paths' do
       make_file('a.cpp')
       fn = "#{temp_dir}/a.cpp"
-      op = jaba(cpp_app: true, dry_run: true) do
+      proj = jaba(cpp_app: true, dry_run: true) do
         cpp :app do
           src [fn]
         end
       end
-      op[:cpp]['app|vs2019|windows'][:src].must_equal(['a.cpp'])
+      proj[:src].must_equal(['a.cpp'])
     end
 
     it 'supports adding whole src directories recursively' do
       make_file('a/b.cpp', 'a/c.cpp', 'a/d.cpp', 'a/e/f/g.cpp')
       make_file('a/b.z') # won't match as .z not in src_ext attr
-      op = jaba(cpp_app: true, dry_run: true) do
+      proj = jaba(cpp_app: true, dry_run: true) do
         cpp :app do
           src ['a']
         end
       end
-      op[:cpp]['app|vs2019|windows'][:src].must_equal(['a/b.cpp', 'a/c.cpp', 'a/d.cpp', 'a/e/f/g.cpp'])
+      proj[:src].must_equal(['a/b.cpp', 'a/c.cpp', 'a/d.cpp', 'a/e/f/g.cpp'])
     end
 
     it 'supports platform-specific default src extensions' do
@@ -112,23 +112,23 @@ module JABA
     it 'supports adding custom extensions' do
       make_file('a/b.cpp', 'a/c.cpp', 'a/d.cpp', 'a/e/f/g.cpp')
       make_file('a/b.z', 'a/e/f/g/h.y')
-      op = jaba(cpp_app: true, dry_run: true) do
+      proj = jaba(cpp_app: true, dry_run: true) do
         cpp :app do
           src_ext ['.z', '.y']
           src ['a']
         end
       end
-      op[:cpp]['app|vs2019|windows'][:src].must_equal(['a/b.cpp', 'a/b.z', 'a/c.cpp', 'a/d.cpp', 'a/e/f/g.cpp', 'a/e/f/g/h.y'])
+      proj[:src].must_equal(['a/b.cpp', 'a/b.z', 'a/c.cpp', 'a/d.cpp', 'a/e/f/g.cpp', 'a/e/f/g/h.y'])
     end
 
     it 'supports glob matches' do
       make_file('a.cpp', 'b.cpp', 'c/d.cpp', 'd/e/f/g.cpp')
-      op = jaba(cpp_app: true, dry_run: true) do
+      proj = jaba(cpp_app: true, dry_run: true) do
         cpp :app do
           src ['*'] # should not recurse
         end
       end
-      op[:cpp]['app|vs2019|windows'][:src].must_equal ['a.cpp', 'b.cpp']
+      proj[:src].must_equal ['a.cpp', 'b.cpp']
     end
 
     # TODO: test fail when no src file matches

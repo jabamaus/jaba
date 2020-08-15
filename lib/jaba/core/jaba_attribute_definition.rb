@@ -280,8 +280,8 @@ module JABA
         @jaba_attr_flags.each do |jaf|
           begin
             jaf.compatible?(self)
-          rescue JDLError => e
-            JABA.error("'#{jaf.id.inspect_unquoted}' flag is incompatible: #{e.raw_message}")
+          rescue JabaError => e
+            JABA.error("'#{jaf.id.inspect_unquoted}' flag is incompatible: #{e.message}")
           end
         end
       end
@@ -293,8 +293,8 @@ module JABA
       services.set_warn_object(self) do
         begin
           yield
-        rescue JDLError => e
-          JABA.error("#{what} failed validation: #{e.raw_message}", callstack: e.backtrace)
+        rescue JabaError => e
+          JABA.error("#{what} failed validation: #{e.message}", callstack: e.backtrace)
         end
       end
     end

@@ -84,9 +84,13 @@ module JABA
   ##
   # TODO: consider changing to errobj and making them all support src_loc?
   # TODO: is callstack necessary?
+  # TODO: rename errline to src_loc?
   def self.error(msg, callstack: nil, errline: nil)
     e = JabaError.new(msg)
-    e.instance_variable_set(:@errline, errline)
+    cs = Array(errline || callstack)
+    if !cs.empty?
+      e.instance_variable_set(:@cs, cs)
+    end
     raise e
   end
 
@@ -187,6 +191,8 @@ module JABA
 
         @output[:warnings] = @warnings.uniq # Strip duplicate warnings
         @output
+      rescue CommandLineUsageError
+        raise
       rescue => e
         # log the raw exception
         #
@@ -195,9 +201,23 @@ module JABA
 
         # Does the backtrace contain .jaba files? If so customise the info
         #
+        cs = nil
+        if e.instance_variable_defined?(:@cs)
+          cs = e.instance_variable_get(:@cs)
+        end
+        bt = cs ? cs : e.backtrace
         jdl_bt = get_jdl_backtrace(bt, include_api: false)
+
         if jdl_bt
-          @output[:error] = get_jdl_error_msg(jdl_bt, type: :error)
+          jdl_error_info(e.message, jdl_bt, type: :error) do |msg, file, line|
+            @output[:error] = msg
+
+            e = JDLError.new(msg)
+            e.instance_variable_set(:@file, file)
+            e.instance_variable_set(:@line, line)
+            e.set_backtrace(jdl_bt)
+            raise e
+          end
         end
         
         raise
@@ -800,7 +820,7 @@ module JABA
       if block_given?
         @top_level_api.instance_eval(&block)
       end
-    rescue JDLError
+    rescue JabaError
       raise # Prevent fallthrough to next case
     rescue StandardError => e # Catches errors like invalid constants
       JABA.error(e.message, callstack: e.backtrace, include_api: true)
@@ -999,7 +1019,7 @@ module JABA
 
     ##
     #
-    def get_jdl_error_msg(backtrace, type: :error)
+    def jdl_error_info(msg, backtrace, type: :error)
       err_line = backtrace[0]
       
       # Extract file and line information from the error line.
@@ -1011,9 +1031,9 @@ module JABA
       file = Regexp.last_match(1)
       line = Regexp.last_match(2).to_i
 
-      msg = String.new
+      m = String.new
       
-      msg << case type
+      m << case type
       when :error
         'Error'
       when :warn
@@ -1022,11 +1042,11 @@ module JABA
         'Syntax error'
       end
       
-      msg << ' at'
-      msg << " #{file.basename}:#{line}"
-      msg << ": #{msg}"
-      msg.ensure_end_with!('.')
-      msg
+      m << ' at'
+      m << " #{file.basename}:#{line}"
+      m << ": #{msg}"
+      m.ensure_end_with!('.')
+      yield m, file, line
     end
 
     ##

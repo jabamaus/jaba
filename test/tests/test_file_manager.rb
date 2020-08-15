@@ -72,7 +72,7 @@ module JABA
     end
 
     it 'detects invalid eol spec' do
-      e = assert_raises RuntimeError do
+      e = assert_raises do
         fn = "#{temp_dir}/f"
         fm = Services.new.file_manager
         fm.new_file(fn, eol: :undefined)
@@ -91,7 +91,7 @@ module JABA
       f = fm.new_file(fn)
       w = f.writer
       w << 'b'
-      assert_raises RuntimeError do
+      assert_raises do
         f.write
       end.message.must_match(/Duplicate filename '.*' detected/)
     end
