@@ -47,7 +47,7 @@ module JABA
           at = @attr_def.jaba_attr_type
           return default_hash.transform_values{|e| at.map_value(e)}
         elsif services.in_attr_default_block?
-          jaba_error("Cannot read uninitialised #{describe}")
+          attr_error("Cannot read uninitialised #{describe}")
         end
       end
       values = @hash.transform_values {|e| e.value(api_call_loc)}
@@ -68,7 +68,7 @@ module JABA
       # 
       if !no_keyval
         if args.empty?
-          jaba_error("#{describe} requires a key/value eg \"#{defn_id} :my_key, 'my value'\"")
+          attr_error("#{describe} requires a key/value eg \"#{defn_id} :my_key, 'my value'\"")
         end
         key = args.shift
 
@@ -78,7 +78,7 @@ module JABA
           @node.eval_jdl(&block)
         else
           if args.empty?
-            jaba_error("#{describe} requires a key/value eg \"#{defn_id} :my_key, 'my value'\"")
+            attr_error("#{describe} requires a key/value eg \"#{defn_id} :my_key, 'my value'\"")
           end
           args.shift
         end
@@ -91,7 +91,7 @@ module JABA
       if !@set && @default_block
         default_hash = services.execute_attr_default_block(@node, @default_block)
         if !default_hash.hash?
-          jaba_error("#{describe} default requires a hash not a '#{default_hash.class}'")
+          attr_error("#{describe} default requires a hash not a '#{default_hash.class}'")
         end
         default_hash.each do |k, v|
           insert_key(k, v, *args, **keyval_args)
@@ -141,7 +141,7 @@ module JABA
     def fetch(key, fail_if_not_found: true)
       if !@hash.key?(key)
         if fail_if_not_found
-          jaba_error("'#{key}' key not found in #{describe}")
+          attr_error("'#{key}' key not found in #{describe}")
         else
           return nil
         end

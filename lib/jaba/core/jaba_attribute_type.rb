@@ -106,7 +106,7 @@ module JABA
     #
     def validate_value(attr_def, value)
       if !value.string?
-        services.jaba_error("'#{value}' must be a string but was a '#{value.class}'")
+        JABA.error("'#{value}' must be a string but was a '#{value.class}'")
       end
     end
 
@@ -144,7 +144,7 @@ module JABA
     #
     def validate_value(attr_def, value)
       if !value.symbol?
-        services.jaba_error("'#{value}' must be a symbol but was a '#{value.class}'")
+        JABA.error("'#{value}' must be a symbol but was a '#{value.class}'")
       end
     end
     
@@ -182,7 +182,7 @@ module JABA
     #
     def validate_value(attr_def, value)
       if !value.symbol? && !value.string?
-        services.jaba_error("'#{value}' must be a symbol or a string but was a '#{value.class}'")
+        JABA.error("'#{value}' must be a symbol or a string but was a '#{value.class}'")
       end
     end
     
@@ -221,7 +221,7 @@ module JABA
     #
     def validate_value(attr_def, value)
       if !value.respond_to?(:to_s)
-        services.jaba_error("'#{value}' must respond to 'to_s' method but '#{value.class}' did not")
+        JABA.error("'#{value}' must respond to 'to_s' method but '#{value.class}' did not")
       end
     end
     
@@ -265,7 +265,7 @@ module JABA
     #
     def validate_value(attr_def, value)
       if !value.integer?
-        services.jaba_error(":int attributes only accept integer values but got [value=#{value}, class=#{value.class}]")
+        JABA.error(":int attributes only accept integer values but got [value=#{value}, class=#{value.class}]")
       end
     end
 
@@ -308,7 +308,7 @@ module JABA
       when 'false'
         false
       else
-        services.jaba_error("Invalid value '#{str}' passed to JabaAttributeTypeBool#from_string")
+        JABA.error("Invalid value '#{str}' passed to JabaAttributeTypeBool#from_string")
       end
     end
 
@@ -324,7 +324,7 @@ module JABA
     #
     def validate_value(attr_def, value)
       if !value.boolean?
-        services.jaba_error(":bool attributes only accept [true|false] but got '#{value}'")
+        JABA.error(":bool attributes only accept [true|false] but got '#{value}'")
       end
     end
 
@@ -375,7 +375,7 @@ module JABA
     def post_init_attr_def(attr_def)
       items = attr_def.items
       if items.empty?
-        services.jaba_error("'items' must be set")
+        JABA.error("'items' must be set")
       elsif items.uniq!
         services.jaba_warning("'items' contains duplicates")
       end
@@ -386,7 +386,7 @@ module JABA
     def validate_value(attr_def, value)
       items = attr_def.items
       if !items.include?(value)
-        services.jaba_error("Must be one of #{items} but got '#{value}'")
+        JABA.error("Must be one of #{items} but got '#{value}'")
       end
     end
 
@@ -594,7 +594,7 @@ module JABA
     def post_init_attr_def(attr_def)
       t = attr_def.node_type
       if t.nil?
-        services.jaba_error("'node_type' must be set")
+        JABA.error("'node_type' must be set")
       end
       if attr_def.jaba_type.defn_id != t
         attr_def.jaba_type.top_level_type.set_property(:dependencies, t)
@@ -648,10 +648,10 @@ module JABA
     def post_init_attr_def(attr_def)
       t = attr_def.node_type
       if t.nil?
-        services.jaba_error("'node_type' must be set")
+        JABA.error("'node_type' must be set")
       end
       if attr_def.jaba_type.defn_id == t
-        services.jaba_error("node_type attribute cannot be set to owning type")
+        JABA.error("node_type attribute cannot be set to owning type")
       else
         attr_def.jaba_type.top_level_type.set_property(:dependencies, t)
       end

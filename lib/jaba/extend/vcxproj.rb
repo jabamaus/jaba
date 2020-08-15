@@ -168,7 +168,7 @@ module JABA
           if sf
             @per_file_props.push_value(sf, [prop, cfg_name, platform, val])
           else
-            attr.jaba_error("'#{file_with_prop}' src file not in project")
+            attr.attr_error("'#{file_with_prop}' src file not in project")
           end
         end
 

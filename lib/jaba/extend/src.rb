@@ -33,10 +33,10 @@ module JABA
       end
       services = @node.services
       if !defined?(@root)
-        services.jaba_error("process_src requires @root instance variable to be set")
+        JABA.error("process_src requires @root instance variable to be set")
       end
       if !defined?(@projdir)
-        services.jaba_error("process_src requires @projdir instance variable to be set")
+        JABA.error("process_src requires @projdir instance variable to be set")
       end
 
       src_attr = @node.get_attr(src_attr_id)
@@ -57,13 +57,13 @@ module JABA
 
         if spec.wildcard?
           if force
-            services.jaba_error('Wildcards are not allowed when force adding src - ' \
+            JABA.error('Wildcards are not allowed when force adding src - ' \
               'only explicitly specified source files', errline: src_attr.last_call_location)
           end
           glob_matches = file_manager.glob(abs_spec)
         else # else its an explicitly specified file or directory
           if !file_manager.exist?(abs_spec) && !force
-            services.jaba_error("'#{spec}' does not exist on disk. Use :force to add anyway.", errline: src_attr.last_call_location)
+            JABA.error("'#{spec}' does not exist on disk. Use :force to add anyway.", errline: src_attr.last_call_location)
           end
 
           # If its a directory add files recursively, else add single file
@@ -108,7 +108,7 @@ module JABA
       end
 
       if src.empty?
-        services.jaba_error("'#{@node.defn_id}' does not have any source files", errline: @node.src_loc)
+        JABA.error("'#{@node.defn_id}' does not have any source files", errline: @node.src_loc)
       end
 
       src.sort!{|x, y| x.absolute_path.casecmp(y.absolute_path)}

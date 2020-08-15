@@ -66,7 +66,7 @@ module JABA
         when :symbol, :string
           @jaba_attr_key_type = services.get_attribute_type(@key_type_id)
         else
-          jaba_error("#{describe} :key_type must be set to either :symbol or :string")
+          JABA.error("#{describe} :key_type must be set to either :symbol or :string")
         end
 
         # Attributes that are stored as values in a hash have their corresponding key stored in their options. This is
@@ -122,7 +122,7 @@ module JABA
     #
     def add_value_option(id, required, items)
       if !id.symbol?
-        jaba_error("In #{describe} value_option id must be specified as a symbol, eg :option")
+        JABA.error("In #{describe} value_option id must be specified as a symbol, eg :option")
       end
       @value_options << ValueOption.new(id, required, items).freeze
     end
@@ -131,11 +131,11 @@ module JABA
     #
     def get_value_option(id)
       if @value_options.empty?
-        jaba_error("Invalid value option '#{id.inspect_unquoted}' - no options defined in #{describe}")
+        JABA.error("Invalid value option '#{id.inspect_unquoted}' - no options defined in #{describe}")
       end
       vo = @value_options.find{|v| v.id == id}
       if !vo
-        jaba_error("Invalid value option '#{id.inspect_unquoted}'. Valid #{describe} options: #{@value_options.map{|v| v.id}}")
+        JABA.error("Invalid value option '#{id.inspect_unquoted}'. Valid #{describe} options: #{@value_options.map{|v| v.id}}")
       end
       vo
     end
@@ -195,7 +195,7 @@ module JABA
       when :flags
         f = incoming
         if !f.symbol?
-          jaba_error('Flags must be specified as symbols, eg :flag')
+          JABA.error('Flags must be specified as symbols, eg :flag')
         end
         if @flags.include?(f)
           jaba_warning("Duplicate flag '#{f.inspect_unquoted}' specified in #{describe}")
@@ -205,7 +205,7 @@ module JABA
       when :flag_options
         f = incoming
         if !f.symbol?
-          jaba_error('Flag options must be specified as symbols, eg :option')
+          JABA.error('Flag options must be specified as symbols, eg :option')
         end
         if @flag_options.include?(f)
           jaba_warning("Duplicate flag option '#{f.inspect_unquoted}' specified in #{describe}")
@@ -224,11 +224,11 @@ module JABA
         return if @default_block
 
         if single? && incoming.is_a?(Enumerable)
-          jaba_error("#{describe} default must be a single value not a '#{incoming.class}'")
+          JABA.error("#{describe} default must be a single value not a '#{incoming.class}'")
         elsif array? && !incoming.array?
-          jaba_error("#{describe} default must be an array not a '#{incoming.class}'")
+          JABA.error("#{describe} default must be an array not a '#{incoming.class}'")
         elsif hash? && !incoming.hash?
-          jaba_error("#{describe} default must be a hash not a '#{incoming.class}'")
+          JABA.error("#{describe} default must be a hash not a '#{incoming.class}'")
         end
 
         call_validators("#{describe} default") do
@@ -248,7 +248,7 @@ module JABA
         end
       when :title
         if incoming.size > MAX_TITLE_CHARS
-          jaba_error("Title must be #{MAX_TITLE_CHARS} characters or less but was #{incoming.size}")
+          JABA.error("Title must be #{MAX_TITLE_CHARS} characters or less but was #{incoming.size}")
         end
       end
     end
@@ -259,7 +259,7 @@ module JABA
       case hook
       when :validate_key
         if !hash?
-          jaba_error("#{describe} cannot specify 'validate_key' - only supported by hash attributes")
+          JABA.error("#{describe} cannot specify 'validate_key' - only supported by hash attributes")
         end
       end
     end
@@ -271,7 +271,7 @@ module JABA
       # is useful for testing little jaba snippets where adding titles would be cumbersome.
       #
       if @title.nil? && !JABA.running_tests? && !services.input.barebones
-        jaba_error("#{describe} requires a title")
+        JABA.error("#{describe} requires a title")
       end
 
       call_validators(describe) do
@@ -281,7 +281,7 @@ module JABA
           begin
             jaf.compatible?(self)
           rescue JDLError => e
-            jaba_error("'#{jaf.id.inspect_unquoted}' flag is incompatible: #{e.raw_message}")
+            JABA.error("'#{jaf.id.inspect_unquoted}' flag is incompatible: #{e.raw_message}")
           end
         end
       end
@@ -294,7 +294,7 @@ module JABA
         begin
           yield
         rescue JDLError => e
-          jaba_error("#{what} failed validation: #{e.raw_message}", callstack: e.backtrace)
+          JABA.error("#{what} failed validation: #{e.raw_message}", callstack: e.backtrace)
         end
       end
     end

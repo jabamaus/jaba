@@ -45,7 +45,7 @@ module JABA
           at = @attr_def.jaba_attr_type
           return values.map{|e| at.map_value(e)}
         elsif services.in_attr_default_block?
-          jaba_error("Cannot read uninitialised #{describe}")
+          attr_error("Cannot read uninitialised #{describe}")
         end
       end
       values = @elems.map {|e| e.value(api_call_loc)}
@@ -76,13 +76,13 @@ module JABA
         end
       else
         if @attr_def.node_by_value?
-          jaba_error("Node attributes require a block")
+          attr_error("Node attributes require a block")
         end
         values = args.shift
       end
 
       if values && !values.array?
-        jaba_error("#{describe} requires an array not a '#{values.class}'")
+        attr_error("#{describe} requires an array not a '#{values.class}'")
       end
 
       values = Array(values)
@@ -94,7 +94,7 @@ module JABA
       if !@set && @default_block
         default_values = services.execute_attr_default_block(@node, @default_block)
         if !default_values.array?
-          jaba_error("#{describe} default requires an array not a '#{default_values.class}'")
+          attr_error("#{describe} default requires an array not a '#{default_values.class}'")
         end
         values.prepend(*default_values)
       end
@@ -158,7 +158,7 @@ module JABA
     def apply_pre_post_fix(pre, post, val)
       if pre || post
         if !val.string?
-          jaba_error("When setting #{describe} prefix/postfix option can only be used with string arrays")
+          attr_error("When setting #{describe} prefix/postfix option can only be used with string arrays")
         end
         "#{pre}#{val}#{post}"
       else
@@ -198,7 +198,7 @@ module JABA
               ex.call(val)
             elsif ex.is_a?(Regexp)
               if !val.string?
-                jaba_error("When setting #{describe} exclude regex can only operate on strings")
+                attr_error("When setting #{describe} exclude regex can only operate on strings")
               end
               val.match(ex)
             else
@@ -211,7 +211,7 @@ module JABA
         begin
           @elems.stable_sort!
         rescue StandardError
-          jaba_error("Failed to sort #{decribe}. Might be missing <=> operator")
+          attr_error("Failed to sort #{decribe}. Might be missing <=> operator")
         end
       end
     end

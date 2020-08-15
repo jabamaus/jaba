@@ -31,7 +31,7 @@ module JABA
             p.handle.start_with?("#{spec}|")
           end
           if matches.empty?
-            jaba_error("No projects matching spec '#{spec.inspect_unquoted}' found", errline: errline)
+            JABA.error("No projects matching spec '#{spec.inspect_unquoted}' found", errline: errline)
           end
           projects.concat(matches)
         end
@@ -56,7 +56,7 @@ module JABA
         get_matching_projects(projects, root, project_specs, errline: projects_attr.last_call_location)
   
         if projects.empty?
-          jaba_error("No projects matched specs", errline: projects_attr.last_call_location)
+          JABA.error("No projects matched specs", errline: projects_attr.last_call_location)
         end
   
         configs = {}

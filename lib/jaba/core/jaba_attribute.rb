@@ -96,9 +96,9 @@ module JABA
 
     ##
     #
-    def jaba_error(msg)
+    def attr_error(msg)
       cs = @last_call_location ? @last_call_location : @attr_def.src_loc
-      services.jaba_error(msg, errline: cs)
+      JABA.error(msg, errline: cs)
     end
     
     ##
@@ -108,7 +108,7 @@ module JABA
         begin
           yield
         rescue JDLError => e
-          jaba_error("#{describe} failed validation: #{e.raw_message}. See #{e.backtrace[0]}") # TODO: cleanup format of backtrace[0]
+          attr_error("#{describe} failed validation: #{e.raw_message}. See #{e.backtrace[0]}") # TODO: cleanup format of backtrace[0]
         end
       end
     end
@@ -161,7 +161,7 @@ module JABA
       #
       if (__api_call_loc || @set) && !@node.allow_set_read_only_attrs?
         if @attr_def.has_flag?(:read_only)
-          jaba_error("#{describe} is read only")
+          attr_error("#{describe} is read only")
         end
       end
 
@@ -178,7 +178,7 @@ module JABA
         end
       else
         if @attr_def.node_by_value? && !@outer_attr
-          jaba_error("Node attributes require a block")
+          attr_error("Node attributes require a block")
         end
         new_value = args.shift
       end
@@ -193,12 +193,12 @@ module JABA
       @value_options = keyval_args.empty? ? {} : Marshal.load(Marshal.dump(keyval_args))
 
       if new_value.is_a?(Enumerable)
-        jaba_error("#{describe} must be a single value not a '#{new_value.class}'")
+        attr_error("#{describe} must be a single value not a '#{new_value.class}'")
       end
 
       @flag_options.each do |f|
         if !@attr_def.flag_options.include?(f)
-          jaba_error("Invalid flag option '#{f.inspect_unquoted}' passed to #{describe}. Valid flags are #{@attr_def.flag_options}")
+          attr_error("Invalid flag option '#{f.inspect_unquoted}' passed to #{describe}. Valid flags are #{@attr_def.flag_options}")
         end
       end
 
@@ -208,9 +208,9 @@ module JABA
         if vo.required
           if !@value_options.key?(vo.id)
             if !vo.items.empty?
-              jaba_error("In #{describe} '#{vo.id}' option requires a value. Valid values are #{vo.items.inspect}")
+              attr_error("In #{describe} '#{vo.id}' option requires a value. Valid values are #{vo.items.inspect}")
             else
-              jaba_error("In #{describe} '#{vo.id}' option requires a value")
+              attr_error("In #{describe} '#{vo.id}' option requires a value")
             end
           end
         end
@@ -222,7 +222,7 @@ module JABA
         vo = @attr_def.get_value_option(k)
         if !vo.items.empty?
           if !vo.items.include?(v)
-            jaba_error("In #{describe} invalid value '#{v.inspect_unquoted}' passed to '#{k.inspect_unquoted}' option. Valid values: #{vo.items.inspect}")
+            attr_error("In #{describe} invalid value '#{v.inspect_unquoted}' passed to '#{k.inspect_unquoted}' option. Valid values: #{vo.items.inspect}")
           end
         end
       end
@@ -274,7 +274,7 @@ module JABA
       @attr_def.get_value_option(key)
       if !@value_options.key?(key)
         if fail_if_not_found
-          jaba_error("Option key '#{key}' not found in #{describe}")
+          attr_error("Option key '#{key}' not found in #{describe}")
         else
           return nil
         end
@@ -356,7 +356,7 @@ module JABA
           val = services.execute_attr_default_block(@node, @default_block)
           @attr_def.jaba_attr_type.map_value(val)
         elsif services.in_attr_default_block?
-          jaba_error("Cannot read uninitialised #{describe}")
+          attr_error("Cannot read uninitialised #{describe}")
         else
           nil
         end

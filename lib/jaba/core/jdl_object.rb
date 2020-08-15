@@ -18,7 +18,7 @@ module JABA
 
     ##
     # Returns source location as a Thread::Backtrace::Location. See https://ruby-doc.org/core-2.7.1/Thread/Backtrace/Location.html.
-    # Use this to pass to the callstack argument in jaba_error/jaba_warning. Do not embed in jaba_error/warning messages themselves
+    # Use this to pass to the callstack argument in JABA.error/jaba_warning. Do not embed in JABA.error/warning messages themselves
     # as it will appear as eg "C:/projects/GitHub/jaba/modules/cpp/cpp.jaba:49:in `block (2 levels) in execute_jdl'" - the "in `block`"
     # is not wanted in user level error messages. Instead use src_loc.describe.
     #
@@ -54,12 +54,6 @@ module JABA
 
     ##
     #
-    def jaba_error(...)
-      services.jaba_error(...)
-    end
-    
-    ##
-    #
     def eval_jdl(*args, use_api: true, **keyval_args, &block)
       receiver = use_api ? @api : self
       receiver.instance_exec(*args, **keyval_args, &block)
@@ -76,7 +70,7 @@ module JABA
       n_actual = args ? Array(args).size : 0
       
       if n_actual != n_expected
-        jaba_error("Shared definition '#{id}' expects #{n_expected} arguments but #{n_actual} were passed")
+        JABA.error("Shared definition '#{id}' expects #{n_expected} arguments but #{n_actual} were passed")
       end
       
       eval_jdl(args, &sd.block)

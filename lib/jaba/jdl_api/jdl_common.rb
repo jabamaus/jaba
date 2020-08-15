@@ -8,7 +8,7 @@ module  JABA
     ##
     #
     def fail(msg)
-      @obj.jaba_error(msg)
+      JABA.error(msg)
     end
 
     ##

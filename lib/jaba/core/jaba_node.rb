@@ -108,7 +108,7 @@ module JABA
           end
         end
         if fail_if_not_found
-          jaba_error("'#{@defn_id}.#{attr_id}' attribute not found")
+          JABA.error("'#{@defn_id}.#{attr_id}' attribute not found")
         end
       end
       a
@@ -162,11 +162,11 @@ module JABA
     #
     def remove_attr(attr_id)
       if @attribute_lookup.delete(attr_id).nil?
-        jaba_error("Could not remove '#{attr_id}' attribute from #{describe}")
+        JABA.error("Could not remove '#{attr_id}' attribute from #{describe}")
       end
       index = @attributes.index{|a| a.defn_id == attr_id}
       if index.nil?
-        jaba_error("Could not remove '#{attr_id}' attribute from #{describe}")
+        JABA.error("Could not remove '#{attr_id}' attribute from #{describe}")
       end
       @attributes.delete_at(index)
     end
@@ -190,7 +190,7 @@ module JABA
     def post_create
       @attributes.each do |a|
         if !a.set? && a.required?
-          jaba_error("#{a.describe} requires a value. See #{a.attr_def.src_loc.describe}", errline: src_loc)
+          JABA.error("#{a.describe} requires a value. See #{a.attr_def.src_loc.describe}", errline: src_loc)
         end
       
         a.finalise
@@ -218,7 +218,7 @@ module JABA
         if !a
           attr_def = @jaba_type.top_level_type.get_attr_def(id)
           if !attr_def
-            jaba_error("'#{id}' attribute not defined in #{describe}")
+            JABA.error("'#{id}' attribute not defined in #{describe}")
           elsif attr_def.node_by_reference?
             null_node = services.get_null_node(attr_def.node_type)
             return null_node.attrs_read_only
@@ -233,15 +233,15 @@ module JABA
         if !a
           attr_def = @jaba_type.top_level_type.get_attr_def(id)
           if !attr_def
-            jaba_error("'#{id}' attribute not defined")
+            JABA.error("'#{id}' attribute not defined")
           elsif attr_def.jaba_type.defn_id != @jaba_type.defn_id
-            jaba_error("Cannot change referenced '#{id}' attribute")
+            JABA.error("Cannot change referenced '#{id}' attribute")
           end
           return nil
         end
 
         if (__read_only || @read_only) && !@allow_set_read_only_attrs
-          jaba_error("#{a.describe} is read only")
+          JABA.error("#{a.describe} is read only")
         end
         
         a.set(*args, __api_call_loc: __api_call_loc, **keyval_args, &block)
@@ -254,7 +254,7 @@ module JABA
     def wipe_attrs(ids)
       ids.flatten.each do |id|
         if !id.symbol?
-          jaba_error("'#{id}' must be specified as a symbol")
+          JABA.error("'#{id}' must be specified as a symbol")
         end
         get_attr(id).clear
       end

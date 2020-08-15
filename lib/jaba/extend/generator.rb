@@ -78,9 +78,9 @@ module JABA
       
       if @top_level_jaba_type.singleton
         if @root_nodes.size == 0
-          jaba_error("singleton type '#{type_id}' must be instantiated exactly once", errline: @top_level_jaba_type.src_loc)
+          JABA.error("singleton type '#{type_id}' must be instantiated exactly once", errline: @top_level_jaba_type.src_loc)
         elsif @root_nodes.size > 1
-          jaba_error("singleton type '#{type_id}' must be instantiated exactly once", errline: @root_nodes.last.src_loc)
+          JABA.error("singleton type '#{type_id}' must be instantiated exactly once", errline: @root_nodes.last.src_loc)
         end
       end
 
@@ -145,21 +145,21 @@ module JABA
       handle = nil
 
       if parent
-        jaba_error('name is required for child nodes') if !name
+        JABA.error('name is required for child nodes') if !name
         if name.is_a?(JabaNode)
           name = name.defn_id
         end
         handle = "#{parent.handle}|#{name}"
         depth = parent.depth + 1
       else
-        jaba_error('name not required for root nodes') if name
+        JABA.error('name not required for root nodes') if name
         handle = "#{@definition.id}"
       end
 
       services.log "#{'  ' * depth}Instancing node [type=#{type_id}, handle=#{handle}]"
 
       if node_from_handle(handle, fail_if_not_found: false)
-        jaba_error("Duplicate node handle '#{handle}'")
+        JABA.error("Duplicate node handle '#{handle}'")
       end
 
       jt = if sub_type_id
@@ -200,7 +200,7 @@ module JABA
         end
         
       rescue FrozenError => e
-        jaba_error('Cannot modify read only value', callstack: e.backtrace)
+        JABA.error('Cannot modify read only value', callstack: e.backtrace)
       end
 
       jn.post_create
@@ -212,7 +212,7 @@ module JABA
     def node_from_handle(handle, fail_if_not_found: true, errline: nil)
       n = @node_lookup[handle]
       if !n && fail_if_not_found
-        jaba_error("Node with handle '#{handle}' not found", errline: errline)
+        JABA.error("Node with handle '#{handle}' not found", errline: errline)
       end
       n
     end
@@ -254,12 +254,6 @@ module JABA
     end
 
     ##
-    #
-    def jaba_error(...)
-      services.jaba_error(...)
-    end
-
-    ##
     # Override this in subclass to register items with the system, eg cmd line cmds and options.
     #
     def register
@@ -293,7 +287,7 @@ module JABA
       klass = klass.string? ? JABA.const_get(klass) : klass
       ho = klass.new(self, node)
       if !ho.respond_to?(:init)
-        jaba_error("#{klass} must implement 'init' method and do any instance variable initialisation there")
+        JABA.error("#{klass} must implement 'init' method and do any instance variable initialisation there")
       end
       ho.init(*args, **keyval_args)
       @host_objects << ho
@@ -306,7 +300,7 @@ module JABA
     def host_object_from_node(node, fail_if_not_found: true)
       ho = @node_to_host_object[node]
       if !ho && fail_if_not_found
-        jaba_error("'#{ho}' not found")
+        JABA.error("'#{ho}' not found")
       end
       ho
     end

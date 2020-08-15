@@ -26,7 +26,7 @@ module JABA
       target_platform_to_archs = {}
       root_node.attrs.platforms.each do |pspec|
         if pspec !~ /^(.*?)_(.*)/
-          jaba_error("Cannot extract platform and architecture from '#{pspec}'")
+          JABA.error("Cannot extract platform and architecture from '#{pspec}'")
         end
         platform = Regexp.last_match(1).to_sym
         arch = Regexp.last_match(2).to_sym
@@ -82,7 +82,7 @@ module JABA
               c.handle[/^.*?\|(.*)/, 1] == dep_cfg_handle
             end
             if !cfg
-              jaba_error("Could not find config in #{node.describe} to match #{dep_cfg.describe}")
+              JABA.error("Could not find config in #{node.describe} to match #{dep_cfg.describe}")
             end
             process_node_exports(cfg, dep_cfg)
           end

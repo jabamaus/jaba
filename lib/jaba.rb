@@ -24,9 +24,9 @@ module JABA
       s = Services.new
       yield s.input if block_given?
       s.run
-    rescue => e
+    rescue
       if handle_exceptions
-        return {error: e.message}
+        return s.output
       else
         raise
       end

@@ -37,6 +37,8 @@ module JABA
 
   using JABACoreExt
 
+  class JabaError < StandardError ; end
+
   @@running_tests = false
 
   # Maximum length of attribute etc title string.
@@ -80,10 +82,20 @@ module JABA
   end
 
   ##
+  # TODO: consider changing to errobj and making them all support src_loc?
+  # TODO: is callstack necessary?
+  def self.error(msg, callstack: nil, errline: nil)
+    e = JabaError.new(msg)
+    e.instance_variable_set(:@errline, errline)
+    raise e
+  end
+
+  ##
   #
   class Services
 
     attr_reader :input
+    attr_reader :output
     attr_reader :input_manager
     attr_reader :file_manager
     attr_reader :globals
@@ -175,13 +187,19 @@ module JABA
 
         @output[:warnings] = @warnings.uniq # Strip duplicate warnings
         @output
-      rescue JDLError => e
-        log e.message, :ERROR
-        log e.backtrace, :ERROR
-        @output
       rescue => e
-        log e.message, :ERROR
-        log e.backtrace, :ERROR
+        # log the raw exception
+        #
+        log e.full_message, :ERROR
+        @output[:error] = e.message
+
+        # Does the backtrace contain .jaba files? If so customise the info
+        #
+        jdl_bt = get_jdl_backtrace(bt, include_api: false)
+        if jdl_bt
+          @output[:error] = get_jdl_error_msg(jdl_bt, type: :error)
+        end
+        
         raise
       ensure
         term_log
@@ -203,7 +221,7 @@ module JABA
           if file_manager.exist?(JABA.config_file)
             content = file_manager.read(JABA.config_file, freeze: false)
             if content !~ /src_root "(.*)"/
-              jaba_error("Could not read src_root from #{JABA.config_file}")
+              JABA.error("Could not read src_root from #{JABA.config_file}")
             end
             @src_root = Regexp.last_match(1)
           end
@@ -248,7 +266,7 @@ module JABA
         @top_level_jaba_types.sort_topological!(:dependencies)
       rescue TSort::Cyclic => e
         err_type = e.instance_variable_get(:@err_obj)
-        jaba_error("'#{err_type}' contains a cyclic dependency", errline: err_type.src_loc)
+        JABA.error("'#{err_type}' contains a cyclic dependency", errline: err_type.src_loc)
       end
 
       log 'Initialisation of JabaTypes complete'
@@ -372,7 +390,7 @@ module JABA
     def make_attr_type(klass)
       at = klass.new
       if @jaba_attr_type_lookup.has_key?(at.id)
-        jaba_error("Attribute type multiply defined [id=#{at.id}, class=#{klass}]")
+        JABA.error("Attribute type multiply defined [id=#{at.id}, class=#{klass}]")
       end
       at.instance_variable_set(:@services, self)
       @jaba_attr_types << at
@@ -385,7 +403,7 @@ module JABA
     def make_attr_flag(klass)
       af = klass.new
       if @jaba_attr_flag_lookup.has_key?(af.id)
-        jaba_error("Attribute flag multiply defined [id=#{af.id}, class=#{klass}]")
+        JABA.error("Attribute flag multiply defined [id=#{af.id}, class=#{klass}]")
       end
       af.instance_variable_set(:@services, self)
       @jaba_attr_flags << af
@@ -405,7 +423,7 @@ module JABA
       log "Instancing top level JabaType [handle=#{handle}]"
 
       if @jaba_type_lookup.key?(handle)
-        jaba_error("'#{handle}' jaba type multiply defined")
+        JABA.error("'#{handle}' jaba type multiply defined")
       end
 
       generator_id = dfn.id.to_s.capitalize_first
@@ -429,7 +447,7 @@ module JABA
     def get_top_level_jaba_type(id, fail_if_not_found: true, errline: nil)
       jt = @jaba_type_lookup[id]
       if !jt && fail_if_not_found
-        jaba_error("'#{id}' type not defined", errline: errline)
+        JABA.error("'#{id}' type not defined", errline: errline)
       end
       jt
     end
@@ -438,7 +456,7 @@ module JABA
     #
     def validate_id(id)
       if !(id.symbol? || id.string?) || id !~ /^[a-zA-Z0-9_\-.]+$/
-        jaba_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol " \
+        JABA.error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol " \
           "(-_. permitted), eg :my_id, 'my-id', 'my.id'")
       end
     end
@@ -451,7 +469,7 @@ module JABA
       end
       t = @jaba_attr_type_lookup[id]
       if !t
-        jaba_error("'#{id}' attribute type is undefined. Valid types: [#{@jaba_attr_types.map{|at| at.id.inspect}.join(', ')}]")
+        JABA.error("'#{id}' attribute type is undefined. Valid types: [#{@jaba_attr_types.map{|at| at.id.inspect}.join(', ')}]")
       end
       t
     end
@@ -461,7 +479,7 @@ module JABA
     def get_attribute_flag(id)
       f = @jaba_attr_flag_lookup[id]
       if !f
-        jaba_error("'#{id.inspect_unquoted}' is an invalid flag. Valid flags: [#{@jaba_attr_flags.map{|at| at.id.inspect}.join(', ')}]")
+        JABA.error("'#{id.inspect_unquoted}' is an invalid flag. Valid flags: [#{@jaba_attr_flags.map{|at| at.id.inspect}.join(', ')}]")
       end
       f
     end
@@ -469,12 +487,12 @@ module JABA
     ##
     #
     def define_type(id, &block)
-      jaba_error("id is required") if id.nil?
+      JABA.error("id is required") if id.nil?
       log "  Defining type [id=#{id}]"
       validate_id(id)
       existing = @jaba_type_defs.find{|d| d.id == id}
       if existing
-        jaba_error("Type '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc.describe}.")
+        JABA.error("Type '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc.describe}.")
       end
       d = make_definition(id, block, caller_locations(2, 1)[0])
       if id == :globals
@@ -488,15 +506,15 @@ module JABA
     ##
     #
     def define_shared(id, &block)
-      jaba_error("id is required") if id.nil?
-      jaba_error("A block is required") if !block_given?
+      JABA.error("id is required") if id.nil?
+      JABA.error("A block is required") if !block_given?
 
       log "  Defining shared definition [id=#{id}]"
       validate_id(id)
 
       existing = get_shared_definition(id, fail_if_not_found: false)
       if existing
-        jaba_error("Shared definition '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc.describe}.")
+        JABA.error("Shared definition '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc.describe}.")
       end
 
       @shared_def_lookup[id] = make_definition(id, block, caller_locations(2, 1)[0])
@@ -508,7 +526,7 @@ module JABA
     def get_shared_definition(id, fail_if_not_found: true)
       d = @shared_def_lookup[id]
       if !d && fail_if_not_found
-        jaba_error("Shared definition '#{id}' not found")
+        JABA.error("Shared definition '#{id}' not found")
       end
       d
     end
@@ -516,8 +534,8 @@ module JABA
     ##
     #
     def define_instance(type_id, id, &block)
-      jaba_error("type_id is required") if type_id.nil?
-      jaba_error("id is required") if id.nil?
+      JABA.error("type_id is required") if type_id.nil?
+      JABA.error("id is required") if id.nil?
 
       validate_id(id)
 
@@ -525,7 +543,7 @@ module JABA
 
       existing = get_instance_definition(type_id, id, fail_if_not_found: false)
       if existing
-        jaba_error("Type instance '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc.describe}.")
+        JABA.error("Type instance '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc.describe}.")
       end
       
       d = make_definition(id, block, caller_locations(2, 1)[0])
@@ -542,7 +560,7 @@ module JABA
       defs = @instance_def_lookup[type_id]
       d = defs&.find {|dd| dd.id == id}
       if !d && fail_if_not_found
-        jaba_error("'#{id}' instance not defined", errline: errline)
+        JABA.error("'#{id}' instance not defined", errline: errline)
       end
       d
     end
@@ -552,7 +570,7 @@ module JABA
     def get_instance_ids(type_id)
       defs = @instance_def_lookup[type_id]
       if !defs
-        jaba_error("No '#{type_id}' type defined")
+        JABA.error("No '#{type_id}' type defined")
       end
       defs.map(&:id)
     end
@@ -560,11 +578,11 @@ module JABA
     ##
     #
     def define_defaults(id, &block)
-      jaba_error("id is required") if id.nil?
+      JABA.error("id is required") if id.nil?
       log "  Defining defaults [id=#{id}]"
       existing = @default_defs.find {|d| d.id == id}
       if existing
-        jaba_error("Defaults block '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc.describe}.")
+        JABA.error("Defaults block '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc.describe}.")
       end
       @default_defs << make_definition(id, block, caller_locations(2, 1)[0])
       nil
@@ -597,11 +615,11 @@ module JABA
     ##
     #
     def define_translator(id, &block)
-      jaba_error("id is required") if id.nil?
+      JABA.error("id is required") if id.nil?
       log "  Defining translator [id=#{id}]"
       existing = get_translator_definition(id, fail_if_not_found: false)
       if existing
-        jaba_error("Translator block '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc.describe}.")
+        JABA.error("Translator block '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc.describe}.")
       end
       @translator_defs << make_definition(id, block, caller_locations(2, 1)[0])
       nil
@@ -612,7 +630,7 @@ module JABA
     def get_translator_definition(id, fail_if_not_found: true)
       td = @translator_defs.find {|d| d.id == id}
       if !td && fail_if_not_found
-        jaba_error("'#{id.inspect_unquoted}' translator not found")
+        JABA.error("'#{id.inspect_unquoted}' translator not found")
       end
       td
     end
@@ -622,7 +640,7 @@ module JABA
     def get_translator(id, fail_if_not_found: true)
       t = @translators[id]
       if !t && fail_if_not_found
-        jaba_error("'#{id.inspect_unquoted}' translator not found")
+        JABA.error("'#{id.inspect_unquoted}' translator not found")
       end
       t
     end
@@ -630,8 +648,8 @@ module JABA
     ##
     #
     def open(what, id, type=nil, &block)
-      jaba_error("id is required") if id.nil?
-      jaba_error("A block is required") if !block_given?
+      JABA.error("id is required") if id.nil?
+      JABA.error("A block is required") if !block_given?
       src_loc = caller_locations(2, 1)[0]
 
       case what
@@ -640,7 +658,7 @@ module JABA
         @open_type_defs << make_definition(id, block, src_loc)
       when :instance
         log "  Opening instance [id=#{id} type=#{type}]"
-        jaba_error("type is required") if type.nil?
+        JABA.error("type is required") if type.nil?
         d = make_definition(id, block, src_loc)
         d.jaba_type_id = type
         @open_instance_defs << d
@@ -658,7 +676,7 @@ module JABA
     #
     def get_generator(top_level_type_id)
       g = @generators.find {|g| g.type_id == top_level_type_id}
-      jaba_error("'#{top_level_type_id.inspect_unquoted}' generator not found") if !g
+      JABA.error("'#{top_level_type_id.inspect_unquoted}' generator not found") if !g
       g
     end
 
@@ -785,9 +803,9 @@ module JABA
     rescue JDLError
       raise # Prevent fallthrough to next case
     rescue StandardError => e # Catches errors like invalid constants
-      jaba_error(e.message, callstack: e.backtrace, include_api: true)
+      JABA.error(e.message, callstack: e.backtrace, include_api: true)
     rescue ScriptError => e # Catches syntax errors. In this case there is no backtrace.
-      jaba_error(e.message, syntax: true)
+      JABA.error(e.message, syntax: true)
     end
 
     ##
@@ -852,14 +870,14 @@ module JABA
       p = p.to_absolute(clean: true)
 
       if !File.exist?(p)
-        jaba_error("#{p} does not exist")
+        JABA.error("#{p} does not exist")
       end
 
       if File.directory?(p)
         files = @file_manager.glob("#{p}/*.jaba")
         if files.empty?
           if fail_if_empty
-            jaba_error("No .jaba files found in #{p}")
+            JABA.error("No .jaba files found in #{p}")
           else
             jaba_warning("No .jaba files found in #{p}")
           end
@@ -879,7 +897,7 @@ module JABA
       # TODO: warn on dupes
       # TODO: convert to absolute here?
       if @jdl_file_lookup.has_key?(f)
-        jaba_error("'#{f}' multiply included")
+        JABA.error("'#{f}' multiply included")
       end
       @jdl_file_lookup[f] = nil
       @jdl_files << f
@@ -905,9 +923,7 @@ module JABA
         n = ((130 - msg.size)/2).round # TODO: handle overflow
         msg = "#{'=' * n} #{msg} #{'=' * n}"
       end
-      Array(msg).each do |line|
-        @log_msgs << "#{severity} #{line}"
-      end
+      @log_msgs << "#{severity} #{msg}"
     end
 
     ##
@@ -949,18 +965,68 @@ module JABA
       @warnings << make_jaba_error(msg, warn: true, **options).message
       nil
     end
-    
+
     ##
     #
-    def jaba_error(msg, **options)
-      e = make_jaba_error(msg, **options)
-      err = {}
-      err[:msg] = e.message
-      err[:file] = e.file
-      err[:line] = e.line
-      err[:trace] = e.backtrace
-      @output[:error] = err
-      raise e
+    def get_jdl_backtrace(backtrace, include_api: false)
+      # Clean up callstack which could be in 'caller' or 'caller_locations' form.
+      #
+      backtrace = backtrace.map do |l|
+        if l.is_a?(::Thread::Backtrace::Location)
+          "#{l.absolute_path}:#{l.lineno}"
+        else
+          l
+        end
+      end
+
+      candidates = include_api ? @jdl_files + $LOADED_FEATURES.select{|f| f =~ /jaba\/lib\/jaba\/jdl_api/} : @jdl_files
+
+      # Extract any lines in the callstack that contain references to definition source files.
+      #
+      jdl_backtrace = backtrace.select {|c| candidates.any? {|sf| c.include?(sf)}}
+      return nil if jdl_backtrace.empty?
+
+      # remove the unwanted ':in ...' suffix from user level definition errors
+      #
+      jdl_backtrace.map!{|l| l.sub(/:in .*/, '')}
+      
+      # Can contain unhelpful duplicates due to loops, make unique.
+      #
+      jdl_backtrace.uniq!
+
+      jdl_backtrace
+    end
+
+    ##
+    #
+    def get_jdl_error_msg(backtrace, type: :error)
+      err_line = backtrace[0]
+      
+      # Extract file and line information from the error line.
+      #
+      if err_line !~ /^(.+):(\d+)/
+        raise "Could not extract file and line number from '#{err_line}'"
+      end
+
+      file = Regexp.last_match(1)
+      line = Regexp.last_match(2).to_i
+
+      msg = String.new
+      
+      msg << case type
+      when :error
+        'Error'
+      when :warn
+        'Warning'
+      when :syntax
+        'Syntax error'
+      end
+      
+      msg << ' at'
+      msg << " #{file.basename}:#{line}"
+      msg << ": #{msg}"
+      msg.ensure_end_with!('.')
+      msg
     end
 
     ##

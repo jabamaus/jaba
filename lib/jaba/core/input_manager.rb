@@ -49,7 +49,7 @@ module JABA
     def register_cmd(id, dev_cmd: false)
       raise "cmd id must be a symbol" if !id.symbol?
       if id !~ /^[a-zA-Z0-9\-]+$/
-        @services.jaba_error("Invalid cmd id '#{id}' specified. Can only contain [a-zA-Z0-9-]")
+        JABA.error("Invalid cmd id '#{id}' specified. Can only contain [a-zA-Z0-9-]")
       end
       c = Cmd.new
       c.id = id
@@ -63,10 +63,10 @@ module JABA
     #
     def register_option(long, short: nil, help:, type: nil, var: nil, dev_option: false, phase: 1, cmd: nil)
       if long !~ /^--[a-zA-Z0-9\-]+$/
-        @services.jaba_error("Invalid long option format '#{long}' specified. Must be of form --my-long-option")
+        JABA.error("Invalid long option format '#{long}' specified. Must be of form --my-long-option")
       end
       if short && short !~ /^-[a-zA-Z]$/
-        @services.jaba_error("Invalid short option format '#{short}' specified. Must be of form -O")
+        JABA.error("Invalid short option format '#{short}' specified. Must be of form -O")
       end
       
       o = CmdLineOption.new
@@ -142,7 +142,7 @@ module JABA
     def get_cmd(id, fail_if_not_found: true)
       c = @cmds.find{|c| c.id == id}
       if !c && fail_if_not_found
-        @services.jaba_error("#{id} command not recognised")
+        JABA.error("#{id} command not recognised")
       end
       c
     end

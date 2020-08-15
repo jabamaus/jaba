@@ -42,7 +42,7 @@ module JABA
       services.log "  Defining '#{id}' attribute [variant=#{variant}, type=#{type}]"
       
       if key_type && variant != :hash
-        jaba_error("Only attr_hash supports :key_type argument")
+        JABA.error("Only attr_hash supports :key_type argument")
       end
       
       validate_id(id)
@@ -58,14 +58,14 @@ module JABA
     ##
     #
     def define_sub_type(id, &block)
-      jaba_error("Sub type '#{handle.inspect_unquoted}' cannot have another subtype '#{id.inspect_unquoted}'")
+      JABA.error("Sub type '#{handle.inspect_unquoted}' cannot have another subtype '#{id.inspect_unquoted}'")
     end
 
     ##
     #
     def validate_id(id)
       if !(id.symbol? || id.string?) || id !~ /^[a-zA-Z0-9_\?]+$/
-        jaba_error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol " \
+        JABA.error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol " \
           "(underscore permitted), eg :my_id or 'my_id'")
       end
     end
@@ -146,7 +146,7 @@ module JABA
     def get_sub_type(id)
       st = @sub_types.find{|st| st.handle == id}
       if !st
-        jaba_error("'#{id.inspect_unquoted}' sub type not found in '#{@defn_id.inspect_unquoted}' top level type")
+        JABA.error("'#{id.inspect_unquoted}' sub type not found in '#{@defn_id.inspect_unquoted}' top level type")
       end
       st
     end
@@ -161,7 +161,7 @@ module JABA
     #
     def register_attr_def(id, attr_def)
       if @all_attr_defs.key?(id)
-        attr_def.jaba_error("'#{id}' attribute multiply defined in '#{defn_id}'")
+        JABA.error("'#{id}' attribute multiply defined in '#{defn_id}'")
       end
       @all_attr_defs[id] = attr_def
     end
@@ -173,11 +173,11 @@ module JABA
       # is useful for testing little jaba snippets where adding titles would be cumbersome.
       #
       if @title.nil? && !JABA.running_tests? && !services.input.barebones
-        jaba_error("Requires a title", errline: src_loc)
+        JABA.error("Requires a title", errline: src_loc)
       end
 
     rescue JDLError => e
-      jaba_error("'#{defn_id}' type failed validation: #{e.raw_message}", callstack: e.backtrace)
+      JABA.error("'#{defn_id}' type failed validation: #{e.raw_message}", callstack: e.backtrace)
     end
 
     ##

@@ -1,10 +1,9 @@
 require_relative '../lib/jaba'
 
 output = JABA.run
-err = output[:error]
 
-if err
-  $stderr.puts err[:msg]
+if output[:error]
+  $stderr.puts output[:error]
   exit 1
 end
 

@@ -61,7 +61,7 @@ module JABA
     #
     def compatible?(attr_def)
       if attr_def.default_set?
-        services.jaba_error(':required can only be specified if no default specified')
+        JABA.error(':required can only be specified if no default specified')
       end
     end
 
@@ -155,7 +155,7 @@ module JABA
     #
     def compatible?(attr_def)
       if !attr_def.array?
-        services.jaba_error(':allow_dupes is only allowed on array attributes')
+        JABA.error(':allow_dupes is only allowed on array attributes')
       end
     end
 
@@ -187,7 +187,7 @@ module JABA
     #
     def compatible?(attr_def)
       if !attr_def.array?
-        services.jaba_error(':no_sort is only allowed on array attributes')
+        JABA.error(':no_sort is only allowed on array attributes')
       end
     end
 
@@ -218,7 +218,7 @@ module JABA
     #
     def compatible?(attr_def)
       if attr_def.type_id != :file && attr_def.type_id != :dir
-        services.jaba_error(":no_check_exist can only be used with :file and :dir attribute types")
+        JABA.error(":no_check_exist can only be used with :file and :dir attribute types")
       end
     end
 
@@ -250,7 +250,7 @@ module JABA
     #
     def compatible?(attr_def)
       if attr_def.type_id != :file && attr_def.type_id != :dir
-        services.jaba_error(':base_on_cwd can only be used with :file and :dir attribute types')
+        JABA.error(':base_on_cwd can only be used with :file and :dir attribute types')
       end
     end
 
