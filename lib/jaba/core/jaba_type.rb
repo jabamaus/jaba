@@ -180,11 +180,11 @@ module JABA
       # is useful for testing little jaba snippets where adding titles would be cumbersome.
       #
       if @title.nil? && !JABA.running_tests? && !services.input.barebones
-        JABA.error("#{describe} requires a title", errobj: self)
+        JABA.error("requires a title")
       end
 
     rescue => e
-      JABA.error("'#{defn_id}' type failed validation: #{e.message}", callstack: e.backtrace)
+      JABA.error("#{describe} failed validation: #{e.message}", errobj: self)
     end
 
     ##

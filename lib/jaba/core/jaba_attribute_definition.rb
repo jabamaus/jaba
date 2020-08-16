@@ -76,9 +76,7 @@ module JABA
         add_value_option(:__key, false, [])
       end
       
-      services.set_warn_object(self) do
-        @jaba_attr_type.init_attr_def(self)
-      end
+      @jaba_attr_type.init_attr_def(self)
 
       if block
         eval_jdl(&block)
@@ -198,7 +196,7 @@ module JABA
           JABA.error('Flags must be specified as symbols, eg :flag')
         end
         if @flags.include?(f)
-          jaba_warning("Duplicate flag '#{f.inspect_unquoted}' specified in #{describe}")
+          jaba_warn("Duplicate flag '#{f.inspect_unquoted}' specified in #{describe}")
           return :ignore
         end
         @jaba_attr_flags << services.get_attribute_flag(f) # check flag exists
@@ -208,7 +206,7 @@ module JABA
           JABA.error('Flag options must be specified as symbols, eg :option')
         end
         if @flag_options.include?(f)
-          jaba_warning("Duplicate flag option '#{f.inspect_unquoted}' specified in #{describe}")
+          jaba_warn("Duplicate flag option '#{f.inspect_unquoted}' specified in #{describe}")
           return :ignore
         end
       end
@@ -273,7 +271,7 @@ module JABA
         # is useful for testing little jaba snippets where adding titles would be cumbersome.
         #
         if @title.nil? && !JABA.running_tests? && !services.input.barebones
-          JABA.error("#{describe} requires a title")
+          JABA.error('requires a title')
         end
 
         @jaba_attr_type.post_init_attr_def(self)
@@ -291,13 +289,10 @@ module JABA
     ##
     #
     def call_validators(what)
-      services.set_warn_object(self) do
-        begin
-          yield
-        rescue => e
-          # TODO: remove the failed validation part - superfluous
-          JABA.error("#{what} failed validation: #{e.message}", callstack: e.backtrace)
-        end
+      begin
+        yield
+      rescue => e
+        JABA.error("#{what} failed validation: #{e.message}", callstack: e.backtrace)
       end
     end
 

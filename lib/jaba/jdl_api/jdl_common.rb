@@ -14,7 +14,7 @@ module  JABA
     ##
     #
     def warn(msg)
-      @obj.jaba_warning(msg)
+      @obj.jaba_warn(msg)
     end
 
     ##

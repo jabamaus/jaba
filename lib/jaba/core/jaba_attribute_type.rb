@@ -377,7 +377,7 @@ module JABA
       if items.empty?
         JABA.error("'items' must be set")
       elsif items.uniq!
-        services.jaba_warning("'items' contains duplicates")
+        services.jaba_warn("'items' contains duplicates")
       end
     end
 
@@ -424,7 +424,7 @@ module JABA
     #
     def validate_value(attr_def, file)
       file.validate_path do |msg|
-        services.jaba_warning("File '#{file}' not specified cleanly: #{msg}")
+        services.jaba_warn("File '#{file}' not specified cleanly: #{msg}")
       end
     end
 
@@ -468,7 +468,7 @@ module JABA
     #
     def validate_value(attr_def, dir)
       dir.validate_path do |msg|
-        services.jaba_warning("Directory '#{dir}' not specified cleanly: #{msg}")
+        services.jaba_warn("Directory '#{dir}' not specified cleanly: #{msg}")
       end
     end
 
@@ -506,7 +506,7 @@ module JABA
     #
     def validate_value(attr_def, src_spec)
       src_spec.validate_path do |msg|
-        services.jaba_warning("Src spec '#{src_spec}' not specified cleanly: #{msg}")
+        services.jaba_warn("Src spec '#{src_spec}' not specified cleanly: #{msg}")
       end
     end
 

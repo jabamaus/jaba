@@ -106,7 +106,7 @@ module JABA
         end
 
         if existing
-          jaba_warning("When setting #{describe} stripping duplicate value '#{val.inspect_unquoted}'. See previous at #{existing.src_loc.describe}. " \
+          jaba_warn("When setting #{describe} stripping duplicate value '#{val.inspect_unquoted}'. See previous at #{existing.src_loc.describe}. " \
             "Flag with :allow_dupes to allow.")
         else
           val = apply_pre_post_fix(prefix, postfix, val)

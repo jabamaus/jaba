@@ -249,8 +249,8 @@ module JABA
 
     ##
     #
-    def jaba_warning(...)
-      services.jaba_warning(...)
+    def jaba_warn(...)
+      services.jaba_warn(...)
     end
 
     ##

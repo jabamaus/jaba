@@ -116,7 +116,6 @@ module JABA
       @log_msgs = JABA.running_tests? ? nil : [] # Disable logging when running tests
       
       @warnings = []
-      @warn_object = nil
       
       @modules_root = "#{JABA.jaba_install_dir}/modules"
       @src_root = nil
@@ -896,7 +895,7 @@ module JABA
           if fail_if_empty
             JABA.error("No .jaba files found in #{p}")
           else
-            jaba_warning("No .jaba files found in #{p}")
+            jaba_warn("No .jaba files found in #{p}")
           end
         else
           files.each do |f|
@@ -964,26 +963,13 @@ module JABA
 
     ##
     #
-    def set_warn_object(wo)
-      @warn_object = wo
-      if block_given?
-        yield
-        @warn_object = nil
-      end
-    end
-
-    ##
-    #
-    def jaba_warning(msg, errobj: nil, **options)
+    def jaba_warn(msg, errobj: nil)
       log_warning(msg)
-      if @warn_object
-        options[:callstack] = @warn_object.is_a?(JDL_Object) ? @warn_object.src_loc : @warn_object
-      end
       errline = nil
       if errobj
         errline = errobj.src_loc
       end
-      @warnings << make_jaba_error(msg, errline: errline, warn: true, **options).message
+      @warnings << make_jaba_error(msg, errline: errline, warn: true).message
       nil
     end
 

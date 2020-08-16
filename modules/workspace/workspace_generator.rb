@@ -23,7 +23,7 @@ module JABA
             File.fnmatch?(abs_spec, p.root)
            end
           if matches.empty?
-            jaba_warning("No projects matching spec '#{spec.inspect_unquoted}' found", errobj: errobj)
+            jaba_warn("No projects matching spec '#{spec.inspect_unquoted}' found", errobj: errobj)
           end
           projects.concat(matches)
         else # its an id

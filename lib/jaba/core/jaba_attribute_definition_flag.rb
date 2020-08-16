@@ -93,7 +93,7 @@ module JABA
     #
     def compatible?(attr_def)
       if attr_def.type_id == :node_ref
-        services.jaba_warning('Object reference attribute does not need to be flagged with :read_only as they always are')
+        services.jaba_warn('Object reference attribute does not need to be flagged with :read_only as they always are')
       end
     end
   end

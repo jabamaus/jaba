@@ -89,9 +89,9 @@ module JABA
 
     ##
     #
-    def jaba_warning(msg)
+    def jaba_warn(msg)
       obj = @last_call_location ? self : @attr_def
-      services.jaba_warning(msg, errobj: obj)
+      services.jaba_warn(msg, errobj: obj)
     end
 
     ##
@@ -104,12 +104,10 @@ module JABA
     ##
     #
     def call_validators
-      services.set_warn_object(@last_call_location) do
-        begin
-          yield
-        rescue => e
-          attr_error("#{describe} failed validation: #{e.message}")
-        end
+      begin
+        yield
+      rescue => e
+        attr_error("#{describe} failed validation: #{e.message}")
       end
     end
 

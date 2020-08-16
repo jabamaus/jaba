@@ -77,7 +77,7 @@ module JABA
 
         if glob_matches
           if glob_matches.empty?
-            services.jaba_warning("'#{spec}' did not match any #{src_attr_id} files ", errobj: src_attr)
+            services.jaba_warn("'#{spec}' did not match any #{src_attr_id} files ", errobj: src_attr)
           else
             matching = glob_matches.select{|f| extensions.include?(f.extname)}
             # It is valid for matching to be empty here, eg if file type is not wanted on this platfom

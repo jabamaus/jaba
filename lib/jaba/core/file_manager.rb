@@ -139,7 +139,7 @@ module JABA
       fn = file.filename
 
       if file.str.empty?
-        services.jaba_warning("'#{fn}' is empty")
+        services.jaba_warn("'#{fn}' is empty")
       end
 
       if @generated_lookup.key?(fn)
