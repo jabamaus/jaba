@@ -344,6 +344,14 @@ module JABACoreExt
       self
     end
 
+    ##
+    # Turn eg "C:/projects/GitHub/jaba/lib/jaba/jdl_api/jdl_common.rb:11:in `fail'"
+    # into "C:/projects/GitHub/jaba/lib/jaba/jdl_api/jdl_common.rb:11"
+    #
+    def clean_backtrace
+      sub(/:in .*/, '')
+    end
+
   end
 
   ##

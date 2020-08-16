@@ -108,7 +108,7 @@ module JABA
         begin
           yield
         rescue => e
-          attr_error("#{describe} failed validation: #{e.message}. See #{e.backtrace[0]}") # TODO: cleanup format of backtrace[0]
+          attr_error("#{describe} failed validation: #{e.message}. See #{e.backtrace[2].clean_backtrace}")
         end
       end
     end

@@ -1014,7 +1014,7 @@ module JABA
 
       # remove the unwanted ':in ...' suffix from user level definition errors
       #
-      jdl_bt.map!{|l| l.sub(/:in .*/, '')}
+      jdl_bt.map!{|l| l.clean_backtrace}
       
       # Can contain unhelpful duplicates due to loops, make unique.
       #
