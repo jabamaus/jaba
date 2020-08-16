@@ -920,8 +920,8 @@ module JABA
     ##
     #
     def process_jdl_file(f)
-      # TODO: warn on dupes
-      # TODO: convert to absolute here?
+      f = f.to_absolute(clean: true)
+
       if @jdl_file_lookup.has_key?(f)
         JABA.error("'#{f}' multiply included")
       end
