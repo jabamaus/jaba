@@ -78,9 +78,9 @@ module JABA
       
       if @top_level_jaba_type.singleton
         if @root_nodes.size == 0
-          JABA.error("singleton type '#{type_id}' must be instantiated exactly once", errline: @top_level_jaba_type.src_loc)
+          JABA.error("singleton type '#{type_id}' must be instantiated exactly once", errobj: @top_level_jaba_type)
         elsif @root_nodes.size > 1
-          JABA.error("singleton type '#{type_id}' must be instantiated exactly once", errline: @root_nodes.last.src_loc)
+          JABA.error("singleton type '#{type_id}' must be instantiated exactly once", errobj: @root_nodes.last)
         end
       end
 
@@ -209,10 +209,10 @@ module JABA
 
     ##
     #
-    def node_from_handle(handle, fail_if_not_found: true, errline: nil)
+    def node_from_handle(handle, fail_if_not_found: true, errobj: nil)
       n = @node_lookup[handle]
       if !n && fail_if_not_found
-        JABA.error("Node with handle '#{handle}' not found", errline: errline)
+        JABA.error("Node with handle '#{handle}' not found", errobj: errobj)
       end
       n
     end
@@ -235,7 +235,7 @@ module JABA
       else
         "#{ref_node_id}"
       end
-      ref_node = rjt.generator.node_from_handle(handle, errline: attr.last_call_location)
+      ref_node = rjt.generator.node_from_handle(handle, errobj: attr)
       
       # Don't need to track node references when resolving references between the same types as this
       # happens after all the nodes have been set up, by which time the functionality is not needed.

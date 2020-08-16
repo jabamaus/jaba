@@ -124,7 +124,7 @@ module JABA
     end
     
     it 'checks for cyclic dependencies' do
-      check_fail '\'a\' contains a cyclic dependency', line: [__FILE__, 'tagF'] do
+      check_fail '\'a\' type contains a cyclic dependency', line: [__FILE__, 'tagF'] do
         jaba(barebones: true) do
           define :a do # tagF
             dependencies :c

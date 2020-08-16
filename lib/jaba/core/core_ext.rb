@@ -364,8 +364,7 @@ module JABACoreExt
         if c.size == 1
           result << c.first
         else
-          err_obj = c.first
-          JABA.error("'#{err_obj}' contains a cyclic dependency", errline: err_obj.src_loc)
+          JABA.error("#{c.first.describe} contains a cyclic dependency", errobj: c.first)
         end
       end
       replace(result)

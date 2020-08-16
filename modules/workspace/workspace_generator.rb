@@ -15,7 +15,7 @@ module JABA
     ##
     # For use by workspace generator. spec is either a defn_id or a wildcard match against projdir.
     # 
-    def get_matching_projects(projects, root, specs, errline:)
+    def get_matching_projects(projects, root, specs, errobj:)
       specs.each do |spec|
         if spec.string? && spec.wildcard?
           abs_spec = "#{root}/#{spec}"
@@ -23,7 +23,7 @@ module JABA
             File.fnmatch?(abs_spec, p.root)
            end
           if matches.empty?
-            jaba_warning("No projects matching spec '#{spec.inspect_unquoted}' found", errline: errline)
+            jaba_warning("No projects matching spec '#{spec.inspect_unquoted}' found", errobj: errobj)
           end
           projects.concat(matches)
         else # its an id
@@ -31,7 +31,7 @@ module JABA
             p.handle.start_with?("#{spec}|")
           end
           if matches.empty?
-            JABA.error("No projects matching spec '#{spec.inspect_unquoted}' found", errline: errline)
+            JABA.error("No projects matching spec '#{spec.inspect_unquoted}' found", errobj: errobj)
           end
           projects.concat(matches)
         end
@@ -53,10 +53,10 @@ module JABA
         projects = []
         projects_attr = wsn.get_attr(:projects)
         project_specs = projects_attr.value
-        get_matching_projects(projects, root, project_specs, errline: projects_attr.last_call_location)
+        get_matching_projects(projects, root, project_specs, errobj: projects_attr)
   
         if projects.empty?
-          JABA.error("No projects matched specs", errline: projects_attr.last_call_location)
+          JABA.error("No projects matched specs", errobj: projects_attr)
         end
   
         configs = {}

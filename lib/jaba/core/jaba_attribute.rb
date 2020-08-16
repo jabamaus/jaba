@@ -81,24 +81,24 @@ module JABA
     end
     
     ##
-    # Returns file and line number but using file basename instead of full path.
+    # Allows attributes to be treated the same as JDL_Object for error reporting.
     #
-    def last_call_loc_basename
-      "#{@last_call_location.path.basename}:#{@last_call_location.lineno}"
+    def src_loc
+      @last_call_location
     end
 
     ##
     #
     def jaba_warning(msg)
-      cs = @last_call_location ? @last_call_location : @attr_def.src_loc
-      services.jaba_warning(msg, errline: cs)
+      obj = @last_call_location ? self : @attr_def
+      services.jaba_warning(msg, errobj: obj)
     end
 
     ##
     #
     def attr_error(msg)
-      cs = @last_call_location ? @last_call_location : @attr_def.src_loc
-      JABA.error(msg, errline: cs)
+      obj = @last_call_location ? self : @attr_def
+      JABA.error(msg, errobj: obj)
     end
     
     ##

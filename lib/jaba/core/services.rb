@@ -83,11 +83,10 @@ module JABA
   end
 
   ##
-  # TODO: consider changing to errobj and making them all support src_loc?
-  # TODO: rename errline to src_loc?
-  def self.error(msg, errline: nil, callstack: nil, include_api: false, syntax: false)
+  #
+  def self.error(msg, errobj: nil, callstack: nil, include_api: false, syntax: false)
     e = JabaError.new(msg)
-    e.instance_variable_set(:@callstack, Array(errline || callstack || caller))
+    e.instance_variable_set(:@callstack, Array(errobj&.src_loc || callstack || caller))
     e.instance_variable_set(:@include_api, include_api)
     e.instance_variable_set(:@syntax, syntax)
     raise e
@@ -264,7 +263,7 @@ module JABA
       # Open top level JabaTypes so more attributes can be added
       #
       @open_type_defs.each do |d|
-        tlt = get_top_level_jaba_type(d.id, errline: d.src_loc)
+        tlt = get_top_level_jaba_type(d.id, errobj: d)
         tlt.eval_jdl(&d.block)
         tlt.open_sub_type_defs.each do |std|
           st = tlt.get_sub_type(std.id)
@@ -289,14 +288,14 @@ module JABA
       # Process instance definitions and assign them to a generator
       #
       @instance_defs.each do |d|
-        jt = get_top_level_jaba_type(d.jaba_type_id, errline: d.src_loc)
+        jt = get_top_level_jaba_type(d.jaba_type_id, errobj: d)
         jt.generator.register_instance_definition(d)
       end
 
       # Register instance open defs
       #
       @open_instance_defs.each do |d|
-        inst_def = get_instance_definition(d.jaba_type_id, d.id, errline: d.src_loc)
+        inst_def = get_instance_definition(d.jaba_type_id, d.id, errobj: d)
         inst_def.open_defs << d
       end
 
@@ -455,10 +454,10 @@ module JABA
 
     ##
     #
-    def get_top_level_jaba_type(id, fail_if_not_found: true, errline: nil)
+    def get_top_level_jaba_type(id, fail_if_not_found: true, errobj: nil)
       jt = @jaba_type_lookup[id]
       if !jt && fail_if_not_found
-        JABA.error("'#{id}' type not defined", errline: errline)
+        JABA.error("'#{id}' type not defined", errobj: errobj)
       end
       jt
     end
@@ -567,11 +566,11 @@ module JABA
     
     ##
     #
-    def get_instance_definition(type_id, id, fail_if_not_found: true, errline: nil)
+    def get_instance_definition(type_id, id, fail_if_not_found: true, errobj: nil)
       defs = @instance_def_lookup[type_id]
       d = defs&.find {|dd| dd.id == id}
       if !d && fail_if_not_found
-        JABA.error("'#{id}' instance not defined", errline: errline)
+        JABA.error("'#{id}' instance not defined", errobj: errobj)
       end
       d
     end
@@ -975,12 +974,16 @@ module JABA
 
     ##
     #
-    def jaba_warning(msg, **options)
+    def jaba_warning(msg, errobj: nil, **options)
       log_warning(msg)
       if @warn_object
         options[:callstack] = @warn_object.is_a?(JDL_Object) ? @warn_object.src_loc : @warn_object
       end
-      @warnings << make_jaba_error(msg, warn: true, **options).message
+      errline = nil
+      if errobj
+        errline = errobj.src_loc
+      end
+      @warnings << make_jaba_error(msg, errline: errline, warn: true, **options).message
       nil
     end
 
@@ -1049,10 +1052,12 @@ module JABA
       m << case err_type
       when :error
         'Error'
-      when :warn
+      when :warning
         'Warning'
       when :syntax
         'Syntax error'
+      else
+        raise "Invalid error type '#{err_type}'"
       end
       
       m << ' at'

@@ -186,7 +186,8 @@ module JABA
     end
 
     it 'handles duplicates' do
-      check_warn("When setting 't.a' array attribute stripping duplicate value '5'", __FILE__, 'tagU') do
+      line = find_line_number(__FILE__, 'tagL')
+      check_warn("When setting 't.a' array attribute stripping duplicate value '5'. See previous at test_attribute_array.rb:#{line}", __FILE__, 'tagU') do
         jaba(barebones: true) do
           define :test do
             attr_array :a # Duplicates will be stripped by default
@@ -196,8 +197,9 @@ module JABA
             attr_array :c, type: :bool
           end
           test :t do
-            a [4, 5, 5, 6, 6, 7, 7, 7, 8] # tagU
-            a.must_equal [4, 5, 6, 7, 8]
+            a [5] # tagL
+            a [5, 6, 6, 7, 7, 7, 8] # tagU
+            a.must_equal [5, 6, 7, 8]
             b [5, 5, 6, 6, 7, 7, 7] # duplicates allowed
             b.must_equal [5, 5, 6, 6, 7, 7, 7]
             c [true, false, false, true] # Never strips duplicates in bool arrays

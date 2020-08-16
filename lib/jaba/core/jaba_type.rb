@@ -37,6 +37,13 @@ module JABA
     end
 
     ##
+    # Used in error messages.
+    #
+    def describe
+      "'#{@handle}' type"
+    end
+
+    ##
     #
     def define_attr(id, variant, type: nil, key_type: nil, &block)
       services.log "  Defining '#{id}' attribute [variant=#{variant}, type=#{type}]"
@@ -173,7 +180,7 @@ module JABA
       # is useful for testing little jaba snippets where adding titles would be cumbersome.
       #
       if @title.nil? && !JABA.running_tests? && !services.input.barebones
-        JABA.error("Requires a title", errline: src_loc)
+        JABA.error("#{describe} requires a title", errobj: self)
       end
 
     rescue => e
