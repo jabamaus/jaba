@@ -163,7 +163,11 @@ module JABACoreExt
       parts = split(/[\/\\]/)
       parts.delete('.')
       parts.delete('')
-      parts.each do |p|
+      i = 0
+      s = parts.size
+      while i < s
+        p = parts[i]
+        i += 1
         if p == '..'
           case result.last
           when '..', nil

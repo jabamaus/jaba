@@ -41,7 +41,12 @@ module JABA
       @attributes = []
       @attribute_lookup = {}
       
-      jaba_type.attribute_defs.each do |attr_def|
+      i = 0
+      adefs = jaba_type.attribute_defs
+      s = adefs.size
+      while i < s
+        attr_def = adefs[i]
+        i += 1
         a = case attr_def.variant
             when :single
               JabaAttributeSingle.new(attr_def, self)
@@ -93,7 +98,11 @@ module JABA
       a = @attribute_lookup[attr_id]
       if !a
         if search
-          @referenced_nodes.each do |ref_node|
+          i = 0
+          s = @referenced_nodes.size
+          while i < s
+            ref_node = @referenced_nodes[i]
+            i += 1
             a = ref_node.get_attr(attr_id, fail_if_not_found: false, search: false)
             if a
               if a.attr_def.has_flag?(:expose)
@@ -140,7 +149,11 @@ module JABA
       if attr_id
         get_attr(attr_id).visit_attr(&block)
       else
-        @attributes.each do |a|
+        i = 0
+        s = @attributes.size
+        while i < s
+          a = @attributes[i]
+          i += 1
           next if skip_attr && a.defn_id == skip_attr
           next if type && !Array(type).include?(a.attr_def.type_id)
           next if skip_variant && skip_variant == a.attr_def.variant
@@ -188,7 +201,11 @@ module JABA
     ##
     # 
     def post_create
-      @attributes.each do |a|
+      i = 0
+      s = @attributes.size
+      while i < s
+        a = @attributes[i]
+        i += 1
         if !a.set? && a.required?
           JABA.error("#{a.describe} requires a value. See #{a.attr_def.src_loc.describe}", errobj: self)
         end

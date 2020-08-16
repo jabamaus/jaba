@@ -99,7 +99,11 @@ module JABA
         values.prepend(*default_values)
       end
 
-      values.each do |val|
+      i = 0
+      s = values.size
+      while i < s
+        val = values[i]
+        i += 1
         existing = nil
         if !@attr_def.has_flag?(:allow_dupes) && !@attr_def.node_by_value?
           existing = @elems.find{|e| e.value == val}
