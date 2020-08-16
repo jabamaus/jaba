@@ -16,7 +16,6 @@ To do:
 - rename $(root) to $(spec_root)?
 - Check attribute validators when parsing cmd line.
 - Should jaba target one 'language' (type) per run? Eg C++, C#
-- Better logging of exception errors. Never return a backtrace to cmd line - ugly.
 - Nasty that :export flag option always needs :no_delete
 - Use did_you_mean? Eg
   Error at basic_dll.jaba:8: 'defines' attribute not defined. Did you mean 'define'?
