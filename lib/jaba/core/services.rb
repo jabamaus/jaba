@@ -66,8 +66,14 @@ module JABA
 
   ##
   #
+  def self.modules_dir
+    "#{JABA.jaba_install_dir}/modules"
+  end
+
+  ##
+  #
   def self.temp_dir
-    '.jaba'
+    "#{JABA.invoking_dir}/.jaba"
   end
 
   ##
@@ -117,7 +123,6 @@ module JABA
       
       @warnings = []
       
-      @modules_root = "#{JABA.jaba_install_dir}/modules"
       @src_root = nil
       @jdl_files = []
       @jdl_includes = []
@@ -826,7 +831,7 @@ module JABA
       @@module_ruby_files_loaded = true
       plugin_files = []
 
-      Dir.glob("#{@modules_root}/**/*").each do |f|
+      Dir.glob("#{JABA.modules_dir}/**/*").each do |f|
         case f.extname
         when '.rb'
           plugin_files << f
@@ -843,7 +848,7 @@ module JABA
     #
     def load_module_jaba_files
       if input.barebones?
-        process_jdl_file("#{@modules_root}/core/globals.jaba") # globals always needs loading
+        process_jdl_file("#{JABA.modules_dir}/core/globals.jaba") # globals always needs loading
       else
         @@module_jaba_files.each do |f|
           process_jdl_file(f)
