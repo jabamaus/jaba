@@ -211,7 +211,7 @@ module JABA
         begin
           @elems.stable_sort!
         rescue StandardError
-          attr_error("Failed to sort #{decribe}. Might be missing <=> operator")
+          attr_error("Failed to sort #{describe}. Might be missing <=> operator")
         end
       end
     end
