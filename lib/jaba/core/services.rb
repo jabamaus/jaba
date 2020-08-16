@@ -193,32 +193,37 @@ module JABA
 
         @output[:warnings] = @warnings.uniq # Strip duplicate warnings
         @output
-      rescue JabaError => e
+      rescue => e
         # log the raw exception
         #
-        log e.full_message, :ERROR
+        log e.full_message(highlight: false), :ERROR
         @output[:error] = e.message
 
-        cs = e.instance_variable_get(:@callstack)
-        include_api = e.instance_variable_get(:@include_api)
-        err_type = e.instance_variable_get(:@syntax) ? :syntax : :error
-        
-        jdl_bt = get_jdl_backtrace(cs, err_type: err_type, include_api: include_api)
+        case e
+        when JabaError
+          cs = e.instance_variable_get(:@callstack)
+          include_api = e.instance_variable_get(:@include_api)
+          err_type = e.instance_variable_get(:@syntax) ? :syntax : :error
+          
+          jdl_bt = get_jdl_backtrace(cs, err_type: err_type, include_api: include_api)
 
-        if jdl_bt.empty? && err_type != :syntax
-          raise e.message
-        end
+          if jdl_bt.empty? && err_type != :syntax
+            raise
+          end
 
-        jdl_error_info(e.message, jdl_bt, err_type: err_type) do |msg, file, line|
-          @output[:error] = msg
+          jdl_error_info(e.message, jdl_bt, err_type: err_type) do |msg, file, line|
+            @output[:error] = msg
 
-          # Raise final JDLError
-          #
-          e = JDLError.new(msg)
-          e.instance_variable_set(:@file, file)
-          e.instance_variable_set(:@line, line)
-          e.set_backtrace(jdl_bt)
-          raise e
+            # Raise final JDLError
+            #
+            e = JDLError.new(msg)
+            e.instance_variable_set(:@file, file)
+            e.instance_variable_set(:@line, line)
+            e.set_backtrace(jdl_bt)
+            raise e
+          end
+        else
+          raise
         end
       ensure
         term_log
