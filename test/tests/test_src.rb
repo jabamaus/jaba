@@ -32,6 +32,7 @@ module JABA
         jaba(cpp_app: true, dry_run: true) do
           cpp :app do
             src ['a.cpp'] # tagA
+            src ['c.cpp'], :force
           end
         end
       end
@@ -49,6 +50,7 @@ module JABA
         jaba(cpp_app: true, dry_run: true) do
           cpp :app do
             src ['a/*.*'], :force # tagB
+            src ['b.cpp'], :force
           end
         end
       end
@@ -59,7 +61,8 @@ module JABA
       check_warn "'b/*' did not match any src files", __FILE__, 'tagF' do
         proj = jaba(cpp_app: true, dry_run: true) do
           cpp :app do
-            src ['.a', 'b/*'] # tagF
+            src ['b/*'] # tagF
+            src ['.a']
           end
         end
         proj[:src].must_equal(['.a'])

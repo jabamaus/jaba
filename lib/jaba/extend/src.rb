@@ -58,12 +58,12 @@ module JABA
         if spec.wildcard?
           if force
             JABA.error('Wildcards are not allowed when force adding src - ' \
-              'only explicitly specified source files', errobj: src_attr)
+              'only explicitly specified source files', errobj: elem)
           end
           glob_matches = file_manager.glob(abs_spec)
         else # else its an explicitly specified file or directory
           if !file_manager.exist?(abs_spec) && !force
-            JABA.error("'#{spec}' does not exist on disk. Use :force to add anyway.", errobj: src_attr)
+            JABA.error("'#{spec}' does not exist on disk. Use :force to add anyway.", errobj: elem)
           end
 
           # If its a directory add files recursively, else add single file
@@ -77,7 +77,7 @@ module JABA
 
         if glob_matches
           if glob_matches.empty?
-            services.jaba_warn("'#{spec}' did not match any #{src_attr_id} files ", errobj: src_attr)
+            services.jaba_warn("'#{spec}' did not match any #{src_attr_id} files ", errobj: elem)
           else
             matching = glob_matches.select{|f| extensions.include?(f.extname)}
             # It is valid for matching to be empty here, eg if file type is not wanted on this platfom
@@ -108,7 +108,7 @@ module JABA
       end
 
       if src.empty?
-        JABA.error("'#{@node.defn_id}' does not have any source files", errobj: @node)
+        JABA.error("#{@node.describe} does not have any source files", errobj: @node)
       end
 
       src.sort!{|x, y| x.absolute_path.casecmp(y.absolute_path)}

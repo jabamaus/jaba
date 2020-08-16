@@ -3,7 +3,6 @@
 To do:
 
 - Support for node-by-value attribute
-- Investigate Error at jabaruby.jaba:57: 'parse.c' does not exist on disk. Use :force to add anyway. Wrong line was being reported.
 - Disallow globals from referencing itself
 - Maybe add open_globals_type and open_globals_inst?
 - Allow default values to take options?
@@ -38,7 +37,6 @@ To do:
 - test opening sub types
 - Have a command line switch to make all error messages contain absolute paths
 - Sort jaba input/output files
-- Add 'describe' method to everything which can be used as standard in error and log messages
 - How customise jaba output file? Subclass vcxproj or jdl definition, or something else?
 - support for 'overriding' attribute defs when opening types
 - make_generator should be able to make subclasses of eg CppGenerator
