@@ -21,7 +21,7 @@ module JABA
     #
     def define_hook(id, &block)
       if @hooks.key?(id)
-        raise "'#{id}' hook multiply defined"
+        JABA.error("'#{id}' hook multiply defined")
       end
       hook = block_given? ? block : :not_set
       @hooks[id] = hook
@@ -37,7 +37,7 @@ module JABA
     #
     def set_hook(id, &block)
       if !hook_defined?(id)
-        raise "'#{id}' hook not defined"
+        JABA.error("'#{id}' hook not defined")
       end
       on_hook_defined(id)
       @hooks[id] = block
@@ -48,10 +48,10 @@ module JABA
     def call_hook(id, *args, receiver: self, fail_if_not_set: false, **keyval_args)
       block = @hooks[id]
       if !block
-        raise "'#{id}' hook not defined"
+        JABA.error("'#{id}' hook not defined")
       elsif block == :not_set
         if fail_if_not_set
-          raise "'#{id}' not set - cannot call'"
+          JABA.error("'#{id}' not set - cannot call'")
         end
         return nil
       else

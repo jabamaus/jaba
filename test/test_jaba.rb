@@ -117,8 +117,8 @@ module JABA
 
     ##
     #
-    def check_fail(msg, exception: JDLError, line: nil, trace: nil)
-      e = assert_raises exception do
+    def check_fail(msg, line: nil, trace: nil)
+      e = assert_raises JDLError do
         yield
       end
       

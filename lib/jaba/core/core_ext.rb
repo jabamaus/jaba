@@ -95,7 +95,7 @@ module JABACoreExt
     ##
     #
     def validate_path
-      raise 'block expected' if !block_given?
+      JABA.error('block expected') if !block_given?
       if include?('\\')
         yield 'contains backslashes'
       end
@@ -136,7 +136,7 @@ module JABACoreExt
         base_parts.shift
       end
       if (!parts.empty? && parts[0].absolute_path?) || (!base_parts.empty? && base_parts[0].absolute_path?)
-        raise "Cannot turn '#{self}' into a relative path from '#{base}' - paths are unrelated"
+        JABA.error("Cannot turn '#{self}' into a relative path from '#{base}' - paths are unrelated")
       end
       result = []
       if !no_dot_dot
@@ -248,7 +248,7 @@ module JABACoreExt
     ##
     #
     def capitalize_first!
-      raise "Cannot capitalze empty string" if empty?
+      JABA.error("Cannot capitalze empty string") if empty?
       self[0] = self[0].chr.upcase
       self
     end
@@ -364,9 +364,8 @@ module JABACoreExt
         if c.size == 1
           result << c.first
         else
-          e = TSort::Cyclic.new
-          e.instance_variable_set(:@err_obj, c.first)
-          raise e
+          err_obj = c.first
+          JABA.error("'#{err_obj}' contains a cyclic dependency", errline: err_obj.src_loc)
         end
       end
       replace(result)
@@ -463,7 +462,7 @@ module JABACoreExt
       when :rel_jaba_root
         "#{path.relative_path_from(JABA.jaba_install_dir)}:#{lineno}"
       else
-        raise "Unsupported style '#{style}'"
+        JABA.error("Unsupported style '#{style}'")
       end
     end
 

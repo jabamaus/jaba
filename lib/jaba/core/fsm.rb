@@ -14,7 +14,7 @@ module JABA
     #
     def initialize(initial: nil, events: nil, &block)
       super()
-      raise 'block required' if !block_given?
+      JABA.error('block required') if !block_given?
       @states = []
       @events = Array(events)
       @on_run = nil
@@ -57,7 +57,7 @@ module JABA
     #
     def get_state(id)
       s = @states.find{|s| s.id == id}
-      raise "'#{id}' state not defined" if !s
+      JABA.error("'#{id}' state not defined") if !s
       s
     end
 

@@ -83,14 +83,12 @@ module JABA
 
   ##
   # TODO: consider changing to errobj and making them all support src_loc?
-  # TODO: is callstack necessary?
   # TODO: rename errline to src_loc?
-  def self.error(msg, callstack: nil, errline: nil)
+  def self.error(msg, errline: nil, callstack: nil, include_api: false, syntax: false)
     e = JabaError.new(msg)
-    cs = Array(errline || callstack)
-    if !cs.empty?
-      e.instance_variable_set(:@cs, cs)
-    end
+    e.instance_variable_set(:@callstack, Array(errline || callstack || caller))
+    e.instance_variable_set(:@include_api, include_api)
+    e.instance_variable_set(:@syntax, syntax)
     raise e
   end
 
@@ -191,36 +189,32 @@ module JABA
 
         @output[:warnings] = @warnings.uniq # Strip duplicate warnings
         @output
-      rescue CommandLineUsageError
-        raise
-      rescue => e
+      rescue JabaError => e
         # log the raw exception
         #
         log e.full_message, :ERROR
         @output[:error] = e.message
 
-        # Does the backtrace contain .jaba files? If so customise the info
-        #
-        cs = nil
-        if e.instance_variable_defined?(:@cs)
-          cs = e.instance_variable_get(:@cs)
-        end
-        bt = cs ? cs : e.backtrace
-        jdl_bt = get_jdl_backtrace(bt, include_api: false)
+        cs = e.instance_variable_get(:@callstack)
+        include_api = e.instance_variable_get(:@include_api)
+        err_type = e.instance_variable_get(:@syntax) ? :syntax : :error
+        jdl_bt = get_jdl_backtrace(cs, err_type: err_type, include_api: include_api)
 
-        if jdl_bt
-          jdl_error_info(e.message, jdl_bt, type: :error) do |msg, file, line|
-            @output[:error] = msg
-
-            e = JDLError.new(msg)
-            e.instance_variable_set(:@file, file)
-            e.instance_variable_set(:@line, line)
-            e.set_backtrace(jdl_bt)
-            raise e
-          end
+        if jdl_bt.empty? && err_type != :syntax
+          raise e.message
         end
-        
-        raise
+
+        jdl_error_info(e.message, jdl_bt, err_type: err_type) do |msg, file, line|
+          @output[:error] = msg
+
+          # Raise final JDLError
+          #
+          e = JDLError.new(msg)
+          e.instance_variable_set(:@file, file)
+          e.instance_variable_set(:@line, line)
+          e.set_backtrace(jdl_bt)
+          raise e
+        end
       ensure
         term_log
       end
@@ -282,12 +276,7 @@ module JABA
       # type is added. JabaTypes are dependency order sorted to ensure that referenced JabaNodes are created
       # before the JabaNode that are referencing it.
       #
-      begin
-        @top_level_jaba_types.sort_topological!(:dependencies)
-      rescue TSort::Cyclic => e
-        err_type = e.instance_variable_get(:@err_obj)
-        JABA.error("'#{err_type}' contains a cyclic dependency", errline: err_type.src_loc)
-      end
+      @top_level_jaba_types.sort_topological!(:dependencies)
 
       log 'Initialisation of JabaTypes complete'
 
@@ -872,7 +861,14 @@ module JABA
       # Definitions can also be provided in a block form
       #
       Array(input.definitions).each do |block|
-        @jdl_files << block.source_location[0]
+        block_file = block.source_location[0].cleanpath
+
+        # Special case when running tests. test_jaba.rb includes definition blocks as part of test setup. Don't
+        # consider test_jaba as a jaba src file as it confuses error handling
+        #
+        if !JABA.running_tests? || block_file !~ /test\/test_jaba\.rb/
+          @jdl_files << block_file
+        end
         execute_jdl(&block)
       end
 
@@ -988,10 +984,16 @@ module JABA
 
     ##
     #
-    def get_jdl_backtrace(backtrace, include_api: false)
+    def get_jdl_backtrace(callstack, err_type:, include_api: false)
+      # With ruby ScriptErrors there is no useful bactrace 
+      #
+      if err_type == :syntax
+        return []
+      end
+
       # Clean up callstack which could be in 'caller' or 'caller_locations' form.
       #
-      backtrace = backtrace.map do |l|
+      callstack = callstack.map do |l|
         if l.is_a?(::Thread::Backtrace::Location)
           "#{l.absolute_path}:#{l.lineno}"
         else
@@ -1003,24 +1005,33 @@ module JABA
 
       # Extract any lines in the callstack that contain references to definition source files.
       #
-      jdl_backtrace = backtrace.select {|c| candidates.any? {|sf| c.include?(sf)}}
-      return nil if jdl_backtrace.empty?
+      jdl_bt = callstack.select {|c| candidates.any? {|sf| c.include?(sf)}}
 
       # remove the unwanted ':in ...' suffix from user level definition errors
       #
-      jdl_backtrace.map!{|l| l.sub(/:in .*/, '')}
+      jdl_bt.map!{|l| l.sub(/:in .*/, '')}
       
       # Can contain unhelpful duplicates due to loops, make unique.
       #
-      jdl_backtrace.uniq!
+      jdl_bt.uniq!
 
-      jdl_backtrace
+      jdl_bt
     end
 
     ##
     #
-    def jdl_error_info(msg, backtrace, type: :error)
-      err_line = backtrace[0]
+    def jdl_error_info(msg, backtrace, err_type: :error)
+      if err_type == :syntax
+        # With ruby ScriptErrors there is no useful callstack. The error location is in the msg itself.
+        #
+        err_line = msg
+
+        # Delete ruby's way of reporting syntax errors in favour of our own
+        #
+        msg = msg.sub(/^.* syntax error, /, '')
+      else
+        err_line = backtrace[0]
+      end
       
       # Extract file and line information from the error line.
       #
@@ -1033,7 +1044,7 @@ module JABA
 
       m = String.new
       
-      m << case type
+      m << case err_type
       when :error
         'Error'
       when :warn

@@ -267,20 +267,21 @@ module JABA
     ##
     #
     def validate
-      # Insist on the attribute having a title, unless running unit tests or in barebones mode. Barebones mode
-      # is useful for testing little jaba snippets where adding titles would be cumbersome.
-      #
-      if @title.nil? && !JABA.running_tests? && !services.input.barebones
-        JABA.error("#{describe} requires a title")
-      end
-
       call_validators(describe) do
+
+        # Insist on the attribute having a title, unless running unit tests or in barebones mode. Barebones mode
+        # is useful for testing little jaba snippets where adding titles would be cumbersome.
+        #
+        if @title.nil? && !JABA.running_tests? && !services.input.barebones
+          JABA.error("#{describe} requires a title")
+        end
+
         @jaba_attr_type.post_init_attr_def(self)
   
         @jaba_attr_flags.each do |jaf|
           begin
             jaf.compatible?(self)
-          rescue JabaError => e
+          rescue => e
             JABA.error("'#{jaf.id.inspect_unquoted}' flag is incompatible: #{e.message}")
           end
         end
@@ -293,7 +294,8 @@ module JABA
       services.set_warn_object(self) do
         begin
           yield
-        rescue JabaError => e
+        rescue => e
+          # TODO: remove the failed validation part - superfluous
           JABA.error("#{what} failed validation: #{e.message}", callstack: e.backtrace)
         end
       end

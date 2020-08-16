@@ -81,7 +81,7 @@ module JABA
     end
 
     it 'fails if set undefined property' do
-      e = assert_raises RuntimeError do
+      e = assert_raises do
         pc = PropertyContainer.new
         pc.set_property(:a)
       end
@@ -89,19 +89,19 @@ module JABA
     end
 
     it 'fails if property multiply defined' do
-      e = assert_raises RuntimeError do
+      e = assert_raises do
         pc = PropertyContainer.new
         pc.define_property(:a)
         pc.define_property(:a)
       end
       e.message.must_equal("'a' property multiply defined")
-      e = assert_raises RuntimeError do
+      e = assert_raises do
         pc = PropertyContainer.new
         pc.define_array_property(:a)
         pc.define_array_property(:a)
       end
       e.message.must_equal("'a' property multiply defined")
-      e = assert_raises RuntimeError do
+      e = assert_raises do
         pc = PropertyContainer.new
         pc.define_property(:a)
         pc.define_array_property(:a)
@@ -112,7 +112,7 @@ module JABA
     it 'stays as either a single value or array' do
       pc = PropertyContainer.new
       pc.define_property(:a, 1)
-      assert_raises RuntimeError do
+      assert_raises do
         pc.set_property(:a, [1])
       end.message.must_equal("'a' property cannot accept an array")
       pc.define_property(:b)

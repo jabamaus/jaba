@@ -35,7 +35,7 @@ module JABA
     ##
     #
     def from_string(str)
-      raise "from_string(str) must be implemented in #{self.class}"
+      JABA.error("from_string(str) must be implemented in #{self.class}")
     end
 
     ##

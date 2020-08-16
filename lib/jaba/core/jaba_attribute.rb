@@ -107,7 +107,7 @@ module JABA
       services.set_warn_object(@last_call_location) do
         begin
           yield
-        rescue JabaError => e
+        rescue => e
           attr_error("#{describe} failed validation: #{e.message}. See #{e.backtrace[0]}") # TODO: cleanup format of backtrace[0]
         end
       end

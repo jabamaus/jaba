@@ -84,19 +84,19 @@ module JABA
         'a/../b/.././c'.relative_path_from('d').must_equal('../c')
         'C:/a/b/c'.relative_path_from('C:/a/b').must_equal('c')
         'C:/a/b/c/d/e/f.rb:12'.relative_path_from('C:/a/b/c').must_equal('d/e/f.rb:12') # test can use on ruby source file locations
-        assert_raises RuntimeError do
+        assert_raises do
           'a'.relative_path_from('/')
         end.message.must_match("Cannot turn 'a' into a relative path from '/' - paths are unrelated")
-        assert_raises RuntimeError do
+        assert_raises do
           'a'.relative_path_from("C:")
         end
-        assert_raises RuntimeError do
+        assert_raises do
           'C:/'.relative_path_from('D:/')
         end.message.must_match('paths are unrelated')
-        assert_raises RuntimeError do
+        assert_raises do
           'C:/'.relative_path_from('D:/a/b/c')
         end.message.must_match('paths are unrelated')
-        assert_raises RuntimeError do
+        assert_raises do
           'C:/a/b/c'.relative_path_from('x/y/z')
         end.message.must_match('paths are unrelated')
         '//a/b'.relative_path_from('//a/b/c').must_equal('..')

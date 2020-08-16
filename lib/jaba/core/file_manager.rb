@@ -128,7 +128,7 @@ module JABA
     #
     def new_file(filename, eol: :unix, encoding: nil, capacity: nil, track: true)
       if !ValidEols.include?(eol)
-        raise "'#{eol.inspect}' is an invalid eol style. Valid values: #{ValidEols.inspect}"
+        JABA.error("'#{eol.inspect}' is an invalid eol style. Valid values: #{ValidEols.inspect}")
       end
       JabaFile.new(self, filename.to_absolute(clean: true), encoding, eol, capacity, track)
     end
@@ -143,7 +143,7 @@ module JABA
       end
 
       if @generated_lookup.key?(fn)
-        raise "Duplicate filename '#{fn}' detected"
+        JABA.error("Duplicate filename '#{fn}' detected")
       end
 
       existing = read(fn, encoding: file.encoding)
@@ -197,7 +197,7 @@ module JABA
       if str.nil?
         if !exist?(fn)
           if fail_if_not_found
-            raise "'#{fn}' does not exist - cannot read"
+            JABA.error("'#{fn}' does not exist - cannot read")
           else
             return nil
           end

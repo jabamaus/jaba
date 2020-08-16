@@ -29,7 +29,7 @@ module JABA
     #
     def process_src(src_attr_id, src_ext_attr_id)
       if !defined?(@node)
-        raise "process_src requires @node instance variable to be set"
+        JABA.error("process_src requires @node instance variable to be set")
       end
       services = @node.services
       if !defined?(@root)

@@ -176,7 +176,7 @@ module JABA
         JABA.error("Requires a title", errline: src_loc)
       end
 
-    rescue JabaError => e
+    rescue => e
       JABA.error("'#{defn_id}' type failed validation: #{e.message}", callstack: e.backtrace)
     end
 
