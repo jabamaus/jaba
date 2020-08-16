@@ -7,7 +7,7 @@ module JABA
     it 'supports a default' do
       # It validates default is an array
       #
-      check_fail "'a' array attribute default must be an array not a 'Integer'", line: [__FILE__, 'tagV'] do
+      check_fail2 "Error at #{src_loc(__FILE__, :tagV)}: 'a' array attribute default must be an array not a 'Integer'." do
         jaba(barebones: true) do
           define :test do
             attr_array :a do
@@ -19,7 +19,7 @@ module JABA
 
       # It validates default is an array when block form is used
       #
-      check_fail "'t.a' array attribute default requires an array not a 'Integer'", line: [__FILE__, 'tagO'] do
+      check_fail2 "Error at #{src_loc(__FILE__, :tagO)}: 't.a' array attribute default requires an array not a 'Integer'." do
         jaba(barebones: true) do
           define :test do
             attr_array :a do # tagO
@@ -34,7 +34,7 @@ module JABA
       
       # It validates default elements respect attribute type
       #
-      check_fail "'a' array attribute default failed validation: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagD'] do
+      check_fail2 "Error at #{src_loc(__FILE__, :tagD)}: 'a' array attribute default failed validation: 'not a symbol' must be a symbol but was a 'String'." do
         jaba(barebones: true) do
           define :test do
             attr_array :a, type: :symbol do
@@ -46,7 +46,7 @@ module JABA
 
       # It validates default elements respect attribute type when block form used
       #
-      check_fail "'t.a' array attribute failed validation: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagW'] do
+      check_fail2 "Error at #{src_loc(__FILE__, :tagW)}: 't.a' array attribute failed validation: 'not a symbol' must be a symbol but was a 'String'." do
         jaba(barebones: true) do
           define :test do
             attr_array :a, type: :symbol do # tagW

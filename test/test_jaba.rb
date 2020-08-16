@@ -101,6 +101,12 @@ module JABA
     end
     
     ##
+    #
+    def src_loc(file, tag)
+      "#{file.basename}:#{find_line_number(file, tag)}"
+    end
+
+    ##
     # Helper for testing error reporting.
     #
     def find_line_number(file, spec)
@@ -142,6 +148,25 @@ module JABA
       e
     end
     
+    ##
+    #
+    def check_fail2(msg, trace: nil)
+      e = assert_raises JDLError do
+        yield
+      end
+      
+      e.message.must_equal(msg)
+
+      if trace
+        backtrace = []
+        trace.each_slice(2) do |elem|
+          backtrace << "#{elem[0]}:#{find_line_number(elem[0], elem[1])}"
+        end
+        e.backtrace.slice(1, backtrace.size).must_equal(backtrace)
+      end
+      e
+    end
+
     ##
     #
     def check_warn(msg, expected_file = nil, tag = nil)
