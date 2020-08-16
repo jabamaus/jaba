@@ -944,12 +944,6 @@ module JABA
 
     ##
     #
-    def log_warning(msg, **options)
-      log(msg, :WARN, **options)
-    end
-
-    ##
-    #
     def term_log
       return if !@log_msgs
       log_fn = JABA.log_file
@@ -964,7 +958,7 @@ module JABA
     ##
     #
     def jaba_warn(msg, errobj: nil)
-      log_warning(msg)
+      log(msg, :WARN)
       errline = nil
       if errobj
         errline = errobj.src_loc
