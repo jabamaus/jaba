@@ -176,7 +176,9 @@ module JABA
         log "Starting Jaba at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}", section: true
         
         duration = JABA.milli_timer do
-          JABA.profile(input.profile) do
+          # Too early for input manager to process cmd line so check --profile the old fashioned way
+          #
+          JABA.profile(input.argv.include?('--profile')) do
             do_run
             build_jaba_output
           end
