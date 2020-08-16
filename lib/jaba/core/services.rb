@@ -39,6 +39,7 @@ module JABA
 
   class JabaError < StandardError ; end
 
+  @@invoking_dir = Dir.getwd.freeze
   @@running_tests = false
 
   # Maximum length of attribute etc title string.
@@ -53,8 +54,8 @@ module JABA
 
   ##
   # 
-  def self.cwd
-    @@cwd ||= Dir.getwd
+  def self.invoking_dir
+    @@invoking_dir
   end
   
   ##
@@ -198,6 +199,7 @@ module JABA
         cs = e.instance_variable_get(:@callstack)
         include_api = e.instance_variable_get(:@include_api)
         err_type = e.instance_variable_get(:@syntax) ? :syntax : :error
+        
         jdl_bt = get_jdl_backtrace(cs, err_type: err_type, include_api: include_api)
 
         if jdl_bt.empty? && err_type != :syntax
@@ -240,7 +242,7 @@ module JABA
             @src_root = Regexp.last_match(1)
           end
           if @src_root.nil?
-            @src_root = JABA.cwd
+            @src_root = JABA.invoking_dir
           end
         end
 

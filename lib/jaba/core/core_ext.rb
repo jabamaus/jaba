@@ -227,7 +227,7 @@ module JABACoreExt
       if absolute_path?
         clean ? cleanpath : self
       else
-        abs = "#{JABA.cwd}/#{self}"
+        abs = "#{JABA.invoking_dir}/#{self}"
         clean ? abs.cleanpath : abs
       end
     end
