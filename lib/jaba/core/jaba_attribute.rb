@@ -113,7 +113,7 @@ module JABA
 
     ##
     #
-    def handle_attribute_block(__api_call_loc, id:, &block)
+    def value_from_block(__api_call_loc, id:, &block)
       if @attr_def.node_by_value?
         node_type = @attr_def.node_type
         g = services.get_generator(node_type)
@@ -178,7 +178,7 @@ module JABA
       end
 
       new_value = if block_given?
-        handle_attribute_block(__api_call_loc, id: "#{@attr_def.defn_id}", &block)
+        value_from_block(__api_call_loc, id: "#{@attr_def.defn_id}", &block)
       else
         if @attr_def.node_by_value? && !@outer_attr
           attr_error("Node attributes require a block")

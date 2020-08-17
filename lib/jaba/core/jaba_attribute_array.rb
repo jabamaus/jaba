@@ -64,16 +64,16 @@ module JABA
       # wants to just set some excludes.
       #
       values = if block_given?
-        Array(handle_attribute_block(__api_call_loc, id: "#{@attr_def.defn_id}[#{@elems.size}]", &block))
+        value_from_block(__api_call_loc, id: "#{@attr_def.defn_id}[#{@elems.size}]", &block)
       else
         if @attr_def.node_by_value?
           attr_error("Node attributes require a block")
         end
-        args.shift
-      end
-
-      if values && !values.array?
-        attr_error("#{describe} requires an array not a '#{values.class}'")
+        arg = args.shift
+        if arg && !arg.array?
+          attr_error("#{describe} requires an array not a '#{arg.class}'")
+        end
+        arg
       end
 
       values = Array(values)
