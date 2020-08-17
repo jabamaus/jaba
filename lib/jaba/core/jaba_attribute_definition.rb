@@ -62,11 +62,10 @@ module JABA
       # Custom hash attribute setup
       #
       if hash?
-        case @key_type_id
-        when :symbol, :string
+        if @key_type_id
           @jaba_attr_key_type = services.get_attribute_type(@key_type_id)
         else
-          JABA.error("#{describe} :key_type must be set to either :symbol or :string")
+          JABA.error("#{describe} must specify :key_type [#{services.jaba_attr_types.map{|t| t.id.inspect}.join(', ')}]")
         end
 
         # Attributes that are stored as values in a hash have their corresponding key stored in their options. This is

@@ -108,6 +108,7 @@ module JABA
     attr_reader :file_manager
     attr_reader :globals
     attr_reader :globals_node
+    attr_reader :jaba_attr_types
 
     @@module_ruby_files_loaded = false
     @@module_jaba_files = []
