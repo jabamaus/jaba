@@ -63,22 +63,13 @@ module JABA
       # It is possible for values to be nil, which happens if no args are passed. This can happen if the user
       # wants to just set some excludes.
       #
-      values = nil
-      if block_given?
-        if @attr_def.node_by_value?
-          node_type = @attr_def.node_type
-          g = services.get_generator(node_type)
-          g.push_definition(services.make_definition(@attr_def.defn_id, block, __api_call_loc)) do
-            values = Array(g.make_node(name: "#{@attr_def.defn_id}[#{@elems.size}]", parent: @node))
-          end
-        else
-          values = @node.eval_jdl(&block)
-        end
+      values = if block_given?
+        Array(handle_attribute_block(__api_call_loc, id: "#{@attr_def.defn_id}[#{@elems.size}]", &block))
       else
         if @attr_def.node_by_value?
           attr_error("Node attributes require a block")
         end
-        values = args.shift
+        args.shift
       end
 
       if values && !values.array?
