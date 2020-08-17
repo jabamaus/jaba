@@ -1,0 +1,265 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>jabaruby</ProjectName>
+    <ProjectGuid>{D9DD1EE0-34B4-525F-9633-AA62B2B21D48}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>jabaruby</RootNamespace>
+    <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>..\build\bin\x86_64\Debug\</OutDir>
+    <IntDir>..\obj\Debug\</IntDir>
+    <TargetName>jabaruby_debug</TargetName>
+    <TargetExt>.exe</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\..\bin\</OutDir>
+    <IntDir>..\obj\Release\</IntDir>
+    <TargetName>jabaruby</TargetName>
+    <TargetExt>.exe</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Link>
+      <LinkIncremental>false</LinkIncremental>
+      <AdditionalDependencies>imagehlp.lib;iphlpapi.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\ruby;..\..\..\ruby\include;..\..\..\ruby\.ext\include\x64-mswin64_140;..\..\..\ruby\enc\unicode\12.1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>JSON_GENERATOR;LOAD_RELATIVE;RUBY_EXPORT;CANONICALIZATION_FOR_MATHN;DISABLE_RUBYGEMS=1;_WIN32_WINNT=0x0600;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Link>
+      <LinkIncremental>false</LinkIncremental>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <AdditionalDependencies>imagehlp.lib;iphlpapi.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\ruby;..\..\..\ruby\include;..\..\..\ruby\.ext\include\x64-mswin64_140;..\..\..\ruby\enc\unicode\12.1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>JSON_GENERATOR;LOAD_RELATIVE;RUBY_EXPORT;CANONICALIZATION_FOR_MATHN;DISABLE_RUBYGEMS=1;_WIN32_WINNT=0x0600;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\jaba_ext.c" />
+    <ClInclude Include="..\..\..\ruby\addr2line.h" />
+    <ClCompile Include="..\..\..\ruby\array.c" />
+    <ClCompile Include="..\..\..\ruby\ast.c" />
+    <ClCompile Include="..\..\..\ruby\bignum.c" />
+    <ClInclude Include="..\..\..\ruby\builtin.h" />
+    <ClCompile Include="..\..\..\ruby\class.c" />
+    <ClCompile Include="..\..\..\ruby\compar.c" />
+    <ClCompile Include="..\..\..\ruby\compile.c" />
+    <ClCompile Include="..\..\..\ruby\complex.c" />
+    <ClInclude Include="..\..\..\ruby\constant.h" />
+    <ClCompile Include="..\..\..\ruby\cont.c" />
+    <MASM Include="..\..\..\ruby\coroutine\win64\Context.asm" />
+    <ClCompile Include="..\..\..\ruby\debug.c" />
+    <ClCompile Include="..\..\..\ruby\debug_counter.c" />
+    <ClInclude Include="..\..\..\ruby\debug_counter.h" />
+    <ClCompile Include="..\..\..\ruby\dir.c" />
+    <ClInclude Include="..\..\..\ruby\dln.h" />
+    <ClCompile Include="..\..\..\ruby\dln_find.c" />
+    <ClCompile Include="..\..\..\ruby\dmydln.c" />
+    <ClCompile Include="..\..\..\ruby\enc\ascii.c" />
+    <ClCompile Include="..\..\..\ruby\enc\trans\newline.c" />
+    <ClCompile Include="..\..\..\ruby\enc\unicode.c" />
+    <ClCompile Include="..\..\..\ruby\enc\us_ascii.c" />
+    <ClCompile Include="..\..\..\ruby\enc\utf_8.c" />
+    <ClInclude Include="..\..\..\ruby\encindex.h" />
+    <ClCompile Include="..\..\..\ruby\encoding.c" />
+    <ClCompile Include="..\..\..\ruby\enum.c" />
+    <ClCompile Include="..\..\..\ruby\enumerator.c" />
+    <ClCompile Include="..\..\..\ruby\error.c" />
+    <ClCompile Include="..\..\..\ruby\eval.c" />
+    <ClInclude Include="..\..\..\ruby\eval_intern.h" />
+    <ClCompile Include="..\..\..\ruby\ext\digest\digest.c" />
+    <ClInclude Include="..\..\..\ruby\ext\digest\digest.h" />
+    <ClCompile Include="..\..\..\ruby\ext\digest\sha1\sha1.c" />
+    <ClInclude Include="..\..\..\ruby\ext\digest\sha1\sha1.h" />
+    <ClInclude Include="..\..\..\ruby\ext\digest\sha1\sha1cc.h" />
+    <ClCompile Include="..\..\..\ruby\ext\digest\sha1\sha1init.c" />
+    <ClInclude Include="..\..\..\ruby\ext\digest\sha1\sha1ossl.h" />
+    <ClInclude Include="..\..\..\ruby\ext\json\fbuffer\fbuffer.h" />
+    <ClCompile Include="..\..\..\ruby\ext\json\generator\generator.c" />
+    <ClInclude Include="..\..\..\ruby\ext\json\generator\generator.h" />
+    <ClCompile Include="..\..\..\ruby\ext\json\parser\parser.c" />
+    <ClInclude Include="..\..\..\ruby\ext\json\parser\parser.h" />
+    <ClCompile Include="..\..\..\ruby\file.c" />
+    <ClCompile Include="..\..\..\ruby\gc.c" />
+    <ClInclude Include="..\..\..\ruby\gc.h" />
+    <ClCompile Include="..\..\..\ruby\hash.c" />
+    <ClInclude Include="..\..\..\ruby\hrtime.h" />
+    <ClInclude Include="..\..\..\ruby\id.h" />
+    <ClInclude Include="..\..\..\ruby\id_table.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\assert.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\backward.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\backward\classext.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\backward\cxxanyargs.hpp" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\backward\rubyio.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\backward\rubysig.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\backward\st.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\backward\util.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\debug.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\defines.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\encoding.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\intern.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\io.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\missing.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\onigmo.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\oniguruma.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\re.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\regex.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\ruby.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\st.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\subst.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\thread.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\thread_native.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\util.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\version.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\vm.h" />
+    <ClInclude Include="..\..\..\ruby\include\ruby\win32.h" />
+    <ClCompile Include="..\..\..\ruby\inits.c" />
+    <ClInclude Include="..\..\..\ruby\internal.h" />
+    <ClCompile Include="..\..\..\ruby\io.c" />
+    <ClCompile Include="..\..\..\ruby\iseq.c" />
+    <ClInclude Include="..\..\..\ruby\iseq.h" />
+    <ClCompile Include="..\..\..\ruby\load.c" />
+    <ClCompile Include="..\..\..\ruby\main.c" />
+    <ClCompile Include="..\..\..\ruby\marshal.c" />
+    <ClCompile Include="..\..\..\ruby\math.c" />
+    <ClInclude Include="..\..\..\ruby\method.h" />
+    <ClCompile Include="..\..\..\ruby\miniinit.c" />
+    <ClCompile Include="..\..\..\ruby\missing\crypt.c" />
+    <ClCompile Include="..\..\..\ruby\missing\explicit_bzero.c" />
+    <ClCompile Include="..\..\..\ruby\missing\ffs.c" />
+    <ClCompile Include="..\..\..\ruby\missing\langinfo.c" />
+    <ClCompile Include="..\..\..\ruby\missing\lgamma_r.c" />
+    <ClCompile Include="..\..\..\ruby\missing\setproctitle.c" />
+    <ClCompile Include="..\..\..\ruby\missing\strlcat.c" />
+    <ClCompile Include="..\..\..\ruby\missing\strlcpy.c" />
+    <ClInclude Include="..\..\..\ruby\mjit.h" />
+    <ClCompile Include="..\..\..\ruby\node.c" />
+    <ClInclude Include="..\..\..\ruby\node.h" />
+    <ClCompile Include="..\..\..\ruby\numeric.c" />
+    <ClCompile Include="..\..\..\ruby\object.c" />
+    <ClCompile Include="..\..\..\ruby\pack.c" />
+    <ClCompile Include="..\..\..\ruby\parse.c" />
+    <CustomBuild Include="..\..\..\ruby\probes.d">
+      <FileType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ruby ..\..\..\ruby\tool\gen_dummy_probes.rb %(Identity) &gt;..\..\..\ruby\probes.dmyh</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\ruby\probes.dmyh</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Generating probes.dmyh</Message>
+      <FileType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ruby ..\..\..\ruby\tool\gen_dummy_probes.rb %(Identity) &gt;..\..\..\ruby\probes.dmyh</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\ruby\probes.dmyh</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Generating probes.dmyh</Message>
+    </CustomBuild>
+    <ClInclude Include="..\..\..\ruby\probes.h" />
+    <ClInclude Include="..\..\..\ruby\probes_helper.h" />
+    <ClCompile Include="..\..\..\ruby\proc.c" />
+    <ClCompile Include="..\..\..\ruby\process.c" />
+    <ClCompile Include="..\..\..\ruby\random.c" />
+    <ClCompile Include="..\..\..\ruby\range.c" />
+    <ClCompile Include="..\..\..\ruby\rational.c" />
+    <ClCompile Include="..\..\..\ruby\re.c" />
+    <ClCompile Include="..\..\..\ruby\regcomp.c" />
+    <ClCompile Include="..\..\..\ruby\regenc.c" />
+    <ClInclude Include="..\..\..\ruby\regenc.h" />
+    <ClCompile Include="..\..\..\ruby\regerror.c" />
+    <ClCompile Include="..\..\..\ruby\regexec.c" />
+    <ClInclude Include="..\..\..\ruby\regint.h" />
+    <ClCompile Include="..\..\..\ruby\regparse.c" />
+    <ClInclude Include="..\..\..\ruby\regparse.h" />
+    <ClCompile Include="..\..\..\ruby\regsyntax.c" />
+    <ClCompile Include="..\..\..\ruby\ruby.c" />
+    <ClInclude Include="..\..\..\ruby\ruby_assert.h" />
+    <ClInclude Include="..\..\..\ruby\ruby_atomic.h" />
+    <ClCompile Include="..\..\..\ruby\safe.c" />
+    <ClCompile Include="..\..\..\ruby\signal.c" />
+    <ClInclude Include="..\..\..\ruby\siphash.h" />
+    <ClCompile Include="..\..\..\ruby\sprintf.c" />
+    <ClCompile Include="..\..\..\ruby\st.c" />
+    <ClCompile Include="..\..\..\ruby\strftime.c" />
+    <ClCompile Include="..\..\..\ruby\string.c" />
+    <ClCompile Include="..\..\..\ruby\struct.c" />
+    <ClCompile Include="..\..\..\ruby\symbol.c" />
+    <ClInclude Include="..\..\..\ruby\symbol.h" />
+    <ClCompile Include="..\..\..\ruby\thread.c" />
+    <ClInclude Include="..\..\..\ruby\thread_pthread.h" />
+    <ClInclude Include="..\..\..\ruby\thread_win32.h" />
+    <ClCompile Include="..\..\..\ruby\time.c" />
+    <ClInclude Include="..\..\..\ruby\timev.h" />
+    <ClCompile Include="..\..\..\ruby\transcode.c" />
+    <ClInclude Include="..\..\..\ruby\transcode_data.h" />
+    <ClCompile Include="..\..\..\ruby\transient_heap.c" />
+    <ClInclude Include="..\..\..\ruby\transient_heap.h" />
+    <ClCompile Include="..\..\..\ruby\util.c" />
+    <ClCompile Include="..\..\..\ruby\variable.c" />
+    <ClInclude Include="..\..\..\ruby\variable.h" />
+    <ClCompile Include="..\..\..\ruby\version.c" />
+    <ClInclude Include="..\..\..\ruby\version.h" />
+    <ClCompile Include="..\..\..\ruby\vm.c" />
+    <ClCompile Include="..\..\..\ruby\vm_backtrace.c" />
+    <ClInclude Include="..\..\..\ruby\vm_core.h" />
+    <ClInclude Include="..\..\..\ruby\vm_debug.h" />
+    <ClCompile Include="..\..\..\ruby\vm_dump.c" />
+    <ClInclude Include="..\..\..\ruby\vm_exec.h" />
+    <ClInclude Include="..\..\..\ruby\vm_insnhelper.h" />
+    <ClInclude Include="..\..\..\ruby\vm_opts.h" />
+    <ClCompile Include="..\..\..\ruby\vm_trace.c" />
+    <ClCompile Include="..\..\..\ruby\win32\file.c">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)win32_file.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)win32_file.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\ruby\win32\win32.c" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
+  </ImportGroup>
+</Project>
