@@ -1,3 +1,3 @@
 @echo off
-jabaruby.exe --disable=rubyopt -I%~dp0ruby -w %~dp0jaba.rb %*
+jabaruby.exe --disable=rubyopt -I%~dp0..\jabaruby\stdlib -w %~dp0jaba.rb %*
 
