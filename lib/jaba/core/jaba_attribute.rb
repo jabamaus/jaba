@@ -143,7 +143,7 @@ module JABA
     def value(api_call_loc = nil)
       @last_call_location = api_call_loc if api_call_loc
       if api_call_loc && @value.is_a?(JabaNode)
-        @value.attrs_read_only
+        @value.attrs_read_only.__internal_set_api_call_loc(api_call_loc)
       else
         @value
       end
@@ -359,7 +359,10 @@ module JABA
           nil
         end
       elsif api_call_loc && @value.is_a?(JabaNode)
-        @value.attrs_read_only
+        # Pass on api call location to the read only attribute accessor to enable value calls to be chained. This happens
+        # if a node-by-value attribute is nested, eg root_attr.sub_attr1.sub_attr2.
+        #
+        @value.attrs_read_only.__internal_set_api_call_loc(api_call_loc)
       else
         @value
       end

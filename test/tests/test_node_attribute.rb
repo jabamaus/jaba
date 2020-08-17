@@ -25,22 +25,28 @@ module JABA
           end
         end
         define :obj2 do
-          attr :e
+          attr :e, type: :node do
+            node_type :obj3
+          end
         end
-
+        define :obj3 do
+          attr :f
+        end
         test :t do
           obj do
             a 'a'
             b ['c', 'd']
             c :e, 'f'
             d do
-              e 1
+              e do
+                f 1
+              end
             end
           end
           obj.a.must_equal('a')
           obj.b.must_equal ['c', 'd']
           obj.c.must_equal({e: 'f'})
-          #obj.d.e.must_equal(1)
+          obj.d.e.f.must_equal(1)
         end
       end
     end
