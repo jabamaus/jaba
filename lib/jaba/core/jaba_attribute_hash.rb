@@ -74,13 +74,22 @@ module JABA
 
         # If block given, use it to evaluate value
         #
-        val = if block_given?
-          @node.eval_jdl(&block)
+        val = nil
+        if block_given?
+          if @attr_def.node_by_value?
+            node_type = @attr_def.node_type
+            g = services.get_generator(node_type)
+            g.push_definition(services.make_definition(@attr_def.defn_id, block, __api_call_loc)) do
+              val = g.make_node(name: "#{@attr_def.defn_id}|#{key}", parent: @node)
+            end
+          else
+            val = @node.eval_jdl(&block)
+          end
         else
           if args.empty?
             attr_error("#{describe} requires a key/value eg \"#{defn_id} :my_key, 'my value'\"")
           end
-          args.shift
+          val = args.shift
         end
       end
 

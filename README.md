@@ -2,6 +2,10 @@
 
 To do:
 
+- clean up error
+  - C:\projects\GitHub\jaba>jaba --baren
+    C:/projects/GitHub/jaba/lib/jaba/core/input_manager.rb:167:in `usage_error': --baren option not recognised
+- Generate .vscode/launch.json
 - Support for node-by-value attribute
 - Disallow globals from referencing itself
 - Maybe add open_globals_type and open_globals_inst?
