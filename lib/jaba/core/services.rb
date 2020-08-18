@@ -124,7 +124,7 @@ module JABA
       
       @warnings = []
       
-      @src_root = nil
+      @jaba_root = nil
       @jdl_files = []
       @jdl_includes = []
       @jdl_file_lookup = {}
@@ -242,22 +242,22 @@ module JABA
       @input_manager.process(phase: 1)
 
       if !input_manager.cmd_specified?(:genref)
-        @src_root = input.src_root
+        @jaba_root = input.jaba_root
 
-        if @src_root.nil? && !JABA.running_tests?
+        if @jaba_root.nil? && !JABA.running_tests?
           if file_manager.exist?(JABA.config_file)
             content = file_manager.read(JABA.config_file, freeze: false)
-            if content !~ /src_root "(.*)"/
-              JABA.error("Could not read src_root from #{JABA.config_file}")
+            if content !~ /jaba_root "(.*)"/
+              JABA.error("Could not read jaba_root from #{JABA.config_file}")
             end
-            @src_root = Regexp.last_match(1)
+            @jaba_root = Regexp.last_match(1)
           end
-          if @src_root.nil?
-            @src_root = JABA.invoking_dir
+          if @jaba_root.nil?
+            @jaba_root = JABA.invoking_dir
           end
         end
 
-        log "src_root=#{@src_root}"
+        log "jaba_root=#{@jaba_root}"
       end
 
       load_module_jaba_files
@@ -867,8 +867,8 @@ module JABA
         process_jdl_file(JABA.config_file)
       end
 
-      if @src_root
-        process_load_path(@src_root, fail_if_empty: true)
+      if @jaba_root
+        process_load_path(@jaba_root, fail_if_empty: true)
       end
 
       # Definitions can also be provided in a block form
