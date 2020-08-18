@@ -73,6 +73,12 @@ module JABA
     end
     
     ##
+    #
+    def inspect
+      @defn_id.inspect
+    end
+
+    ##
     # Used in error messages.
     #
     def describe
