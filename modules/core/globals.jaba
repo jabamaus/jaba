@@ -4,6 +4,9 @@ define :globals do
 
   attr :src_root, type: :dir do
     title 'Root of source tree'
+    note 'Tells Jaba where to start looking for .jaba files to execute. Defaults to the directory Jaba was invoked in ' \
+         'if not specified on the command line. Often coincident with the root of a source tree, but not always as jaba files can ' \
+         'exist outside a src tree if desired.'
   end
 
   attr :jaba_input_file, type: :file do
