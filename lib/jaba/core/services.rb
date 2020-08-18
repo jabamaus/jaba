@@ -200,7 +200,7 @@ module JABA
         # log the raw exception
         #
         log e.full_message(highlight: false), :ERROR
-        @output[:error] = "#{e.backtrace[0]}: #{e.message}"
+        @output[:error] = "#{e.backtrace[0].clean_backtrace}: #{e.message}"
 
         case e
         when JabaError

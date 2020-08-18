@@ -36,7 +36,7 @@ module JABA
       register_option('--barebones', help: 'Loads minimal modules', type: :flag, var: :barebones, dev_option: true)
 
       @default_cmd = register_cmd(:gen)
-      register_option('--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root, cmd: :gen)
+      register_option('--src-root', short: '-S', help: 'Set src root', type: :value, var: :jaba_root, cmd: :gen)
       register_option('--define', short: '-D', help: 'Set global attribute value', phase: 2, cmd: :gen)
       
       register_cmd(:build)
@@ -117,11 +117,11 @@ module JABA
           # Only create config.jaba for out of src builds
           #
           # TODO: automatically patch in new attrs
-          if input.src_root
+          if input.jaba_root
             config_file = JABA.config_file
             if !File.exist?(config_file)
               @services.globals_node.allow_set_read_only_attrs do
-                @services.globals.src_root input.src_root
+                @services.globals.jaba_root input.jaba_root
               end
               make_jaba_config(config_file)
             end

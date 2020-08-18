@@ -12,7 +12,7 @@ To do:
 - is it possible to write a 3rd party jaba file that is stored in jaba itself and then moved into the project with no, or very minimal changes?
 - rethink root property. Maybe rename to srcroot and only have certain things based off it. Or maybe even remove.
 - Should to_absolute base off JABA.cwd or dest_root? I think the latter...
-- Remove src_root from globals and put into jaba.cache file
+- Remove jaba_root from globals and put into jaba.cache file
 - consider having a globals per-type (eg cpp globals)
 - validate when --src-root can be specified. Should be required if no .jaba files in cwd and disallowed if there are.
 - rename $(root) to $(spec_root)?

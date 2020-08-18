@@ -22,7 +22,7 @@ module JABA
       check_fail "Error at test.jaba:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric " \
                      "string or symbol",
                      line: [fullpath, line] do
-        jaba(barebones: true, src_root: temp_dir)
+        jaba(barebones: true, jaba_root: temp_dir)
       end
     end
     
@@ -41,7 +41,7 @@ module JABA
       fullpath = "#{temp_dir}/test.jaba"
       IO.write(fullpath, "\n\n&*^^\n")
       check_fail 'Syntax error at test.jaba:3: unexpected &' do
-        jaba(barebones: true, src_root: temp_dir)
+        jaba(barebones: true, jaba_root: temp_dir)
       end
     end
     

@@ -27,10 +27,10 @@ module JABA
 
     ##
     #
-    def jaba(barebones: false, src_root: nil, argv: nil, dry_run: false, dump_output: false, cpp_app: false, cpp_defaults: false, &block)
+    def jaba(barebones: false, jaba_root: nil, argv: nil, dry_run: false, dump_output: false, cpp_app: false, cpp_defaults: false, &block)
       td = temp_dir(create: false)
       op = JABA.run(handle_exceptions: false) do |c|
-        c.src_root = src_root
+        c.jaba_root = jaba_root
         c.dest_root = td
         c.argv = Array(argv) if argv
         c.definitions(&block) if block_given?
