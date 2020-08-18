@@ -492,7 +492,7 @@ module JABACoreExt
         "#{path}:#{lineno}"
       when :basename
         "#{path.basename}:#{lineno}"
-      when :rel_jaba_root
+      when :rel_src_root
         "#{path.relative_path_from(JABA.jaba_install_dir)}:#{lineno}"
       else
         JABA.error("Unsupported style '#{style}'")

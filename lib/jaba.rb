@@ -41,7 +41,7 @@ module JABA
     ##
     # Input root. Defaults to current working directory.
     #
-    attr_accessor :jaba_root
+    attr_accessor :src_root
 
     ##
     # Output/dest root. Defaults to current working directory.

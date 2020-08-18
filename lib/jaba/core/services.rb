@@ -124,7 +124,7 @@ module JABA
       
       @warnings = []
       
-      @jaba_root = nil
+      @src_root = nil
       @jdl_files = []
       @jdl_includes = []
       @jdl_file_lookup = {}
@@ -242,22 +242,22 @@ module JABA
       @input_manager.process(phase: 1)
 
       if !input_manager.cmd_specified?(:genref)
-        @jaba_root = input.jaba_root
+        @src_root = input.src_root
 
-        if @jaba_root.nil? && !JABA.running_tests?
+        if @src_root.nil? && !JABA.running_tests?
           if file_manager.exist?(JABA.config_file)
             content = file_manager.read(JABA.config_file, freeze: false)
-            if content !~ /jaba_root "(.*)"/
-              JABA.error("Could not read jaba_root from #{JABA.config_file}")
+            if content !~ /src_root "(.*)"/
+              JABA.error("Could not read src_root from #{JABA.config_file}")
             end
-            @jaba_root = Regexp.last_match(1)
+            @src_root = Regexp.last_match(1)
           end
-          if @jaba_root.nil?
-            @jaba_root = JABA.invoking_dir
+          if @src_root.nil?
+            @src_root = JABA.invoking_dir
           end
         end
 
-        log "jaba_root=#{@jaba_root}"
+        log "src_root=#{@src_root}"
       end
 
       load_module_jaba_files
@@ -867,8 +867,8 @@ module JABA
         process_jdl_file(JABA.config_file)
       end
 
-      if @jaba_root
-        process_load_path(@jaba_root, fail_if_empty: true)
+      if @src_root
+        process_load_path(@src_root, fail_if_empty: true)
       end
 
       # Definitions can also be provided in a block form
@@ -1201,7 +1201,7 @@ module JABA
       w << "> "
       w << "> | Property | Value  |"
       w << "> |-|-|"
-      md_row(w, :src, "$(jaba_install)/#{jt.src_loc.describe(style: :rel_jaba_root)}")
+      md_row(w, :src, "$(jaba_install)/#{jt.src_loc.describe(style: :rel_src_root)}")
       md_row(w, :notes, jt.notes.make_sentence)
       md_row(w, 'depends on', jt.dependencies.join(", ")) # TODO: make into links
       w << "> "
@@ -1226,7 +1226,7 @@ module JABA
         md_row(w, :default, ad.default.proc? ? nil : ad.default.inspect)
         md_row(w, :flags, ad.flags.map(&:inspect).join(', '))
         md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
-        md_row(w, :src, "$(jaba_install)/#{ad.src_loc.describe(style: :rel_jaba_root)}")
+        md_row(w, :src, "$(jaba_install)/#{ad.src_loc.describe(style: :rel_src_root)}")
         # TODO: make $(cpp#src_ext) links work again
         md_row(w, :notes, ad.notes.make_sentence.to_markdown_links) if !ad.notes.empty?
         w << ">"
