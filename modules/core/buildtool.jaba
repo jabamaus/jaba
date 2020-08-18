@@ -6,6 +6,10 @@ define :buildtool do
     title 'Build message'
   end
 
+  attr :output, type: :file do
+    title 'Build tool output file'
+  end
+  
   attr_array :outputs, type: :file do
     title 'Build tool output files'
   end

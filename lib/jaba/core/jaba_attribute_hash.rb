@@ -75,7 +75,7 @@ module JABA
         # If block given, use it to evaluate value
         #
         val = if block_given?
-          value_from_block(__api_call_loc, id: "#{@attr_def.defn_id}|#{key}", &block)
+          value_from_block(__api_call_loc, id: "#{@attr_def.defn_id}|#{key}", block_args: key, &block)
         else
           if args.empty?
             attr_error("#{describe} requires a key/value eg \"#{defn_id} :my_key, 'my value'\"")

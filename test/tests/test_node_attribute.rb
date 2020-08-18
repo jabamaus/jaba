@@ -8,9 +8,12 @@ module JABA
     # TODO: test with references
     # TODO: test if block not provided
     # TODO: test disallowing referencing self
+    # TODO: test works with :required
+    # TODO: test works with :export
+    # TODO: what about sorting? Disable?
 
     it 'works with all attribute variants' do
-      jaba(barebones: true) do
+      jaba do
         define :test do
           attr :node_single, type: :node do
             node_type :node
@@ -20,6 +23,9 @@ module JABA
           end
           attr_hash :node_hash, key_type: :symbol, type: :node do
             node_type :node
+          end
+          attr :platform, type: :node_ref do
+            node_type :platform
           end
         end
         define :node do
@@ -39,10 +45,16 @@ module JABA
           attr :f
         end
         test :t do
+          platform :windows
           node_single do
             a 'a'
             b ['c', 'd']
-            c :e, 'f'
+            if windows?
+              c :e, 'f'
+            end
+            if ios?
+              b ['e']
+            end
             d do
               e do
                 f 1
@@ -71,7 +83,8 @@ module JABA
           node_array[1].b.must_equal ['c1', 'd1']
           node_array[1].c.must_equal({e1: 'f1'})
 
-          node_hash :k1 do
+          node_hash :k1 do |key|
+            key.must_equal(:k1)
             a 'a'
             b ['c', 'd']
             c :e, 'f'

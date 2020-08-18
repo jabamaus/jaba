@@ -140,7 +140,7 @@ module JABA
     ##
     # Call this from subclass
     #
-    def make_node(sub_type_id: nil, name: nil, parent: nil, &block)
+    def make_node(sub_type_id: nil, name: nil, parent: nil, block_args: nil, &block)
       depth = 0
       handle = nil
 
@@ -192,7 +192,7 @@ module JABA
         end
 
         if @definition.block
-          jn.eval_jdl(&@definition.block)
+          jn.eval_jdl(*block_args, &@definition.block)
         end
 
         @definition.open_defs.each do |d|

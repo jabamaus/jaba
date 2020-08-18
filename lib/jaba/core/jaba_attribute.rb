@@ -113,12 +113,12 @@ module JABA
 
     ##
     #
-    def value_from_block(__api_call_loc, id:, &block)
+    def value_from_block(__api_call_loc, id:, block_args: nil, &block)
       if @attr_def.node_by_value?
         node_type = @attr_def.node_type
         g = services.get_generator(node_type)
         g.push_definition(services.make_definition(@attr_def.defn_id, block, __api_call_loc)) do
-          return g.make_node(name: id, parent: @node)
+          return g.make_node(name: id, parent: @node, block_args: block_args)
         end
       else
         return @node.eval_jdl(&block)
