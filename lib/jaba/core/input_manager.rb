@@ -429,7 +429,9 @@ module JABA
     def show_help
       @max_width = 120
       w = StringWriter.new
-      w << "jaba build system generator v#{VERSION}"
+      w << "Jaba build system generator v#{VERSION}"
+      w << "Copyright (C) 2020-#{Time.now.year} James French"
+      w << "Built on ruby #{RUBY_VERSION}p#{RUBY_PATCHLEVEL} #{RUBY_RELEASE_DATE} [#{RUBY_PLATFORM}] #{RUBY_COPYRIGHT.sub('ruby', '')}"
       w << ""
       w << "Usage:"
       w << ""
