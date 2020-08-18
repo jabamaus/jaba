@@ -356,6 +356,28 @@ module JABACoreExt
       sub(/:in .*/, '')
     end
 
+    ##
+    #
+    def to_escaped_XML!
+      gsub!(/["'&<>\n]/) do |match|
+        case match
+        when '"'
+          '&quot;'
+        when "'"
+          '&apos;'
+        when '&'
+          '&amp;'
+        when '<'
+          '&lt;'
+        when '>'
+          '&gt;'
+        when "\n"
+          '&#x0D;&#x0A;'
+        end
+      end
+      self
+    end
+
   end
 
   ##
