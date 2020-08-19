@@ -8,7 +8,7 @@ module JABA
 
   ##
   #
-  class JabaAttributeDefinitionFlag
+  class JabaAttrDefFlag
 
     attr_reader :services
     attr_reader :id
@@ -49,7 +49,7 @@ module JABA
 
   ##
   #
-  class JabaAttributeDefinitionFlagRequired < JabaAttributeDefinitionFlag
+  class JabaAttrDefFlagRequired < JabaAttrDefFlag
 
     ##
     #
@@ -70,7 +70,7 @@ module JABA
   
   ##
   #
-  class JabaAttributeDefinitionFlagReadOnly < JabaAttributeDefinitionFlag
+  class JabaAttrDefFlagReadOnly < JabaAttrDefFlag
 
     ##
     #
@@ -91,7 +91,7 @@ module JABA
   
   ##
   #
-  class JabaAttributeDefinitionFlagExpose < JabaAttributeDefinitionFlag
+  class JabaAttrDefFlagExpose < JabaAttrDefFlag
 
     ##
     #
@@ -111,7 +111,7 @@ module JABA
   
   ##
   #
-  class JabaAttributeDefinitionFlagAllowDupes < JabaAttributeDefinitionFlag
+  class JabaAttrDefFlagAllowDupes < JabaAttrDefFlag
 
     ##
     #
@@ -132,7 +132,7 @@ module JABA
   
   ##
   #
-  class JabaAttributeDefinitionFlagNoSort < JabaAttributeDefinitionFlag
+  class JabaAttrDefFlagNoSort < JabaAttrDefFlag
 
     ##
     #
@@ -152,7 +152,7 @@ module JABA
   end
   
   # TODO: use this
-  class JabaAttributeDefinitionFlagNoCheckExist < JabaAttributeDefinitionFlag
+  class JabaAttrDefFlagNoCheckExist < JabaAttrDefFlag
 
     ##
     #
@@ -173,7 +173,7 @@ module JABA
 
   ##
   #
-  class JabaAttributeDefinitionFlagDelayEvaluation < JabaAttributeDefinitionFlag
+  class JabaAttrDefFlagDelayEvaluation < JabaAttrDefFlag
 
     ##
     #

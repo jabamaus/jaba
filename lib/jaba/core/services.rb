@@ -382,7 +382,7 @@ module JABA
         case c
         when /^JabaAttributeType./
           make_attr_type(JABA.const_get(c))
-        when /^JabaAttributeDefinitionFlag./
+        when /^JabaAttrDefFlag./
           make_attr_flag(JABA.const_get(c))
         when /^(.+)Generator$/
           # Create non-default generators up front (eg CppGenerator, WorkspaceGenerator). There will only be one instance
