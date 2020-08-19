@@ -5,6 +5,7 @@ define :text do
   attr :filename, type: :file do
     title 'Path of the filename to be generated'
     flags :required
+    base :local
   end
   
   attr :content, type: :to_s do

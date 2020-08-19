@@ -8,13 +8,14 @@ define :workspace do
     title 'Root directory relative to which all other paths are specified'
     note 'Defaults to containing directory of definition source file'
     default '.'
+    base :local
   end
 
   attr :workspacedir, type: :dir do
     title 'Directory in which workspaces will be generated'
     default 'projects'
+    base :global
     flags :no_check_exist # May get created during generation
-    flags :base_on_cwd
   end
 
   attr_array :projects, type: :symbol_or_string do

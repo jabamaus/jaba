@@ -1,5 +1,6 @@
 To do:
 
+- attr def properties should have help string/notes...
 - clean up error
   - C:\projects\GitHub\jaba>jaba --baren
     C:/projects/GitHub/jaba/lib/jaba/core/input_manager.rb:167:in `usage_error': --baren option not recognised

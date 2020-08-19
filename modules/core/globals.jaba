@@ -7,6 +7,7 @@ define :globals do
     note 'Tells Jaba where to start looking for .jaba files to execute. Defaults to the directory Jaba was invoked in ' \
          'if not specified on the command line. Often coincident with the root of a source tree, but not always as jaba files can ' \
          'exist outside a src tree if desired.'
+    base :global
   end
 
   attr :jaba_input_file, type: :file do
@@ -14,6 +15,7 @@ define :globals do
     note 'Mostly useful for debugging and testing but could be useful as a second way of tracking definition changes in source control. ' \
          'The file is written before any file generation occurs, and can be considered a specification of the final data. '
     default '.jaba/jaba.input.json'
+    base :global
   end
 
   attr :dump_input, type: :bool do
@@ -25,6 +27,7 @@ define :globals do
     note 'Jaba output can be later used by another process (eg the build process) to do things like looking up paths by id rather ' \
          'than embedding them in code, iterating over all defined unit tests and invoking them, etc.'
     default '.jaba/jaba.output.json'
+    base :global
   end
 
   attr :dump_output, type: :bool do

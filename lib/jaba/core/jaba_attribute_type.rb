@@ -287,6 +287,21 @@ module JABA
   #
   class PathAttrBase < JabaAttributeType
 
+    ##
+    #
+    def init_attr_def(attr_def)
+      attr_def.define_property(:base)
+    end
+
+    ##
+    #
+    def post_init_attr_def(attr_def)
+      base = attr_def.base
+      if base != :local && base != :global
+        JABA.error("'base' must be set to :local or :global")
+      end
+    end
+
   end
 
   ##

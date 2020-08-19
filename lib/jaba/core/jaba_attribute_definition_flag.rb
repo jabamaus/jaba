@@ -224,36 +224,4 @@ module JABA
 
   end
 
-  ##
-  #
-  class JabaAttributeDefinitionFlagBaseOnCwd < JabaAttributeDefinitionFlag
-
-    ##
-    #
-    def id
-      :base_on_cwd
-    end
-
-    ##
-    #
-    def title
-      'TODO'
-    end
-
-    ##
-    #
-    def notes
-      'Bases path on cwd instead of definition $(root)'
-    end
-
-    ##
-    #
-    def compatible?(attr_def)
-      if attr_def.type_id != :file && attr_def.type_id != :dir
-        JABA.error(':base_on_cwd can only be used with :file and :dir attribute types')
-      end
-    end
-
-  end
-
 end

@@ -8,7 +8,9 @@ module JABA
       check_warn "Directory 'a\\b' not specified cleanly: contains backslashes", __FILE__, 'tagA' do
         jaba(barebones: true) do
           define :test do
-            attr :a, type: :dir
+            attr :a, type: :dir do
+              base :local
+            end
           end
           test :t do
             a "a\\b" # tagA
