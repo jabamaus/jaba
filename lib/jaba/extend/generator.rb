@@ -314,7 +314,10 @@ module JABA
         r.absolute_path? ? r : "#{node.source_dir}/#{r}".cleanpath
       end
 
-      # Make all file/dir/path attributes into absolute paths based on root, unless :not_relative_to_spec_root specified
+      # Make all :file and :dir attributes into absolute paths based on either local or global root. Local root
+      # is the 'root' attribute (which itself is based on the directory of the .jaba file). Global root is
+      # usually the cwd when jaba was invoked, although this can be overridden by setting dest_root, which
+      # unit tests do. :src_spec attributes should also have this applied but they are handled separately.
       #
       node.visit_node(visit_self: true) do |n|
         n.visit_attr(type: [:file, :dir], skip_attr: :root) do |a|
