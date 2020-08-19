@@ -197,8 +197,6 @@ module JABA
         @output[:warnings] = @warnings.uniq # Strip duplicate warnings
         @output
       rescue => e
-        # log the raw exception
-        #
         log e.full_message(highlight: false), :ERROR
         @output[:error] = "#{e.backtrace[0].clean_backtrace}: #{e.message}"
 
@@ -217,17 +215,15 @@ module JABA
           jdl_error_info(e.message, jdl_bt, err_type: err_type) do |msg, file, line|
             @output[:error] = msg
 
-            # Raise final JDLError
-            #
             e = JDLError.new(msg)
             e.instance_variable_set(:@file, file)
             e.instance_variable_set(:@line, line)
             e.set_backtrace(jdl_bt)
-            raise e
           end
-        else
-          raise
+        when CommandLineUsageError
+          @output[:error] = e.message # Don't need any location info
         end
+        raise e
       ensure
         term_log
       end
