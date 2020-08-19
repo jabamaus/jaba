@@ -189,6 +189,7 @@ define :cpp do
     attr_hash :buildtool, key_type: :src_spec, type: :node do
       title 'Custom build tool'
       node_type :buildtool
+      flags :delay_evaluation
     end
 
     # Common attributes. These are the attributes that most definitions will set/use.
