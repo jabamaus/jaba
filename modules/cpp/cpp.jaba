@@ -13,7 +13,7 @@ define :cpp do
 
     attr :root, type: :dir do
       title 'Root directory relative to which all other paths are specified'
-      note 'Root of the project specified as an offset from the file that contains the project definition. ' \
+      note 'Root of the project specified as an offset from the .jaba file that contains the project definition. ' \
            'All paths are specified relative to this. Project files will be generated here unless $(projdir) is set. ' \
            'Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible ' \
            'in order to not damage portability'
