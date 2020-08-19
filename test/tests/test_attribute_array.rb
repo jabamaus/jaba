@@ -34,7 +34,7 @@ module JABA
       
       # It validates default elements respect attribute type
       #
-      check_fail2 "Error at #{src_loc(__FILE__, :tagD)}: 'a' array attribute default failed validation: 'not a symbol' must be a symbol but was a 'String'." do
+      check_fail2 "Error at #{src_loc(__FILE__, :tagD)}: 'a' array attribute default invalid: 'not a symbol' must be a symbol but was a 'String'." do
         jaba(barebones: true) do
           define :test do
             attr_array :a, type: :symbol do
@@ -46,7 +46,7 @@ module JABA
 
       # It validates default elements respect attribute type when block form used
       #
-      check_fail2 "Error at #{src_loc(__FILE__, :tagW)}: 't.a' array attribute failed validation: 'not a symbol' must be a symbol but was a 'String'." do
+      check_fail2 "Error at #{src_loc(__FILE__, :tagW)}: 't.a' array attribute invalid: 'not a symbol' must be a symbol but was a 'String'." do
         jaba(barebones: true) do
           define :test do
             attr_array :a, type: :symbol do # tagW
@@ -489,7 +489,7 @@ module JABA
     end
     
     it 'supports setting a validator' do
-      check_fail "'t.a' array attribute failed validation: failed", line: [__FILE__, 'tagB'] do
+      check_fail "'t.a' array attribute invalid: failed", line: [__FILE__, 'tagB'] do
         jaba(barebones: true) do
           define :test do
             attr_array :a do

@@ -107,7 +107,7 @@ module JABA
       begin
         yield
       rescue => e
-        attr_error("#{describe} failed validation: #{e.message}")
+        attr_error("#{describe} invalid: #{e.message}")
       end
     end
 

@@ -5,7 +5,7 @@ module JABA
   class TestNodeRefAttribute < JabaTest
     
     it 'requires referent type to be specified' do
-      check_fail "'b' attribute failed validation: 'node_type' must be set", line: [__FILE__, 'tagP'] do
+      check_fail "'b' attribute invalid: 'node_type' must be set", line: [__FILE__, 'tagP'] do
         jaba(barebones: true) do
           define :a do
             attr :b, type: :node_ref # tagP

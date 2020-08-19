@@ -276,11 +276,7 @@ module JABA
         @jaba_attr_type.post_init_attr_def(self)
   
         @jaba_attr_flags.each do |jaf|
-          begin
-            jaf.compatible?(self)
-          rescue => e
-            JABA.error("'#{jaf.id.inspect_unquoted}' flag is incompatible2: #{e.message}")
-          end
+          jaf.compatible?(self)
         end
       end
     end
@@ -291,7 +287,7 @@ module JABA
       begin
         yield
       rescue => e
-        JABA.error("#{what} failed validation: #{e.message}", callstack: e.backtrace)
+        JABA.error("#{what} invalid: #{e.message}", callstack: e.backtrace)
       end
     end
 

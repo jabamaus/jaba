@@ -46,7 +46,7 @@ module JABA
       #
       invalid_keys = ['PG1_CharacterSet', '|PG1|CharacterSet', '|', 'A||B', 'win32/file.c|ObjectFileName']
       invalid_keys.each do |key|
-        check_fail "'app.vcprop' hash attribute failed validation: Must be of form <group>|<property> but was '#{key}'", line: [__FILE__, 'tagJ'] do
+        check_fail "'app.vcprop' hash attribute invalid: Must be of form <group>|<property> but was '#{key}'", line: [__FILE__, 'tagJ'] do
           jaba(dry_run: true) do
             cpp :app do
               platforms [:windows_x86_64]

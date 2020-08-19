@@ -174,7 +174,7 @@ module JABA
     # TODO: also check for circularity in default blocks
     
     it 'supports specifying a validator' do
-      check_fail "'t.a' attribute failed validation: Val must not be 2.",
+      check_fail "'t.a' attribute invalid: Val must not be 2.",
          line: [__FILE__, 'tagS'] do
         jaba(barebones: true) do
           define :test do

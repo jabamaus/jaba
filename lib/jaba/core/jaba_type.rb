@@ -184,7 +184,7 @@ module JABA
       end
 
     rescue => e
-      JABA.error("#{describe} failed validation: #{e.message}", errobj: self)
+      JABA.error("#{describe} invalid: #{e.message}", errobj: self)
     end
 
     ##
