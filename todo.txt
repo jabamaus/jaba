@@ -9,18 +9,16 @@ To do:
 - Allow default values to take options?
 - RUBY LICENSE REQUIREMENTS
 - is it possible to write a 3rd party jaba file that is stored in jaba itself and then moved into the project with no, or very minimal changes?
-- rethink root property. Maybe rename to srcroot and only have certain things based off it. Or maybe even remove.
 - Should to_absolute base off JABA.cwd or dest_root? I think the latter...
-- Remove src_root from globals and put into jaba.cache file
+- Remove src_root from globals and put into jaba.cache file?
 - consider having a globals per-type (eg cpp globals)
 - validate when --src-root can be specified. Should be required if no .jaba files in cwd and disallowed if there are.
-- rename $(root) to $(spec_root)?
 - Check attribute validators when parsing cmd line.
 - Should jaba target one 'language' (type) per run? Eg C++, C#
 - Nasty that :export flag option always needs :no_delete
 - Use did_you_mean? Eg
   Error at basic_dll.jaba:8: 'defines' attribute not defined. Did you mean 'define'?
-- Combine jaba.input.json and jaba.output.json into just the latter?
+- Combine jaba.input.json and jaba.output.json into one file
 - Have a 'jaba clean' command
 - put simple type verification system into Property
 - consider putting config attrs inside a block. It is a bit nasty doing multiple passes and ignoring attrs.
@@ -30,13 +28,10 @@ To do:
 - tag attrs as control flow attrs somehow for benefit of docs
 - add slnproperty which can address sln sections. Particularly useful when used with ExtensibilityGlobals
 - disband VSProj in favour of VSUtilities module
-- Make it so that all attributes have to have a type?
-- test build actions
+- test build shell cmds
 - Move title/note/example into module and include
 - more error reporting testing with actual files rather than blocks
-- test opening sub types
 - Have a command line switch to make all error messages contain absolute paths
-- Sort jaba input/output files
 - How customise jaba output file? Subclass vcxproj or jdl definition, or something else?
 - support for 'overriding' attribute defs when opening types
 - make_generator should be able to make subclasses of eg CppGenerator
@@ -44,15 +39,12 @@ To do:
 - think more about path handling in general and make it very consistent. eg all paths get to generators as absolute.
 - Have a way of globally setting default for :platforms, :hosts and :configs (and for clearing)
 - make file/dir attrs cleanpath
-- sortable arrays must be of same type
 - Make :nocheckexists do something
 - check that only arrays and hashes can be exported
-- test different default values and different validation for different platforms
 - Think more about project 'skus'. Also, platforms support specific hosts. Where is that info stored?
 - test :required flag compatibility
 - Revisit set_to_default and wipe. Have way of clearing to default and clearing fully, but don't count that as set=true
 - In defaults block are paths relative to the defaults file or the file of the definition being instanced?
-- Consider something like  base: :__dir__ option on :dir attribute types to force a path to be relative to source definition file and not root
 - Test __dir__
 - Allow 'axes' of configs. Bear in mind that platforms can be any string.
 - Have some kind of spec for flag_options, eg
@@ -87,8 +79,7 @@ if there are multiple attrs, with a warning.
   - Make _ID be id of the definition the code is in, such that it works even inside
       a block that is being executed in the context of a different jaba object
 
-- Stop profiling test as a whole. Add a stresstest feature.
-- Ability to reverse engineer jaba definitions from existing vsprojects would be awesome
+- Ability to reverse engineer jaba definitions from existing vsprojects
 - Should 'absolute' paths starting with / force 'root' to be disregarded and make paths relative to definition file or
   should use eg "#{__dir__}/main.cpp"?
 - Add check for re-entrancy when evaluating default blocks
@@ -98,9 +89,8 @@ if there are multiple attrs, with a warning.
 - Add 'underlying type' to attribute types? eg file.dir/src_spec are strings. Use this for extra
   validation and also to sort using casecmp
 - resolve issues around sorting with mixed type elements
-- Add an init callback to definitions?
+ - sortable arrays must be of same type
 - Add wildcard validation to dir property
-- jdl_exclude system
 
 - Think about a 'configure' system. Eg could have a configure block eg for ruby jaba file it might be
 
