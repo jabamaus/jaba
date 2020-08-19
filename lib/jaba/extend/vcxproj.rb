@@ -15,7 +15,7 @@ module JABA
     
     ##
     #
-    def init
+    def initialize(generator, node)
       super
       @projname = @attrs.projname
       @vcxproj_file = "#{@projdir}/#{@projname}.vcxproj"
@@ -23,6 +23,12 @@ module JABA
       @file_type_hash = services.globals.vcfiletype
       @masm_required = false
       @per_file_props = {}
+    end
+
+    ##
+    #
+    def post_create
+      process_src(:src, :src_ext)
 
       # Call translator for this platform to initialse project level Visual Studio-specific attributes
       # (vcglobals), based on cross platform definition.
@@ -41,8 +47,8 @@ module JABA
         # Build events. Standard across platforms.
         #
         shell_cmds = {}
-        cfg.visit_attr(:shell) do |a, value|
-          type = a.get_option_value(:when)
+        cfg.visit_attr(:shell) do |attr, value|
+          type = attr.get_option_value(:when)
           group = case type
           when :PreBuild, :PreLink, :PostBuild
             "#{type}Event"

@@ -19,7 +19,8 @@ module JABA
 
     ##
     #
-    def init
+    def initialize(generator, node)
+      super
       @projdir = @attrs.projdir
       @host = @attrs.host_ref
       @platform = @attrs.platform_ref

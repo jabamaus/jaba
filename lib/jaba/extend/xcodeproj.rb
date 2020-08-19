@@ -14,10 +14,17 @@ module JABA
     
     ##
     #
-    def init
+    def initialize(generator, node)
+      super
       @projdir = @attrs.projdir
       @projname = @attrs.projname
       @host = @attrs.host_ref
+    end
+
+    ##
+    #
+    def post_create
+      process_src(:src, :src_ext)
     end
 
     ##

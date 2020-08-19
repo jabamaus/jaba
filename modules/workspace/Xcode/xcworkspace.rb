@@ -8,8 +8,8 @@ module JABA
 
     ##
     #
-    def init(...)
-      super(...)
+    def initialize(generator, node, projects, configs)
+      super
     end
 
   end

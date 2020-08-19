@@ -285,11 +285,7 @@ module JABA
     #
     def make_host_object(klass, node, *args, **keyval_args)
       klass = klass.string? ? JABA.const_get(klass) : klass
-      ho = klass.new(self, node)
-      if !ho.respond_to?(:init)
-        JABA.error("#{klass} must implement 'init' method and do any instance variable initialisation there")
-      end
-      ho.init(*args, **keyval_args)
+      ho = klass.new(self, node, *args, **keyval_args)
       @host_objects << ho
       @node_to_host_object[node] = ho
       ho

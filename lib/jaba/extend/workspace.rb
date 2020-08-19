@@ -10,13 +10,14 @@ module JABA
 
     ##
     #
-    def init(projects, configs)
+    def initialize(generator, node, projects, configs)
+      super(generator, node)
       @projects = projects
       @configs = configs
       @name = @attrs.name
       @workspacedir = @attrs.workspacedir
     end
-    
+
   end
 
 end

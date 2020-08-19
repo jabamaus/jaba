@@ -1,5 +1,6 @@
 To do:
 
+- Go back to allowing single values to be passed to array attrs without requiring []
 - Add ability to set :local or :global option on per-attribute basis
 - attr def properties should have help string/notes...
 - Generate .vscode/launch.json

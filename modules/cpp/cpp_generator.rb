@@ -92,7 +92,7 @@ module JABA
       @project_nodes.each do |pn|
         klass = pn.attrs.host_ref.attrs.cpp_project_classname
         proj = make_project(klass, pn)
-        proj.process_src(:src, :src_ext)
+        proj.post_create
       end
     end
 
