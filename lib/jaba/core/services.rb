@@ -159,7 +159,7 @@ module JABA
       @globals = nil
       @globals_node = nil
 
-      @null_attr_type = JabaAttributeType.new
+      @null_attr_type = JabaAttributeType.new(:null, 'Null attribute type')
       @null_nodes = {}
       
       @in_attr_default_block = false
@@ -415,6 +415,7 @@ module JABA
         JABA.error("Attribute type multiply defined [id=#{at.id}, class=#{klass}]")
       end
       at.instance_variable_set(:@services, self)
+      at.post_create
       @jaba_attr_types << at
       @jaba_attr_type_lookup[at.id] = at
       at

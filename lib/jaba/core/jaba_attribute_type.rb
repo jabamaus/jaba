@@ -11,31 +11,47 @@ module JABA
   class JabaAttributeType
     
     attr_reader :services
+    attr_reader :id
+    attr_reader :title
+    attr_reader :notes
+    attr_reader :default
 
     ##
     #
-    def id
+    def initialize(id, title, default: nil)
+      @id = id
+      @title = title
+      @default = default
+      @notes = nil
     end
 
     ##
     #
-    def title
+    def describe
+      "#{@id} attribute type"
     end
 
     ##
     #
-    def notes
-    end
-
-    ##
-    #
-    def default
+    def post_create
+      JABA.error("id must be specified") if id.nil?
+      JABA.error("#{describe} must have a title") if title.nil?
+      @id.freeze
+      @title.freeze
+      @default.freeze
+      @notes.freeze
     end
 
     ##
     #
     def from_string(str)
       str
+    end
+    
+    ##
+    #
+    def map_value(value)
+      value
     end
 
     ##
@@ -60,12 +76,6 @@ module JABA
     def validate_value(attr_def, value)
     end
 
-    ##
-    #
-    def map_value(value)
-      value
-    end
-
   end
 
   ##
@@ -74,26 +84,9 @@ module JABA
     
     ##
     #
-    def id
-      :string
-    end
-
-    ##
-    #
-    def title
-      'String attribute type'
-    end
-
-    ##
-    #
-    def notes
-      'Only explicit strings will be accepted. Symbols are not valid. Defaults to empty string unless value must be specified by user.'
-    end
-
-    ##
-    #
-    def default
-      ''
+    def initialize
+      super(:string, 'String attribute type', default: '')
+      @notes = 'Only explicit strings will be accepted. Symbols are not valid. Defaults to empty string unless value must be specified by user.'
     end
 
     ##
@@ -112,20 +105,9 @@ module JABA
     
     ##
     #
-    def id
-      :symbol
-    end
-
-    ##
-    #
-    def title
-      'Symbol attribute type'
-    end
-
-    ##
-    #
-    def notes
-      'Only explicit symbols will be accepted. Strings are not valid.'
+    def initialize
+      super(:symbol, 'Symbol attribute type')
+      @notes = 'Only explicit symbols will be accepted. Strings are not valid.'
     end
 
     ##
@@ -150,20 +132,9 @@ module JABA
     
     ##
     #
-    def id
-      :symbol_or_string
-    end
-
-    ##
-    #
-    def title
-      'Symbol or string attribute type'
-    end
-
-    ##
-    #
-    def notes
-      'Only explicit strings or symbols will be accepted'
+    def initialize
+      super(:symbol_or_string, 'Symbol or string attribute type')
+      @notes = 'Only explicit strings or symbols will be accepted'
     end
 
     ##
@@ -182,20 +153,9 @@ module JABA
     
     ##
     #
-    def id
-      :to_s
-    end
-
-    ##
-    #
-    def title
-      'to_s attribute type'
-    end
-
-    ##
-    #
-    def notes
-      'Any object that supports that can be converted to a string with to_s will be accepted. This is very permissive as ' \
+    def initialize
+      super(:to_s, 'to_s attribute type')
+      @notes = 'Any object that supports that can be converted to a string with to_s will be accepted. This is very permissive as ' \
       'in practice this is just about anything in ruby - this type is here to make that intention explcit.'
     end
 
@@ -215,26 +175,9 @@ module JABA
   
     ##
     #
-    def id
-      :int
-    end
-
-    ##
-    #
-    def title
-      'Integer attribute type'
-    end
-
-    ##
-    #
-    def notes
-      'Defaults to 0 unless value must be specified by user'
-    end
-    
-    ##
-    #
-    def default
-      0
+    def initialize
+      super(:int, 'Integer attribute type', default: 0)
+      @notes = 'Defaults to 0 unless value must be specified by user'
     end
 
     ##
@@ -259,26 +202,9 @@ module JABA
     
     ##
     #
-    def id
-      :bool
-    end
-
-    ##
-    #
-    def title
-      'Boolean attribute type'
-    end
-
-    ##
-    #
-    def notes
-      'Accepts [true|false]. Defaults to false unless value must be supplied by user.'
-    end
-
-    ##
-    #
-    def default
-      false
+    def initialize
+      super(:bool, 'Boolean attribute type', default: false)
+      @notes = 'Accepts [true|false]. Defaults to false unless value must be supplied by user.'
     end
 
     ##
@@ -318,20 +244,9 @@ module JABA
     
     ##
     #
-    def id
-      :choice
-    end
-
-    ##
-    #
-    def title
-      'Choice attribute type'
-    end
-
-    ##
-    #
-    def notes
-      'Can take exactly one of a set of unique values'
+    def initialize
+      super(:choice, 'Choice attribute type')
+      @notes = 'Can take exactly one of a set of unique values'
     end
 
     ##
@@ -371,6 +286,7 @@ module JABA
   ##
   #
   class PathAttrBase < JabaAttributeType
+
   end
 
   ##
@@ -379,20 +295,9 @@ module JABA
     
     ##
     #
-    def id
-      :file
-    end
-
-    ##
-    #
-    def title
-      'File attribute type'
-    end
-
-    ##
-    #
-    def notes
-      'Validates that value is a string path representing a file'
+    def initialize
+      super(:file, 'File attribute type')
+      @notes = 'Validates that value is a string path representing a file'
     end
 
     ##
@@ -411,26 +316,9 @@ module JABA
     
     ##
     #
-    def id
-      :dir
-    end
-
-    ##
-    #
-    def title
-      'Directory attribute type'
-    end
-
-    ##
-    #
-    def notes
-      'Validates that value is a string path representing a directory'
-    end
-
-    ##
-    #
-    def default
-      '.'
+    def initialize
+      super(:dir, 'Directory attribute type', default: '.')
+      @notes = 'Validates that value is a string path representing a directory'
     end
 
     ##
@@ -455,20 +343,9 @@ module JABA
     
     ##
     #
-    def id
-      :src_spec
-    end
-
-    ##
-    #
-    def title
-      'Source file specification pattern'
-    end
-
-    ##
-    #
-    def notes
-      'Can be file glob match an explicit path or a directory'
+    def initialize
+      super(:src_spec, 'Source file specification pattern')
+      @notes = 'Can be file glob match an explicit path or a directory'
     end
 
     ##
@@ -487,20 +364,8 @@ module JABA
     
     ##
     #
-    def id
-      :uuid
-    end
-
-    ##
-    #
-    def title
-      'UUID attribute type'
-    end
-
-    ##
-    #
-    def notes
-      'TODO'
+    def initialize
+      super(:uuid, 'UUID attribute type')
     end
 
     ##
@@ -517,20 +382,8 @@ module JABA
     
     ##
     #
-    def id
-      :node_ref
-    end
-
-    ##
-    #
-    def title
-      'Object reference attribute type'
-    end
-
-    ##
-    #
-    def notes
-      'TODO'
+    def initialize
+      super(:node_ref, 'Object reference attribute type')
     end
 
     ##
@@ -540,7 +393,7 @@ module JABA
     end
 
     ##
-    # TODO: remove. Do in core to save all the property setting and getting
+    #
     def init_attr_def(attr_def)
       attr_def.define_property(:node_type)
       attr_def.define_property(:make_handle) # TODO: flag as block or validate as such
@@ -566,20 +419,8 @@ module JABA
     
     ##
     #
-    def id
-      :node
-    end
-
-    ##
-    #
-    def title
-      'Object attribute type'
-    end
-
-    ##
-    #
-    def notes
-      'TODO'
+    def initialize
+      super(:node, 'Object attribute type')
     end
 
     ##
