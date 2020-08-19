@@ -429,6 +429,7 @@ module JABA
         JABA.error("Attribute flag multiply defined [id=#{af.id}, class=#{klass}]")
       end
       af.instance_variable_set(:@services, self)
+      af.post_create
       @jaba_attr_flags << af
       @jaba_attr_flag_lookup[af.id] = af
       af
