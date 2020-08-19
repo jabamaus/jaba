@@ -87,7 +87,7 @@ cpp :jabaruby do
   if debug
     targetname 'jabaruby_debug'
   else
-    bindir '../bin'
+    bindir '../bin' # TODO: this should actually be an install step
     vcprop 'Link|OptimizeReferences', true
     vcprop 'Link|EnableCOMDATFolding', true
   end
