@@ -20,9 +20,9 @@ module JABA
   # Jaba entry point. Returns a json-like hash object containing a summary of what has been generated.
   #
   def self.run(handle_exceptions: true)
+    s = Services.new
+    yield s.input if block_given?
     begin
-      s = Services.new
-      yield s.input if block_given?
       s.run
     rescue
       if handle_exceptions
