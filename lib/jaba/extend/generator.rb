@@ -336,7 +336,6 @@ module JABA
       # Call generators defined per-node instance, in the context of the node itself, not its api
       #
       @root_nodes.each do |n|
-        # TODO: review again. should it use api?
         n.call_hook(:generate, receiver: n, use_api: false)
       end
       generate
