@@ -212,14 +212,13 @@ module JABA
             raise
           end
 
-          jdl_error_info(e.message, jdl_bt, err_type: err_type) do |msg, file, line|
-            @output[:error] = msg
+          msg, file, line = jdl_error_info(e.message, jdl_bt, err_type: err_type)
+          @output[:error] = msg
 
-            e = JDLError.new(msg)
-            e.instance_variable_set(:@file, file)
-            e.instance_variable_set(:@line, line)
-            e.set_backtrace(jdl_bt)
-          end
+          e = JDLError.new(msg)
+          e.instance_variable_set(:@file, file)
+          e.instance_variable_set(:@line, line)
+          e.set_backtrace(jdl_bt)
         when CommandLineUsageError
           @output[:error] = e.message # Don't need any location info
         end
@@ -969,12 +968,15 @@ module JABA
     ##
     #
     def jaba_warn(msg, errobj: nil)
-      log(msg, :WARN)
-      errline = nil
-      if errobj
-        errline = errobj.src_loc
+      callstack = Array(errobj&.src_loc || caller)
+      jdl_bt = get_jdl_backtrace(callstack, err_type: :warning)
+      if jdl_bt.empty?
+        msg = "Warning: #{msg}"
+      else
+        msg, _, _ = jdl_error_info(msg, jdl_bt, err_type: :warning)
       end
-      @warnings << make_jaba_error(msg, errline: errline, warn: true).message
+      log(msg, :WARN)
+      @warnings << msg
       nil
     end
 
@@ -1055,98 +1057,7 @@ module JABA
       m << " #{file.basename}:#{line}"
       m << ": #{msg}"
       m.ensure_end_with!('.')
-      yield m, file, line
-    end
-
-    ##
-    # Errors can be raised in 3 contexts:
-    #
-    # 1) Syntax errors/other ruby errors that are raised by the initial evaluation of the definition files or block in
-    #    execute_jdl.
-    # 2) From user definitions using the 'fail' API.
-    # 3) From core library code. 
-    #
-    def make_jaba_error(msg, syntax: false, callstack: nil, errline: nil, warn: false, include_api: false)
-      error_line = nil
-
-      if syntax
-        # With ruby ScriptErrors there is no useful callstack. The error location is in the msg itself.
-        #
-        error_line = msg
-
-        # Delete ruby's way of reporting syntax errors in favour of our own
-        #
-        msg = msg.sub(/^.* syntax error, /, '')
-      else
-        # Clean up callstack which could be in 'caller' form or 'caller_locations' form.
-        #
-        backtrace = Array(errline || callstack || caller).map do |l|
-          if l.is_a?(::Thread::Backtrace::Location)
-            "#{l.absolute_path}:#{l.lineno}"
-          else
-            l
-          end
-        end
-
-        files = include_api ? @jdl_files + $LOADED_FEATURES.select{|f| f =~ /jaba\/lib\/jaba\/jdl_api/} : @jdl_files
-
-        # Extract any lines in the callstack that contain references to definition source files.
-        #
-        lines = backtrace.select {|c| files.any? {|sf| c.include?(sf)}}
-
-        # remove the unwanted ':in ...' suffix from user level definition errors
-        #
-        lines.map!{|l| l.sub(/:in .*/, '')}
-        
-        # There was nothing in the callstack linking the error to a JDL line. This could be because
-        # there is an internal error in jaba, or because the error was not raised properly (ie the
-        # context of the error was not passed in the 'callstack' option. Assume the former.
-        #
-        if lines.empty?
-          if warn
-            msg = "Warning: #{msg}"
-          end
-          e = RuntimeError.new(msg)
-          e.set_backtrace(backtrace)
-          if warn
-            return e
-          else
-            raise e
-          end
-        end
-        
-        error_line = lines[0]
-      end
-
-      # Extract file and line information from the error line.
-      #
-      if error_line !~ /^(.+):(\d+)/
-        raise "Could not extract file and line number from '#{error_line}'"
-      end
-
-      file = Regexp.last_match(1)
-      line = Regexp.last_match(2).to_i
-      m = String.new
-      
-      m << if warn
-             'Warning'
-           elsif syntax
-             'Syntax error'
-           else
-             'Error'
-           end
-      
-      m << ' at'
-      m << " #{file.basename}:#{line}"
-      m << ": #{msg}"
-      m.ensure_end_with!('.')
-      
-      e = JDLError.new(m)
-      e.instance_variable_set(:@raw_message, msg)
-      e.instance_variable_set(:@file, file)
-      e.instance_variable_set(:@line, line)
-      e.set_backtrace(lines.uniq) if lines # Can contain unhelpful duplicates due to loops, make unique.
-      e
+      [m, file, line]
     end
 
     ##
