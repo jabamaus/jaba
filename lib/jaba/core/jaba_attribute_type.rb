@@ -35,7 +35,7 @@ module JABA
     ##
     #
     def from_string(str)
-      JABA.error("from_string(str) must be implemented in #{self.class}")
+      str
     end
 
     ##
@@ -94,12 +94,6 @@ module JABA
     #
     def default
       ''
-    end
-
-    ##
-    #
-    def from_string(str)
-      str
     end
 
     ##
@@ -174,12 +168,6 @@ module JABA
 
     ##
     #
-    def from_string(str)
-      str
-    end
-
-    ##
-    #
     def validate_value(attr_def, value)
       if !value.symbol? && !value.string?
         JABA.error("'#{value}' must be a symbol or a string but was a '#{value.class}'")
@@ -209,12 +197,6 @@ module JABA
     def notes
       'Any object that supports that can be converted to a string with to_s will be accepted. This is very permissive as ' \
       'in practice this is just about anything in ruby - this type is here to make that intention explcit.'
-    end
-
-    ##
-    #
-    def from_string(str)
-      str
     end
 
     ##
@@ -366,12 +348,6 @@ module JABA
 
     ##
     #
-    def from_string(str)
-      str
-    end
-
-    ##
-    #
     def post_init_attr_def(attr_def)
       items = attr_def.items
       if items.empty?
@@ -394,7 +370,12 @@ module JABA
 
   ##
   #
-  class JabaAttributeTypeFile < JabaAttributeType
+  class PathAttrBase < JabaAttributeType
+  end
+
+  ##
+  #
+  class JabaAttributeTypeFile < PathAttrBase
     
     ##
     #
@@ -416,12 +397,6 @@ module JABA
 
     ##
     #
-    def from_string(str)
-      str
-    end
-
-    ##
-    #
     def validate_value(attr_def, file)
       file.validate_path do |msg|
         services.jaba_warn("File '#{file}' not specified cleanly: #{msg}")
@@ -432,7 +407,7 @@ module JABA
 
   ##
   #
-  class JabaAttributeTypeDir < JabaAttributeType
+  class JabaAttributeTypeDir < PathAttrBase
     
     ##
     #
@@ -460,8 +435,8 @@ module JABA
 
     ##
     #
-    def from_string(str)
-      str
+    def init_attr_def(attr_def)
+      attr_def.define_property(:base)
     end
 
     ##
@@ -476,7 +451,7 @@ module JABA
 
   ##
   #
-  class JabaAttributeTypeSrcSpec < JabaAttributeType
+  class JabaAttributeTypeSrcSpec < PathAttrBase
     
     ##
     #
@@ -494,12 +469,6 @@ module JABA
     #
     def notes
       'Can be file glob match an explicit path or a directory'
-    end
-
-    ##
-    #
-    def from_string(str)
-      str
     end
 
     ##
@@ -536,12 +505,6 @@ module JABA
 
     ##
     #
-    def from_string(str)
-      str
-    end
-
-    ##
-    #
     def map_value(value)
       JABA.generate_guid(namespace: 'JabaAttributeTypeUUID', name: value)
     end
@@ -568,12 +531,6 @@ module JABA
     #
     def notes
       'TODO'
-    end
-
-    ##
-    #
-    def from_string(str)
-      str
     end
 
     ##
@@ -623,12 +580,6 @@ module JABA
     #
     def notes
       'TODO'
-    end
-
-    ##
-    #
-    def from_string(str)
-      str
     end
 
     ##
