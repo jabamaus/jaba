@@ -279,7 +279,7 @@ module JABA
           begin
             jaf.compatible?(self)
           rescue => e
-            JABA.error("'#{jaf.id.inspect_unquoted}' flag is incompatible: #{e.message}")
+            JABA.error("'#{jaf.id.inspect_unquoted}' flag is incompatible2: #{e.message}")
           end
         end
       end
