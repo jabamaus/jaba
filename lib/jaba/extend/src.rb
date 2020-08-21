@@ -116,9 +116,13 @@ module JABA
 
     ##
     #
-    def get_matching_src_obj(spec, src_list)
+    def get_matching_src_obj(spec, src_list, fail_if_not_found: true, errobj: nil)
       abs_spec = !spec.absolute_path? ? "#{@root}/#{spec}" : spec
-      src_list.find{|s| s.absolute_path == abs_spec}
+      s = src_list.find{|s| s.absolute_path == abs_spec}
+      if !s && fail_if_not_found
+        JABA.error("'#{spec}' src file not in project", errobj: errobj)
+      end
+      s
     end
 
   end

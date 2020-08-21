@@ -115,16 +115,28 @@ module JABA
     #
     def value_from_block(__api_call_loc, id:, block_args: nil, &block)
       if @attr_def.node_by_value?
-        node_type = @attr_def.node_type
-        g = services.get_generator(node_type)
-        g.push_definition(services.make_definition(@attr_def.defn_id, block, __api_call_loc)) do
-          return g.make_node(name: id, parent: @node, block_args: block_args)
+        if @attr_def.has_flag?(:delay_evaluation)
+          return block
         end
+        make_node(id: id, block_args: block_args, api_call_loc: __api_call_loc, &block)
       else
         return @node.eval_jdl(&block)
       end
     end
     
+    ##
+    #
+    def make_node(id:, block_args: nil, __api_call_loc: nil, &block)
+      if !@attr_def.node_by_value?
+        JABA.error("Only for use with :node attribute type")
+      end
+      node_type = @attr_def.node_type
+      g = services.get_generator(node_type)
+      g.push_definition(services.make_definition(@attr_def.defn_id, block, __api_call_loc)) do
+        return g.make_node(name: id, parent: @node, block_args: block_args)
+      end
+    end
+
   end
 
   ##

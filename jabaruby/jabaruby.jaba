@@ -2,7 +2,6 @@
 # TODO: add miniruby.rc
 # TODO: generate id.h
 # TODO: generate miniprelude.c
-# TODO: generate probes.dmyh C:\RUBY27~1\bin\ruby.exe ./tool/gen_dummy_probes.rb ./probes.d > probes.dmyh
 # TODO: generate dummy probes.h
 # TODO: generate ast.rbinc
 # TODO: generate known_errors.inc
@@ -40,25 +39,17 @@ cpp :jabaruby do
   ], :force
   
   src ['probes.d']
-  vcfprop 'probes.d|FileType', :Document
-  vcfprop 'probes.d|Command', "ruby ..\\..\\..\\ruby\\tool\\gen_dummy_probes.rb %(Identity) &gt;..\\..\\..\\ruby\\probes.dmyh"
-  vcfprop 'probes.d|Outputs', '..\..\..\ruby\probes.dmyh'
-  vcfprop 'probes.d|Message', 'Generating probes.dmyh'
+  #vcfprop 'probes.d|FileType', :Document
+  #vcfprop 'probes.d|Command', "ruby ..\\..\\..\\ruby\\tool\\gen_dummy_probes.rb %(Identity) &gt;..\\..\\..\\ruby\\probes.dmyh"
+  #vcfprop 'probes.d|Outputs', '..\..\..\ruby\probes.dmyh'
+  #vcfprop 'probes.d|Message', 'Generating probes.dmyh'
 
   buildtool 'probes.d' do |f|
     output "#{f}myh"
-    command "ruby ..\\..\\..\\ruby\\tool\\gen_dummy_probes.rb #{f} &gt;..\\..\\..\\ruby\\probes.dmyh"
+    command "ruby ..\\..\\..\\ruby\\tool\\gen_dummy_probes.rb #{f} > #{output}"
     message "Generating #{output}"
   end
 
-=begin
-  buildtool '*.d', do |f|
-    op = "#{f}myh"
-    outputs [op]
-    command "ruby ..\\..\\..\\ruby\\tool\\gen_dummy_probes.rb #{f} #{op}"
-    message "Generating #{op}"
-  end
-=end
   src ['coroutine/win64/Context.asm']
   src ['enc/ascii.c', 'enc/us_ascii.c', 'enc/unicode.c', 'enc/utf_8.c', 'enc/trans/newline.c'], :force
   src ['crypt.c', 'ffs.c', 'langinfo.c', 'lgamma_r.c', 'strlcat.c',

@@ -191,13 +191,13 @@
     <ClCompile Include="..\..\..\ruby\parse.c" />
     <CustomBuild Include="..\..\..\ruby\probes.d">
       <FileType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ruby ..\..\..\ruby\tool\gen_dummy_probes.rb %(Identity) &gt;..\..\..\ruby\probes.dmyh</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ruby ..\..\..\ruby\tool\gen_dummy_probes.rb ..\..\..\ruby\probes.d &gt; ..\..\..\ruby\probes.dmyh</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\ruby\probes.dmyh</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Generating probes.dmyh</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Generating ..\..\..\ruby\probes.dmyh</Message>
       <FileType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ruby ..\..\..\ruby\tool\gen_dummy_probes.rb %(Identity) &gt;..\..\..\ruby\probes.dmyh</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ruby ..\..\..\ruby\tool\gen_dummy_probes.rb ..\..\..\ruby\probes.d &gt; ..\..\..\ruby\probes.dmyh</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\ruby\probes.dmyh</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Generating probes.dmyh</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Generating ..\..\..\ruby\probes.dmyh</Message>
     </CustomBuild>
     <ClInclude Include="..\..\..\ruby\probes.h" />
     <ClInclude Include="..\..\..\ruby\probes_helper.h" />

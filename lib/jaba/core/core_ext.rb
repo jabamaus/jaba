@@ -358,8 +358,8 @@ module JABACoreExt
 
     ##
     #
-    def to_escaped_XML!
-      gsub!(/["'&<>\n]/) do |match|
+    def to_escaped_xml
+      gsub(/["'&<>\n]/) do |match|
         case match
         when '"'
           '&quot;'
@@ -375,7 +375,6 @@ module JABACoreExt
           '&#x0D;&#x0A;'
         end
       end
-      self
     end
 
   end

@@ -41,6 +41,8 @@ module JABA
       # based on cross platform definition.
       #
       each_config do |cfg|
+        cfg_name = cfg.attrs.configname
+        platform_name = cfg.attrs.arch_ref.attrs.vsname
         t = services.get_translator("vcxproj_config_#{platform}".to_sym)
         t.execute(node: cfg, args: [self, cfg.attrs.type])
 
@@ -58,6 +60,18 @@ module JABA
 
         shell_cmds.each do |group, cmds|
           cfg.attrs.vcprop "#{group}|Command", cmds.join("\n")
+        end
+
+        cfg.visit_attr(:buildtool) do |attr, value|
+          src_spec = attr.get_option_value(:__key)
+          sf = get_matching_src_obj(src_spec, @src, errobj: attr)
+          btn = attr.make_node(id: "buildtool|#{sf.absolute_path.basename}", block_args: sf.projdir_rel, &value)
+          btattrs = btn.attrs
+
+          @per_file_props.push_value(sf, [:FileType, cfg_name, platform_name, :Document])
+          @per_file_props.push_value(sf, [:Command, cfg_name, platform_name, btattrs.command.to_escaped_xml])
+          @per_file_props.push_value(sf, [:Outputs, cfg_name, platform_name, btattrs.output])
+          @per_file_props.push_value(sf, [:Message, cfg_name, platform_name, btattrs.message])
         end
       end
     end
@@ -170,12 +184,8 @@ module JABA
 
         cfg.visit_attr(:vcfprop) do |attr, val|
           file_with_prop, prop = attr.get_option_value(:__key).split('|')
-          sf = get_matching_src_obj(file_with_prop, @src)
-          if sf
-            @per_file_props.push_value(sf, [prop, cfg_name, platform, val])
-          else
-            attr.attr_error("'#{file_with_prop}' src file not in project")
-          end
+          sf = get_matching_src_obj(file_with_prop, @src, errobj: attr)
+          @per_file_props.push_value(sf, [prop, cfg_name, platform, val])
         end
 
         property_group(@pg1, close: true)
