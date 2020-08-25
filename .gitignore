@@ -10,6 +10,6 @@
 *.vcxproj.user
 .vs/
 .vscode*
-examples-build/
+*build/
 docs/
 .jaba/
