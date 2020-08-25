@@ -44,32 +44,34 @@ module JABA
       # TODO: pass this in
       cpp_gen = get_generator(:cpp)
       @candidate_projects = cpp_gen.get_projects
-
       @root_nodes.each do |wsn|
-        #klass = wsn.attrs.host_ref.attrs.workspace_classname
+        services.globals.cpp_hosts.each do |target_host|
+          classname = target_host.attrs.workspace_classname
+          next if classname.empty?
 
-        root = make_node_paths_absolute(wsn)
+          root = make_node_paths_absolute(wsn)
 
-        projects = []
-        projects_attr = wsn.get_attr(:projects)
-        project_specs = projects_attr.value
-        get_matching_projects(projects, root, project_specs, errobj: projects_attr)
-  
-        if projects.empty?
-          JABA.error("No projects matched specs", errobj: projects_attr)
-        end
-  
-        configs = {}
-        projects.each do |p|
-          p.each_config do |cfg|
-            cfg_id = cfg.handle[/^.*?\|(.*)/, 1] # TODO: nasty
-            if !configs.key?(cfg_id)
-              configs[cfg_id] = [cfg.attrs.configname, cfg.attrs.arch_ref.attrs.vsname]
+          projects = []
+          projects_attr = wsn.get_attr(:projects)
+          project_specs = projects_attr.value
+          get_matching_projects(projects, root, project_specs, errobj: projects_attr)
+    
+          if projects.empty?
+            JABA.error("No projects matched specs", errobj: projects_attr)
+          end
+    
+          configs = {}
+          projects.each do |p|
+            p.each_config do |cfg|
+              cfg_id = cfg.handle[/^.*?\|(.*)/, 1] # TODO: nasty
+              if !configs.key?(cfg_id)
+                configs[cfg_id] = [cfg.attrs.configname, cfg.attrs.arch_ref.attrs.vsname]
+              end
             end
           end
+          configs = configs.values
+          make_workspace(classname, wsn, projects, configs)
         end
-        configs = configs.values
-        make_workspace('Sln', wsn, projects, configs)
       end
     end
 

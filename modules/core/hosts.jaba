@@ -9,19 +9,29 @@ define :host do
     title 'Targeting Visual Studio?'
     flags :expose
   end
+  
   attr :xcode?, type: :bool do
     title 'Targeting Xcode?'
     flags :expose
   end
+  
+  attr :ninja?, type: :bool do
+    title 'Targeting ninja?'
+    flags :expose
+  end
+
   attr :major_version do
     title 'Host major version'
   end
+  
   attr :version, type: :string do
     title 'Host version string'
   end
+  
   attr :version_year do
     title 'Host version year'
   end
+  
   attr :toolset, type: :string do
     title 'Default toolset for host'
   end
@@ -105,4 +115,8 @@ end
 host :xcode do
   xcode? true
   toolset nil
+end
+
+host :ninja do
+  ninja? true
 end
