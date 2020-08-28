@@ -118,7 +118,7 @@ module JABA
         if @attr_def.has_flag?(:delay_evaluation)
           return block
         end
-        make_node(id: id, block_args: block_args, api_call_loc: __api_call_loc, &block)
+        make_node(id: id, block_args: block_args, __api_call_loc: __api_call_loc, &block)
       else
         return @node.eval_jdl(&block)
       end
