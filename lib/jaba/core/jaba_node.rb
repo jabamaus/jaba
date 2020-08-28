@@ -228,7 +228,7 @@ module JABA
     # which act as options. eg my_attr 'val', :export, :exclude would make args equal to ['val', :opt1, :opt2]. If
     # however the value being passed in is an array it could be eg [['val1', 'val2'], :opt1, :opt2].
     #  
-    def handle_attr(id, *args, __api_call_loc: nil, __read_only: false, **keyval_args, &block)
+    def handle_attr(id, *args, __jdl_call_loc: nil, __read_only: false, **keyval_args, &block)
       # First determine if it is a set or a get operation
       #
       is_get = (args.empty? && keyval_args.empty? && !block_given?)
@@ -249,7 +249,7 @@ module JABA
           return nil
         end
         
-        return a.value(__api_call_loc)
+        return a.value(__jdl_call_loc)
       else
         a = get_attr(id, search: false, fail_if_not_found: false)
         
@@ -267,7 +267,7 @@ module JABA
           JABA.error("#{a.describe} is read only")
         end
         
-        a.set(*args, __api_call_loc: __api_call_loc, **keyval_args, &block)
+        a.set(*args, __jdl_call_loc: __jdl_call_loc, **keyval_args, &block)
         return nil
       end
     end
@@ -323,7 +323,7 @@ module JABA
     def initialize(node, read_only: false)
       @node = node
       @read_only = read_only
-      @api_call_loc = nil
+      @jdl_call_loc = nil
     end
     
     ##
@@ -341,15 +341,15 @@ module JABA
     # Store api call location (only done in read only version of this accessor) so it can be passed on to enable value calls to be chained. This happens
     # if a node-by-value attribute is nested, eg root_attr.sub_attr1.sub_attr2.
     #
-    def __internal_set_api_call_loc(api_call_loc)
-      @api_call_loc = api_call_loc
+    def __internal_set_jdl_call_loc(jdl_call_loc)
+      @jdl_call_loc = jdl_call_loc
       self
     end
 
     ##
     #
     def method_missing(attr_id, *args, **keyval_args, &block)
-      @node.handle_attr(attr_id, *args, __api_call_loc: @api_call_loc, __read_only: @read_only, **keyval_args, &block)
+      @node.handle_attr(attr_id, *args, __jdl_call_loc: @jdl_call_loc, __read_only: @read_only, **keyval_args, &block)
     end
    
   end

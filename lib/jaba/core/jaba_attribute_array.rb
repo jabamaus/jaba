@@ -37,8 +37,8 @@ module JABA
 
     ##
     #
-    def value(api_call_loc = nil)
-      @last_call_location = api_call_loc if api_call_loc
+    def value(jdl_call_loc = nil)
+      @last_call_location = jdl_call_loc if jdl_call_loc
       if !@set
         if @default_block
           values = services.execute_attr_default_block(@node, @default_block)
@@ -48,7 +48,7 @@ module JABA
           attr_error("Cannot read uninitialised #{describe}")
         end
       end
-      values = @elems.map {|e| e.value(api_call_loc)}
+      values = @elems.map {|e| e.value(jdl_call_loc)}
       if !@attr_def.node_by_reference? # read only, enforce by freezing, unless value is a node
         values.freeze
       end
@@ -57,14 +57,14 @@ module JABA
     
     ##
     #
-    def set(*args, __api_call_loc: nil, prefix: nil, postfix: nil, exclude: nil, **keyval_args, &block)
-      @last_call_location = __api_call_loc if __api_call_loc
+    def set(*args, __jdl_call_loc: nil, prefix: nil, postfix: nil, exclude: nil, **keyval_args, &block)
+      @last_call_location = __jdl_call_loc if __jdl_call_loc
       
       # It is possible for values to be nil, which happens if no args are passed. This can happen if the user
       # wants to just set some excludes.
       #
       values = if block_given?
-        value_from_block(__api_call_loc, id: "#{@attr_def.defn_id}[#{@elems.size}]", &block)
+        value_from_block(__jdl_call_loc, id: "#{@attr_def.defn_id}[#{@elems.size}]", &block)
       else
         if @attr_def.node_by_value?
           attr_error("Node attributes require a block")
@@ -123,7 +123,7 @@ module JABA
     #
     def add_elem(val, *args, **keyval_args)
       e = JabaAttributeElement.new(@attr_def, @node, self)
-      e.set(val, *args, __api_call_loc: @last_call_location, **keyval_args)
+      e.set(val, *args, __jdl_call_loc: @last_call_location, **keyval_args)
       @elems << e
     end
 

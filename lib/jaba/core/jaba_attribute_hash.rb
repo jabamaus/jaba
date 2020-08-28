@@ -39,8 +39,8 @@ module JABA
     ##
     # Returns a read only hash of key->attribute values. Expensive because it must map attributes to their values.
     #
-    def value(api_call_loc = nil)
-      @last_call_location = api_call_loc if api_call_loc
+    def value(jdl_call_loc = nil)
+      @last_call_location = jdl_call_loc if jdl_call_loc
       if !@set
         if @default_block
           default_hash = services.execute_attr_default_block(@node, @default_block)
@@ -50,7 +50,7 @@ module JABA
           attr_error("Cannot read uninitialised #{describe}")
         end
       end
-      values = @hash.transform_values {|e| e.value(api_call_loc)}
+      values = @hash.transform_values {|e| e.value(jdl_call_loc)}
       if !@attr_def.node_by_reference? # read only, enforce by freezing, unless value is a node
         values.freeze
       end
@@ -59,8 +59,8 @@ module JABA
     
     ##
     #
-    def set(*args, no_keyval: false, __api_call_loc: nil, **keyval_args, &block)
-      @last_call_location = __api_call_loc if __api_call_loc
+    def set(*args, no_keyval: false, __jdl_call_loc: nil, **keyval_args, &block)
+      @last_call_location = __jdl_call_loc if __jdl_call_loc
       
       key = nil
       val = nil
@@ -75,7 +75,7 @@ module JABA
         # If block given, use it to evaluate value
         #
         val = if block_given?
-          value_from_block(__api_call_loc, id: "#{@attr_def.defn_id}|#{key}", block_args: key, &block)
+          value_from_block(__jdl_call_loc, id: "#{@attr_def.defn_id}|#{key}", block_args: key, &block)
         else
           if args.empty?
             attr_error("#{describe} requires a key/value eg \"#{defn_id} :my_key, 'my value'\"")
@@ -176,7 +176,7 @@ module JABA
         end
       end
 
-      attr.set(val, *args, validate: validate, __api_call_loc: @last_call_location, __key: key, **keyval_args)
+      attr.set(val, *args, validate: validate, __jdl_call_loc: @last_call_location, __key: key, **keyval_args)
 
       # Log overwrites. This behaviour could be beefed up and customised with options if necessary
       #

@@ -113,12 +113,12 @@ module JABA
 
     ##
     #
-    def value_from_block(__api_call_loc, id:, block_args: nil, &block)
+    def value_from_block(__jdl_call_loc, id:, block_args: nil, &block)
       if @attr_def.node_by_value?
         if @attr_def.has_flag?(:delay_evaluation)
           return block
         end
-        make_node(id: id, block_args: block_args, __api_call_loc: __api_call_loc, &block)
+        make_node(id: id, block_args: block_args, __jdl_call_loc: __jdl_call_loc, &block)
       else
         return @node.eval_jdl(&block)
       end
@@ -126,13 +126,13 @@ module JABA
     
     ##
     #
-    def make_node(id:, block_args: nil, __api_call_loc: nil, &block)
+    def make_node(id:, block_args: nil, __jdl_call_loc: nil, &block)
       if !@attr_def.node_by_value?
         JABA.error("Only for use with :node attribute type")
       end
       node_type = @attr_def.node_type
       g = services.get_generator(node_type)
-      g.push_definition(services.make_definition(@attr_def.defn_id, block, __api_call_loc)) do
+      g.push_definition(services.make_definition(@attr_def.defn_id, block, __jdl_call_loc)) do
         return g.make_node(name: id, parent: @node, block_args: block_args)
       end
     end
@@ -166,10 +166,10 @@ module JABA
     # Returns the value of the attribute. If value is a reference to a JabaNode and the call to value() came from user
     # definitions then return the node's attributes rather than the node itself.
     #
-    def value(api_call_loc = nil)
-      @last_call_location = api_call_loc if api_call_loc
-      if api_call_loc && @value.is_a?(JabaNode)
-        @value.attrs_read_only.__internal_set_api_call_loc(api_call_loc)
+    def value(jdl_call_loc = nil)
+      @last_call_location = jdl_call_loc if jdl_call_loc
+      if jdl_call_loc && @value.is_a?(JabaNode)
+        @value.attrs_read_only.__internal_set_jdl_call_loc(jdl_call_loc)
       else
         @value
       end
@@ -177,20 +177,20 @@ module JABA
     
     ##
     #
-    def set(*args, __api_call_loc: nil, validate: true, __resolve_ref: true, **keyval_args, &block)
-      @last_call_location = __api_call_loc if __api_call_loc
+    def set(*args, __jdl_call_loc: nil, validate: true, __resolve_ref: true, **keyval_args, &block)
+      @last_call_location = __jdl_call_loc if __jdl_call_loc
 
       # Check for read only if calling from definitions, or if not calling from definitions but from library code,
       # allow setting read only attrs the first time, in order to initialise them.
       #
-      if (__api_call_loc || @set) && !@node.allow_set_read_only_attrs?
+      if (__jdl_call_loc || @set) && !@node.allow_set_read_only_attrs?
         if @attr_def.has_flag?(:read_only)
           attr_error("#{describe} is read only")
         end
       end
 
       new_value = if block_given?
-        value_from_block(__api_call_loc, id: "#{@attr_def.defn_id}", &block)
+        value_from_block(__jdl_call_loc, id: "#{@attr_def.defn_id}", &block)
       else
         if @attr_def.node_by_value? && !@outer_attr
           attr_error("Node attributes require a block")
@@ -364,8 +364,8 @@ module JABA
     # Returns the value of the attribute. If value is a reference to a JabaNode and the call to value() came from user
     # definitions then return the node's attributes rather than the node itself.
     #
-    def value(api_call_loc = nil)
-      @last_call_location = api_call_loc if api_call_loc
+    def value(jdl_call_loc = nil)
+      @last_call_location = jdl_call_loc if jdl_call_loc
       if !@set
         if @default_block
           val = services.execute_attr_default_block(@node, @default_block)
@@ -375,11 +375,11 @@ module JABA
         else
           nil
         end
-      elsif api_call_loc && @value.is_a?(JabaNode)
+      elsif jdl_call_loc && @value.is_a?(JabaNode)
         # Pass on api call location to the read only attribute accessor to enable value calls to be chained. This happens
         # if a node-by-value attribute is nested, eg root_attr.sub_attr1.sub_attr2.
         #
-        @value.attrs_read_only.__internal_set_api_call_loc(api_call_loc)
+        @value.attrs_read_only.__internal_set_jdl_call_loc(jdl_call_loc)
       else
         @value
       end
