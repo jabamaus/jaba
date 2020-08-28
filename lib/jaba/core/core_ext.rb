@@ -252,7 +252,7 @@ module JABACoreExt
     ##
     #
     def capitalize_first!
-      JABA.error("Cannot capitalze empty string") if empty?
+      JABA.error("Cannot capitalize empty string") if empty?
       self[0] = self[0].chr.upcase
       self
     end
