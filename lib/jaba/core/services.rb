@@ -1057,7 +1057,9 @@ module JABA
       m << ' at'
       m << " #{file.basename}:#{line}"
       m << ": #{msg}"
-      m.ensure_end_with!('.')
+      if m =~ /[a-zA-Z0-9']$/
+        m.ensure_end_with!('.')
+      end
       [m, file, line]
     end
 
