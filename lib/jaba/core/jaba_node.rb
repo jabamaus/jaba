@@ -338,7 +338,7 @@ module JABA
       @node.defn_id
     end
     
-    # Store api call location (only done in read only version of this accessor) so it can be passed on to enable value calls to be chained. This happens
+    # Store jdl call location (only done in read only version of this accessor) so it can be passed on to enable value calls to be chained. This happens
     # if a node-by-value attribute is nested, eg root_attr.sub_attr1.sub_attr2.
     #
     def __internal_set_jdl_call_loc(jdl_call_loc)
