@@ -10,6 +10,7 @@ module JABA
   #
   class JabaAttributeBase
 
+    attr_reader :services
     attr_reader :node
     attr_reader :attr_def
     attr_reader :last_call_location
@@ -17,18 +18,13 @@ module JABA
     ##
     #
     def initialize(attr_def, node, outer_attr)
+      @services = node.services
       @attr_def = attr_def
       @node = node
       @outer_attr = outer_attr
       @last_call_location = nil
       @set = false
       @default_block = @attr_def.default_block
-    end
-
-    ##
-    #
-    def services
-      @node.services
     end
 
     ##
@@ -376,7 +372,7 @@ module JABA
           nil
         end
       elsif jdl_call_loc && @value.is_a?(JabaNode)
-        # Pass on api call location to the read only attribute accessor to enable value calls to be chained. This happens
+        # Pass on jdl call location to the read only attribute accessor to enable value calls to be chained. This happens
         # if a node-by-value attribute is nested, eg root_attr.sub_attr1.sub_attr2.
         #
         @value.attrs_read_only.__internal_set_jdl_call_loc(jdl_call_loc)
