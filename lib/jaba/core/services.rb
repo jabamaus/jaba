@@ -207,10 +207,14 @@ module JABA
           include_api = e.instance_variable_get(:@include_api)
           err_type = e.instance_variable_get(:@syntax) ? :syntax : :error
           
-          jdl_bt = get_jdl_backtrace(cs, err_type: err_type, include_api: include_api)
-
-          if jdl_bt.empty? && err_type != :syntax
-            raise
+          bt = if err_type == :syntax
+            [] # Syntax errors (ruby ScriptErrors) don't have backtraces
+          else
+            jdl_bt = get_jdl_backtrace(cs, include_api: include_api)
+            if jdl_bt.empty?
+              raise # If there is no jdl file in the callstack reraise the original exception
+            end
+            jdl_bt
           end
 
           msg, file, line = jdl_error_info(e.message, jdl_bt, err_type: err_type)
@@ -219,7 +223,7 @@ module JABA
           e = JDLError.new(msg)
           e.instance_variable_set(:@file, file)
           e.instance_variable_set(:@line, line)
-          e.set_backtrace(jdl_bt)
+          e.set_backtrace(bt)
         when CommandLineUsageError
           @output[:error] = e.message # Don't need any location info
         end
@@ -970,7 +974,7 @@ module JABA
     #
     def jaba_warn(msg, errobj: nil)
       callstack = Array(errobj&.src_loc || caller)
-      jdl_bt = get_jdl_backtrace(callstack, err_type: :warning)
+      jdl_bt = get_jdl_backtrace(callstack)
       if jdl_bt.empty?
         msg = "Warning: #{msg}"
       else
@@ -983,13 +987,7 @@ module JABA
 
     ##
     #
-    def get_jdl_backtrace(callstack, err_type:, include_api: false)
-      # With ruby ScriptErrors there is no useful bactrace 
-      #
-      if err_type == :syntax
-        return []
-      end
-
+    def get_jdl_backtrace(callstack, include_api: false)
       # Clean up callstack which could be in 'caller' or 'caller_locations' form.
       #
       callstack = callstack.map do |l|
