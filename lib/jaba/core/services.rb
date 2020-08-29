@@ -217,6 +217,7 @@ module JABA
             jdl_bt
           end
 
+          # TODO: backtrace is not being reported to the end user
           msg, file, line = jdl_error_info(e.message, jdl_bt, err_type: err_type)
           @output[:error] = msg
 
@@ -877,13 +878,7 @@ module JABA
       #
       Array(input.definitions).each do |block|
         block_file = block.source_location[0].cleanpath
-
-        # Special case when running tests. test_jaba.rb includes definition blocks as part of test setup. Don't
-        # consider test_jaba as a jaba src file as it confuses error handling
-        #
-        if !JABA.running_tests? || block_file !~ /test\/test_jaba\.rb/
-          @jdl_files << block_file
-        end
+        @jdl_files << block_file
         execute_jdl(&block)
       end
 
@@ -996,6 +991,15 @@ module JABA
         else
           l
         end
+      end
+
+      # Disregard everything after the main entry point, if it is present in callstack. Prevents error handling from
+      # getting confused when definitions are supplied in block form where normal source code and jdl source code
+      # exist in the same file.
+      #
+      jaba_run_idx = callstack.index{|l| l =~ /jaba\/lib\/jaba\.rb.*in `run'/}
+      if jaba_run_idx
+        callstack.slice!(jaba_run_idx..-1)
       end
 
       candidates = include_api ? @jdl_files + $LOADED_FEATURES.select{|f| f =~ /jaba\/lib\/jaba\/jdl/} : @jdl_files

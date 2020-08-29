@@ -93,7 +93,7 @@ module JABA
 
       # test with attr default using an unset attr
       #
-      check_fail2 "Error at #{src_loc(__FILE__, :tagI)}: Cannot read uninitialised 't.b' array attribute." do
+      check_fail2 "Error at #{src_loc(__FILE__, :tagI)}: Cannot read uninitialised 't.b' array attribute.", trace: [__FILE__, :tagX] do
         jaba(barebones: true) do
           define :test do
             attr :a
@@ -106,7 +106,7 @@ module JABA
           end
           test :t do
             a 1
-            c # TODO: this should be in trace
+            c # tagX
           end
         end
       end

@@ -13,7 +13,6 @@ module JABA
     attr_reader :services
     attr_reader :node
     attr_reader :attr_def
-    attr_reader :last_call_location
     
     ##
     #
@@ -93,8 +92,13 @@ module JABA
     ##
     #
     def attr_error(msg)
-      obj = @last_call_location ? self : @attr_def
-      JABA.error(msg, errobj: obj)
+      jdl_bt = services.get_jdl_backtrace(caller)
+      if jdl_bt.empty?
+        obj = @last_call_location ? self : @attr_def
+        JABA.error(msg, errobj: obj)
+      else
+        JABA.error(msg)
+      end
     end
     
     ##
