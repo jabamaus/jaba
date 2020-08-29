@@ -306,15 +306,18 @@ module JABACoreExt
     # Used when generating code example blocks in reference manual.
     #
     def split_and_trim_leading_whitespace
+      bg = block_given?
       lines = split("\n")
       lines.delete('')
 
       if lines[0] =~ /^(\s*)/
         lw = Regexp.last_match(1)
         lines.each do |l|
-          yield l.delete_prefix(lw)
+          result = l.delete_prefix!(lw)
+          yield result if bg
         end
       end
+      lines
     end
     
     # Convert all variables specified as $(cpp#varname) (which themselves reference attribute names) into markdown links
