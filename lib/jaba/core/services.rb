@@ -1000,7 +1000,7 @@ module JABA
         end
       end
 
-      candidates = include_api ? @jdl_files + $LOADED_FEATURES.select{|f| f =~ /jaba\/lib\/jaba\/jdl_api/} : @jdl_files
+      candidates = include_api ? @jdl_files + $LOADED_FEATURES.select{|f| f =~ /jaba\/lib\/jaba\/jdl/} : @jdl_files
 
       # Extract any lines in the callstack that contain references to definition source files.
       #
