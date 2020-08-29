@@ -5,10 +5,8 @@ module JABA
   class TestErrorReporting < JabaTest
     
     it 'works when a definition contains an error when definitions in a block' do
-      line = find_line_number(__FILE__, 'tagR')
-      check_fail "Error at test_error_reporting.rb:#{line}: 'invalid id' is an invalid id. Must be an " \
-                     "alphanumeric string or symbol",
-                     line: [__FILE__, line] do
+      check_fail2 "Error at #{src_loc(__FILE__, :tagR)}: 'invalid id' is an invalid id. Must be an " \
+                     "alphanumeric string or symbol (-_. permitted), eg :my_id, 'my-id', 'my.id'." do
         jaba do
           category 'invalid id' # tagR
         end
@@ -19,16 +17,14 @@ module JABA
       fullpath = "#{temp_dir}/test.jaba"
       IO.write(fullpath, "\n\ncategory 'invalid id' do\nend\n")
       line = 3
-      check_fail "Error at test.jaba:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric " \
-                     "string or symbol",
-                     line: [fullpath, line] do
+      check_fail2 "Error at test.jaba:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric " \
+                     "string or symbol (-_. permitted), eg :my_id, 'my-id', 'my.id'." do
         jaba(barebones: true, src_root: temp_dir)
       end
     end
     
-    it 'works when a there is a syntax error when definitions in a block' do
-      line = find_line_number(__FILE__, 'tagL')
-      check_fail "Error at test_error_reporting.rb:#{line}", line: [__FILE__, line] do
+    it 'works when a there is a standard error when definitions in a block' do
+      check_fail2 "Error at #{src_loc(__FILE__, :tagL)}: uninitialized constant JABA::TestErrorReporting::CODE." do
         jaba(barebones: true) do
           shared :a do
           end
@@ -40,13 +36,13 @@ module JABA
     it 'works when a there is a syntax error when definitions in a separate file' do
       fullpath = "#{temp_dir}/test.jaba"
       IO.write(fullpath, "\n\n&*^^\n")
-      check_fail 'Syntax error at test.jaba:3: unexpected &' do
+      check_fail2 'Syntax error at test.jaba:3: unexpected &' do
         jaba(barebones: true, src_root: temp_dir)
       end
     end
     
     it 'reports lines correctly when using shared modules' do
-      check_fail ':bool attributes only accept [true|false]', line: [__FILE__, 'tagH'] do
+      check_fail2 "Error at #{src_loc(__FILE__, :tagH)}: 't.a' attribute invalid: :bool attributes only accept [true|false] but got 'invalid'." do
         jaba(barebones: true) do
           define :test do
             attr :a, type: :bool
@@ -62,7 +58,7 @@ module JABA
     end
 
     it 'allows errors to be raised from definitions' do
-      check_fail 'Error msg', line: [__FILE__, 'tagW'] do
+      check_fail2 "Error at #{src_loc(__FILE__, :tagW)}: Error msg." do
         jaba(barebones: true) do
           define :test do
             fail "Error msg" # tagW
