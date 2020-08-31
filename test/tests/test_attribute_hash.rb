@@ -146,7 +146,7 @@ module JABA
     it 'checks for accessing uninitialised attributes' do
       # test with hash attr default using an unset attr
       #
-      check_fail "Cannot read uninitialised 't.b' attribute", line: [__FILE__, 'tagI'] do
+      assert_jdl_error "Error at #{src_loc(__FILE__, :tagI)}: Cannot read uninitialised 't.b' attribute.", trace: [__FILE__, :tagi] do
         jaba(barebones: true) do
           define :test do
             attr :a
@@ -159,7 +159,7 @@ module JABA
           end
           test :t do
             a 1
-            c # TODO: this should be in trace
+            c # tagi
           end
         end
       end
