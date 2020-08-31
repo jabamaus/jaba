@@ -117,7 +117,7 @@ module JABA
 
       # test with another attr using unset array attr
       #
-      check_fail "Cannot read uninitialised 't.a' array attribute", line: [__FILE__, 'tagF'] do
+      assert_jdl_error "Error at #{src_loc(__FILE__, :tagF)}: Cannot read uninitialised 't.a' array attribute.", trace: [__FILE__, :tagf] do
         jaba(barebones: true) do
           define :test do
             attr_array :a
@@ -128,7 +128,7 @@ module JABA
             end
           end
           test :t do
-            b
+            b # tagf
           end
         end
       end
@@ -159,7 +159,7 @@ module JABA
     end
     
     it 'is not possible to modify returned array' do
-      check_fail 'Cannot modify read only value', line: [__FILE__, 'tagN'] do
+      assert_jdl_error "Error at #{src_loc(__FILE__, :tagN)}: Cannot modify read only value." do
         jaba(barebones: true) do
           define :test do
             attr_array :a do
@@ -242,7 +242,7 @@ module JABA
     end
 
     it 'validates element types are valid' do
-      check_fail ':bool attributes only accept [true|false]', line: [__FILE__, 'tagT'] do
+      assert_jdl_error "Error at #{src_loc(__FILE__, :tagT)}: 't.a' array attribute invalid: :bool attributes only accept [true|false] but got 'true'." do
         jaba(barebones: true) do
           define :test do
             attr_array :a, type: :bool
@@ -270,7 +270,7 @@ module JABA
     end
     
     it 'only allows prefix/postfix on string elements' do
-      check_fail "When setting 't.a' array attribute prefix/postfix option can only be used with string arrays", line: [__FILE__, 'tagQ'] do
+      assert_jdl_error "Error at #{src_loc(__FILE__, :tagQ)}: When setting 't.a' array attribute prefix/postfix option can only be used with string arrays." do
         jaba(barebones: true) do
           define :test do
             attr_array :a
@@ -336,7 +336,7 @@ module JABA
     end
     
     it 'fails if excluding with regex on non-strings' do
-      check_fail "When setting 't.a' array attribute exclude regex can only operate on strings", line: [__FILE__, 'tagR'] do
+      assert_jdl_error "Error at #{src_loc(__FILE__, :tagR)}: When setting 't.a' array attribute exclude regex can only operate on strings." do
         jaba(barebones: true) do
           define :test do
             attr_array :a
@@ -418,7 +418,7 @@ module JABA
     end
 
     it 'catches invalid args to wipe' do
-      check_fail "'t.b' attribute not found", line: [__FILE__, 'tagS'] do
+      assert_jdl_error "Error at #{src_loc(__FILE__, :tagS)}: 't.b' attribute not found." do
         jaba(barebones: true) do
           define :test do
             attr_array :a
@@ -490,20 +490,20 @@ module JABA
     end
     
     it 'supports setting a validator' do
-      check_fail "'t.a' array attribute invalid: failed", line: [__FILE__, 'tagB'] do
+      assert_jdl_error "Error at #{src_loc(__FILE__, :tagB)}: 't.a' array attribute invalid: failed.", trace: [__FILE__, :tagb] do
         jaba(barebones: true) do
           define :test do
             attr_array :a do
               validate do |val|
                 if val == 'invalid'
-                  fail 'failed'
+                  fail 'failed' # tagB
                 end
               end
             end
           end
           test :t do
             a ['val']
-            a ['invalid'] # tagB
+            a ['invalid'] # tagb
           end
         end
       end

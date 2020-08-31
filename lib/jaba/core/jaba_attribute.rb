@@ -91,13 +91,13 @@ module JABA
 
     ##
     #
-    def attr_error(msg)
-      jdl_bt = services.get_jdl_backtrace(caller)
+    def attr_error(msg, callstack: nil)
+      jdl_bt = services.get_jdl_backtrace(callstack || caller)
       if jdl_bt.empty?
         obj = @last_call_location ? self : @attr_def
         JABA.error(msg, errobj: obj)
       else
-        JABA.error(msg)
+        JABA.error(msg, callstack: jdl_bt)
       end
     end
     
@@ -107,7 +107,7 @@ module JABA
       begin
         yield
       rescue => e
-        attr_error("#{describe} invalid: #{e.message}")
+        attr_error("#{describe} invalid: #{e.message}", callstack: e.backtrace)
       end
     end
 

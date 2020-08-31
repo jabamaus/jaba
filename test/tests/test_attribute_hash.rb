@@ -378,38 +378,38 @@ module JABA
           end
         end
       end
-      check_fail "'t.a' hash attribute invalid: failed", line: [__FILE__, 'tagC'] do
+      assert_jdl_error "Error at #{src_loc(__FILE__, :tagC)}: 't.a' hash attribute invalid: failed.", trace: [__FILE__, :tagc] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a, key_type: :string do
               validate_key do |key|
                 if key == 'invalid'
-                  fail 'failed'
+                  fail 'failed' # tagC
                 end
               end
             end
           end
           test :t do
             a 'k1', :v
-            a 'invalid', :v # tagC
+            a 'invalid', :v # tagc
           end
         end
       end
 
-      check_fail "'t.a' hash attribute invalid: failed", line: [__FILE__, 'tagB'] do
+      assert_jdl_error "Error at #{src_loc(__FILE__, :tagB)}: 't.a' hash attribute invalid: failed.", trace: [__FILE__, :tagb] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a, key_type: :symbol do
               validate do |val|
                 if val == 'invalid'
-                  fail 'failed'
+                  fail 'failed' # tagB
                 end
               end
             end
           end
           test :t do
             a :k, :v
-            a :k, 'invalid' # tagB
+            a :k, 'invalid' # tagb
           end
         end
       end

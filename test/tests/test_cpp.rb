@@ -2,7 +2,11 @@
 
 module JABA
 
+  using JABACoreExt
+  
   class TestCpp < JabaTest
+
+    CPP_VS_JDL_FILE = "#{__dir__}/../../modules/cpp/VisualStudio/cpp_vs.jaba".cleanpath
 
     # TODO
     it 'is evaluated per-type, per-sku and per-config' do
@@ -45,8 +49,9 @@ module JABA
       # Test that keys always contain exactly 1 | character with something either side
       #
       invalid_keys = ['PG1_CharacterSet', '|PG1|CharacterSet', '|', 'A||B', 'win32/file.c|ObjectFileName']
+      err_loc = src_loc(CPP_VS_JDL_FILE, '"Must be of form <group>|<property>')
       invalid_keys.each do |key|
-        check_fail "'app.vcprop' hash attribute invalid: Must be of form <group>|<property> but was '#{key}'", line: [__FILE__, 'tagJ'] do
+        assert_jdl_error "Error at #{err_loc}: 'app.vcprop' hash attribute invalid: Must be of form <group>|<property> but was '#{key}'.", trace: [__FILE__, :tagJ] do
           jaba(dry_run: true) do
             cpp :app do
               platforms [:windows_x86_64]
