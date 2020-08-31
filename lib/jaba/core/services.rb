@@ -218,12 +218,12 @@ module JABA
           end
 
           # TODO: backtrace is not being reported to the end user
-          msg, file, line = jdl_error_info(e.message, jdl_bt, err_type: err_type)
-          @output[:error] = msg
+          info = jdl_error_info(e.message, jdl_bt, err_type: err_type)
+          @output[:error] = info.message
 
-          e = JDLError.new(msg)
-          e.instance_variable_set(:@file, file)
-          e.instance_variable_set(:@line, line)
+          e = JDLError.new(info.message)
+          e.instance_variable_set(:@file, info.file)
+          e.instance_variable_set(:@line, info.line)
           e.set_backtrace(bt)
         when CommandLineUsageError
           @output[:error] = e.message # Don't need any location info
@@ -973,7 +973,7 @@ module JABA
       if jdl_bt.empty?
         msg = "Warning: #{msg}"
       else
-        msg, _, _ = jdl_error_info(msg, jdl_bt, err_type: :warning)
+        msg = jdl_error_info(msg, jdl_bt, err_type: :warning).message
       end
       log(msg, :WARN)
       @warnings << msg
@@ -1019,6 +1019,8 @@ module JABA
       jdl_bt
     end
 
+    ErrorInfo = Struct.new(:message, :file, :line)
+
     ##
     #
     def jdl_error_info(msg, backtrace, err_type: :error)
@@ -1062,7 +1064,7 @@ module JABA
       if m =~ /[a-zA-Z0-9']$/
         m.ensure_end_with!('.')
       end
-      [m, file, line]
+      ErrorInfo.new(m, file, line)
     end
 
     ##
