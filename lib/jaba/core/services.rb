@@ -218,7 +218,7 @@ module JABA
           end
 
           # TODO: backtrace is not being reported to the end user
-          info = jdl_error_info(e.message, jdl_bt, err_type: err_type)
+          info = jdl_error_info(e.message, bt, err_type: err_type)
           @output[:error] = info.message
 
           e = JDLError.new(info.message)
