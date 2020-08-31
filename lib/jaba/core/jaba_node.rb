@@ -177,34 +177,6 @@ module JABA
     end
 
     ##
-    # Removes attribute and returns it.
-    #
-    def remove_attr(attr_id)
-      if @attribute_lookup.delete(attr_id).nil?
-        JABA.error("Could not remove '#{attr_id}' attribute from #{describe}")
-      end
-      index = @attributes.index{|a| a.defn_id == attr_id}
-      if index.nil?
-        JABA.error("Could not remove '#{attr_id}' attribute from #{describe}")
-      end
-      @attributes.delete_at(index)
-    end
-
-    ##
-    # TODO: improve
-    def pull_up(*attr_ids)
-      attr_ids.each do |attr_id|
-        attr = nil
-        # TODO: check commonality
-        @children.each do |child|
-          attr = child.remove_attr(attr_id)
-        end
-        @attributes << attr
-        @attribute_lookup[attr_id] = attr
-      end
-    end
-
-    ##
     # 
     def post_create
       i = 0
