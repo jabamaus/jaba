@@ -7,10 +7,10 @@ module JABA
     it 'supports a default' do
       # It validates default is an array
       #
-      check_fail2 "Error at #{src_loc(__FILE__, :tagV)}: 'a' array attribute default must be an array not a 'Integer'." do
+      check_fail2 "Error at #{src_loc(__FILE__, :tagV)}: 'a' array attribute default must be an array not a 'Integer'.", trace: [__FILE__, :tagv] do
         jaba(barebones: true) do
           define :test do
-            attr_array :a do
+            attr_array :a do # tagv
               default 1 # tagV
             end
           end
@@ -34,10 +34,11 @@ module JABA
       
       # It validates default elements respect attribute type
       #
-      check_fail2 "Error at #{src_loc(__FILE__, :tagD)}: 'a' array attribute default invalid: 'not a symbol' must be a symbol but was a 'String'." do
+      check_fail2 "Error at #{src_loc(__FILE__, :tagD)}: 'a' array attribute default invalid: 'not a symbol' must be a symbol but was a 'String'.",
+           trace: [__FILE__, :tagd] do
         jaba(barebones: true) do
           define :test do
-            attr_array :a, type: :symbol do
+            attr_array :a, type: :symbol do # tagd
               default ['not a symbol'] # tagD
             end
           end

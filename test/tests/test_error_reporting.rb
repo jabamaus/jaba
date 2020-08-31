@@ -42,7 +42,7 @@ module JABA
     end
     
     it 'reports lines correctly when using shared modules' do
-      check_fail2 "Error at #{src_loc(__FILE__, :tagH)}: 't.a' attribute invalid: :bool attributes only accept [true|false] but got 'invalid'." do
+      check_fail2 "Error at #{src_loc(__FILE__, :tagH)}: 't.a' attribute invalid: :bool attributes only accept [true|false] but got 'invalid'.", trace: [__FILE__, :tagh] do
         jaba(barebones: true) do
           define :test do
             attr :a, type: :bool
@@ -51,7 +51,7 @@ module JABA
             a 'invalid' # tagH
           end
           test :t do
-            include :s
+            include :s # tagh
           end
         end
       end
