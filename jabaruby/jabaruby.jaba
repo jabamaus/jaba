@@ -1,28 +1,29 @@
 
-# TODO: add miniruby.rc
-# TODO: generate id.h
-# TODO: generate miniprelude.c
-# TODO: generate dummy probes.h
-# TODO: generate ast.rbinc
-# TODO: generate known_errors.inc
-# TODO: generate warning.rbinc
-# TODO: generate gc.rbinc
-# TODO: generate prelude.rbinc
-# TODO: generate io.rbinc
-# TODO: generate node_name.inc
-# TODO: generate mjit_config.h
-# TODO: generate pack.rbinc
-# TODO: generate parse.c ; copy lex.c.blt lex.c
-# TODO: generate id.c
-# TODO: generate vm_call_iseq_optimized.inc
-# TODO: generate trace_point.rbinc
-# TODO: generate enc/trans/newline.c
-#           converter for universal_newline
-#           converter for crlf_newline
-#           converter for cr_newline
-# TODO: turn off edit and continue
-# TODO: investigate -Zm600. Related to large link size
-# TODO: runtime library static
+# TODO:
+# - add miniruby.rc
+# - generate id.h
+# - generate miniprelude.c
+# - generate dummy probes.h
+# - generate ast.rbinc
+# - generate known_errors.inc
+# - generate warning.rbinc
+# - generate gc.rbinc
+# - generate prelude.rbinc
+# - generate io.rbinc
+# - generate node_name.inc
+# - generate mjit_config.h
+# - generate pack.rbinc
+# - generate parse.c ; copy lex.c.blt lex.c
+# - generate id.c
+# - generate vm_call_iseq_optimized.inc
+# - generate trace_point.rbinc
+# - generate enc/trans/newline.c
+#     converter for universal_newline
+#     converter for crlf_newline
+#     converter for cr_newline
+# - turn off edit and continue
+# - investigate -Zm600. Related to large link size
+# - runtime library static
 cpp :jabaruby do
   type :console
   root '../../ruby'
