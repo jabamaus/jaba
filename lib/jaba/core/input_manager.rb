@@ -111,7 +111,6 @@ module JABA
     def process(phase:)
       process_cmd_line(phase)
 
-      # TODO: automatically patch in new attrs
       if phase == 2
         if !JABA.running_tests?
           # Only create config.jaba for out of src builds
