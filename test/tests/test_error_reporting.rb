@@ -5,7 +5,7 @@ module JABA
   class TestErrorReporting < JabaTest
     
     it 'works when a definition contains an error when definitions in a block' do
-      check_fail2 "Error at #{src_loc(__FILE__, :tagR)}: 'invalid id' is an invalid id. Must be an " \
+      assert_jdl_error "Error at #{src_loc(__FILE__, :tagR)}: 'invalid id' is an invalid id. Must be an " \
                      "alphanumeric string or symbol (-_. permitted), eg :my_id, 'my-id', 'my.id'." do
         jaba do
           category 'invalid id' # tagR
@@ -17,14 +17,14 @@ module JABA
       fullpath = "#{temp_dir}/test.jaba"
       IO.write(fullpath, "\n\ncategory 'invalid id' do\nend\n")
       line = 3
-      check_fail2 "Error at test.jaba:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric " \
+      assert_jdl_error "Error at test.jaba:#{line}: 'invalid id' is an invalid id. Must be an alphanumeric " \
                      "string or symbol (-_. permitted), eg :my_id, 'my-id', 'my.id'." do
         jaba(barebones: true, src_root: temp_dir)
       end
     end
     
     it 'works when a there is a standard error when definitions in a block' do
-      check_fail2 "Error at #{src_loc(__FILE__, :tagL)}: uninitialized constant JABA::TestErrorReporting::CODE." do
+      assert_jdl_error "Error at #{src_loc(__FILE__, :tagL)}: uninitialized constant JABA::TestErrorReporting::CODE." do
         jaba(barebones: true) do
           shared :a do
           end
@@ -36,13 +36,13 @@ module JABA
     it 'works when a there is a syntax error when definitions in a separate file' do
       fullpath = "#{temp_dir}/test.jaba"
       IO.write(fullpath, "\n\n&*^^\n")
-      check_fail2 'Syntax error at test.jaba:3: unexpected &' do
+      assert_jdl_error 'Syntax error at test.jaba:3: unexpected &' do
         jaba(barebones: true, src_root: temp_dir)
       end
     end
     
     it 'reports lines correctly when using shared modules' do
-      check_fail2 "Error at #{src_loc(__FILE__, :tagH)}: 't.a' attribute invalid: :bool attributes only accept [true|false] but got 'invalid'.", trace: [__FILE__, :tagh] do
+      assert_jdl_error "Error at #{src_loc(__FILE__, :tagH)}: 't.a' attribute invalid: :bool attributes only accept [true|false] but got 'invalid'.", trace: [__FILE__, :tagh] do
         jaba(barebones: true) do
           define :test do
             attr :a, type: :bool
@@ -58,7 +58,7 @@ module JABA
     end
 
     it 'allows errors to be raised from definitions' do
-      check_fail2 "Error at #{src_loc(__FILE__, :tagW)}: Error msg." do
+      assert_jdl_error "Error at #{src_loc(__FILE__, :tagW)}: Error msg." do
         jaba(barebones: true) do
           define :test do
             fail "Error msg" # tagW

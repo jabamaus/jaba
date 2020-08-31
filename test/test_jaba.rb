@@ -150,7 +150,7 @@ module JABA
     
     ##
     #
-    def check_fail2(msg, trace: [])
+    def assert_jdl_error(msg, trace: [])
       e = assert_raises JDLError do
         yield
       end
@@ -161,7 +161,7 @@ module JABA
       trace.each_slice(2) do |elem|
         backtrace << "#{elem[0]}:#{find_line_number(elem[0], elem[1])}"
       end
-      
+
       # First backtrace item contains the same file and line number as the main message line so disregard
       #
       bt = e.backtrace
