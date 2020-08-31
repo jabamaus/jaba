@@ -305,17 +305,12 @@ module JABA
           end
         end
         
-        # Filters can have an optional guid in the form:
-        #   <UniqueIdentifier>{D5562E0F-416B-56C0-0AED-F91F76C052F1}</UniqueIdentifier>
-        # According to Visual Studio docs it allows automation interfaces to find the filter.
-        # I'm not sure if its really required.
-        # Visual Studio creates the guid by hashing the filter so the same guid will appear in
-        # multiple files if the filters are the same.
-        #
-        # TODO: investigate whether this is really needed
-        # 
         filters.each_key do |f|
-          w << "    <Filter Include=\"#{f}\" />"
+          w << "    <Filter Include=\"#{f}\">"
+          # According to Visual Studio docs UniqueIdentifier allows automation interfaces to find the filter.
+          #
+          w << "      <UniqueIdentifier>#{JABA.generate_guid(namespace: @vcxproj_file, name: f)}</UniqueIdentifier>"
+          w << "    </Filter>"
         end
       end
 
