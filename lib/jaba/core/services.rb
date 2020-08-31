@@ -217,9 +217,8 @@ module JABA
             jdl_bt
           end
 
-          # TODO: backtrace is not being reported to the end user
           info = jdl_error_info(e.message, bt, err_type: err_type)
-          @output[:error] = info.message
+          @output[:error] = info.full_message
 
           e = JDLError.new(info.message)
           e.instance_variable_set(:@file, info.file)
@@ -1019,7 +1018,7 @@ module JABA
       jdl_bt
     end
 
-    ErrorInfo = Struct.new(:message, :file, :line)
+    ErrorInfo = Struct.new(:message, :full_message, :file, :line)
 
     ##
     #
@@ -1064,7 +1063,20 @@ module JABA
       if m =~ /[a-zA-Z0-9']$/
         m.ensure_end_with!('.')
       end
-      ErrorInfo.new(m, file, line)
+
+      # Format full message, which includes backtrace. First backtrace entry is the error line
+      # which has already been reported in the main error line, so only show the backtrace if it
+      # contains more than one item.
+      #
+      fm = String.new(m)
+      if backtrace.size > 1
+        fm << "\nTrace:\n"
+        backtrace.each do |bt|
+          fm << "  " << bt << "\n"
+        end
+      end
+      
+      ErrorInfo.new(m, fm, file, line)
     end
 
     ##
