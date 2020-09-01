@@ -36,7 +36,6 @@ module JABA
     attr_reader :type_id # eg :cpp, :text
     attr_reader :top_level_jaba_type
     attr_reader :root_nodes
-    attr_reader :source_file
 
     ##
     #
@@ -49,7 +48,6 @@ module JABA
       @host_objects = []
       @node_to_host_object = {}
       @reference_attrs_to_resolve = []
-      @source_file = JABA.const_source_location(self.class.name)[0]
     end
 
     ##
