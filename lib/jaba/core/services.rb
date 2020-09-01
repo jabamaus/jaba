@@ -396,7 +396,6 @@ module JABA
           id = Regexp.last_match(1)
           klass = JABA.const_get(c)
           g = klass.new(self)
-          g.register
           @generator_lookup[id] = g
         end
       end
@@ -455,7 +454,6 @@ module JABA
 
       tlt = TopLevelJabaType.new(self, dfn.id, dfn.src_loc, dfn.block, handle, generator)
       generator.set_top_level_type(tlt)
-      generator.init
 
       @top_level_jaba_types  << tlt
       @jaba_type_lookup[handle] = tlt

@@ -14,7 +14,8 @@ module JABA
      
     ##
     #
-    def init
+    def initialize(services)
+      super
       @project_nodes = []
     end
 

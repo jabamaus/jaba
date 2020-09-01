@@ -209,7 +209,8 @@ module JABA
     
     ##
     #
-    def init
+    def initialize(services)
+      super
       @projects = []
     end
 

@@ -3,7 +3,8 @@
 module JABA
 
   class Test_imGenerator < Generator
-    def register
+    def initialize(services)
+      super
       # General options, available to all commands
       #
       register_cmdline_option('--value-opt', short: '-v', help: 'value opt', var: :value_opt, type: :value)

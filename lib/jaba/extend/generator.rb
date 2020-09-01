@@ -254,20 +254,6 @@ module JABA
     end
 
     ##
-    # Override this in subclass to register items with the system, eg cmd line cmds and options.
-    #
-    def register
-      # nothing
-    end
-
-    ##
-    # Override this in subclass. Called at construction time. Same role as initialize().
-    #
-    def init
-      # nothing
-    end
-
-    ##
     # Override this in sublcass if type needs to be split into more than one node.
     #
     def make_nodes
