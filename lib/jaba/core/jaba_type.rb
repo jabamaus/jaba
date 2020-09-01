@@ -8,7 +8,7 @@ module JABA
   
   ##
   #
-  class JabaType < JDL_Object
+  class JabaType < JabaObject
 
     include PropertyMethods
 

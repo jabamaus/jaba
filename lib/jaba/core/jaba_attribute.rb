@@ -76,7 +76,7 @@ module JABA
     end
     
     ##
-    # Allows attributes to be treated the same as JDL_Object for error reporting.
+    # Allows attributes to be treated the same as JabaObject for error reporting.
     #
     def src_loc
       @last_call_location

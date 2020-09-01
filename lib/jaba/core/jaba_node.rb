@@ -8,7 +8,7 @@ module JABA
   
   ##
   #
-  class JabaNode < JDL_Object
+  class JabaNode < JabaObject
 
     attr_reader :jaba_type
     attr_reader :handle

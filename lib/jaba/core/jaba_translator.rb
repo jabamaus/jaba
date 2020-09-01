@@ -6,7 +6,7 @@ module JABA
 
   ##
   #
-  class Translator < JDL_Object
+  class Translator < JabaObject
 
     ##
     #
