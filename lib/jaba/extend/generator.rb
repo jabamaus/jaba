@@ -62,7 +62,7 @@ module JABA
     ##
     #
     def describe
-      "'#{@type_id}'' generator"
+      "'#{@type_id}' generator"
     end
 
     ##
