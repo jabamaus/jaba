@@ -245,6 +245,7 @@ define :cpp do
     attr_array :syslibs, type: :string do
       title 'System libs'
       flags :no_sort
+      flag_options :export, :no_delete
     end
 
     attr_array :cflags, type: :string do
