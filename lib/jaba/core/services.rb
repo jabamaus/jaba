@@ -1077,10 +1077,10 @@ module JABA
     ##
     #
     def generate_reference_doc
-      @docs_dir = "#{JABA.jaba_install_dir}/docs"
-      main_page = @file_manager.new_file("#{@docs_dir}/src/jaba_reference.md", capacity: 16 * 1024)
+      @docs_src_dir = "#{JABA.jaba_install_dir}/docs_src"
+      main_page = @file_manager.new_file("#{@docs_src_dir}/jaba_reference.md", capacity: 16 * 1024)
       w = main_page.writer
-      w << "# Jaba Definition Language Reference"
+      w << "# Jaba language reference"
       w << ""
 
       w << "- Attribute variants"
@@ -1116,7 +1116,7 @@ module JABA
     ##
     #
     def generate_jaba_type_reference(jt)
-      file = @file_manager.new_file("#{@docs_dir}/src/#{jt.reference_manual_page(ext: '.md')}", capacity: 16 * 1024)
+      file = @file_manager.new_file("#{@docs_src_dir}/#{jt.reference_manual_page(ext: '.md')}", capacity: 16 * 1024)
       w = file.writer
       w << "## #{jt.defn_id}"
       w << "> "
