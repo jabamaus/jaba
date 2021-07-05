@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+    <head>
+        <title>jaba_type_workspace</title>
+        <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code&display=swap"> 
+        <link rel="stylesheet" href="mamd.css">
+    </head>
+    <body>
+        <h2 id="workspace">workspace</h2>
+<blockquote>
+<p><em>Workspace of projects</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>src</em></td>
+<td>$(jaba_install)/modules/workspace/workspace.jaba:1</td>
+</tr>
+<tr>
+<td><em>notes</em></td>
+<td>Manages attribute definitions for 'workspace' type.</td>
+</tr>
+<tr>
+<td><em>depends on</em></td>
+<td>cpp</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="name"></a></p>
+<h4 id="name">name</h4>
+<blockquote>
+<p><em>Base name of workspace files</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>string</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>src</em></td>
+<td>$(jaba_install)/modules/workspace/workspace.jaba:30</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="namesuffix"></a></p>
+<h4 id="namesuffix">namesuffix</h4>
+<blockquote>
+<p><em>Optional suffix to be applied to $(name)</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>string</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;&quot;</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>src</em></td>
+<td>$(jaba_install)/modules/workspace/workspace.jaba:37</td>
+</tr>
+<tr>
+<td><em>notes</em></td>
+<td>Has no effect if <a href="#name">$(name)</a> is set explicitly.</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="primary"></a></p>
+<h4 id="primary">primary</h4>
+<blockquote>
+<p><em>Primary project</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>nil</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>src</em></td>
+<td>$(jaba_install)/modules/workspace/workspace.jaba:42</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="projects"></a></p>
+<h4 id="projects">projects</h4>
+<blockquote>
+<p><em>Contained projects</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>symbol_or_string array</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>nil</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td>:required, :no_sort</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>src</em></td>
+<td>$(jaba_install)/modules/workspace/workspace.jaba:21</td>
+</tr>
+<tr>
+<td><em>notes</em></td>
+<td>Specified by id (symbol or string), or by glob matches against project <a href="#root">$(root)</a>. Dependencies will be automatically pulled in..</td>
+</tr>
+</tbody>
+</table>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa">
+
+</pre></blockquote>
+<p><a id="root"></a></p>
+<h4 id="root">root</h4>
+<blockquote>
+<p><em>Root directory relative to which all other paths are specified</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>dir</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;.&quot;</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>src</em></td>
+<td>$(jaba_install)/modules/workspace/workspace.jaba:7</td>
+</tr>
+<tr>
+<td><em>notes</em></td>
+<td>Defaults to containing directory of definition source file.</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="workspacedir"></a></p>
+<h4 id="workspacedir">workspacedir</h4>
+<blockquote>
+<p><em>Directory in which workspaces will be generated</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>dir</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;projects&quot;</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td>:no_check_exist</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>src</em></td>
+<td>$(jaba_install)/modules/workspace/workspace.jaba:14</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+
+    </body>
+</html>

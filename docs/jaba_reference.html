@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+    <head>
+        <title>jaba_reference</title>
+        <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code&display=swap"> 
+        <link rel="stylesheet" href="mamd.css">
+    </head>
+    <body>
+        <h1 id="jaba-definition-language-reference">Jaba Definition Language Reference</h1>
+<ul>
+<li>Attribute variants
+<ul>
+<li>single</li>
+<li>array</li>
+<li>hash</li>
+</ul>
+</li>
+<li>Attribute types
+<ul>
+<li>bool</li>
+<li>choice</li>
+<li>dir</li>
+<li>file</li>
+<li>int</li>
+<li>node</li>
+<li>node_ref</li>
+<li>src_spec</li>
+<li>string</li>
+<li>symbol</li>
+<li>symbol_or_string</li>
+<li>to_s</li>
+<li>uuid</li>
+</ul>
+</li>
+<li>Attribute flags
+<ul>
+<li>allow_dupes</li>
+<li>delay_evaluation</li>
+<li>expose</li>
+<li>no_check_exist</li>
+<li>no_sort</li>
+<li>read_only</li>
+<li>required</li>
+</ul>
+</li>
+<li>Types
+<ul>
+<li><a href="jaba_type_arch.html">arch</a>
+<ul>
+<li><a href="jaba_type_arch.html#arm64?">arm64?</a></li>
+<li><a href="jaba_type_arch.html#vsname">vsname</a></li>
+<li><a href="jaba_type_arch.html#x86?">x86?</a></li>
+<li><a href="jaba_type_arch.html#x86_64?">x86_64?</a></li>
+</ul>
+</li>
+<li><a href="jaba_type_buildtool.html">buildtool</a>
+<ul>
+<li><a href="jaba_type_buildtool.html#command">command</a></li>
+<li><a href="jaba_type_buildtool.html#message">message</a></li>
+<li><a href="jaba_type_buildtool.html#output">output</a></li>
+<li><a href="jaba_type_buildtool.html#outputs">outputs</a></li>
+</ul>
+</li>
+<li><a href="jaba_type_category.html">category</a>
+<ul>
+<li><a href="jaba_type_category.html#guid">guid</a></li>
+<li><a href="jaba_type_category.html#name">name</a></li>
+<li><a href="jaba_type_category.html#parent">parent</a></li>
+</ul>
+</li>
+<li><a href="jaba_type_cpp.html">cpp</a>
+<ul>
+<li><a href="jaba_type_cpp.html#arch">arch</a></li>
+<li><a href="jaba_type_cpp.html#arch_ref">arch_ref</a></li>
+<li><a href="jaba_type_cpp.html#bindir">bindir</a></li>
+<li><a href="jaba_type_cpp.html#build_root">build_root</a></li>
+<li><a href="jaba_type_cpp.html#buildtool">buildtool</a></li>
+<li><a href="jaba_type_cpp.html#cflags">cflags</a></li>
+<li><a href="jaba_type_cpp.html#character_set">character_set</a></li>
+<li><a href="jaba_type_cpp.html#config">config</a></li>
+<li><a href="jaba_type_cpp.html#configname">configname</a></li>
+<li><a href="jaba_type_cpp.html#configs">configs</a></li>
+<li><a href="jaba_type_cpp.html#debug">debug</a></li>
+<li><a href="jaba_type_cpp.html#define">define</a></li>
+<li><a href="jaba_type_cpp.html#deps">deps</a></li>
+<li><a href="jaba_type_cpp.html#exceptions">exceptions</a></li>
+<li><a href="jaba_type_cpp.html#guid">guid</a></li>
+<li><a href="jaba_type_cpp.html#host">host</a></li>
+<li><a href="jaba_type_cpp.html#host_ref">host_ref</a></li>
+<li><a href="jaba_type_cpp.html#importlib">importlib</a></li>
+<li><a href="jaba_type_cpp.html#inc">inc</a></li>
+<li><a href="jaba_type_cpp.html#libdir">libdir</a></li>
+<li><a href="jaba_type_cpp.html#libs">libs</a></li>
+<li><a href="jaba_type_cpp.html#nowarn">nowarn</a></li>
+<li><a href="jaba_type_cpp.html#objdir">objdir</a></li>
+<li><a href="jaba_type_cpp.html#platform">platform</a></li>
+<li><a href="jaba_type_cpp.html#platform_ref">platform_ref</a></li>
+<li><a href="jaba_type_cpp.html#platforms">platforms</a></li>
+<li><a href="jaba_type_cpp.html#projdir">projdir</a></li>
+<li><a href="jaba_type_cpp.html#projname">projname</a></li>
+<li><a href="jaba_type_cpp.html#projsuffix">projsuffix</a></li>
+<li><a href="jaba_type_cpp.html#root">root</a></li>
+<li><a href="jaba_type_cpp.html#rtti">rtti</a></li>
+<li><a href="jaba_type_cpp.html#shell">shell</a></li>
+<li><a href="jaba_type_cpp.html#src">src</a></li>
+<li><a href="jaba_type_cpp.html#src_ext">src_ext</a></li>
+<li><a href="jaba_type_cpp.html#syslibs">syslibs</a></li>
+<li><a href="jaba_type_cpp.html#targetext">targetext</a></li>
+<li><a href="jaba_type_cpp.html#targetname">targetname</a></li>
+<li><a href="jaba_type_cpp.html#targetprefix">targetprefix</a></li>
+<li><a href="jaba_type_cpp.html#targetsuffix">targetsuffix</a></li>
+<li><a href="jaba_type_cpp.html#toolset">toolset</a></li>
+<li><a href="jaba_type_cpp.html#type">type</a></li>
+<li><a href="jaba_type_cpp.html#vcfprop">vcfprop</a></li>
+<li><a href="jaba_type_cpp.html#vcglobal">vcglobal</a></li>
+<li><a href="jaba_type_cpp.html#vcprop">vcprop</a></li>
+<li><a href="jaba_type_cpp.html#warnerror">warnerror</a></li>
+<li><a href="jaba_type_cpp.html#winsdkver">winsdkver</a></li>
+</ul>
+</li>
+<li><a href="jaba_type_globals.html">globals</a>
+<ul>
+<li><a href="jaba_type_globals.html#cpp_hosts">cpp_hosts</a></li>
+<li><a href="jaba_type_globals.html#dump_input">dump_input</a></li>
+<li><a href="jaba_type_globals.html#dump_output">dump_output</a></li>
+<li><a href="jaba_type_globals.html#jaba_input_file">jaba_input_file</a></li>
+<li><a href="jaba_type_globals.html#jaba_output_file">jaba_output_file</a></li>
+<li><a href="jaba_type_globals.html#src_root">src_root</a></li>
+<li><a href="jaba_type_globals.html#vcfiletype">vcfiletype</a></li>
+</ul>
+</li>
+<li><a href="jaba_type_host.html">host</a>
+<ul>
+<li><a href="jaba_type_host.html#cpp_project_classname">cpp_project_classname</a></li>
+<li><a href="jaba_type_host.html#cpp_src_ext">cpp_src_ext</a></li>
+<li><a href="jaba_type_host.html#cpp_supported_platforms">cpp_supported_platforms</a></li>
+<li><a href="jaba_type_host.html#major_version">major_version</a></li>
+<li><a href="jaba_type_host.html#ninja?">ninja?</a></li>
+<li><a href="jaba_type_host.html#toolset">toolset</a></li>
+<li><a href="jaba_type_host.html#version">version</a></li>
+<li><a href="jaba_type_host.html#version_year">version_year</a></li>
+<li><a href="jaba_type_host.html#visual_studio?">visual_studio?</a></li>
+<li><a href="jaba_type_host.html#vs2010?">vs2010?</a></li>
+<li><a href="jaba_type_host.html#vs2012?">vs2012?</a></li>
+<li><a href="jaba_type_host.html#vs2013?">vs2013?</a></li>
+<li><a href="jaba_type_host.html#vs2015?">vs2015?</a></li>
+<li><a href="jaba_type_host.html#vs2017?">vs2017?</a></li>
+<li><a href="jaba_type_host.html#vs2019?">vs2019?</a></li>
+<li><a href="jaba_type_host.html#workspace_classname">workspace_classname</a></li>
+<li><a href="jaba_type_host.html#xcode?">xcode?</a></li>
+</ul>
+</li>
+<li><a href="jaba_type_platform.html">platform</a>
+<ul>
+<li><a href="jaba_type_platform.html#apple?">apple?</a></li>
+<li><a href="jaba_type_platform.html#cpp_src_ext">cpp_src_ext</a></li>
+<li><a href="jaba_type_platform.html#ios?">ios?</a></li>
+<li><a href="jaba_type_platform.html#macos?">macos?</a></li>
+<li><a href="jaba_type_platform.html#microsoft?">microsoft?</a></li>
+<li><a href="jaba_type_platform.html#valid_archs">valid_archs</a></li>
+<li><a href="jaba_type_platform.html#windows?">windows?</a></li>
+</ul>
+</li>
+<li><a href="jaba_type_text.html">text</a>
+<ul>
+<li><a href="jaba_type_text.html#content">content</a></li>
+<li><a href="jaba_type_text.html#eol">eol</a></li>
+<li><a href="jaba_type_text.html#filename">filename</a></li>
+<li><a href="jaba_type_text.html#line">line</a></li>
+</ul>
+</li>
+<li><a href="jaba_type_workspace.html">workspace</a>
+<ul>
+<li><a href="jaba_type_workspace.html#name">name</a></li>
+<li><a href="jaba_type_workspace.html#namesuffix">namesuffix</a></li>
+<li><a href="jaba_type_workspace.html#primary">primary</a></li>
+<li><a href="jaba_type_workspace.html#projects">projects</a></li>
+<li><a href="jaba_type_workspace.html#root">root</a></li>
+<li><a href="jaba_type_workspace.html#workspacedir">workspacedir</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+    </body>
+</html>

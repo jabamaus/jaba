@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+    <head>
+        <title>jaba_type_globals</title>
+        <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code&display=swap"> 
+        <link rel="stylesheet" href="mamd.css">
+    </head>
+    <body>
+        <h2 id="globals">globals</h2>
+<blockquote>
+<p><em>Global attribute definitions</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>src</em></td>
+<td>$(jaba_install)/modules/core/globals.jaba:1</td>
+</tr>
+<tr>
+<td><em>notes</em></td>
+<td>Manages attribute definitions for 'globals' type.</td>
+</tr>
+<tr>
+<td><em>depends on</em></td>
+<td>host</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="cpp_hosts"></a></p>
+<h4 id="cpp-hosts">cpp_hosts</h4>
+<blockquote>
+<p><em>Target hosts</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>node_ref array</td>
+</tr>
+<tr>
+<td><em>node_type</em></td>
+<td>:host</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>nil</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td>:required</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>src</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba:415</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="dump_input"></a></p>
+<h4 id="dump-input">dump_input</h4>
+<blockquote>
+<p><em>Controls generation of $(jaba_input_file)</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>bool</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>false</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>src</em></td>
+<td>$(jaba_install)/modules/core/globals.jaba:21</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="dump_output"></a></p>
+<h4 id="dump-output">dump_output</h4>
+<blockquote>
+<p><em>Controls generation of $(jaba_output_file)</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>bool</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>true</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>src</em></td>
+<td>$(jaba_install)/modules/core/globals.jaba:33</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="jaba_input_file"></a></p>
+<h4 id="jaba-input-file">jaba_input_file</h4>
+<blockquote>
+<p><em>Name/path of file to contain a raw dump of all the input data to Jaba</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>file</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;.jaba/jaba.input.json&quot;</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>src</em></td>
+<td>$(jaba_install)/modules/core/globals.jaba:13</td>
+</tr>
+<tr>
+<td><em>notes</em></td>
+<td>Mostly useful for debugging and testing but could be useful as a second way of tracking definition changes in source control. The file is written before any file generation occurs, and can be considered a specification of the final data.</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="jaba_output_file"></a></p>
+<h4 id="jaba-output-file">jaba_output_file</h4>
+<blockquote>
+<p><em>Name/path of file to contain Jaba output in json format</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>file</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;.jaba/jaba.output.json&quot;</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>src</em></td>
+<td>$(jaba_install)/modules/core/globals.jaba:25</td>
+</tr>
+<tr>
+<td><em>notes</em></td>
+<td>Jaba output can be later used by another process (eg the build process) to do things like looking up paths by id rather than embedding them in code, iterating over all defined unit tests and invoking them, etc..</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="src_root"></a></p>
+<h4 id="src-root">src_root</h4>
+<blockquote>
+<p><em>Root of source tree</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>dir</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;.&quot;</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>src</em></td>
+<td>$(jaba_install)/modules/core/globals.jaba:5</td>
+</tr>
+<tr>
+<td><em>notes</em></td>
+<td>Tells Jaba where to start looking for .jaba files to execute. Defaults to the directory Jaba was invoked in if not specified on the command line. Often coincident with the root of a source tree, but not always as jaba files can exist outside a src tree if desired..</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="vcfiletype"></a></p>
+<h4 id="vcfiletype">vcfiletype</h4>
+<blockquote>
+<p><em>Visual C++ file types</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>symbol hash</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>nil</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td>:required</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>src</em></td>
+<td>$(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:2</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+
+    </body>
+</html>

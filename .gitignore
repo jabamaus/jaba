@@ -11,5 +11,5 @@
 .vs/
 .vscode*
 *build/
-docs/
+docs/src/
 .jaba/
