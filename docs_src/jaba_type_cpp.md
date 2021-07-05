@@ -100,7 +100,7 @@
 >
 > *Examples*
 >```ruby
-> 
+> character_set :unicode
 >```
 <a id="config"></a>
 #### config
@@ -141,7 +141,7 @@
 >
 > *Examples*
 >```ruby
-> 
+> configs [:Debug, :Release]
 >```
 <a id="debug"></a>
 #### debug
@@ -211,7 +211,7 @@
 >
 > *Examples*
 >```ruby
-> 
+> exceptions false # disable exceptions
 >```
 <a id="guid"></a>
 #### guid
@@ -290,8 +290,8 @@
 >
 > *Examples*
 >```ruby
-> 
-> 
+> inc ['mylibrary/include']
+> inc ['mylibrary/include'], :export # Export include path to dependents
 >```
 <a id="libdir"></a>
 #### libdir
@@ -332,7 +332,7 @@
 >
 > *Examples*
 >```ruby
-> 
+> nowarn [4100, 4127, 4244] if visual_studio?
 >```
 <a id="objdir"></a>
 #### objdir
@@ -469,7 +469,7 @@
 >
 > *Examples*
 >```ruby
-> 
+> rtti true
 >```
 <a id="shell"></a>
 #### shell
@@ -498,11 +498,11 @@
 >
 > *Examples*
 >```ruby
-> 
-> 
-> 
-> 
-> 
+> src ['*']  # Add all src in $(root) whose extension is in $(src_ext)
+> src ['src/**/*'] # Add all src in $(root)/src whose extension is in $(src_ext), recursively
+> src ['main.c', 'io.c'] # Add src explicitly
+> src ['build.jaba']  # Explicitly add even though not in $(src_ext)
+> src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
 >```
 <a id="src_ext"></a>
 #### src_ext
@@ -657,7 +657,7 @@
 >
 > *Examples*
 >```ruby
-> 
+> warnerror true
 >```
 <a id="winsdkver"></a>
 #### winsdkver

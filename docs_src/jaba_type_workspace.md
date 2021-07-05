@@ -61,8 +61,8 @@
 >
 > *Examples*
 >```ruby
-> 
-> 
+> projects [:proj1, :proj2, :proj3] # Add 3 projects explicitly by id
+> projects ['examples/**/*'] # Make a workspace containing all examples. Matches on $($root) of each project.
 >```
 <a id="root"></a>
 #### root

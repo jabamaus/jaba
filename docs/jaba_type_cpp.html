@@ -298,7 +298,7 @@
 </tbody>
 </table>
 <p><em>Examples</em></p>
-<pre style="color:#272822;background-color:#fafafa">
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">character_set</span> <span style="color:#d88200">:unicode</span>
 </pre></blockquote>
 <p><a id="config"></a></p>
 <h4 id="config">config</h4>
@@ -409,7 +409,7 @@
 </tbody>
 </table>
 <p><em>Examples</em></p>
-<pre style="color:#272822;background-color:#fafafa">
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">configs</span> <span style="color:#f92672">[</span><span style="color:#d88200">:Debug</span><span style="color:#111">,</span> <span style="color:#d88200">:Release</span><span style="color:#f92672">]</span>
 </pre></blockquote>
 <p><a id="debug"></a></p>
 <h4 id="debug">debug</h4>
@@ -579,7 +579,7 @@
 </tbody>
 </table>
 <p><em>Examples</em></p>
-<pre style="color:#272822;background-color:#fafafa">
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">exceptions</span> <span style="color:#00a8c8">false</span> <span style="color:#75715e"># disable exceptions</span>
 </pre></blockquote>
 <p><a id="guid"></a></p>
 <h4 id="guid">guid</h4>
@@ -784,8 +784,8 @@
 </tbody>
 </table>
 <p><em>Examples</em></p>
-<pre style="color:#272822;background-color:#fafafa">
-
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">inc</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;mylibrary/include&#39;</span><span style="color:#f92672">]</span>
+<span style="color:#111">inc</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;mylibrary/include&#39;</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">:export</span> <span style="color:#75715e"># Export include path to dependents</span>
 </pre></blockquote>
 <p><a id="libdir"></a></p>
 <h4 id="libdir">libdir</h4>
@@ -896,7 +896,7 @@
 </tbody>
 </table>
 <p><em>Examples</em></p>
-<pre style="color:#272822;background-color:#fafafa">
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">nowarn</span> <span style="color:#f92672">[</span><span style="color:#ae81ff">4100</span><span style="color:#f92672"></span><span style="color:#111">,</span> <span style="color:#ae81ff">4127</span><span style="color:#f92672"></span><span style="color:#111">,</span> <span style="color:#ae81ff">4244</span><span style="color:#f92672"></span><span style="color:#f92672">]</span> <span style="color:#00a8c8">if</span> <span style="color:#111">visual_studio?</span>
 </pre></blockquote>
 <p><a id="objdir"></a></p>
 <h4 id="objdir">objdir</h4>
@@ -1255,7 +1255,7 @@
 </tbody>
 </table>
 <p><em>Examples</em></p>
-<pre style="color:#272822;background-color:#fafafa">
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">rtti</span> <span style="color:#00a8c8">true</span>
 </pre></blockquote>
 <p><a id="shell"></a></p>
 <h4 id="shell">shell</h4>
@@ -1331,11 +1331,11 @@
 </tbody>
 </table>
 <p><em>Examples</em></p>
-<pre style="color:#272822;background-color:#fafafa">
-
-
-
-
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;*&#39;</span><span style="color:#f92672">]</span>  <span style="color:#75715e"># Add all src in $(root) whose extension is in $(src_ext)</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;src/**/*&#39;</span><span style="color:#f92672">]</span> <span style="color:#75715e"># Add all src in $(root)/src whose extension is in $(src_ext), recursively</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;main.c&#39;</span><span style="color:#111">,</span> <span style="color:#d88200">&#39;io.c&#39;</span><span style="color:#f92672">]</span> <span style="color:#75715e"># Add src explicitly</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;build.jaba&#39;</span><span style="color:#f92672">]</span>  <span style="color:#75715e"># Explicitly add even though not in $(src_ext)</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;does_not_exist.cpp&#39;</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">:force</span>  <span style="color:#75715e"># Force addition of file not on disk</span>
 </pre></blockquote>
 <p><a id="src_ext"></a></p>
 <h4 id="src-ext">src_ext</h4>
@@ -1785,7 +1785,7 @@
 </tbody>
 </table>
 <p><em>Examples</em></p>
-<pre style="color:#272822;background-color:#fafafa">
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">warnerror</span> <span style="color:#00a8c8">true</span>
 </pre></blockquote>
 <p><a id="winsdkver"></a></p>
 <h4 id="winsdkver">winsdkver</h4>

@@ -310,12 +310,14 @@ module JABACoreExt
       lines = split("\n")
       lines.delete('')
 
-      if lines[0] =~ /^(\s*)/
+      if lines[0] =~ /^(\s+)/
         lw = Regexp.last_match(1)
         lines.each do |l|
           result = l.delete_prefix!(lw)
           yield result if bg
         end
+      else
+        lines.each{|l| yield l} if bg
       end
       lines
     end
