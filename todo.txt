@@ -16,7 +16,6 @@ To do:
 - validate when --src-root can be specified. Should be required if no .jaba files in cwd and disallowed if there are.
 - Check attribute validators when parsing cmd line.
 - Should jaba target one 'language' (type) per run? Eg C++, C#
-- Nasty that :export flag option always needs :no_delete
 - Use did_you_mean? Eg
   Error at basic_dll.jaba:8: 'defines' attribute not defined. Did you mean 'define'?
 - Combine jaba.input.json and jaba.output.json into one file
@@ -49,6 +48,8 @@ To do:
 - Test __dir__
 - Allow 'axes' of configs. Bear in mind that platforms can be any string.
 - Have some kind of spec for flag_options, eg
+- Automatically pull in dependencies into workspace
+- Consider changing :export to :public
 
 flag_option :export do
   note 'do exporting'

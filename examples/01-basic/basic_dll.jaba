@@ -4,7 +4,7 @@ cpp :BasicDll do
   platforms [:windows_x86, :windows_x86_64]
   configs [:Debug, :Release]
   src ['.']
-  inc ['include'], :export, :no_delete
-  define ['WITH_EXAMPLE_DLL'], :export
+  inc ['include'], :export
+  define ['WITH_EXAMPLE_DLL'], :export_only
   define ['DLL_EXPORT']
 end

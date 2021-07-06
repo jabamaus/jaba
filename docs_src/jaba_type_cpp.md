@@ -82,7 +82,7 @@
 > | _type_ | string array |
 > | _default_ | nil |
 > | _flags_ |  |
-> | _options_ | :export, :no_delete |
+> | _options_ | :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:251 |
 >
 <a id="character_set"></a>
@@ -136,7 +136,7 @@
 > | _type_ | symbol_or_string array |
 > | _default_ | nil |
 > | _flags_ | :required, :no_sort |
-> | _options_ | :export, :no_delete |
+> | _options_ | :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:68 |
 >
 > *Examples*
@@ -165,7 +165,7 @@
 > | _type_ | symbol_or_string array |
 > | _default_ | nil |
 > | _flags_ |  |
-> | _options_ | :export, :no_delete |
+> | _options_ | :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:271 |
 >
 <a id="deps"></a>
@@ -285,7 +285,7 @@
 > | _type_ | dir array |
 > | _default_ | nil |
 > | _flags_ | :no_sort |
-> | _options_ | :export, :no_delete |
+> | _options_ | :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:276 |
 >
 > *Examples*
@@ -326,7 +326,7 @@
 > | _type_ |  |
 > | _default_ | nil |
 > | _flags_ |  |
-> | _options_ | :export, :no_delete |
+> | _options_ | :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:293 |
 > | _notes_ | Placed directly into projects as is, with no validation.  |
 >
@@ -480,7 +480,7 @@
 > | _type_ | string array |
 > | _default_ | nil |
 > | _flags_ |  |
-> | _options_ | :export, :no_delete |
+> | _options_ | :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:197 |
 > | _notes_ | Maps to build events in Visual Studio.  |
 >
@@ -493,7 +493,7 @@
 > | _type_ | src_spec array |
 > | _default_ | nil |
 > | _flags_ | :required, :no_sort |
-> | _options_ | :force, :export, :no_delete |
+> | _options_ | :force, :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:125 |
 >
 > *Examples*
@@ -513,7 +513,7 @@
 > | _type_ | string array |
 > | _default_ |  |
 > | _flags_ | :no_sort |
-> | _options_ | :export, :no_delete |
+> | _options_ | :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:142 |
 > | _notes_ | Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes..  |
 >
@@ -526,7 +526,7 @@
 > | _type_ | string array |
 > | _default_ | nil |
 > | _flags_ | :no_sort |
-> | _options_ | :export, :no_delete |
+> | _options_ | :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:245 |
 >
 <a id="targetext"></a>
@@ -616,7 +616,7 @@
 > | _type_ | to_s hash |
 > | _default_ | nil |
 > | _flags_ |  |
-> | _options_ | :export, :no_delete |
+> | _options_ | :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:88 |
 >
 <a id="vcglobal"></a>
@@ -628,7 +628,7 @@
 > | _type_ | to_s hash |
 > | _default_ | nil |
 > | _flags_ |  |
-> | _options_ | :export, :no_delete |
+> | _options_ | :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:57 |
 >
 <a id="vcprop"></a>
@@ -640,7 +640,7 @@
 > | _type_ | to_s hash |
 > | _default_ | nil |
 > | _flags_ |  |
-> | _options_ | :export, :no_delete |
+> | _options_ | :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:77 |
 >
 <a id="warnerror"></a>

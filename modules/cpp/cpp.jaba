@@ -68,7 +68,7 @@ define :cpp do
     attr_array :configs, type: :symbol_or_string do
       title 'Build configurations'
       flags :required, :no_sort
-      flag_options :export, :no_delete
+      flag_options :export, :export_only
       example 'configs [:Debug, :Release]'
     end
     
@@ -128,7 +128,7 @@ define :cpp do
       flags :required # Must be specified by user
       flags :no_sort # Final source will be sorted so no need to sort this
       flag_options :force # Specify when explicitly specidied src does not exist on disk but still want to add to project
-      flag_options :export, :no_delete
+      flag_options :export, :export_only
       value_option :vpath # For organising files in a generated project
       # TODO: examples for excludes
       # TODO: add absolute path example
@@ -143,7 +143,7 @@ define :cpp do
       title 'File extensions used when matching src files'
       note 'Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.'
       flags :no_sort
-      flag_options :export, :no_delete
+      flag_options :export, :export_only
       default do
         ext = ['.cpp', '.h', '.inl', '.c', '.cc', '.cxx', '.hpp']
         ext.concat(host_ref.cpp_src_ext)
@@ -197,7 +197,7 @@ define :cpp do
     attr_array :shell, type: :string do
       title 'Shell commands to execute during build'
       note 'Maps to build events in Visual Studio'
-      flag_options :export, :no_delete
+      flag_options :export, :export_only
       value_option :when, required: true, items: [:PreBuild, :PreLink, :PostBuild]
     end
 
@@ -245,12 +245,12 @@ define :cpp do
     attr_array :syslibs, type: :string do
       title 'System libs'
       flags :no_sort
-      flag_options :export, :no_delete
+      flag_options :export, :export_only
     end
 
     attr_array :cflags, type: :string do
       title 'Raw compiler command line switches'
-      flag_options :export, :no_delete
+      flag_options :export, :export_only
     end
 
     attr :configname, type: :symbol_or_string do
@@ -270,14 +270,14 @@ define :cpp do
     
     attr_array :define, type: :symbol_or_string do
       title 'Preprocessor defines'
-      flag_options :export, :no_delete
+      flag_options :export, :export_only
     end
 
     attr_array :inc, type: :dir do
       title 'Include paths'
       base :local
       flags :no_sort
-      flag_options :export, :no_delete
+      flag_options :export, :export_only
       example "inc ['mylibrary/include']"
       example "inc ['mylibrary/include'], :export # Export include path to dependents"
     end
@@ -293,7 +293,7 @@ define :cpp do
     attr_array :nowarn do
       title 'Warnings to disable'
       note 'Placed directly into projects as is, with no validation'
-      flag_options :export, :no_delete
+      flag_options :export, :export_only
       example "nowarn [4100, 4127, 4244] if visual_studio?"
     end
 

@@ -110,11 +110,11 @@ module JABA
           type :lib
           src ['main.cpp']
           vcglobal :StringAttr, 's'
-          vcglobal :StringAttr2, 's2', :export
-          vcglobal :StringAttr3, 's3', :export, :no_delete
+          vcglobal :StringAttr2, 's2', :export_only # will be sent to dependents but won't be defined on self
+          vcglobal :StringAttr3, 's3', :export
           # TODO: what happens if export :BoolAttr, false ? will it overwrite? Probably fail. Warn if same value.
           define ['D']
-          define ['C', 'B'], :export
+          define ['C', 'B'], :export_only
           define ['R'], :export if config == :Release
           define ['E']
           inc ['include'], :export
@@ -135,7 +135,7 @@ module JABA
       lib[:vcglobal].has_key?(:StringAttr2).must_equal(false)
       lib[:vcglobal][:StringAttr3].must_equal('s3')
       lib[:configs][:Debug][:define].must_equal ['D', 'E']
-      lib[:configs][:Release][:define].must_equal ['D', 'E']
+      lib[:configs][:Release][:define].must_equal ['D', 'E', 'R']
     end
 
     it 'only allows :export on array and hash properties' do

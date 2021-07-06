@@ -57,7 +57,7 @@ open_type :cpp do
     attr_hash :vcglobal, key_type: :symbol, type: :to_s do
       title 'Address Globals property group in a vcxproj directly'
       value_option :condition
-      flag_options :export, :no_delete
+      flag_options :export, :export_only
     end
 
     attr :winsdkver, type: :choice do
@@ -77,7 +77,7 @@ open_type :cpp do
     attr_hash :vcprop, key_type: :string, type: :to_s do
       title 'Address per-configuration sections of a vcxproj directly'
       value_option :condition
-      flag_options :export, :no_delete
+      flag_options :export, :export_only
       validate_key do |key|
         if key !~ /^[A-Za-z0-9_-]+\|{1}[A-Za-z0-9_-]+/
           fail "Must be of form <group>|<property> but was '#{key}'"
@@ -87,7 +87,7 @@ open_type :cpp do
 
     attr_hash :vcfprop, key_type: :string, type: :to_s do
       title 'Add per-configuration per-file property'
-      flag_options :export, :no_delete
+      flag_options :export, :export_only
       validate_key do |key|
         if key !~ /^[^|]+\|{1}[A-Za-z0-9_-]+/
           fail "Must be of form <src file>|<property> but was '#{key}'"

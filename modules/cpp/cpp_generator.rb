@@ -126,7 +126,8 @@ module JABA
         # visit all attribute elements in array/hash
         #
         dep_attr.visit_attr do |elem|
-          if elem.has_flag_option?(:export)
+          export_only = elem.has_flag_option?(:export_only)
+          if elem.has_flag_option?(:export) || export_only
 
             # Get the corresponding attr in this project node. Only consider this node so don't set search: true.
             # This will always be a hash or an array.
@@ -134,9 +135,9 @@ module JABA
             attr = target_node.get_attr(elem.defn_id) if !attr
             attr.insert_clone(elem)
 
-            # Exported items are deleted from the exporting module by default, unless :no_delete specified
+            # Exported items are deleted from the exporting module if :export_only specified
             #
-            :delete if !elem.has_flag_option?(:no_delete)
+            :delete if export_only
           end
         end
       end
