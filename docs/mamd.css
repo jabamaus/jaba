@@ -238,6 +238,8 @@ table tr {
   padding: 0;
 }
 
+thead, th {display: none;}
+
 table tr:nth-child(2n) {
   background-color: #f8f8f8;
 }
