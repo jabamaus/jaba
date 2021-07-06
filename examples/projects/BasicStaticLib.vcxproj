@@ -90,8 +90,6 @@
     <ClCompile>
       <AdditionalIncludeDirectories>..\ExampleLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
-    <Link>
-    </Link>
     <Lib>
     </Lib>
   </ItemDefinitionGroup>
@@ -99,8 +97,6 @@
     <ClCompile>
       <AdditionalIncludeDirectories>..\ExampleLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
-    <Link>
-    </Link>
     <Lib>
       <TargetMachine>MachineX64</TargetMachine>
     </Lib>
@@ -109,8 +105,6 @@
     <ClCompile>
       <AdditionalIncludeDirectories>..\ExampleLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
-    <Link>
-    </Link>
     <Lib>
     </Lib>
   </ItemDefinitionGroup>
@@ -118,8 +112,6 @@
     <ClCompile>
       <AdditionalIncludeDirectories>..\ExampleLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
-    <Link>
-    </Link>
     <Lib>
       <TargetMachine>MachineX64</TargetMachine>
     </Lib>
