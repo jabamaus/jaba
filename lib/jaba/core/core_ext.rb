@@ -314,7 +314,7 @@ module JABACoreExt
         lw = Regexp.last_match(1)
         lines.each do |l|
           result = l.delete_prefix!(lw)
-          yield result if bg
+          yield result if result && bg
         end
       else
         lines.each{|l| yield l} if bg

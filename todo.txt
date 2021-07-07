@@ -3,7 +3,6 @@ To do:
 - Go back to allowing single values to be passed to array attrs without requiring []
 - Add ability to set :local or :global option on per-attribute basis
 - attr def properties should have help string/notes...
-- Generate .vscode/launch.json
 - Support for node-by-value attribute
 - Disallow globals from referencing itself
 - Maybe add open_globals_type and open_globals_inst?
@@ -21,7 +20,6 @@ To do:
 - Combine jaba.input.json and jaba.output.json into one file
 - Have a 'jaba clean' command
 - put simple type verification system into Property
-- consider putting config attrs inside a block. It is a bit nasty doing multiple passes and ignoring attrs.
 - there could be a directive on include statements that runs inlcuded file in new jaba instance
 - validate platforms and architecture specs
 - cpp attrs need to be split into project and config in reference manual

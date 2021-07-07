@@ -136,7 +136,6 @@
 > if vs2010?
 >   ...
 > end
-> 
 > vcprop :VS2010Specific, 'value' if vs2010?
 >```
 <a id="vs2012?"></a>
@@ -156,7 +155,6 @@
 > if vs2012?
 >   ...
 > end
-> 
 > vcprop :VS2012Specific, 'value' if vs2012?
 >```
 <a id="vs2013?"></a>
@@ -176,7 +174,6 @@
 > if vs2013?
 >   ...
 > end
-> 
 > vcprop :VS2013Specific, 'value' if vs2013?
 >```
 <a id="vs2015?"></a>
@@ -196,7 +193,6 @@
 > if vs2015?
 >   ...
 > end
-> 
 > vcprop :VS2015Specific, 'value' if vs2015?
 >```
 <a id="vs2017?"></a>
@@ -216,7 +212,6 @@
 > if vs2017?
 >   ...
 > end
-> 
 > vcprop :VS2017Specific, 'value' if vs2017?
 >```
 <a id="vs2019?"></a>
@@ -236,7 +231,6 @@
 > if vs2019?
 >   ...
 > end
-> 
 > vcprop :VS2019Specific, 'value' if vs2019?
 >```
 <a id="workspace_classname"></a>

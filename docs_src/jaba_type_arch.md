@@ -26,7 +26,6 @@
 > if arm64?
 >   ...
 > end
-> 
 > src ['arch_arm64.cpp'] if arm64?
 >```
 <a id="vsname"></a>
@@ -58,7 +57,6 @@
 > if x86?
 >   ...
 > end
-> 
 > src ['arch_x86.cpp'] if x86?
 >```
 <a id="x86_64?"></a>
@@ -78,6 +76,5 @@
 > if x86_64?
 >   ...
 > end
-> 
 > src ['arch_x86_64.cpp'] if x86_64?
 >```

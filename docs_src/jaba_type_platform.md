@@ -52,7 +52,6 @@
 > if ios?
 >   ...
 > end
-> 
 > src ['imp_ios.cpp'] if ios?
 >```
 <a id="macos?"></a>
@@ -72,7 +71,6 @@
 > if macos?
 >   ...
 > end
-> 
 > src ['imp_macos.cpp'] if macos?
 >```
 <a id="microsoft?"></a>
@@ -117,6 +115,5 @@
 > if windows?
 >   ...
 > end
-> 
 > src ['imp_windows.cpp'] if windows?
 >```

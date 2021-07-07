@@ -194,7 +194,6 @@
 >   type :lib
 >   ...
 > end
-> 
 >```
 <a id="exceptions"></a>
 #### exceptions
@@ -247,7 +246,6 @@
 > when :xcode
 >   ...
 > end
-> 
 >```
 <a id="host_ref"></a>
 #### host_ref
@@ -367,7 +365,6 @@
 > when :macos
 >   ...
 > end
-> 
 >```
 <a id="platform_ref"></a>
 #### platform_ref
@@ -414,7 +411,6 @@
 >   src ['**/*'] # Get all src in $(root), which defaults to directory of definition file
 >   projdir 'projects' # Place generated projects in 'projects' directory
 > end
-> 
 >```
 <a id="projname"></a>
 #### projname
