@@ -17,7 +17,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | symbol_or_string |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ | :read_only |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:161 |
@@ -31,7 +31,7 @@
 > |-|-|
 > | _type_ | node_ref |
 > | _node_type_ | :arch |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:167 |
@@ -69,7 +69,7 @@
 > |-|-|
 > | _type_ | node hash |
 > | _node_type_ | :buildtool |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ | :delay_evaluation |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:189 |
@@ -81,7 +81,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | string array |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:251 |
@@ -94,7 +94,7 @@
 > |-|-|
 > | _type_ | choice |
 > | _items_ | [:mbcs, :unicode, nil] |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:350 |
@@ -110,7 +110,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | symbol_or_string |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ | :read_only |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:182 |
@@ -135,7 +135,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | symbol_or_string array |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ | :required, :no_sort |
 > | _options_ | :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:68 |
@@ -164,7 +164,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | symbol_or_string array |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:271 |
@@ -177,7 +177,7 @@
 > |-|-|
 > | _type_ | node_ref array |
 > | _node_type_ | :cpp |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:75 |
@@ -233,7 +233,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | symbol |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ | :read_only |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:26 |
@@ -256,7 +256,7 @@
 > |-|-|
 > | _type_ | node_ref |
 > | _node_type_ | :host |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:40 |
@@ -282,7 +282,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | dir array |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ | :no_sort |
 > | _options_ | :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:276 |
@@ -311,7 +311,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | file array |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ | :no_sort, :no_check_exist |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:239 |
@@ -323,7 +323,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ |  |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:293 |
@@ -352,7 +352,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | symbol |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ | :read_only |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:46 |
@@ -375,7 +375,7 @@
 > |-|-|
 > | _type_ | node_ref |
 > | _node_type_ | :platform |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:60 |
@@ -388,7 +388,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ |  |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ | :required |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:7 |
@@ -475,7 +475,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | string array |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:197 |
@@ -488,7 +488,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | src_spec array |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ | :required, :no_sort |
 > | _options_ | :force, :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:125 |
@@ -521,7 +521,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | string array |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ | :no_sort |
 > | _options_ | :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:245 |
@@ -599,7 +599,7 @@
 > |-|-|
 > | _type_ | choice |
 > | _items_ | [:app, :console, :lib, :dll] |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ | :required |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:174 |
@@ -611,7 +611,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | to_s hash |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:91 |
@@ -623,7 +623,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | to_s hash |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:57 |
@@ -635,7 +635,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | to_s hash |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
 > | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:80 |
@@ -664,7 +664,7 @@
 > |-|-|
 > | _type_ | choice |
 > | _items_ | ["10.0.16299.0", "10.0.17134.0", "10.0.17763.0", "10.0.18362.0", nil] |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:63 |

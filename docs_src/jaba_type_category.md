@@ -30,7 +30,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | string |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ | :required |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/core/category.jaba:5 |
@@ -44,7 +44,7 @@
 > |-|-|
 > | _type_ | node_ref |
 > | _node_type_ | :category |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/core/category.jaba:11 |

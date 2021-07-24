@@ -42,7 +42,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ |  |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/workspace/workspace.jaba:42 |
@@ -54,7 +54,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | symbol_or_string array |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ | :required, :no_sort |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/workspace/workspace.jaba:21 |

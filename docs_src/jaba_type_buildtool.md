@@ -41,7 +41,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | file |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/core/buildtool.jaba:9 |
@@ -53,7 +53,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | file array |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/core/buildtool.jaba:14 |

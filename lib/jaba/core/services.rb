@@ -1153,7 +1153,7 @@ module JABA
         ad.jaba_attr_type.get_reference_manual_rows(ad)&.each do |id, value|
           md_row(w, id, value)
         end
-        md_row(w, :default, ad.default.proc? ? nil : ad.default.inspect)
+        md_row(w, :default, ad.default.proc? ? nil : !ad.default.nil? ? ad.default.inspect : nil)
         md_row(w, :flags, ad.flags.map(&:inspect).join(', '))
         md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
         md_row(w, :src, "$(jaba_install)/#{ad.src_loc.describe(style: :rel_src_root)}")

@@ -94,7 +94,7 @@
 > |-|-|
 > | _type_ | choice array |
 > | _items_ | [:x86, :x86_64, :arm64] |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ | :required, :no_sort |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/core/platforms.jaba:34 |

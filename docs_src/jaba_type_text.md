@@ -17,7 +17,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | to_s |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/text/text.jaba:11 |
@@ -43,7 +43,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | file |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ | :required |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/text/text.jaba:5 |
@@ -55,7 +55,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | to_s array |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ | :allow_dupes, :no_sort |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/text/text.jaba:16 |

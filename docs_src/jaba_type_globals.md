@@ -18,7 +18,7 @@
 > |-|-|
 > | _type_ | node_ref array |
 > | _node_type_ | :host |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ | :required |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:415 |
@@ -93,7 +93,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | symbol hash |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ | :required |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:2 |

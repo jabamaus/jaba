@@ -17,7 +17,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ | string |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ | :required |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:390 |
@@ -43,7 +43,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ |  |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:386 |
@@ -55,7 +55,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ |  |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/core/hosts.jaba:23 |
@@ -103,7 +103,7 @@
 > | Property | Value  |
 > |-|-|
 > | _type_ |  |
-> | _default_ | nil |
+> | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/core/hosts.jaba:31 |
