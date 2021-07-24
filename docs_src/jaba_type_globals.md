@@ -1,3 +1,4 @@
+[home](index.html)
 ## globals
 > 
 > _Global attribute definitions_
@@ -6,7 +7,7 @@
 > |-|-|
 > | _src_ | $(jaba_install)/modules/core/globals.jaba:1 |
 > | _notes_ | Manages attribute definitions for 'globals' type.  |
-> | _depends on_ | host |
+> | _depends on_ | [host](jaba_type_host.html) |
 > 
 
 <a id="cpp_hosts"></a>

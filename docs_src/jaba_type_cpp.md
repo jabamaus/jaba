@@ -1,3 +1,4 @@
+[home](index.html)
 ## cpp
 > 
 > _Cross platform C++ project definition_
@@ -6,7 +7,7 @@
 > |-|-|
 > | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:3 |
 > | _notes_ | Manages attribute definitions for 'cpp' type.  |
-> | _depends on_ | host, platform, arch, buildtool |
+> | _depends on_ | [host](jaba_type_host.html), [platform](jaba_type_platform.html), [arch](jaba_type_arch.html), [buildtool](jaba_type_buildtool.html) |
 > 
 
 <a id="arch"></a>
@@ -613,7 +614,7 @@
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
-> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:88 |
+> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:91 |
 >
 <a id="vcglobal"></a>
 #### vcglobal
@@ -637,7 +638,7 @@
 > | _default_ | nil |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
-> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:77 |
+> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:80 |
 >
 <a id="warnerror"></a>
 #### warnerror
@@ -668,3 +669,9 @@
 > | _options_ |  |
 > | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:63 |
 >
+> *Examples*
+>```ruby
+> winsdkver '10.0.18362.0'
+> # wrapper for
+> vcglobal :WindowsTargetPlatformVersion, winsdkver
+>```

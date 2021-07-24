@@ -1,5 +1,7 @@
+[home](index.html)
 # Jaba language reference
 
+Specifies what can be placed in .jaba files
 - Attribute variants
   - single
   - array

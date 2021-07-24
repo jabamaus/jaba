@@ -1,3 +1,4 @@
+[home](index.html)
 ## workspace
 > 
 > _Workspace of projects_
@@ -6,7 +7,7 @@
 > |-|-|
 > | _src_ | $(jaba_install)/modules/workspace/workspace.jaba:1 |
 > | _notes_ | Manages attribute definitions for 'workspace' type.  |
-> | _depends on_ | cpp |
+> | _depends on_ | [cpp](jaba_type_cpp.html) |
 > 
 
 <a id="name"></a>

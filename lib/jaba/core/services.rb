@@ -1080,9 +1080,15 @@ module JABA
       @docs_src_dir = "#{JABA.jaba_install_dir}/docs_src"
       main_page = @file_manager.new_file("#{@docs_src_dir}/jaba_reference.md", capacity: 16 * 1024)
       w = main_page.writer
+      w << "[home](index.html)"
       w << "# Jaba language reference"
       w << ""
+      w << "Specifies what can be placed in .jaba files"
 
+      # TODO: document include statement
+      # TODO: document top level types
+      # TODO: document how to define new types and attributes
+      
       w << "- Attribute variants"
       w << "  - single"
       w << "  - array"
@@ -1118,6 +1124,7 @@ module JABA
     def generate_jaba_type_reference(jt)
       file = @file_manager.new_file("#{@docs_src_dir}/#{jt.reference_manual_page(ext: '.md')}", capacity: 16 * 1024)
       w = file.writer
+      w << "[home](index.html)"
       w << "## #{jt.defn_id}"
       w << "> "
       w << "> _#{jt.title}_"
@@ -1126,7 +1133,7 @@ module JABA
       w << "> |-|-|"
       md_row(w, :src, "$(jaba_install)/#{jt.src_loc.describe(style: :rel_src_root)}")
       md_row(w, :notes, jt.notes.make_sentence)
-      md_row(w, 'depends on', jt.dependencies.join(", ")) # TODO: make into links
+      md_row(w, 'depends on', jt.dependencies.map{|d| "[#{d}](#{d.reference_manual_page})"}.join(", "))
       w << "> "
       w << ""
       jt.all_attr_defs_sorted.each do |ad|
@@ -1150,7 +1157,6 @@ module JABA
         md_row(w, :flags, ad.flags.map(&:inspect).join(', '))
         md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
         md_row(w, :src, "$(jaba_install)/#{ad.src_loc.describe(style: :rel_src_root)}")
-        # TODO: make $(cpp#src_ext) links work again
         md_row(w, :notes, ad.notes.make_sentence.to_markdown_links) if !ad.notes.empty?
         w << ">"
         if !ad.examples.empty?

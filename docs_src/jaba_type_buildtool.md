@@ -1,3 +1,4 @@
+[home](index.html)
 ## buildtool
 > 
 > _Custom build tool_

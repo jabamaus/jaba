@@ -1,3 +1,4 @@
+[home](index.html)
 ## category
 > 
 > _Project category type_
@@ -19,7 +20,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:101 |
+> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:104 |
 > | _notes_ | Seeded by [$(name)](#name). Required by Visual Studio .sln files.  |
 >
 <a id="name"></a>

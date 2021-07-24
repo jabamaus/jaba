@@ -70,6 +70,9 @@ open_type :cpp do
         nil
       ]
       default nil
+      example "winsdkver '10.0.18362.0'"
+      example "# wrapper for"
+      example "vcglobal :WindowsTargetPlatformVersion, winsdkver"
     end
   end
 

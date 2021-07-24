@@ -1,3 +1,4 @@
+[home](index.html)
 ## arch
 > 
 > _Target architecture type_

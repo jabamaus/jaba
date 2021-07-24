@@ -1,3 +1,4 @@
+[home](index.html)
 ## platform
 > 
 > _Target platform type_
