@@ -183,7 +183,7 @@ module JABA
           end
         end
 
-        summary = String.new "Generated #{@generated.size} files, #{@added.size} added, #{@modified.size} modified in #{duration}"
+        summary = "Generated #{@generated.size} files, #{@added.size} added, #{@modified.size} modified in #{duration}"
         summary << " [dry run]" if input.dry_run?
         # TODO: verbose mode prints all generated
 
