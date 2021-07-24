@@ -1,6 +1,6 @@
-To do:
-
+- I think its time to move setting config attrs into their own block. Prevents problems with attributes having nil values when evaluating in the context of the project.
 - Go back to allowing single values to be passed to array attrs without requiring []
+- Automatically pull in dependencies into workspace
 - Add ability to set :local or :global option on per-attribute basis
 - attr def properties should have help string/notes...
 - Support for node-by-value attribute
@@ -8,9 +8,7 @@ To do:
 - Maybe add open_globals_type and open_globals_inst?
 - Allow default values to take options?
 - RUBY LICENSE REQUIREMENTS
-- is it possible to write a 3rd party jaba file that is stored in jaba itself and then moved into the project with no, or very minimal changes?
 - Should to_absolute base off JABA.cwd or dest_root? I think the latter...
-- Remove src_root from globals and put into jaba.cache file?
 - consider having a globals per-type (eg cpp globals)
 - validate when --src-root can be specified. Should be required if no .jaba files in cwd and disallowed if there are.
 - Check attribute validators when parsing cmd line.
@@ -18,27 +16,21 @@ To do:
 - Use did_you_mean? Eg
   Error at basic_dll.jaba:8: 'defines' attribute not defined. Did you mean 'define'?
 - Combine jaba.input.json and jaba.output.json into one file
-- Have a 'jaba clean' command
-- put simple type verification system into Property
-- there could be a directive on include statements that runs inlcuded file in new jaba instance
+- there could be a directive on include statements that runs included file in new jaba instance
 - validate platforms and architecture specs
 - cpp attrs need to be split into project and config in reference manual
 - tag attrs as control flow attrs somehow for benefit of docs
 - add slnproperty which can address sln sections. Particularly useful when used with ExtensibilityGlobals
 - disband VSProj in favour of VSUtilities module
-- test build shell cmds
 - Move title/note/example into module and include
-- more error reporting testing with actual files rather than blocks
 - Have a command line switch to make all error messages contain absolute paths
 - How customise jaba output file? Subclass vcxproj or jdl definition, or something else?
 - support for 'overriding' attribute defs when opening types
 - make_generator should be able to make subclasses of eg CppGenerator
 - make paths in jaba.output.json relative to itself. Introduce json node writing api to wrap this up and to make it robust.
-- think more about path handling in general and make it very consistent. eg all paths get to generators as absolute.
 - Have a way of globally setting default for :platforms, :hosts and :configs (and for clearing)
 - make file/dir attrs cleanpath
 - Make :nocheckexists do something
-- check that only arrays and hashes can be exported
 - Think more about project 'skus'. Also, platforms support specific hosts. Where is that info stored?
 - test :required flag compatibility
 - Revisit set_to_default and wipe. Have way of clearing to default and clearing fully, but don't count that as set=true
@@ -46,8 +38,6 @@ To do:
 - Test __dir__
 - Allow 'axes' of configs. Bear in mind that platforms can be any string.
 - Have some kind of spec for flag_options, eg
-- Automatically pull in dependencies into workspace
-- Consider changing :export to :public
 
 flag_option :export do
   note 'do exporting'
@@ -73,12 +63,9 @@ if there are multiple attrs, with a warning.
     flags :required, :no_sort
   end
 
-  - check for duplicate filenames at generator level, with proper error reporting
-  - Make contents of attr def defaults overidable by user, including calling super
-
-  - Make _ID be id of the definition the code is in, such that it works even inside
-      a block that is being executed in the context of a different jaba object
-
+- check for duplicate filenames at generator level, with proper error reporting
+- Make contents of attr def defaults overidable by user, including calling super
+- Make _ID be id of the definition the code is in, such that it works even inside a block that is being executed in the context of a different jaba object
 - Ability to reverse engineer jaba definitions from existing vsprojects
 - Should 'absolute' paths starting with / force 'root' to be disregarded and make paths relative to definition file or
   should use eg "#{__dir__}/main.cpp"?
@@ -89,42 +76,8 @@ if there are multiple attrs, with a warning.
 - Add 'underlying type' to attribute types? eg file.dir/src_spec are strings. Use this for extra
   validation and also to sort using casecmp
 - resolve issues around sorting with mixed type elements
- - sortable arrays must be of same type
+- sortable arrays must be of same type
 - Add wildcard validation to dir property
-
-- Think about a 'configure' system. Eg could have a configure block eg for ruby jaba file it might be
-
-configure do
-  attr :extensions, type: :multichoice do
-    items Dir.glob(ext_dir) # get list of ruby extension
-  end
-  attr :static, type: :bool do
-    default false
-  end
-  ...
-end
-
-When jaba is run and no configure file has been generated, jaba generates one from the above definition which is just a flat list.
-Maybe a yml file?
-
-jaba.configure:
-
-static = false
-extension_json = true
-extension_ripper = true
-...
-
-This is then used in the jaba build definition eg
-
-cpp :ruby do
-  type (static ? :lib : :dll)
-
-  case extension
-  when :json
-  ...
-  end
-end
-
 
 
 
@@ -140,17 +93,3 @@ A: Because Jaba cares a lot about a clean build, and about deterministic minimum
 
 Q: Why is Jaba library code style not very 'ruby'?
 A: The code is written in a style that is the easiest to step through in an IDE debugger, which is an essential tool in the development process
-
-https://rix0r.nl/blog/2015/08/13/cmake-guide/
-
-
-    <CustomBuild Include="..\..\..\ruby\probes.d">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ruby ..\..\..\ruby\tool/gen_dummy_probes.rb %(Identity) &gt;..\..\..\ruby\probes.dmyh</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\ruby\probes.dmyh</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Generating probes.dmyh</Message>
-    </CustomBuild>
-
-
-  https://www.gamedev.net/blogs/entry/2266894-fully-featured-custom-build-targets-in-visual-c/
-  http://reedbeta.com/blog/custom-toolchain-with-msbuild/
