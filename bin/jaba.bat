@@ -1,3 +1,3 @@
 @echo off
-ruby.exe -w %~dp0jaba.rb %*
+jabaruby.exe -I%~dp0..\jabaruby\stdlib -w %~dp0jaba.rb %*
 

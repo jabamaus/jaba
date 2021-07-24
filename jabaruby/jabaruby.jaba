@@ -1,55 +1,30 @@
-
-# TODO:
-# - add miniruby.rc
-# - generate id.h
-# - generate miniprelude.c
-# - generate dummy probes.h
-# - generate ast.rbinc
-# - generate known_errors.inc
-# - generate warning.rbinc
-# - generate gc.rbinc
-# - generate prelude.rbinc
-# - generate io.rbinc
-# - generate node_name.inc
-# - generate mjit_config.h
-# - generate pack.rbinc
-# - generate parse.c ; copy lex.c.blt lex.c
-# - generate id.c
-# - generate vm_call_iseq_optimized.inc
-# - generate trace_point.rbinc
-# - generate enc/trans/newline.c
-#     converter for universal_newline
-#     converter for crlf_newline
-#     converter for cr_newline
-# - turn off edit and continue
-# - investigate -Zm600. Related to large link size
-# - runtime library static
 cpp :jabaruby do
   type :console
-  root '../../ruby'
+  root 'C:/projects/ruby-3.0.2'
   platforms [:windows_x86_64]
   configs [:Debug, :Release]
-  src [
-    "#{__dir__}/jaba_ext.c", 'main.c', 'dmydln.c', 'miniinit.c', 'array.c', 'ast.c', 'bignum.c', 'class.c', 'compar.c', 'compile.c',
-    'complex.c', 'cont.c', 'debug.c', 'debug_counter.c', 'dir.c', 'dln_find.c', 'encoding.c', 'enum.c', 'enumerator.c', 'error.c',
-    'eval.c', 'file.c', 'gc.c', 'hash.c', 'inits.c', 'io.c', 'iseq.c', 'load.c', 'marshal.c', 'math.c',
-    'node.c', 'numeric.c', 'object.c', 'pack.c', 'parse.c', 'proc.c', 'process.c', 'random.c', 'range.c', 'rational.c', 're.c',
-    'regcomp.c', 'regenc.c', 'regerror.c', 'regexec.c', 'regparse.c', 'regsyntax.c', 'ruby.c', 'safe.c', 'signal.c', 'sprintf.c',
-    'st.c', 'strftime.c', 'string.c', 'struct.c', 'symbol.c', 'thread.c', 'time.c', 'transcode.c', 'transient_heap.c', 'util.c',
-    'variable.c', 'version.c', 'vm.c', 'vm_backtrace.c', 'vm_dump.c', 'vm_trace.c'
-  ], :force
+  src ["#{__dir__}/jaba_ext.c"]
+  src %w(
+    main.c dmydln.c miniinit.c array.c ast.c bignum.c class.c compar.c compile.c
+    complex.c cont.c debug.c debug_counter.c dir.c dln_find.c encoding.c enum.c enumerator.c error.c
+    eval.c file.c gc.c hash.c inits.c io.c iseq.c load.c marshal.c math.c memory_view.c mjit.c mjit_compile.c
+    node.c numeric.c object.c pack.c parse.c proc.c process.c ractor.c random.c range.c rational.c re.c
+    regcomp.c regenc.c regerror.c regexec.c regparse.c regsyntax.c ruby.c scheduler.c signal.c sprintf.c
+    st.c strftime.c string.c struct.c symbol.c thread.c time.c transcode.c transient_heap.c util.c
+    variable.c version.c vm.c vm_backtrace.c vm_dump.c vm_sync.c vm_trace.c
+  )
   
-  src ['probes.d']
+  #src ['probes.d']
   #vcfprop 'probes.d|FileType', :Document
   #vcfprop 'probes.d|Command', "ruby ..\\..\\..\\ruby\\tool\\gen_dummy_probes.rb %(Identity) &gt;..\\..\\..\\ruby\\probes.dmyh"
   #vcfprop 'probes.d|Outputs', '..\..\..\ruby\probes.dmyh'
   #vcfprop 'probes.d|Message', 'Generating probes.dmyh'
 
-  buildtool 'probes.d' do |f|
-    output "#{f}myh"
-    command "ruby ..\\..\\..\\ruby\\tool\\gen_dummy_probes.rb #{f} > #{output}"
-    message "Generating #{output}"
-  end
+  #buildtool 'probes.d' do |f|
+  #  output "#{f}myh"
+  #  command "ruby ..\\..\\..\\ruby\\tool\\gen_dummy_probes.rb #{f} > #{output}"
+  #  message "Generating #{output}"
+  #end
 
   src ['coroutine/win64/Context.asm']
   src ['enc/ascii.c', 'enc/us_ascii.c', 'enc/unicode.c', 'enc/utf_8.c', 'enc/trans/newline.c'], :force
@@ -72,7 +47,6 @@ cpp :jabaruby do
   define ['LOAD_RELATIVE']
   define ['RUBY_EXPORT', 'CANONICALIZATION_FOR_MATHN', 'DISABLE_RUBYGEMS=1','_WIN32_WINNT=0x0600']
   syslibs ['imagehlp.lib', 'iphlpapi.lib', 'ws2_32.lib']
-  objdir "obj/#{config}"
 
   vcprop 'Link|LinkIncremental', false
 
