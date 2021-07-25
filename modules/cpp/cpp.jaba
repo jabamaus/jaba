@@ -131,7 +131,6 @@ define :cpp do
       flag_options :export, :export_only
       value_option :vpath # For organising files in a generated project
       # TODO: examples for excludes
-      # TODO: add absolute path example
       example %Q{
         # Add all src in $(root) whose extension is in $(src_ext)
         src ['*']

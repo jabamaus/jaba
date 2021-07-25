@@ -86,7 +86,8 @@ module JABA
           b.must_equal [1, 2, 3]
           c.must_equal [4, 5, 6]
           d.must_equal [1, 2, 3, 4, 5, 6]
-          d [7, 8, 9] # default array values are appended to not overwritten when block style used
+          d [7, 8] # default array values are appended to not overwritten when block style used
+          d 9
           d.must_equal [1, 2, 3, 4, 5, 6, 7, 8, 9]
           e [9] # default array values are appended to not overwritten when value style used
           e.must_equal [7, 8, 9]

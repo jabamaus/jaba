@@ -69,11 +69,7 @@ module JABA
         if @attr_def.node_by_value?
           attr_error("Node attributes require a block")
         end
-        arg = args.shift
-        if arg && !arg.array?
-          attr_error("#{describe} requires an array not a '#{arg.class}'")
-        end
-        arg
+        args.shift
       end
 
       values = Array(values)

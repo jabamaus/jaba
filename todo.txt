@@ -1,5 +1,5 @@
+- Add example modules to docs, including comment docs.
 - I think its time to move setting config attrs into their own block. Prevents problems with attributes having nil values when evaluating in the context of the project.
-- Go back to allowing single values to be passed to array attrs without requiring []
 - Automatically pull in dependencies into workspace
 - Add ability to set :local or :global option on per-attribute basis
 - attr def properties should have help string/notes...

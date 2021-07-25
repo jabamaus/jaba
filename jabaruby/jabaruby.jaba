@@ -3,7 +3,7 @@ cpp :jabaruby do
   root 'C:/projects/ruby-3.0.2'
   platforms [:windows_x86_64]
   configs [:Debug, :Release]
-  src ["./jaba_ext.c"]
+  src './jaba_ext.c'
   src %w(
     main.c dmydln.c miniinit.c array.c ast.c bignum.c class.c compar.c compile.c
     complex.c cont.c debug.c debug_counter.c dir.c dln_find.c encoding.c enum.c enumerator.c error.c
