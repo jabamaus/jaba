@@ -202,7 +202,6 @@ module JABA
             return nil
           end
         else
-          services.log "Reading #{fn}"
           str = IO.binread(fn)
           str.force_encoding(encoding) if encoding
           str.freeze if freeze # Don't want cache entries being inadvertently modified
