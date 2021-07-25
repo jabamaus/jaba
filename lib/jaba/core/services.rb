@@ -926,7 +926,6 @@ module JABA
       #
       if f.basename == 'config.jaba'
         content = @file_manager.read(f, freeze: false)
-        log "Executing #{f}"
         content.prepend("open_instance :globals, type: :globals do\n")
         content << "end"
         execute_jdl(file: f, str: content)
