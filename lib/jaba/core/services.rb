@@ -860,10 +860,6 @@ module JABA
         end
       end
 
-      if File.exist?(JABA.config_file) && !JABA.running_tests?
-        process_jdl_file(JABA.config_file)
-      end
-
       if @src_root
         process_load_path(@src_root, fail_if_empty: true)
       end
@@ -881,6 +877,12 @@ module JABA
       while !@jdl_includes.empty?
         last = @jdl_includes.pop
         process_load_path(last)
+      end
+
+      # Process config file at the end so it is authoritative and overwrites existing values.
+      #
+      if File.exist?(JABA.config_file) && !JABA.running_tests?
+        process_jdl_file(JABA.config_file)
       end
     end
 
