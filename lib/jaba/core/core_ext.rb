@@ -490,17 +490,18 @@ module JABACoreExt
     ##
     # Formats source location for use in user level messages.
     #
-    def describe(style: :basename)
-      case style
+    def describe(style: :basename, line: true)
+      base = case style
       when :absolute
-        "#{path}:#{lineno}"
+        path
       when :basename
-        "#{path.basename}:#{lineno}"
+        path.basename
       when :rel_src_root
-        "#{path.relative_path_from(JABA.jaba_install_dir)}:#{lineno}"
+        path.relative_path_from(JABA.jaba_install_dir)
       else
         JABA.error("Unsupported style '#{style}'")
       end
+      line ? "#{base}:#{lineno}" : base
     end
 
   end
