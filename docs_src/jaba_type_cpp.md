@@ -526,6 +526,13 @@
 > # Add src with hardcoded absolute path. Not recommended.
 > src ['C:/projects/app/main.cpp']
 > src ['/usr/local/app/main.cpp']
+> 
+> # Add src in bulk without needing quotes, commas or square brackets
+> src %w(main.c dmydln.c miniinit.c array.c ast.c bignum.c class.c compar.c compile.c)
+> src %w(
+>   main.c dmydln.c miniinit.c array.c
+>   ast.c bignum.c class.c compar.c compile.c
+> )
 >```
 <a id="src_ext"></a>
 #### src_ext

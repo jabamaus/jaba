@@ -1359,6 +1359,13 @@
 <span style="color:#75715e"># Add src with hardcoded absolute path. Not recommended.</span>
 <span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;C:/projects/app/main.cpp&#39;</span><span style="color:#f92672">]</span>
 <span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;/usr/local/app/main.cpp&#39;</span><span style="color:#f92672">]</span>
+
+<span style="color:#75715e"># Add src in bulk without needing quotes, commas or square brackets</span>
+<span style="color:#111">src</span> <span style="color:#d88200">%w(</span><span style="color:#d88200">main.c dmydln.c miniinit.c array.c ast.c bignum.c class.c compar.c compile.c</span><span style="color:#d88200">)</span>
+<span style="color:#111">src</span> <span style="color:#d88200">%w(</span><span style="color:#d88200">
+</span><span style="color:#d88200">  main.c dmydln.c miniinit.c array.c
+</span><span style="color:#d88200">  ast.c bignum.c class.c compar.c compile.c
+</span><span style="color:#d88200"></span><span style="color:#d88200">)</span>
 </pre></blockquote>
 <p><a id="src_ext"></a></p>
 <h4 id="src-ext">src_ext</h4>
