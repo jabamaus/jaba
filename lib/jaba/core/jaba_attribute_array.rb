@@ -89,19 +89,19 @@ module JABA
       i = 0
       s = values.size
       while i < s
-        val = values[i]
+        val = apply_pre_post_fix(prefix, postfix, values[i])
+        elem = make_elem(val, *args, add: false, **keyval_args)
         i += 1
         existing = nil
         if !@attr_def.has_flag?(:allow_dupes) && !@attr_def.node_by_value?
-          existing = @elems.find{|e| e.value == val}
+          existing = @elems.find{|e| e.raw_value == elem.raw_value}
         end
 
         if existing
           jaba_warn("When setting #{describe} stripping duplicate value '#{val.inspect_unquoted}'. See previous at #{existing.src_loc.describe}. " \
             "Flag with :allow_dupes to allow.")
         else
-          val = apply_pre_post_fix(prefix, postfix, val)
-          add_elem(val, *args, **keyval_args)
+          @elems << elem
         end
       end
       
@@ -117,10 +117,13 @@ module JABA
     
     ##
     #
-    def add_elem(val, *args, **keyval_args)
+    def make_elem(val, *args, add: true, **keyval_args)
       e = JabaAttributeElement.new(@attr_def, @node, self)
       e.set(val, *args, __jdl_call_loc: @last_call_location, **keyval_args)
-      @elems << e
+      if add
+        @elems << e
+      end
+      e
     end
 
     ##
@@ -141,7 +144,7 @@ module JABA
       value_options = other.value_options
       f_options = other.flag_options
       val = Marshal.load(Marshal.dump(other.raw_value))
-      add_elem(val, *f_options, validate: false, __resolve_ref: false, **value_options)
+      make_elem(val, *f_options, validate: false, __resolve_ref: false, **value_options)
     end
 
     ##

@@ -197,6 +197,7 @@ module JABA
               flags :allow_dupes
             end
             attr_array :c, type: :bool
+            attr_array :d, type: :string
           end
           test :t do
             a [5] # tagL
@@ -206,6 +207,9 @@ module JABA
             b.must_equal [5, 5, 6, 6, 7, 7, 7]
             c [true, false, false, true] # Never strips duplicates in bool arrays
             c.must_equal [true, false, false, true]
+            d ['aa', 'ab', 'ac']
+            d ['a', 'b', 'c'], prefix: 'a' # Test duplicates caused by prefix still stripped
+            d.must_equal ['aa', 'ab', 'ac']
           end
         end
       end

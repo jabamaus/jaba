@@ -43,6 +43,26 @@ module JABA
       end
     end
     
+    it 'strips duplicates' do
+      line = find_line_number(__FILE__, 'tagL')
+      check_warn("When setting 'a.ref' array attribute stripping duplicate value ':b'. See previous at test_node_ref_attribute.rb:#{line}", __FILE__, 'tagM') do
+        jaba(barebones: true) do
+          define :type_a do
+            attr_array :ref, type: :node_ref do
+              node_type :type_b
+            end
+          end
+          define :type_b
+          type_a :a do
+            ref :b # tagL
+            ref :b # tagM
+            ref.size.must_equal(1)
+          end
+          type_b :b
+        end
+      end
+    end
+
     it 'catches invalid reference to different type' do
       # TODO: don't like this error message
       check_fail 'Node with handle \'undefined\' not found', line: [__FILE__, 'tagW'] do
