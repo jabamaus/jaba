@@ -43,6 +43,7 @@ module JABA
       w = file.writer
 
       @src.each do |sf|
+        w << sf.projdir_rel
       end
 
       file.write
