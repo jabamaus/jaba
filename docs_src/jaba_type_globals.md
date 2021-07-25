@@ -5,7 +5,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _src_ | $(jaba_install)/modules/core/globals.jaba:1 |
+> | _defined in_ | $(jaba_install)/modules/core/globals.jaba |
 > | _notes_ | Manages attribute definitions for 'globals' type.  |
 > | _depends on_ | [host](jaba_type_host.html) |
 > 
@@ -21,7 +21,7 @@
 > | _default_ |  |
 > | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:415 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
 <a id="dump_input"></a>
 #### dump_input
@@ -33,7 +33,7 @@
 > | _default_ | false |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/globals.jaba:21 |
+> | _defined in_ | $(jaba_install)/modules/core/globals.jaba |
 >
 <a id="dump_output"></a>
 #### dump_output
@@ -45,7 +45,7 @@
 > | _default_ | true |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/globals.jaba:33 |
+> | _defined in_ | $(jaba_install)/modules/core/globals.jaba |
 >
 <a id="jaba_input_file"></a>
 #### jaba_input_file
@@ -57,7 +57,7 @@
 > | _default_ | ".jaba/jaba.input.json" |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/globals.jaba:13 |
+> | _defined in_ | $(jaba_install)/modules/core/globals.jaba |
 > | _notes_ | Mostly useful for debugging and testing but could be useful as a second way of tracking definition changes in source control. The file is written before any file generation occurs, and can be considered a specification of the final data.  |
 >
 <a id="jaba_output_file"></a>
@@ -70,7 +70,7 @@
 > | _default_ | ".jaba/jaba.output.json" |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/globals.jaba:25 |
+> | _defined in_ | $(jaba_install)/modules/core/globals.jaba |
 > | _notes_ | Jaba output can be later used by another process (eg the build process) to do things like looking up paths by id rather than embedding them in code, iterating over all defined unit tests and invoking them, etc..  |
 >
 <a id="src_root"></a>
@@ -83,7 +83,7 @@
 > | _default_ | "." |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/globals.jaba:5 |
+> | _defined in_ | $(jaba_install)/modules/core/globals.jaba |
 > | _notes_ | Tells Jaba where to start looking for .jaba files to execute. Defaults to the directory Jaba was invoked in if not specified on the command line. Often coincident with the root of a source tree, but not always as jaba files can exist outside a src tree if desired..  |
 >
 <a id="vcfiletype"></a>
@@ -96,5 +96,5 @@
 > | _default_ |  |
 > | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:2 |
+> | _defined in_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba |
 >

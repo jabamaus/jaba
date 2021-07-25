@@ -5,7 +5,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _src_ | $(jaba_install)/modules/core/hosts.jaba:4 |
+> | _defined in_ | $(jaba_install)/modules/core/hosts.jaba |
 > | _notes_ | Manages attribute definitions for 'host' type.  |
 > | _depends on_ |  |
 > 
@@ -20,7 +20,7 @@
 > | _default_ |  |
 > | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:390 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | For example Vcxproj, Xcodeproj. Use when implementing a new project type..  |
 >
 <a id="cpp_src_ext"></a>
@@ -33,7 +33,7 @@
 > | _default_ | [] |
 > | _flags_ | :no_sort |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:396 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Any host-specific extensions specified are in addition to the Core C/C+ file types specified in [$(cpp#src_ext)](#cpp-src_ext).  |
 >
 <a id="cpp_supported_platforms"></a>
@@ -46,7 +46,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:386 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
 <a id="major_version"></a>
 #### major_version
@@ -58,7 +58,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jaba:23 |
+> | _defined in_ | $(jaba_install)/modules/core/hosts.jaba |
 >
 <a id="ninja?"></a>
 #### ninja?
@@ -70,7 +70,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jaba:18 |
+> | _defined in_ | $(jaba_install)/modules/core/hosts.jaba |
 >
 <a id="toolset"></a>
 #### toolset
@@ -82,7 +82,7 @@
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jaba:35 |
+> | _defined in_ | $(jaba_install)/modules/core/hosts.jaba |
 >
 <a id="version"></a>
 #### version
@@ -94,7 +94,7 @@
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jaba:27 |
+> | _defined in_ | $(jaba_install)/modules/core/hosts.jaba |
 >
 <a id="version_year"></a>
 #### version_year
@@ -106,7 +106,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jaba:31 |
+> | _defined in_ | $(jaba_install)/modules/core/hosts.jaba |
 >
 <a id="visual_studio?"></a>
 #### visual_studio?
@@ -118,7 +118,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jaba:8 |
+> | _defined in_ | $(jaba_install)/modules/core/hosts.jaba |
 >
 <a id="vs2010?"></a>
 #### vs2010?
@@ -130,7 +130,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jaba:41 |
+> | _defined in_ | $(jaba_install)/modules/core/hosts.jaba |
 >
 > *Examples*
 >```ruby
@@ -149,7 +149,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jaba:41 |
+> | _defined in_ | $(jaba_install)/modules/core/hosts.jaba |
 >
 > *Examples*
 >```ruby
@@ -168,7 +168,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jaba:41 |
+> | _defined in_ | $(jaba_install)/modules/core/hosts.jaba |
 >
 > *Examples*
 >```ruby
@@ -187,7 +187,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jaba:41 |
+> | _defined in_ | $(jaba_install)/modules/core/hosts.jaba |
 >
 > *Examples*
 >```ruby
@@ -206,7 +206,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jaba:41 |
+> | _defined in_ | $(jaba_install)/modules/core/hosts.jaba |
 >
 > *Examples*
 >```ruby
@@ -225,7 +225,7 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jaba:41 |
+> | _defined in_ | $(jaba_install)/modules/core/hosts.jaba |
 >
 > *Examples*
 >```ruby
@@ -244,7 +244,7 @@
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/workspace/workspace.jaba:49 |
+> | _defined in_ | $(jaba_install)/modules/workspace/workspace.jaba |
 > | _notes_ | For example Sln, XcodeWorkspace. Use when implementing a new workspace type..  |
 >
 <a id="xcode?"></a>
@@ -257,5 +257,5 @@
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/hosts.jaba:13 |
+> | _defined in_ | $(jaba_install)/modules/core/hosts.jaba |
 >

@@ -5,7 +5,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _src_ | $(jaba_install)/modules/core/buildtool.jaba:1 |
+> | _defined in_ | $(jaba_install)/modules/core/buildtool.jaba |
 > | _notes_ | Manages attribute definitions for 'buildtool' type.  |
 > | _depends on_ |  |
 > 
@@ -20,7 +20,7 @@
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/buildtool.jaba:19 |
+> | _defined in_ | $(jaba_install)/modules/core/buildtool.jaba |
 >
 <a id="message"></a>
 #### message
@@ -32,7 +32,7 @@
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/buildtool.jaba:5 |
+> | _defined in_ | $(jaba_install)/modules/core/buildtool.jaba |
 >
 <a id="output"></a>
 #### output
@@ -44,7 +44,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/buildtool.jaba:9 |
+> | _defined in_ | $(jaba_install)/modules/core/buildtool.jaba |
 >
 <a id="outputs"></a>
 #### outputs
@@ -56,5 +56,5 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/core/buildtool.jaba:14 |
+> | _defined in_ | $(jaba_install)/modules/core/buildtool.jaba |
 >

@@ -1131,7 +1131,7 @@ module JABA
       w << "> "
       w << "> | Property | Value  |"
       w << "> |-|-|"
-      md_row(w, :src, "$(jaba_install)/#{jt.src_loc.describe(style: :rel_src_root)}")
+      md_row(w, 'defined in', "$(jaba_install)/#{jt.src_loc.describe(style: :rel_src_root, line: false)}")
       md_row(w, :notes, jt.notes.make_sentence)
       md_row(w, 'depends on', jt.dependencies.map{|d| "[#{d}](#{d.reference_manual_page})"}.join(", "))
       w << "> "
@@ -1156,7 +1156,7 @@ module JABA
         md_row(w, :default, ad.default.proc? ? nil : !ad.default.nil? ? ad.default.inspect : nil)
         md_row(w, :flags, ad.flags.map(&:inspect).join(', '))
         md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
-        md_row(w, :src, "$(jaba_install)/#{ad.src_loc.describe(style: :rel_src_root)}")
+        md_row(w, 'defined in', "$(jaba_install)/#{ad.src_loc.describe(style: :rel_src_root, line: false)}")
         md_row(w, :notes, ad.notes.make_sentence.to_markdown_links) if !ad.notes.empty?
         w << ">"
         if !ad.examples.empty?

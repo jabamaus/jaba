@@ -5,7 +5,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:3 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Manages attribute definitions for 'cpp' type.  |
 > | _depends on_ | [host](jaba_type_host.html), [platform](jaba_type_platform.html), [arch](jaba_type_arch.html), [buildtool](jaba_type_buildtool.html) |
 > 
@@ -20,7 +20,7 @@
 > | _default_ |  |
 > | _flags_ | :read_only |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:161 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Query current architecture being processed. Use to define control flow to set config-specific atttributes.  |
 >
 <a id="arch_ref"></a>
@@ -34,7 +34,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:167 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
 <a id="bindir"></a>
 #### bindir
@@ -46,7 +46,7 @@
 > | _default_ |  |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:212 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
 <a id="build_root"></a>
 #### build_root
@@ -58,7 +58,7 @@
 > | _default_ | "build" |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:204 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Specified as a relative path from main build root.  |
 >
 <a id="buildtool"></a>
@@ -72,7 +72,7 @@
 > | _default_ |  |
 > | _flags_ | :delay_evaluation |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:189 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
 <a id="cflags"></a>
 #### cflags
@@ -84,7 +84,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:251 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
 <a id="character_set"></a>
 #### character_set
@@ -97,7 +97,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:350 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
 > *Examples*
 >```ruby
@@ -113,7 +113,7 @@
 > | _default_ |  |
 > | _flags_ | :read_only |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:182 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Returns current config being processed. Use to define control flow to set config-specific atttributes.  |
 >
 <a id="configname"></a>
@@ -126,7 +126,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:256 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
 <a id="configs"></a>
 #### configs
@@ -138,7 +138,7 @@
 > | _default_ |  |
 > | _flags_ | :required, :no_sort |
 > | _options_ | :export, :export_only |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:68 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
 > *Examples*
 >```ruby
@@ -154,7 +154,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:263 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Defaults to true if config id contains 'debug'.  |
 >
 <a id="define"></a>
@@ -167,7 +167,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:271 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
 <a id="deps"></a>
 #### deps
@@ -180,7 +180,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:75 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | List of ids of other cpp definitions.  |
 >
 > *Examples*
@@ -207,7 +207,7 @@
 > | _default_ | true |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:361 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
 > *Examples*
 >```ruby
@@ -223,7 +223,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:49 |
+> | _defined in_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba |
 > | _notes_ | Seeded by [$(projname)](#projname). Required by Visual Studio project files.  |
 >
 <a id="host"></a>
@@ -236,7 +236,7 @@
 > | _default_ |  |
 > | _flags_ | :read_only |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:26 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Query current target host.  |
 >
 > *Examples*
@@ -259,7 +259,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:40 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Use when access to host attributes is required.  |
 >
 <a id="importlib"></a>
@@ -272,7 +272,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:285 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Defaults to [$(projname)](#projname)[$(targetsuffix)](#targetsuffix).lib.  |
 >
 <a id="inc"></a>
@@ -285,7 +285,7 @@
 > | _default_ |  |
 > | _flags_ | :no_sort |
 > | _options_ | :export, :export_only |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:276 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
 > *Examples*
 >```ruby
@@ -302,7 +302,7 @@
 > | _default_ |  |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:221 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
 <a id="libs"></a>
 #### libs
@@ -314,7 +314,7 @@
 > | _default_ |  |
 > | _flags_ | :no_sort, :no_check_exist |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:239 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
 <a id="nowarn"></a>
 #### nowarn
@@ -326,7 +326,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:293 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Placed directly into projects as is, with no validation.  |
 >
 > *Examples*
@@ -343,7 +343,7 @@
 > | _default_ |  |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:230 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
 <a id="platform"></a>
 #### platform
@@ -355,7 +355,7 @@
 > | _default_ |  |
 > | _flags_ | :read_only |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:46 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Query current target platform.  |
 >
 > *Examples*
@@ -378,7 +378,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:60 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Use when access to platform attributes is required.  |
 >
 <a id="platforms"></a>
@@ -391,7 +391,7 @@
 > | _default_ |  |
 > | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:7 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
 <a id="projdir"></a>
 #### projdir
@@ -403,7 +403,7 @@
 > | _default_ | "projects" |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:96 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Specified as an offset from [$(root)](#root). If not specified projects will be generated in [$(root)](#root). Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible in order to not damage portability.  |
 >
 > *Examples*
@@ -423,7 +423,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:112 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Defaults to [$(id)](#id)[$(projsuffix)](#projsuffix).  |
 >
 <a id="projsuffix"></a>
@@ -436,7 +436,7 @@
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:120 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Has no effect if [$(projname)](#projname) is set explicitly.  |
 >
 <a id="root"></a>
@@ -449,7 +449,7 @@
 > | _default_ | "." |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:14 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Root of the project specified as an offset from the .jaba file that contains the project definition. All paths are specified relative to this. Project files will be generated here unless [$(projdir)](#projdir) is set. Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible in order to not damage portability.  |
 >
 <a id="rtti"></a>
@@ -462,7 +462,7 @@
 > | _default_ | false |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:369 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
 > *Examples*
 >```ruby
@@ -478,7 +478,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:197 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Maps to build events in Visual Studio.  |
 >
 <a id="src"></a>
@@ -491,15 +491,15 @@
 > | _default_ |  |
 > | _flags_ | :required, :no_sort |
 > | _options_ | :force, :export, :export_only |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:125 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
 > *Examples*
 >```ruby
-> src ['*']  # Add all src in $(root) whose extension is in $(src_ext)
-> src ['src/**/*'] # Add all src in $(root)/src whose extension is in $(src_ext), recursively
-> src ['main.c', 'io.c'] # Add src explicitly
-> src ['build.jaba']  # Explicitly add even though not in $(src_ext)
-> src ['does_not_exist.cpp'], :force  # Force addition of file not on disk
+> src ['*']  # Add all src in $(root) whose extension is in $(src_ext)"
+> src ['src/**/*'] # Add all src in $(root)/src whose extension is in $(src_ext), recursively"
+> src ['main.c', 'io.c'] # Add src explicitly"
+> src ['build.jaba']  # Explicitly add even though not in $(src_ext)"
+> src ['does_not_exist.cpp'], :force  # Force addition of file not on disk"
 >```
 <a id="src_ext"></a>
 #### src_ext
@@ -511,7 +511,7 @@
 > | _default_ |  |
 > | _flags_ | :no_sort |
 > | _options_ | :export, :export_only |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:142 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes..  |
 >
 <a id="syslibs"></a>
@@ -524,7 +524,7 @@
 > | _default_ |  |
 > | _flags_ | :no_sort |
 > | _options_ | :export, :export_only |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:245 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
 <a id="targetext"></a>
 #### targetext
@@ -536,7 +536,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:318 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Defaults to standard extension for [$(type)](#type) of project for target [$(platform)](#platform).  |
 >
 <a id="targetname"></a>
@@ -549,7 +549,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:300 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Defaults to [$(targetprefix)](#targetprefix)[$(projname)](#projname)[$(targetsuffix)](#targetsuffix).  |
 >
 <a id="targetprefix"></a>
@@ -562,7 +562,7 @@
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:308 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Has no effect if [$(targetname)](#targetname) specified.  |
 >
 <a id="targetsuffix"></a>
@@ -575,7 +575,7 @@
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:313 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Has no effect if [$(targetname)](#targetname) specified.  |
 >
 <a id="toolset"></a>
@@ -588,7 +588,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:374 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 > | _notes_ | Defaults to host's default toolset.  |
 >
 <a id="type"></a>
@@ -602,7 +602,7 @@
 > | _default_ |  |
 > | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:174 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
 <a id="vcfprop"></a>
 #### vcfprop
@@ -614,7 +614,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
-> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:91 |
+> | _defined in_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba |
 >
 <a id="vcglobal"></a>
 #### vcglobal
@@ -626,7 +626,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
-> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:57 |
+> | _defined in_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba |
 >
 <a id="vcprop"></a>
 #### vcprop
@@ -638,7 +638,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
-> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:80 |
+> | _defined in_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba |
 >
 <a id="warnerror"></a>
 #### warnerror
@@ -650,7 +650,7 @@
 > | _default_ | false |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/cpp.jaba:343 |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
 > *Examples*
 >```ruby
@@ -667,7 +667,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba:63 |
+> | _defined in_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba |
 >
 > *Examples*
 >```ruby

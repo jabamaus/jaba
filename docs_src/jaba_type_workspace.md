@@ -5,7 +5,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _src_ | $(jaba_install)/modules/workspace/workspace.jaba:1 |
+> | _defined in_ | $(jaba_install)/modules/workspace/workspace.jaba |
 > | _notes_ | Manages attribute definitions for 'workspace' type.  |
 > | _depends on_ | [cpp](jaba_type_cpp.html) |
 > 
@@ -20,7 +20,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/workspace/workspace.jaba:30 |
+> | _defined in_ | $(jaba_install)/modules/workspace/workspace.jaba |
 >
 <a id="namesuffix"></a>
 #### namesuffix
@@ -32,7 +32,7 @@
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/workspace/workspace.jaba:37 |
+> | _defined in_ | $(jaba_install)/modules/workspace/workspace.jaba |
 > | _notes_ | Has no effect if [$(name)](#name) is set explicitly.  |
 >
 <a id="primary"></a>
@@ -45,7 +45,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/workspace/workspace.jaba:42 |
+> | _defined in_ | $(jaba_install)/modules/workspace/workspace.jaba |
 >
 <a id="projects"></a>
 #### projects
@@ -57,7 +57,7 @@
 > | _default_ |  |
 > | _flags_ | :required, :no_sort |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/workspace/workspace.jaba:21 |
+> | _defined in_ | $(jaba_install)/modules/workspace/workspace.jaba |
 > | _notes_ | Specified by id (symbol or string), or by glob matches against project [$(root)](#root). Dependencies will be automatically pulled in..  |
 >
 > *Examples*
@@ -75,7 +75,7 @@
 > | _default_ | "." |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/workspace/workspace.jaba:7 |
+> | _defined in_ | $(jaba_install)/modules/workspace/workspace.jaba |
 > | _notes_ | Defaults to containing directory of definition source file.  |
 >
 <a id="workspacedir"></a>
@@ -88,5 +88,5 @@
 > | _default_ | "projects" |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/workspace/workspace.jaba:14 |
+> | _defined in_ | $(jaba_install)/modules/workspace/workspace.jaba |
 >

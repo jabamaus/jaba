@@ -5,7 +5,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _src_ | $(jaba_install)/modules/text/text.jaba:1 |
+> | _defined in_ | $(jaba_install)/modules/text/text.jaba |
 > | _notes_ | Manages attribute definitions for 'text' type.  |
 > | _depends on_ |  |
 > 
@@ -20,7 +20,7 @@
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/text/text.jaba:11 |
+> | _defined in_ | $(jaba_install)/modules/text/text.jaba |
 > | _notes_ | Directly set content of file as a string..  |
 >
 <a id="eol"></a>
@@ -34,7 +34,7 @@
 > | _default_ | :native |
 > | _flags_ |  |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/text/text.jaba:21 |
+> | _defined in_ | $(jaba_install)/modules/text/text.jaba |
 >
 <a id="filename"></a>
 #### filename
@@ -46,7 +46,7 @@
 > | _default_ |  |
 > | _flags_ | :required |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/text/text.jaba:5 |
+> | _defined in_ | $(jaba_install)/modules/text/text.jaba |
 >
 <a id="line"></a>
 #### line
@@ -58,5 +58,5 @@
 > | _default_ |  |
 > | _flags_ | :allow_dupes, :no_sort |
 > | _options_ |  |
-> | _src_ | $(jaba_install)/modules/text/text.jaba:16 |
+> | _defined in_ | $(jaba_install)/modules/text/text.jaba |
 >
