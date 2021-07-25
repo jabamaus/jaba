@@ -182,7 +182,9 @@ module JABA
       #
       existing = @hash[key]
       if existing
-        services.log("Overwriting '#{key}' hash key [old=#{existing.value}, new=#{val}] in #{describe}")
+        if existing.value != val
+          services.log("Overwriting '#{key}' hash key [old=#{existing.value}, new=#{val}] in #{describe}")
+        end
       end
       @hash[key] = attr
     end
