@@ -393,12 +393,12 @@ module JABA
 
   ##
   #
-  class JabaAttributeTypeObjectRef < JabaAttributeType
+  class JabaAttributeTypeNodeRef < JabaAttributeType
     
     ##
     #
     def initialize
-      super(:node_ref, 'Object reference attribute type')
+      super(:node_ref, 'Node reference attribute type')
     end
 
     ##
@@ -430,12 +430,12 @@ module JABA
 
   ##
   #
-  class JabaAttributeTypeObject < JabaAttributeType
+  class JabaAttributeTypeNode < JabaAttributeType
     
     ##
     #
     def initialize
-      super(:node, 'Object attribute type')
+      super(:node, 'Node attribute type')
     end
 
     ##
