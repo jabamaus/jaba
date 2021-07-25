@@ -51,8 +51,7 @@ module JABA
         force = elem.has_flag_option?(:force)
         spec_files.clear
         vpath_option = elem.get_option_value(:vpath, fail_if_not_found: false)
-
-        abs_spec = !spec.absolute_path? ? "#{@root}/#{spec}" : spec
+        abs_spec = get_abs_spec(spec)
         glob_matches = nil
 
         if spec.wildcard?
@@ -79,9 +78,16 @@ module JABA
           if glob_matches.empty?
             services.jaba_warn("'#{spec}' did not match any #{src_attr_id} files ", errobj: elem)
           else
-            matching = glob_matches.select{|f| extensions.include?(f.extname)}
-            # It is valid for matching to be empty here, eg if file type is not wanted on this platfom
-            spec_files.concat(matching)
+            extname = abs_spec.extname
+            # Glob matches will ignore files of unwanted extensions, unless the extension is explicitly specified
+            #
+            if !extname.empty? && !extname.wildcard?
+              spec_files.concat(glob_matches)
+            else
+              matching = glob_matches.select{|f| extensions.include?(f.extname)}
+              # It is valid for matching to be empty here, eg if file type is not wanted on this platfom
+              spec_files.concat(matching)
+            end
           end
         end
 
@@ -115,9 +121,24 @@ module JABA
     end
 
     ##
+    # Given a file spec, return it as an absolute path.
+    # If it starts with ./ the src file is considered as being relative
+    # to the .jaba file the definition is in, else its considered relative to the definition's $(root) attribute.
+    #
+    def get_abs_spec(spec)
+      if spec.absolute_path?
+        spec
+      elsif spec.start_with?('./')
+        "#{@node.source_dir}#{spec.delete_prefix('.')}"
+      else
+        "#{@root}/#{spec}"
+      end
+    end
+
+    ##
     #
     def get_matching_src_obj(spec, src_list, fail_if_not_found: true, errobj: nil)
-      abs_spec = !spec.absolute_path? ? "#{@root}/#{spec}" : spec
+      abs_spec = get_abs_spec(spec)
       s = src_list.find{|s| s.absolute_path == abs_spec}
       if !s && fail_if_not_found
         JABA.error("'#{spec}' src file not in project", errobj: errobj)

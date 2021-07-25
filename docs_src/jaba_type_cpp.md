@@ -495,11 +495,37 @@
 >
 > *Examples*
 >```ruby
-> src ['*']  # Add all src in $(root) whose extension is in $(src_ext)"
-> src ['src/**/*'] # Add all src in $(root)/src whose extension is in $(src_ext), recursively"
-> src ['main.c', 'io.c'] # Add src explicitly"
-> src ['build.jaba']  # Explicitly add even though not in $(src_ext)"
-> src ['does_not_exist.cpp'], :force  # Force addition of file not on disk"
+> # Add all src in $(root) whose extension is in $(src_ext)
+> src ['*']
+> 
+> # Add all src in $(root)/src whose extension is in $(src_ext), recursively
+> src ['src/**/*']
+> 
+> # Glob matches are not required to add whole directory recursively (whose extension is in $(src_ext))
+> src ['src']
+> 
+> # Add src explicitly
+> src ['main.c', 'io.c']
+> 
+> # Add src explicitly even if extension not in $(src_ext)
+> src ['build.jaba']
+> 
+> # Add src by glob match even if extension not in $(src_ext) only if has explicit extension
+> src ['*.jaba']
+> 
+> # Force addition of file not on disk
+> src ['does_not_exist.cpp'], :force
+> 
+> # Precede with ./ to force path to be relative to current jaba file even if $(root) points elsewhere.
+> # Useful if you want to make $(root) point to a 3rd party distro but you want to add a local file
+> src ['./local.cxx']
+> 
+> # Add src where path expands to an absolute path, __dir__ being the directory the jaba file is in
+> src ["C:/projects/GitHub/jaba/modules/cpp/ui.cpp"]
+> 
+> # Add src with hardcoded absolute path. Not recommended.
+> src ['C:/projects/app/main.cpp']
+> src ['/usr/local/app/main.cpp']
 >```
 <a id="src_ext"></a>
 #### src_ext

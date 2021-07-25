@@ -57,7 +57,7 @@ module JABA
     end
 
     it 'supports adding files beginning with dot but only explicitly' do
-      make_file('.a', 'b/.cpp')
+      make_file('.a', 'b/.cpp', 'c.cpp')
       check_warn "'b/*' did not match any src files", __FILE__, 'tagF' do
         proj = jaba(cpp_app: true, dry_run: true) do
           cpp :app do
@@ -78,6 +78,26 @@ module JABA
         end
       end
       proj[:src].must_equal(['a.cpp'])
+    end
+
+    it 'supports adding src relative to jaba file or root' do
+      r = "#{temp_dir}/a"
+      make_file('a/a.cpp')
+      proj = jaba(cpp_app: true, dry_run: true) do
+        cpp :app do
+          root r
+          src ['./missing.rb'], :force
+          src ['a.cpp']
+          src ['./test_cpp.rb'] # force relative to this definition file (this src file) rather than root
+          src ['./test_p*.rb'] # extension explicitly specified even though .rb not a cpp file type so will be added
+          src ['./test_*.*'] # nothing will be added because glob will not match any cpp file extensions
+          vcfprop './missing.rb|Foo', 'bar'
+          vcfprop 'a.cpp|Foo', 'bar'
+          vcfprop './test_cpp.rb|Foo', 'bar'
+        end
+      end
+      # src files are sorted by absolute path which gives odd ordering here
+      proj[:src].must_equal(["../../../missing.rb", "a/a.cpp", "../../../test_cpp.rb", "../../../test_path_attributes.rb", "../../../test_property.rb"])
     end
 
     it 'supports adding whole src directories recursively' do

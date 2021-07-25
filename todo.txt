@@ -3,7 +3,6 @@
 - Automatically pull in dependencies into workspace
 - Add ability to set :local or :global option on per-attribute basis
 - attr def properties should have help string/notes...
-- Support for node-by-value attribute
 - Disallow globals from referencing itself
 - Maybe add open_globals_type and open_globals_inst?
 - Allow default values to take options?
@@ -35,7 +34,6 @@
 - test :required flag compatibility
 - Revisit set_to_default and wipe. Have way of clearing to default and clearing fully, but don't count that as set=true
 - In defaults block are paths relative to the defaults file or the file of the definition being instanced?
-- Test __dir__
 - Allow 'axes' of configs. Bear in mind that platforms can be any string.
 - Have some kind of spec for flag_options, eg
 
@@ -67,8 +65,6 @@ if there are multiple attrs, with a warning.
 - Make contents of attr def defaults overidable by user, including calling super
 - Make _ID be id of the definition the code is in, such that it works even inside a block that is being executed in the context of a different jaba object
 - Ability to reverse engineer jaba definitions from existing vsprojects
-- Should 'absolute' paths starting with / force 'root' to be disregarded and make paths relative to definition file or
-  should use eg "#{__dir__}/main.cpp"?
 - Add check for re-entrancy when evaluating default blocks
 - consistent method names across tests and consistent brackets on must_equal
 - Create a table of attr mappings from jaba->premake->cmake
@@ -78,8 +74,6 @@ if there are multiple attrs, with a warning.
 - resolve issues around sorting with mixed type elements
 - sortable arrays must be of same type
 - Add wildcard validation to dir property
-
-
 
 * Jaba does not try to be a complete cross platform 'API' to underlying build systems. It recognises where there is obvious commonality,
 eg include paths, defines, libs, etc, but where things diverge across systems you can simply drop down and address that system directly,

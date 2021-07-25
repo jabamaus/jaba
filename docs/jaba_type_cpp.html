@@ -1328,11 +1328,37 @@
 </tbody>
 </table>
 <p><em>Examples</em></p>
-<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;*&#39;</span><span style="color:#f92672">]</span>  <span style="color:#75715e"># Add all src in $(root) whose extension is in $(src_ext)&#34;</span>
-<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;src/**/*&#39;</span><span style="color:#f92672">]</span> <span style="color:#75715e"># Add all src in $(root)/src whose extension is in $(src_ext), recursively&#34;</span>
-<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;main.c&#39;</span><span style="color:#111">,</span> <span style="color:#d88200">&#39;io.c&#39;</span><span style="color:#f92672">]</span> <span style="color:#75715e"># Add src explicitly&#34;</span>
-<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;build.jaba&#39;</span><span style="color:#f92672">]</span>  <span style="color:#75715e"># Explicitly add even though not in $(src_ext)&#34;</span>
-<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;does_not_exist.cpp&#39;</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">:force</span>  <span style="color:#75715e"># Force addition of file not on disk&#34;</span>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#75715e"># Add all src in $(root) whose extension is in $(src_ext)</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;*&#39;</span><span style="color:#f92672">]</span>
+
+<span style="color:#75715e"># Add all src in $(root)/src whose extension is in $(src_ext), recursively</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;src/**/*&#39;</span><span style="color:#f92672">]</span>
+
+<span style="color:#75715e"># Glob matches are not required to add whole directory recursively (whose extension is in $(src_ext))</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;src&#39;</span><span style="color:#f92672">]</span>
+
+<span style="color:#75715e"># Add src explicitly</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;main.c&#39;</span><span style="color:#111">,</span> <span style="color:#d88200">&#39;io.c&#39;</span><span style="color:#f92672">]</span>
+
+<span style="color:#75715e"># Add src explicitly even if extension not in $(src_ext)</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;build.jaba&#39;</span><span style="color:#f92672">]</span>
+
+<span style="color:#75715e"># Add src by glob match even if extension not in $(src_ext) only if has explicit extension</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;*.jaba&#39;</span><span style="color:#f92672">]</span>
+
+<span style="color:#75715e"># Force addition of file not on disk</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;does_not_exist.cpp&#39;</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">:force</span>
+
+<span style="color:#75715e"># Precede with ./ to force path to be relative to current jaba file even if $(root) points elsewhere.</span>
+<span style="color:#75715e"># Useful if you want to make $(root) point to a 3rd party distro but you want to add a local file</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;./local.cxx&#39;</span><span style="color:#f92672">]</span>
+
+<span style="color:#75715e"># Add src where path expands to an absolute path, __dir__ being the directory the jaba file is in</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#34;</span><span style="color:#d88200">C:/projects/GitHub/jaba/modules/cpp/ui.cpp</span><span style="color:#d88200">&#34;</span><span style="color:#f92672">]</span>
+
+<span style="color:#75715e"># Add src with hardcoded absolute path. Not recommended.</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;C:/projects/app/main.cpp&#39;</span><span style="color:#f92672">]</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;/usr/local/app/main.cpp&#39;</span><span style="color:#f92672">]</span>
 </pre></blockquote>
 <p><a id="src_ext"></a></p>
 <h4 id="src-ext">src_ext</h4>
