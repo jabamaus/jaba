@@ -16,7 +16,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | symbol_or_string |
+> | _type_ | :symbol_or_string |
 > | _default_ |  |
 > | _flags_ | :read_only |
 > | _options_ |  |
@@ -29,7 +29,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | node_ref |
+> | _type_ | :node_ref |
 > | _node_type_ | :arch |
 > | _default_ |  |
 > | _flags_ |  |
@@ -42,7 +42,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | dir |
+> | _type_ | :dir |
 > | _default_ |  |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
@@ -54,7 +54,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | dir |
+> | _type_ | :dir |
 > | _default_ | "build" |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
@@ -67,7 +67,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | node hash |
+> | _type_ | :node {} |
 > | _node_type_ | :buildtool |
 > | _default_ |  |
 > | _flags_ | :delay_evaluation |
@@ -80,7 +80,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string array |
+> | _type_ | :string [] |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
@@ -92,7 +92,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | choice |
+> | _type_ | :choice |
 > | _items_ | [:mbcs, :unicode, nil] |
 > | _default_ |  |
 > | _flags_ |  |
@@ -109,7 +109,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | symbol_or_string |
+> | _type_ | :symbol_or_string |
 > | _default_ |  |
 > | _flags_ | :read_only |
 > | _options_ |  |
@@ -122,7 +122,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | symbol_or_string |
+> | _type_ | :symbol_or_string |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
@@ -134,7 +134,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | symbol_or_string array |
+> | _type_ | :symbol_or_string [] |
 > | _default_ |  |
 > | _flags_ | :required, :no_sort |
 > | _options_ | :export, :export_only |
@@ -150,7 +150,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool |
+> | _type_ | :bool |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
@@ -163,7 +163,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | symbol_or_string array |
+> | _type_ | :symbol_or_string [] |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
@@ -175,7 +175,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | node_ref array |
+> | _type_ | :node_ref [] |
 > | _node_type_ | :cpp |
 > | _default_ |  |
 > | _flags_ |  |
@@ -202,7 +202,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | choice |
+> | _type_ | :choice |
 > | _items_ | [true, false, :structured] |
 > | _default_ | true |
 > | _flags_ |  |
@@ -219,7 +219,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | uuid |
+> | _type_ | :uuid |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
@@ -232,7 +232,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | symbol |
+> | _type_ | :symbol |
 > | _default_ |  |
 > | _flags_ | :read_only |
 > | _options_ |  |
@@ -254,7 +254,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | node_ref |
+> | _type_ | :node_ref |
 > | _node_type_ | :host |
 > | _default_ |  |
 > | _flags_ |  |
@@ -281,7 +281,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | dir array |
+> | _type_ | :dir [] |
 > | _default_ |  |
 > | _flags_ | :no_sort |
 > | _options_ | :export, :export_only |
@@ -298,7 +298,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | dir |
+> | _type_ | :dir |
 > | _default_ |  |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
@@ -310,7 +310,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | file array |
+> | _type_ | :file [] |
 > | _default_ |  |
 > | _flags_ | :no_sort, :no_check_exist |
 > | _options_ |  |
@@ -322,7 +322,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ |  |
+> | _type_ |  [] |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
@@ -339,7 +339,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | dir |
+> | _type_ | :dir |
 > | _default_ |  |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
@@ -351,7 +351,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | symbol |
+> | _type_ | :symbol |
 > | _default_ |  |
 > | _flags_ | :read_only |
 > | _options_ |  |
@@ -373,7 +373,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | node_ref |
+> | _type_ | :node_ref |
 > | _node_type_ | :platform |
 > | _default_ |  |
 > | _flags_ |  |
@@ -387,7 +387,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ |  |
+> | _type_ |  [] |
 > | _default_ |  |
 > | _flags_ | :required |
 > | _options_ |  |
@@ -399,7 +399,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | dir |
+> | _type_ | :dir |
 > | _default_ | "projects" |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
@@ -419,7 +419,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string |
+> | _type_ | :string |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
@@ -432,7 +432,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string |
+> | _type_ | :string |
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
@@ -445,7 +445,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | dir |
+> | _type_ | :dir |
 > | _default_ | "." |
 > | _flags_ |  |
 > | _options_ |  |
@@ -458,7 +458,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool |
+> | _type_ | :bool |
 > | _default_ | false |
 > | _flags_ |  |
 > | _options_ |  |
@@ -474,7 +474,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string array |
+> | _type_ | :string [] |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
@@ -487,7 +487,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | src_spec array |
+> | _type_ | :src_spec [] |
 > | _default_ |  |
 > | _flags_ | :required, :no_sort |
 > | _options_ | :force, :export, :export_only |
@@ -533,7 +533,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string array |
+> | _type_ | :string [] |
 > | _default_ |  |
 > | _flags_ | :no_sort |
 > | _options_ | :export, :export_only |
@@ -546,7 +546,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string array |
+> | _type_ | :string [] |
 > | _default_ |  |
 > | _flags_ | :no_sort |
 > | _options_ | :export, :export_only |
@@ -558,7 +558,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string |
+> | _type_ | :string |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
@@ -571,7 +571,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string |
+> | _type_ | :string |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
@@ -584,7 +584,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string |
+> | _type_ | :string |
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
@@ -597,7 +597,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string |
+> | _type_ | :string |
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
@@ -610,7 +610,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string |
+> | _type_ | :string |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
@@ -623,7 +623,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | choice |
+> | _type_ | :choice |
 > | _items_ | [:app, :console, :lib, :dll] |
 > | _default_ |  |
 > | _flags_ | :required |
@@ -636,7 +636,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | to_s hash |
+> | _type_ | :to_s {} |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
@@ -648,7 +648,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | to_s hash |
+> | _type_ | :to_s {} |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
@@ -660,7 +660,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | to_s hash |
+> | _type_ | :to_s {} |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ | :export, :export_only |
@@ -672,7 +672,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool |
+> | _type_ | :bool |
 > | _default_ | false |
 > | _flags_ |  |
 > | _options_ |  |
@@ -688,7 +688,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | choice |
+> | _type_ | :choice |
 > | _items_ | ["10.0.16299.0", "10.0.17134.0", "10.0.17763.0", "10.0.18362.0", nil] |
 > | _default_ |  |
 > | _flags_ |  |

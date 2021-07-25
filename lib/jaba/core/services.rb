@@ -1146,8 +1146,12 @@ module JABA
         # TODO: need to flag whether per-project/per-config etc
         type = String.new
         if ad.type_id
-          type << "#{ad.type_id}"
-          type << " #{ad.variant}" if !ad.single?
+          type << "#{ad.type_id.inspect}"
+        end
+        if ad.array?
+          type << " []"
+        elsif ad.hash?
+          type << " {}"
         end
         md_row(w, :type, type)
         ad.jaba_attr_type.get_reference_manual_rows(ad)&.each do |id, value|

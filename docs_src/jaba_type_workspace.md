@@ -16,7 +16,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string |
+> | _type_ | :string |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
@@ -28,7 +28,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string |
+> | _type_ | :string |
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
@@ -53,7 +53,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | symbol_or_string array |
+> | _type_ | :symbol_or_string [] |
 > | _default_ |  |
 > | _flags_ | :required, :no_sort |
 > | _options_ |  |
@@ -71,7 +71,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | dir |
+> | _type_ | :dir |
 > | _default_ | "." |
 > | _flags_ |  |
 > | _options_ |  |
@@ -84,7 +84,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | dir |
+> | _type_ | :dir |
 > | _default_ | "projects" |
 > | _flags_ | :no_check_exist |
 > | _options_ |  |

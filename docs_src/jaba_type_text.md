@@ -16,7 +16,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | to_s |
+> | _type_ | :to_s |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
@@ -29,7 +29,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | choice |
+> | _type_ | :choice |
 > | _items_ | [:lf, :crlf, :native] |
 > | _default_ | :native |
 > | _flags_ |  |
@@ -42,7 +42,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | file |
+> | _type_ | :file |
 > | _default_ |  |
 > | _flags_ | :required |
 > | _options_ |  |
@@ -54,7 +54,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | to_s array |
+> | _type_ | :to_s [] |
 > | _default_ |  |
 > | _flags_ | :allow_dupes, :no_sort |
 > | _options_ |  |

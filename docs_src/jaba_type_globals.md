@@ -16,7 +16,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | node_ref array |
+> | _type_ | :node_ref [] |
 > | _node_type_ | :host |
 > | _default_ |  |
 > | _flags_ | :required |
@@ -29,7 +29,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool |
+> | _type_ | :bool |
 > | _default_ | false |
 > | _flags_ |  |
 > | _options_ |  |
@@ -41,7 +41,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool |
+> | _type_ | :bool |
 > | _default_ | true |
 > | _flags_ |  |
 > | _options_ |  |
@@ -53,7 +53,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | file |
+> | _type_ | :file |
 > | _default_ | ".jaba/jaba.input.json" |
 > | _flags_ |  |
 > | _options_ |  |
@@ -66,7 +66,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | file |
+> | _type_ | :file |
 > | _default_ | ".jaba/jaba.output.json" |
 > | _flags_ |  |
 > | _options_ |  |
@@ -79,7 +79,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | dir |
+> | _type_ | :dir |
 > | _default_ | "." |
 > | _flags_ |  |
 > | _options_ |  |
@@ -92,7 +92,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | symbol hash |
+> | _type_ | :symbol {} |
 > | _default_ |  |
 > | _flags_ | :required |
 > | _options_ |  |

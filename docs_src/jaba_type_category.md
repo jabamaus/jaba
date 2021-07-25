@@ -16,7 +16,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | uuid |
+> | _type_ | :uuid |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
@@ -29,7 +29,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string |
+> | _type_ | :string |
 > | _default_ |  |
 > | _flags_ | :required |
 > | _options_ |  |
@@ -42,7 +42,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | node_ref |
+> | _type_ | :node_ref |
 > | _node_type_ | :category |
 > | _default_ |  |
 > | _flags_ |  |

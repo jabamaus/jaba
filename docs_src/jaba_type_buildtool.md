@@ -16,7 +16,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string |
+> | _type_ | :string |
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
@@ -28,7 +28,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string |
+> | _type_ | :string |
 > | _default_ | "" |
 > | _flags_ |  |
 > | _options_ |  |
@@ -40,7 +40,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | file |
+> | _type_ | :file |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |
@@ -52,7 +52,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | file array |
+> | _type_ | :file [] |
 > | _default_ |  |
 > | _flags_ |  |
 > | _options_ |  |

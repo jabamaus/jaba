@@ -16,7 +16,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool |
+> | _type_ | :bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -29,7 +29,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string array |
+> | _type_ | :string [] |
 > | _default_ | [] |
 > | _flags_ | :no_sort |
 > | _options_ |  |
@@ -42,7 +42,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool |
+> | _type_ | :bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -61,7 +61,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool |
+> | _type_ | :bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -80,7 +80,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool |
+> | _type_ | :bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -92,7 +92,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | choice array |
+> | _type_ | :choice [] |
 > | _items_ | [:x86, :x86_64, :arm64] |
 > | _default_ |  |
 > | _flags_ | :required, :no_sort |
@@ -105,7 +105,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool |
+> | _type_ | :bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |

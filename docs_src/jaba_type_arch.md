@@ -16,7 +16,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool |
+> | _type_ | :bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -35,7 +35,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | string |
+> | _type_ | :string |
 > | _default_ | "" |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -47,7 +47,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool |
+> | _type_ | :bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
@@ -66,7 +66,7 @@
 > 
 > | Property | Value  |
 > |-|-|
-> | _type_ | bool |
+> | _type_ | :bool |
 > | _default_ | false |
 > | _flags_ | :expose |
 > | _options_ |  |
