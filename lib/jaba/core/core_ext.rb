@@ -308,13 +308,15 @@ module JABACoreExt
     def split_and_trim_leading_whitespace
       bg = block_given?
       lines = split("\n")
-      lines.delete('')
+      lines.shift if lines[0].empty?
+      lines.last.rstrip!
+      lines.pop if lines.last.empty?
 
       if lines[0] =~ /^(\s+)/
         lw = Regexp.last_match(1)
         lines.each do |l|
           result = l.delete_prefix!(lw)
-          yield result if result && bg
+          yield result if bg
         end
       else
         lines.each{|l| yield l} if bg
