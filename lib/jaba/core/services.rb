@@ -730,12 +730,10 @@ module JABA
       root[:jdl_files] = @jdl_files
 
       @generators.each do |g|
-        g_root = {}
-        root[g.type_id] = g_root
         g.root_nodes.each do |rn|
           obj = {}
-          g_root[rn.handle] = obj
-          write_node_json(rn, obj)
+          root["#{g.type_id}|#{rn.handle}"] = obj
+          write_node_json(g, root, rn, obj)
         end
       end
       json = JSON.pretty_generate(root)
@@ -747,17 +745,15 @@ module JABA
 
     ##
     #
-    def write_node_json(node, obj)
+    def write_node_json(generator, root, node, obj)
       node.visit_attr(top_level: true) do |attr, val|
         obj[attr.defn_id] = val
       end
       if !node.children.empty?
-        children = {}
-        obj[:children] = children
         node.children.each do |child|
           child_obj = {}
-          children[child.handle] = child_obj
-          write_node_json(child, child_obj)
+          root["#{generator.type_id}|#{child.handle}"] = child_obj
+          write_node_json(generator, root, child, child_obj)
         end
       end
     end
@@ -766,6 +762,7 @@ module JABA
     #
     def build_jaba_output
       log 'Building output...'
+      
       out_file = globals.jaba_output_file.to_absolute(clean: true)
       out_dir = out_file.dirname
 
