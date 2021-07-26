@@ -1,7 +1,7 @@
 cpp :BasicStaticLib do
   root '../ExampleLib'
   type :lib
-  platforms [:windows_x86, :windows_x86_64]
+  platforms [:windows_x86_64]
   configs [:Debug, :Release]
   src ['.']
   inc ['include'], :export
