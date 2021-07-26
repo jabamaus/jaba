@@ -1,5 +1,5 @@
-[home](index.html)
 ## platform
+[home](index.html)
 > 
 > _Target platform type_
 > 

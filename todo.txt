@@ -1,3 +1,5 @@
+- Change config system. Move config attrs out of globals and into new config type. Always generate a config file (not just out of source builds).
+  Load config file first. Prevent config from being modified once loaded.
 - Add example modules to docs, including comment docs.
 - I think its time to move setting config attrs into their own block. Prevents problems with attributes having nil values when evaluating in the context of the project.
 - Automatically pull in dependencies into workspace

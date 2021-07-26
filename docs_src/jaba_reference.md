@@ -1,33 +1,6 @@
+## Jaba language reference
 [home](index.html)
-# Jaba language reference
 
-Specifies what can be placed in .jaba files
-- Attribute variants
-  - single
-  - array
-  - hash
-- Attribute types
-  - bool
-  - choice
-  - dir
-  - file
-  - int
-  - node
-  - node_ref
-  - src_spec
-  - string
-  - symbol
-  - symbol_or_string
-  - to_s
-  - uuid
-- Attribute flags
-  - allow_dupes
-  - delay_evaluation
-  - expose
-  - no_check_exist
-  - no_sort
-  - read_only
-  - required
 - Types
   - [arch](jaba_type_arch.html)
     - [arm64?](jaba_type_arch.html#arm64?)
@@ -136,4 +109,30 @@ Specifies what can be placed in .jaba files
     - [projects](jaba_type_workspace.html#projects)
     - [root](jaba_type_workspace.html#root)
     - [workspacedir](jaba_type_workspace.html#workspacedir)
+- Attribute types
+  - bool
+  - choice
+  - dir
+  - file
+  - int
+  - node
+  - node_ref
+  - src_spec
+  - string
+  - symbol
+  - symbol_or_string
+  - to_s
+  - uuid
+- Attribute variants
+  - single
+  - array
+  - hash
+- Attribute flags
+  - allow_dupes
+  - delay_evaluation
+  - expose
+  - no_check_exist
+  - no_sort
+  - read_only
+  - required
 

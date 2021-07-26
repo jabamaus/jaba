@@ -1,5 +1,5 @@
-[home](index.html)
 ## buildtool
+[home](index.html)
 > 
 > _Custom build tool_
 > 

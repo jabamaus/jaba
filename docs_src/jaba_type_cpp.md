@@ -1,5 +1,5 @@
-[home](index.html)
 ## cpp
+[home](index.html)
 > 
 > _Cross platform C++ project definition_
 > 
@@ -527,7 +527,7 @@
 > src ['C:/projects/app/main.cpp']
 > src ['/usr/local/app/main.cpp']
 > 
-> # Add src in bulk without needing quotes, commas or square brackets
+> # Add src in bulk without needing quotes, commas or square brackets. Options can be added as normal.
 > src %w(main.c dmydln.c miniinit.c array.c ast.c bignum.c class.c compar.c compile.c)
 > src %w(
 >   main.c dmydln.c miniinit.c array.c

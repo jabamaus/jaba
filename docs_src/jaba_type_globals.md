@@ -1,5 +1,5 @@
-[home](index.html)
 ## globals
+[home](index.html)
 > 
 > _Global attribute definitions_
 > 

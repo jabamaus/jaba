@@ -70,6 +70,12 @@ module JABA
 
   ##
   #
+  def self.docs_src_dir
+    "#{jaba_install_dir}/docs_src"
+  end
+
+  ##
+  #
   def self.temp_dir
     "#{JABA.invoking_dir}/.jaba"
   end
@@ -238,7 +244,7 @@ module JABA
       
       @input_manager.process(phase: 1)
 
-      if !input_manager.cmd_specified?(:genref)
+      if !input_manager.cmd_specified?(:gendoc)
         @src_root = input.src_root
 
         if @src_root.nil? && !JABA.running_tests?
@@ -353,8 +359,8 @@ module JABA
 
       @input_manager.process(phase: 2)
 
-      if input_manager.cmd_specified?(:genref)
-        generate_reference_doc
+      if input_manager.cmd_specified?(:gendoc)
+        generate_docs
         return
       end
 
@@ -771,7 +777,7 @@ module JABA
         end
       end
 
-      if globals.dump_output && !input_manager.cmd_specified?(:genref)
+      if globals.dump_output && !input_manager.cmd_specified?(:gendoc)
         json = JSON.pretty_generate(@output)
         file = @file_manager.new_file(out_file, eol: :native)
         w = file.writer
@@ -1077,104 +1083,119 @@ module JABA
 
     ##
     #
+    def generate_docs
+      generate_reference_doc
+      generate_examples_doc
+    end
+
+    ##
+    #
     def generate_reference_doc
-      @docs_src_dir = "#{JABA.jaba_install_dir}/docs_src"
-      main_page = @file_manager.new_file("#{@docs_src_dir}/jaba_reference.md", capacity: 16 * 1024)
-      w = main_page.writer
-      w << "[home](index.html)"
-      w << "# Jaba language reference"
-      w << ""
-      w << "Specifies what can be placed in .jaba files"
+      write_doc_page('jaba_reference.md', 'Jaba language reference') do |w|
+        w << ""
 
-      # TODO: document include statement
-      # TODO: document top level types
-      # TODO: document how to define new types and attributes
-      
-      w << "- Attribute variants"
-      w << "  - single"
-      w << "  - array"
-      w << "  - hash"
-
-      w << "- Attribute types"
-      @jaba_attr_types.each do |at|
-        w << "  - #{at.id}"
-      end
-
-      w << "- Attribute flags"
-      @jaba_attr_flags.each do |af|
-        w << "  - #{af.id}"
-      end
-      
-      w << "- Types"
-      @top_level_jaba_types.sort_by {|jt| jt.defn_id}.each do |jt|
-        w << "  - [#{jt.defn_id}](#{jt.reference_manual_page})"
-        jt.all_attr_defs_sorted.each do |ad|
-          w << "    - [#{ad.defn_id}](#{jt.reference_manual_page}##{ad.defn_id})"
+        # TODO: document include statement
+        # TODO: document top level types
+        # TODO: document how to define new types and attributes
+        
+        w << "- Types"
+        @top_level_jaba_types.sort_by {|jt| jt.defn_id}.each do |jt|
+          w << "  - [#{jt.defn_id}](#{jt.reference_manual_page})"
+          jt.all_attr_defs_sorted.each do |ad|
+            w << "    - [#{ad.defn_id}](#{jt.reference_manual_page}##{ad.defn_id})"
+          end
         end
-      end
 
-      w.newline
-      @top_level_jaba_types.each do |jt|
-        generate_jaba_type_reference(jt)
+        @top_level_jaba_types.each do |jt|
+          generate_jaba_type_reference(jt)
+        end
+
+        w << "- Attribute types"
+        @jaba_attr_types.each do |at|
+          w << "  - #{at.id}"
+        end
+
+        w << "- Attribute variants"
+        w << "  - single"
+        w << "  - array"
+        w << "  - hash"
+
+        w << "- Attribute flags"
+        @jaba_attr_flags.each do |af|
+          w << "  - #{af.id}"
+        end
+        w << ""
       end
-      main_page.write
     end
 
     ##
     #
     def generate_jaba_type_reference(jt)
-      file = @file_manager.new_file("#{@docs_src_dir}/#{jt.reference_manual_page(ext: '.md')}", capacity: 16 * 1024)
-      w = file.writer
-      w << "[home](index.html)"
-      w << "## #{jt.defn_id}"
-      w << "> "
-      w << "> _#{jt.title}_"
-      w << "> "
-      w << "> | Property | Value  |"
-      w << "> |-|-|"
-      md_row(w, 'defined in', "$(jaba_install)/#{jt.src_loc.describe(style: :rel_src_root, line: false)}")
-      md_row(w, :notes, jt.notes.make_sentence)
-      md_row(w, 'depends on', jt.dependencies.map{|d| "[#{d}](#{d.reference_manual_page})"}.join(", "))
-      w << "> "
-      w << ""
-      jt.all_attr_defs_sorted.each do |ad|
-        w << "<a id=\"#{ad.defn_id}\"></a>" # anchor for the attribute eg cpp-src
-        w << "#### #{ad.defn_id}"
-        w << "> _#{ad.title}_"
+      write_doc_page(jt.reference_manual_page(ext: '.md'), "#{jt.defn_id}") do |w|
+        w << "> "
+        w << "> _#{jt.title}_"
         w << "> "
         w << "> | Property | Value  |"
         w << "> |-|-|"
-        # TODO: need to flag whether per-project/per-config etc
-        type = String.new
-        if ad.type_id
-          type << "#{ad.type_id.inspect}"
-        end
-        if ad.array?
-          type << " []"
-        elsif ad.hash?
-          type << " {}"
-        end
-        md_row(w, :type, type)
-        ad.jaba_attr_type.get_reference_manual_rows(ad)&.each do |id, value|
-          md_row(w, id, value)
-        end
-        md_row(w, :default, ad.default.proc? ? nil : !ad.default.nil? ? ad.default.inspect : nil)
-        md_row(w, :flags, ad.flags.map(&:inspect).join(', '))
-        md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
-        md_row(w, 'defined in', "$(jaba_install)/#{ad.src_loc.describe(style: :rel_src_root, line: false)}")
-        md_row(w, :notes, ad.notes.make_sentence.to_markdown_links) if !ad.notes.empty?
-        w << ">"
-        if !ad.examples.empty?
-          w << "> *Examples*"
-          w << ">```ruby"
-          ad.examples.each do |e|
-            e.split_and_trim_leading_whitespace do |line|
-              w << "> #{line}"
-            end
+        md_row(w, 'defined in', "$(jaba_install)/#{jt.src_loc.describe(style: :rel_src_root, line: false)}")
+        md_row(w, :notes, jt.notes.make_sentence)
+        md_row(w, 'depends on', jt.dependencies.map{|d| "[#{d}](#{d.reference_manual_page})"}.join(", "))
+        w << "> "
+        w << ""
+        jt.all_attr_defs_sorted.each do |ad|
+          w << "<a id=\"#{ad.defn_id}\"></a>" # anchor for the attribute eg cpp-src
+          w << "#### #{ad.defn_id}"
+          w << "> _#{ad.title}_"
+          w << "> "
+          w << "> | Property | Value  |"
+          w << "> |-|-|"
+          # TODO: need to flag whether per-project/per-config etc
+          type = String.new
+          if ad.type_id
+            type << "#{ad.type_id.inspect}"
           end
-          w << ">```"
+          if ad.array?
+            type << " []"
+          elsif ad.hash?
+            type << " {}"
+          end
+          md_row(w, :type, type)
+          ad.jaba_attr_type.get_reference_manual_rows(ad)&.each do |id, value|
+            md_row(w, id, value)
+          end
+          md_row(w, :default, ad.default.proc? ? nil : !ad.default.nil? ? ad.default.inspect : nil)
+          md_row(w, :flags, ad.flags.map(&:inspect).join(', '))
+          md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
+          md_row(w, 'defined in', "$(jaba_install)/#{ad.src_loc.describe(style: :rel_src_root, line: false)}")
+          md_row(w, :notes, ad.notes.make_sentence.to_markdown_links) if !ad.notes.empty?
+          w << ">"
+          if !ad.examples.empty?
+            w << "> *Examples*"
+            w << ">```ruby"
+            ad.examples.each do |e|
+              e.split_and_trim_leading_whitespace do |line|
+                w << "> #{line}"
+              end
+            end
+            w << ">```"
+          end
         end
       end
+    end
+
+    def generate_examples_doc
+      write_doc_page('jaba_examples.md', 'Jaba examples') do |w|
+      end
+    end
+
+    ##
+    #
+    def write_doc_page(md, title)
+      file = @file_manager.new_file("#{JABA.docs_src_dir}/#{md}", capacity: 16 * 1024)
+      w = file.writer
+      w << "## #{title}"
+      w << "[home](index.html)"
+      yield w
       file.write
     end
 

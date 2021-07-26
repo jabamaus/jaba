@@ -1,5 +1,5 @@
-[home](index.html)
 ## text
+[home](index.html)
 > 
 > _Basic text file that is written to HDD_
 > 
