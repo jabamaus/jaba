@@ -227,11 +227,11 @@ module JABACoreExt
 
     ##
     #
-    def to_absolute(clean: false)
+    def to_absolute(base:, clean: false)
       if absolute_path?
         clean ? cleanpath : self
       else
-        abs = "#{JABA.invoking_dir}/#{self}"
+        abs = "#{base}/#{self}"
         clean ? abs.cleanpath : abs
       end
     end

@@ -208,7 +208,7 @@ module JABA
         @output
       rescue => e
         log e.full_message(highlight: false), :ERROR
-        @output[:error] = "#{e.backtrace[0].clean_backtrace}: #{e.message}"
+        @output[:error] = "#{e.message}\n#{e.backtrace.join("\n")}"
 
         case e
         when JabaError
@@ -221,7 +221,6 @@ module JABA
           else
             jdl_bt = get_jdl_backtrace(cs, include_api: include_api)
             if jdl_bt.empty?
-              @output[:error] = "#{e.message}\n#{e.backtrace.join("\n")}"
               raise # If there is no jdl file in the callstack reraise the original exception
             end
             jdl_bt
@@ -234,10 +233,13 @@ module JABA
           e.instance_variable_set(:@file, info.file)
           e.instance_variable_set(:@line, info.line)
           e.set_backtrace(bt)
+          raise e
         when CommandLineUsageError
           @output[:error] = e.message # Don't need any location info
+          raise
+        else
+          raise
         end
-        raise e
       ensure
         term_log
       end
@@ -253,6 +255,11 @@ module JABA
 
       if !input_manager.cmd_specified?(:gendoc)
         @src_root = input.src_root
+        
+        input.build_root = input.build_root.to_absolute(base: JABA.invoking_dir, clean: true)
+        if !File.exist?(input.build_root)
+          FileUtils.makedirs(input.build_root)
+        end
 
         if @src_root.nil? && !JABA.running_tests?
           if file_manager.exist?(JABA.config_file)
@@ -268,6 +275,7 @@ module JABA
         end
 
         log "src_root=#{@src_root}"
+        log "build_root=#{input.build_root}"
       end
 
       load_module_jaba_files
@@ -738,7 +746,7 @@ module JABA
         end
       end
       json = JSON.pretty_generate(root)
-      file = @file_manager.new_file('.jaba/jaba.state.json'.to_absolute(clean: true), eol: :native, track: false)
+      file = @file_manager.new_file('.jaba/jaba.state.json'.to_absolute(base: input.build_root, clean: true), eol: :native, track: false)
       w = file.writer
       w.write_raw(json)
       file.write
@@ -764,7 +772,7 @@ module JABA
     def build_jaba_output
       log 'Building output...'
       
-      out_file = globals.jaba_output_file.to_absolute(clean: true)
+      out_file = globals.jaba_output_file.to_absolute(base: input.build_root, clean: true)
       out_dir = out_file.dirname
 
       @generated = @file_manager.generated.map{|f| f.relative_path_from(out_dir)}
@@ -899,7 +907,7 @@ module JABA
     ##
     #
     def process_load_path(p, fail_if_empty: false)
-      p = p.to_absolute(clean: true)
+      p = p.to_absolute(base: input.src_root, clean: true)
 
       if !File.exist?(p)
         JABA.error("#{p} does not exist")
@@ -926,7 +934,7 @@ module JABA
     ##
     #
     def process_jdl_file(f)
-      f = f.to_absolute(clean: true)
+      f = f.to_absolute(base: input.src_root, clean: true)
 
       if @jdl_file_lookup.has_key?(f)
         JABA.error("'#{f}' multiply included")

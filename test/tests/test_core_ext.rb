@@ -142,14 +142,14 @@ module JABA
 
       it 'supports to_absolute' do
         cwd = Dir.getwd
-        'C:'.to_absolute.must_equal('C:')
-           'C:/a/b/c'.to_absolute.must_equal('C:/a/b/c')
-        '/'.to_absolute.must_equal('/')
-        '/a'.to_absolute.must_equal('/a')
-        '..'.to_absolute(clean: true).must_equal("#{cwd}/..".cleanpath)
-        'a'.to_absolute.must_equal("#{cwd}/a")
-        '.'.to_absolute.must_match(cwd)
-        '././a/b/../../.'.to_absolute(clean: true).must_equal(cwd)
+        'C:'.to_absolute(base: cwd).must_equal('C:')
+        'C:/a/b/c'.to_absolute(base: cwd).must_equal('C:/a/b/c')
+        '/'.to_absolute(base: cwd).must_equal('/')
+        '/a'.to_absolute(base: cwd).must_equal('/a')
+        '..'.to_absolute(base: cwd, clean: true).must_equal("#{cwd}/..".cleanpath)
+        'a'.to_absolute(base: cwd).must_equal("#{cwd}/a")
+        '.'.to_absolute(base: cwd).must_match(cwd)
+        '././a/b/../../.'.to_absolute(base: cwd, clean: true).must_equal(cwd)
       end
 
       it 'supports ensure_end_with' do

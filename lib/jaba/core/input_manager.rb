@@ -37,6 +37,7 @@ module JABA
 
       @default_cmd = register_cmd(:gen)
       register_option('--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root, cmd: :gen)
+      register_option('--build-root', short: '-B', help: 'Set build root', type: :value, var: :build_root, cmd: :gen)
       register_option('--define', short: '-D', help: 'Set global attribute value', phase: 2, cmd: :gen)
       register_option('--dump-state', help: 'Dump state to json for debugging', type: :flag, var: :dump_state, cmd: :gen)
       
@@ -89,14 +90,16 @@ module JABA
       @options << o
 
       if var
-        @input.define_singleton_method(var) do
-          instance_variable_get(o.inst_var)
+        if !@input.respond_to?(var)
+          @input.define_singleton_method(var) do
+            instance_variable_get(o.inst_var)
+          end
         end
         val = case type
         when :flag
           false
         when :value
-          nil
+          @input.instance_variable_get(o.inst_var)
         when :array
           []
         else
@@ -314,7 +317,7 @@ module JABA
               im.usage_error("No value provided for '#{arg}'")
             end
             if @attr.type_id == :file || @attr.type_id == :dir
-              @value = @value.to_absolute(clean: true) # TODO: need to do this for array/hash elems too
+              @value = @value.to_absolute(base: JABA.invoking_dir, clean: true) # TODO: need to do this for array/hash elems too
             end
             @attr.set(@value)
           end
