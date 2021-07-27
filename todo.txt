@@ -1,3 +1,4 @@
+- Make defaults work per-file. Introduce global_defaults.
 - Change config system. Move config attrs out of globals and into new config type. Always generate a config file (not just out of source builds).
   Load config file first. Prevent config from being modified once loaded.
 - Add example modules to docs, including comment docs.
@@ -9,7 +10,6 @@
 - Maybe add open_globals_type and open_globals_inst?
 - Allow default values to take options?
 - RUBY LICENSE REQUIREMENTS
-- Should to_absolute base off JABA.cwd or dest_root? I think the latter...
 - consider having a globals per-type (eg cpp globals)
 - validate when --src-root can be specified. Should be required if no .jaba files in cwd and disallowed if there are.
 - Check attribute validators when parsing cmd line.

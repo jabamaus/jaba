@@ -1189,7 +1189,8 @@ module JABA
 
     def generate_examples_doc
       write_doc_page('jaba_examples.md', 'Jaba examples') do |w|
-        Dir.glob("#{JABA.examples_dir}/01-basic/*.jaba").each do |example|
+        Dir.glob("#{JABA.examples_dir}/**/*.jaba").each do |example|
+          next if example.basename == 'examples.jaba'
           str = @file_manager.read(example, fail_if_not_found: true)
           md_code(w) do
             # TODO: extract top comments and turn into formatted markdown
