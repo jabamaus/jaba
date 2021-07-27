@@ -237,35 +237,33 @@ module JABA
       
       @input_manager.process(phase: 1)
 
-      if !input_manager.cmd_specified?(:gendoc)
-        @src_root = input.src_root
-        
-        input.build_root = input.build_root.to_absolute(base: JABA.cwd, clean: true)
-        if !File.exist?(input.build_root)
-          FileUtils.makedirs(input.build_root)
-        end
-
-        @jaba_temp_dir = "#{input.build_root}/.jaba"
-        @config_file = "#{@jaba_temp_dir}/config.jaba"
-
-        if @src_root.nil? && !JABA.running_tests?
-          if file_manager.exist?(@config_file)
-            content = file_manager.read(@config_file, freeze: false)
-            if content !~ /src_root "(.*)"/
-              JABA.error("Could not read src_root from #{@config_file}")
-            end
-            @src_root = Regexp.last_match(1)
-          end
-          if @src_root.nil?
-            @src_root = JABA.cwd
-          end
-        end
-
-        log "src_root=#{@src_root}"
-        log "build_root=#{input.build_root}"
-        log "temp_dir=#{@jaba_temp_dir}"
-        log "config_file=#{@config_file}"
+      @src_root = input.src_root
+      
+      input.build_root = input.build_root.to_absolute(base: JABA.cwd, clean: true)
+      if !File.exist?(input.build_root)
+        FileUtils.makedirs(input.build_root)
       end
+
+      @jaba_temp_dir = "#{input.build_root}/.jaba"
+      @config_file = "#{@jaba_temp_dir}/config.jaba"
+
+      if @src_root.nil? && !JABA.running_tests?
+        if file_manager.exist?(@config_file)
+          content = file_manager.read(@config_file, freeze: false)
+          if content !~ /src_root "(.*)"/
+            JABA.error("Could not read src_root from #{@config_file}")
+          end
+          @src_root = Regexp.last_match(1)
+        end
+        if @src_root.nil?
+          @src_root = JABA.cwd
+        end
+      end
+
+      log "src_root=#{@src_root}"
+      log "build_root=#{input.build_root}"
+      log "temp_dir=#{@jaba_temp_dir}"
+      log "config_file=#{@config_file}"
 
       load_module_jaba_files
 
