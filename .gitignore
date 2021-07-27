@@ -1,6 +1,7 @@
 /test/tests/temp
 *.profile
 *.exe
+*.exe.recipe
 *.idb
 *.ilk
 *.log
