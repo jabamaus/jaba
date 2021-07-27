@@ -23,18 +23,6 @@
 > | _options_ |  |
 > | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
-<a id="dump_input"></a>
-#### dump_input
-> _Controls generation of $(jaba_input_file)_
-> 
-> | Property | Value  |
-> |-|-|
-> | _type_ | :bool |
-> | _default_ | false |
-> | _flags_ |  |
-> | _options_ |  |
-> | _defined in_ | $(jaba_install)/modules/core/globals.jaba |
->
 <a id="dump_output"></a>
 #### dump_output
 > _Controls generation of $(jaba_output_file)_
@@ -46,19 +34,6 @@
 > | _flags_ |  |
 > | _options_ |  |
 > | _defined in_ | $(jaba_install)/modules/core/globals.jaba |
->
-<a id="jaba_input_file"></a>
-#### jaba_input_file
-> _Name/path of file to contain a raw dump of all the input data to Jaba_
-> 
-> | Property | Value  |
-> |-|-|
-> | _type_ | :file |
-> | _default_ | ".jaba/jaba.input.json" |
-> | _flags_ |  |
-> | _options_ |  |
-> | _defined in_ | $(jaba_install)/modules/core/globals.jaba |
-> | _notes_ | Mostly useful for debugging and testing but could be useful as a second way of tracking definition changes in source control. The file is written before any file generation occurs, and can be considered a specification of the final data.  |
 >
 <a id="jaba_output_file"></a>
 #### jaba_output_file

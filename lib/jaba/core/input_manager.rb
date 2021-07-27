@@ -38,6 +38,7 @@ module JABA
       @default_cmd = register_cmd(:gen)
       register_option('--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root, cmd: :gen)
       register_option('--define', short: '-D', help: 'Set global attribute value', phase: 2, cmd: :gen)
+      register_option('--dump-state', help: 'Dump state to json for debugging', type: :flag, var: :dump_state, cmd: :gen)
       
       register_cmd(:build)
       register_cmd(:clean)

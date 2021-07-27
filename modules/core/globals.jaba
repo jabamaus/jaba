@@ -10,18 +10,6 @@ define :globals do
     base :global
   end
 
-  attr :jaba_input_file, type: :file do
-    title 'Name/path of file to contain a raw dump of all the input data to Jaba'
-    note 'Mostly useful for debugging and testing but could be useful as a second way of tracking definition changes in source control. ' \
-         'The file is written before any file generation occurs, and can be considered a specification of the final data. '
-    default '.jaba/jaba.input.json'
-    base :global
-  end
-
-  attr :dump_input, type: :bool do
-    title 'Controls generation of $(jaba_input_file)'
-  end
-
   attr :jaba_output_file, type: :file do
     title 'Name/path of file to contain Jaba output in json format'
     note 'Jaba output can be later used by another process (eg the build process) to do things like looking up paths by id rather ' \

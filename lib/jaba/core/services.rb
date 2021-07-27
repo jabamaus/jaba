@@ -378,8 +378,8 @@ module JABA
       # Output definition input data as a json file, before generation. This is raw data as generated from the definitions.
       # Can be used for debugging and testing.
       #
-      if globals.dump_input
-        dump_jaba_input
+      if input.dump_state
+        dump_jaba_state
       end
 
       log 'Performing file generation...'
@@ -726,7 +726,7 @@ module JABA
 
     ##
     #
-    def dump_jaba_input
+    def dump_jaba_state
       root = {}
       root[:jdl_files] = @jdl_files
 
@@ -738,7 +738,7 @@ module JABA
         end
       end
       json = JSON.pretty_generate(root)
-      file = @file_manager.new_file(globals.jaba_input_file.to_absolute(clean: true), eol: :native, track: false)
+      file = @file_manager.new_file('.jaba/jaba.state.json'.to_absolute(clean: true), eol: :native, track: false)
       w = file.writer
       w.write_raw(json)
       file.write
