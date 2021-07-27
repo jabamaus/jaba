@@ -20,7 +20,7 @@
     - [arch](jaba_type_cpp.html#arch)
     - [arch_ref](jaba_type_cpp.html#arch_ref)
     - [bindir](jaba_type_cpp.html#bindir)
-    - [build_root](jaba_type_cpp.html#build_root)
+    - [build_root_offset](jaba_type_cpp.html#build_root_offset)
     - [buildtool](jaba_type_cpp.html#buildtool)
     - [cflags](jaba_type_cpp.html#cflags)
     - [character_set](jaba_type_cpp.html#character_set)

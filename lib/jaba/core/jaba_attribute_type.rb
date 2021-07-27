@@ -288,17 +288,26 @@ module JABA
   class PathAttrBase < JabaAttributeType
 
     ##
+    # Used when converting a path specified in jaba definitions into an absolute path.
+    #
+    VALID_BASE_SPECS = [
+      :cwd,               # path will be based on current working directory (the directory jaba was invoked in)
+      :definition_root,   # path will be based on the specified root of the jaba definition the path was set in
+      :build_root,        # path will be based on build_root
+      :jaba_file          # path will be based on the directory of the jaba definition file the path was set in
+    ]
+    
+    ##
     #
     def init_attr_def(attr_def)
-      attr_def.define_property(:base)
+      attr_def.define_property(:basedir_spec)
     end
 
     ##
     #
     def post_init_attr_def(attr_def)
-      base = attr_def.base
-      if base != :local && base != :global
-        JABA.error("'base' must be set to :local or :global")
+      if !VALID_BASE_SPECS.include?(attr_def.basedir_spec)
+        JABA.error("'basedir_spec' must be one of #{VALID_BASE_SPECS}")
       end
     end
 
@@ -334,12 +343,6 @@ module JABA
     def initialize
       super(:dir, 'Directory attribute type', default: '.')
       @notes = 'Validates that value is a string path representing a directory'
-    end
-
-    ##
-    #
-    def init_attr_def(attr_def)
-      attr_def.define_property(:base)
     end
 
     ##

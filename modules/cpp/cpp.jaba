@@ -18,7 +18,7 @@ define :cpp do
            'Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible ' \
            'in order to not damage portability'
       default '.'
-      base :local
+      basedir_spec :jaba_file
     end
     
     # Control flow attributes
@@ -97,7 +97,7 @@ define :cpp do
       title 'Directory in which projects will be generated'
       default 'projects'
       flags :no_check_exist # May get created during generation
-      base :global
+      basedir_spec :build_root
       note 'Specified as an offset from $(root). If not specified projects will be generated in $(root)'
       note 'Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible ' \
             'in order to not damage portability'
@@ -124,7 +124,7 @@ define :cpp do
 
     attr_array :src, type: :src_spec do
       title 'Source file specification'
-      base :local
+      basedir_spec :definition_root
       flags :required # Must be specified by user
       flags :no_sort # Final source will be sorted so no need to sort this
       flag_options :force # Specify when explicitly specidied src does not exist on disk but still want to add to project
@@ -235,44 +235,44 @@ define :cpp do
       value_option :when, required: true, items: [:PreBuild, :PreLink, :PostBuild]
     end
 
-    attr :build_root, type: :dir do
+    attr :build_root_offset, type: :dir do
       title 'Root directory for build artifacts'
       note 'Specified as a relative path from main build root'
-      base :global
+      basedir_spec :build_root
       default 'build'
       flags :no_check_exist
     end
 
     attr :bindir, type: :dir do
       title 'Output directory for executables'
-      base :global
+      basedir_spec :build_root
       default do
-        "#{build_root}/bin/#{arch}/#{config}"
+        "#{build_root_offset}/bin/#{arch}/#{config}"
       end
       flags :no_check_exist
     end
 
     attr :libdir, type: :dir do
       title 'Output directory for libs'
-      base :global
+      basedir_spec :build_root
       default do
-        "#{build_root}/lib/#{arch}/#{config}"
+        "#{build_root_offset}/lib/#{arch}/#{config}"
       end
       flags :no_check_exist
     end
 
     attr :objdir, type: :dir do
       title 'Output directory for object files'
-      base :global
+      basedir_spec :build_root
       default do
-        "#{build_root}/obj/#{arch}/#{config}/#{projname}"
+        "#{build_root_offset}/obj/#{arch}/#{config}/#{projname}"
       end
       flags :no_check_exist
     end
 
     attr_array :libs, type: :file do
       title 'Paths to required non-system libs'
-      base :local
+      basedir_spec :definition_root
       flags :no_sort, :no_check_exist
     end
 
@@ -309,7 +309,7 @@ define :cpp do
 
     attr_array :inc, type: :dir do
       title 'Include paths'
-      base :local
+      basedir_spec :definition_root
       flags :no_sort
       flag_options :export, :export_only
       example "inc ['mylibrary/include']"

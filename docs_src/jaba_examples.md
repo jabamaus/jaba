@@ -55,6 +55,9 @@ cpp :AppWithCustomisedBuildTree do
   platforms [:windows_x86_64]
   configs [:Debug, :Release]
   src ['main.cpp']
+  bindir "custom_build_tree/bin/#{config}"
+  libdir "custom_build_tree/lib/#{config}"
+  objdir "custom_build_tree/obj/#{config}"
 end
 ```
 

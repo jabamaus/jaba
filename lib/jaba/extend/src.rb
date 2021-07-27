@@ -51,7 +51,7 @@ module JABA
         force = elem.has_flag_option?(:force)
         spec_files.clear
         vpath_option = elem.get_option_value(:vpath, fail_if_not_found: false)
-        abs_spec = get_abs_spec(spec)
+        abs_spec = JABA.spec_to_absolute_path(spec, @root, @node)
         glob_matches = nil
 
         if spec.wildcard?
@@ -121,24 +121,9 @@ module JABA
     end
 
     ##
-    # Given a file spec, return it as an absolute path.
-    # If it starts with ./ the src file is considered as being relative
-    # to the .jaba file the definition is in, else its considered relative to the definition's $(root) attribute.
-    #
-    def get_abs_spec(spec)
-      if spec.absolute_path?
-        spec
-      elsif spec.start_with?('./')
-        "#{@node.source_dir}#{spec.delete_prefix('.')}"
-      else
-        "#{@root}/#{spec}"
-      end
-    end
-
-    ##
     #
     def get_matching_src_obj(spec, src_list, fail_if_not_found: true, errobj: nil)
-      abs_spec = get_abs_spec(spec)
+      abs_spec = JABA.spec_to_absolute_path(spec, @root, @node)
       s = src_list.find{|s| s.absolute_path == abs_spec}
       if !s && fail_if_not_found
         JABA.error("'#{spec}' src file not in project", errobj: errobj)

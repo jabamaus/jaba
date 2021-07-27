@@ -9,7 +9,7 @@ module JABA
         jaba(barebones: true) do
           define :test do
             attr :a, type: :dir do
-              base :local
+              basedir_spec :definition_root
             end
           end
           test :t do
@@ -19,6 +19,9 @@ module JABA
       end
     end
 
+    # TODO: test all base_dir specs
+
+    # TODO: test paths starting with ./
   end
 
 end

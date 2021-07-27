@@ -48,8 +48,8 @@
 > | _options_ |  |
 > | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
 >
-<a id="build_root"></a>
-#### build_root
+<a id="build_root_offset"></a>
+#### build_root_offset
 > _Root directory for build artifacts_
 > 
 > | Property | Value  |

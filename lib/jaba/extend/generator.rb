@@ -288,22 +288,32 @@ module JABA
     ##
     #
     def make_node_paths_absolute(node)
-      # Turn root into absolute path
+      # Turn root into absolute path, if present
       #
-      root = node.get_attr(:root, search: true).map_value! do |r|
+      root = node.get_attr(:root, search: true, fail_if_not_found: false)&.map_value! do |r|
         r.absolute_path? ? r : "#{node.source_dir}/#{r}".cleanpath
       end
 
-      # Make all :file and :dir attributes into absolute paths based on either local or global root. Local root
-      # is the 'root' attribute (which itself is based on the directory of the .jaba file). Global root is
-      # usually the cwd when jaba was invoked, although this can be overridden by setting dest_root, which
-      # unit tests do. :src_spec attributes should also have this applied but they are handled separately.
+      # Make all :file and :dir attributes into absolute paths based on basedir_spec
       #
       node.visit_node(visit_self: true) do |n|
         n.visit_attr(type: [:file, :dir], skip_attr: :root) do |a|
-          base = a.attr_def.base == :global ? services.input.dest_root : root
+          basedir_spec = a.attr_def.basedir_spec
+          base_dir = case basedir_spec
+          when :build_root
+            services.input.dest_root
+          when :definition_root
+            root
+          when :jaba_file
+            n.source_dir
+          when :cwd
+            JABA.invoking_dir
+          else
+            JABA.error "Unexpected basedir_spec value '#{basedir_spec}'"
+          end
+
           a.map_value! do |p|
-            p.absolute_path? ? p : "#{base}/#{p}".cleanpath
+            JABA.spec_to_absolute_path(p, base_dir, n)
           end
         end
       end
@@ -338,6 +348,13 @@ module JABA
   ##
   # The default generator for a JabaType if none exists. Does no generation.
   #
-  class DefaultGenerator < Generator ; end
+  class DefaultGenerator < Generator
+
+    def make_host_objects
+      @root_nodes.each do |n|
+        make_node_paths_absolute(n)
+      end
+    end
+  end
 
 end

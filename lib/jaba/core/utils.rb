@@ -25,6 +25,22 @@ module JABA
   end
 
   ##
+  # Convert a file path specified in user definitions to an absolute path.
+  # If a path starts with ./ it is taken as being relative to the directory the jaba file is in, else it is
+  # made absolute based on the supplied base dir (unless absolute already).
+  #
+  def self.spec_to_absolute_path(spec, base_dir, node)
+    abs_path = if spec.absolute_path?
+      spec
+    elsif spec.start_with?('./')
+      "#{node.source_dir}#{spec.delete_prefix('.')}"
+    else
+      "#{base_dir}/#{spec}"
+    end
+    abs_path.cleanpath
+  end
+
+  ##
   #
   def self.generate_guid(namespace:, name:, braces: true)
     sha1 = ::Digest::SHA1.new

@@ -8,13 +8,13 @@ define :workspace do
     title 'Root directory relative to which all other paths are specified'
     note 'Defaults to containing directory of definition source file'
     default '.'
-    base :local
+    basedir_spec :jaba_file
   end
 
   attr :workspacedir, type: :dir do
     title 'Directory in which workspaces will be generated'
     default 'projects'
-    base :global
+    basedir_spec :build_root
     flags :no_check_exist # May get created during generation
   end
 

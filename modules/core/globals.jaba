@@ -7,7 +7,7 @@ define :globals do
     note 'Tells Jaba where to start looking for .jaba files to execute. Defaults to the directory Jaba was invoked in ' \
          'if not specified on the command line. Often coincident with the root of a source tree, but not always as jaba files can ' \
          'exist outside a src tree if desired.'
-    base :global
+    basedir_spec :cwd
   end
 
   attr :jaba_output_file, type: :file do
@@ -15,7 +15,7 @@ define :globals do
     note 'Jaba output can be later used by another process (eg the build process) to do things like looking up paths by id rather ' \
          'than embedding them in code, iterating over all defined unit tests and invoking them, etc.'
     default '.jaba/jaba.output.json'
-    base :global
+    basedir_spec :build_root
   end
 
   attr :dump_output, type: :bool do

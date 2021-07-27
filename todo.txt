@@ -1,10 +1,10 @@
+- Rename dest_root to build_root
 - Make defaults work per-file. Introduce global_defaults.
 - Change config system. Move config attrs out of globals and into new config type. Always generate a config file (not just out of source builds).
-  Load config file first. Prevent config from being modified once loaded.
+  Load config file first. Prevent config from being modified once loaded. Introduce new type for congig and stop using globals.
 - Add example modules to docs, including comment docs.
 - I think its time to move setting config attrs into their own block. Prevents problems with attributes having nil values when evaluating in the context of the project.
 - Automatically pull in dependencies into workspace
-- Add ability to set :local or :global option on per-attribute basis
 - attr def properties should have help string/notes...
 - Disallow globals from referencing itself
 - Maybe add open_globals_type and open_globals_inst?
@@ -17,7 +17,6 @@
 - Use did_you_mean? Eg
   Error at basic_dll.jaba:8: 'defines' attribute not defined. Did you mean 'define'?
 - Combine jaba.input.json and jaba.output.json into one file
-- there could be a directive on include statements that runs included file in new jaba instance
 - validate platforms and architecture specs
 - cpp attrs need to be split into project and config in reference manual
 - tag attrs as control flow attrs somehow for benefit of docs
@@ -30,7 +29,6 @@
 - make_generator should be able to make subclasses of eg CppGenerator
 - make paths in jaba.output.json relative to itself. Introduce json node writing api to wrap this up and to make it robust.
 - Have a way of globally setting default for :platforms, :hosts and :configs (and for clearing)
-- make file/dir attrs cleanpath
 - Make :nocheckexists do something
 - Think more about project 'skus'. Also, platforms support specific hosts. Where is that info stored?
 - test :required flag compatibility

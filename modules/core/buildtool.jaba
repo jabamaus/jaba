@@ -8,12 +8,12 @@ define :buildtool do
 
   attr :output, type: :file do
     title 'Build tool output file'
-    base :local
+    basedir_spec :definition_root
   end
   
   attr_array :outputs, type: :file do
     title 'Build tool output files'
-    base :local
+    basedir_spec :definition_root
   end
 
   attr :command, type: :string do
