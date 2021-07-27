@@ -23,7 +23,7 @@ module JABA
       @cmds = []
 
       @input = Input.new
-      @input.instance_variable_set(:@build_root, JABA.invoking_dir)
+      @input.instance_variable_set(:@build_root, JABA.cwd)
       @input.instance_variable_set(:@argv, ARGV)
       @input.instance_variable_set(:@definitions, [])
       @input.instance_variable_set(:@cmd, nil)
@@ -317,7 +317,7 @@ module JABA
               im.usage_error("No value provided for '#{arg}'")
             end
             if @attr.type_id == :file || @attr.type_id == :dir
-              @value = @value.to_absolute(base: JABA.invoking_dir, clean: true) # TODO: need to do this for array/hash elems too
+              @value = @value.to_absolute(base: JABA.cwd, clean: true) # TODO: need to do this for array/hash elems too
             end
             @attr.set(@value)
           end

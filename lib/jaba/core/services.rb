@@ -37,7 +37,7 @@ module JABA
 
   class JabaError < StandardError ; end
 
-  @@invoking_dir = Dir.getwd.freeze
+  @@cwd = Dir.getwd.freeze
   @@running_tests = false
 
   # Maximum length of attribute etc title string.
@@ -52,8 +52,8 @@ module JABA
 
   ##
   # 
-  def self.invoking_dir
-    @@invoking_dir
+  def self.cwd
+    @@cwd
   end
   
   ##
@@ -83,7 +83,7 @@ module JABA
   ##
   #
   def self.temp_dir
-    "#{JABA.invoking_dir}/.jaba"
+    "#{JABA.cwd}/.jaba"
   end
 
   ##
@@ -256,7 +256,7 @@ module JABA
       if !input_manager.cmd_specified?(:gendoc)
         @src_root = input.src_root
         
-        input.build_root = input.build_root.to_absolute(base: JABA.invoking_dir, clean: true)
+        input.build_root = input.build_root.to_absolute(base: JABA.cwd, clean: true)
         if !File.exist?(input.build_root)
           FileUtils.makedirs(input.build_root)
         end
@@ -270,7 +270,7 @@ module JABA
             @src_root = Regexp.last_match(1)
           end
           if @src_root.nil?
-            @src_root = JABA.invoking_dir
+            @src_root = JABA.cwd
           end
         end
 
