@@ -301,7 +301,7 @@ module JABA
           basedir_spec = a.attr_def.basedir_spec
           base_dir = case basedir_spec
           when :build_root
-            services.input.dest_root
+            services.input.build_root
           when :definition_root
             root
           when :jaba_file

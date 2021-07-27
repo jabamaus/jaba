@@ -27,12 +27,12 @@ module JABA
 
     ##
     #
-    def jaba(barebones: false, src_root: nil, dest_root: nil, argv: nil, dry_run: false, dump_output: false, cpp_app: false, cpp_defaults: false, &block)
+    def jaba(barebones: false, src_root: nil, build_root: nil, argv: nil, dry_run: false, dump_output: false, cpp_app: false, cpp_defaults: false, &block)
       td = temp_dir(create: false)
-      dest_root = dest_root || td
+      build_root = build_root || td
       op = JABA.run(handle_exceptions: false) do |c|
         c.src_root = src_root
-        c.dest_root = dest_root
+        c.build_root = build_root
         c.argv = Array(argv) if argv
         c.definitions(&block) if block_given?
         c.barebones = barebones
@@ -49,7 +49,7 @@ module JABA
         c.definitions do
           open_instance :globals, type: :globals do
             dump_output dump_output
-            jaba_output_file "#{dest_root}/jaba.output.json"
+            jaba_output_file "#{build_root}/jaba.output.json"
           end
         end
         c.dry_run = dry_run

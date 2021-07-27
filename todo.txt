@@ -1,4 +1,4 @@
-- Rename dest_root to build_root
+- Decide on format of jaba.output.json
 - Make defaults work per-file. Introduce global_defaults.
 - Change config system. Move config attrs out of globals and into new config type. Always generate a config file (not just out of source builds).
   Load config file first. Prevent config from being modified once loaded. Introduce new type for congig and stop using globals.

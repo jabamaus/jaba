@@ -793,11 +793,11 @@ module JABA
       #
       @file_manager.include_untracked
 
-      # Now make files that will be reported back to the user relative to cwd
+      # Now make files that will be reported back to the user relative to build_root
       #
-      @generated = @file_manager.generated.map{|f| f.relative_path_from(input.dest_root)}
-      @added = @file_manager.added.map{|f| f.relative_path_from(input.dest_root)}.sort_no_case!
-      @modified = @file_manager.modified.map{|f| f.relative_path_from(input.dest_root)}.sort_no_case!
+      @generated = @file_manager.generated.map{|f| f.relative_path_from(input.build_root)}
+      @added = @file_manager.added.map{|f| f.relative_path_from(input.build_root)}.sort_no_case!
+      @modified = @file_manager.modified.map{|f| f.relative_path_from(input.build_root)}.sort_no_case!
 
       # These are not included in the output file but are returned to outer context
       #
