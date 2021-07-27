@@ -98,9 +98,6 @@ define :cpp do
       default 'projects'
       flags :no_check_exist # May get created during generation
       basedir_spec :build_root
-      note 'Specified as an offset from $(root). If not specified projects will be generated in $(root)'
-      note 'Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible ' \
-            'in order to not damage portability'
       example %Q{
         cpp :MyApp do
           src ['**/*'] # Get all src in $(root), which defaults to directory of definition file

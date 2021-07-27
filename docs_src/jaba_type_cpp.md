@@ -412,7 +412,6 @@
 > | _flags_ | :no_check_exist |
 > | _options_ |  |
 > | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
-> | _notes_ | Specified as an offset from [$(root)](#root). If not specified projects will be generated in [$(root)](#root). Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible in order to not damage portability.  |
 >
 > *Examples*
 >```ruby
