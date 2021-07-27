@@ -82,24 +82,6 @@ module JABA
 
   ##
   #
-  def self.temp_dir
-    "#{JABA.cwd}/.jaba"
-  end
-
-  ##
-  #
-  def self.log_file
-    "#{JABA.temp_dir}/jaba.log"
-  end
-
-  ##
-  #
-  def self.config_file
-    "#{JABA.temp_dir}/config.jaba"
-  end
-
-  ##
-  #
   def self.error(msg, errobj: nil, callstack: nil, include_api: false, syntax: false)
     e = JabaError.new(msg)
     e.instance_variable_set(:@callstack, Array(errobj&.src_loc || callstack || caller))
@@ -119,6 +101,8 @@ module JABA
     attr_reader :globals
     attr_reader :globals_node
     attr_reader :jaba_attr_types
+    attr_reader :jaba_temp_dir
+    attr_reader :config_file
 
     @@module_ruby_files_loaded = false
     @@module_jaba_files = []
@@ -189,7 +173,7 @@ module JABA
         duration = JABA.milli_timer do
           # Too early for input manager to process cmd line so check --profile the old fashioned way
           #
-          JABA.profile(input.argv.include?('--profile')) do
+          profile(input.argv.include?('--profile')) do
             do_run
             build_jaba_output
           end
@@ -261,11 +245,14 @@ module JABA
           FileUtils.makedirs(input.build_root)
         end
 
+        @jaba_temp_dir = "#{input.build_root}/.jaba"
+        @config_file = "#{@jaba_temp_dir}/config.jaba"
+
         if @src_root.nil? && !JABA.running_tests?
-          if file_manager.exist?(JABA.config_file)
-            content = file_manager.read(JABA.config_file, freeze: false)
+          if file_manager.exist?(@config_file)
+            content = file_manager.read(@config_file, freeze: false)
             if content !~ /src_root "(.*)"/
-              JABA.error("Could not read src_root from #{JABA.config_file}")
+              JABA.error("Could not read src_root from #{@config_file}")
             end
             @src_root = Regexp.last_match(1)
           end
@@ -276,6 +263,8 @@ module JABA
 
         log "src_root=#{@src_root}"
         log "build_root=#{input.build_root}"
+        log "temp_dir=#{@jaba_temp_dir}"
+        log "config_file=#{@config_file}"
       end
 
       load_module_jaba_files
@@ -899,8 +888,8 @@ module JABA
 
       # Process config file at the end so it is authoritative and overwrites existing values.
       #
-      if File.exist?(JABA.config_file) && !JABA.running_tests?
-        process_jdl_file(JABA.config_file)
+      if File.exist?(@config_file) && !JABA.running_tests?
+        process_jdl_file(@config_file)
       end
     end
 
@@ -969,7 +958,7 @@ module JABA
     #
     def term_log
       return if !@log_msgs
-      log_fn = JABA.log_file
+      log_fn = "#{@jaba_temp_dir}/jaba.log"
       if File.exist?(log_fn)
         File.delete(log_fn)
       else
@@ -1093,6 +1082,35 @@ module JABA
       ErrorInfo.new(m, fm, file, line)
     end
 
+    ##
+    #
+    def profile(enabled)
+      if !enabled
+        yield
+        return
+      end
+
+      begin
+        require 'ruby-prof'
+      rescue LoadError
+        puts "ruby-prof gem is required to run with --profile. Could not be loaded."
+        exit 1
+      end
+
+      puts 'Invoking ruby-prof...'
+      RubyProf.start
+      yield
+      result = RubyProf.stop
+      file = "#{@jaba_temp_dir}/jaba.profile"
+      str = String.new
+      puts "Write profiling results to #{file}..."
+      [RubyProf::FlatPrinter, RubyProf::GraphPrinter].each do |p|
+        printer = p.new(result)
+        printer.print(str)
+      end
+      IO.write(file, str)
+    end
+    
     ##
     #
     def generate_docs

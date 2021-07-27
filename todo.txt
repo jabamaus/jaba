@@ -1,3 +1,4 @@
+- Refactor src_root handling
 - Decide on format of jaba.output.json
 - Make defaults work per-file. Introduce global_defaults.
 - Change config system. Move config attrs out of globals and into new config type. Always generate a config file (not just out of source builds).

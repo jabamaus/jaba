@@ -121,12 +121,11 @@ module JABA
           #
           # TODO: automatically patch in new attrs
           if input.src_root
-            config_file = JABA.config_file
-            if !File.exist?(config_file)
+            if !File.exist?(@services.config_file)
               @services.globals_node.allow_set_read_only_attrs do
                 @services.globals.src_root input.src_root
               end
-              make_jaba_config(config_file)
+              make_jaba_config(@services.config_file)
             end
           end
         end
