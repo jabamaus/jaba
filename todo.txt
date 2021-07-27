@@ -1,3 +1,4 @@
+- ability to have build tree out of src but projects in src? config option to base projdir off src_root instead of dest_root?
 - Refactor src_root handling
 - Decide on format of jaba.output.json
 - Make defaults work per-file. Introduce global_defaults.

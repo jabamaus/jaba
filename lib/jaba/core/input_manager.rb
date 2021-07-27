@@ -10,9 +10,6 @@ module JABA
   #
   class InputManager
 
-    Cmd = Struct.new(:id, :options, :dev_cmd)
-    CmdLineOption = Struct.new(:long, :short, :describe, :help, :type, :inst_var, :dev_option, :phase, :cmd)
-
     attr_reader :input
 
     ##
@@ -53,7 +50,7 @@ module JABA
       if id !~ /^[a-zA-Z0-9\-]+$/
         JABA.error("Invalid cmd id '#{id}' specified. Can only contain [a-zA-Z0-9-]")
       end
-      c = Cmd.new
+      c = OpenStruct.new
       c.id = id
       c.options = []
       c.dev_cmd = dev_cmd
@@ -71,7 +68,7 @@ module JABA
         JABA.error("Invalid short option format '#{short}' specified. Must be of form -O")
       end
       
-      o = CmdLineOption.new
+      o = OpenStruct.new
       o.long = long
       o.short = short
       o.help = help
