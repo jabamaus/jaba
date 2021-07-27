@@ -221,6 +221,7 @@ module JABA
           else
             jdl_bt = get_jdl_backtrace(cs, include_api: include_api)
             if jdl_bt.empty?
+              @output[:error] = "#{e.message}\n#{e.backtrace.join("\n")}"
               raise # If there is no jdl file in the callstack reraise the original exception
             end
             jdl_bt
