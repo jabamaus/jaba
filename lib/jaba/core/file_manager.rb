@@ -127,10 +127,13 @@ module JABA
     ##
     #
     def new_file(filename, eol: :unix, encoding: nil, capacity: nil, track: true)
+      if !filename.absolute_path?
+        JABA.error("'#{filename}' must be an absolute path")
+      end
       if !ValidEols.include?(eol)
         JABA.error("'#{eol.inspect}' is an invalid eol style. Valid values: #{ValidEols.inspect}")
       end
-      JabaFile.new(self, filename.to_absolute(clean: true), encoding, eol, capacity, track)
+      JabaFile.new(self, filename.cleanpath, encoding, eol, capacity, track)
     end
 
     ##
@@ -192,7 +195,11 @@ module JABA
     ##
     #
     def read(filename, encoding: nil, fail_if_not_found: false, freeze: true)
-      fn = filename.to_absolute(clean: true)
+      if !filename.absolute_path?
+        JABA.error("'#{filename}' must be an absolute path")
+      end
+
+      fn = filename.cleanpath
       str = file_read_cache[fn]
       if str.nil?
         if !exist?(fn)
