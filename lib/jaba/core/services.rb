@@ -106,8 +106,6 @@ module JABA
     @@module_ruby_files_loaded = false
     @@module_jaba_files = []
 
-    DefinitionInfo = Struct.new(:id, :block, :src_loc, :open_defs, :jaba_type_id)
-    
     ##
     #
     def initialize
@@ -494,7 +492,13 @@ module JABA
     ##
     #
     def make_definition(id, block, src_loc)
-      DefinitionInfo.new(id, block, src_loc, [], nil)
+      d = OpenStruct.new
+      d.id = id
+      d.block = block
+      d.src_loc = src_loc
+      d.open_defs = []
+      d.jaba_type_id = nil
+      d
     end
 
     ##
