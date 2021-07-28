@@ -221,6 +221,9 @@ module JABA
     ##
     #
     def glob(spec, flags=0)
+      if !spec.absolute_path?
+        JABA.error("'#{spec}' must be an absolute path")
+      end
       files = glob_cache[spec]
       if files.nil?
         files = Dir.glob(spec, flags)
@@ -233,6 +236,9 @@ module JABA
     ##
     #
     def exist?(fn)
+      if !fn.absolute_path?
+        JABA.error("'#{spec}' must be an absolute path")
+      end
       exist = file_exist_cache[fn]
       if exist.nil?
         exist = File.exist?(fn)
