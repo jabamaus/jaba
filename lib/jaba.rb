@@ -92,8 +92,4 @@ module JABA
     
   end
 
-  ##
-  #
-  class CommandLineUsageError < StandardError ; end
-
 end

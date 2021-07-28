@@ -142,7 +142,7 @@ module JABA
     ##
     #
     def usage_error(msg)
-      raise CommandLineUsageError, msg
+      JABA.error(msg, want_backtrace: false)
     end
 
     ##

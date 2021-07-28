@@ -39,10 +39,10 @@ module JABA
     end
 
     it 'detects unknown options' do
-      assert_raises CommandLineUsageError do
+      assert_raises JabaError do
         jaba(barebones: true, argv: ['--unknown'])
       end.message.must_equal("--unknown option not recognised")
-      assert_raises CommandLineUsageError do
+      assert_raises JabaError do
         jaba(barebones: true, argv: ['-Z'])
       end.message.must_equal("-Z option not recognised")
     end
@@ -61,7 +61,7 @@ module JABA
           define :test_im
         end
       end
-      assert_raises CommandLineUsageError  do
+      assert_raises JabaError  do
         jaba(barebones: true, argv: ['--value-opt']) do
           define :test_im
         end
@@ -82,7 +82,7 @@ module JABA
           define :test_im
         end
       end
-      assert_raises CommandLineUsageError do
+      assert_raises JabaError do
         jaba(barebones: true, argv: ['--array-opt']) do
           define :test_im
         end

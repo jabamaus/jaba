@@ -82,11 +82,12 @@ module JABA
 
   ##
   #
-  def self.error(msg, errobj: nil, callstack: nil, include_api: false, syntax: false)
+  def self.error(msg, errobj: nil, callstack: nil, include_api: false, syntax: false, want_backtrace: true)
     e = JabaError.new(msg)
     e.instance_variable_set(:@callstack, Array(errobj&.src_loc || callstack || caller))
     e.instance_variable_set(:@include_api, include_api)
     e.instance_variable_set(:@syntax, syntax)
+    e.instance_variable_set(:@want_backtrace, want_backtrace)
     raise e
   end
 
@@ -197,36 +198,35 @@ module JABA
         @output
       rescue => e
         log e.full_message(highlight: false), :ERROR
-        @output[:error] = "#{e.message}\n#{e.backtrace.join("\n")}"
 
         case e
         when JabaError
           cs = e.instance_variable_get(:@callstack)
           include_api = e.instance_variable_get(:@include_api)
           err_type = e.instance_variable_get(:@syntax) ? :syntax : :error
+          want_backtrace = e.instance_variable_get(:@want_backtrace)
           
           bt = if err_type == :syntax
             [] # Syntax errors (ruby ScriptErrors) don't have backtraces
           else
             jdl_bt = get_jdl_backtrace(cs, include_api: include_api)
             if jdl_bt.empty?
-              raise # If there is no jdl file in the callstack reraise the original exception
+              @output[:error] = want_backtrace ? e.full_message : e.message
+              raise
             end
             jdl_bt
           end
 
           info = jdl_error_info(e.message, bt, err_type: err_type)
-          @output[:error] = info.full_message
+          @output[:error] = want_backtrace ? info.full_message : info.message
 
           e = JDLError.new(info.message)
           e.instance_variable_set(:@file, info.file)
           e.instance_variable_set(:@line, info.line)
           e.set_backtrace(bt)
           raise e
-        when CommandLineUsageError
-          @output[:error] = e.message # Don't need any location info
-          raise
         else
+          @output[:error] = e.full_message
           raise
         end
       ensure
@@ -951,16 +951,16 @@ module JABA
       p = p.to_absolute(base: input.src_root, clean: true)
 
       if !File.exist?(p)
-        JABA.error("#{p} does not exist")
+        JABA.error("#{p} does not exist", want_backtrace: false)
       end
 
       if File.directory?(p)
         files = @file_manager.glob("#{p}/*.jaba")
         if files.empty?
           if fail_if_empty
-            JABA.error("No .jaba files found in #{p}")
+            JABA.error("No .jaba files found in #{p}", want_backtrace: false)
           else
-            jaba_warn("No .jaba files found in #{p}")
+            jaba_warn("No .jaba files found in #{p}", want_backtrace: false)
           end
         else
           files.each do |f|
@@ -1076,8 +1076,6 @@ module JABA
       jdl_bt
     end
 
-    ErrorInfo = Struct.new(:message, :full_message, :file, :line)
-
     ##
     #
     def jdl_error_info(msg, backtrace, err_type: :error)
@@ -1134,7 +1132,12 @@ module JABA
         end
       end
       
-      ErrorInfo.new(m, fm, file, line)
+      e = OpenStruct.new
+      e.message = m
+      e.full_message = fm
+      e.file = file
+      e.line = line
+      e
     end
 
     ##
