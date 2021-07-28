@@ -943,7 +943,9 @@ module JABA
     ##
     #
     def process_load_path(p, fail_if_empty: false)
-      p = p.to_absolute(base: input.src_root, clean: true)
+      if !p.absolute_path?
+        JABA.error("'#{f}' must be an absolute path")
+      end
 
       if !File.exist?(p)
         JABA.error("#{p} does not exist", want_backtrace: false)
@@ -970,7 +972,10 @@ module JABA
     ##
     #
     def process_jaba_file(f)
-      f = f.to_absolute(base: input.src_root, clean: true)
+      if !f.absolute_path?
+        JABA.error("'#{f}' must be an absolute path")
+      end
+      f = f.cleanpath
 
       if @jdl_file_lookup.has_key?(f)
         JABA.error("'#{f}' multiply included")
