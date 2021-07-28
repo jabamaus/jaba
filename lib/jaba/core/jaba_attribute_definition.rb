@@ -6,9 +6,9 @@ module JABA
 
   using JABACoreExt
 
-  ##
+  # Maximum length of attribute etc title string.
   #
-  ValueOption = Struct.new(:id, :required, :items)
+  MAX_TITLE_CHARS = 100
 
   ##
   # Manages shared data that is common to Attributes instanced from this definition.
@@ -121,7 +121,12 @@ module JABA
       if !id.symbol?
         JABA.error("In #{describe} value_option id must be specified as a symbol, eg :option")
       end
-      @value_options << ValueOption.new(id, required, items).freeze
+      vo = OpenStruct.new
+      vo.id = id
+      vo.required = required
+      vo.items = items
+      vo.freeze
+      @value_options << vo
     end
 
     ##

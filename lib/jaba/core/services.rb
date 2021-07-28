@@ -38,10 +38,6 @@ module JABA
   @@cwd = Dir.getwd.freeze
   @@running_tests = false
 
-  # Maximum length of attribute etc title string.
-  #
-  MAX_TITLE_CHARS = 100
-  
   ##
   #
   def self.running_tests?
