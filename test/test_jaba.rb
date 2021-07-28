@@ -93,11 +93,11 @@ module JABA
 
     ##
     #
-    def make_file(*fns)
+    def make_file(*fns, content: "test\n")
       fns.each do |fn|
         fn = "#{temp_dir}/#{fn}"
         make_dir(fn.dirname)
-        IO.write(fn, "test\n")
+        IO.write(fn, content)
       end
     end
     
