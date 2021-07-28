@@ -31,7 +31,7 @@ module JABA
       td = temp_dir(create: false)
       build_root = build_root || td
       op = JABA.run(handle_exceptions: false) do |c|
-        c.src_root = src_root
+        c.src_root = src_root # Most unit tests don't have a src_root as everything is defined inline in code
         c.build_root = build_root
         c.argv = Array(argv) if argv
         c.definitions(&block) if block_given?

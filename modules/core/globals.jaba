@@ -2,14 +2,6 @@ define :globals do
   title 'Global attribute definitions'
   singleton true
 
-  attr :src_root, type: :dir do
-    title 'Root of source tree'
-    note 'Tells Jaba where to start looking for .jaba files to execute. Defaults to the directory Jaba was invoked in ' \
-         'if not specified on the command line. Often coincident with the root of a source tree, but not always as jaba files can ' \
-         'exist outside a src tree if desired.'
-    basedir_spec :cwd
-  end
-
   attr :jaba_output_file, type: :file do
     title 'Name/path of file to contain Jaba output in json format'
     note 'Jaba output can be later used by another process (eg the build process) to do things like looking up paths by id rather ' \

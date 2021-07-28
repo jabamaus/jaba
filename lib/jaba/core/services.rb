@@ -112,16 +112,23 @@ module JABA
     ##
     #
     def initialize
+      @input = Input.new
+      @input.instance_variable_set(:@build_root, JABA.cwd)
+      @input.instance_variable_set(:@src_root, JABA.cwd)
+      @input.instance_variable_set(:@argv, ARGV)
+      @input.instance_variable_set(:@definitions, [])
+      @input.instance_variable_set(:@cmd, nil)
+
       @output = {}
       
       @log_msgs = JABA.running_tests? ? nil : [] # Disable logging when running tests
       
       @warnings = []
       
-      @src_root = nil
       @jdl_files = []
       @jdl_includes = []
       @jdl_file_lookup = {}
+      @config_loaded = false
       
       @attr_type_defs = []
       @attr_flag_defs = []
@@ -161,7 +168,6 @@ module JABA
       @top_level_api = JDL_TopLevel.new(self)
       @file_manager = FileManager.new(self)
       @input_manager = InputManager.new(self)
-      @input = @input_manager.input
     end
 
     ##
@@ -187,7 +193,6 @@ module JABA
         log "Done! (#{duration})"
 
         @output[:summary] = summary
-
         @output[:warnings] = @warnings.uniq # Strip duplicate warnings
         @output
       rescue => e
@@ -237,34 +242,7 @@ module JABA
       
       @input_manager.process(phase: 1)
 
-      @src_root = input.src_root
-      
-      input.build_root = input.build_root.to_absolute(base: JABA.cwd, clean: true)
-      if !File.exist?(input.build_root)
-        FileUtils.makedirs(input.build_root)
-      end
-
-      @jaba_temp_dir = "#{input.build_root}/.jaba"
-      @config_file = "#{@jaba_temp_dir}/config.jaba"
-
-      if @src_root.nil? && !JABA.running_tests?
-        if file_manager.exist?(@config_file)
-          content = file_manager.read(@config_file, freeze: false)
-          if content !~ /src_root "(.*)"/
-            JABA.error("Could not read src_root from #{@config_file}")
-          end
-          @src_root = Regexp.last_match(1)
-        end
-        if @src_root.nil?
-          @src_root = JABA.cwd
-        end
-      end
-
-      log "src_root=#{@src_root}"
-      log "build_root=#{input.build_root}"
-      log "temp_dir=#{@jaba_temp_dir}"
-      log "config_file=#{@config_file}"
-
+      init_root_paths
       load_module_jaba_files
 
       # Prepend globals type definition so globals are processed first, allowing everything else to access them
@@ -360,6 +338,8 @@ module JABA
       @globals = @globals_node.attrs
 
       @input_manager.process(phase: 2)
+      
+      process_config_file
 
       if input_manager.cmd_specified?(:gendoc)
         generate_docs
@@ -384,6 +364,80 @@ module JABA
       @generators.each(&:perform_generation)
     end
     
+    ##
+    #
+    def init_root_paths
+      # Initialise build_root from command line, if not present defaults to cwd
+      #
+      input.build_root = input.build_root.to_absolute(base: JABA.cwd, clean: true)
+
+      # Ensure build_root exists
+      #
+      if !File.exist?(input.build_root)
+        FileUtils.makedirs(input.build_root)
+      end
+
+      @jaba_temp_dir = "#{input.build_root}/.jaba"
+      @config_file = "#{@jaba_temp_dir}/config.jaba"
+
+      # Initialise src_root from command line, if not present defaults to cwd and ensure it exists
+      #
+      unless JABA.running_tests? && input.src_root.nil?
+        input.src_root = input.src_root.to_absolute(base: JABA.cwd, clean: true)
+      end
+      
+      # Jaba may have been invoked from an out-of-source build tree so read src_root from jaba temp dir
+      #
+      src_root_file_str = @file_manager.read("#{@jaba_temp_dir}/src_root", fail_if_not_found: false)
+      if src_root_file_str
+        input.src_root = src_root_file_str[/SRC_ROOT=(.*)/, 1]
+      end
+      
+      # TODO: create src_root file for out-of-source builds
+
+      log "src_root=#{input.src_root}"
+      log "build_root=#{input.build_root}"
+      log "temp_dir=#{@jaba_temp_dir}"
+      log "config_file=#{@config_file}"    
+    end
+
+    ##
+    #
+    def process_config_file
+      if !JABA.running_tests?
+        # Create config.jaba if it does not exist, which will write in any config options defined on the command line
+        #
+        # TODO: automatically patch in new attrs
+        if !File.exist?(@config_file)
+          file = @file_manager.new_file(@config_file, track: false, eol: :native)
+          w = file.writer
+
+          @globals_node.visit_attr(top_level: true) do |attr, value|
+            attr_def = attr.attr_def
+
+            # TODO: include ref manual type docs, eg type, definition location etc
+            comment = String.new("#{attr_def.title}. #{attr_def.notes.join("\n")}")
+            comment.wrap!(130, prefix: '# ')
+
+            w << "##"
+            w << comment
+            w << "#"
+            if attr.hash?
+              value.each do |k, v|
+                w << "#{attr_def.defn_id} #{k.inspect}, #{v.inspect}"
+              end
+            else
+              w << "#{attr_def.defn_id} #{value.inspect}"
+            end
+            w << ''
+          end
+          w.chomp!
+
+          file.write
+        end
+      end
+    end
+
     ##
     #
     def create_core_objects
@@ -759,7 +813,7 @@ module JABA
     def build_jaba_output
       log 'Building output...'
       
-      out_file = globals.jaba_output_file.to_absolute(base: input.build_root, clean: true)
+      out_file = globals.jaba_output_file
       out_dir = out_file.dirname
 
       @generated = @file_manager.generated.map{|f| f.relative_path_from(out_dir)}
@@ -865,8 +919,14 @@ module JABA
         end
       end
 
-      if @src_root
-        process_load_path(@src_root, fail_if_empty: true)
+      # Process config file
+      #
+      if File.exist?(@config_file) && !JABA.running_tests?
+        process_jdl_file(@config_file)
+      end
+
+      if input.src_root
+        process_load_path(input.src_root, fail_if_empty: true)
       end
 
       # Definitions can also be provided in a block form
@@ -882,12 +942,6 @@ module JABA
       while !@jdl_includes.empty?
         last = @jdl_includes.pop
         process_load_path(last)
-      end
-
-      # Process config file at the end so it is authoritative and overwrites existing values.
-      #
-      if File.exist?(@config_file) && !JABA.running_tests?
-        process_jdl_file(@config_file)
       end
     end
 
@@ -932,10 +986,13 @@ module JABA
       # Special handling for config.jaba
       #
       if f.basename == 'config.jaba'
-        content = @file_manager.read(f, freeze: false)
-        content.prepend("open_instance :globals, type: :globals do\n")
-        content << "end"
-        execute_jdl(file: f, str: content)
+        if !@config_loaded
+          @config_loaded = true
+          content = @file_manager.read(f, freeze: false)
+          content.prepend("open_instance :globals, type: :globals do\n")
+          content << "end"
+          execute_jdl(file: f, str: content)
+        end
       else
         execute_jdl(file: f)
       end

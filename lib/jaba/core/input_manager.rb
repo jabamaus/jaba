@@ -16,14 +16,9 @@ module JABA
     #
     def initialize(services)
       @services = services
+      @input = services.input
       @options = []
       @cmds = []
-
-      @input = Input.new
-      @input.instance_variable_set(:@build_root, JABA.cwd)
-      @input.instance_variable_set(:@argv, ARGV)
-      @input.instance_variable_set(:@definitions, [])
-      @input.instance_variable_set(:@cmd, nil)
 
       # General non-cmd-specific options
       #
@@ -111,22 +106,6 @@ module JABA
     #
     def process(phase:)
       process_cmd_line(phase)
-
-      if phase == 2
-        if !JABA.running_tests?
-          # Only create config.jaba for out of src builds
-          #
-          # TODO: automatically patch in new attrs
-          if input.src_root
-            if !File.exist?(@services.config_file)
-              @services.globals_node.allow_set_read_only_attrs do
-                @services.globals.src_root input.src_root
-              end
-              make_jaba_config(@services.config_file)
-            end
-          end
-        end
-      end
     end
 
     ##
@@ -391,36 +370,6 @@ module JABA
           end
         end
       end
-    end
-
-    ##
-    #
-    def make_jaba_config(config_file)
-      file = @services.file_manager.new_file(config_file, track: false, eol: :native)
-      w = file.writer
-
-      @services.globals_node.visit_attr(top_level: true) do |attr, value|
-        attr_def = attr.attr_def
-
-        # TODO: include ref manual type docs, eg type, definition location etc
-        comment = String.new("#{attr_def.title}. #{attr_def.notes.join("\n")}")
-        comment.wrap!(130, prefix: '# ')
-
-        w << "##"
-        w << comment
-        w << "#"
-        if attr.hash?
-          value.each do |k, v|
-            w << "#{attr_def.defn_id} #{k.inspect}, #{v.inspect}"
-          end
-        else
-          w << "#{attr_def.defn_id} #{value.inspect}"
-        end
-        w << ''
-      end
-      w.chomp!
-
-      file.write
     end
 
     ##

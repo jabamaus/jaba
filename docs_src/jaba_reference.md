@@ -67,7 +67,6 @@
     - [cpp_hosts](jaba_type_globals.html#cpp_hosts)
     - [dump_output](jaba_type_globals.html#dump_output)
     - [jaba_output_file](jaba_type_globals.html#jaba_output_file)
-    - [src_root](jaba_type_globals.html#src_root)
     - [vcfiletype](jaba_type_globals.html#vcfiletype)
   - [host](jaba_type_host.html)
     - [cpp_project_classname](jaba_type_host.html#cpp_project_classname)
