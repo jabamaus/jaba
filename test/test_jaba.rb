@@ -125,7 +125,7 @@ module JABA
     ##
     #
     def check_fail(msg, line: nil, trace: nil)
-      e = assert_raises JDLError do
+      e = assert_raises JabaError do
         yield
       end
       
@@ -152,7 +152,7 @@ module JABA
     ##
     #
     def assert_jdl_error(msg, trace: [])
-      e = assert_raises JDLError do
+      e = assert_raises JabaError do
         yield
       end
       

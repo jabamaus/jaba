@@ -35,8 +35,6 @@ module JABA
 
   using JABACoreExt
 
-  class JabaError < StandardError ; end
-
   @@cwd = Dir.getwd.freeze
   @@running_tests = false
 
@@ -220,7 +218,7 @@ module JABA
           info = jdl_error_info(e.message, bt, err_type: err_type)
           @output[:error] = want_backtrace ? info.full_message : info.message
 
-          e = JDLError.new(info.message)
+          e = JabaError.new(info.message)
           e.instance_variable_set(:@file, info.file)
           e.instance_variable_set(:@line, info.line)
           e.set_backtrace(bt)

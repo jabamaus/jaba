@@ -78,7 +78,7 @@ module JABA
   # Raised when there is an error in a definition. These errors should be fixable by the user by modifying the definition
   # file.
   #
-  class JDLError < StandardError
+  class JabaError < StandardError
     
     ##
     # The definition file the error occurred in.
