@@ -35,7 +35,6 @@ module JABA
 
   using JABACoreExt
 
-  @@cwd = Dir.getwd.freeze
   @@running_tests = false
 
   ##
@@ -44,12 +43,6 @@ module JABA
     @@running_tests
   end
 
-  ##
-  # 
-  def self.cwd
-    @@cwd
-  end
-  
   ##
   #
   def self.install_dir
@@ -89,6 +82,7 @@ module JABA
   #
   class Services
 
+    attr_reader :invoking_dir
     attr_reader :input
     attr_reader :output
     attr_reader :input_manager
@@ -105,14 +99,17 @@ module JABA
     ##
     #
     def initialize
+      @invoking_dir = Dir.getwd.freeze
+
       @input = Input.new
-      @input.instance_variable_set(:@build_root, JABA.cwd)
-      @input.instance_variable_set(:@src_root, JABA.cwd)
+      @input.instance_variable_set(:@build_root, @invoking_dir)
+      @input.instance_variable_set(:@src_root, @invoking_dir)
       @input.instance_variable_set(:@argv, ARGV)
       @input.instance_variable_set(:@definitions, [])
       @input.instance_variable_set(:@cmd, nil)
 
       @output = {}
+      @output[:services] = self if JABA.running_tests?
       
       @log_msgs = JABA.running_tests? ? nil : [] # Disable logging when running tests
       
@@ -235,7 +232,7 @@ module JABA
       @input_manager.process(phase: 1)
 
       init_root_paths
-      load_module_jaba_files
+      load_jaba_files
 
       # Prepend globals type definition so globals are processed first, allowing everything else to access them
       #
@@ -361,7 +358,7 @@ module JABA
     def init_root_paths
       # Initialise build_root from command line, if not present defaults to cwd
       #
-      input.build_root = input.build_root.to_absolute(base: JABA.cwd, clean: true)
+      input.build_root = input.build_root.to_absolute(base: @invoking_dir, clean: true)
 
       # Ensure build_root exists
       #
@@ -375,7 +372,7 @@ module JABA
       # Initialise src_root from command line, if not present defaults to cwd and ensure it exists
       #
       unless JABA.running_tests? && input.src_root.nil?
-        input.src_root = input.src_root.to_absolute(base: JABA.cwd, clean: true)
+        input.src_root = input.src_root.to_absolute(base: @invoking_dir, clean: true)
       end
       
       # Jaba may have been invoked from an out-of-source build tree so read src_root from jaba temp dir
@@ -908,19 +905,19 @@ module JABA
 
     ##
     #
-    def load_module_jaba_files
+    def load_jaba_files
       if input.barebones?
-        process_jdl_file("#{JABA.modules_dir}/core/globals.jaba") # globals always needs loading
+        process_jaba_file("#{JABA.modules_dir}/core/globals.jaba") # globals always needs loading
       else
         @@module_jaba_files.each do |f|
-          process_jdl_file(f)
+          process_jaba_file(f)
         end
       end
 
       # Process config file
       #
       if File.exist?(@config_file) && !JABA.running_tests?
-        process_jdl_file(@config_file)
+        process_jaba_file(@config_file)
       end
 
       if input.src_root
@@ -962,17 +959,17 @@ module JABA
           end
         else
           files.each do |f|
-            process_jdl_file(f)
+            process_jaba_file(f)
           end
         end
       else
-        process_jdl_file(p)
+        process_jaba_file(p)
       end
     end
 
     ##
     #
-    def process_jdl_file(f)
+    def process_jaba_file(f)
       f = f.to_absolute(base: input.src_root, clean: true)
 
       if @jdl_file_lookup.has_key?(f)

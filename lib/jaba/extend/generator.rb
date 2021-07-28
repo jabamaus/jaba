@@ -307,7 +307,7 @@ module JABA
           when :jaba_file
             n.source_dir
           when :cwd
-            JABA.cwd
+            services.invoking_dir
           else
             JABA.error "Unexpected basedir_spec value '#{basedir_spec}'"
           end
