@@ -1,4 +1,3 @@
-- Fix --help error
 - Finish rationalising assert_jdl_error/check_fail
 - Get rid of JDLError
 - ability to have build tree out of src but projects in src? config option to base projdir off src_root instead of dest_root?

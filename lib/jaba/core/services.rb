@@ -1151,8 +1151,7 @@ module JABA
       begin
         require 'ruby-prof'
       rescue LoadError
-        puts "ruby-prof gem is required to run with --profile. Could not be loaded."
-        exit 1
+        JABA.error( "ruby-prof gem is required to run with --profile. Could not be loaded.", want_backtrace: false)
       end
 
       puts 'Invoking ruby-prof...'

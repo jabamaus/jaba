@@ -408,7 +408,7 @@ module JABA
       w << ""
 
       puts w
-      exit
+      exit!
     end
 
     ##
