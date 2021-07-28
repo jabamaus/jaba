@@ -238,6 +238,13 @@ module JABACoreExt
 
     ##
     #
+    def to_absolute!(...)
+      replace(to_absolute(...))
+      self
+    end
+
+    ##
+    #
     def to_backslashes
       dup.to_backslashes!
     end

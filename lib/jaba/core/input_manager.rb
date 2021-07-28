@@ -313,7 +313,7 @@ module JABA
               im.usage_error("No value provided for '#{arg}'")
             end
             if @attr.type_id == :file || @attr.type_id == :dir
-              @value = @value.to_absolute(base: JABA.cwd, clean: true) # TODO: need to do this for array/hash elems too
+              @value.to_absolute!(base: JABA.cwd, clean: true) # TODO: need to do this for array/hash elems too
             end
             @attr.set(@value)
           end

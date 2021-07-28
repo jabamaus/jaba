@@ -1,3 +1,4 @@
+- Fix error reporting for user-level errors like no jaba files being in folder. Should not dump an internal callstack.
 - ability to have build tree out of src but projects in src? config option to base projdir off src_root instead of dest_root?
 - Refactor src_root handling
 - Decide on format of jaba.output.json
