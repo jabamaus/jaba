@@ -498,8 +498,8 @@ module JABACoreExt
         path
       when :basename
         path.basename
-      when :rel_src_root
-        path.relative_path_from(JABA.jaba_install_dir)
+      when :rel_jaba_install
+        path.relative_path_from(JABA.install_dir)
       else
         JABA.error("Unsupported style '#{style}'")
       end

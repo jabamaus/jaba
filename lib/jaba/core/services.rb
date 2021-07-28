@@ -58,26 +58,26 @@ module JABA
   
   ##
   #
-  def self.jaba_install_dir
+  def self.install_dir
     @@jaba_install_dir ||= "#{__dir__}/../../..".cleanpath
   end
 
   ##
   #
   def self.modules_dir
-    "#{JABA.jaba_install_dir}/modules"
+    "#{install_dir}/modules"
   end
 
   ##
   #
   def self.examples_dir
-    "#{jaba_install_dir}/examples"
+    "#{install_dir}/examples"
   end
 
   ##
   #
   def self.docs_src_dir
-    "#{jaba_install_dir}/docs_src"
+    "#{install_dir}/docs_src"
   end
 
   ##
@@ -1165,7 +1165,7 @@ module JABA
         w << "> "
         w << "> | Property | Value  |"
         w << "> |-|-|"
-        md_row(w, 'defined in', "$(jaba_install)/#{jt.src_loc.describe(style: :rel_src_root, line: false)}")
+        md_row(w, 'defined in', "$(jaba_install)/#{jt.src_loc.describe(style: :rel_jaba_install, line: false)}")
         md_row(w, :notes, jt.notes.make_sentence)
         md_row(w, 'depends on', jt.dependencies.map{|d| "[#{d}](#{d.reference_manual_page})"}.join(", "))
         w << "> "
@@ -1194,7 +1194,7 @@ module JABA
           md_row(w, :default, ad.default.proc? ? nil : !ad.default.nil? ? ad.default.inspect : nil)
           md_row(w, :flags, ad.flags.map(&:inspect).join(', '))
           md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
-          md_row(w, 'defined in', "$(jaba_install)/#{ad.src_loc.describe(style: :rel_src_root, line: false)}")
+          md_row(w, 'defined in', "$(jaba_install)/#{ad.src_loc.describe(style: :rel_jaba_install, line: false)}")
           md_row(w, :notes, ad.notes.make_sentence.to_markdown_links) if !ad.notes.empty?
           w << ">"
           if !ad.examples.empty?
