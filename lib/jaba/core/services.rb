@@ -379,14 +379,19 @@ module JABA
 
       # Jaba may have been invoked from an out-of-source build tree so read src_root from jaba temp dir
       #
+      cached_src_root = nil
       src_root_cache = "#{@jaba_temp_dir}/src_root.cache"
       if File.exist?(src_root_cache)
         str = @file_manager.read(src_root_cache)
-        input.src_root = str[/src_root=(.*)/, 1]
+        cached_src_root = str[/src_root=(.*)/, 1]
       end
 
       if input.src_root
         input.src_root = input.src_root.to_absolute(base: @invoking_dir, clean: true)
+
+        if cached_src_root && input.src_root != cached_src_root
+          JABA.error("Source root already set to #{cached_src_root} - cannot change", want_backtrace: false)
+        end
         IO.write(src_root_cache, "src_root=#{input.src_root}")
       end
   

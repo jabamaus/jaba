@@ -36,7 +36,6 @@ module JABA
       services.input.build_root.must_equal(br)
       
       File.exist?("#{br}/.jaba").must_equal(true)
-      #File.exist?("#{br}/.jaba/config.jaba").must_equal(true)
       File.exist?("#{br}/.jaba/jaba.output.json").must_equal(true)
       File.exist?("#{br}/.jaba/src_root.cache").must_equal(true)
       IO.read("#{br}/.jaba/src_root.cache").must_equal("src_root=#{sr}")
@@ -49,6 +48,20 @@ module JABA
       JABA.run do |c|
         c.build_root = br
       end
+
+      # Check that attempts to change src_root once cached fail
+      #
+      op = JABA.run(want_exceptions: false) do |c|
+        c.build_root = br
+        c.src_root = "#{JABA.examples_dir}/02-advanced"
+      end
+      op[:error].must_equal("Source root already set to #{sr} - cannot change")
+
+      op = JABA.run(want_exceptions: false) do |c|
+        c.build_root = br
+        c.argv = ['-S', "#{JABA.examples_dir}/02-advanced"]
+      end
+      op[:error].must_equal("Source root already set to #{sr} - cannot change")
     end
 
     it 'checks src_root is valid' do
@@ -107,7 +120,6 @@ module JABA
       end
     end
 
-    # TODO: test changing src_root once its set up fails
   end
 
 end
