@@ -62,7 +62,7 @@ module JABA
     end
 
     it 'fails if no filename specified' do
-      assert_jdl_error "Error at #{src_loc(__FILE__, :tagY)}: 't.filename' attribute requires a value. See #{src_loc(TEXT_JDL_FILE, 'attr :filename')}." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagY)}: 't.filename' attribute requires a value. See #{src_loc(TEXT_JDL_FILE, 'attr :filename')}." do
         jaba do
           text :t # tagY
         end

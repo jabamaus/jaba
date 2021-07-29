@@ -7,7 +7,7 @@ module JABA
     it 'supports a default' do
       # It validates default is an array
       #
-      assert_jdl_error "Error at #{src_loc(__FILE__, :tagV)}: 'a' array attribute default must be an array not a 'Integer'.", trace: [__FILE__, :tagv] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagV)}: 'a' array attribute default must be an array not a 'Integer'.", trace: [__FILE__, :tagv] do
         jaba(barebones: true) do
           define :test do
             attr_array :a do # tagv
@@ -19,7 +19,7 @@ module JABA
 
       # It validates default is an array when block form is used
       #
-      assert_jdl_error "Error at #{src_loc(__FILE__, :tagO)}: 't.a' array attribute default requires an array not a 'Integer'." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagO)}: 't.a' array attribute default requires an array not a 'Integer'." do
         jaba(barebones: true) do
           define :test do
             attr_array :a do # tagO
@@ -34,7 +34,7 @@ module JABA
       
       # It validates default elements respect attribute type
       #
-      assert_jdl_error "Error at #{src_loc(__FILE__, :tagD)}: 'a' array attribute default invalid: 'not a symbol' must be a symbol but was a 'String'.",
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagD)}: 'a' array attribute default invalid: 'not a symbol' must be a symbol but was a 'String'.",
            trace: [__FILE__, :tagd] do
         jaba(barebones: true) do
           define :test do
@@ -47,7 +47,7 @@ module JABA
 
       # It validates default elements respect attribute type when block form used
       #
-      assert_jdl_error "Error at #{src_loc(__FILE__, :tagW)}: 't.a' array attribute invalid: 'not a symbol' must be a symbol but was a 'String'." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagW)}: 't.a' array attribute invalid: 'not a symbol' must be a symbol but was a 'String'." do
         jaba(barebones: true) do
           define :test do
             attr_array :a, type: :symbol do # tagW
@@ -98,7 +98,7 @@ module JABA
     it 'checks for accessing uninitialised attributes' do
       # test with array attr default using an unset attr
       #
-      assert_jdl_error "Error at #{src_loc(__FILE__, :tagI)}: Cannot read uninitialised 't.b' attribute.", trace: [__FILE__, :tagi] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagI)}: Cannot read uninitialised 't.b' attribute.", trace: [__FILE__, :tagi] do
         jaba(barebones: true) do
           define :test do
             attr :a
@@ -118,7 +118,7 @@ module JABA
 
       # test with another attr using unset array attr
       #
-      assert_jdl_error "Error at #{src_loc(__FILE__, :tagF)}: Cannot read uninitialised 't.a' array attribute.", trace: [__FILE__, :tagf] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagF)}: Cannot read uninitialised 't.a' array attribute.", trace: [__FILE__, :tagf] do
         jaba(barebones: true) do
           define :test do
             attr_array :a
@@ -160,7 +160,7 @@ module JABA
     end
     
     it 'is not possible to modify returned array' do
-      assert_jdl_error "Error at #{src_loc(__FILE__, :tagN)}: Cannot modify read only value." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagN)}: Cannot modify read only value." do
         jaba(barebones: true) do
           define :test do
             attr_array :a do
@@ -247,7 +247,7 @@ module JABA
     end
 
     it 'validates element types are valid' do
-      assert_jdl_error "Error at #{src_loc(__FILE__, :tagT)}: 't.a' array attribute invalid: :bool attributes only accept [true|false] but got 'true'." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagT)}: 't.a' array attribute invalid: :bool attributes only accept [true|false] but got 'true'." do
         jaba(barebones: true) do
           define :test do
             attr_array :a, type: :bool
@@ -275,7 +275,7 @@ module JABA
     end
     
     it 'only allows prefix/postfix on string elements' do
-      assert_jdl_error "Error at #{src_loc(__FILE__, :tagQ)}: When setting 't.a' array attribute prefix/postfix option can only be used with string arrays." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagQ)}: When setting 't.a' array attribute prefix/postfix option can only be used with string arrays." do
         jaba(barebones: true) do
           define :test do
             attr_array :a
@@ -341,7 +341,7 @@ module JABA
     end
     
     it 'fails if excluding with regex on non-strings' do
-      assert_jdl_error "Error at #{src_loc(__FILE__, :tagR)}: When setting 't.a' array attribute exclude regex can only operate on strings." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagR)}: When setting 't.a' array attribute exclude regex can only operate on strings." do
         jaba(barebones: true) do
           define :test do
             attr_array :a
@@ -423,7 +423,7 @@ module JABA
     end
 
     it 'catches invalid args to wipe' do
-      assert_jdl_error "Error at #{src_loc(__FILE__, :tagS)}: 't.b' attribute not found." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagS)}: 't.b' attribute not found." do
         jaba(barebones: true) do
           define :test do
             attr_array :a
@@ -495,7 +495,7 @@ module JABA
     end
     
     it 'supports setting a validator' do
-      assert_jdl_error "Error at #{src_loc(__FILE__, :tagB)}: 't.a' array attribute invalid: failed.", trace: [__FILE__, :tagb] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagB)}: 't.a' array attribute invalid: failed.", trace: [__FILE__, :tagb] do
         jaba(barebones: true) do
           define :test do
             attr_array :a do

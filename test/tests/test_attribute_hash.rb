@@ -146,7 +146,7 @@ module JABA
     it 'checks for accessing uninitialised attributes' do
       # test with hash attr default using an unset attr
       #
-      assert_jdl_error "Error at #{src_loc(__FILE__, :tagI)}: Cannot read uninitialised 't.b' attribute.", trace: [__FILE__, :tagi] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagI)}: Cannot read uninitialised 't.b' attribute.", trace: [__FILE__, :tagi] do
         jaba(barebones: true) do
           define :test do
             attr :a
@@ -378,7 +378,7 @@ module JABA
           end
         end
       end
-      assert_jdl_error "Error at #{src_loc(__FILE__, :tagC)}: 't.a' hash attribute invalid: failed.", trace: [__FILE__, :tagc] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagC)}: 't.a' hash attribute invalid: failed.", trace: [__FILE__, :tagc] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a, key_type: :string do
@@ -396,7 +396,7 @@ module JABA
         end
       end
 
-      assert_jdl_error "Error at #{src_loc(__FILE__, :tagB)}: 't.a' hash attribute invalid: failed.", trace: [__FILE__, :tagb] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagB)}: 't.a' hash attribute invalid: failed.", trace: [__FILE__, :tagb] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a, key_type: :symbol do

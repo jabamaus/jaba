@@ -151,7 +151,7 @@ module JABA
     
     ##
     #
-    def assert_jdl_error(msg, trace: [])
+    def assert_jaba_error(msg, trace: [])
       e = assert_raises JabaError do
         yield
       end

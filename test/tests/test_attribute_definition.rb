@@ -174,7 +174,7 @@ module JABA
     # TODO: also check for circularity in default blocks
     
     it 'supports specifying a validator' do
-      assert_jdl_error "Error at #{src_loc(__FILE__, :tags)}: 't.a' attribute invalid: Val must not be 2.", trace: [__FILE__, :tagS] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tags)}: 't.a' attribute invalid: Val must not be 2.", trace: [__FILE__, :tagS] do
         jaba(barebones: true) do
           define :test do
             attr :a do

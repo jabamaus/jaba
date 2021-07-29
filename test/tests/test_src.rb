@@ -28,7 +28,7 @@ module JABA
     end
 
     it 'fails if explicitly specified files do not exist unless forced' do
-      assert_jdl_error "Error at #{src_loc(__FILE__, :tagA)}: 'a.cpp' does not exist on disk. Use :force to add anyway." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagA)}: 'a.cpp' does not exist on disk. Use :force to add anyway." do
         jaba(cpp_app: true, dry_run: true) do
           cpp :app do
             src ['a.cpp'] # tagA
@@ -46,7 +46,7 @@ module JABA
 
     it 'disallows wildcards when force adding src' do
       make_file('a/a.cpp')
-      assert_jdl_error "Error at #{src_loc(__FILE__, :tagB)}: Wildcards are not allowed when force adding src - only explicitly specified source files." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagB)}: Wildcards are not allowed when force adding src - only explicitly specified source files." do
         jaba(cpp_app: true, dry_run: true) do
           cpp :app do
             src ['a/*.*'], :force # tagB
