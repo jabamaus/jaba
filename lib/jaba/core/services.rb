@@ -109,7 +109,7 @@ module JABA
       @input.instance_variable_set(:@cmd, nil)
 
       @output = {}
-      @output[:services] = self if JABA.running_tests?
+      @output[:services] = self if JABA.running_tests? # internal access for unit testing
       
       @log_msgs = JABA.running_tests? ? nil : [] # Disable logging when running tests
       
