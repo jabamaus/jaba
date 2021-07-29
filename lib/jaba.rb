@@ -21,9 +21,11 @@ module JABA
   #
   def self.run(want_exceptions: false)
     s = Services.new
-    yield s.input if block_given?
     begin
-      s.run
+      s.execute do
+        yield s.input if block_given?
+        s.run
+      end
     rescue
       if want_exceptions
         raise

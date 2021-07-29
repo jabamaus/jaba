@@ -67,6 +67,38 @@ module JABA
       end
     end
 
+    it 'supports core errors' do
+      op = JABA.run(want_exceptions: false) do |c|
+        JABA.error("an error occurred", want_backtrace: false)
+      end
+      op[:error].must_equal "an error occurred"
+
+      op = JABA.run(want_exceptions: false) do |c|
+        JABA.error("an error occurred", want_backtrace: true)
+      end
+      op[:error].must_match ":in `error': an error occurred (JABA::JabaError)\n\tfrom "
+
+      e = assert_raises JabaError do
+        JABA.run(want_exceptions: true) do |c|
+          JABA.error("an error occurred", want_backtrace: true)
+        end
+      end
+      e.message.must_equal('an error occurred')
+      e.backtrace.empty?.must_equal(false)
+
+      e = assert_raises JabaError do
+        JABA.run(want_exceptions: true) do |c|
+          JABA.error("an error occurred", want_backtrace: false)
+        end
+      end
+      e.message.must_equal('an error occurred')
+      
+      # there is still a backtrace even though want_backtrace is false because want_backtrace
+      # only affects jaba's return error not the exception.
+      #
+      e.backtrace.empty?.must_equal(false)
+    end
+
   end
 
 end

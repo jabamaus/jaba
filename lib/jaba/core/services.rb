@@ -162,29 +162,9 @@ module JABA
 
     ##
     #
-    def run
+    def execute
       begin
-        log "Starting Jaba at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}", section: true
-        
-        duration = JABA.milli_timer do
-          # Too early for input manager to process cmd line so check --profile the old fashioned way
-          #
-          profile(input.argv.include?('--profile')) do
-            do_run
-            build_jaba_output
-          end
-        end
-
-        summary = "Generated #{@generated.size} files, #{@added.size} added, #{@modified.size} modified in #{duration}"
-        summary << " [dry run]" if input.dry_run?
-        # TODO: verbose mode prints all generated
-
-        log summary
-        log "Done! (#{duration})"
-
-        @output[:summary] = summary
-        @output[:warnings] = @warnings.uniq # Strip duplicate warnings
-        @output
+        yield
       rescue => e
         log e.full_message(highlight: false), :ERROR
 
@@ -200,7 +180,7 @@ module JABA
           else
             jdl_bt = get_jdl_backtrace(cs, include_api: include_api)
             if jdl_bt.empty?
-              @output[:error] = want_backtrace ? e.full_message : e.message
+              @output[:error] = want_backtrace ? e.full_message(highlight: !JABA.running_tests?) : e.message
               raise
             end
             jdl_bt
@@ -215,12 +195,37 @@ module JABA
           e.set_backtrace(bt)
           raise e
         else
-          @output[:error] = e.full_message
+          @output[:error] = e.full_message(highlight: !JABA.running_tests?)
           raise
         end
       ensure
         term_log
       end
+    end
+
+    ##
+    #
+    def run
+      log "Starting Jaba at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}", section: true
+      
+      duration = JABA.milli_timer do
+        # Too early for input manager to process cmd line so check --profile the old fashioned way
+        #
+        profile(input.argv.include?('--profile')) do
+          do_run
+        end
+      end
+
+      summary = "Generated #{@generated.size} files, #{@added.size} added, #{@modified.size} modified in #{duration}"
+      summary << " [dry run]" if input.dry_run?
+      # TODO: verbose mode prints all generated
+
+      log summary
+      log "Done! (#{duration})"
+
+      @output[:summary] = summary
+      @output[:warnings] = @warnings.uniq # Strip duplicate warnings
+      @output
     end
 
     ##
@@ -351,6 +356,8 @@ module JABA
       # Write final files
       #
       @generators.each(&:perform_generation)
+
+      build_jaba_output
     end
     
     ##
