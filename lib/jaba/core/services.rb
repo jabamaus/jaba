@@ -363,34 +363,33 @@ module JABA
     ##
     #
     def init_root_paths
-      # Initialise build_root from command line, if not present defaults to cwd
+      # Initialise build_root from command line, if not present defaults to cwd. Don't call to_absolute!
+      # as string could be frozen.
       #
       input.build_root = input.build_root.to_absolute(base: @invoking_dir, clean: true)
-
-      # Ensure build_root exists
-      #
-      if !File.exist?(input.build_root)
-        FileUtils.makedirs(input.build_root)
-      end
 
       @jaba_temp_dir = "#{input.build_root}/.jaba"
       @config_file = "#{@jaba_temp_dir}/config.jaba"
 
-      # Initialise src_root from command line, if not present defaults to cwd and ensure it exists
+      # Ensure build_root and temp dir exists
       #
-      unless JABA.running_tests? && input.src_root.nil?
-        input.src_root = input.src_root.to_absolute(base: @invoking_dir, clean: true)
+      if !File.exist?(@jaba_temp_dir)
+        FileUtils.makedirs(@jaba_temp_dir)
       end
-      
+
       # Jaba may have been invoked from an out-of-source build tree so read src_root from jaba temp dir
       #
-      src_root_file_str = @file_manager.read("#{@jaba_temp_dir}/src_root", fail_if_not_found: false)
-      if src_root_file_str
-        input.src_root = src_root_file_str[/SRC_ROOT=(.*)/, 1]
+      src_root_cache = "#{@jaba_temp_dir}/src_root.cache"
+      if File.exist?(src_root_cache)
+        str = @file_manager.read(src_root_cache)
+        input.src_root = str[/src_root=(.*)/, 1]
       end
-      
-      # TODO: create src_root file for out-of-source builds
 
+      if input.src_root
+        input.src_root = input.src_root.to_absolute(base: @invoking_dir, clean: true)
+        IO.write(src_root_cache, "src_root=#{input.src_root}")
+      end
+  
       log "src_root=#{input.src_root}"
       log "build_root=#{input.build_root}"
       log "temp_dir=#{@jaba_temp_dir}"
@@ -923,7 +922,7 @@ module JABA
 
       # Process config file
       #
-      if File.exist?(@config_file) && !JABA.running_tests?
+      if File.exist?(@config_file)
         process_jaba_file(@config_file)
       end
 
@@ -951,7 +950,7 @@ module JABA
     #
     def process_load_path(p, fail_if_empty: false)
       if !p.absolute_path?
-        JABA.error("'#{f}' must be an absolute path")
+        JABA.error("'#{p}' must be an absolute path")
       end
 
       if !File.exist?(p)
@@ -961,10 +960,11 @@ module JABA
       if File.directory?(p)
         files = @file_manager.glob("#{p}/*.jaba")
         if files.empty?
+          msg = "No .jaba files found in #{p}"
           if fail_if_empty
-            JABA.error("No .jaba files found in #{p}", want_backtrace: false)
+            JABA.error(msg, want_backtrace: false)
           else
-            jaba_warn("No .jaba files found in #{p}", want_backtrace: false)
+            jaba_warn(msg)
           end
         else
           files.each do |f|
@@ -1010,8 +1010,11 @@ module JABA
     def log(msg, severity = :INFO, section: false)
       return if !@log_msgs
       if section
-        n = ((130 - msg.size)/2).round # TODO: handle overflow
-        msg = "#{'=' * n} #{msg} #{'=' * n}"
+        max_width = 130
+        n = ((max_width - msg.size)/2).round
+        if n > 2
+          msg = "#{'=' * n} #{msg} #{'=' * n}"
+        end
       end
       @log_msgs << "#{severity} #{msg}"
     end
