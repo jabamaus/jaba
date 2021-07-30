@@ -315,6 +315,7 @@ module JABACoreExt
     def split_and_trim_leading_whitespace
       bg = block_given?
       lines = split("\n")
+      return lines if lines.empty?
       lines.shift if lines[0].empty?
       lines.last.rstrip!
       lines.pop if lines.last.empty?
