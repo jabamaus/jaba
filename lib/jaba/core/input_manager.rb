@@ -22,7 +22,7 @@ module JABA
 
       # General non-cmd-specific options
       #
-      register_option('--help', help: 'Show help')
+      register_option('--help', help: 'Show help', phase: 2)
       register_option('--dry-run', help: 'Perform a dry run', type: :flag, var: :dry_run)
       register_option('--profile', help: 'Profiles with ruby-prof', type: :flag, var: :profile, dev_option: true)
       register_option('--barebones', help: 'Loads minimal modules', type: :flag, var: :barebones, dev_option: true)
@@ -30,7 +30,7 @@ module JABA
       @default_cmd = register_cmd(:gen)
       register_option('--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root, cmd: :gen)
       register_option('--build-root', short: '-B', help: 'Set build root', type: :value, var: :build_root, cmd: :gen)
-      register_option('--define', short: '-D', help: 'Set global attribute value', phase: 2, cmd: :gen)
+      register_option('--define', short: '-D', help: 'Set global attribute value', phase: 3, cmd: :gen)
       register_option('--dump-state', help: 'Dump state to json for debugging', type: :flag, var: :dump_state, cmd: :gen)
       
       register_cmd(:build)
@@ -380,6 +380,8 @@ module JABA
       w << "Jaba build system generator v#{VERSION}"
       w << "Copyright (C) 2020-#{Time.now.year} James French"
       w << "Built on ruby #{RUBY_VERSION}p#{RUBY_PATCHLEVEL} #{RUBY_RELEASE_DATE} [#{RUBY_PLATFORM}] #{RUBY_COPYRIGHT.sub('ruby', '')}"
+      w << ""
+      w << "Current src_root: #{@input.src_root}"
       w << ""
       w << "Usage:"
       w << ""

@@ -55,37 +55,41 @@ module JABA
         c.build_root = br
         c.src_root = "#{JABA.examples_dir}/02-advanced"
       end
-      op[:error].must_equal("Source root already set to #{sr} - cannot change")
+      op[:error].must_equal("Source root already set to '#{sr}' - cannot change")
 
       op = JABA.run(want_exceptions: false) do |c|
         c.build_root = br
         c.argv = ['-S', "#{JABA.examples_dir}/02-advanced"]
       end
-      op[:error].must_equal("Source root already set to #{sr} - cannot change")
+      op[:error].must_equal("Source root already set to '#{sr}' - cannot change")
     end
 
     it 'checks src_root is valid' do
       sr = "#{temp_dir}/src_root"
+      br = "#{temp_dir}/build_root"
       op = JABA.run do |c|
         c.src_root = sr
+        c.build_root = br
       end
-      op[:error].must_equal "#{sr} does not exist"
-      
+      op[:error].must_equal "source root '#{sr}' does not exist"
+
       FileUtils.mkdir(sr)
       op = JABA.run do |c|
         c.src_root = sr
+        c.build_root = br
       end
-      op[:error].must_equal "No .jaba files found in #{sr}"
+      op[:error].must_equal "No .jaba files found in '#{sr}'"
 
-      # test a nested .jaba file. Should not find it because search is not recursive
+      # test a nested .jaba file. Should not find it because search is not recursivetj
       #
       FileUtils.mkdir("#{sr}/nested")
       IO.write("#{sr}/nested/test.jaba", "")
 
       op = JABA.run do |c|
         c.src_root = sr
+        c.build_root = br
       end
-      op[:error].must_equal "No .jaba files found in #{sr}"
+      op[:error].must_equal "No .jaba files found in '#{sr}'"
     end
 
     it 'defaults build_root to cwd' do

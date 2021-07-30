@@ -102,8 +102,8 @@ module JABA
       @invoking_dir = Dir.getwd.freeze
 
       @input = Input.new
-      @input.instance_variable_set(:@build_root, @invoking_dir)
-      @input.instance_variable_set(:@src_root, @invoking_dir)
+      @input.instance_variable_set(:@build_root, nil)
+      @input.instance_variable_set(:@src_root, nil)
       @input.instance_variable_set(:@argv, ARGV)
       @input.instance_variable_set(:@definitions, [])
       @input.instance_variable_set(:@cmd, nil)
@@ -237,6 +237,9 @@ module JABA
       @input_manager.process(phase: 1)
 
       init_root_paths
+
+      @input_manager.process(phase: 2)
+
       load_jaba_files
 
       # Prepend globals type definition so globals are processed first, allowing everything else to access them
@@ -331,7 +334,7 @@ module JABA
       @globals_node = globals_generator.root_nodes.first
       @globals = @globals_node.attrs
 
-      @input_manager.process(phase: 2)
+      @input_manager.process(phase: 3)
       
       process_config_file
 
@@ -363,10 +366,13 @@ module JABA
     ##
     #
     def init_root_paths
-      # Initialise build_root from command line, if not present defaults to cwd. Don't call to_absolute!
-      # as string could be frozen.
+      # Initialise build_root from command line, if not present defaults to cwd. 
       #
-      input.build_root = input.build_root.to_absolute(base: @invoking_dir, clean: true)
+      input.build_root = if input.build_root.nil?
+        @invoking_dir
+      else
+        input.build_root.to_absolute(base: @invoking_dir, clean: true)
+      end
 
       @jaba_temp_dir = "#{input.build_root}/.jaba"
       @config_file = "#{@jaba_temp_dir}/config.jaba"
@@ -378,20 +384,29 @@ module JABA
       end
 
       # Jaba may have been invoked from an out-of-source build tree so read src_root from jaba temp dir
-      #
+      # 
       cached_src_root = nil
       src_root_cache = "#{@jaba_temp_dir}/src_root.cache"
       if File.exist?(src_root_cache)
         str = @file_manager.read(src_root_cache)
         cached_src_root = str[/src_root=(.*)/, 1]
+        if cached_src_root && input.src_root && input.src_root != cached_src_root
+          JABA.error("Source root already set to '#{cached_src_root}' - cannot change", want_backtrace: false)
+        end
+        input.src_root = cached_src_root
+      end
+
+      input.src_root = if input.src_root.nil?
+        @invoking_dir if !JABA.running_tests?
+      else
+        input.src_root.to_absolute(base: @invoking_dir, clean: true)
       end
 
       if input.src_root
-        input.src_root = input.src_root.to_absolute(base: @invoking_dir, clean: true)
-
-        if cached_src_root && input.src_root != cached_src_root
-          JABA.error("Source root already set to #{cached_src_root} - cannot change", want_backtrace: false)
+        if !File.exist?(input.src_root)
+          JABA.error("source root '#{input.src_root}' does not exist", want_backtrace: false)
         end
+
         IO.write(src_root_cache, "src_root=#{input.src_root}")
       end
   
@@ -959,13 +974,13 @@ module JABA
       end
 
       if !File.exist?(p)
-        JABA.error("#{p} does not exist", want_backtrace: false)
+        JABA.error("'#{p}' does not exist", want_backtrace: false)
       end
 
       if File.directory?(p)
         files = @file_manager.glob("#{p}/*.jaba")
         if files.empty?
-          msg = "No .jaba files found in #{p}"
+          msg = "No .jaba files found in '#{p}'"
           if fail_if_empty
             JABA.error(msg, want_backtrace: false)
           else
