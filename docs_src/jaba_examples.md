@@ -1,10 +1,10 @@
 ## Jaba examples
 [home](index.html)
 ```ruby
-include '../3rdParty/3rdPartyLib'
+include '../example_src/3rdParty/3rdPartyLib'
 
 cpp :AppWith3rdPartyDependency do
-  root '../ExampleApp'
+  root '../example_src/ExampleApp'
   type :console
   platforms [:windows_x86_64]
   configs [:Debug, :Release]
@@ -17,7 +17,7 @@ end
 # Demonstrates the minimum required to create a C++ console app
 #
 cpp :BasicApp do
-  root '../ExampleApp'
+  root '../example_src/ExampleApp'
   type :console
   platforms [:windows_x86_64]
   configs [:Debug, :Release]
@@ -27,7 +27,7 @@ end
 
 ```ruby
 cpp :BasicAppWithDependencies do
-  root '../ExampleApp'
+  root '../example_src/ExampleApp'
   type :console
   platforms [:windows_x86_64]
   configs [:Debug, :Release]
@@ -38,7 +38,7 @@ end
 
 ```ruby
 cpp :BasicDll do
-  root '../ExampleDll'
+  root '../example_src/ExampleDll'
   type :dll
   platforms [:windows_x86_64]
   configs [:Debug, :Release]
@@ -51,7 +51,7 @@ end
 
 ```ruby
 cpp :BasicStaticLib do
-  root '../ExampleLib'
+  root '../example_src/ExampleLib'
   type :lib
   platforms [:windows_x86_64]
   configs [:Debug, :Release]
@@ -62,8 +62,11 @@ end
 ```
 
 ```ruby
+```
+
+```ruby
 cpp :AppWithCustomisedBuildTree do
-  root '../ExampleApp'
+  root '../example_src/ExampleApp'
   type :console
   platforms [:windows_x86_64]
   configs [:Debug, :Release]

@@ -1214,6 +1214,7 @@ module JABA
     def generate_docs
       generate_reference_doc
       generate_examples_doc
+      generate_faqs
     end
 
     ##
@@ -1323,6 +1324,45 @@ module JABA
             end
           end
         end
+      end
+    end
+
+    ##
+    #
+    def generate_faqs
+      # TODO: check for duplicate ids
+      write_doc_page('jaba_faqs.md', 'Jaba FAQs') do |w|
+        faqs = {}
+        IO.read("#{JABA.docs_src_dir}/faqs_src.txt").scan(/^(.*?):(.*?)---/m) do |section, entry|
+          lines = entry.split("\n")
+          faq = lines.shift.lstrip
+          faq_id = faq.slice(0, 20).delete(' ')
+          answer = lines.join("\n").strip
+          entry = faqs[section]
+          if entry.nil?
+            faqs[section] = []
+          end
+          faqs[section] << [faq, faq_id, answer]
+        end
+        w << ""
+        faqs.each do |s, entries|
+          w << "- [#{s}](##{s})"
+          entries.each do |e|
+            w << "  - [#{e[0]}](##{e[1]})"
+          end
+        end
+        w << ""
+        faqs.each do |s, entries|
+          w << "<a id=\"#{s}\"></a>"
+          w << "## #{s}"
+          entries.each do |e|
+            w << "<a id=\"#{e[1]}\"></a>"
+            w << "#### #{e[0]}"
+            w << "#{e[2]}"
+            w << ""
+          end
+        end
+        w << ""
       end
     end
 

@@ -1,0 +1,18 @@
+General: What generators does jaba currently support?
+Currently only Visual Studio (win32/x64) but there are plans to support Xcode (ios/osx) and Ninja (linux).
+---
+General: Is jaba going to support make?
+No
+---
+General: Why is Jaba written in ruby?
+
+---
+General: How much ruby knowledge do I need?
+
+---
+General: Why doesn't jaba update the build automatically when .jaba files change?
+
+---
+General: Does jaba put absolute file paths in generated files?
+
+---
