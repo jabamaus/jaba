@@ -79,6 +79,9 @@ define :cpp do
       make_handle do |id|
         "#{id}|#{host}|#{platform}"
       end
+      unresolved_msg do |id|
+        "'#{id.inspect}' dependency not found"
+      end
       example %Q{
         cpp :MyApp do
           type :app

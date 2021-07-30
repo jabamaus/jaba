@@ -233,7 +233,16 @@ module JABA
       else
         "#{ref_node_id}"
       end
-      ref_node = rjt.generator.node_from_handle(handle, errobj: attr)
+      ref_node = rjt.generator.node_from_handle(handle, fail_if_not_found: false)
+      if ref_node.nil?
+        unresolved_msg_block = attr_def.unresolved_msg
+        err_msg = if unresolved_msg_block
+          "#{node.eval_jdl(ref_node_id, &unresolved_msg_block)}"
+        else
+          "Node with handle '#{handle}' not found"
+        end
+        JABA.error(err_msg, errobj: attr)
+      end
       
       # Don't need to track node references when resolving references between the same types as this
       # happens after all the nodes have been set up, by which time the functionality is not needed.

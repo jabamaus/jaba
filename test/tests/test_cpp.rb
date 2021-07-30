@@ -85,6 +85,25 @@ module JABA
       end
     end
 
+    it 'fails if dependency not found' do
+      td = temp_dir
+      make_file("app/main.cpp")
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagG)}: ':lib' dependency not found." do
+        jaba do
+          defaults :cpp do
+            platforms [:windows_x86, :windows_x86_64]
+            configs [:Debug, :Release]
+          end
+          cpp :app do
+            root "#{td}/app"
+            type :console
+            deps [:lib] # tagG
+            src ['main.cpp']
+          end
+        end
+      end
+    end
+
     # TODO: test exporting references
     # Note that exported items are deleted from exported module by default
     #
