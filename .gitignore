@@ -13,3 +13,4 @@
 .vscode*
 *build/
 .jaba/
+docs_src/generated

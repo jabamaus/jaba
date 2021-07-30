@@ -1369,7 +1369,7 @@ module JABA
     ##
     #
     def write_doc_page(md, title)
-      file = @file_manager.new_file("#{JABA.docs_src_dir}/#{md}", capacity: 16 * 1024)
+      file = @file_manager.new_file("#{JABA.docs_src_dir}/generated/#{md}", capacity: 16 * 1024)
       w = file.writer
       w << "## #{title}"
       w << "[home](index.html)"
