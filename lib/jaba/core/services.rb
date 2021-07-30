@@ -199,7 +199,7 @@ module JABA
           raise
         end
       ensure
-        term_log
+        term_log if !input_manager.cmd_specified?(:gendoc)
       end
     end
 
@@ -213,6 +213,7 @@ module JABA
         #
         profile(input.argv.include?('--profile')) do
           do_run
+          build_jaba_output
         end
       end
 
@@ -334,14 +335,14 @@ module JABA
       @globals_node = globals_generator.root_nodes.first
       @globals = @globals_node.attrs
 
-      @input_manager.process(phase: 3)
-      
-      process_config_file
-
       if input_manager.cmd_specified?(:gendoc)
         generate_docs
         return
       end
+
+      @input_manager.process(phase: 3)
+      
+      process_config_file if !JABA.running_tests?
 
       post_globals.each do |g|
         g.process
@@ -359,8 +360,6 @@ module JABA
       # Write final files
       #
       @generators.each(&:perform_generation)
-
-      build_jaba_output
     end
     
     ##
@@ -379,7 +378,7 @@ module JABA
 
       # Ensure build_root and temp dir exists
       #
-      if !File.exist?(@jaba_temp_dir)
+      if !File.exist?(@jaba_temp_dir) && !input_manager.cmd_specified?(:gendoc)
         FileUtils.makedirs(@jaba_temp_dir)
       end
 
@@ -402,6 +401,8 @@ module JABA
         input.src_root.to_absolute(base: @invoking_dir, clean: true)
       end
 
+      input.src_root = nil if input_manager.cmd_specified?(:gendoc)
+      
       if input.src_root
         if !File.exist?(input.src_root)
           JABA.error("source root '#{input.src_root}' does not exist", want_backtrace: false)
@@ -421,41 +422,39 @@ module JABA
     def src_root_valid?
       input.src_root && load_path_valid?(input.src_root)
     end
-    
+
     ##
     #
     def process_config_file
-      if !JABA.running_tests?
-        # Create config.jaba if it does not exist, which will write in any config options defined on the command line
-        #
-        # TODO: automatically patch in new attrs
-        if !File.exist?(@config_file)
-          file = @file_manager.new_file(@config_file, track: false, eol: :native)
-          w = file.writer
+      # Create config.jaba if it does not exist, which will write in any config options defined on the command line
+      #
+      # TODO: automatically patch in new attrs
+      if !File.exist?(@config_file)
+        file = @file_manager.new_file(@config_file, track: false, eol: :native)
+        w = file.writer
 
-          @globals_node.visit_attr(top_level: true) do |attr, value|
-            attr_def = attr.attr_def
+        @globals_node.visit_attr(top_level: true) do |attr, value|
+          attr_def = attr.attr_def
 
-            # TODO: include ref manual type docs, eg type, definition location etc
-            comment = String.new("#{attr_def.title}. #{attr_def.notes.join("\n")}")
-            comment.wrap!(130, prefix: '# ')
+          # TODO: include ref manual type docs, eg type, definition location etc
+          comment = String.new("#{attr_def.title}. #{attr_def.notes.join("\n")}")
+          comment.wrap!(130, prefix: '# ')
 
-            w << "##"
-            w << comment
-            w << "#"
-            if attr.hash?
-              value.each do |k, v|
-                w << "#{attr_def.defn_id} #{k.inspect}, #{v.inspect}"
-              end
-            else
-              w << "#{attr_def.defn_id} #{value.inspect}"
+          w << "##"
+          w << comment
+          w << "#"
+          if attr.hash?
+            value.each do |k, v|
+              w << "#{attr_def.defn_id} #{k.inspect}, #{v.inspect}"
             end
-            w << ''
+          else
+            w << "#{attr_def.defn_id} #{value.inspect}"
           end
-          w.chomp!
-
-          file.write
+          w << ''
         end
+        w.chomp!
+
+        file.write
       end
     end
 
