@@ -1,6 +1,19 @@
 ## Jaba examples
 [home](index.html)
 ```ruby
+include '../3rdParty/3rdPartyLib'
+
+cpp :AppWith3rdPartyDependency do
+  root '../ExampleApp'
+  type :console
+  platforms [:windows_x86_64]
+  configs [:Debug, :Release]
+  src ['main.cpp']
+  deps ['3rdPartyLib']
+end
+```
+
+```ruby
 # Demonstrates the minimum required to create a C++ console app
 #
 cpp :BasicApp do
@@ -58,6 +71,17 @@ cpp :AppWithCustomisedBuildTree do
   bindir "custom_build_tree/bin/#{config}"
   libdir "custom_build_tree/lib/#{config}"
   objdir "custom_build_tree/obj/#{config}"
+end
+```
+
+```ruby
+cpp '3rdPartyLib' do
+  type :lib
+  platforms [:windows_x86_64]
+  configs [:Debug, :Release]
+  src ['.']
+  inc ['include'], :export
+  define ['WITH_3RDPARTY_LIB'], :export_only
 end
 ```
 

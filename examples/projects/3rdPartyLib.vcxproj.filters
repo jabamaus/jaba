@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include\3rdPartyLib">
+      <UniqueIdentifier>{8EAA2072-5C34-5611-BE53-C8F82783AF16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{D3D2D753-35C6-5022-9638-AA14EEE99D9A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{3240D0A9-AEF5-52E1-89C4-38B073C7F543}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\3rdParty\3rdPartyLib\include\3rdPartyLib\3rdPartyLib.h">
+      <Filter>include\3rdPartyLib</Filter>
+    </ClInclude>
+    <ClCompile Include="..\3rdParty\3rdPartyLib\src\3rdPartyLib.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

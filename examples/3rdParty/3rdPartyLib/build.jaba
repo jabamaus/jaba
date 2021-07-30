@@ -1,0 +1,8 @@
+cpp '3rdPartyLib' do
+  type :lib
+  platforms [:windows_x86_64]
+  configs [:Debug, :Release]
+  src ['.']
+  inc ['include'], :export
+  define ['WITH_3RDPARTY_LIB'], :export_only
+end

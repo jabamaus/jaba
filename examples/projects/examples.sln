@@ -1,5 +1,9 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio version 16
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3rdPartyLib", "3rdPartyLib.vcxproj", "{49416454-B6B3-51BD-9C12-115843516597}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AppWith3rdPartyDependency", "AppWith3rdPartyDependency.vcxproj", "{F1888CB3-BE8C-5688-A5F4-CCAA91CDCDB7}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AppWithCustomisedBuildTree", "AppWithCustomisedBuildTree.vcxproj", "{AAE32613-72B9-5EC0-BC66-D16F1A8FB5CF}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BasicStaticLib", "BasicStaticLib.vcxproj", "{BA635332-9857-511F-BF0A-D242BFA20F1A}"
@@ -16,6 +20,14 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{49416454-B6B3-51BD-9C12-115843516597}.Debug|x64.ActiveCfg = Debug|x64
+		{49416454-B6B3-51BD-9C12-115843516597}.Debug|x64.Build.0 = Debug|x64
+		{49416454-B6B3-51BD-9C12-115843516597}.Release|x64.ActiveCfg = Release|x64
+		{49416454-B6B3-51BD-9C12-115843516597}.Release|x64.Build.0 = Release|x64
+		{F1888CB3-BE8C-5688-A5F4-CCAA91CDCDB7}.Debug|x64.ActiveCfg = Debug|x64
+		{F1888CB3-BE8C-5688-A5F4-CCAA91CDCDB7}.Debug|x64.Build.0 = Debug|x64
+		{F1888CB3-BE8C-5688-A5F4-CCAA91CDCDB7}.Release|x64.ActiveCfg = Release|x64
+		{F1888CB3-BE8C-5688-A5F4-CCAA91CDCDB7}.Release|x64.Build.0 = Release|x64
 		{AAE32613-72B9-5EC0-BC66-D16F1A8FB5CF}.Debug|x64.ActiveCfg = Debug|x64
 		{AAE32613-72B9-5EC0-BC66-D16F1A8FB5CF}.Debug|x64.Build.0 = Debug|x64
 		{AAE32613-72B9-5EC0-BC66-D16F1A8FB5CF}.Release|x64.ActiveCfg = Release|x64

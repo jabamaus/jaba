@@ -1,0 +1,10 @@
+include '../3rdParty/3rdPartyLib'
+
+cpp :AppWith3rdPartyDependency do
+  root '../ExampleApp'
+  type :console
+  platforms [:windows_x86_64]
+  configs [:Debug, :Release]
+  src ['main.cpp']
+  deps ['3rdPartyLib']
+end
