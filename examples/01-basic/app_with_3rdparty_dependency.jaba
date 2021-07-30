@@ -1,7 +1,7 @@
-include '../3rdParty/3rdPartyLib'
+include '../example_src/3rdParty/3rdPartyLib'
 
 cpp :AppWith3rdPartyDependency do
-  root '../ExampleApp'
+  root '../example_src/ExampleApp'
   type :console
   platforms [:windows_x86_64]
   configs [:Debug, :Release]

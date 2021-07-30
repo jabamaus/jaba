@@ -1,5 +1,5 @@
 cpp :BasicStaticLib do
-  root '../ExampleLib'
+  root '../example_src/ExampleLib'
   type :lib
   platforms [:windows_x86_64]
   configs [:Debug, :Release]

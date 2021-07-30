@@ -12,10 +12,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\ExampleLib\include\ExampleLib\ExampleLib.h">
+    <ClInclude Include="..\example_src\ExampleLib\include\ExampleLib\ExampleLib.h">
       <Filter>include\ExampleLib</Filter>
     </ClInclude>
-    <ClCompile Include="..\ExampleLib\src\ExampleLib.cpp">
+    <ClCompile Include="..\example_src\ExampleLib\src\ExampleLib.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
