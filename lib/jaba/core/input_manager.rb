@@ -381,8 +381,10 @@ module JABA
       w << "Copyright (C) 2020-#{Time.now.year} James French"
       w << "Built on ruby #{RUBY_VERSION}p#{RUBY_PATCHLEVEL} #{RUBY_RELEASE_DATE} [#{RUBY_PLATFORM}] #{RUBY_COPYRIGHT.sub('ruby', '')}"
       w << ""
-      w << "Current src_root: #{@input.src_root}"
-      w << ""
+      if @services.src_root_valid?
+        w << "Current src_root: #{@input.src_root}"
+        w << ""
+      end
       w << "Usage:"
       w << ""
       w << "  jaba cmd [options]"

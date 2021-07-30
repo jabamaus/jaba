@@ -418,6 +418,12 @@ module JABA
 
     ##
     #
+    def src_root_valid?
+      input.src_root && load_path_valid?(input.src_root)
+    end
+    
+    ##
+    #
     def process_config_file
       if !JABA.running_tests?
         # Create config.jaba if it does not exist, which will write in any config options defined on the command line
@@ -964,6 +970,12 @@ module JABA
         last = @jdl_includes.pop
         process_load_path(last)
       end
+    end
+
+    ##
+    #
+    def load_path_valid?(path)
+      !@file_manager.glob("#{path}/*.jaba").empty?
     end
 
     ##
