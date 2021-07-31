@@ -63,3 +63,8 @@ b.add('LICENSE')
 b.add('README.md') # TODO: turn README into html
 
 b.build
+
+# TODO: Check working copy has no changes
+# TODO: clean working copy
+# TODO: link to versioned docs
+# TODO: copy docs to docs branch, build and publish

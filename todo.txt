@@ -1,4 +1,4 @@
-* Write release build script. Will strip docs and tests.
+- add 'jaba doc' command that jumps to docs for that version.
 * Implement jaba build command to build vs2019 solution
 * Categories in solution files.
 - flag to control whether absolute paths allowed in file/dir attrs. Eg build_root_offset is not an offset if absolute path used.
