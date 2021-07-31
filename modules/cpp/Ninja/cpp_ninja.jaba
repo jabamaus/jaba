@@ -1,4 +1,0 @@
-open_instance :ninja, type: :host do
-  cpp_supported_platforms [:windows]
-  cpp_project_classname 'Ninjaproj'
-end

@@ -1,17 +1,1 @@
-/test/tests/temp
-*.profile
-*.exe
-*.exe.recipe
-*.idb
-*.ilk
-*.log
-*.obj
-*.tlog
-*.pdb
-*.vcxproj.user
-.vs/
 .vscode*
-*build/
-.jaba/
-docs_src/generated
-tools/release_temp

@@ -1,9 +1,0 @@
-# Demonstrates the minimum required to create a C++ console app
-#
-cpp :BasicApp do
-  root '../example_src/ExampleApp'
-  type :console
-  platforms [:windows_x86_64]
-  configs [:Debug, :Release]
-  src ['main.cpp']
-end

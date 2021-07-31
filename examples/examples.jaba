@@ -1,9 +1,0 @@
-include '01-basic'
-include '02-advanced'
-
-workspace :examples do
-  projects ['*']
-end
-
-# TODO:
-# - plugin example
