@@ -1,6 +1,12 @@
 module JABA
 
   using JABACoreExt
+
+  ##
+  #
+  def self.jaba_repo_url
+    'https://github.com/jabamaus/jaba.git'
+  end
   
   ##
   #
@@ -18,12 +24,6 @@ module JABA
   #
   def self.examples_dir
     "#{install_dir}/examples"
-  end
-
-  ##
-  #
-  def self.docs_src_dir
-    "#{install_dir}/docs_src"
   end
 
 end

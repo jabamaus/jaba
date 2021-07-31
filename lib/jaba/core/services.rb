@@ -86,7 +86,7 @@ module JABA
       @input.instance_variable_set(:@cmd, nil)
 
       @output = {}
-      @output[:services] = self if JABA.running_tests? # internal access for unit testing
+      @output[:services] = self # internal access for unit testing
       
       @log_msgs = JABA.running_tests? ? nil : [] # Disable logging when running tests
       
@@ -176,7 +176,7 @@ module JABA
           raise
         end
       ensure
-        term_log if !input_manager.cmd_specified?(:gendoc)
+        term_log
       end
     end
 
@@ -312,11 +312,6 @@ module JABA
       @globals_node = globals_generator.root_nodes.first
       @globals = @globals_node.attrs
 
-      if input_manager.cmd_specified?(:gendoc)
-        generate_docs
-        return
-      end
-
       @input_manager.process(phase: 3)
       
       process_config_file if !JABA.running_tests?
@@ -355,7 +350,7 @@ module JABA
 
       # Ensure build_root and temp dir exists
       #
-      if !File.exist?(@jaba_temp_dir) && !input_manager.cmd_specified?(:gendoc)
+      if !File.exist?(@jaba_temp_dir)
         FileUtils.makedirs(@jaba_temp_dir)
       end
 
@@ -378,8 +373,6 @@ module JABA
         input.src_root.to_absolute(base: @invoking_dir, clean: true)
       end
 
-      input.src_root = nil if input_manager.cmd_specified?(:gendoc)
-      
       if input.src_root
         if !File.exist?(input.src_root)
           JABA.error("source root '#{input.src_root}' does not exist", want_backtrace: false)
@@ -833,7 +826,7 @@ module JABA
         end
       end
 
-      if globals.dump_output && !input_manager.cmd_specified?(:gendoc)
+      if globals.dump_output
         json = JSON.pretty_generate(@output)
         file = @file_manager.new_file(out_file, eol: :native)
         w = file.writer
@@ -1184,206 +1177,6 @@ module JABA
         printer.print(str)
       end
       IO.write(file, str)
-    end
-    
-    ##
-    #
-    def generate_docs
-      generate_reference_doc
-      generate_examples_doc
-      generate_faqs
-    end
-
-    ##
-    #
-    def generate_reference_doc
-      write_doc_page('jaba_reference.md', 'Jaba language reference') do |w|
-        w << ""
-
-        # TODO: document include statement
-        # TODO: document top level types
-        # TODO: document how to define new types and attributes
-        
-        w << "- Types"
-        @top_level_jaba_types.sort_by {|jt| jt.defn_id}.each do |jt|
-          w << "  - [#{jt.defn_id}](#{jt.reference_manual_page})"
-          jt.all_attr_defs_sorted.each do |ad|
-            w << "    - [#{ad.defn_id}](#{jt.reference_manual_page}##{ad.defn_id})"
-          end
-        end
-
-        @top_level_jaba_types.each do |jt|
-          generate_jaba_type_reference(jt)
-        end
-
-        w << "- Attribute types"
-        @jaba_attr_types.each do |at|
-          w << "  - #{at.id}"
-        end
-
-        w << "- Attribute variants"
-        w << "  - single"
-        w << "  - array"
-        w << "  - hash"
-
-        w << "- Attribute flags"
-        @jaba_attr_flags.each do |af|
-          w << "  - #{af.id}"
-        end
-        w << ""
-      end
-    end
-
-    ##
-    #
-    def generate_jaba_type_reference(jt)
-      write_doc_page(jt.reference_manual_page(ext: '.md'), "#{jt.defn_id}") do |w|
-        w << "> "
-        w << "> _#{jt.title}_"
-        w << "> "
-        w << "> | Property | Value  |"
-        w << "> |-|-|"
-        md_row(w, 'defined in', "$(jaba_install)/#{jt.src_loc.describe(style: :rel_jaba_install, line: false)}")
-        md_row(w, :notes, jt.notes.make_sentence)
-        md_row(w, 'depends on', jt.dependencies.map{|d| "[#{d}](#{d.reference_manual_page})"}.join(", "))
-        w << "> "
-        w << ""
-        jt.all_attr_defs_sorted.each do |ad|
-          w << "<a id=\"#{ad.defn_id}\"></a>" # anchor for the attribute eg cpp-src
-          w << "#### #{ad.defn_id}"
-          w << "> _#{ad.title}_"
-          w << "> "
-          w << "> | Property | Value  |"
-          w << "> |-|-|"
-          # TODO: need to flag whether per-project/per-config etc
-          type = String.new
-          if ad.type_id
-            type << "#{ad.type_id.inspect}"
-          end
-          if ad.array?
-            type << " []"
-          elsif ad.hash?
-            type << " {}"
-          end
-          md_row(w, :type, type)
-          ad.jaba_attr_type.get_reference_manual_rows(ad)&.each do |id, value|
-            md_row(w, id, value)
-          end
-          md_row(w, :default, ad.default.proc? ? nil : !ad.default.nil? ? ad.default.inspect : nil)
-          md_row(w, :flags, ad.flags.map(&:inspect).join(', '))
-          md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
-          md_row(w, 'defined in', "$(jaba_install)/#{ad.src_loc.describe(style: :rel_jaba_install, line: false)}")
-          md_row(w, :notes, ad.notes.make_sentence.to_markdown_links) if !ad.notes.empty?
-          w << ">"
-          if !ad.examples.empty?
-            w << "> *Examples*"
-            md_code(w, prefix: '>') do
-              ad.examples.each do |e|
-                e.split_and_trim_leading_whitespace do |line|
-                  w << "> #{line}"
-                end
-              end
-            end
-          end
-        end
-      end
-    end
-
-    def generate_examples_doc
-      write_doc_page('jaba_examples.md', 'Jaba examples') do |w|
-        Dir.glob("#{JABA.examples_dir}/**/*.jaba").each do |example|
-          next if example.basename == 'examples.jaba'
-          str = @file_manager.read(example, fail_if_not_found: true)
-          md_code(w) do
-            # TODO: extract top comments and turn into formatted markdown
-            str.split_and_trim_leading_whitespace do |line|
-              w << line
-            end
-          end
-        end
-      end
-    end
-
-    ##
-    #
-    def generate_faqs
-      # TODO: check for duplicate ids
-      write_doc_page('jaba_faqs.md', 'Jaba FAQs') do |w|
-        faqs = {}
-        IO.read("#{JABA.docs_src_dir}/faqs_src.txt").scan(/^(.*?):(.*?)---/m) do |section, entry|
-          lines = entry.split("\n")
-          faq = lines.shift.lstrip
-          faq_id = faq.slice(0, 20).delete(' ')
-          answer = lines.join("\n").strip
-          entry = faqs[section]
-          if entry.nil?
-            faqs[section] = []
-          end
-          faqs[section] << [faq, faq_id, answer]
-        end
-        w << ""
-        faqs.each do |s, entries|
-          w << "- [#{s}](##{s})"
-          entries.each do |e|
-            w << "  - [#{e[0]}](##{e[1]})"
-          end
-        end
-        w << ""
-        faqs.each do |s, entries|
-          w << "<a id=\"#{s}\"></a>"
-          w << "## #{s}"
-          entries.each do |e|
-            w << "<a id=\"#{e[1]}\"></a>"
-            w << "#### #{e[0]}"
-            w << "#{e[2]}"
-            w << ""
-          end
-        end
-        w << ""
-      end
-    end
-
-    ##
-    #
-    def write_doc_page(md, title)
-      file = @file_manager.new_file("#{JABA.docs_src_dir}/generated/#{md}", capacity: 16 * 1024)
-      w = file.writer
-      w << "## #{title}"
-      w << "[home](index.html)"
-      yield w
-      md_small(w, "Generated by #{html_link('https://github.com/ishani/MaMD', 'MaMD')} " \
-        "which uses #{html_link('https://github.com/yuin/goldmark', 'Goldmark')}, " \
-        "#{html_link('https://github.com/alecthomas/chroma', 'Chroma')}, " \
-        "#{html_link('https://rsms.me/inter', 'Inter')} and " \
-        "#{html_link('https://github.com/tonsky/FiraCode', 'FiraCode')}")
-      file.write
-    end
-
-    ##
-    #
-    def html_link(href, text)
-      "<a href=\"#{href}\">#{text}</a>"
-    end
-
-    ##
-    #
-    def md_small(w, text)
-      w << "<sub><sup>#{text}</sup></sub>"
-    end
-
-    ##
-    #
-    def md_code(w, prefix: nil)
-      w << "#{prefix}```ruby"
-      yield
-      w << "#{prefix}```"
-      w << ""
-    end
-    
-    ##
-    #
-    def md_row(w, p, v)
-      w << "> | _#{p}_ | #{v} |"
     end
 
   end

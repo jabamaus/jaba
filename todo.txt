@@ -1,3 +1,4 @@
+- add example of 'parameterisable' libraries that can be static or dynamic. Achieve it by adding 'default_cpp_library_type' global and initialising 'type' with it.
 - add 'jaba doc' command that jumps to docs for that version.
 * Implement jaba build command to build vs2019 solution
 * Categories in solution files.

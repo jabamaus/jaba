@@ -35,7 +35,6 @@ module JABA
       
       register_cmd(:build)
       register_cmd(:clean)
-      register_cmd(:gendoc, dev_cmd: true)
     end
 
     ##
