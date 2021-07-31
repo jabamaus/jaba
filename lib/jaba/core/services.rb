@@ -10,6 +10,7 @@ require_relative 'core_ext'
 require_relative 'utils'
 require_relative 'file_manager'
 require_relative 'input_manager'
+require_relative 'standard_paths'
 require_relative 'jaba_object'
 require_relative 'jaba_attribute_type'
 require_relative 'jaba_attribute_definition_flag'
@@ -41,30 +42,6 @@ module JABA
   #
   def self.running_tests?
     @@running_tests
-  end
-
-  ##
-  #
-  def self.install_dir
-    @@jaba_install_dir ||= "#{__dir__}/../../..".cleanpath
-  end
-
-  ##
-  #
-  def self.modules_dir
-    "#{install_dir}/modules"
-  end
-
-  ##
-  #
-  def self.examples_dir
-    "#{install_dir}/examples"
-  end
-
-  ##
-  #
-  def self.docs_src_dir
-    "#{install_dir}/docs_src"
   end
 
   ##
