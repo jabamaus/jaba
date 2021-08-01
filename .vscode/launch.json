@@ -21,7 +21,7 @@
       "name": "Debug jaba",
       "type": "Ruby",
       "request": "launch",
-      "program": "${workspaceRoot}/bin/jaba.rb"
+      "program": "${workspaceRoot}/bin/jaba.rb",
       "args": []
     }
   ]
