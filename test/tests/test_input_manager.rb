@@ -10,8 +10,8 @@ module JABA
       register_cmdline_option('--value-opt', short: '-v', help: 'value opt', var: :value_opt, type: :value)
       register_cmdline_option('--array-opt', short: '-a', help: 'array opt', var: :array_opt, type: :array)
 
-      register_cmdline_cmd(:cmd1)
-      register_cmdline_cmd(:cmd2)
+      register_cmdline_cmd(:cmd1, help: 'cmd1 help')
+      register_cmdline_cmd(:cmd2, help: 'cmd2 help')
     end
 
     def generate
