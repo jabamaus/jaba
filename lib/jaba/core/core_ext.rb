@@ -310,38 +310,6 @@ module JABACoreExt
     end
 
     ##
-    # Used when generating code example blocks in reference manual.
-    #
-    def split_and_trim_leading_whitespace
-      bg = block_given?
-      lines = split("\n")
-      return lines if lines.empty?
-      lines.shift if lines[0].empty?
-      lines.last.rstrip!
-      lines.pop if lines.last.empty?
-
-      if lines[0] =~ /^(\s+)/
-        lw = Regexp.last_match(1)
-        lines.each do |l|
-          result = l.delete_prefix!(lw)
-          yield result if bg
-        end
-      else
-        lines.each{|l| yield l} if bg
-      end
-      lines
-    end
-    
-    # Convert all variables specified as $(cpp#varname) (which themselves reference attribute names) into markdown links
-    # eg [$(cpp#varname)](#cpp-varname).
-    #
-    def to_markdown_links
-      gsub(/(\$\((.*?)\))/) do
-        "[#{$1}](##{$2.sub('#', '-')})"
-      end
-    end
-
-    ##
     #
     def wrap(...)
       dup.wrap!(...)
@@ -462,18 +430,6 @@ module JABACoreExt
     #
     def vs_join_paths(**args)
       map(&:vs_quote!).vs_join(**args)&.to_backslashes!
-    end
-
-    ##
-    # Used when generating reference manual.
-    #
-    def make_sentence
-      s = String.new
-      each do |l|
-        s.concat(l.capitalize_first)
-        s.ensure_end_with!('. ')
-      end
-      s
     end
 
   end

@@ -150,7 +150,7 @@ class DocBuilder
           w << "> *Examples*"
           md_code(w, prefix: '>') do
             ad.examples.each do |e|
-              e.split_and_trim_leading_whitespace do |line|
+              split_and_trim_leading_whitespace(e).each do |line|
                 w << "> #{line}"
               end
             end
@@ -167,7 +167,7 @@ class DocBuilder
         str = @file_manager.read(example, fail_if_not_found: true)
         md_code(w) do
           # TODO: extract top comments and turn into formatted markdown
-          str.split_and_trim_leading_whitespace do |line|
+          split_and_trim_leading_whitespace(str).each do |line|
             w << line
           end
         end
@@ -270,10 +270,59 @@ class DocBuilder
     w << "> | _#{p}_ | #{v} |"
   end
 
+  ##
+  # Used when generating code example blocks in reference manual.
+  #
+  def split_and_trim_leading_whitespace(paragraph)
+    lines = paragraph.split("\n")
+    return lines if lines.empty?
+    lines.shift if lines[0].empty?
+    lines.last.rstrip!
+    lines.pop if lines.last.empty?
+
+    if lines[0] =~ /^(\s+)/
+      lw = Regexp.last_match(1)
+      lines.each do |l|
+        l.delete_prefix!(lw)
+      end
+    end
+    lines
+  end
+  
+  ##
+  #
   def git_cmd(cmd)
     puts cmd
     system("git #{cmd}")
     puts 'Done!'
+  end
+
+end
+
+class String
+
+  # Convert all variables specified as $(cpp#varname) (which themselves reference attribute names) into markdown links
+  # eg [$(cpp#varname)](#cpp-varname).
+  #
+  def to_markdown_links
+    gsub(/(\$\((.*?)\))/) do
+      "[#{$1}](##{$2.sub('#', '-')})"
+    end
+  end
+
+end
+
+class Array
+
+  ##
+  #
+  def make_sentence
+    s = String.new
+    each do |l|
+      s.concat(l.capitalize_first)
+      s.ensure_end_with!('. ')
+    end
+    s
   end
 
 end
