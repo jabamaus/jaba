@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
     <head>
-        <title>jaba_type_text</title>
+        <title>jaba_type_buildtool</title>
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code&display=swap"> 
-        <link rel="stylesheet" href="mamd.css">
+        <link rel="stylesheet" href="../mamd.css">
     </head>
     <body>
-        <h2 id="text">text</h2>
+        <h2 id="buildtool">buildtool</h2>
 <p><a href="index.html">home</a></p>
 <blockquote>
-<p><em>Basic text file that is written to HDD</em></p>
+<p><em>Custom build tool</em></p>
 <table>
 <thead>
 <tr>
@@ -21,11 +21,11 @@
 <tbody>
 <tr>
 <td><em>defined in</em></td>
-<td>$(jaba_install)/modules/text/text.jaba</td>
+<td>$(jaba_install)/modules/core/buildtool.jaba</td>
 </tr>
 <tr>
 <td><em>notes</em></td>
-<td>Manages attribute definitions for 'text' type.</td>
+<td>Manages attribute definitions for 'buildtool' type.</td>
 </tr>
 <tr>
 <td><em>depends on</em></td>
@@ -34,10 +34,10 @@
 </tbody>
 </table>
 </blockquote>
-<p><a id="content"></a></p>
-<h4 id="content">content</h4>
+<p><a id="command"></a></p>
+<h4 id="command">command</h4>
 <blockquote>
-<p><em>Content as a single multiline string</em></p>
+<p><em>Build tool command line invocation</em></p>
 <table>
 <thead>
 <tr>
@@ -48,11 +48,11 @@
 <tbody>
 <tr>
 <td><em>type</em></td>
-<td>:to_s</td>
+<td>:string</td>
 </tr>
 <tr>
 <td><em>default</em></td>
-<td></td>
+<td>&quot;&quot;</td>
 </tr>
 <tr>
 <td><em>flags</em></td>
@@ -64,19 +64,15 @@
 </tr>
 <tr>
 <td><em>defined in</em></td>
-<td>$(jaba_install)/modules/text/text.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Directly set content of file as a string..</td>
+<td>$(jaba_install)/modules/core/buildtool.jaba</td>
 </tr>
 </tbody>
 </table>
 </blockquote>
-<p><a id="eol"></a></p>
-<h4 id="eol">eol</h4>
+<p><a id="message"></a></p>
+<h4 id="message">message</h4>
 <blockquote>
-<p><em>End of line style</em></p>
+<p><em>Build message</em></p>
 <table>
 <thead>
 <tr>
@@ -87,15 +83,11 @@
 <tbody>
 <tr>
 <td><em>type</em></td>
-<td>:choice</td>
-</tr>
-<tr>
-<td><em>items</em></td>
-<td>[:lf, :crlf, :native]</td>
+<td>:string</td>
 </tr>
 <tr>
 <td><em>default</em></td>
-<td>:native</td>
+<td>&quot;&quot;</td>
 </tr>
 <tr>
 <td><em>flags</em></td>
@@ -107,15 +99,15 @@
 </tr>
 <tr>
 <td><em>defined in</em></td>
-<td>$(jaba_install)/modules/text/text.jaba</td>
+<td>$(jaba_install)/modules/core/buildtool.jaba</td>
 </tr>
 </tbody>
 </table>
 </blockquote>
-<p><a id="filename"></a></p>
-<h4 id="filename">filename</h4>
+<p><a id="output"></a></p>
+<h4 id="output">output</h4>
 <blockquote>
-<p><em>Path of the filename to be generated</em></p>
+<p><em>Build tool output file</em></p>
 <table>
 <thead>
 <tr>
@@ -134,7 +126,7 @@
 </tr>
 <tr>
 <td><em>flags</em></td>
-<td>:required</td>
+<td></td>
 </tr>
 <tr>
 <td><em>options</em></td>
@@ -142,15 +134,15 @@
 </tr>
 <tr>
 <td><em>defined in</em></td>
-<td>$(jaba_install)/modules/text/text.jaba</td>
+<td>$(jaba_install)/modules/core/buildtool.jaba</td>
 </tr>
 </tbody>
 </table>
 </blockquote>
-<p><a id="line"></a></p>
-<h4 id="line">line</h4>
+<p><a id="outputs"></a></p>
+<h4 id="outputs">outputs</h4>
 <blockquote>
-<p><em>Adds a line of content to file</em></p>
+<p><em>Build tool output files</em></p>
 <table>
 <thead>
 <tr>
@@ -161,7 +153,7 @@
 <tbody>
 <tr>
 <td><em>type</em></td>
-<td>:to_s []</td>
+<td>:file []</td>
 </tr>
 <tr>
 <td><em>default</em></td>
@@ -169,7 +161,7 @@
 </tr>
 <tr>
 <td><em>flags</em></td>
-<td>:allow_dupes, :no_sort</td>
+<td></td>
 </tr>
 <tr>
 <td><em>options</em></td>
@@ -177,7 +169,7 @@
 </tr>
 <tr>
 <td><em>defined in</em></td>
-<td>$(jaba_install)/modules/text/text.jaba</td>
+<td>$(jaba_install)/modules/core/buildtool.jaba</td>
 </tr>
 </tbody>
 </table>

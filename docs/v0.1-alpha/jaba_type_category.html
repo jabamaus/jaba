@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
     <head>
-        <title>jaba_type_buildtool</title>
+        <title>jaba_type_category</title>
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code&display=swap"> 
-        <link rel="stylesheet" href="mamd.css">
+        <link rel="stylesheet" href="../mamd.css">
     </head>
     <body>
-        <h2 id="buildtool">buildtool</h2>
+        <h2 id="category">category</h2>
 <p><a href="index.html">home</a></p>
 <blockquote>
-<p><em>Custom build tool</em></p>
+<p><em>Project category type</em></p>
 <table>
 <thead>
 <tr>
@@ -21,11 +21,11 @@
 <tbody>
 <tr>
 <td><em>defined in</em></td>
-<td>$(jaba_install)/modules/core/buildtool.jaba</td>
+<td>$(jaba_install)/modules/core/category.jaba</td>
 </tr>
 <tr>
 <td><em>notes</em></td>
-<td>Manages attribute definitions for 'buildtool' type.</td>
+<td>Manages attribute definitions for 'category' type.</td>
 </tr>
 <tr>
 <td><em>depends on</em></td>
@@ -34,10 +34,49 @@
 </tbody>
 </table>
 </blockquote>
-<p><a id="command"></a></p>
-<h4 id="command">command</h4>
+<p><a id="guid"></a></p>
+<h4 id="guid">guid</h4>
 <blockquote>
-<p><em>Build tool command line invocation</em></p>
+<p><em>Globally unique id (GUID)</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:uuid</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba</td>
+</tr>
+<tr>
+<td><em>notes</em></td>
+<td>Seeded by <a href="#name">$(name)</a>. Required by Visual Studio .sln files.</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="name"></a></p>
+<h4 id="name">name</h4>
+<blockquote>
+<p><em>Display name of category</em></p>
 <table>
 <thead>
 <tr>
@@ -52,11 +91,11 @@
 </tr>
 <tr>
 <td><em>default</em></td>
-<td>&quot;&quot;</td>
+<td></td>
 </tr>
 <tr>
 <td><em>flags</em></td>
-<td></td>
+<td>:required</td>
 </tr>
 <tr>
 <td><em>options</em></td>
@@ -64,15 +103,19 @@
 </tr>
 <tr>
 <td><em>defined in</em></td>
-<td>$(jaba_install)/modules/core/buildtool.jaba</td>
+<td>$(jaba_install)/modules/core/category.jaba</td>
+</tr>
+<tr>
+<td><em>notes</em></td>
+<td>Maps to name of solution folder in a Visual Studio solution.</td>
 </tr>
 </tbody>
 </table>
 </blockquote>
-<p><a id="message"></a></p>
-<h4 id="message">message</h4>
+<p><a id="parent"></a></p>
+<h4 id="parent">parent</h4>
 <blockquote>
-<p><em>Build message</em></p>
+<p><em>Parent category</em></p>
 <table>
 <thead>
 <tr>
@@ -83,42 +126,11 @@
 <tbody>
 <tr>
 <td><em>type</em></td>
-<td>:string</td>
+<td>:node_ref</td>
 </tr>
 <tr>
-<td><em>default</em></td>
-<td>&quot;&quot;</td>
-</tr>
-<tr>
-<td><em>flags</em></td>
-<td></td>
-</tr>
-<tr>
-<td><em>options</em></td>
-<td></td>
-</tr>
-<tr>
-<td><em>defined in</em></td>
-<td>$(jaba_install)/modules/core/buildtool.jaba</td>
-</tr>
-</tbody>
-</table>
-</blockquote>
-<p><a id="output"></a></p>
-<h4 id="output">output</h4>
-<blockquote>
-<p><em>Build tool output file</em></p>
-<table>
-<thead>
-<tr>
-<th>Property</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>type</em></td>
-<td>:file</td>
+<td><em>node_type</em></td>
+<td>:category</td>
 </tr>
 <tr>
 <td><em>default</em></td>
@@ -134,42 +146,11 @@
 </tr>
 <tr>
 <td><em>defined in</em></td>
-<td>$(jaba_install)/modules/core/buildtool.jaba</td>
-</tr>
-</tbody>
-</table>
-</blockquote>
-<p><a id="outputs"></a></p>
-<h4 id="outputs">outputs</h4>
-<blockquote>
-<p><em>Build tool output files</em></p>
-<table>
-<thead>
-<tr>
-<th>Property</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>type</em></td>
-<td>:file []</td>
+<td>$(jaba_install)/modules/core/category.jaba</td>
 </tr>
 <tr>
-<td><em>default</em></td>
-<td></td>
-</tr>
-<tr>
-<td><em>flags</em></td>
-<td></td>
-</tr>
-<tr>
-<td><em>options</em></td>
-<td></td>
-</tr>
-<tr>
-<td><em>defined in</em></td>
-<td>$(jaba_install)/modules/core/buildtool.jaba</td>
+<td><em>notes</em></td>
+<td>Use this to build a category hierarchy that can be used to classify projects in workspaces.</td>
 </tr>
 </tbody>
 </table>
