@@ -1,1 +1,2 @@
-ruby build_docs.rb
+@echo off
+ruby %~dp0..\tools\build_docs.rb
