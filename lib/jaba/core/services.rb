@@ -209,20 +209,19 @@ module JABA
     ##
     #
     def do_run
-      # TODO: not working
-      if input_manager.cmd_specified?(:help)
-        if OS.windows?
-          system("start #{JABA.jaba_docs_url}")
-        elsif OS.mac?
-          system("open #{JABA.jaba_docs_url}")
-        end
-        exit!
-      end
-
       load_module_ruby_files
       create_core_objects
       
       @input_manager.process(phase: 1)
+
+      if input_manager.cmd_specified?(:help)
+        if OS.windows?
+          system("start #{JABA.jaba_docs_url}/v#{VERSION}")
+        elsif OS.mac?
+          system("open #{JABA.jaba_docs_url}v#{VERSION}")
+        end
+        exit!
+      end
 
       init_root_paths
 
