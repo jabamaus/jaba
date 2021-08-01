@@ -1,6 +1,7 @@
 ## buildtool v0.1-alpha
 [home](../index.html)  
 [0.1-alpha home](index.html)
+
 > 
 > _Custom build tool_
 > 
@@ -10,6 +11,12 @@
 > | _notes_ | Manages attribute definitions for 'buildtool' type.  |
 > | _depends on_ |  |
 > 
+
+Attributes:  
+- [command](#command)
+- [message](#message)
+- [output](#output)
+- [outputs](#outputs)
 
 <a id="command"></a>
 #### command

@@ -1,6 +1,7 @@
 ## cpp v0.1-alpha
 [home](../index.html)  
 [0.1-alpha home](index.html)
+
 > 
 > _Cross platform C++ project definition_
 > 
@@ -10,6 +11,54 @@
 > | _notes_ | Manages attribute definitions for 'cpp' type.  |
 > | _depends on_ | [host](jaba_type_host.html), [platform](jaba_type_platform.html), [arch](jaba_type_arch.html), [buildtool](jaba_type_buildtool.html) |
 > 
+
+Attributes:  
+- [arch](#arch)
+- [arch_ref](#arch_ref)
+- [bindir](#bindir)
+- [build_root_offset](#build_root_offset)
+- [buildtool](#buildtool)
+- [cflags](#cflags)
+- [character_set](#character_set)
+- [config](#config)
+- [configname](#configname)
+- [configs](#configs)
+- [debug](#debug)
+- [define](#define)
+- [deps](#deps)
+- [exceptions](#exceptions)
+- [guid](#guid)
+- [host](#host)
+- [host_ref](#host_ref)
+- [importlib](#importlib)
+- [inc](#inc)
+- [libdir](#libdir)
+- [libs](#libs)
+- [nowarn](#nowarn)
+- [objdir](#objdir)
+- [platform](#platform)
+- [platform_ref](#platform_ref)
+- [platforms](#platforms)
+- [projdir](#projdir)
+- [projname](#projname)
+- [projsuffix](#projsuffix)
+- [root](#root)
+- [rtti](#rtti)
+- [shell](#shell)
+- [src](#src)
+- [src_ext](#src_ext)
+- [syslibs](#syslibs)
+- [targetext](#targetext)
+- [targetname](#targetname)
+- [targetprefix](#targetprefix)
+- [targetsuffix](#targetsuffix)
+- [toolset](#toolset)
+- [type](#type)
+- [vcfprop](#vcfprop)
+- [vcglobal](#vcglobal)
+- [vcprop](#vcprop)
+- [warnerror](#warnerror)
+- [winsdkver](#winsdkver)
 
 <a id="arch"></a>
 #### arch

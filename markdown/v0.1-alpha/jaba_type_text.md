@@ -1,6 +1,7 @@
 ## text v0.1-alpha
 [home](../index.html)  
 [0.1-alpha home](index.html)
+
 > 
 > _Basic text file that is written to HDD_
 > 
@@ -10,6 +11,12 @@
 > | _notes_ | Manages attribute definitions for 'text' type.  |
 > | _depends on_ |  |
 > 
+
+Attributes:  
+- [content](#content)
+- [eol](#eol)
+- [filename](#filename)
+- [line](#line)
 
 <a id="content"></a>
 #### content

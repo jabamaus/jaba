@@ -1,6 +1,7 @@
 ## arch v0.1-alpha
 [home](../index.html)  
 [0.1-alpha home](index.html)
+
 > 
 > _Target architecture type_
 > 
@@ -10,6 +11,12 @@
 > | _notes_ | Manages attribute definitions for 'arch' type.  |
 > | _depends on_ |  |
 > 
+
+Attributes:  
+- [arm64?](#arm64?)
+- [vsname](#vsname)
+- [x86?](#x86?)
+- [x86_64?](#x86_64?)
 
 <a id="arm64?"></a>
 #### arm64?

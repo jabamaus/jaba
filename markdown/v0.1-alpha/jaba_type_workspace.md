@@ -1,6 +1,7 @@
 ## workspace v0.1-alpha
 [home](../index.html)  
 [0.1-alpha home](index.html)
+
 > 
 > _Workspace of projects_
 > 
@@ -10,6 +11,14 @@
 > | _notes_ | Manages attribute definitions for 'workspace' type.  |
 > | _depends on_ | [cpp](jaba_type_cpp.html) |
 > 
+
+Attributes:  
+- [name](#name)
+- [namesuffix](#namesuffix)
+- [primary](#primary)
+- [projects](#projects)
+- [root](#root)
+- [workspacedir](#workspacedir)
 
 <a id="name"></a>
 #### name

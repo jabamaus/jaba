@@ -1,6 +1,7 @@
 ## category v0.1-alpha
 [home](../index.html)  
 [0.1-alpha home](index.html)
+
 > 
 > _Project category type_
 > 
@@ -10,6 +11,11 @@
 > | _notes_ | Manages attribute definitions for 'category' type.  |
 > | _depends on_ |  |
 > 
+
+Attributes:  
+- [guid](#guid)
+- [name](#name)
+- [parent](#parent)
 
 <a id="guid"></a>
 #### guid

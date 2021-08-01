@@ -1,6 +1,7 @@
 ## globals v0.1-alpha
 [home](../index.html)  
 [0.1-alpha home](index.html)
+
 > 
 > _Global attribute definitions_
 > 
@@ -10,6 +11,12 @@
 > | _notes_ | Manages attribute definitions for 'globals' type.  |
 > | _depends on_ | [host](jaba_type_host.html) |
 > 
+
+Attributes:  
+- [cpp_hosts](#cpp_hosts)
+- [dump_output](#dump_output)
+- [jaba_output_file](#jaba_output_file)
+- [vcfiletype](#vcfiletype)
 
 <a id="cpp_hosts"></a>
 #### cpp_hosts

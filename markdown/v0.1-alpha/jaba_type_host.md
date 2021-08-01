@@ -1,6 +1,7 @@
 ## host v0.1-alpha
 [home](../index.html)  
 [0.1-alpha home](index.html)
+
 > 
 > _Target host type_
 > 
@@ -10,6 +11,25 @@
 > | _notes_ | Manages attribute definitions for 'host' type.  |
 > | _depends on_ |  |
 > 
+
+Attributes:  
+- [cpp_project_classname](#cpp_project_classname)
+- [cpp_src_ext](#cpp_src_ext)
+- [cpp_supported_platforms](#cpp_supported_platforms)
+- [major_version](#major_version)
+- [ninja?](#ninja?)
+- [toolset](#toolset)
+- [version](#version)
+- [version_year](#version_year)
+- [visual_studio?](#visual_studio?)
+- [vs2010?](#vs2010?)
+- [vs2012?](#vs2012?)
+- [vs2013?](#vs2013?)
+- [vs2015?](#vs2015?)
+- [vs2017?](#vs2017?)
+- [vs2019?](#vs2019?)
+- [workspace_classname](#workspace_classname)
+- [xcode?](#xcode?)
 
 <a id="cpp_project_classname"></a>
 #### cpp_project_classname

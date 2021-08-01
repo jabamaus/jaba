@@ -1,6 +1,7 @@
 ## platform v0.1-alpha
 [home](../index.html)  
 [0.1-alpha home](index.html)
+
 > 
 > _Target platform type_
 > 
@@ -10,6 +11,15 @@
 > | _notes_ | Manages attribute definitions for 'platform' type. Manages attribute definitions required by platforms.  |
 > | _depends on_ |  |
 > 
+
+Attributes:  
+- [apple?](#apple?)
+- [cpp_src_ext](#cpp_src_ext)
+- [ios?](#ios?)
+- [macos?](#macos?)
+- [microsoft?](#microsoft?)
+- [valid_archs](#valid_archs)
+- [windows?](#windows?)
 
 <a id="apple?"></a>
 #### apple?
