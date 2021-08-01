@@ -109,6 +109,7 @@ class DocBuilder
   #
   def generate_jaba_type_reference(jt)
     write_markdown_page(jt.reference_manual_page(ext: '.md'), "#{jt.defn_id}", versioned: true) do |w|
+      w << ""
       w << "> "
       w << "> _#{jt.title}_"
       w << "> "
@@ -118,6 +119,11 @@ class DocBuilder
       md_row(w, :notes, jt.notes.make_sentence)
       md_row(w, 'depends on', jt.dependencies.map{|d| "[#{d}](#{d.reference_manual_page})"}.join(", "))
       w << "> "
+      w << ""
+      w << "Attributes:  "
+      jt.all_attr_defs_sorted.each do |ad|
+        w << "- [#{ad.defn_id}](##{ad.defn_id})"
+      end
       w << ""
       jt.all_attr_defs_sorted.each do |ad|
         w << "<a id=\"#{ad.defn_id}\"></a>" # anchor for the attribute eg cpp-src
