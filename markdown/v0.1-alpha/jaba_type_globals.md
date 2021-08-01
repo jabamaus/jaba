@@ -1,5 +1,6 @@
-## globals
-[home](index.html)
+## globals v0.1-alpha
+[home](../index.html)  
+[0.1-alpha home](index.html)
 > 
 > _Global attribute definitions_
 > 

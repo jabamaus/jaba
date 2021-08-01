@@ -1,5 +1,6 @@
-## host
-[home](index.html)
+## host v0.1-alpha
+[home](../index.html)  
+[0.1-alpha home](index.html)
 > 
 > _Target host type_
 > 

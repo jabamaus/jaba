@@ -1,5 +1,5 @@
 ## Jaba FAQs
-[home](index.html)
+[home](index.html)  
 
 - [General](#General)
   - [What generators does jaba currently support?](#Whatgeneratorsdoes)

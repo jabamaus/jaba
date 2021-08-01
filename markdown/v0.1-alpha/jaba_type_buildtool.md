@@ -1,5 +1,6 @@
-## buildtool
-[home](index.html)
+## buildtool v0.1-alpha
+[home](../index.html)  
+[0.1-alpha home](index.html)
 > 
 > _Custom build tool_
 > 

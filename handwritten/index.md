@@ -1,5 +1,5 @@
-## Jaba documentation
+## Jaba docs
 - [Overview](jaba_overview.html)
-- [Jaba language reference](jaba_reference.html)
-- [Examples](jaba_examples.html)
 - [FAQs](jaba_faqs.html)
+- Versioned docs
+  - [0.1-alpha](v0.1-alpha/index.html)

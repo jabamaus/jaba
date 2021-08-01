@@ -1,5 +1,6 @@
-## Jaba language reference
-[home](index.html)
+## Jaba language reference v0.1-alpha
+[home](../index.html)  
+[0.1-alpha home](index.html)
 
 - Types
   - [arch](jaba_type_arch.html)

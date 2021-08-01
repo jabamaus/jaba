@@ -1,5 +1,6 @@
-## platform
-[home](index.html)
+## platform v0.1-alpha
+[home](../index.html)  
+[0.1-alpha home](index.html)
 > 
 > _Target platform type_
 > 

@@ -1,5 +1,6 @@
-## Jaba examples
-[home](index.html)
+## Jaba examples v0.1-alpha
+[home](../index.html)  
+[0.1-alpha home](index.html)
 ```ruby
 include '../example_src/3rdParty/3rdPartyLib'
 

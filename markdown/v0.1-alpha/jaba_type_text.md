@@ -1,5 +1,6 @@
-## text
-[home](index.html)
+## text v0.1-alpha
+[home](../index.html)  
+[0.1-alpha home](index.html)
 > 
 > _Basic text file that is written to HDD_
 > 

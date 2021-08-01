@@ -1,5 +1,6 @@
-## cpp
-[home](index.html)
+## cpp v0.1-alpha
+[home](../index.html)  
+[0.1-alpha home](index.html)
 > 
 > _Cross platform C++ project definition_
 > 
