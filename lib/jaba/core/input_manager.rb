@@ -24,8 +24,8 @@ module JABA
       #
       register_option('--help', help: 'Show help', phase: 2)
       register_option('--dry-run', help: 'Perform a dry run', type: :flag, var: :dry_run)
-      register_option('--profile', help: 'Profiles with ruby-prof', type: :flag, var: :profile, dev_option: true)
-      register_option('--barebones', help: 'Loads minimal modules', type: :flag, var: :barebones, dev_option: true)
+      register_option('--profile', help: 'Profiles with ruby-prof gem', type: :flag, var: :profile, dev_only: true)
+      register_option('--barebones', help: 'Loads minimal modules', type: :flag, var: :barebones, dev_only: true)
 
       @default_cmd = register_cmd(:gen, help: 'Regenerate buildsystem')
       register_option('--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root, cmd: :gen)
@@ -40,7 +40,7 @@ module JABA
 
     ##
     #
-    def register_cmd(id, help:, dev_cmd: false)
+    def register_cmd(id, help:, dev_only: false)
       JABA.error("cmd id must be a symbol") if !id.symbol?
       if id !~ /^[a-zA-Z0-9\-]+$/
         JABA.error("Invalid cmd id '#{id}' specified. Can only contain [a-zA-Z0-9-]")
@@ -49,14 +49,14 @@ module JABA
       c.id = id
       c.help = help
       c.options = []
-      c.dev_cmd = dev_cmd
+      c.dev_only = dev_only
       @cmds << c
       c
     end
 
     ##
     #
-    def register_option(long, short: nil, help:, type: nil, var: nil, dev_option: false, phase: 1, cmd: nil)
+    def register_option(long, short: nil, help:, type: nil, var: nil, dev_only: false, phase: 1, cmd: nil)
       if long !~ /^--[a-zA-Z0-9\-]+$/
         JABA.error("Invalid long option format '#{long}' specified. Must be of form --my-long-option")
       end
@@ -70,7 +70,7 @@ module JABA
       o.help = help
       o.type = type
       o.inst_var = var ? "@#{var}" : nil
-      o.dev_option = dev_option
+      o.dev_only = dev_only
       o.phase = phase
       o.cmd = cmd
       o.describe = short ? "#{short} [#{long}]" : long
@@ -394,7 +394,7 @@ module JABA
       w << ""
       
       @cmds.each do |c|
-        next if c.dev_cmd
+        next if c.dev_only
         print_cmd_help(c, w)
         w << ""
       end
@@ -418,7 +418,7 @@ module JABA
       option_indent = 4
 
       if cmd
-        opts.concat(cmd.options.select{|o| !o.dev_option})
+        opts.concat(cmd.options.select{|o| !o.dev_only})
         cmd_str = "  #{cmd.id}"
         if cmd == @default_cmd
           cmd_str << ' (default)'
@@ -426,7 +426,7 @@ module JABA
         items << cmd_str
         help_items << cmd
       else
-        opts.concat(@options.select{|o| !o.cmd && !o.dev_option && o.long != '--help'})
+        opts.concat(@options.select{|o| !o.cmd && !o.dev_only && o.long != '--help'})
         option_indent = 2
       end
       
