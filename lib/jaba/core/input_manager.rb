@@ -27,25 +27,26 @@ module JABA
       register_option('--profile', help: 'Profiles with ruby-prof', type: :flag, var: :profile, dev_option: true)
       register_option('--barebones', help: 'Loads minimal modules', type: :flag, var: :barebones, dev_option: true)
 
-      @default_cmd = register_cmd(:gen)
+      @default_cmd = register_cmd(:gen, help: 'Regenerate buildsystem')
       register_option('--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root, cmd: :gen)
       register_option('--build-root', short: '-B', help: 'Set build root', type: :value, var: :build_root, cmd: :gen)
       register_option('--define', short: '-D', help: 'Set global attribute value', phase: 3, cmd: :gen)
       register_option('--dump-state', help: 'Dump state to json for debugging', type: :flag, var: :dump_state, cmd: :gen)
       
-      register_cmd(:build)
-      register_cmd(:clean)
+      register_cmd(:build, help: 'Execute build')
+      register_cmd(:clean, help: 'Clean build')
     end
 
     ##
     #
-    def register_cmd(id, dev_cmd: false)
+    def register_cmd(id, help:, dev_cmd: false)
       JABA.error("cmd id must be a symbol") if !id.symbol?
       if id !~ /^[a-zA-Z0-9\-]+$/
         JABA.error("Invalid cmd id '#{id}' specified. Can only contain [a-zA-Z0-9-]")
       end
       c = OpenStruct.new
       c.id = id
+      c.help = help
       c.options = []
       c.dev_cmd = dev_cmd
       @cmds << c
@@ -393,20 +394,13 @@ module JABA
       
       @cmds.each do |c|
         next if c.dev_cmd
-        if c == @default_cmd
-          w << "  #{c.id} (default)"
-        else
-          w << "  #{c.id}"
-        end
-        opts = c.options.select{|o| !o.dev_option}
-        print_options(w, 4, opts)
+        print_cmd_help(c, w)
         w << ""
       end
 
       w << "General options:"
       w << ""
-      opts = @options.select{|o| !o.cmd && !o.dev_option && o.long != '--help'}
-      print_options(w, 2, opts)
+      print_cmd_help(nil, w)
 
       w << ""
 
@@ -416,13 +410,33 @@ module JABA
 
     ##
     #
-    def print_options(w, indent, opts)
-      return if opts.empty?
-      max_len = opts.map{|o| o.describe.length}.max
-      help_start = max_len + indent + 2
+    def print_cmd_help(cmd, w)
+      opts = []
+      items = []
+      help_items = []
+      option_indent = 4
+      if cmd
+        opts.concat(cmd.options.select{|o| !o.dev_option})
+        cmd_str = "  #{cmd.id}"
+        if cmd == @default_cmd
+          cmd_str << ' (default)'
+        end
+        items << cmd_str
+        help_items << cmd
+      else
+        opts.concat(@options.select{|o| !o.cmd && !o.dev_option && o.long != '--help'})
+        option_indent = 2
+      end
+      
+      items.concat(opts.map{|o| "#{' ' * option_indent}#{o.describe}"})
+      help_items.concat(opts)
 
-      opts.each do |o|
-        w << "#{' ' * indent}#{o.describe}#{' ' * (max_len - o.describe.size)}  #{o.help.wrap(@max_width, prefix: (' ' * help_start), trim_leading_prefix: true)}"
+      max_len = items.map{|i| i.length}.max
+      help_start = max_len + 2
+
+      items.each_with_index do |i, index|
+        hi = help_items[index]
+        w << "#{i}#{' ' * (max_len - i.size)}  #{hi.help.wrap(@max_width, prefix: (' ' * help_start), trim_leading_prefix: true)}"
       end
     end
 
