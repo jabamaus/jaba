@@ -2,99 +2,90 @@
 
 module JABA
 
+  class StateA
+    def on_init(val)
+      print "a:on_init(#{val})|"
+    end
+    def on_enter
+      print 'a:on_enter|'
+    end
+    def on_exit
+      print 'a:on_exit|'
+    end
+    def on_event1(n)
+      print "a:on_event1(#{n})|"
+      goto StateB if n == 1
+    end
+  end
+
+  class StateB
+    def on_init
+      print 'b:on_init|'
+    end
+    def on_enter
+      print 'b:on_enter|'
+    end
+    def on_exit
+      print 'b:on_exit|'
+    end
+    def on_event1(n)
+      print "b:on_event1(#{n})|"
+      goto StateA if n == 0
+    end
+  end
+
+  class StateC
+    def on_enter
+      print 'c:on_enter|'
+      goto StateD, 1, 2
+    end
+    def on_exit
+      print 'c:on_exit|'
+    end
+  end
+
+  class StateD
+    def on_enter(arg1, arg2)
+      print "d:on_enter(#{arg1}, #{arg2})|"
+    end
+    def on_exit
+      print 'd:on_exit|'
+    end
+  end
+
+  class StateE
+    def on_enter
+      print "e:on_enter|var1=#{fsm.var1}|var2=#{fsm.var2}|"
+    end
+  end
+
   class TestFSM < JabaTest
 
-    it 'calls on_init on all states' do
-      assert_output 'a:on_init|b:on_init' do
-        FSM.new do
-          state :a do
-            on_init do
-              print 'a:on_init|'
-            end
-          end
-          state :b do
-            on_init do
-              print 'b:on_init'
-            end
-          end
-          state :c do
-          end
-        end
-      end
-    end
-
-    it 'starts in specified state' do
-      assert_output 'b:on_enter|b:on_exit' do
-        FSM.new(initial: :b) do
-          state :a do
-            on_enter do
-              print 'a:on_enter'
-            end
-          end
-          state :b do
-            on_enter do
-              print 'b:on_enter|'
-            end
-            on_exit do
-              print 'b:on_exit'
-            end
-          end
+    it 'starts in first state' do
+      assert_output 'a:on_init(1)|b:on_init|a:on_enter|a:on_exit|' do
+        FSM.new do |fsm|
+          fsm.add_state(StateA, 1)
+          fsm.add_state(StateB)
+          fsm.add_state(StateC)
         end
       end
     end
 
     it 'supports transitions' do
-      assert_output 'a:on_enter|a:on_exit|b:on_enter(1, 2, 3)|b:on_exit' do
-        FSM.new do
-          state :a do
-            on_enter do
-              print 'a:on_enter|'
-              goto :b, 1, 2, 3
-            end
-            on_exit do
-              print 'a:on_exit|'
-            end
-          end
-          state :b do
-            on_enter do |arg1, arg2, arg3|
-              print "b:on_enter(#{arg1}, #{arg2}, #{arg3})|"
-            end
-            on_exit do
-              print 'b:on_exit'
-            end
-          end
+      assert_output 'c:on_enter|c:on_exit|d:on_enter(1, 2)|d:on_exit|' do
+        FSM.new do |fsm|
+          fsm.add_state(StateC)
+          fsm.add_state(StateD)
         end
       end
     end
 
     it 'supports events' do
-      assert_output 'a:on_enter|a:on_event1(0)|a:on_event1(1)|a:on_exit|b:on_enter|b:on_event1(1)|b:on_event1(0)|b:on_exit|a:on_enter|a:on_exit|' do
-        FSM.new(events: [:event1]) do
-          state :a do
-            on_enter  do
-              print 'a:on_enter|'
-            end
-            on_exit do
-              print 'a:on_exit|'
-            end
-            on_event1 do |n|
-              print "a:on_event1(#{n})|"
-              goto :b if n == 1
-            end
-          end
-          state :b do
-            on_enter do
-              print 'b:on_enter|'
-            end
-            on_exit do
-              print 'b:on_exit|'
-            end
-            on_event1 do |n|
-              print "b:on_event1(#{n})|"
-              goto :a if n == 0
-            end
-          end
-          on_run do
+      assert_output 'a:on_init(1)|b:on_init|a:on_enter|a:on_event1(0)|a:on_event1(1)|a:on_exit|b:on_enter|b:on_event1(1)|b:on_event1(0)|b:on_exit|a:on_enter|a:on_exit|' do
+        FSM.new do |fsm|
+          fsm.add_state(StateA, 1)
+          fsm.add_state(StateB)
+          fsm.on_run do
             send_event(:event1, 0)
             send_event(:event1, 1)
             send_event(:event1, 1)
@@ -104,6 +95,15 @@ module JABA
       end
     end
 
+    it 'supports variables' do
+      assert_output 'e:on_enter|var1=1|var2=[1, 2]|' do
+        FSM.new do |fsm|
+          fsm.add_state(StateE)
+          fsm.set_var(:var1, 1)
+          fsm.set_var(:var2, [1, 2])
+        end
+      end
+    end
   end
 
 end

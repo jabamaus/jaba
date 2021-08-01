@@ -257,26 +257,40 @@ module JABA
   ##
   #
   class FSM
-
+    
     ##
     #
-    def initialize(initial: nil, events: nil, &block)
-      super()
-      JABA.error('block required') if !block_given?
+    def initialize
       @states = []
-      @events = Array(events)
       @on_run = nil
-      instance_eval(&block)
-      @current = initial ? get_state(initial) : @states.first
-      @current.send_event(:enter)
-      instance_eval(&@on_run) if @on_run
-      @current.send_event(:exit)
+      if block_given?
+        yield self
+        run
+      end
     end
 
     ##
     #
-    def state(id, &block)
-      @states << FSMState.new(self, id, @events, &block)
+    def add_state(klass, ...)
+      s = klass.new
+      fsm = self
+      s.define_singleton_method(:fsm) do
+        fsm
+      end
+      s.define_singleton_method(:goto) do |*args|
+        fsm.goto(*args)
+      end
+      s.on_init(...) if s.respond_to?(:on_init)
+      @states << s
+    end
+
+    ##
+    #
+    def set_var(var, val)
+      instance_variable_set("@#{var}", val)
+      define_singleton_method var do
+        val
+      end
     end
 
     ##
@@ -287,74 +301,42 @@ module JABA
 
     ##
     #
-    def send_event(id, *args)
-      @current.send_event(id, *args)
+    def goto(stateClass, ...)
+      @current_state.on_exit if @current_state.respond_to?(:on_exit)
+
+      @current_state = @states.find{|s| s.class == stateClass}
+      if @current_state.nil?
+        JABA.error("'#{stateClass}' state not found")
+      end
+
+      @current_state.on_enter(...) if @current_state.respond_to?(:on_enter)
     end
-
-  private
-
-    ##
-    #
-    def goto(id, *args)
-      @current.send_event(:exit)
-      @current = get_state(id)
-      @current.send_event(:enter, *args)
-    end
-
-    ##
-    #
-    def get_state(id)
-      s = @states.find{|s| s.id == id}
-      JABA.error("'#{id}' state not defined") if !s
-      s
-    end
-
-  end
-
-  ##
-  #
-  class FSMState
     
-    attr_reader :id
-
     ##
     #
-    def initialize(fsm, id, events, &block)
-      super()
-      @fsm = fsm
-      @id = id
-      @event_to_block = {}
-      define_event(:init)
-      define_event(:enter)
-      define_event(:exit)
-      events.each do |event|
-        define_event(event)
-      end
-      instance_eval(&block)
-      send_event(:init)
-    end
-
-    ##
-    #
-    def define_event(event)
-      define_singleton_method("on_#{event}") do |&block|
-        @event_to_block[event] = block
+    def send_event(event, ...)
+      event_handler = "on_#{event}".to_sym
+      if @current_state.respond_to?(event_handler)
+        @current_state.send(event_handler, ...)
       end
     end
 
     ##
     #
-    def send_event(id, *args)
-      block = @event_to_block[id]
-      if block
-        block.call(*args)
-      end
-    end
+    def run
+      @current_state = @states.first
 
-    ##
-    #
-    def goto(id, *args)
-      @fsm.send(:goto, id, *args)
+      if @current_state.respond_to?(:on_enter)
+        @current_state.on_enter
+      end
+
+      if @on_run
+        instance_eval(&@on_run)
+      end
+
+      if @current_state.respond_to?(:on_exit)
+        @current_state.on_exit
+      end
     end
 
   end
