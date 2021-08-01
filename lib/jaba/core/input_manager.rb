@@ -35,6 +35,7 @@ module JABA
       
       register_cmd(:build, help: 'Execute build')
       register_cmd(:clean, help: 'Clean build')
+      register_cmd(:help, help: 'Open jaba web help')
     end
 
     ##
@@ -415,6 +416,7 @@ module JABA
       items = []
       help_items = []
       option_indent = 4
+
       if cmd
         opts.concat(cmd.options.select{|o| !o.dev_option})
         cmd_str = "  #{cmd.id}"

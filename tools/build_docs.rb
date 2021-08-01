@@ -4,6 +4,7 @@ using JABACoreExt
 
 class DocBuilder
 
+  JABA_REPO_URL =               "https://github.com/jabamaus/jaba.git"
   DOCS_REPO_DIR =               "#{JABA.install_dir}/../jaba_docs".cleanpath
   DOCS_HANDWRITTEN_DIR =        "#{DOCS_REPO_DIR}/handwritten"
   DOCS_MARKDOWN_DIR =           "#{DOCS_REPO_DIR}/markdown"
@@ -16,7 +17,7 @@ class DocBuilder
 
   def build
     if !File.exist?(DOCS_REPO_DIR)
-      git_cmd("clone --branch docs --single-branch #{JABA.jaba_repo_url} #{DOCS_REPO_DIR}")
+      git_cmd("clone --branch docs --single-branch #{JABA_REPO_URL} #{DOCS_REPO_DIR}")
     end
 
     doc_temp = "#{__dir__}/doc_temp"

@@ -4,8 +4,8 @@ module JABA
 
   ##
   #
-  def self.jaba_repo_url
-    'https://github.com/jabamaus/jaba.git'
+  def self.jaba_docs_url
+    'https://jabamaus.github.io/jaba'
   end
   
   ##

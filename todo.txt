@@ -1,5 +1,5 @@
+- Fix jaba command line commands. They are not being picked up.
 - add example of 'parameterisable' libraries that can be static or dynamic. Achieve it by adding 'default_cpp_library_type' global and initialising 'type' with it.
-- add 'jaba doc' command that jumps to docs for that version.
 * Implement jaba build command to build vs2019 solution
 * Categories in solution files.
 - flag to control whether absolute paths allowed in file/dir attrs. Eg build_root_offset is not an offset if absolute path used.
