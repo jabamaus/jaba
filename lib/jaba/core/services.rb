@@ -84,6 +84,7 @@ module JABA
       @input.instance_variable_set(:@argv, ARGV)
       @input.instance_variable_set(:@definitions, [])
       @input.instance_variable_set(:@cmd, nil)
+      @input.instance_variable_set(:@global_attrs, {})
 
       @output = {}
       @output[:services] = self # internal access for unit testing
@@ -186,9 +187,9 @@ module JABA
       log "Starting Jaba at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}", section: true
       
       duration = JABA.milli_timer do
-        # Too early for input manager to process cmd line so check --profile the old fashioned way
-        #
-        profile(input.argv.include?('--profile')) do
+        @input_manager.process_cmd_line
+        
+        profile(input.profile) do
           do_run
           build_jaba_output
         end
@@ -209,11 +210,6 @@ module JABA
     ##
     #
     def do_run
-      load_module_ruby_files
-      create_core_objects
-      
-      @input_manager.process(phase: 1)
-
       if input_manager.cmd_specified?(:help)
         if OS.windows?
           system("start #{JABA.jaba_docs_url}/v#{VERSION}")
@@ -222,11 +218,14 @@ module JABA
         end
         exit!
       end
+      
+      load_module_ruby_files
+      create_core_objects
+
+      @input_manager.process_cmd_line
+      @input_manager.finalise
 
       init_root_paths
-
-      @input_manager.process(phase: 2)
-
       load_jaba_files
 
       # Prepend globals type definition so globals are processed first, allowing everything else to access them
@@ -321,8 +320,7 @@ module JABA
       @globals_node = globals_generator.root_nodes.first
       @globals = @globals_node.attrs
 
-      @input_manager.process(phase: 3)
-      
+      set_global_attrs_from_cmdline
       process_config_file if !JABA.running_tests?
 
       post_globals.each do |g|
@@ -400,6 +398,45 @@ module JABA
     #
     def src_root_valid?
       input.src_root && load_path_valid?(input.src_root)
+    end
+
+    ##
+    #
+    def set_global_attrs_from_cmdline
+      input.global_attrs.each do |name, values|
+        attr = @globals_node.get_attr(name.to_sym, fail_if_not_found: false)
+        if attr.nil?
+          fsm.input_manager.usage_error("'#{name}' attribute not defined in :globals type")
+        end
+
+        type = attr.attr_def.jaba_attr_type
+        case attr.attr_def.variant
+        when :single
+          if values.size > 1
+            @input_manager.usage_error("'#{name}' attribute only expects one value but #{values} provided")
+          end
+          value = type.from_string(values[0])
+          if attr.type_id == :file || attr.type_id == :dir
+            value.to_absolute!(base: @services.invoking_dir, clean: true) # TODO: need to do this for array/hash elems too
+          end
+          attr.set(value)
+        when :array
+          if values.empty?
+            @input_manager.usage_error("'#{name}' array attribute requires one or more values")
+          end
+          attr.set(values.map{|v| type.from_string(v)})
+        when :hash
+          if values.empty? || values.size % 2 != 0
+            @input_manager.usage_error("'#{name}' hash attribute requires one or more pairs of values")
+          end
+          key_type = attr.attr_def.jaba_attr_key_type
+          values.each_slice(2) do |kv|
+            key = key_type.from_string(kv[0])
+            value = type.from_string(kv[1])
+            attr.set(key, value)
+          end
+        end
+      end
     end
 
     ##

@@ -302,14 +302,18 @@ module JABA
     ##
     #
     def goto(stateClass, ...)
-      @current_state.on_exit if @current_state.respond_to?(:on_exit)
+      if @current_state.respond_to?(:on_exit)
+        @current_state.on_exit
+      end
 
       @current_state = @states.find{|s| s.class == stateClass}
       if @current_state.nil?
         JABA.error("'#{stateClass}' state not found")
       end
 
-      @current_state.on_enter(...) if @current_state.respond_to?(:on_enter)
+      if @current_state.respond_to?(:on_enter)
+        @current_state.on_enter(...)
+      end
     end
     
     ##

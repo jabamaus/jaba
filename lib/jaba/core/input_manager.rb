@@ -22,7 +22,7 @@ module JABA
 
       # General non-cmd-specific options
       #
-      register_option('--help', help: 'Show help', phase: 2)
+      register_option('--help', help: 'Show help', type: :flag, var: :show_help)
       register_option('--dry-run', help: 'Perform a dry run', type: :flag, var: :dry_run)
       register_option('--profile', help: 'Profiles with ruby-prof gem', type: :flag, var: :profile, dev_only: true)
       register_option('--barebones', help: 'Loads minimal modules', type: :flag, var: :barebones, dev_only: true)
@@ -30,7 +30,7 @@ module JABA
       @default_cmd = register_cmd(:gen, help: 'Regenerate buildsystem')
       register_option('--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root, cmd: :gen)
       register_option('--build-root', short: '-B', help: 'Set build root', type: :value, var: :build_root, cmd: :gen)
-      register_option('--define', short: '-D', help: 'Set global attribute value', phase: 3, cmd: :gen)
+      register_option('--define', short: '-D', help: 'Set global attribute value', cmd: :gen)
       register_option('--dump-state', help: 'Dump state to json for debugging', type: :flag, var: :dump_state, cmd: :gen)
       
       register_cmd(:build, help: 'Execute build')
@@ -56,7 +56,7 @@ module JABA
 
     ##
     #
-    def register_option(long, short: nil, help:, type: nil, var: nil, dev_only: false, phase: 1, cmd: nil)
+    def register_option(long, short: nil, help:, type: nil, var: nil, dev_only: false, cmd: nil)
       if long !~ /^--[a-zA-Z0-9\-]+$/
         JABA.error("Invalid long option format '#{long}' specified. Must be of form --my-long-option")
       end
@@ -71,7 +71,6 @@ module JABA
       o.type = type
       o.inst_var = var ? "@#{var}" : nil
       o.dev_only = dev_only
-      o.phase = phase
       o.cmd = cmd
       o.describe = short ? "#{short} [#{long}]" : long
       
@@ -96,17 +95,11 @@ module JABA
         when :array
           []
         else
-          JABA.error("Unhandled type '#{type}'")
+          JABA.error("Invalid type '#{type}'. Must be :flag, :value or :array.")
         end
         @input.instance_variable_set(o.inst_var, val)
       end
       o
-    end
-
-    ##
-    #
-    def process(phase:)
-      process_cmd_line(phase)
     end
 
     ##
@@ -148,7 +141,9 @@ module JABA
 
     ##
     #
-    def process_cmd_line(phase)
+    def process_cmd_line
+      unknown = []
+      
       FSM.new do |fsm|
         fsm.add_state(WantCmdState)
         fsm.add_state(WantOptionState)
@@ -156,16 +151,12 @@ module JABA
         fsm.add_state(ValueState)
         fsm.add_state(ArrayState)
         fsm.add_state(GlobalAttrState)
-        fsm.add_state(GlobalAttrSingleState)
-        fsm.add_state(GlobalAttrArrayState)
-        fsm.add_state(GlobalAttrHashState)
 
-        fsm.set_var(:argv, Array(input.argv).dup) # Take a copy because cmd line is parsed multiple times
+        fsm.set_var(:argv, input.argv)
         fsm.set_var(:input_manager, self)
         fsm.set_var(:input, @input)
         fsm.set_var(:default_cmd, @default_cmd)
-        fsm.set_var(:phase, phase)
-        fsm.set_var(:globals_node, @services.globals_node)
+        fsm.set_var(:unknown, unknown)
 
         fsm.on_run do
           while !@argv.empty?
@@ -174,6 +165,18 @@ module JABA
             send_event(:process_arg, arg)
           end
         end
+      end
+      input.argv = unknown
+    end
+
+    ##
+    #
+    def finalise
+      if !input.argv.empty?
+        usage_error("#{input.argv[0]} option not recognised")
+      end
+      if input.show_help
+        show_help
       end
     end
 
@@ -257,7 +260,8 @@ module JABA
       else
         cmd = fsm.input_manager.get_cmd(arg.to_sym, fail_if_not_found: false)
         if cmd.nil?
-          fsm.input_manager.usage_error("#{arg} command not recognised")
+          goto IgnoreState, arg
+          return
         end
       end
       fsm.input.instance_variable_set(:@cmd, cmd.id)
@@ -270,23 +274,17 @@ module JABA
       opt = fsm.input_manager.get_option(arg)
 
       if opt.nil?
-        fsm.input_manager.usage_error("#{arg} option not recognised")
-      end
-
-      if fsm.phase != opt.phase
-        goto IgnoreState
+        goto IgnoreState, arg
         return
       end
 
       case opt.long
-      when '--help'
-        fsm.input_manager.show_help
       when '--define'
         goto GlobalAttrState
       else
         case opt.type
         when :flag
-          input.instance_variable_set(opt.inst_var, true)
+          fsm.input.instance_variable_set(opt.inst_var, true)
         when :value
           goto ValueState, opt
         when :array
@@ -297,10 +295,15 @@ module JABA
   end
   
   class IgnoreState
+    def on_enter(arg)
+      fsm.unknown << arg
+    end
     def on_process_arg(arg)
       if fsm.input_manager.option_defined?(arg)
         fsm.argv.unshift(arg)
         goto WantOptionState
+      else
+        fsm.unknown << arg
       end
     end
   end
@@ -319,11 +322,10 @@ module JABA
     def on_process_arg(arg)
       if fsm.input_manager.option_defined?(arg)
         fsm.argv.unshift(arg)
-        goto WantOptionState
       else
         @val = arg
-        goto WantOptionState
       end
+      goto WantOptionState
     end
   end
 
@@ -351,112 +353,29 @@ module JABA
 
   class GlobalAttrState
     def on_enter
-      @attr = nil
+      @attr_name = nil
+      @values = []
     end
     def on_exit
-      if @attr.nil?
+      if @attr_name.nil?
         fsm.input_manager.usage_error('No attribute name supplied')
       end
-    end
-    def on_process_arg(arg)
-      @attr = fsm.globals_node.get_attr(arg.to_sym, fail_if_not_found: false)
-      if !@attr
-        fsm.input_manager.usage_error("'#{arg}' attribute not defined in :globals type")
+      if @values.empty?
+        fsm.input_manager.usage_error("'#{@attr_name}' expects a value")
       end
-      case @attr.attr_def.variant
-      when :single
-        goto GlobalAttrSingleState, @attr
-      when :array
-        goto GlobalAttrArrayState, @attr
-      when :hash
-        goto GlobalAttrHashState, @attr
-      end
-    end
-  end
-
-  class GlobalAttrSingleState
-    def on_enter(attr)
-      @attr = attr
-      @type = attr.attr_def.jaba_attr_type
-      @value = nil
-      if @attr.type_id == :bool
-        @value = true
-      end
-    end
-    def on_exit
-      if @value.nil?
-        fsm.input_manager.usage_error("No value provided for '#{arg}'")
-      end
-      if @attr.type_id == :file || @attr.type_id == :dir
-        @value.to_absolute!(base: @services.invoking_dir, clean: true) # TODO: need to do this for array/hash elems too
-      end
-      @attr.set(@value)
-    end
-    def on_process_arg(arg)
-      if fsm.input_manager.option_defined?(arg)
-        fsm.argv.unshift(arg)
-      else
-        @value = @type.from_string(arg)
-      end
-      goto WantOptionState
-    end
-  end
-
-  class GlobalAttrArrayState
-    def on_enter(attr)
-      @attr = attr
-      @type = attr.attr_def.jaba_attr_type
-      @elems = []
-    end
-    def on_exit
-      if @elems.empty?
-        fsm.input_manager.usage_error("No values provided for '#{arg}'")
-      end
-
-      # Normal jaba array behaviour is always to concat to the existing value but when setting from the command
-      # line the behaviour is to replace the existing value.
-      #
-      @attr.clear
-      @attr.set(@elems)
+      fsm.input.global_attrs.push_value(@attr_name, @values)
     end
     def on_process_arg(arg)
       if fsm.input_manager.option_defined?(arg)
         fsm.argv.unshift(arg)
         goto WantOptionState
-      else
-        val = @type.from_string(arg)
-        @elems << val
+        return
       end
-    end
-  end
 
-  class GlobalAttrHashState
-    def on_enter(attr)
-      @attr = attr
-      @key_type = attr.attr_def.jaba_attr_key_type
-      @type = attr.attr_def.jaba_attr_type
-      @key = nil
-      @elems = {}
-    end
-    def on_exit
-      @elems.each do |k, v|
-        @attr.set(k, v)
-      end
-    end
-    def on_process_arg(arg)
-      if fsm.input_manager.option_defined?(arg)
-        if @elems.empty?
-          fsm.input_manager.usage_error("No valued provided for '#{arg}'")
-        else
-          fsm.argv.unshift(arg)
-          goto WantOptionState
-        end
-      end
-      if @key.nil?
-        @key = @key_type.from_string(arg)
+      if @attr_name.nil?
+        @attr_name = arg
       else
-        @elems[@key] = @type.from_string(arg)
-        @key = nil
+        @values << arg
       end
     end
   end

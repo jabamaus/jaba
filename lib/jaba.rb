@@ -72,6 +72,11 @@ module JABA
     ##
     #
     attr_bool :dump_state
+
+    ##
+    # Initialise global attrs from a hash of name to value(s)
+    #
+    attr_accessor :global_attrs
     
   end
 

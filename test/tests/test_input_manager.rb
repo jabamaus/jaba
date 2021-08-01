@@ -91,7 +91,7 @@ module JABA
 
     # TODO: check failure cases, eg when no value/s provided
     it 'can populate globals from command line' do
-      jaba(barebones: true, argv: ['-D', 'bool']) do
+      jaba(barebones: true, argv: ['-D', 'bool', 'true']) do
         open_type :globals do
           attr :bool, type: :bool
         end
@@ -101,7 +101,7 @@ module JABA
         end
       end
       jaba(argv: [
-        '-D', 'bool1',
+        '-D', 'bool1', 'true',
         '-D', 'bool2', 'false',
         '-D', 'a_string', 'str',
         '-D', 'an_int', '1',
@@ -135,11 +135,7 @@ module JABA
           globals.a_symbol.must_equal(:symbol)
 
           globals.string_array.must_equal(['a', 'b', 'c'])
-
-          # Normal jaba array behaviour is always to concat to the existing value but when setting from the command
-          # line the behaviour is to replace the existing value.
-          #
-          globals.string_array_with_default.must_equal(['d', 'e', 'f'])
+          globals.string_array_with_default.must_equal(['a', 'b', 'c', 'd', 'e', 'f'])
 
           globals.hash1.must_equal({key1: 'value1', key2: 'value2', key3: 'value3'})
           globals.hash2.must_equal({'key1' => :value1, 'key2' => :value2, 'key3' => :value3})
