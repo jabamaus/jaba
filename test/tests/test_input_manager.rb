@@ -38,13 +38,15 @@ module JABA
     it 'detects duplicate options' do
     end
 
-    it 'detects unknown options' do
+    it 'handles unknown options' do
       assert_raises JabaError do
         jaba(barebones: true, argv: ['--unknown'])
       end.message.must_equal("--unknown option not recognised")
       assert_raises JabaError do
         jaba(barebones: true, argv: ['-Z'])
       end.message.must_equal("-Z option not recognised")
+      # everything after -- is ignored
+      jaba(barebones: true, argv: ['--value-opt', 'value', '--', 'ignore', 'after', '--'])
     end
 
     it 'supports value options' do
@@ -102,14 +104,14 @@ module JABA
       end
       jaba(argv: [
         '-D', 'bool1', 'true',
-        '-D', 'bool2', 'false',
+        '-D', 'bool2=false',
         '-D', 'a_string', 'str',
         '-D', 'an_int', '1',
-        '-D', 'a_symbol', 'symbol',
+        '-D', 'a_symbol=symbol',
         '-D', 'string_array', 'a', 'b', 'c',
-        '-D', 'string_array_with_default', 'd', 'e', 'f',
-        '--define', 'hash1', 'key1', 'value1', 'key2', 'value2', '-D', 'hash1', 'key3', 'value3',
-        '--define', 'hash2', 'key1', 'value1', 'key2', 'value2', '-D','hash2', 'key3', 'value3'
+        '-D', 'string_array_with_default', 'd,e,f',
+        '--define', 'hash1', 'key1=value1', 'key2', '=value2', '-D', 'hash1', 'key3', 'value3=',
+        '--define', 'hash2', 'key1', 'value1', 'key2=value2', '-D','hash2', 'key3', 'value3'
         ]) do
         open_type :globals do
           attr :bool1, type: :bool
@@ -137,7 +139,7 @@ module JABA
           globals.string_array.must_equal(['a', 'b', 'c'])
           globals.string_array_with_default.must_equal(['a', 'b', 'c', 'd', 'e', 'f'])
 
-          globals.hash1.must_equal({key1: 'value1', key2: 'value2', key3: 'value3'})
+          globals.hash1.must_equal({key1: 'value1', key2: '=value2', key3: 'value3='})
           globals.hash2.must_equal({'key1' => :value1, 'key2' => :value2, 'key3' => :value3})
         end
       end

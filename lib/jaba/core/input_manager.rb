@@ -350,12 +350,13 @@ module JABA
 
   class GlobalAttrState
     def on_enter
-      @attr_name = nil
       @values = []
     end
     def on_exit
-      if @attr_name.nil?
+      if @values.empty?
         fsm.input_manager.usage_error('No attribute name supplied')
+      else
+        @attr_name = @values.shift
       end
       if @values.empty?
         fsm.input_manager.usage_error("'#{@attr_name}' expects a value")
@@ -366,10 +367,16 @@ module JABA
       if fsm.input_manager.option_defined?(arg)
         fsm.argv.unshift(arg)
         goto WantOptionState
-      elsif @attr_name.nil?
-        @attr_name = arg
       else
-        @values << arg
+        case arg
+        when /^(.+)=(.+)$/
+          @values << Regexp.last_match(1)
+          @values << Regexp.last_match(2)
+        when /,/
+          @values.concat(arg.split(','))
+        else
+          @values << arg
+        end
       end
     end
   end
