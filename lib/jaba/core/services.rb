@@ -405,7 +405,7 @@ module JABA
       input.global_attrs.each do |name, values|
         attr = @globals_node.get_attr(name.to_sym, fail_if_not_found: false)
         if attr.nil?
-          fsm.input_manager.usage_error("'#{name}' attribute not defined in :globals type")
+          @input_manager.usage_error("'#{name}' attribute not defined in :globals type")
         end
 
         type = attr.attr_def.jaba_attr_type
