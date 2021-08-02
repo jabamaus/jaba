@@ -253,43 +253,40 @@ module JABA
 
   class WantCmdState
     def on_process_arg(arg)
-      cmd = nil
-      if arg.start_with?('-')
-        cmd = fsm.default_cmd
+      cmd = if arg.start_with?('-')
         fsm.argv.unshift(arg)
+        fsm.default_cmd
       else
-        cmd = fsm.input_manager.get_cmd(arg.to_sym, fail_if_not_found: false)
-        if cmd.nil?
-          goto IgnoreState, arg
-          return
-        end
+        fsm.input_manager.get_cmd(arg.to_sym, fail_if_not_found: false)
       end
-      fsm.input.instance_variable_set(:@cmd, cmd.id)
-      goto WantOptionState
+      if cmd
+        fsm.input.instance_variable_set(:@cmd, cmd.id)
+        goto WantOptionState
+      else
+        goto IgnoreState, arg
+      end
     end
   end
 
   class WantOptionState
     def on_process_arg(arg)
       opt = fsm.input_manager.get_option(arg)
-
-      if opt.nil?
-        goto IgnoreState, arg
-        return
-      end
-
-      case opt.long
-      when '--define'
-        goto GlobalAttrState
-      else
-        case opt.type
-        when :flag
-          fsm.input.instance_variable_set(opt.inst_var, true)
-        when :value
-          goto ValueState, opt
-        when :array
-          goto ArrayState, opt
+      if opt
+        case opt.long
+        when '--define'
+          goto GlobalAttrState
+        else
+          case opt.type
+          when :flag
+            fsm.input.instance_variable_set(opt.inst_var, true)
+          when :value
+            goto ValueState, opt
+          when :array
+            goto ArrayState, opt
+          end
         end
+      else
+        goto IgnoreState, arg
       end
     end
   end
@@ -369,10 +366,7 @@ module JABA
       if fsm.input_manager.option_defined?(arg)
         fsm.argv.unshift(arg)
         goto WantOptionState
-        return
-      end
-
-      if @attr_name.nil?
+      elsif @attr_name.nil?
         @attr_name = arg
       else
         @values << arg
