@@ -135,10 +135,10 @@ module JABA
         current_val = instance_variable_get(PropertyMethods.get_var(p_id))
         if current_val.array?
           val = if val.array?
-                  val.flatten # don't flatten! as might be frozen
-                else
-                  Array(val)
-                end
+            val.flatten # don't flatten! as might be frozen
+          else
+            Array(val)
+          end
           val.each do |elem|
             if pre_property_set(p_id, elem) != :ignore
               current_val << elem
