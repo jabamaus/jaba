@@ -17,8 +17,12 @@ module JABA
     def initialize(services)
       @services = services
       @input = services.input
+      @passthru_args = []
       @options = []
       @cmds = []
+
+      argv  = JABA.running_tests? ? [] : ARGV.dup
+      @input.instance_variable_set(:@argv, argv)
 
       # General non-cmd-specific options
       #
@@ -141,13 +145,28 @@ module JABA
 
     ##
     #
+    def process
+      # Strip pasthru args from argv and store.
+      #
+      i = @input.argv.find_index{|a| a == '--'}
+      if !i.nil?
+        @passthru_args.concat(@input.argv.slice!(i, @input.argv.size - 1))
+        @passthru_args.shift
+      end
+      process_cmd_line
+    end
+
+    ##
+    # This is called twice as generators can register additional commands and options after the first pass.
+    #
     def process_cmd_line
+      return if input.argv.empty?
       unknown = []
       
       FSM.new do |fsm|
         fsm.add_state(WantCmdState)
         fsm.add_state(WantOptionState)
-        fsm.add_state(IgnoreState)
+        fsm.add_state(UnknownOptionState)
         fsm.add_state(ValueState)
         fsm.add_state(ArrayState)
         fsm.add_state(GlobalAttrState)
@@ -161,7 +180,6 @@ module JABA
         fsm.on_run do
           while !@argv.empty?
             arg = @argv.shift
-            break if arg == '--'
             send_event(:process_arg, arg)
           end
         end
@@ -263,7 +281,7 @@ module JABA
         fsm.input.instance_variable_set(:@cmd, cmd.id)
         goto WantOptionState
       else
-        goto IgnoreState, arg
+        goto UnknownOptionState, arg
       end
     end
   end
@@ -286,12 +304,12 @@ module JABA
           end
         end
       else
-        goto IgnoreState, arg
+        goto UnknownOptionState, arg
       end
     end
   end
   
-  class IgnoreState
+  class UnknownOptionState
     def on_enter(arg)
       fsm.unknown << arg
     end

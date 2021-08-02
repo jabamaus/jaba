@@ -81,7 +81,6 @@ module JABA
       @input = Input.new
       @input.instance_variable_set(:@build_root, nil)
       @input.instance_variable_set(:@src_root, nil)
-      @input.instance_variable_set(:@argv, ARGV)
       @input.instance_variable_set(:@definitions, [])
       @input.instance_variable_set(:@cmd, nil)
       @input.instance_variable_set(:@global_attrs, {})
@@ -187,7 +186,7 @@ module JABA
       log "Starting Jaba at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}", section: true
       
       duration = JABA.milli_timer do
-        @input_manager.process_cmd_line
+        @input_manager.process
         
         profile(input.profile) do
           do_run
