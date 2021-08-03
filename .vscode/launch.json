@@ -22,6 +22,7 @@
       "type": "Ruby",
       "request": "launch",
       "program": "${workspaceRoot}/bin/jaba.rb",
+      "cwd": "${workspaceRoot}/examples",
       "args": []
     }
   ]
