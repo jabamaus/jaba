@@ -1,0 +1,20 @@
+# To change default lib type from command line:
+#
+# jaba -D cpp_default_lib_type lib
+# jaba -D cpp_default_lib_type dll
+
+cpp :BasicLib do
+  root '../example_src/ExampleLib'
+  type globals.cpp_default_lib_type
+  platforms [:windows_x86_64]
+  configs [:Debug, :Release]
+  src ['.']
+  inc ['include'], :export
+  define ['WITH_BASICLIB'], :export_only
+  case type
+  when :lib
+    define ['BASICLIB_STATIC'], :export
+  when :dll
+    define ['BASICLIB_DYNAMIC'], :export
+  end
+end

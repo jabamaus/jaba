@@ -451,6 +451,20 @@ open_type :globals do
     node_type :host
     flags :required
   end
+
+  attr :cpp_default_lib_type, type: :choice do
+    title 'Default lib type'
+    items [:lib, :dll]
+    default :lib
+    notes 'If a library can build either as a static library or a shared object the definition writer can choose to set its type ' \
+          'to globals.cpp_defaut_lib_type so that the end user can choose.'
+    example %Q{
+      cpp :MyLib do
+        type globals.cpp_default_lib_type
+      end
+    }
+  end
+ 
 end
 
 open_instance :globals, type: :globals do
