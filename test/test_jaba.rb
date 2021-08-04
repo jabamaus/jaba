@@ -158,17 +158,18 @@ module JABA
       
       e.message.must_equal(msg)
 
-      backtrace = []
-      trace.each_slice(2) do |elem|
-        backtrace << "#{elem[0]}:#{find_line_number(elem[0], elem[1])}"
+      if trace
+        backtrace = []
+        trace.each_slice(2) do |elem|
+          backtrace << "#{elem[0]}:#{find_line_number(elem[0], elem[1])}"
+        end
+
+        # First backtrace item contains the same file and line number as the main message line so disregard
+        #
+        bt = e.backtrace
+        bt.shift
+        bt.must_equal(backtrace)
       end
-
-      # First backtrace item contains the same file and line number as the main message line so disregard
-      #
-      bt = e.backtrace
-      bt.shift
-      bt.must_equal(backtrace)
-
       e
     end
 
