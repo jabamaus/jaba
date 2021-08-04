@@ -181,13 +181,13 @@ module JABA
     # Override in subclass to validate value. If property is an array will be called for each element.
     # Return :ignore to cancel property set
     #
-    def pre_property_set(id, variant, incoming_val)
+    def pre_property_set(id, incoming_val)
     end
 
     ##
     # Override in subclass to validate value. If property is an array will be called for each element.
     #
-    def post_property_set(id, variant, incoming_val)
+    def post_property_set(id, incoming_val)
     end
 
     ##
