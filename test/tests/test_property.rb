@@ -45,90 +45,90 @@ module JABA
 
   class TestProperty < JabaTest
 
-    it 'can define a property with or without default' do
+    it 'supports single value properties' do
       pc = PropertyContainer.new
       pc.define_property(:a)
-      pc.a.must_be_nil
-      pc.define_property(:b, 1)
-      pc.b.must_equal(1)
+
+      assert_jaba_error "'a' expects a single value but got '[1]'", trace: nil do
+        pc.set_property(:a, [1])
+      end
+
+      assert_jaba_error "'a' expects a single value but got '{:a=>:b}'", trace: nil do
+        pc.set_property(:a, {a: :b})
+      end
+      
+      pc.set_property(:a, 1)
+      pc.a.must_equal 1
+      pc.get_property(:a).must_equal(1)
+      pc.set_property(:a, 2)
+      pc.a.must_equal(2)
+
+      pc.define_property(:b, accepts_block: true)
+      pc.set_property(:b) do
+        print 'can accept block if flagged'
+      end
+      assert_output 'can accept block if flagged' do
+        pc.b.call
+      end
     end
 
-    it 'can define an array property with or without default' do
+    it 'supports array properties' do
       pc = PropertyContainer.new
       pc.define_array_property(:a)
       pc.a.must_equal []
-      pc.define_array_property(:b, [1, 2])
-      pc.b.must_equal [1, 2]
-    end
 
-    it 'can set single value properties' do
-      pc = PropertyContainer.new
-      pc.define_property(:a)
-      pc.set_property(:a, 1)
-      pc.a.must_equal(1)
-    end
-    
-    it 'appends single values or arrays to array properties' do
-      pc = PropertyContainer.new
-      pc.define_array_property(:a)
-      pc.a.must_equal []
-      pc.set_property(:a, 1)
-      pc.a.must_equal [1]
+      assert_jaba_error "'a' expects an array but got '{:a=>:b}'", trace: nil do
+        pc.set_property(:a, {a: :b})
+      end
+
+      pc.set_property(:a, 1) # arrays accept single values
+      pc.get_property(:a).must_equal [1]
       pc.set_property(:a, [2, 3])
       pc.a.must_equal [1, 2, 3]
       pc.set_property(:a, [[4, 5], [6, 7]]) # gets flattened
       pc.a.must_equal [1, 2, 3, 4, 5, 6, 7]
+
+      pc.define_array_property(:b, accepts_block: true)
+      pc.set_property(:b) do
+        print 'can accept block if flagged'
+      end
+      assert_output 'can accept block if flagged' do
+        pc.b.call
+      end
     end
 
-    it 'fails if set undefined property' do
-      e = assert_raises do
-        pc = PropertyContainer.new
-        pc.set_property(:a)
-      end
-      e.message.must_equal("Failed to set undefined 'a' property")
-    end
-
-    it 'fails if property multiply defined' do
-      e = assert_raises do
-        pc = PropertyContainer.new
-        pc.define_property(:a)
-        pc.define_property(:a)
-      end
-      e.message.must_equal("'a' property multiply defined")
-      e = assert_raises do
-        pc = PropertyContainer.new
-        pc.define_array_property(:a)
-        pc.define_array_property(:a)
-      end
-      e.message.must_equal("'a' property multiply defined")
-      e = assert_raises do
-        pc = PropertyContainer.new
-        pc.define_property(:a)
-        pc.define_array_property(:a)
-      end
-      e.message.must_equal("'a' property multiply defined")
-    end
-
-    it 'stays as either a single value or array' do
+    it 'supports hash properties' do
       pc = PropertyContainer.new
-      pc.define_property(:a, 1)
-      assert_raises do
-        pc.set_property(:a, [1])
-      end.message.must_equal("'a' property cannot accept an array")
-      pc.define_property(:b)
-      pc.set_property(:b, [1]) # allowed because b is nil
-      pc.b.must_equal [1]
-      pc.b.must_equal [1]
-      pc.set_property(:b, 2) # now appends because property has become an array
-      pc.b.must_equal [1, 2]
-      pc.b.must_equal [1, 2]
+      pc.define_hash_property(:a)
+      pc.a.must_equal({})
+
+      assert_jaba_error "'a' expects a hash but got '1'", trace: nil do
+        pc.set_property(:a, 1)
+      end
+      
+      pc.set_property(:a, {a: :b})
+      pc.a.must_equal({a: :b})
+      pc.get_property(:a).must_equal({a: :b})
+      pc.set_property(:a, {c: :d})
+      pc.a.must_equal({a: :b, c: :d})
+
+      pc.define_hash_property(:b, accepts_block: true)
+      pc.set_property(:b) do
+        print 'can accept block if flagged'
+      end
+      assert_output 'can accept block if flagged' do
+        pc.b.call
+      end
     end
 
-    it 'supports blocks' do
+    it 'supports block properties' do
       pc = PropertyContainer.new
-      pc.define_property(:a)
+      pc.define_block_property(:a)
       pc.set_property(:a) do
         print 'in block'
+      end
+      assert_output 'in block' do
+        pc.a.call
       end
       pc.a.proc?.must_equal(true)
       pc.set_property(:a) do
@@ -137,20 +137,58 @@ module JABA
       assert_output 'in different block' do
         pc.a.call
       end
+      pc.set_property(:a, lambda{ print 'setting via lambda'})
+      assert_output 'setting via lambda' do
+        pc.a.call
+      end
+      assert_jaba_error 'Must provide a value or a block but not both', trace: nil do
+        pc.set_property(:a, 1) do
+        end
+      end
+    end
+
+    it 'fails if set undefined property' do
+      pc = PropertyContainer.new
+      assert_jaba_error "Failed to set undefined 'a' property", trace: nil do
+        pc.set_property(:a)
+      end
+      assert_jaba_error "Failed to get undefined 'a' property", trace: nil do
+        pc.get_property(:a)
+      end
+    end
+
+    it 'fails if property multiply defined' do
+      assert_jaba_error "'a' property multiply defined", trace: nil do
+        pc = PropertyContainer.new
+        pc.define_property(:a)
+        pc.define_property(:a)
+      end
+      assert_jaba_error "'a' property multiply defined", trace: nil do
+        pc = PropertyContainer.new
+        pc.define_array_property(:a)
+        pc.define_array_property(:a)
+      end
+      assert_jaba_error "'a' property multiply defined", trace: nil do
+        pc = PropertyContainer.new
+        pc.define_property(:a)
+        pc.define_array_property(:a)
+      end
     end
 
     it 'calls pre_property_set and post_property_set with incoming value' do
-      assert_output "pre a->1\npost a->1\npre b->2\npost b->2\npre b->3\npost b->3\npre b->4\npost b->4\npre c->block\npost c->block\n" do
+      assert_output "pre a->1\npost a->1\npre b->2\npost b->2\npre b->3\npost b->3\npre b->4\npost b->4\npre c->{:a=>:b}\npost c->{:a=>:b}\npre d->block\npost d->block\n" do
         pc = PropertyContainer.new(on_prop_set: true)
         pc.define_property(:a)
         pc.set_property(:a, 1)
         pc.define_array_property(:b)
-        pc.set_property(:b, 2)
+        pc.set_property(:b, [2])
         pc.ignore_next
-        pc.set_property(:b, 5) # Won't get set
+        pc.set_property(:b, [5]) # Won't get set
         pc.set_property(:b, [3, 4])
-        pc.define_property(:c)
-        pc.set_property(:c) do
+        pc.define_hash_property(:c)
+        pc.set_property(:c, {a: :b})
+        pc.define_block_property(:d) # doesn't call pre/post set for block properties
+        pc.set_property(:d) do
         end
       end
     end

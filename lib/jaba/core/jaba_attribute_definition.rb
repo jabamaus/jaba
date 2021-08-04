@@ -49,7 +49,7 @@ module JABA
       define_property(:title)
       define_array_property(:notes)
       define_array_property(:examples)
-      define_property(:default)
+      define_property(:default, variant: variant, accepts_block: true)
       define_array_property(:flags)
       define_array_property(:flag_options)
       
@@ -225,22 +225,10 @@ module JABA
         @default_block = @default.proc? ? @default : nil
         return if @default_block
 
-        if single? && incoming.is_a?(Enumerable)
-          JABA.error("#{describe} default must be a single value not a '#{incoming.class}'")
-        elsif array? && !incoming.array?
-          JABA.error("#{describe} default must be an array not a '#{incoming.class}'")
-        elsif hash? && !incoming.hash?
-          JABA.error("#{describe} default must be a hash not a '#{incoming.class}'")
-        end
-
         call_validators("#{describe} default") do
           case @variant
-          when :single
-            @jaba_attr_type.validate_value(self, @default)
-          when :array
-            incoming.each do |elem|
-              @jaba_attr_type.validate_value(self, elem)
-            end
+          when :single, :array
+            @jaba_attr_type.validate_value(self, incoming)
           when :hash
             incoming.each do |key, val|
               @jaba_attr_key_type.validate_value(self, key)

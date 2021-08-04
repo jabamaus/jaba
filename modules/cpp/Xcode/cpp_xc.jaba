@@ -1,3 +1,7 @@
+open_instance :ios, type: :platform do
+  cpp_src_ext []
+end
+
 open_instance :xcode, type: :host do
   cpp_supported_platforms [:ios]
   cpp_project_classname 'Xcodeproj'

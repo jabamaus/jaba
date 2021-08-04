@@ -89,7 +89,7 @@ module JABA
 
       # validates that default is a hash
       #
-      check_fail "'a' hash attribute default must be a hash not a 'Array'", line: [__FILE__, 'tagU'] do
+      check_fail "'default' expects a hash but got '[]'", line: [__FILE__, 'tagU'] do
         jaba(barebones: true) do
           define :test do
             attr_hash :a, key_type: :symbol do

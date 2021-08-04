@@ -414,8 +414,8 @@ module JABA
     #
     def init_attr_def(attr_def)
       attr_def.define_property(:node_type)
-      attr_def.define_property(:make_handle) # TODO: flag as block or validate as such
-      attr_def.define_property(:unresolved_msg)
+      attr_def.define_block_property(:make_handle)
+      attr_def.define_block_property(:unresolved_msg)
     end
 
     ##

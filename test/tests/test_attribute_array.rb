@@ -5,13 +5,13 @@ module JABA
   class TestAttributeArray < JabaTest
 
     it 'supports a default' do
-      # It validates default is an array
+      # It validates default is an array or single value
       #
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagV)}: 'a' array attribute default must be an array not a 'Integer'.", trace: [__FILE__, :tagv] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagV)}: 'default' expects an array but got '{:a=>:b}'.", trace: [__FILE__, :tagv] do
         jaba(barebones: true) do
           define :test do
             attr_array :a do # tagv
-              default 1 # tagV
+              default({a: :b}) # tagV
             end
           end
         end
