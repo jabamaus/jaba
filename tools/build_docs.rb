@@ -39,6 +39,8 @@ class DocBuilder
 
     FileUtils.mkdir(DOCS_HTML_DIR)
     FileUtils.mkdir(DOCS_MARKDOWN_DIR)
+
+    FileUtils.copy_file("#{DOCS_HANDWRITTEN_DIR}/mamd.css", "#{DOCS_HTML_DIR}/mamd.css")
     
     op = JABA.run(want_exceptions: true) do |c|
       c.dry_run
