@@ -12,6 +12,7 @@
 <a href="index.html">0.1-alpha home</a></p>
 <blockquote>
 <p><em>Target platform type</em></p>
+<p>Manages attribute definitions for 'platform' type. Manages attribute definitions required by platforms.</p>
 <table>
 <thead>
 <tr>
@@ -23,10 +24,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/core/platforms.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Manages attribute definitions for 'platform' type. Manages attribute definitions required by platforms.</td>
 </tr>
 <tr>
 <td><em>depends on</em></td>
@@ -49,6 +46,7 @@
 <h4 id="apple">apple?</h4>
 <blockquote>
 <p><em>Returns true if current target platform is an Apple platform</em></p>
+<p>Use only if attribute being set works across all current and future apple platforms. As such probably rarely used..</p>
 <table>
 <thead>
 <tr>
@@ -77,10 +75,6 @@
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/core/platforms.jaba</td>
 </tr>
-<tr>
-<td><em>notes</em></td>
-<td>Use only if attribute being set works across all current and future apple platforms. As such probably rarely used..</td>
-</tr>
 </tbody>
 </table>
 </blockquote>
@@ -88,6 +82,7 @@
 <h4 id="cpp-src-ext">cpp_src_ext</h4>
 <blockquote>
 <p><em>Default src file extensions for C++ projects</em></p>
+<p>Any platform-specific extensions specified are in addition to the Core C/C+ file types specified in <a href="#cpp-src_ext">$(cpp#src_ext)</a>.</p>
 <table>
 <thead>
 <tr>
@@ -115,10 +110,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Any platform-specific extensions specified are in addition to the Core C/C+ file types specified in <a href="#cpp-src_ext">$(cpp#src_ext)</a>.</td>
 </tr>
 </tbody>
 </table>
@@ -255,7 +246,7 @@
 <td>:choice []</td>
 </tr>
 <tr>
-<td><em>items</em></td>
+<td><em>choices</em></td>
 <td>[:x86, :x86_64, :arm64]</td>
 </tr>
 <tr>

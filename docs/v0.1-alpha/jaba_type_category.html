@@ -12,6 +12,7 @@
 <a href="index.html">0.1-alpha home</a></p>
 <blockquote>
 <p><em>Project category type</em></p>
+<p>Manages attribute definitions for 'category' type.</p>
 <table>
 <thead>
 <tr>
@@ -23,10 +24,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/core/category.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Manages attribute definitions for 'category' type.</td>
 </tr>
 <tr>
 <td><em>depends on</em></td>
@@ -45,6 +42,7 @@
 <h4 id="guid">guid</h4>
 <blockquote>
 <p><em>Globally unique id (GUID)</em></p>
+<p>Seeded by <a href="#name">$(name)</a>. Required by Visual Studio .sln files.</p>
 <table>
 <thead>
 <tr>
@@ -73,10 +71,6 @@
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba</td>
 </tr>
-<tr>
-<td><em>notes</em></td>
-<td>Seeded by <a href="#name">$(name)</a>. Required by Visual Studio .sln files.</td>
-</tr>
 </tbody>
 </table>
 </blockquote>
@@ -84,6 +78,7 @@
 <h4 id="name">name</h4>
 <blockquote>
 <p><em>Display name of category</em></p>
+<p>Maps to name of solution folder in a Visual Studio solution.</p>
 <table>
 <thead>
 <tr>
@@ -112,10 +107,6 @@
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/core/category.jaba</td>
 </tr>
-<tr>
-<td><em>notes</em></td>
-<td>Maps to name of solution folder in a Visual Studio solution.</td>
-</tr>
 </tbody>
 </table>
 </blockquote>
@@ -123,6 +114,7 @@
 <h4 id="parent">parent</h4>
 <blockquote>
 <p><em>Parent category</em></p>
+<p>Use this to build a category hierarchy that can be used to classify projects in workspaces.</p>
 <table>
 <thead>
 <tr>
@@ -136,8 +128,8 @@
 <td>:node_ref</td>
 </tr>
 <tr>
-<td><em>node_type</em></td>
-<td>:category</td>
+<td><em>references</em></td>
+<td><a href="jaba_type_category.html">category</a></td>
 </tr>
 <tr>
 <td><em>default</em></td>
@@ -154,10 +146,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/core/category.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Use this to build a category hierarchy that can be used to classify projects in workspaces.</td>
 </tr>
 </tbody>
 </table>

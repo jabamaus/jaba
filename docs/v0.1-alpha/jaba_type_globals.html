@@ -12,6 +12,7 @@
 <a href="index.html">0.1-alpha home</a></p>
 <blockquote>
 <p><em>Global attribute definitions</em></p>
+<p>Manages attribute definitions for 'globals' type.</p>
 <table>
 <thead>
 <tr>
@@ -23,10 +24,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/core/globals.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Manages attribute definitions for 'globals' type.</td>
 </tr>
 <tr>
 <td><em>depends on</em></td>
@@ -47,6 +44,7 @@
 <h4 id="cpp-default-lib-type">cpp_default_lib_type</h4>
 <blockquote>
 <p><em>Default lib type</em></p>
+<p>If a library can build either as a static library or a shared object the definition writer can choose to set its type to globals.cpp_defaut_lib_type so that the end user can choose..</p>
 <table>
 <thead>
 <tr>
@@ -60,7 +58,7 @@
 <td>:choice</td>
 </tr>
 <tr>
-<td><em>items</em></td>
+<td><em>choices</em></td>
 <td>[:lib, :dll]</td>
 </tr>
 <tr>
@@ -78,10 +76,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>If a library can build either as a static library or a shared object the definition writer can choose to set its type to globals.cpp_defaut_lib_type so that the end user can choose..</td>
 </tr>
 </tbody>
 </table>
@@ -107,8 +101,8 @@
 <td>:node_ref []</td>
 </tr>
 <tr>
-<td><em>node_type</em></td>
-<td>:host</td>
+<td><em>references</em></td>
+<td><a href="jaba_type_host.html">host</a></td>
 </tr>
 <tr>
 <td><em>default</em></td>
@@ -168,6 +162,7 @@
 <h4 id="jaba-output-file">jaba_output_file</h4>
 <blockquote>
 <p><em>Name/path of file to contain Jaba output in json format</em></p>
+<p>Jaba output can be later used by another process (eg the build process) to do things like looking up paths by id rather than embedding them in code, iterating over all defined unit tests and invoking them, etc..</p>
 <table>
 <thead>
 <tr>
@@ -195,10 +190,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/core/globals.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Jaba output can be later used by another process (eg the build process) to do things like looking up paths by id rather than embedding them in code, iterating over all defined unit tests and invoking them, etc..</td>
 </tr>
 </tbody>
 </table>

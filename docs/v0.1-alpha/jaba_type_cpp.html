@@ -12,6 +12,7 @@
 <a href="index.html">0.1-alpha home</a></p>
 <blockquote>
 <p><em>Cross platform C++ project definition</em></p>
+<p>Manages attribute definitions for 'cpp' type.</p>
 <table>
 <thead>
 <tr>
@@ -23,10 +24,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Manages attribute definitions for 'cpp' type.</td>
 </tr>
 <tr>
 <td><em>depends on</em></td>
@@ -88,6 +85,7 @@
 <h4 id="arch">arch</h4>
 <blockquote>
 <p><em>Target architecture as an id</em></p>
+<p>Query current architecture being processed. Use to define control flow to set config-specific atttributes.</p>
 <table>
 <thead>
 <tr>
@@ -116,10 +114,6 @@
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
 </tr>
-<tr>
-<td><em>notes</em></td>
-<td>Query current architecture being processed. Use to define control flow to set config-specific atttributes.</td>
-</tr>
 </tbody>
 </table>
 </blockquote>
@@ -140,8 +134,8 @@
 <td>:node_ref</td>
 </tr>
 <tr>
-<td><em>node_type</em></td>
-<td>:arch</td>
+<td><em>references</em></td>
+<td><a href="jaba_type_arch.html">arch</a></td>
 </tr>
 <tr>
 <td><em>default</em></td>
@@ -201,6 +195,7 @@
 <h4 id="build-root-offset">build_root_offset</h4>
 <blockquote>
 <p><em>Root directory for build artifacts</em></p>
+<p>Specified as a relative path from main build root.</p>
 <table>
 <thead>
 <tr>
@@ -228,10 +223,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Specified as a relative path from main build root.</td>
 </tr>
 </tbody>
 </table>
@@ -327,7 +318,7 @@
 <td>:choice</td>
 </tr>
 <tr>
-<td><em>items</em></td>
+<td><em>choices</em></td>
 <td>[:mbcs, :unicode, nil]</td>
 </tr>
 <tr>
@@ -355,6 +346,7 @@
 <h4 id="config">config</h4>
 <blockquote>
 <p><em>Current target config as an id</em></p>
+<p>Returns current config being processed. Use to define control flow to set config-specific atttributes.</p>
 <table>
 <thead>
 <tr>
@@ -382,10 +374,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Returns current config being processed. Use to define control flow to set config-specific atttributes.</td>
 </tr>
 </tbody>
 </table>
@@ -466,6 +454,7 @@
 <h4 id="debug">debug</h4>
 <blockquote>
 <p><em>Flags config as a debug config</em></p>
+<p>Defaults to true if config id contains 'debug'.</p>
 <table>
 <thead>
 <tr>
@@ -493,10 +482,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Defaults to true if config id contains 'debug'.</td>
 </tr>
 </tbody>
 </table>
@@ -540,6 +525,7 @@
 <h4 id="deps">deps</h4>
 <blockquote>
 <p><em>Project dependencies</em></p>
+<p>List of ids of other cpp definitions.</p>
 <table>
 <thead>
 <tr>
@@ -553,8 +539,8 @@
 <td>:node_ref []</td>
 </tr>
 <tr>
-<td><em>node_type</em></td>
-<td>:cpp</td>
+<td><em>references</em></td>
+<td><a href="jaba_type_cpp.html">cpp</a></td>
 </tr>
 <tr>
 <td><em>default</em></td>
@@ -571,10 +557,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>List of ids of other cpp definitions.</td>
 </tr>
 </tbody>
 </table>
@@ -607,7 +589,7 @@
 <td>:choice</td>
 </tr>
 <tr>
-<td><em>items</em></td>
+<td><em>choices</em></td>
 <td>[true, false, :structured]</td>
 </tr>
 <tr>
@@ -635,6 +617,7 @@
 <h4 id="guid">guid</h4>
 <blockquote>
 <p><em>Globally unique id (GUID)</em></p>
+<p>Seeded by <a href="#projname">$(projname)</a>. Required by Visual Studio project files.</p>
 <table>
 <thead>
 <tr>
@@ -663,10 +646,6 @@
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba</td>
 </tr>
-<tr>
-<td><em>notes</em></td>
-<td>Seeded by <a href="#projname">$(projname)</a>. Required by Visual Studio project files.</td>
-</tr>
 </tbody>
 </table>
 </blockquote>
@@ -674,6 +653,7 @@
 <h4 id="host">host</h4>
 <blockquote>
 <p><em>Target host as an id</em></p>
+<p>Query current target host.</p>
 <table>
 <thead>
 <tr>
@@ -702,10 +682,6 @@
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
 </tr>
-<tr>
-<td><em>notes</em></td>
-<td>Query current target host.</td>
-</tr>
 </tbody>
 </table>
 <p><em>Examples</em></p>
@@ -720,6 +696,7 @@
 <h4 id="host-ref">host_ref</h4>
 <blockquote>
 <p><em>Target host as object</em></p>
+<p>Use when access to host attributes is required.</p>
 <table>
 <thead>
 <tr>
@@ -733,8 +710,8 @@
 <td>:node_ref</td>
 </tr>
 <tr>
-<td><em>node_type</em></td>
-<td>:host</td>
+<td><em>references</em></td>
+<td><a href="jaba_type_host.html">host</a></td>
 </tr>
 <tr>
 <td><em>default</em></td>
@@ -752,10 +729,6 @@
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
 </tr>
-<tr>
-<td><em>notes</em></td>
-<td>Use when access to host attributes is required.</td>
-</tr>
 </tbody>
 </table>
 </blockquote>
@@ -763,6 +736,7 @@
 <h4 id="importlib">importlib</h4>
 <blockquote>
 <p><em>Name of import lib for use will dlls</em></p>
+<p>Defaults to <a href="#projname">$(projname)</a><a href="#targetsuffix">$(targetsuffix)</a>.lib.</p>
 <table>
 <thead>
 <tr>
@@ -790,10 +764,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Defaults to <a href="#projname">$(projname)</a><a href="#targetsuffix">$(targetsuffix)</a>.lib.</td>
 </tr>
 </tbody>
 </table>
@@ -910,6 +880,7 @@
 <h4 id="nowarn">nowarn</h4>
 <blockquote>
 <p><em>Warnings to disable</em></p>
+<p>Placed directly into projects as is, with no validation.</p>
 <table>
 <thead>
 <tr>
@@ -937,10 +908,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Placed directly into projects as is, with no validation.</td>
 </tr>
 </tbody>
 </table>
@@ -986,6 +953,7 @@
 <h4 id="platform">platform</h4>
 <blockquote>
 <p><em>Target platform as an id</em></p>
+<p>Query current target platform.</p>
 <table>
 <thead>
 <tr>
@@ -1014,10 +982,6 @@
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
 </tr>
-<tr>
-<td><em>notes</em></td>
-<td>Query current target platform.</td>
-</tr>
 </tbody>
 </table>
 <p><em>Examples</em></p>
@@ -1032,6 +996,7 @@
 <h4 id="platform-ref">platform_ref</h4>
 <blockquote>
 <p><em>Target platform as an object</em></p>
+<p>Use when access to platform attributes is required.</p>
 <table>
 <thead>
 <tr>
@@ -1045,8 +1010,8 @@
 <td>:node_ref</td>
 </tr>
 <tr>
-<td><em>node_type</em></td>
-<td>:platform</td>
+<td><em>references</em></td>
+<td><a href="jaba_type_platform.html">platform</a></td>
 </tr>
 <tr>
 <td><em>default</em></td>
@@ -1063,10 +1028,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Use when access to platform attributes is required.</td>
 </tr>
 </tbody>
 </table>
@@ -1150,6 +1111,7 @@
 <h4 id="projname">projname</h4>
 <blockquote>
 <p><em>Base name of project files</em></p>
+<p>Defaults to <a href="#id">$(id)</a><a href="#projsuffix">$(projsuffix)</a>.</p>
 <table>
 <thead>
 <tr>
@@ -1178,10 +1140,6 @@
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
 </tr>
-<tr>
-<td><em>notes</em></td>
-<td>Defaults to <a href="#id">$(id)</a><a href="#projsuffix">$(projsuffix)</a>.</td>
-</tr>
 </tbody>
 </table>
 </blockquote>
@@ -1189,6 +1147,7 @@
 <h4 id="projsuffix">projsuffix</h4>
 <blockquote>
 <p><em>Optional suffix to be applied to $(projname)</em></p>
+<p>Has no effect if <a href="#projname">$(projname)</a> is set explicitly.</p>
 <table>
 <thead>
 <tr>
@@ -1217,10 +1176,6 @@
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
 </tr>
-<tr>
-<td><em>notes</em></td>
-<td>Has no effect if <a href="#projname">$(projname)</a> is set explicitly.</td>
-</tr>
 </tbody>
 </table>
 </blockquote>
@@ -1228,6 +1183,7 @@
 <h4 id="root">root</h4>
 <blockquote>
 <p><em>Root directory relative to which all other paths are specified</em></p>
+<p>Root of the project specified as an offset from the .jaba file that contains the project definition. All paths are specified relative to this. Project files will be generated here unless <a href="#projdir">$(projdir)</a> is set. Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible in order to not damage portability.</p>
 <table>
 <thead>
 <tr>
@@ -1255,10 +1211,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Root of the project specified as an offset from the .jaba file that contains the project definition. All paths are specified relative to this. Project files will be generated here unless <a href="#projdir">$(projdir)</a> is set. Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible in order to not damage portability.</td>
 </tr>
 </tbody>
 </table>
@@ -1304,6 +1256,7 @@
 <h4 id="shell">shell</h4>
 <blockquote>
 <p><em>Shell commands to execute during build</em></p>
+<p>Maps to build events in Visual Studio.</p>
 <table>
 <thead>
 <tr>
@@ -1331,10 +1284,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Maps to build events in Visual Studio.</td>
 </tr>
 </tbody>
 </table>
@@ -1417,6 +1366,7 @@
 <h4 id="src-ext">src_ext</h4>
 <blockquote>
 <p><em>File extensions used when matching src files</em></p>
+<p>Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes..</p>
 <table>
 <thead>
 <tr>
@@ -1444,10 +1394,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes..</td>
 </tr>
 </tbody>
 </table>
@@ -1491,6 +1437,7 @@
 <h4 id="targetext">targetext</h4>
 <blockquote>
 <p><em>Extension to apply to $(targetname)</em></p>
+<p>Defaults to standard extension for <a href="#type">$(type)</a> of project for target <a href="#platform">$(platform)</a>.</p>
 <table>
 <thead>
 <tr>
@@ -1518,10 +1465,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Defaults to standard extension for <a href="#type">$(type)</a> of project for target <a href="#platform">$(platform)</a>.</td>
 </tr>
 </tbody>
 </table>
@@ -1530,6 +1473,7 @@
 <h4 id="targetname">targetname</h4>
 <blockquote>
 <p><em>Base name of output file without extension</em></p>
+<p>Defaults to <a href="#targetprefix">$(targetprefix)</a><a href="#projname">$(projname)</a><a href="#targetsuffix">$(targetsuffix)</a>.</p>
 <table>
 <thead>
 <tr>
@@ -1557,10 +1501,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Defaults to <a href="#targetprefix">$(targetprefix)</a><a href="#projname">$(projname)</a><a href="#targetsuffix">$(targetsuffix)</a>.</td>
 </tr>
 </tbody>
 </table>
@@ -1569,6 +1509,7 @@
 <h4 id="targetprefix">targetprefix</h4>
 <blockquote>
 <p><em>Prefix to apply to $(targetname)</em></p>
+<p>Has no effect if <a href="#targetname">$(targetname)</a> specified.</p>
 <table>
 <thead>
 <tr>
@@ -1596,10 +1537,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Has no effect if <a href="#targetname">$(targetname)</a> specified.</td>
 </tr>
 </tbody>
 </table>
@@ -1608,6 +1545,7 @@
 <h4 id="targetsuffix">targetsuffix</h4>
 <blockquote>
 <p><em>Suffix to apply to $(targetname)</em></p>
+<p>Has no effect if <a href="#targetname">$(targetname)</a> specified.</p>
 <table>
 <thead>
 <tr>
@@ -1636,10 +1574,6 @@
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
 </tr>
-<tr>
-<td><em>notes</em></td>
-<td>Has no effect if <a href="#targetname">$(targetname)</a> specified.</td>
-</tr>
 </tbody>
 </table>
 </blockquote>
@@ -1647,6 +1581,7 @@
 <h4 id="toolset">toolset</h4>
 <blockquote>
 <p><em>Toolset version to use</em></p>
+<p>Defaults to host's default toolset.</p>
 <table>
 <thead>
 <tr>
@@ -1674,10 +1609,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Defaults to host's default toolset.</td>
 </tr>
 </tbody>
 </table>
@@ -1699,7 +1630,7 @@
 <td>:choice</td>
 </tr>
 <tr>
-<td><em>items</em></td>
+<td><em>choices</em></td>
 <td>[:app, :console, :lib, :dll]</td>
 </tr>
 <tr>
@@ -1880,7 +1811,7 @@
 <td>:choice</td>
 </tr>
 <tr>
-<td><em>items</em></td>
+<td><em>choices</em></td>
 <td>[&quot;10.0.16299.0&quot;, &quot;10.0.17134.0&quot;, &quot;10.0.17763.0&quot;, &quot;10.0.18362.0&quot;, nil]</td>
 </tr>
 <tr>

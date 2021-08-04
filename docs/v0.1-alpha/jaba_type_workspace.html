@@ -12,6 +12,7 @@
 <a href="index.html">0.1-alpha home</a></p>
 <blockquote>
 <p><em>Workspace of projects</em></p>
+<p>Manages attribute definitions for 'workspace' type.</p>
 <table>
 <thead>
 <tr>
@@ -23,10 +24,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/workspace/workspace.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Manages attribute definitions for 'workspace' type.</td>
 </tr>
 <tr>
 <td><em>depends on</em></td>
@@ -83,6 +80,7 @@
 <h4 id="namesuffix">namesuffix</h4>
 <blockquote>
 <p><em>Optional suffix to be applied to $(name)</em></p>
+<p>Has no effect if <a href="#name">$(name)</a> is set explicitly.</p>
 <table>
 <thead>
 <tr>
@@ -110,10 +108,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/workspace/workspace.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Has no effect if <a href="#name">$(name)</a> is set explicitly.</td>
 </tr>
 </tbody>
 </table>
@@ -157,6 +151,7 @@
 <h4 id="projects">projects</h4>
 <blockquote>
 <p><em>Contained projects</em></p>
+<p>Specified by id (symbol or string), or by glob matches against project <a href="#root">$(root)</a>. Dependencies will be automatically pulled in..</p>
 <table>
 <thead>
 <tr>
@@ -185,10 +180,6 @@
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/workspace/workspace.jaba</td>
 </tr>
-<tr>
-<td><em>notes</em></td>
-<td>Specified by id (symbol or string), or by glob matches against project <a href="#root">$(root)</a>. Dependencies will be automatically pulled in..</td>
-</tr>
 </tbody>
 </table>
 <p><em>Examples</em></p>
@@ -199,6 +190,7 @@
 <h4 id="root">root</h4>
 <blockquote>
 <p><em>Root directory relative to which all other paths are specified</em></p>
+<p>Defaults to containing directory of definition source file.</p>
 <table>
 <thead>
 <tr>
@@ -226,10 +218,6 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/workspace/workspace.jaba</td>
-</tr>
-<tr>
-<td><em>notes</em></td>
-<td>Defaults to containing directory of definition source file.</td>
 </tr>
 </tbody>
 </table>
