@@ -13,10 +13,32 @@
 > 
 
 Attributes:  
+- [cpp_default_lib_type](#cpp_default_lib_type)
 - [cpp_hosts](#cpp_hosts)
 - [dump_output](#dump_output)
 - [jaba_output_file](#jaba_output_file)
 - [vcfiletype](#vcfiletype)
+
+<a id="cpp_default_lib_type"></a>
+#### cpp_default_lib_type
+> _Default lib type_
+> 
+> | Property | Value  |
+> |-|-|
+> | _type_ | :choice |
+> | _items_ | [:lib, :dll] |
+> | _default_ | :lib |
+> | _flags_ |  |
+> | _options_ |  |
+> | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
+> | _notes_ | If a library can build either as a static library or a shared object the definition writer can choose to set its type to globals.cpp_defaut_lib_type so that the end user can choose..  |
+>
+> *Examples*
+>```ruby
+> cpp :MyLib do
+>   type globals.cpp_default_lib_type
+> end
+>```
 
 <a id="cpp_hosts"></a>
 #### cpp_hosts
@@ -26,7 +48,7 @@ Attributes:
 > |-|-|
 > | _type_ | :node_ref [] |
 > | _node_type_ | :host |
-> | _default_ |  |
+> | _default_ | [] |
 > | _flags_ | :required |
 > | _options_ |  |
 > | _defined in_ | $(jaba_install)/modules/cpp/cpp.jaba |
@@ -63,7 +85,7 @@ Attributes:
 > | Property | Value  |
 > |-|-|
 > | _type_ | :symbol {} |
-> | _default_ |  |
+> | _default_ | {} |
 > | _flags_ | :required |
 > | _options_ |  |
 > | _defined in_ | $(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba |

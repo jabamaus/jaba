@@ -63,7 +63,7 @@ Attributes:
 > | Property | Value  |
 > |-|-|
 > | _type_ | :to_s [] |
-> | _default_ |  |
+> | _default_ | [] |
 > | _flags_ | :allow_dupes, :no_sort |
 > | _options_ |  |
 > | _defined in_ | $(jaba_install)/modules/text/text.jaba |

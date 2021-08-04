@@ -37,11 +37,59 @@
 </blockquote>
 <p>Attributes:</p>
 <ul>
+<li><a href="#cpp_default_lib_type">cpp_default_lib_type</a></li>
 <li><a href="#cpp_hosts">cpp_hosts</a></li>
 <li><a href="#dump_output">dump_output</a></li>
 <li><a href="#jaba_output_file">jaba_output_file</a></li>
 <li><a href="#vcfiletype">vcfiletype</a></li>
 </ul>
+<p><a id="cpp_default_lib_type"></a></p>
+<h4 id="cpp-default-lib-type">cpp_default_lib_type</h4>
+<blockquote>
+<p><em>Default lib type</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:choice</td>
+</tr>
+<tr>
+<td><em>items</em></td>
+<td>[:lib, :dll]</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>:lib</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+<tr>
+<td><em>notes</em></td>
+<td>If a library can build either as a static library or a shared object the definition writer can choose to set its type to globals.cpp_defaut_lib_type so that the end user can choose..</td>
+</tr>
+</tbody>
+</table>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">cpp</span> <span style="color:#d88200">:MyLib</span> <span style="color:#00a8c8">do</span>
+  <span style="color:#111">type</span> <span style="color:#111">globals</span><span style="color:#f92672">.</span><span style="color:#111">cpp_default_lib_type</span>
+<span style="color:#00a8c8">end</span>
+</pre></blockquote>
 <p><a id="cpp_hosts"></a></p>
 <h4 id="cpp-hosts">cpp_hosts</h4>
 <blockquote>
@@ -64,7 +112,7 @@
 </tr>
 <tr>
 <td><em>default</em></td>
-<td></td>
+<td>[]</td>
 </tr>
 <tr>
 <td><em>flags</em></td>
@@ -173,7 +221,7 @@
 </tr>
 <tr>
 <td><em>default</em></td>
-<td></td>
+<td>{}</td>
 </tr>
 <tr>
 <td><em>flags</em></td>

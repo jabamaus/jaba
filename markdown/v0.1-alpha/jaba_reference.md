@@ -65,6 +65,7 @@
     - [warnerror](jaba_type_cpp.html#warnerror)
     - [winsdkver](jaba_type_cpp.html#winsdkver)
   - [globals](jaba_type_globals.html)
+    - [cpp_default_lib_type](jaba_type_globals.html#cpp_default_lib_type)
     - [cpp_hosts](jaba_type_globals.html#cpp_hosts)
     - [dump_output](jaba_type_globals.html#dump_output)
     - [jaba_output_file](jaba_type_globals.html#jaba_output_file)

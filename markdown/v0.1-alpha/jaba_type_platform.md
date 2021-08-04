@@ -107,7 +107,7 @@ Attributes:
 > |-|-|
 > | _type_ | :choice [] |
 > | _items_ | [:x86, :x86_64, :arm64] |
-> | _default_ |  |
+> | _default_ | [] |
 > | _flags_ | :required, :no_sort |
 > | _options_ |  |
 > | _defined in_ | $(jaba_install)/modules/core/platforms.jaba |

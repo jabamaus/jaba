@@ -64,7 +64,7 @@ Attributes:
 > | Property | Value  |
 > |-|-|
 > | _type_ | :symbol_or_string [] |
-> | _default_ |  |
+> | _default_ | [] |
 > | _flags_ | :required, :no_sort |
 > | _options_ |  |
 > | _defined in_ | $(jaba_install)/modules/workspace/workspace.jaba |

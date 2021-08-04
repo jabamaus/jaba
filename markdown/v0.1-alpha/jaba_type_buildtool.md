@@ -61,7 +61,7 @@ Attributes:
 > | Property | Value  |
 > |-|-|
 > | _type_ | :file [] |
-> | _default_ |  |
+> | _default_ | [] |
 > | _flags_ |  |
 > | _options_ |  |
 > | _defined in_ | $(jaba_install)/modules/core/buildtool.jaba |
