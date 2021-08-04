@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include\ExampleDll">
+      <UniqueIdentifier>{4AF4E9E6-6BF6-5A9E-97A7-30E1EF3B37F3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{8FD4A489-557C-59E6-BF7F-D29354B5535E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{68ED5811-B8EF-541F-9683-791AB71BE8D5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\example_src\ExampleDll\include\ExampleDll\ExampleDll.h">
+      <Filter>include\ExampleDll</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\example_src\ExampleDll\src\ExampleDll.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

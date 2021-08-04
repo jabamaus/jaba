@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include\ExampleLib">
+      <UniqueIdentifier>{41F6BDD9-A5A8-5DEE-97D8-71C52C09997D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{8675480A-01B7-52C8-8375-37791255E4C0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{24A1C1B7-B6FC-58E3-9E7B-13A962E16708}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\example_src\ExampleLib\include\ExampleLib\ExampleLib.h">
+      <Filter>include\ExampleLib</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\example_src\ExampleLib\src\ExampleLib.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

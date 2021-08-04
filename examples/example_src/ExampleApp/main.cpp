@@ -18,7 +18,7 @@ int main(int argc, const char* argv[])
 #ifdef WITH_EXAMPLE_DLL
   printf("example_dll_func() says \"%s\"\n", example_dll_func());
 #endif
-#ifdef WITH_3RDPARTY_LIB
+#ifdef WITH_THIRD_PARTY_LIB
   printf("third_party_lib_func() says \"%s\"\n", third_party_lib_func());
 #endif
   return 0;
