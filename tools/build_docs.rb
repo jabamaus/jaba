@@ -1,5 +1,5 @@
 require_relative '../lib/jaba'
-
+require_relative '../examples/gen_all'
 using JABACoreExt
 
 class DocBuilder
@@ -27,6 +27,19 @@ class DocBuilder
     end
     IO.write("#{doc_temp}/dummy.jaba", "")
 
+    # Delete markdown and docs dirs completely as they will be regenerated
+    #
+    if File.exist?(DOCS_HTML_DIR)
+      FileUtils.remove_dir(DOCS_HTML_DIR)
+    end
+
+    if File.exist?(DOCS_MARKDOWN_DIR)
+      FileUtils.remove_dir(DOCS_MARKDOWN_DIR)
+    end
+
+    FileUtils.mkdir(DOCS_HTML_DIR)
+    FileUtils.mkdir(DOCS_MARKDOWN_DIR)
+    
     op = JABA.run(want_exceptions: true) do |c|
       c.dry_run
       c.src_root = c.build_root = doc_temp
@@ -44,7 +57,7 @@ class DocBuilder
 
     generate_versioned_index
     generate_reference_doc
-    generate_examples_doc
+    generate_examples
     generate_faqs
 
     Dir.chdir(MAMD_DIR) do
@@ -61,7 +74,10 @@ class DocBuilder
     write_markdown_page('index.md', 'Jaba docs', versioned: true, versioned_home: false) do |w|
       w << ""
       w << "- [Jaba language reference](jaba_reference.html)"
-      w << "- [Examples](jaba_examples.html)"
+      w << "- Examples"
+      iterate_examples do |dirname|
+        w << "  - [#{dirname}](#{dirname}.html)"
+      end
       w << ""
     end
   end
@@ -167,15 +183,16 @@ class DocBuilder
     end
   end
 
-  def generate_examples_doc
-    write_markdown_page('jaba_examples.md', 'Jaba examples', versioned: true) do |w|
-      Dir.glob("#{JABA.examples_dir}/**/*.jaba").each do |example|
-        next if example.basename == 'examples.jaba'
-        str = @file_manager.read(example, fail_if_not_found: true)
-        md_code(w) do
-          # TODO: extract top comments and turn into formatted markdown
-          split_and_trim_leading_whitespace(str).each do |line|
-            w << line
+  def generate_examples
+    iterate_examples do |dirname, full_dir|
+      write_markdown_page("#{dirname}.md", dirname, versioned: true) do |w|
+        Dir.glob("#{full_dir}/*.jaba").each do |jaba_file|
+          str = @file_manager.read(jaba_file, fail_if_not_found: true)
+          md_code(w) do
+            # TODO: extract top comments and turn into formatted markdown
+            split_and_trim_leading_whitespace(str).each do |line|
+              w << line
+            end
           end
         end
       end
