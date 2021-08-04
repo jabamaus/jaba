@@ -270,7 +270,7 @@ module JABA
     ##
     #
     def get_reference_manual_rows(attr_def)
-      { items: attr_def.items.inspect }
+      { choices: attr_def.items.inspect }
     end
     
     ##
@@ -425,7 +425,8 @@ module JABA
     ##
     #
     def get_reference_manual_rows(attr_def)
-      { node_type: attr_def.node_type.inspect }
+      ref_type = services.get_top_level_jaba_type(attr_def.node_type)
+      { references: "[#{attr_def.node_type}](#{ref_type.reference_manual_page})" }
     end
 
     ##

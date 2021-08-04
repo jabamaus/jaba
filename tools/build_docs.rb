@@ -132,10 +132,11 @@ class DocBuilder
       w << "> "
       w << "> _#{jt.title}_"
       w << "> "
+      w << "> #{jt.notes.make_sentence}"
+      w << "> "
       w << "> | Property | Value  |"
       w << "> |-|-|"
       md_row(w, 'defined in', "$(jaba_install)/#{jt.src_loc.describe(style: :rel_jaba_install, line: false)}")
-      md_row(w, :notes, jt.notes.make_sentence)
       md_row(w, 'depends on', jt.dependencies.map{|d| "[#{d}](#{d.reference_manual_page})"}.join(", "))
       w << "> "
       w << ""
@@ -148,6 +149,8 @@ class DocBuilder
         w << "<a id=\"#{ad.defn_id}\"></a>" # anchor for the attribute eg cpp-src
         w << "#### #{ad.defn_id}"
         w << "> _#{ad.title}_"
+        w << "> "
+        w << "> #{ad.notes.make_sentence.to_markdown_links}" if !ad.notes.empty?
         w << "> "
         w << "> | Property | Value  |"
         w << "> |-|-|"
@@ -169,7 +172,6 @@ class DocBuilder
         md_row(w, :flags, ad.flags.map(&:inspect).join(', '))
         md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
         md_row(w, 'defined in', "$(jaba_install)/#{ad.src_loc.describe(style: :rel_jaba_install, line: false)}")
-        md_row(w, :notes, ad.notes.make_sentence.to_markdown_links) if !ad.notes.empty?
         w << ">"
         if !ad.examples.empty?
           w << "> *Examples*"
