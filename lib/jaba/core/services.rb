@@ -408,13 +408,14 @@ module JABA
           @input_manager.usage_error("'#{name}' attribute not defined in :globals type")
         end
 
-        type = attr.attr_def.jaba_attr_type
-        case attr.attr_def.variant
+        attr_def = attr.attr_def
+        type = attr_def.jaba_attr_type
+        case attr_def.variant
         when :single
           if values.size > 1
             @input_manager.usage_error("'#{name}' attribute only expects one value but #{values} provided")
           end
-          value = type.from_string(values[0])
+          value = type.from_cmdline(values[0], attr_def)
           if attr.type_id == :file || attr.type_id == :dir
             value.to_absolute!(base: @services.invoking_dir, clean: true) # TODO: need to do this for array/hash elems too
           end
@@ -423,15 +424,15 @@ module JABA
           if values.empty?
             @input_manager.usage_error("'#{name}' array attribute requires one or more values")
           end
-          attr.set(values.map{|v| type.from_string(v)})
+          attr.set(values.map{|v| type.from_cmdline(v, attr_def)})
         when :hash
           if values.empty? || values.size % 2 != 0
             @input_manager.usage_error("'#{name}' hash attribute requires one or more pairs of values")
           end
           key_type = attr.attr_def.jaba_attr_key_type
           values.each_slice(2) do |kv|
-            key = key_type.from_string(kv[0])
-            value = type.from_string(kv[1])
+            key = key_type.from_cmdline(kv[0], attr_def)
+            value = type.from_cmdline(kv[1], attr_def)
             attr.set(key, value)
           end
         end

@@ -44,7 +44,7 @@ module JABA
 
     ##
     #
-    def from_string(str)
+    def from_cmdline(str, attr_def)
       str
     end
     
@@ -112,7 +112,7 @@ module JABA
 
     ##
     #
-    def from_string(str)
+    def from_cmdline(str, attr_def)
       str.to_sym
     end
 
@@ -182,8 +182,12 @@ module JABA
 
     ##
     #
-    def from_string(str)
-      str.to_i
+    def from_cmdline(str, attr_def)
+      begin
+        Integer(str)
+      rescue
+        JABA.error("'#{str}' invalid value for #{attr_def.describe} - integer expected", want_backtrace: false)
+      end
     end
 
     ##
@@ -209,14 +213,14 @@ module JABA
 
     ##
     #
-    def from_string(str)
+    def from_cmdline(str, attr_def)
       case str
-      when 'true'
+      when 'true', '1'
         true
-      when 'false'
+      when 'false', '0'
         false
       else
-        JABA.error("Invalid value '#{str}' passed to JabaAttributeTypeBool#from_string")
+        JABA.error("'#{str}' invalid value for #{attr_def.describe} - [true|false|0|1] expected", want_backtrace: false)
       end
     end
 
@@ -247,6 +251,20 @@ module JABA
     def initialize
       super(:choice, 'Choice attribute type')
       @notes = 'Can take exactly one of a set of unique values'
+    end
+
+    ##
+    #
+    def from_cmdline(str, attr_def)
+      items = attr_def.items
+      
+      # Use find_index to allow for nil being a valid choice
+      #
+      index = items.find_index{|i| i.to_s == str}
+      if index.nil?
+        JABA.error("'#{str}' invalid value for #{attr_def.describe} - [#{items.map{|i| i.to_s}.join('|')}] expected", want_backtrace: false)
+      end
+      items[index]
     end
 
     ##

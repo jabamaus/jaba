@@ -1,3 +1,9 @@
+- add cmd line test for
+  - symbol attr
+  - node ref attr
+  - symbol or string attr
+- add --list-globals option
+- rename items to choices
 - patch new attrs into config
 * Implement jaba build command to build vs2019 solution
 * Categories in solution files.

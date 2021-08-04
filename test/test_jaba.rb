@@ -27,10 +27,18 @@ module JABA
 
     ##
     #
-    def jaba(barebones: false, src_root: nil, build_root: nil, argv: nil, dry_run: false, dump_output: false, cpp_app: false, cpp_defaults: false, &block)
+    def jaba(barebones: false,
+             want_exceptions: true,
+             src_root: nil,
+             build_root: nil,
+             argv: nil,
+             dry_run: false,
+             dump_output: false,
+             cpp_app: false,
+             cpp_defaults: false, &block)
       td = temp_dir(create: false)
       build_root = build_root || td
-      op = JABA.run(want_exceptions: true) do |c|
+      op = JABA.run(want_exceptions: want_exceptions) do |c|
         c.src_root = src_root # Most unit tests don't have a src_root as everything is defined inline in code
         c.build_root = build_root
         c.argv = Array(argv) if argv

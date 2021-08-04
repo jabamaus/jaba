@@ -86,6 +86,43 @@ module JABA
       end
     end
 
+    it 'can be set from the cmd line' do
+      jaba(barebones: true, argv: [
+        '-D', 'a1', 'true',
+        '-D', 'a2', 'false',
+        '-D', 'a3', '1',
+        '-D', 'a4', '0']) do
+        open_type :globals do
+          attr :a1, type: :bool do
+            default false
+          end
+          attr :a2, type: :bool do
+            default true
+          end
+          attr :a3, type: :bool do
+            default false
+          end
+          attr :a4, type: :bool do
+            default true
+          end
+        end
+        define :test
+        test :t do
+          globals.a1.must_equal true
+          globals.a2.must_equal false
+          globals.a3.must_equal true
+          globals.a4.must_equal false
+        end
+      end
+
+      op = jaba(barebones: true, argv: ['-D', 'a', '10'], want_exceptions: false) do
+        open_type :globals do
+          attr :a, type: :bool
+        end
+      end
+      op[:error].must_equal "'10' invalid value for 'a' attribute - [true|false|0|1] expected"
+    end
+
   end
 
 end
