@@ -2,20 +2,20 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="include\ExampleLib">
-      <UniqueIdentifier>{A97884C8-6D23-5F78-86ED-2DEBF201E98B}</UniqueIdentifier>
+      <UniqueIdentifier>{FFE062A4-E894-5A10-852D-67D537916DF7}</UniqueIdentifier>
     </Filter>
     <Filter Include="include">
-      <UniqueIdentifier>{3E6D127A-EAE2-5833-8AA6-E27F8AFF3E2B}</UniqueIdentifier>
+      <UniqueIdentifier>{D75606D0-A3F0-5205-B6FE-BAC6FB208BF5}</UniqueIdentifier>
     </Filter>
     <Filter Include="src">
-      <UniqueIdentifier>{2EDC74D2-E1B9-5A5C-93FC-D1789E007D64}</UniqueIdentifier>
+      <UniqueIdentifier>{D235E321-D5B1-5FE5-9C46-B2B2FE202C89}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\example_src\ExampleLib\include\ExampleLib\ExampleLib.h">
+    <ClInclude Include="..\..\..\example_src\ExampleLib\include\ExampleLib\ExampleLib.h">
       <Filter>include\ExampleLib</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\example_src\ExampleLib\src\ExampleLib.cpp">
+    <ClCompile Include="..\..\..\example_src\ExampleLib\src\ExampleLib.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

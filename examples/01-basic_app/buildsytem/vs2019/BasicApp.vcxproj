@@ -11,10 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>AppWithDependencies</ProjectName>
-    <ProjectGuid>{81988EB9-805B-59D1-B218-50C46D06C712}</ProjectGuid>
+    <ProjectName>BasicApp</ProjectName>
+    <ProjectGuid>{9A89DF9C-BBA0-503A-B0EF-69C023DFE619}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>AppWithDependencies</RootNamespace>
+    <RootNamespace>BasicApp</RootNamespace>
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -39,24 +39,21 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\build\bin\x86_64\Debug\</OutDir>
-    <IntDir>..\build\obj\x86_64\Debug\AppWithDependencies\</IntDir>
-    <TargetName>AppWithDependencies</TargetName>
+    <OutDir>..\..\build\bin\x86_64\Debug\</OutDir>
+    <IntDir>..\..\build\obj\x86_64\Debug\BasicApp\</IntDir>
+    <TargetName>BasicApp</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\build\bin\x86_64\Release\</OutDir>
-    <IntDir>..\build\obj\x86_64\Release\AppWithDependencies\</IntDir>
-    <TargetName>AppWithDependencies</TargetName>
+    <OutDir>..\..\build\bin\x86_64\Release\</OutDir>
+    <IntDir>..\..\build\obj\x86_64\Release\BasicApp\</IntDir>
+    <TargetName>BasicApp</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\example_src\ExampleLib\include;..\..\example_src\ExampleDll\include;..\..\example_src\3rdParty\ThirdPartyLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WITH_EXAMPLE_LIB;WITH_EXAMPLE_DLL;WITH_THIRD_PARTY_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>..\build\lib\x86_64\Debug\BasicStaticLib.lib;..\build\lib\x86_64\Debug\BasicDynamicLib.lib;..\build\lib\x86_64\Debug\ThirdPartyLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
@@ -66,11 +63,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\example_src\ExampleLib\include;..\..\example_src\ExampleDll\include;..\..\example_src\3rdParty\ThirdPartyLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WITH_EXAMPLE_LIB;WITH_EXAMPLE_DLL;WITH_THIRD_PARTY_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>..\build\lib\x86_64\Release\BasicStaticLib.lib;..\build\lib\x86_64\Release\BasicDynamicLib.lib;..\build\lib\x86_64\Release\ThirdPartyLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
@@ -79,18 +73,7 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\example_src\ExampleApp\main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="BasicDynamicLib.vcxproj">
-      <Project>{B1DE1C0C-E5D6-5148-9963-6858C661EFD5}</Project>
-    </ProjectReference>
-    <ProjectReference Include="BasicStaticLib.vcxproj">
-      <Project>{BA635332-9857-511F-BF0A-D242BFA20F1A}</Project>
-    </ProjectReference>
-    <ProjectReference Include="ThirdPartyLib.vcxproj">
-      <Project>{A8C2931B-5A64-5967-9612-3D3CCE62B0A6}</Project>
-    </ProjectReference>
+    <ClCompile Include="..\..\..\example_src\ExampleApp\main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

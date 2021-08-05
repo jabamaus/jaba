@@ -39,25 +39,25 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\build\bin\x86_64\Debug\</OutDir>
-    <IntDir>..\build\obj\x86_64\Debug\BasicDynamicLib\</IntDir>
+    <OutDir>..\..\build\bin\x86_64\Debug\</OutDir>
+    <IntDir>..\..\build\obj\x86_64\Debug\BasicDynamicLib\</IntDir>
     <TargetName>BasicDynamicLib</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\build\bin\x86_64\Release\</OutDir>
-    <IntDir>..\build\obj\x86_64\Release\BasicDynamicLib\</IntDir>
+    <OutDir>..\..\build\bin\x86_64\Release\</OutDir>
+    <IntDir>..\..\build\obj\x86_64\Release\BasicDynamicLib\</IntDir>
     <TargetName>BasicDynamicLib</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\example_src\ExampleDll\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\example_src\ExampleDll\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WITH_EXAMPLE_DLL;DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <ImportLibrary>..\build\lib\x86_64\Debug\BasicDynamicLib.lib</ImportLibrary>
+      <ImportLibrary>..\..\build\lib\x86_64\Debug\BasicDynamicLib.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <ProjectReference>
@@ -66,12 +66,12 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\example_src\ExampleDll\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\example_src\ExampleDll\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WITH_EXAMPLE_DLL;DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <ImportLibrary>..\build\lib\x86_64\Release\BasicDynamicLib.lib</ImportLibrary>
+      <ImportLibrary>..\..\build\lib\x86_64\Release\BasicDynamicLib.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <ProjectReference>
@@ -79,8 +79,8 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\example_src\ExampleDll\include\ExampleDll\ExampleDll.h" />
-    <ClCompile Include="..\..\example_src\ExampleDll\src\ExampleDll.cpp" />
+    <ClInclude Include="..\..\..\example_src\ExampleDll\include\ExampleDll\ExampleDll.h" />
+    <ClCompile Include="..\..\..\example_src\ExampleDll\src\ExampleDll.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

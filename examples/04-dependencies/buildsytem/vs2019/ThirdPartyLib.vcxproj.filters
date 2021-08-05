@@ -2,20 +2,20 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="include\ThirdPartyLib">
-      <UniqueIdentifier>{73930ADE-516F-5CC2-9025-3AAD50877772}</UniqueIdentifier>
+      <UniqueIdentifier>{A656C83F-EAA1-5071-B6C1-26AE59997A09}</UniqueIdentifier>
     </Filter>
     <Filter Include="include">
-      <UniqueIdentifier>{1124FBFC-D9BD-50A5-ABBF-1CE450FBB0C5}</UniqueIdentifier>
+      <UniqueIdentifier>{5D32E6AC-681C-5686-A3B2-6931AF8F3489}</UniqueIdentifier>
     </Filter>
     <Filter Include="src">
-      <UniqueIdentifier>{3B30C156-2881-588F-B170-3962FA61E431}</UniqueIdentifier>
+      <UniqueIdentifier>{CD8B11B9-E2E2-5DDF-A704-3149DE78AEA3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\example_src\3rdParty\ThirdPartyLib\include\ThirdPartyLib\ThirdPartyLib.h">
+    <ClInclude Include="..\..\..\example_src\3rdParty\ThirdPartyLib\include\ThirdPartyLib\ThirdPartyLib.h">
       <Filter>include\ThirdPartyLib</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\example_src\3rdParty\ThirdPartyLib\src\ThirdPartyLib.cpp">
+    <ClCompile Include="..\..\..\example_src\3rdParty\ThirdPartyLib\src\ThirdPartyLib.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

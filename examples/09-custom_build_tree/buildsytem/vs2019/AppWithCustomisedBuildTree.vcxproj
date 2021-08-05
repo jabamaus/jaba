@@ -11,20 +11,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>ThirdPartyLib</ProjectName>
-    <ProjectGuid>{A8C2931B-5A64-5967-9612-3D3CCE62B0A6}</ProjectGuid>
+    <ProjectName>AppWithCustomisedBuildTree</ProjectName>
+    <ProjectGuid>{AAE32613-72B9-5EC0-BC66-D16F1A8FB5CF}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>ThirdPartyLib</RootNamespace>
+    <RootNamespace>AppWithCustomisedBuildTree</RootNamespace>
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
@@ -39,36 +39,41 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\build\lib\x86_64\Debug\</OutDir>
-    <IntDir>..\build\obj\x86_64\Debug\ThirdPartyLib\</IntDir>
-    <TargetName>ThirdPartyLib</TargetName>
-    <TargetExt>.lib</TargetExt>
+    <OutDir>..\..\custom_build_tree\bin\Debug\</OutDir>
+    <IntDir>..\..\custom_build_tree\obj\Debug\</IntDir>
+    <TargetName>AppWithCustomisedBuildTree</TargetName>
+    <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\build\lib\x86_64\Release\</OutDir>
-    <IntDir>..\build\obj\x86_64\Release\ThirdPartyLib\</IntDir>
-    <TargetName>ThirdPartyLib</TargetName>
-    <TargetExt>.lib</TargetExt>
+    <OutDir>..\..\custom_build_tree\bin\Release\</OutDir>
+    <IntDir>..\..\custom_build_tree\obj\Release\</IntDir>
+    <TargetName>AppWithCustomisedBuildTree</TargetName>
+    <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\example_src\3rdParty\ThirdPartyLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
-    <Lib>
+    <Link>
+      <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
-    </Lib>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\example_src\3rdParty\ThirdPartyLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
-    <Lib>
+    <Link>
+      <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
-    </Lib>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\example_src\3rdParty\ThirdPartyLib\include\ThirdPartyLib\ThirdPartyLib.h" />
-    <ClCompile Include="..\..\example_src\3rdParty\ThirdPartyLib\src\ThirdPartyLib.cpp" />
+    <ClCompile Include="..\..\..\example_src\ExampleApp\main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

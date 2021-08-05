@@ -39,20 +39,21 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\build\lib\x86_64\Debug\</OutDir>
-    <IntDir>..\build\obj\x86_64\Debug\BasicStaticLib\</IntDir>
+    <OutDir>..\..\build\lib\x86_64\Debug\</OutDir>
+    <IntDir>..\..\build\obj\x86_64\Debug\BasicStaticLib\</IntDir>
     <TargetName>BasicStaticLib</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\build\lib\x86_64\Release\</OutDir>
-    <IntDir>..\build\obj\x86_64\Release\BasicStaticLib\</IntDir>
+    <OutDir>..\..\build\lib\x86_64\Release\</OutDir>
+    <IntDir>..\..\build\obj\x86_64\Release\BasicStaticLib\</IntDir>
     <TargetName>BasicStaticLib</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\example_src\ExampleLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\example_src\ExampleLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WITH_EXAMPLE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Lib>
       <TargetMachine>MachineX64</TargetMachine>
@@ -60,15 +61,16 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\example_src\ExampleLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\example_src\ExampleLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WITH_EXAMPLE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Lib>
       <TargetMachine>MachineX64</TargetMachine>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\example_src\ExampleLib\include\ExampleLib\ExampleLib.h" />
-    <ClCompile Include="..\..\example_src\ExampleLib\src\ExampleLib.cpp" />
+    <ClInclude Include="..\..\..\example_src\ExampleLib\include\ExampleLib\ExampleLib.h" />
+    <ClCompile Include="..\..\..\example_src\ExampleLib\src\ExampleLib.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

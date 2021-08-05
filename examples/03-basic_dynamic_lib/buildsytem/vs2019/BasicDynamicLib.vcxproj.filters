@@ -2,20 +2,20 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="include\ExampleDll">
-      <UniqueIdentifier>{D1DD8A1A-E02F-5710-A58C-311D0C86D0D1}</UniqueIdentifier>
+      <UniqueIdentifier>{85F239DA-4615-53AF-907D-78334BFF3C4B}</UniqueIdentifier>
     </Filter>
     <Filter Include="include">
-      <UniqueIdentifier>{2002333A-16AC-5E06-B1CE-C39A26BC1DFC}</UniqueIdentifier>
+      <UniqueIdentifier>{0FD8CED6-94F6-50E7-9CF3-59CB793F44AA}</UniqueIdentifier>
     </Filter>
     <Filter Include="src">
-      <UniqueIdentifier>{4434810E-2842-5DD8-BA46-CA5BF5EE7DD6}</UniqueIdentifier>
+      <UniqueIdentifier>{4ACAB708-28F9-5099-9AA3-58478B98D702}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\example_src\ExampleDll\include\ExampleDll\ExampleDll.h">
+    <ClInclude Include="..\..\..\example_src\ExampleDll\include\ExampleDll\ExampleDll.h">
       <Filter>include\ExampleDll</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\example_src\ExampleDll\src\ExampleDll.cpp">
+    <ClCompile Include="..\..\..\example_src\ExampleDll\src\ExampleDll.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
