@@ -5,8 +5,8 @@
 #ifdef WITH_EXAMPLE_DLL
 #include "ExampleDll/ExampleDll.h"
 #endif
-#ifdef WITH_3RDPARTY_LIB
-#include "3rdPartyLib/3rdPartyLib.h"
+#ifdef WITH_THIRD_PARTY_LIB
+#include "ThirdPartyLib/ThirdPartyLib.h"
 #endif
 
 int main(int argc, const char* argv[])

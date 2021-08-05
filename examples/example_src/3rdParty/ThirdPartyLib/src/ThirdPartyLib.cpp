@@ -1,4 +1,4 @@
-#include "3rdPartyLib/3rdPartyLib.h"
+#include "ThirdPartyLib/ThirdPartyLib.h"
 
 char* third_party_lib_func()
 {
