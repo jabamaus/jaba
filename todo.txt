@@ -1,3 +1,5 @@
+- give all unit tests a dummy src_root
+- implement warn level
 - add cmd line test for
   - symbol attr
   - node ref attr

@@ -146,7 +146,7 @@ module JABA
     it 'checks for accessing uninitialised attributes' do
       # test with hash attr default using an unset attr
       #
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagI)}: Cannot read uninitialised 't.b' attribute.", trace: [__FILE__, :tagi] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagI)}: Cannot read uninitialised 't.b' attribute - it might need a default value.", trace: [__FILE__, :tagi] do
         jaba(barebones: true) do
           define :test do
             attr :a

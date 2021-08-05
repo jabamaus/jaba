@@ -45,7 +45,7 @@ module JABA
           at = @attr_def.jaba_attr_type
           return values.map{|e| at.map_value(e)}
         elsif services.in_attr_default_block?
-          attr_error("Cannot read uninitialised #{describe}")
+          attr_error("Cannot read uninitialised #{describe} - it might need a default value")
         end
       end
       values = @elems.map {|e| e.value(jdl_call_loc)}

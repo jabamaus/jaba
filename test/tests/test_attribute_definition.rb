@@ -148,7 +148,7 @@ module JABA
     end
 
     it 'fails if default block references an unset attribute that does not have a default block' do
-      check_fail "Cannot read uninitialised 't.a' attribute", line: [__FILE__, 'tagP'] do
+      check_fail "Cannot read uninitialised 't.a' attribute - it might need a default value", line: [__FILE__, 'tagP'] do
         jaba(barebones: true) do
           define :test do
             attr :a
