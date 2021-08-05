@@ -312,6 +312,7 @@ module JABA
       :cwd,               # path will be based on current working directory (the directory jaba was invoked in)
       :definition_root,   # path will be based on the specified root of the jaba definition the path was set in
       :build_root,        # path will be based on build_root
+      :buildsystem_root,  # path will be based on buildsystem (itself based on build_root)
       :jaba_file          # path will be based on the directory of the jaba definition file the path was set in
     ]
     

@@ -311,6 +311,8 @@ module JABA
           base_dir = case basedir_spec
           when :build_root
             services.input.build_root
+          when :buildsystem_root
+            "#{services.globals.buildsystem_root}"
           when :definition_root
             root
           when :jaba_file

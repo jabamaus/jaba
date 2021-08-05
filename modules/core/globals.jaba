@@ -2,6 +2,13 @@ define :globals do
   title 'Global attribute definitions'
   singleton true
 
+  attr :buildsystem_root, type: :dir do
+    title 'Root of generated build system'
+    note 'Specfied as an offset from main build_root'
+    default 'buildsytem'
+    basedir_spec :build_root
+  end
+  
   attr :jaba_output_file, type: :file do
     title 'Name/path of file to contain Jaba output in json format'
     note 'Jaba output can be later used by another process (eg the build process) to do things like looking up paths by id rather ' \

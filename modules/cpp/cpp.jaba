@@ -98,9 +98,11 @@ define :cpp do
 
     attr :projdir, type: :dir do
       title 'Directory in which projects will be generated'
-      default 'projects'
+      default do
+        "#{host}"
+      end
       flags :no_check_exist # May get created during generation
-      basedir_spec :build_root
+      basedir_spec :buildsystem_root
       example %Q{
         cpp :MyApp do
           src ['**/*'] # Get all src in $(root), which defaults to directory of definition file
