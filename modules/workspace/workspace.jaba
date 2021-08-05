@@ -13,8 +13,11 @@ define :workspace do
 
   attr :workspacedir, type: :dir do
     title 'Directory in which workspaces will be generated'
-    default 'projects'
-    basedir_spec :build_root
+# TODO: can't put in host dir as workspace does not currently setup host attr
+#    default do
+#      "#{host}"
+#    end
+    basedir_spec :buildsystem_root
     flags :no_check_exist # May get created during generation
   end
 
@@ -50,4 +53,8 @@ open_type :host do
     title 'Class name of host-specific Workspace subclass'
     note 'For example Sln, XcodeWorkspace. Use when implementing a new workspace type.'
   end
+end
+
+workspace :all do
+  projects all_instance_ids(:cpp)
 end

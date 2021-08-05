@@ -1,3 +1,6 @@
+- Add src vpath example
+- Add a cpp_current_host global?
+- Overhaul workspace project glob matching
 - Should buildsystem_root include host? Then projdir would operate inside. Probably.
 - consider tracking last call loc in properties, for better reporting
 - Prevent defaults referencing attrs when block not used.
