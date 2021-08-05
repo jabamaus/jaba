@@ -188,6 +188,12 @@ define :cpp do
       end
     end
 
+    attr_hash :buildtool, key_type: :src_spec, type: :node do
+      title 'Custom build tool'
+      node_type :buildtool
+      flags :delay_evaluation
+    end
+    
   end
 
   # Sub-grouping of attributes that pertain to a build configuration
@@ -220,12 +226,6 @@ define :cpp do
       note 'Returns current config being processed. Use to define control flow to set config-specific atttributes'
       flags :read_only
       # TODO: examples, including regexes
-    end
-
-    attr_hash :buildtool, key_type: :src_spec, type: :node do
-      title 'Custom build tool'
-      node_type :buildtool
-      flags :delay_evaluation
     end
 
     # Common attributes. These are the attributes that most definitions will set/use.
