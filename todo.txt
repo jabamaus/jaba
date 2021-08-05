@@ -1,3 +1,5 @@
+- consider tracking last call loc in properties, for better reporting
+- Prevent defaults referencing attrs when block not used.
 - give all unit tests a dummy src_root
 - implement warn level
 - add cmd line test for

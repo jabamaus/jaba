@@ -171,6 +171,22 @@ module JABA
       end
     end
 
+    it 'fails if non-block default value trys to reference another attribute' do
+      check_fail "'b.a' undefined. Are you setting default in terms of another attribute? If so block form must be used.", line: [__FILE__, 'tagZ'] do
+        jaba(barebones: true) do
+          define :test do
+            attr :a
+              #default :b
+            attr :b do
+              default "#{a.upcase}" # tagZ
+            end
+          end
+          test :t do
+            b :c
+          end
+        end
+      end
+    end
     # TODO: also check for circularity in default blocks
     
     it 'supports specifying a validator' do

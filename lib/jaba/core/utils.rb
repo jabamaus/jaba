@@ -193,10 +193,16 @@ module JABA
     ##
     #
     def get_property(p_id)
-      if !@properties.key?(p_id)
+      if !property_defined?(p_id)
         JABA.error("Failed to get undefined '#{p_id}' property")
       end
       instance_variable_get(PropertyMethods.get_var(p_id))
+    end
+
+    ##
+    #
+    def property_defined?(p_id)
+      @properties.key?(p_id)
     end
 
     ##

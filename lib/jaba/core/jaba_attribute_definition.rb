@@ -45,6 +45,7 @@ module JABA
       @jaba_attr_flags = []
       @default_set = false
       @default_block = nil
+      @in_eval_block = false
 
       define_property(:title)
       define_array_property(:notes)
@@ -78,7 +79,9 @@ module JABA
       @jaba_attr_type.init_attr_def(self)
 
       if block
+        @in_eval_block = true
         eval_jdl(&block)
+        @in_eval_block = false
       end
 
       # If default not specified by the user (single value attributes only), fall back to default for the attribute
@@ -190,6 +193,27 @@ module JABA
       @type_id == :node
     end
     
+    ##
+    # Special case handling to try and catch the attribute definition writer from trying to read an attribute when setting a default
+    # value directly (ie without using a block), eg
+    #
+    # default "#{my_path_attribute}/#{my_name_ttribute}"
+    #
+    # This will actually attempt to read a property called my_attribute and would give a potentially confusing message that the
+    # property is not defined. The solution is to put the default in a block, which is evaluated later, eg
+    #
+    # default do
+    #   "#{my_path_attribute}/#{my_name_ttribute}"
+    # end
+    #
+    def handle_property(p_id, val, &block)
+      if val.nil? && !block_given? && @in_eval_block && !property_defined?(p_id)
+        JABA.error("'#{defn_id}.#{p_id}' undefined. Are you setting default in terms of another attribute? If so block form must be used")
+      else
+        super
+      end
+    end
+
     ##
     #
     def pre_property_set(id, incoming)
