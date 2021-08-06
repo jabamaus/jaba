@@ -86,7 +86,6 @@ module JABA
       @input.instance_variable_set(:@global_attrs, {})
 
       @output = {}
-      @output[:services] = self # internal access for unit testing
       
       @log_msgs = JABA.running_tests? ? nil : [] # Disable logging when running tests
       
@@ -203,6 +202,7 @@ module JABA
 
       @output[:summary] = summary
       @output[:warnings] = @warnings.uniq # Strip duplicate warnings
+      @output[:services] = self # internal access for unit testing
       @output
     end
 
