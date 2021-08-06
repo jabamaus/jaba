@@ -30,18 +30,6 @@ module JABA
     def post_create
       process_src(:src, :src_ext)
 
-      @node.visit_attr(:buildtool) do |attr, value|
-        src_spec = attr.get_option_value(:__key)
-        sf = get_matching_src_obj(src_spec, @src, errobj: attr)
-        sf.file_type = :CustomBuild
-        btn = attr.make_node(id: "buildtool|#{sf.absolute_path.basename}", block_args: sf.projdir_rel, &value)
-        btattrs = btn.attrs
-        @per_file_props.push_value(sf, [:FileType, nil, nil, :Document])
-        @per_file_props.push_value(sf, [:Command, nil, nil, btattrs.command.to_escaped_xml])
-        @per_file_props.push_value(sf, [:Outputs, nil, nil, btattrs.output])
-        @per_file_props.push_value(sf, [:Message, nil, nil, btattrs.message])
-      end
-
       # Call translator for this platform to initialse project level Visual Studio-specific attributes
       # (vcglobals), based on cross platform definition.
       #
@@ -72,6 +60,18 @@ module JABA
 
         shell_cmds.each do |group, cmds|
           cfg.attrs.vcprop "#{group}|Command", cmds.join("\n")
+        end
+
+        cfg.visit_attr(:buildtool) do |attr, value|
+          src_spec = attr.get_option_value(:__key)
+          sf = get_matching_src_obj(src_spec, @src, errobj: attr)
+          btn = attr.make_node(id: "buildtool|#{sf.absolute_path.basename}", block_args: sf.projdir_rel, &value)
+          btattrs = btn.attrs
+
+          @per_file_props.push_value(sf, [:FileType, cfg_name, platform_name, :Document])
+          @per_file_props.push_value(sf, [:Command, cfg_name, platform_name, btattrs.command.to_escaped_xml])
+          @per_file_props.push_value(sf, [:Outputs, cfg_name, platform_name, btattrs.output])
+          @per_file_props.push_value(sf, [:Message, cfg_name, platform_name, btattrs.message])
         end
       end
     end
@@ -222,15 +222,7 @@ module JABA
         if file_props
           src_area << ">"
           file_props.each_slice(4) do |a|
-            prop = a[0]
-            cfg_name = a[1]
-            platform = a[2]
-            val = a[3]
-            src_area << if !cfg_name.nil?
-              "      <#{prop} Condition=\"#{cfg_condition(cfg_name, platform)}\">#{val}</#{prop}>"
-            else
-              "      <#{prop}>#{val}</#{prop}>"
-            end
+            src_area << "      <#{a[0]} Condition=\"#{cfg_condition(a[1], a[2])}\">#{a[3]}</#{a[0]}>"
           end
           src_area << "    </#{ft}>"
         else
