@@ -1,0 +1,14 @@
+cpp :ExampleApp do
+  root '../example_src/ExampleApp'
+  type :console
+  platforms [:windows_x86_64]
+  configs [:Debug, :Release]
+  src ['main.cpp']
+  src %w(generated1.cpp generated2.cpp), :force, prefix: './generated/'
+  src ['./generator.rb', './*.xyz']
+  buildtool './src_file1.xyz' do |f|
+    output f.sub('.xyz', '.cpp')
+    command "ruby $(ProjectDir)..\\..\\file_writer.rb #{f}"
+    message "Generating #{output}"
+  end
+end
