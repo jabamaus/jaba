@@ -12,8 +12,8 @@ module JABA
       IO.write("#{sr}/test.jaba", "")
 
       src_roots = [
-        "#{JABA.examples_dir}/01-basic",
-        "#{JABA.examples_dir}/01-basic/basic_app.jaba" # src_root can also be a .jaba file
+        "#{JABA.examples_dir}/01-basic_app",
+        "#{JABA.examples_dir}/01-basic_app/basic_app.jaba" # src_root can also be a .jaba file
       ]
 
       build_roots = [
@@ -24,6 +24,7 @@ module JABA
  
       yield sr, sr # test build_root and src_root being the same
       src_roots.each do |s|
+        File.exist?(s).must_equal(true, "#{s} does not exist")
         build_roots.each do |b|
           yield s, "#{b}_#{s.basename}"
         end
