@@ -65,6 +65,7 @@ module JABA
         cfg.visit_attr(:buildtool) do |attr, value|
           src_spec = attr.get_option_value(:__key)
           sf = get_matching_src_obj(src_spec, @src, errobj: attr)
+          sf.file_type = :CustomBuild
           btn = attr.make_node(id: "buildtool|#{sf.absolute_path.basename}", block_args: sf.projdir_rel, &value)
           btattrs = btn.attrs
 
