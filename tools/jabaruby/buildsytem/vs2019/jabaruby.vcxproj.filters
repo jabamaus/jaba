@@ -1,0 +1,837 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="jaba">
+      <UniqueIdentifier>{A13AD66A-F62A-52CC-AC80-5533C3167327}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="coroutine\win64">
+      <UniqueIdentifier>{CCC07D71-DC3E-5B02-859E-06D172C94C36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="coroutine">
+      <UniqueIdentifier>{FA5B6D83-E09A-5C5E-9A45-5DD556512961}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="enc">
+      <UniqueIdentifier>{4B4BC903-9EC1-559C-81EB-A2FFB9838050}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="enc\trans">
+      <UniqueIdentifier>{43FBFF94-1C8A-5CDE-853F-C9004EE21117}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ext\digest">
+      <UniqueIdentifier>{3AA29C60-3ABF-517A-A492-0A835CBA1EDD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ext">
+      <UniqueIdentifier>{5C814673-3CFE-50BD-9546-9E464203B522}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ext\digest\sha1">
+      <UniqueIdentifier>{1A6BEEDF-643D-579D-930F-F35067076F6A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ext\json">
+      <UniqueIdentifier>{CB8F4A4C-255F-561F-94F8-C66B5BAC1C44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ext\json\fbuffer">
+      <UniqueIdentifier>{C816E2BF-965E-575D-BA6E-6865C9DAC730}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ext\json\generator">
+      <UniqueIdentifier>{483C0D85-38DD-57B9-BF11-899FEBDBF9F0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ext\json\parser">
+      <UniqueIdentifier>{09C71F21-258D-5A16-AA4D-CAFF72DFF5FB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{23C510CA-019D-5302-92A0-26CE4C2BCDDF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\ruby">
+      <UniqueIdentifier>{72F72323-A02F-5AFD-8D84-9D90D384909C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\ruby\backward\2">
+      <UniqueIdentifier>{6DA9DB63-D73B-5052-80C2-0600309BD0E1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\ruby\backward">
+      <UniqueIdentifier>{C3D6F116-9528-5B33-BBF8-69AD8B82F2F1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\ruby\internal">
+      <UniqueIdentifier>{7F72CE0A-96D4-5C6C-8690-8705A7B6FE3C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\ruby\internal\arithmetic">
+      <UniqueIdentifier>{BF518A68-8A95-5863-8F72-0580E0E700C3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\ruby\internal\attr">
+      <UniqueIdentifier>{ABA1E8A9-81E6-5777-8E78-75F18EF5F732}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\ruby\internal\compiler_is">
+      <UniqueIdentifier>{06B2C16E-12D5-5EB9-A88A-38D96293F958}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\ruby\internal\core">
+      <UniqueIdentifier>{D21B9284-2C78-5353-B007-335B5EB1F762}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\ruby\internal\has">
+      <UniqueIdentifier>{C11C3008-6546-502E-AEC1-E216CAE12C63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\ruby\internal\intern">
+      <UniqueIdentifier>{7A3C8D33-FD87-5F39-A0A8-9F4D63109EBF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\ruby\internal\intern\select">
+      <UniqueIdentifier>{C16B8E8C-8D76-573F-B1C3-7ADAC4FFC95F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="missing">
+      <UniqueIdentifier>{E0F4B17E-7281-5280-B597-397700F74102}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="win32">
+      <UniqueIdentifier>{57DF9A96-9874-5075-AF15-72079B9D7313}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\jaba_ext.c">
+      <Filter>jaba</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\addr2line.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\array.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\ast.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\bignum.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\builtin.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\class.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\compar.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\compile.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\complex.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\constant.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\cont.c" />
+    <MASM Include="..\..\..\..\..\..\ruby-3.0.2\coroutine\win64\Context.asm">
+      <Filter>coroutine\win64</Filter>
+    </MASM>
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\debug.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\debug_counter.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\debug_counter.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\dir.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\dln.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\dln_find.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\dmydln.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\enc\ascii.c">
+      <Filter>enc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\enc\trans\newline.c">
+      <Filter>enc\trans</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\enc\unicode.c">
+      <Filter>enc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\enc\us_ascii.c">
+      <Filter>enc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\enc\utf_8.c">
+      <Filter>enc</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\encdb.h" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\encindex.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\encoding.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\enum.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\enumerator.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\error.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\eval.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\eval_intern.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\ext\digest\digest.c">
+      <Filter>ext\digest</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\ext\digest\digest.h">
+      <Filter>ext\digest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\ext\digest\sha1\extconf.h">
+      <Filter>ext\digest\sha1</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\ext\digest\sha1\sha1.c">
+      <Filter>ext\digest\sha1</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\ext\digest\sha1\sha1.h">
+      <Filter>ext\digest\sha1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\ext\digest\sha1\sha1cc.h">
+      <Filter>ext\digest\sha1</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\ext\digest\sha1\sha1init.c">
+      <Filter>ext\digest\sha1</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\ext\json\extconf.h">
+      <Filter>ext\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\ext\json\fbuffer\fbuffer.h">
+      <Filter>ext\json\fbuffer</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\ext\json\generator\generator.c">
+      <Filter>ext\json\generator</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\ext\json\generator\generator.h">
+      <Filter>ext\json\generator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\ext\json\parser\extconf.h">
+      <Filter>ext\json\parser</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\ext\json\parser\parser.c">
+      <Filter>ext\json\parser</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\ext\json\parser\parser.h">
+      <Filter>ext\json\parser</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\file.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\gc.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\gc.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\hash.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\hrtime.h" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\id.h" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\id_table.h" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\assert.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\atomic.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\backward.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\backward\2\assume.h">
+      <Filter>include\ruby\backward\2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\backward\2\attributes.h">
+      <Filter>include\ruby\backward\2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\backward\2\bool.h">
+      <Filter>include\ruby\backward\2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\backward\2\gcc_version_since.h">
+      <Filter>include\ruby\backward\2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\backward\2\inttypes.h">
+      <Filter>include\ruby\backward\2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\backward\2\limits.h">
+      <Filter>include\ruby\backward\2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\backward\2\long_long.h">
+      <Filter>include\ruby\backward\2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\backward\2\r_cast.h">
+      <Filter>include\ruby\backward\2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\backward\2\rmodule.h">
+      <Filter>include\ruby\backward\2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\backward\2\stdalign.h">
+      <Filter>include\ruby\backward\2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\backward\2\stdarg.h">
+      <Filter>include\ruby\backward\2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\backward\cxxanyargs.hpp">
+      <Filter>include\ruby\backward</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\debug.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\defines.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\encoding.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\intern.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\anyargs.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\arithmetic.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\arithmetic\char.h">
+      <Filter>include\ruby\internal\arithmetic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\arithmetic\double.h">
+      <Filter>include\ruby\internal\arithmetic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\arithmetic\fixnum.h">
+      <Filter>include\ruby\internal\arithmetic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\arithmetic\gid_t.h">
+      <Filter>include\ruby\internal\arithmetic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\arithmetic\int.h">
+      <Filter>include\ruby\internal\arithmetic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\arithmetic\intptr_t.h">
+      <Filter>include\ruby\internal\arithmetic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\arithmetic\long.h">
+      <Filter>include\ruby\internal\arithmetic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\arithmetic\long_long.h">
+      <Filter>include\ruby\internal\arithmetic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\arithmetic\mode_t.h">
+      <Filter>include\ruby\internal\arithmetic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\arithmetic\off_t.h">
+      <Filter>include\ruby\internal\arithmetic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\arithmetic\pid_t.h">
+      <Filter>include\ruby\internal\arithmetic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\arithmetic\short.h">
+      <Filter>include\ruby\internal\arithmetic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\arithmetic\size_t.h">
+      <Filter>include\ruby\internal\arithmetic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\arithmetic\st_data_t.h">
+      <Filter>include\ruby\internal\arithmetic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\arithmetic\uid_t.h">
+      <Filter>include\ruby\internal\arithmetic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\assume.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\alloc_size.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\artificial.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\cold.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\const.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\constexpr.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\deprecated.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\diagnose_if.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\enum_extensibility.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\error.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\flag_enum.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\forceinline.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\format.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\maybe_unused.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\noalias.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\nodiscard.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\noexcept.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\noinline.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\nonnull.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\noreturn.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\pure.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\restrict.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\returns_nonnull.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\warning.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\attr\weakref.h">
+      <Filter>include\ruby\internal\attr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\cast.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\compiler_is.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\compiler_is\apple.h">
+      <Filter>include\ruby\internal\compiler_is</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\compiler_is\clang.h">
+      <Filter>include\ruby\internal\compiler_is</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\compiler_is\gcc.h">
+      <Filter>include\ruby\internal\compiler_is</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\compiler_is\intel.h">
+      <Filter>include\ruby\internal\compiler_is</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\compiler_is\msvc.h">
+      <Filter>include\ruby\internal\compiler_is</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\compiler_is\sunpro.h">
+      <Filter>include\ruby\internal\compiler_is</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\compiler_since.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\config.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\constant_p.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\core.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\core\rarray.h">
+      <Filter>include\ruby\internal\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\core\rbasic.h">
+      <Filter>include\ruby\internal\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\core\rbignum.h">
+      <Filter>include\ruby\internal\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\core\rclass.h">
+      <Filter>include\ruby\internal\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\core\rdata.h">
+      <Filter>include\ruby\internal\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\core\rfile.h">
+      <Filter>include\ruby\internal\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\core\rhash.h">
+      <Filter>include\ruby\internal\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\core\rmatch.h">
+      <Filter>include\ruby\internal\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\core\robject.h">
+      <Filter>include\ruby\internal\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\core\rregexp.h">
+      <Filter>include\ruby\internal\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\core\rstring.h">
+      <Filter>include\ruby\internal\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\core\rstruct.h">
+      <Filter>include\ruby\internal\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\core\rtypeddata.h">
+      <Filter>include\ruby\internal\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\ctype.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\dllexport.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\dosish.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\error.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\eval.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\event.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\fl_type.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\gc.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\glob.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\globals.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\has\attribute.h">
+      <Filter>include\ruby\internal\has</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\has\builtin.h">
+      <Filter>include\ruby\internal\has</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\has\c_attribute.h">
+      <Filter>include\ruby\internal\has</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\has\cpp_attribute.h">
+      <Filter>include\ruby\internal\has</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\has\declspec_attribute.h">
+      <Filter>include\ruby\internal\has</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\has\extension.h">
+      <Filter>include\ruby\internal\has</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\has\feature.h">
+      <Filter>include\ruby\internal\has</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\has\warning.h">
+      <Filter>include\ruby\internal\has</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\array.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\bignum.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\class.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\compar.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\complex.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\cont.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\dir.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\enum.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\enumerator.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\error.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\eval.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\file.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\gc.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\hash.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\io.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\load.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\marshal.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\numeric.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\object.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\parse.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\proc.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\process.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\random.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\range.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\rational.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\re.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\ruby.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\select.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\select\largesize.h">
+      <Filter>include\ruby\internal\intern\select</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\select\posix.h">
+      <Filter>include\ruby\internal\intern\select</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\select\win32.h">
+      <Filter>include\ruby\internal\intern\select</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\signal.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\sprintf.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\string.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\struct.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\thread.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\time.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\variable.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\intern\vm.h">
+      <Filter>include\ruby\internal\intern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\interpreter.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\iterator.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\memory.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\method.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\module.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\newobj.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\rgengc.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\scan_args.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\special_consts.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\static_assert.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\stdalign.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\stdbool.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\symbol.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\token_paste.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\value.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\value_type.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\variable.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\warning_push.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\internal\xmalloc.h">
+      <Filter>include\ruby\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\io.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\memory_view.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\missing.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\onigmo.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\oniguruma.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\ractor.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\random.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\re.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\regex.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\ruby.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\st.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\subst.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\thread.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\thread_native.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\util.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\version.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\vm.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\include\ruby\win32.h">
+      <Filter>include\ruby</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\inits.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\internal.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\io.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\iseq.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\iseq.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\load.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\main.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\marshal.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\math.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\memory_view.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\method.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\missing\crypt.c">
+      <Filter>missing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\missing\explicit_bzero.c">
+      <Filter>missing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\missing\ffs.c">
+      <Filter>missing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\missing\langinfo.c">
+      <Filter>missing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\missing\lgamma_r.c">
+      <Filter>missing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\missing\setproctitle.c">
+      <Filter>missing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\missing\strlcat.c">
+      <Filter>missing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\missing\strlcpy.c">
+      <Filter>missing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\mjit.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\mjit.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\mjit_compile.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\mjit_config.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\node.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\node.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\numeric.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\object.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\pack.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\parse.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\parse.h" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\probes.h" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\probes_helper.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\proc.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\process.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\ractor.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\ractor_core.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\random.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\range.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\rational.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\re.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\regcomp.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\regenc.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\regenc.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\regerror.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\regexec.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\regint.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\regparse.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\regparse.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\regsyntax.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\revision.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\ruby.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\ruby_assert.h" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\ruby_atomic.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\scheduler.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\signal.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\siphash.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\sprintf.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\st.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\strftime.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\string.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\struct.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\symbol.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\symbol.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\thread.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\thread_pthread.h" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\thread_win32.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\time.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\timev.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\transcode.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\transcode_data.h" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\transdb.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\transient_heap.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\transient_heap.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\util.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\variable.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\variable.h" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\verconf.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\version.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\version.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\vm.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\vm_backtrace.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\vm_callinfo.h" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\vm_core.h" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\vm_debug.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\vm_dump.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\vm_exec.h" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\vm_insnhelper.h" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\vm_opts.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\vm_sync.c" />
+    <ClInclude Include="..\..\..\..\..\..\ruby-3.0.2\vm_sync.h" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\vm_trace.c" />
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\win32\file.c">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\ruby-3.0.2\win32\win32.c">
+      <Filter>win32</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

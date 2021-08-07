@@ -3,9 +3,9 @@ cpp :jabaruby do
   root 'C:/projects/ruby-3.0.2'
   platforms [:windows_x86_64]
   configs [:Debug, :Release]
-  src './jaba_ext.c'
+  src './jaba_ext.c', vpath: 'jaba'
   src %w(
-    main.c dmydln.c miniinit.c array.c ast.c bignum.c class.c compar.c compile.c
+    main.c dmydln.c array.c ast.c bignum.c class.c compar.c compile.c
     complex.c cont.c debug.c debug_counter.c dir.c dln_find.c encoding.c enum.c enumerator.c error.c
     eval.c file.c gc.c hash.c inits.c io.c iseq.c load.c marshal.c math.c memory_view.c mjit.c mjit_compile.c
     node.c numeric.c object.c pack.c parse.c proc.c process.c ractor.c random.c range.c rational.c re.c
@@ -52,7 +52,7 @@ cpp :jabaruby do
   if debug
     targetname 'jabaruby_debug'
   else
-    bindir '../bin' # TODO: this should actually be an install step
+    bindir '../../bin' # TODO: this should actually be an install step
     vcprop 'Link|OptimizeReferences', true
     vcprop 'Link|EnableCOMDATFolding', true
   end

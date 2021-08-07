@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio version 16
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jabaruby", "jabaruby.vcxproj", "{D9DD1EE0-34B4-525F-9633-AA62B2B21D48}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jabaruby", "vs2019\jabaruby.vcxproj", "{D9DD1EE0-34B4-525F-9633-AA62B2B21D48}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
