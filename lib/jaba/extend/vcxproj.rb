@@ -62,19 +62,6 @@ module JABA
           cfg.attrs.vcprop "#{group}|Command", cmds.join("\n")
         end
 
-        cfg.visit_attr(:buildtool) do |attr, value|
-          src_spec = attr.get_option_value(:__key)
-          sf = get_matching_src_obj(src_spec, @src, errobj: attr)
-          sf.file_type = :CustomBuild
-          btn = attr.make_node(id: "buildtool|#{sf.absolute_path.basename}", block_args: sf.projdir_rel, &value)
-          btattrs = btn.attrs
-
-          @per_file_props.push_value(sf, [:FileType, cfg_name, platform_name, :Document])
-          @per_file_props.push_value(sf, [:Command, cfg_name, platform_name, btattrs.command.to_escaped_xml])
-          @per_file_props.push_value(sf, [:Outputs, cfg_name, platform_name, btattrs.output])
-          @per_file_props.push_value(sf, [:Message, cfg_name, platform_name, btattrs.message])
-        end
-
         cfg.visit_attr(:rule) do |attr, value|
           outputs = value
           inputs =  attr.get_option_value(:in)

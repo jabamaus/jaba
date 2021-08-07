@@ -13,18 +13,6 @@ cpp :jabaruby do
     st.c strftime.c string.c struct.c symbol.c thread.c time.c transcode.c transient_heap.c util.c
     variable.c version.c vm.c vm_backtrace.c vm_dump.c vm_sync.c vm_trace.c
   )
-  
-  #src ['probes.d']
-  #vcfprop 'probes.d|FileType', :Document
-  #vcfprop 'probes.d|Command', "ruby ..\\..\\..\\ruby\\tool\\gen_dummy_probes.rb %(Identity) &gt;..\\..\\..\\ruby\\probes.dmyh"
-  #vcfprop 'probes.d|Outputs', '..\..\..\ruby\probes.dmyh'
-  #vcfprop 'probes.d|Message', 'Generating probes.dmyh'
-
-  #buildtool 'probes.d' do |f|
-  #  output "#{f}myh"
-  #  command "ruby ..\\..\\..\\ruby\\tool\\gen_dummy_probes.rb #{f} > #{output}"
-  #  message "Generating #{output}"
-  #end
 
   src ['coroutine/win64/Context.asm']
   src ['enc/ascii.c', 'enc/us_ascii.c', 'enc/unicode.c', 'enc/utf_8.c', 'enc/trans/newline.c'], :force

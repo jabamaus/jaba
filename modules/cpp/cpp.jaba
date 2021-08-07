@@ -222,12 +222,6 @@ define :cpp do
       # TODO: examples, including regexes
     end
 
-    attr_hash :buildtool, key_type: :src_spec, type: :node do
-      title 'Custom build tool'
-      node_type :buildtool
-      flags :delay_evaluation
-    end
-
     attr_array :rule, type: :src_spec do
       title 'Build rule'
       basedir_spec :definition_root
