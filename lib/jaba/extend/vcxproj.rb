@@ -74,6 +74,27 @@ module JABA
           @per_file_props.push_value(sf, [:Outputs, cfg_name, platform_name, btattrs.output])
           @per_file_props.push_value(sf, [:Message, cfg_name, platform_name, btattrs.message])
         end
+
+        cfg.visit_attr(:rule) do |attr, value|
+          outputs = value
+          inputs =  attr.get_option_value(:in)
+          implicit_inputs =  attr.get_option_value(:imp_in)
+          sf = get_matching_src_obj(inputs[0], @src, errobj: attr)
+          sf.file_type = :CustomBuild
+
+          cmd = attr.get_option_value(:cmd)
+          # TODO: genericise
+          cmd.sub!('$(in[0])', "$(ProjectDir)#{inputs[0].relative_path_from(@projdir, backslashes: true)}")
+          cmd.sub!('$(imp_in[0])', "$(ProjectDir)#{implicit_inputs[0].relative_path_from(@projdir, backslashes: true)}")
+
+          additional_inputs = implicit_inputs.map{|i| i.relative_path_from(@projdir, backslashes: true)}.vs_join_paths
+
+          @per_file_props.push_value(sf, [:FileType, cfg_name, platform_name, :Document])
+          @per_file_props.push_value(sf, [:Command, cfg_name, platform_name, cmd.to_escaped_xml])
+          @per_file_props.push_value(sf, [:Outputs, cfg_name, platform_name, outputs.relative_path_from(@projdir, backslashes: true)])
+          @per_file_props.push_value(sf, [:AdditionalInputs, cfg_name, platform_name, additional_inputs])
+          @per_file_props.push_value(sf, [:Message, cfg_name, platform_name, 'Doing something'])
+        end
       end
     end
     
