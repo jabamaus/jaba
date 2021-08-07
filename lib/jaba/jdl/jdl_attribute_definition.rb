@@ -66,8 +66,8 @@ module JABA
     #
     # And the presence of the :group option and its value would be validated.
     #
-    def value_option(id, required: false, items: [])
-      @attr_def.add_value_option(id, required, items)
+    def value_option(id, type: nil, required: false, items: [])
+      @attr_def.add_value_option(id, type, required, items)
     end
     
     ##

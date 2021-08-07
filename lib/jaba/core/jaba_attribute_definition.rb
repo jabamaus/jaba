@@ -73,7 +73,7 @@ module JABA
         # used when cloning attributes. Store as __key to indicate it is internal and to stop it clashing with any user
         # defined option.
         #
-        add_value_option(:__key, false, [])
+        add_value_option(:__key, @key_type_id, false, [])
       end
       
       @jaba_attr_type.init_attr_def(self)
@@ -120,12 +120,13 @@ module JABA
 
     ##
     #
-    def add_value_option(id, required, items)
+    def add_value_option(id, type, required, items)
       if !id.symbol?
         JABA.error("In #{describe} value_option id must be specified as a symbol, eg :option")
       end
       vo = OpenStruct.new
       vo.id = id
+      vo.type = type
       vo.required = required
       vo.items = items
       vo.freeze
