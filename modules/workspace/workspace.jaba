@@ -54,7 +54,3 @@ open_type :host do
     note 'For example Sln, XcodeWorkspace. Use when implementing a new workspace type.'
   end
 end
-
-workspace :all do
-  projects all_instance_ids(:cpp)
-end
