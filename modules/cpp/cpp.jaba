@@ -146,6 +146,9 @@ define :cpp do
         # Add src explicitly
         src ['main.c', 'io.c']
 
+        # Array brackets not required for one item
+        src 'main.c'
+
         # Add src explicitly even if extension not in $(src_ext)
         src ['build.jaba']
 
@@ -159,19 +162,15 @@ define :cpp do
         # Useful if you want to make $(root) point to a 3rd party distro but you want to add a local file
         src ['./local.cxx']
 
-        # Add src where path expands to an absolute path, __dir__ being the directory the jaba file is in
-        src ["#{__dir__}/ui.cpp"]
-
-        # Add src with hardcoded absolute path. Not recommended.
-        src ['C:/projects/app/main.cpp']
-        src ['/usr/local/app/main.cpp']
-
         # Add src in bulk without needing quotes, commas or square brackets. Options can be added as normal.
         src %w(main.c dmydln.c miniinit.c array.c ast.c bignum.c class.c compar.c compile.c)
         src %w(
           main.c dmydln.c miniinit.c array.c
           ast.c bignum.c class.c compar.c compile.c
         )
+
+        # Place matching files in a specific folder location within the project file
+        src '*_win.cpp', vpath: 'win32'
       }
     end
     
