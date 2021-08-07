@@ -44,7 +44,6 @@ cpp :jabaruby do
   src ['*.h', 'include']
   inc ['.', 'include', '.ext/include/x64-mswin64_140', 'enc/unicode/12.1.0']
 
-  define ['LOAD_RELATIVE']
   define ['RUBY_EXPORT', 'CANONICALIZATION_FOR_MATHN', 'DISABLE_RUBYGEMS=1','_WIN32_WINNT=0x0600']
   syslibs ['imagehlp.lib', 'iphlpapi.lib', 'ws2_32.lib']
 
