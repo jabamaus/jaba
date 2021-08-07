@@ -115,9 +115,6 @@ module JABA
     #
     def value_from_block(__jdl_call_loc, id:, block_args: nil, &block)
       if @attr_def.node_by_value?
-        if @attr_def.has_flag?(:delay_evaluation)
-          return block
-        end
         make_node(id: id, block_args: block_args, __jdl_call_loc: __jdl_call_loc, &block)
       else
         return @node.eval_jdl(&block)

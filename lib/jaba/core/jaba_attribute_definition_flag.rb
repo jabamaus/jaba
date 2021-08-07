@@ -171,27 +171,4 @@ module JABA
 
   end
 
-  ##
-  #
-  class JabaAttrDefFlagDelayEvaluation < JabaAttrDefFlag
-
-    ##
-    #
-    def initialize
-      super(:delay_evaluation, 'Delay evaluation of block')
-      @notes = 'Use with :node attribute to stop the associated block from being executed immediately. Instead ' \
-        'the block will be stored and the generator back end will be responsible for executing it. Enables the ' \
-        'generator to pass input in and to execute multiple times with different inputs'
-    end
-
-    ##
-    #
-    def compatible?(attr_def)
-      if attr_def.type_id != :node
-        JABA.error("#{describe} can only be used with :node attribute type")
-      end
-    end
-
-  end
-  
 end
