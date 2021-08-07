@@ -8,3 +8,7 @@ cpp :CodegenExample do
   rule 'generated/src1.cpp', in: ['src1.xyz'], imp_in: ['generator.rb'], cmd: 'ruby $(imp_in[0]) $(in[0])'
   rule 'generated/src2.cpp', in: ['src2.xyz'], imp_in: ['generator.rb'], cmd: 'ruby $(imp_in[0]) $(in[0])'
 end
+
+workspace :all do
+  projects :CodegenExample
+end
