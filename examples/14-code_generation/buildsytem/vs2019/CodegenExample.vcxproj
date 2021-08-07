@@ -81,24 +81,24 @@
     <ClCompile Include="..\..\main.cpp" />
     <CustomBuild Include="..\..\src1.xyz">
       <FileType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ruby $(ProjectDir)..\..\generator.rb $(ProjectDir)..\..\src1.xyz</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">jabaruby $(ProjectDir)..\..\generator.rb $(ProjectDir)..\..\src1.xyz</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\generated\src1.cpp</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\generator.rb</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Doing something</Message>
       <FileType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ruby $(ProjectDir)..\..\generator.rb $(ProjectDir)..\..\src1.xyz</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">jabaruby $(ProjectDir)..\..\generator.rb $(ProjectDir)..\..\src1.xyz</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\generated\src1.cpp</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\generator.rb</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Doing something</Message>
     </CustomBuild>
     <CustomBuild Include="..\..\src2.xyz">
       <FileType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ruby $(ProjectDir)..\..\generator.rb $(ProjectDir)..\..\src2.xyz</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">jabaruby $(ProjectDir)..\..\generator.rb $(ProjectDir)..\..\src2.xyz</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\generated\src2.cpp</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\generator.rb</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Doing something</Message>
       <FileType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ruby $(ProjectDir)..\..\generator.rb $(ProjectDir)..\..\src2.xyz</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">jabaruby $(ProjectDir)..\..\generator.rb $(ProjectDir)..\..\src2.xyz</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\generated\src2.cpp</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\generator.rb</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Doing something</Message>
