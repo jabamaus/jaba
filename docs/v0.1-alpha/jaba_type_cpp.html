@@ -27,7 +27,7 @@
 </tr>
 <tr>
 <td><em>depends on</em></td>
-<td><a href="jaba_type_host.html">host</a>, <a href="jaba_type_platform.html">platform</a>, <a href="jaba_type_arch.html">arch</a>, <a href="jaba_type_buildtool.html">buildtool</a></td>
+<td><a href="jaba_type_host.html">host</a>, <a href="jaba_type_platform.html">platform</a>, <a href="jaba_type_arch.html">arch</a></td>
 </tr>
 </tbody>
 </table>
@@ -38,7 +38,6 @@
 <li><a href="#arch_ref">arch_ref</a></li>
 <li><a href="#bindir">bindir</a></li>
 <li><a href="#build_root_offset">build_root_offset</a></li>
-<li><a href="#buildtool">buildtool</a></li>
 <li><a href="#cflags">cflags</a></li>
 <li><a href="#character_set">character_set</a></li>
 <li><a href="#config">config</a></li>
@@ -65,6 +64,7 @@
 <li><a href="#projsuffix">projsuffix</a></li>
 <li><a href="#root">root</a></li>
 <li><a href="#rtti">rtti</a></li>
+<li><a href="#rule">rule</a></li>
 <li><a href="#shell">shell</a></li>
 <li><a href="#src">src</a></li>
 <li><a href="#src_ext">src_ext</a></li>
@@ -215,45 +215,6 @@
 <tr>
 <td><em>flags</em></td>
 <td>:no_check_exist</td>
-</tr>
-<tr>
-<td><em>options</em></td>
-<td></td>
-</tr>
-<tr>
-<td><em>defined in</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-</tbody>
-</table>
-</blockquote>
-<p><a id="buildtool"></a></p>
-<h4 id="buildtool">buildtool</h4>
-<blockquote>
-<p><em>Custom build tool</em></p>
-<table>
-<thead>
-<tr>
-<th>Property</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>type</em></td>
-<td>:node {}</td>
-</tr>
-<tr>
-<td><em>node_type</em></td>
-<td>:buildtool</td>
-</tr>
-<tr>
-<td><em>default</em></td>
-<td>{}</td>
-</tr>
-<tr>
-<td><em>flags</em></td>
-<td>:delay_evaluation</td>
 </tr>
 <tr>
 <td><em>options</em></td>
@@ -1085,7 +1046,7 @@
 </tr>
 <tr>
 <td><em>default</em></td>
-<td>&quot;projects&quot;</td>
+<td></td>
 </tr>
 <tr>
 <td><em>flags</em></td>
@@ -1252,6 +1213,41 @@
 <p><em>Examples</em></p>
 <pre style="color:#272822;background-color:#fafafa"><span style="color:#111">rtti</span> <span style="color:#00a8c8">true</span>
 </pre></blockquote>
+<p><a id="rule"></a></p>
+<h4 id="rule">rule</h4>
+<blockquote>
+<p><em>Build rule</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:src_spec []</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>[]</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
 <p><a id="shell"></a></p>
 <h4 id="shell">shell</h4>
 <blockquote>
