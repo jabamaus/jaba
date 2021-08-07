@@ -303,10 +303,10 @@ module JABA
         r.absolute_path? ? r : "#{node.source_dir}/#{r}".cleanpath
       end
 
-      # Make all :file and :dir attributes into absolute paths based on basedir_spec
+      # Make all file path attributes (those of type :file, :dir and :src_spec) into absolute paths based on basedir_spec
       #
       node.visit_node(visit_self: true) do |n|
-        n.visit_attr(type: [:file, :dir], skip_attr: :root) do |a|
+        n.visit_attr(type: [:file, :dir, :src_spec], skip_attr: :root) do |a|
           basedir_spec = a.attr_def.basedir_spec
           base_dir = case basedir_spec
           when :build_root
@@ -325,6 +325,18 @@ module JABA
 
           a.map_value! do |p|
             JABA.spec_to_absolute_path(p, base_dir, n)
+          end
+
+          # TODO: this could be done for all attrs not just :file, :dir and :src_spec because in theory other attribute types
+          # could have an option of type file/dir/src_spec. They would however need a base_dir_spec option too.
+          #
+          a.map_value_option! do |id, type, value|
+            case type
+            when :file, :dir, :src_spec
+              JABA.spec_to_absolute_path(value, base_dir, n)
+            else
+              value
+            end
           end
         end
       end

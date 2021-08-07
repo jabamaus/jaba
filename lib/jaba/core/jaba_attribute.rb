@@ -299,6 +299,21 @@ module JABA
 
     ##
     #
+    def map_value_option!
+      attr_def.each_value_option do |vod|
+        if @value_options.key?(vod.id)
+          vo = @value_options[vod.id]
+          if vo.array?
+            vo.map!{|o| yield vod.id, vod.type, o}
+          else
+            @value_options[vod.id] = yield vod.id, vod.type, vo
+          end
+        end
+      end
+    end
+
+    ##
+    #
     def visit_attr(&block)
       if block.arity == 2
         yield self, value

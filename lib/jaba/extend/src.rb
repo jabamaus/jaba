@@ -47,38 +47,37 @@ module JABA
 
       spec_files = []
 
-      src_attr.visit_attr do |elem, spec|
+      src_attr.visit_attr do |elem, abs_path|
         force = elem.has_flag_option?(:force)
         spec_files.clear
         vpath_option = elem.get_option_value(:vpath, fail_if_not_found: false)
-        abs_spec = JABA.spec_to_absolute_path(spec, @root, @node)
         glob_matches = nil
 
-        if spec.wildcard?
+        if abs_path.wildcard?
           if force
             JABA.error('Wildcards are not allowed when force adding src - ' \
               'only explicitly specified source files', errobj: elem)
           end
-          glob_matches = file_manager.glob(abs_spec)
+          glob_matches = file_manager.glob(abs_path)
         else # else its an explicitly specified file or directory
-          if !file_manager.exist?(abs_spec) && !force
-            JABA.error("'#{spec}' does not exist on disk. Use :force to add anyway.", errobj: elem)
+          if !file_manager.exist?(abs_path) && !force
+            JABA.error("'#{abs_path}' does not exist on disk. Use :force to add anyway.", errobj: elem)
           end
 
           # If its a directory add files recursively, else add single file
           #          
-          if File.directory?(abs_spec)
-            glob_matches = file_manager.glob("#{abs_spec}/**/*")
+          if File.directory?(abs_path)
+            glob_matches = file_manager.glob("#{abs_path}/**/*")
           else
-            spec_files << abs_spec
+            spec_files << abs_path
           end
         end
 
         if glob_matches
           if glob_matches.empty?
-            services.jaba_warn("'#{spec}' did not match any #{src_attr_id} files ", errobj: elem)
+            services.jaba_warn("'#{abs_path}' did not match any #{src_attr_id} files ", errobj: elem)
           else
-            extname = abs_spec.extname
+            extname = abs_path.extname
             # Glob matches will ignore files of unwanted extensions, unless the extension is explicitly specified
             #
             if !extname.empty? && !extname.wildcard?
