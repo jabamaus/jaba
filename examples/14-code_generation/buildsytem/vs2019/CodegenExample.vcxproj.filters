@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="generated">
+      <UniqueIdentifier>{3F75EA94-54C8-5B5A-8A4F-2168EB3B4E6B}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\generated\src1.cpp">
+      <Filter>generated</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\generated\src1.h">
+      <Filter>generated</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\generated\src2.cpp">
+      <Filter>generated</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\generated\src2.h">
+      <Filter>generated</Filter>
+    </ClInclude>
+    <None Include="..\..\generator.rb" />
+    <ClCompile Include="..\..\main.cpp" />
+    <CustomBuild Include="..\..\src1.xyz" />
+    <CustomBuild Include="..\..\src2.xyz" />
+  </ItemGroup>
+</Project>

@@ -11,10 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>ExampleApp</ProjectName>
-    <ProjectGuid>{2412229A-D62F-53A0-A972-B5A10CB4EC6C}</ProjectGuid>
+    <ProjectName>CodegenExample</ProjectName>
+    <ProjectGuid>{F506154F-D192-5E4C-AB3A-C9D7C93585C3}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>ExampleApp</RootNamespace>
+    <RootNamespace>CodegenExample</RootNamespace>
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -40,14 +40,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>..\..\build\bin\x86_64\Debug\</OutDir>
-    <IntDir>..\..\build\obj\x86_64\Debug\ExampleApp\</IntDir>
-    <TargetName>ExampleApp</TargetName>
+    <IntDir>..\..\build\obj\x86_64\Debug\CodegenExample\</IntDir>
+    <TargetName>CodegenExample</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>..\..\build\bin\x86_64\Release\</OutDir>
-    <IntDir>..\..\build\obj\x86_64\Release\ExampleApp\</IntDir>
-    <TargetName>ExampleApp</TargetName>
+    <IntDir>..\..\build\obj\x86_64\Release\CodegenExample\</IntDir>
+    <TargetName>CodegenExample</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -73,12 +73,36 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\generated\generated1.cpp" />
-    <ClCompile Include="..\..\generated\generated2.cpp" />
+    <ClCompile Include="..\..\generated\src1.cpp" />
+    <ClInclude Include="..\..\generated\src1.h" />
+    <ClCompile Include="..\..\generated\src2.cpp" />
+    <ClInclude Include="..\..\generated\src2.h" />
     <None Include="..\..\generator.rb" />
-    <None Include="..\..\generator_src1.xyz" />
-    <None Include="..\..\generator_src2.xyz" />
-    <ClCompile Include="..\..\..\example_src\ExampleApp\main.cpp" />
+    <ClCompile Include="..\..\main.cpp" />
+    <CustomBuild Include="..\..\src1.xyz">
+      <FileType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ruby $(ProjectDir)..\..\generator.rb $(ProjectDir)..\..\src1.xyz</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\generated\src1.cpp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\generator.rb</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Doing something</Message>
+      <FileType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ruby $(ProjectDir)..\..\generator.rb $(ProjectDir)..\..\src1.xyz</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\generated\src1.cpp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\generator.rb</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Doing something</Message>
+    </CustomBuild>
+    <CustomBuild Include="..\..\src2.xyz">
+      <FileType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ruby $(ProjectDir)..\..\generator.rb $(ProjectDir)..\..\src2.xyz</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\generated\src2.cpp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\generator.rb</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Doing something</Message>
+      <FileType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ruby $(ProjectDir)..\..\generator.rb $(ProjectDir)..\..\src2.xyz</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\generated\src2.cpp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\generator.rb</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Doing something</Message>
+    </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
