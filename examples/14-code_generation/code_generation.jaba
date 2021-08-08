@@ -4,9 +4,19 @@ cpp :CodegenExample do
   configs [:Debug, :Release]
   src ['main.cpp', 'generator.rb', '*.xyz']
   src %w(src1.h src2.h src1.cpp src2.cpp), :force, prefix: 'generated/'
- # TODO: how to support multiple outputs
-  rule 'generated/src1.cpp', in: ['src1.xyz'], imp_in: ['generator.rb'], cmd: 'jabaruby $(imp_in[0]) $(in[0])'
-  rule 'generated/src2.cpp', in: ['src2.xyz'], imp_in: ['generator.rb'], cmd: 'jabaruby $(imp_in[0]) $(in[0])'
+
+  rule do
+    out 'generated/src1.cpp'
+    inp 'src1.xyz'
+    imp 'generator.rb'
+    cmd 'jabaruby $(imp[0]) $(inp[0])'
+  end
+  rule do
+    out 'generated/src2.cpp'
+    inp 'src2.xyz'
+    imp 'generator.rb'
+    cmd 'jabaruby $(imp[0]) $(inp[0])'
+  end
 end
 
 workspace :all do

@@ -221,12 +221,9 @@ define :cpp do
       # TODO: examples, including regexes
     end
 
-    attr_array :rule, type: :src_spec do
-      title 'Build rule'
-      basedir_spec :definition_root
-      value_option :in, type: :src_spec, required: true
-      value_option :imp_in, type: :src_spec # implicit inputs
-      value_option :cmd, required: true
+    attr_array :rule, type: :node do
+      title 'Custom build rule'
+      node_type :rule
     end
 
     # Common attributes. These are the attributes that most definitions will set/use.
