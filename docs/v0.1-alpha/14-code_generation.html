@@ -16,9 +16,14 @@
   <span style="color:#111">configs</span> <span style="color:#f92672">[</span><span style="color:#d88200">:Debug</span><span style="color:#111">,</span> <span style="color:#d88200">:Release</span><span style="color:#f92672">]</span>
   <span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;main.cpp&#39;</span><span style="color:#111">,</span> <span style="color:#d88200">&#39;generator.rb&#39;</span><span style="color:#111">,</span> <span style="color:#d88200">&#39;*.xyz&#39;</span><span style="color:#f92672">]</span>
   <span style="color:#111">src</span> <span style="color:#d88200">%w(</span><span style="color:#d88200">src1.h src2.h src1.cpp src2.cpp</span><span style="color:#d88200">)</span><span style="color:#111">,</span> <span style="color:#d88200">:force</span><span style="color:#111">,</span> <span style="color:#d88200">prefix</span><span style="color:#111">:</span> <span style="color:#d88200">&#39;generated/&#39;</span>
- <span style="color:#75715e"># TODO: how to support multiple outputs</span>
-  <span style="color:#111">rule</span> <span style="color:#d88200">&#39;generated/src1.cpp&#39;</span><span style="color:#111">,</span> <span style="color:#00a8c8">in</span><span style="color:#111">:</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;src1.xyz&#39;</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">imp_in</span><span style="color:#111">:</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;generator.rb&#39;</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">cmd</span><span style="color:#111">:</span> <span style="color:#d88200">&#39;jabaruby $(imp_in[0]) $(in[0])&#39;</span>
-  <span style="color:#111">rule</span> <span style="color:#d88200">&#39;generated/src2.cpp&#39;</span><span style="color:#111">,</span> <span style="color:#00a8c8">in</span><span style="color:#111">:</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;src2.xyz&#39;</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">imp_in</span><span style="color:#111">:</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;generator.rb&#39;</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">cmd</span><span style="color:#111">:</span> <span style="color:#d88200">&#39;jabaruby $(imp_in[0]) $(in[0])&#39;</span>
+
+  <span style="color:#111">rule</span> <span style="color:#00a8c8">do</span>
+    <span style="color:#111">input</span> <span style="color:#d88200">&#39;*.xyz&#39;</span>
+    <span style="color:#111">output</span> <span style="color:#d88200">&#39;generated/$(input.basename_no_ext).cpp&#39;</span>
+    <span style="color:#111">implicit_input</span> <span style="color:#d88200">&#39;generator.rb&#39;</span>
+    <span style="color:#111">cmd</span> <span style="color:#d88200">&#39;jabaruby $(implicit_input) $(input)&#39;</span>
+    <span style="color:#111">msg</span> <span style="color:#d88200">&#39;$(input.basename) -&gt; $(output.basename)&#39;</span>
+  <span style="color:#00a8c8">end</span>
 <span style="color:#00a8c8">end</span>
 
 <span style="color:#111">workspace</span> <span style="color:#d88200">:all</span> <span style="color:#00a8c8">do</span>
