@@ -64,33 +64,57 @@ module JABA
 
         cfg.visit_attr(:rule) do |attr, rule_node|
           attrs = rule_node.attrs
-          outputs = attrs.out
-          inputs = attrs.inp
-          implicit_inputs = attrs.imp
+          output = attrs.output
+          implicit_input = attrs.implicit_input.relative_path_from(@projdir, backslashes: true)
           cmd = attrs.cmd
           msg = attrs.msg
 
-          sf = get_matching_src_obj(inputs[0], @src, errobj: attr)
-          sf.file_type = :CustomBuild
+          get_matching_src_objs(attrs.input, @src, errobj: attr).each do |sf|
+            sf.file_type = :CustomBuild
 
-          # TODO: genericise
-          cmd = cmd.sub('$(inp[0])', "$(ProjectDir)#{inputs[0].relative_path_from(@projdir, backslashes: true)}")
-          cmd = cmd.sub('$(imp[0])', "$(ProjectDir)#{implicit_inputs[0].relative_path_from(@projdir, backslashes: true)}")
-          msg = msg.sub('$(inp[0])', inputs[0].basename)
-          msg = msg.sub('$(out[0])', outputs[0].basename)
+            # TODO: check output a valid src file
+            input = sf.projdir_rel
+            d_output = demacroise(output, input, nil, implicit_input)
+            d_output = d_output.relative_path_from(@projdir, backslashes: true)
+            d_cmd = demacroise(cmd, input, implicit_input, d_output).to_escaped_xml
+            d_msg = demacroise(msg, input, implicit_input, d_output).to_escaped_xml
 
-          outputs = outputs.map{|i| i.relative_path_from(@projdir, backslashes: true)}.vs_join_paths
-          additional_inputs = implicit_inputs.map{|i| i.relative_path_from(@projdir, backslashes: true)}.vs_join_paths
-
-          @per_file_props.push_value(sf, [:FileType, cfg_name, platform_name, :Document])
-          @per_file_props.push_value(sf, [:Command, cfg_name, platform_name, cmd.to_escaped_xml])
-          @per_file_props.push_value(sf, [:Outputs, cfg_name, platform_name, outputs])
-          @per_file_props.push_value(sf, [:AdditionalInputs, cfg_name, platform_name, additional_inputs])
-          @per_file_props.push_value(sf, [:Message, cfg_name, platform_name, msg.to_escaped_xml])
+            @per_file_props.push_value(sf, [:FileType, cfg_name, platform_name, :Document])
+            @per_file_props.push_value(sf, [:Command, cfg_name, platform_name, d_cmd])
+            @per_file_props.push_value(sf, [:Outputs, cfg_name, platform_name, d_output])
+            @per_file_props.push_value(sf, [:AdditionalInputs, cfg_name, platform_name, implicit_input])
+            @per_file_props.push_value(sf, [:Message, cfg_name, platform_name, d_msg])
+          end
         end
       end
     end
     
+    ##
+    #
+    def demacroise(str, input, implicit_input, output)
+      str = str.dup
+      matches = str.scan(/(\$\((.*?)\))/)
+      matches.each do |match|
+        full_var = match[0]
+        var = match[1]
+        case var
+        when /^input\.basename_no_ext/
+          str.gsub!(full_var, input.basename_no_ext)
+        when /^input\.basename/
+          str.gsub!(full_var, input.basename)
+        when /^output\.basename/
+          str.gsub!(full_var, output.basename)
+        when /^input/
+          str.gsub!(full_var, "$(ProjectDir)#{input}")
+        when /^implicit_input/
+          str.gsub!(full_var, "$(ProjectDir)#{implicit_input}")
+        when /^output/
+          str.gsub!(full_var, output)
+        end
+      end
+      str
+    end
+
     ##
     # Overridden from Project. Yields eg :ClCompile given '.cpp'.
     #
@@ -199,8 +223,10 @@ module JABA
 
         cfg.visit_attr(:vcfprop) do |attr, val|
           file_with_prop, prop = attr.get_option_value(:__key).split('|')
-          sf = get_matching_src_obj(file_with_prop, @src, errobj: attr)
-          @per_file_props.push_value(sf, [prop, cfg_name, platform, val])
+          sfs = get_matching_src_objs(file_with_prop, @src, errobj: attr)
+          sfs.each do |sf|
+            @per_file_props.push_value(sf, [prop, cfg_name, platform, val])
+          end
         end
 
         property_group(@pg1, close: true)

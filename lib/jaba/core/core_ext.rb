@@ -215,6 +215,12 @@ module JABACoreExt
 
     ##
     #
+    def basename_no_ext
+      File.basename(self, '.*')
+    end
+
+    ##
+    #
     def extname
       File.extname(self)
     end

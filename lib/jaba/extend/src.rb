@@ -121,13 +121,17 @@ module JABA
 
     ##
     #
-    def get_matching_src_obj(spec, src_list, fail_if_not_found: true, errobj: nil)
+    def get_matching_src_objs(spec, src_list, fail_if_not_found: true, errobj: nil)
       abs_spec = JABA.spec_to_absolute_path(spec, @root, @node)
-      s = src_list.find{|s| s.absolute_path == abs_spec}
-      if !s && fail_if_not_found
-        JABA.error("'#{spec}' src file not in project", errobj: errobj)
+      if abs_spec.wildcard?
+        src_list.select{|s| File.fnmatch?(abs_spec, s.absolute_path)}
+      else
+        s = src_list.find{|s| s.absolute_path == abs_spec}
+        if !s && fail_if_not_found
+          JABA.error("'#{spec}' src file not in project", errobj: errobj)
+        end
+        Array(s)
       end
-      s
     end
 
   end

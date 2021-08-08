@@ -6,18 +6,11 @@ cpp :CodegenExample do
   src %w(src1.h src2.h src1.cpp src2.cpp), :force, prefix: 'generated/'
 
   rule do
-    out 'generated/src1.cpp'
-    inp 'src1.xyz'
-    imp 'generator.rb'
-    cmd 'jabaruby $(imp[0]) $(inp[0])'
-    msg '$(inp[0]) -> $(out[0])'
-  end
-  rule do
-    out 'generated/src2.cpp'
-    inp 'src2.xyz'
-    imp 'generator.rb'
-    cmd 'jabaruby $(imp[0]) $(inp[0])'
-    msg '$(inp[0]) -> $(out[0])'
+    input '*.xyz'
+    output 'generated/$(input.basename_no_ext).cpp'
+    implicit_input 'generator.rb'
+    cmd 'jabaruby $(implicit_input) $(input)'
+    msg '$(input.basename) -> $(output.basename)'
   end
 end
 

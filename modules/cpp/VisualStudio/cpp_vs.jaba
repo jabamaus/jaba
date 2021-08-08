@@ -96,6 +96,13 @@ open_type :cpp do
           fail "Must be of form <src file>|<property> but was '#{key}'"
         end
       end
+      example %Q{
+        # Set a property on win32/file.c
+        vcfprop 'win32/file.c|ObjectFileName', '$(IntDir)win32_file.obj'
+
+        # Set same property on all matching files
+        vcfprop 'win32/*|DisableSpecificWarnings', 4096
+      }
     end
   end
 end

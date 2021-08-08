@@ -1,19 +1,19 @@
 define :rule do
   title 'Custom build rule'
 
-  attr_array :out, type: :src_spec do
+  attr :output, type: :src_spec do
     title 'Output files'
     basedir_spec :definition_root
     flags :required
   end
   
-  attr_array :inp, type: :src_spec do
+  attr :input, type: :src_spec do
     title 'Input files'
     basedir_spec :definition_root
     flags :required
   end
 
-  attr_array :imp, type: :src_spec do
+  attr :implicit_input, type: :src_spec do
     title 'Implicit input files'
     basedir_spec :definition_root
   end
@@ -26,5 +26,5 @@ define :rule do
   attr :msg, type: :string do
     title 'Message'
   end
-  
+
 end
