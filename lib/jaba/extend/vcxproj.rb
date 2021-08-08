@@ -76,6 +76,8 @@ module JABA
           # TODO: genericise
           cmd = cmd.sub('$(inp[0])', "$(ProjectDir)#{inputs[0].relative_path_from(@projdir, backslashes: true)}")
           cmd = cmd.sub('$(imp[0])', "$(ProjectDir)#{implicit_inputs[0].relative_path_from(@projdir, backslashes: true)}")
+          msg = msg.sub('$(inp[0])', inputs[0].basename)
+          msg = msg.sub('$(out[0])', outputs[0].basename)
 
           outputs = outputs.map{|i| i.relative_path_from(@projdir, backslashes: true)}.vs_join_paths
           additional_inputs = implicit_inputs.map{|i| i.relative_path_from(@projdir, backslashes: true)}.vs_join_paths
@@ -84,7 +86,7 @@ module JABA
           @per_file_props.push_value(sf, [:Command, cfg_name, platform_name, cmd.to_escaped_xml])
           @per_file_props.push_value(sf, [:Outputs, cfg_name, platform_name, outputs])
           @per_file_props.push_value(sf, [:AdditionalInputs, cfg_name, platform_name, additional_inputs])
-          @per_file_props.push_value(sf, [:Message, cfg_name, platform_name, 'Doing something'])
+          @per_file_props.push_value(sf, [:Message, cfg_name, platform_name, msg.to_escaped_xml])
         end
       end
     end

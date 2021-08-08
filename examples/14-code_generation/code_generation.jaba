@@ -10,12 +10,14 @@ cpp :CodegenExample do
     inp 'src1.xyz'
     imp 'generator.rb'
     cmd 'jabaruby $(imp[0]) $(inp[0])'
+    msg '$(inp[0]) -> $(out[0])'
   end
   rule do
     out 'generated/src2.cpp'
     inp 'src2.xyz'
     imp 'generator.rb'
     cmd 'jabaruby $(imp[0]) $(inp[0])'
+    msg '$(inp[0]) -> $(out[0])'
   end
 end
 
