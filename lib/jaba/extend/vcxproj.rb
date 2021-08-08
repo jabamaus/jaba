@@ -74,9 +74,9 @@ module JABA
 
             # TODO: check output a valid src file
             input = sf.projdir_rel
-            d_output = demacroise(output, input, nil, implicit_input)
+            d_output = demacroise(output, input, implicit_input, nil)
             d_output = d_output.relative_path_from(@projdir, backslashes: true)
-            d_cmd = demacroise(cmd, input, implicit_input, d_output).to_escaped_xml
+            d_cmd = demacroise(cmd, "$(ProjectDir)#{input}", "$(ProjectDir)#{implicit_input}", "$(ProjectDir)#{d_output}").to_escaped_xml
             d_msg = demacroise(msg, input, implicit_input, d_output).to_escaped_xml
 
             @per_file_props.push_value(sf, [:FileType, cfg_name, platform_name, :Document])
@@ -93,24 +93,26 @@ module JABA
     #
     def demacroise(str, input, implicit_input, output)
       str = str.dup
-      matches = str.scan(/(\$\((.*?)\))/)
+      matches = str.scan(/(\$\((.+?)(\.(.+?))?\))/)
       matches.each do |match|
         full_var = match[0]
         var = match[1]
-        case var
-        when /^input\.basename_no_ext/
-          str.gsub!(full_var, input.basename_no_ext)
-        when /^input\.basename/
-          str.gsub!(full_var, input.basename)
-        when /^output\.basename/
-          str.gsub!(full_var, output.basename)
+        method = match[3]
+        repl = case var
         when /^input/
-          str.gsub!(full_var, "$(ProjectDir)#{input}")
+          input
         when /^implicit_input/
-          str.gsub!(full_var, "$(ProjectDir)#{implicit_input}")
+          implicit_input
         when /^output/
-          str.gsub!(full_var, output)
+          output
         end
+        if repl.nil?
+          JABA.error("Invalid macro '#{full_var}' in #{str}") # TODO: err_obj
+        end
+        if !method.nil?
+          repl = repl.send(method)
+        end
+        str.gsub!(full_var, repl)
       end
       str
     end
