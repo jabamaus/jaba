@@ -5,7 +5,7 @@ define :globals do
   attr :buildsystem_root, type: :dir do
     title 'Root of generated build system'
     note 'Specfied as an offset from main build_root'
-    default 'buildsytem'
+    default 'buildsystem'
     basedir_spec :build_root
   end
   
