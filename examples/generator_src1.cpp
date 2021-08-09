@@ -1,5 +1,0 @@
-void foo()
-{
-  printf("foo");
-}
-
