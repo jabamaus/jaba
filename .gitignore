@@ -13,6 +13,6 @@
 .vscode*
 *build/
 .jaba/
-docs_src/generated
 tools/release_temp
 tools/doc_temp
+examples/14-code_generation/generated
