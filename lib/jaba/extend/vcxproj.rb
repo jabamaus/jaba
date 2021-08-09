@@ -77,7 +77,8 @@ module JABA
             d_output = demacroise(output, input, implicit_input, nil)
             d_output = d_output.relative_path_from(@projdir, backslashes: true)
             d_cmd = demacroise(cmd, "$(ProjectDir)#{input}", "$(ProjectDir)#{implicit_input}", "$(ProjectDir)#{d_output}").to_escaped_xml
-            d_msg = demacroise(msg, input, implicit_input, d_output).to_escaped_xml
+            # Characters like < > | & are escaped to prevent unwanted behaviour when the msg is echoed
+            d_msg = demacroise(msg, input, implicit_input, d_output).to_escaped_DOS.to_escaped_xml
 
             @per_file_props.push_value(sf, [:FileType, cfg_name, platform_name, :Document])
             @per_file_props.push_value(sf, [:Command, cfg_name, platform_name, d_cmd])

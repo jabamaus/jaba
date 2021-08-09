@@ -366,6 +366,17 @@ module JABACoreExt
       end
     end
 
+    ##
+    #
+    def to_escaped_DOS
+      gsub(/[\^|<>&]/) do |match|
+        case match
+        when '^', '|', '<', '>', '&'
+          "^#{match}"
+        end
+      end
+    end
+
   end
 
   ##
