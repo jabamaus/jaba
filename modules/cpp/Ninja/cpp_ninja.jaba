@@ -1,4 +1,6 @@
 open_instance :ninja, type: :host do
   cpp_supported_platforms [:windows]
   cpp_project_classname 'Ninjaproj'
+  cpp_src_ext []
+  workspace_classname ''
 end
