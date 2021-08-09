@@ -182,7 +182,9 @@ module JABA
           FileUtils.makedirs(dir)
         end
 
-        IO.binwrite(fn, file.str)
+        if status != :UNCHANGED
+          IO.binwrite(fn, file.str)
+        end
       end
     end
 
