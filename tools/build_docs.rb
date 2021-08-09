@@ -1,10 +1,12 @@
-require_relative '../lib/jaba'
+require_relative 'common'
 require_relative '../examples/gen_all'
+
 using JABACoreExt
 
 class DocBuilder
 
-  JABA_REPO_URL =               "https://github.com/jabamaus/jaba.git"
+  include CommonUtils
+  
   DOCS_REPO_DIR =               "#{JABA.install_dir}/../jaba_docs".cleanpath
   DOCS_HANDWRITTEN_DIR =        "#{DOCS_REPO_DIR}/handwritten"
   DOCS_MARKDOWN_DIR =           "#{DOCS_REPO_DIR}/markdown"
@@ -315,14 +317,6 @@ class DocBuilder
       end
     end
     lines
-  end
-  
-  ##
-  #
-  def git_cmd(cmd)
-    puts cmd
-    system("git #{cmd}")
-    puts 'Done!'
   end
 
 end
