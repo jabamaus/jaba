@@ -44,11 +44,10 @@ module JABA
       # TODO: pass this in
       cpp_gen = get_generator(:cpp)
       @candidate_projects = cpp_gen.get_projects
-      @root_nodes.each do |wsn|
-        services.globals.cpp_hosts.each do |target_host|
-          classname = target_host.attrs.workspace_classname
-          next if classname.empty?
-
+      services.globals.cpp_hosts.each do |target_host|
+        classname = target_host.attrs.workspace_classname
+        next if classname.empty?
+        @root_nodes.each do |wsn|
           root = make_node_paths_absolute(wsn)
 
           projects = []
