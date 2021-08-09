@@ -21,7 +21,7 @@ module JABA
 
     ##
     #
-    def make_nodes
+    def make_node_tree
       root_node = make_node
 
       target_platform_to_archs = {}

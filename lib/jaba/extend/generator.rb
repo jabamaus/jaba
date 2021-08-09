@@ -70,7 +70,7 @@ module JABA
 
       @definitions.each do |d|
         push_definition(d) do
-          @root_nodes << make_nodes
+          @root_nodes << make_node_tree
         end
       end
       
@@ -263,7 +263,7 @@ module JABA
     ##
     # Override this in sublcass if type needs to be split into more than one node.
     #
-    def make_nodes
+    def make_node_tree
       make_node
     end
     

@@ -270,7 +270,7 @@ module JABA
 
   class TestprojGenerator < Generator
           
-    def make_nodes
+    def make_node_tree
       platforms_node = make_node
       
       platforms_node.attrs.platforms.each do |p|
