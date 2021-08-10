@@ -14,7 +14,7 @@ module JABA
 
     it 'works with all attribute variants' do
       jaba do
-        define :test do
+        type :test do
           attr :node_single, type: :node do
             node_type :node
           end
@@ -28,7 +28,7 @@ module JABA
             node_type :platform
           end
         end
-        define :node do
+        type :node do
           attr :a
           attr_array :b
           attr_hash :c, key_type: :symbol
@@ -36,12 +36,12 @@ module JABA
             node_type :node2
           end
         end
-        define :node2 do
+        type :node2 do
           attr :e, type: :node do
             node_type :node3
           end
         end
-        define :node3 do
+        type :node3 do
           attr :f
         end
         test :t do

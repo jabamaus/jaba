@@ -1,4 +1,4 @@
-define :rule do
+type :rule do
   title 'Custom build rule'
 
   attr :output, type: :src_spec do

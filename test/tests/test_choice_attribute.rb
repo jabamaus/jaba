@@ -7,7 +7,7 @@ module JABA
     it 'requires items to be set' do
       check_fail "'items' must be set", line: [__FILE__, 'tagA'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a, type: :choice # tagA
           end
         end
@@ -17,7 +17,7 @@ module JABA
     it 'warns if items contains duplicates' do
       check_warn "'items' contains duplicates", __FILE__, 'tagK' do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a, type: :choice do # tagK
               items [:a, :a, :b, :b]
             end
@@ -29,7 +29,7 @@ module JABA
     it 'requires default to be in items' do
       check_fail "Must be one of [1, 2, 3] but got '4'", line: [__FILE__, 'tagB'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a, type: :choice do
               items [1, 2, 3]
               default 4 # tagB
@@ -39,7 +39,7 @@ module JABA
       end
       check_fail "Must be one of [1, 2, 3] but got '4'", line: [__FILE__, 'tagC'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_array :a, type: :choice do
               items [1, 2, 3]
               default [1, 2, 4] # tagC
@@ -52,7 +52,7 @@ module JABA
     it 'rejects invalid choices' do
       check_fail 'Must be one of [:a, :b, :c]', line: [__FILE__, 'tagD'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a, type: :choice do
               items [:a, :b, :c]
             end
@@ -64,7 +64,7 @@ module JABA
       end
       check_fail 'Must be one of [:a, :b, :c]', line: [__FILE__, 'tagE'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_array :a, type: :choice do
               items [:a, :b, :c]
             end
@@ -95,7 +95,7 @@ module JABA
             default 'b'
           end
         end
-        define :test
+        type :test
         test :t do
           globals.a1.must_equal :b
           globals.a2.must_be_nil

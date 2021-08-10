@@ -53,7 +53,7 @@ module JABA
     ##
     # Define sub type. Useful for grouping attributes.
     #
-    def define(id, &block)
+    def type(id, &block)
       @jaba_type.define_sub_type(id, &block)
     end
 

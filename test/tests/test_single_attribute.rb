@@ -7,7 +7,7 @@ module JABA
     it 'only accepts single values' do
       check_fail "'default' expects a single value but got '[]'", line: [__FILE__, 'tagV'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a do
               default [] # tagV
             end
@@ -17,7 +17,7 @@ module JABA
 
       check_fail "'t.a' attribute must be a single value not a 'Array'", line: [__FILE__, 'tagK'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a
           end
           test :t do
@@ -29,7 +29,7 @@ module JABA
 
     it 'allows setting value with block' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr :a
           attr :b
         end
@@ -46,7 +46,7 @@ module JABA
     it 'prevents modifying read values' do
       check_fail "Cannot modify read only value", line: [__FILE__, 'tagY'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a, type: :string do
               default 'b'
             end
@@ -60,7 +60,7 @@ module JABA
       end
       check_fail "Cannot modify read only value", line: [__FILE__, 'tagS'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a, type: :string do
             end
           end
@@ -75,7 +75,7 @@ module JABA
 
     it 'works with block style default' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr :a
           attr :b
           attr :c do
@@ -95,7 +95,7 @@ module JABA
       #
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagI)}: Cannot read uninitialised 't.b' array attribute - it might need a default value.", trace: [__FILE__, :tagX] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a
             attr_array :b
             attr :c do
@@ -115,7 +115,7 @@ module JABA
       #
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagF)}: Cannot read uninitialised 't.a' attribute - it might need a default value.", trace: [__FILE__, :tagj] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a
             attr_array :b do
               default do
@@ -133,7 +133,7 @@ module JABA
     it 'fails if default block sets attribute' do
       check_fail "'t.a' attribute is read only", line: [__FILE__, 'tagA'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a
             attr :b do
               default do
@@ -150,7 +150,7 @@ module JABA
     it 'validates flag options' do
       check_fail "Invalid flag option ':d' passed to 't.a' attribute. Valid flags are [:a, :b, :c]", line: [__FILE__, 'tagD'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a do
               flag_options :a, :b, :c
             end
@@ -164,7 +164,7 @@ module JABA
 
     it 'overwrites flag and keyval options on successive calls' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr :a do
             flag_options :fo1, :fo2, :fo3
             value_option :kv1
@@ -191,7 +191,7 @@ module JABA
     # TODO: check wiping down required values
     it 'supports wiping value back to default' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr :a do
             default 1
           end
@@ -229,7 +229,7 @@ module JABA
     it 'rejects setting readonly attrs' do
       check_fail "'t.a' attribute is read only", line: [__FILE__, 'tagJ'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a do
               flags :read_only
               default 1
@@ -246,7 +246,7 @@ module JABA
       #
       check_fail "'t.a' attribute is read only", line: [__FILE__, 'tagC'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a do
               flags :read_only
             end

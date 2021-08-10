@@ -9,7 +9,7 @@ module JABA
       #
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagV)}: 'default' expects an array but got '{:a=>:b}'.", trace: [__FILE__, :tagv] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_array :a do # tagv
               default({a: :b}) # tagV
             end
@@ -21,7 +21,7 @@ module JABA
       #
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagO)}: 't.a' array attribute default requires an array not a 'Integer'." do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_array :a do # tagO
               default do
                 1
@@ -37,7 +37,7 @@ module JABA
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagD)}: 'a' array attribute default invalid: 'not a symbol' must be a symbol but was a 'String'.",
            trace: [__FILE__, :tagd] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_array :a, type: :symbol do # tagd
               default ['not a symbol'] # tagD
             end
@@ -49,7 +49,7 @@ module JABA
       #
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagW)}: 't.a' array attribute invalid: 'not a symbol' must be a symbol but was a 'String'." do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_array :a, type: :symbol do # tagW
               default do
                 ['not a symbol']
@@ -62,7 +62,7 @@ module JABA
 
       # TODO: test flag/value options
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr_array :a
           attr_array :b do
             default [1, 2, 3] # value style default
@@ -100,7 +100,7 @@ module JABA
       #
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagI)}: Cannot read uninitialised 't.b' attribute - it might need a default value.", trace: [__FILE__, :tagi] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a
             attr :b
             attr_array :c do
@@ -120,7 +120,7 @@ module JABA
       #
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagF)}: Cannot read uninitialised 't.a' array attribute - it might need a default value.", trace: [__FILE__, :tagf] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_array :a
             attr :b do
               default do
@@ -137,7 +137,7 @@ module JABA
 
     it 'allows setting value with block' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr_array :a
           attr :b
           attr :c
@@ -162,7 +162,7 @@ module JABA
     it 'is not possible to modify returned array' do
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagN)}: Cannot modify read only value." do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_array :a do
               default([:a])
             end
@@ -176,7 +176,7 @@ module JABA
 
     it 'considers setting to empty array as marking it as set' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr_array :a do
             flags :required
           end
@@ -191,7 +191,7 @@ module JABA
       line = find_line_number(__FILE__, 'tagL')
       check_warn("When setting 't.a' array attribute stripping duplicate value '5'. See previous at test_attribute_array.rb:#{line}", __FILE__, 'tagU') do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_array :a # Duplicates will be stripped by default
             attr_array :b do
               flags :allow_dupes
@@ -217,7 +217,7 @@ module JABA
     
     it 'handles sorting' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr_array :a
           attr_array :b
           attr_array :c
@@ -249,7 +249,7 @@ module JABA
     it 'validates element types are valid' do
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagT)}: 't.a' array attribute invalid: :bool attributes only accept [true|false] but got 'true'." do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_array :a, type: :bool
           end
           test :t do
@@ -262,7 +262,7 @@ module JABA
     
     it 'supports prefix and postfix options' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr_array :a do
             flags :no_sort, :allow_dupes
           end
@@ -277,7 +277,7 @@ module JABA
     it 'only allows prefix/postfix on string elements' do
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagQ)}: When setting 't.a' array attribute prefix/postfix option can only be used with string arrays." do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_array :a
           end
           test :t do
@@ -290,7 +290,7 @@ module JABA
     # TODO: merge exclude tests
     it 'supports excluding elements' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr_array :a
           attr_array :b
         end
@@ -310,7 +310,7 @@ module JABA
 
     it 'supports :prefix and :postfix in conjunction with :exclude' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr_array :a do
             flags :no_sort
           end
@@ -327,7 +327,7 @@ module JABA
     
     it 'supports excluding elements with regexes' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr_array :a
         end
         test :t do
@@ -343,7 +343,7 @@ module JABA
     it 'fails if excluding with regex on non-strings' do
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagR)}: When setting 't.a' array attribute exclude regex can only operate on strings." do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_array :a
           end
           test :t do
@@ -355,7 +355,7 @@ module JABA
     
     it 'supports conditional excluding' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr_array :a
           attr_array :b
         end
@@ -374,7 +374,7 @@ module JABA
     
     it 'supports wiping arrays' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr_array :a
           attr :b do
             default 1
@@ -403,7 +403,7 @@ module JABA
     
     it 'supports wiping default array' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr_array :a do
             default [1, 2]
           end
@@ -425,7 +425,7 @@ module JABA
     it 'catches invalid args to wipe' do
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagS)}: 't.b' attribute not found." do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_array :a
           end
           test :t do
@@ -445,7 +445,7 @@ module JABA
       jaba(barebones: true) do
         opt1 = 'opt1'
         opt2 = 'opt2'
-        define :test do
+        type :test do
           attr_array :a do
             value_option :opt1
             value_option :opt2
@@ -497,7 +497,7 @@ module JABA
     it 'supports setting a validator' do
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagB)}: 't.a' array attribute invalid: failed.", trace: [__FILE__, :tagb] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_array :a do
               validate do |val|
                 if val == 'invalid'

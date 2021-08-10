@@ -8,7 +8,7 @@ module JABA
     
     it 'supports a default' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr :single1 do
             default 1
           end
@@ -91,7 +91,7 @@ module JABA
       #
       check_fail "'default' expects a hash but got '[]'", line: [__FILE__, 'tagU'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_hash :a, key_type: :symbol do
               default [] # tagU
             end
@@ -103,7 +103,7 @@ module JABA
       #
       check_fail "'t.a' hash attribute default requires a hash not a 'Integer'", line: [__FILE__, 'tagO'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_hash :a, key_type: :symbol do # tagO
               default do
                 1
@@ -118,7 +118,7 @@ module JABA
       #
       check_fail "'a' hash attribute default invalid: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagL'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_hash :a, key_type: :symbol, type: :symbol do
               default({k: 'not a symbol'}) # tagL
             end
@@ -131,7 +131,7 @@ module JABA
       #
       check_fail "'t.a' hash attribute invalid: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagW'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_hash :a, key_type: :symbol, type: :symbol do # tagW
               default do
                 {k: 'not a symbol'}
@@ -148,7 +148,7 @@ module JABA
       #
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagI)}: Cannot read uninitialised 't.b' attribute - it might need a default value.", trace: [__FILE__, :tagi] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a
             attr :b
             attr_hash :c, key_type: :symbol do
@@ -168,7 +168,7 @@ module JABA
       #
       check_fail "Cannot read uninitialised 't.a' hash attribute", line: [__FILE__, 'tagF'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_hash :a, key_type: :symbol
             attr :b do
               default do
@@ -185,7 +185,7 @@ module JABA
 
     it 'can be set' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr_hash :a, key_type: :symbol
           attr :b, type: :choice do
             items [1, 2]
@@ -237,7 +237,7 @@ module JABA
     it 'is not possible to modify returned hash' do
       check_fail 'Cannot modify read only value', line: [__FILE__, 'tagN'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_hash :a, key_type: :symbol do
               default({k: :v})
             end
@@ -253,7 +253,7 @@ module JABA
       check_fail "'a' hash attribute invalid: :no_sort attribute definition flag is only allowed on array attributes",
                 line: [__FILE__, 'tagQ'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_hash :a, key_type: :symbol do # tagQ
               flags :no_sort
             end
@@ -266,7 +266,7 @@ module JABA
       check_fail "'a' hash attribute invalid: :allow_dupes attribute definition flag is only allowed on array attributes",
                  line: [__FILE__, 'tagP'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_hash :a, key_type: :symbol do # tagP
               flags :allow_dupes
             end
@@ -277,7 +277,7 @@ module JABA
     
     it 'can accept flag options' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr_hash :a, key_type: :symbol do
             flag_options :f1, :f2, :f3
           end
@@ -299,7 +299,7 @@ module JABA
 
     it 'can accept value options' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr_hash :a, key_type: :symbol do
             value_option :kv1
             value_option :kv2
@@ -320,7 +320,7 @@ module JABA
 
     it 'can accept value and flag options' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr_hash :a, key_type: :symbol do
             value_option :kv1
             value_option :kv2
@@ -347,7 +347,7 @@ module JABA
     it 'validates key value supplied correctly' do
       check_fail("'t.a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"", line: [__FILE__, 'tagM']) do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_hash :a, key_type: :symbol
           end
           test :t do
@@ -357,7 +357,7 @@ module JABA
       end
       check_fail("'t.a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"", line: [__FILE__, 'tagZ']) do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_hash :a, key_type: :symbol
           end
           test :t do
@@ -370,7 +370,7 @@ module JABA
     it 'supports setting a validator' do
       check_fail "'a' array attribute cannot specify 'validate_key' - only supported by hash attributes", line: [__FILE__, 'tagD'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_array :a do
               validate_key do |key| # tagD
               end
@@ -380,7 +380,7 @@ module JABA
       end
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagC)}: 't.a' hash attribute invalid: failed.", trace: [__FILE__, :tagc] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_hash :a, key_type: :string do
               validate_key do |key|
                 if key == 'invalid'
@@ -398,7 +398,7 @@ module JABA
 
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagB)}: 't.a' hash attribute invalid: failed.", trace: [__FILE__, :tagb] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_hash :a, key_type: :symbol do
               validate do |val|
                 if val == 'invalid'

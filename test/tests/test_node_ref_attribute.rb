@@ -7,7 +7,7 @@ module JABA
     it 'requires referent type to be specified' do
       check_fail "'b' attribute invalid: 'node_type' must be set", line: [__FILE__, 'tagP'] do
         jaba(barebones: true) do
-          define :a do
+          type :a do
             attr :b, type: :node_ref # tagP
           end
         end
@@ -19,12 +19,12 @@ module JABA
     #
     it 'resolves references to different types immediately' do
       jaba(barebones: true) do
-        define :type_a do
+        type :type_a do
           attr :type_b, type: :node_ref do
             node_type :type_b
           end
         end
-        define :type_b do
+        type :type_b do
           attr :c do
             default 1
           end
@@ -47,12 +47,12 @@ module JABA
       line = find_line_number(__FILE__, 'tagL')
       check_warn("When setting 'a.ref' array attribute stripping duplicate value ':b'. See previous at test_node_ref_attribute.rb:#{line}", __FILE__, 'tagM') do
         jaba(barebones: true) do
-          define :type_a do
+          type :type_a do
             attr_array :ref, type: :node_ref do
               node_type :type_b
             end
           end
-          define :type_b
+          type :type_b
           type_a :a do
             ref :b # tagL
             ref :b # tagM
@@ -67,12 +67,12 @@ module JABA
       # TODO: don't like this error message
       check_fail 'Node with handle \'undefined\' not found', line: [__FILE__, 'tagW'] do
         jaba(barebones: true) do
-          define :type_a do
+          type :type_a do
             attr :ref, type: :node_ref do
               node_type :type_b
             end
           end
-          define :type_b
+          type :type_b
           type_a :a do
             ref :undefined # tagW
           end
@@ -82,7 +82,7 @@ module JABA
 
     it 'resolves references to same type later' do
       jaba(barebones: true) do
-        define :type_a do
+        type :type_a do
           attr :ref, type: :node_ref do
             node_type :type_a
           end
@@ -115,7 +115,7 @@ module JABA
     it 'catches invalid reference to same type' do
       check_fail 'Node with handle \'undefined\' not found', line: [__FILE__, 'tagQ'] do
         jaba(barebones: true) do
-          define :a do
+          type :a do
             attr :b, type: :node_ref do
               node_type :a
             end
@@ -129,7 +129,7 @@ module JABA
 
     it 'works with a default' do
       jaba do
-        define :type_a do
+        type :type_a do
           attr :host, type: :node_ref do
             node_type :host
             default :vs2019
@@ -147,7 +147,7 @@ module JABA
     it 'imports exposed referenced attributes' do
       check_fail "'height' attribute not defined", line: [__FILE__, 'tagI'] do
         jaba(barebones: true) do
-          define :square do
+          type :square do
             attr :length do
               flags :expose
             end
@@ -157,7 +157,7 @@ module JABA
             length 1
             height 2
           end
-          define :has_square do
+          type :has_square do
             attr :square, type: :node_ref do
               node_type :square
             end
@@ -177,7 +177,7 @@ module JABA
     it 'treats references read only when imported' do
       check_fail "Cannot change referenced 'length' attribute", line: [__FILE__, 'tagF'] do
         jaba(barebones: true) do
-          define :line do
+          type :line do
             attr :length do
               flags :expose
             end
@@ -185,7 +185,7 @@ module JABA
           line :a do
             length 1
           end
-          define :has_line do
+          type :has_line do
             attr :line, type: :node_ref do
               node_type :line
             end
@@ -201,13 +201,13 @@ module JABA
     it 'treats references read only when caled through object' do
       check_fail "'a.length' attribute is read only", line: [__FILE__, 'tagD'] do
         jaba(barebones: true) do
-          define :line do
+          type :line do
             attr :length
           end
           line :a do
             length 1
           end
-          define :has_line do
+          type :has_line do
             attr :line, type: :node_ref do
               node_type :line
             end
@@ -223,7 +223,7 @@ module JABA
     it 'warns on unnecessary use of :read_only flag' do
       check_warn 'Object reference attribute does not need to be flagged with :read_only as they always are', __FILE__, 'tagX' do
         jaba do
-          define :test do
+          type :test do
             attr :platform, type: :node_ref do # tagX
               node_type :platform
               flags :read_only
@@ -240,15 +240,15 @@ module JABA
 
     it 'prevents nil access when building tree of nodes' do
       jaba do
-        define :testproj do
+        type :testproj do
           attr_array :platforms
-          define :platform do
+          type :platform do
             attr :platform, type: :node_ref do
               node_type :platform
             end
             attr_array :hosts
           end
-          define :main do
+          type :main do
             attr :host, type: :node_ref do
               node_type :host
             end

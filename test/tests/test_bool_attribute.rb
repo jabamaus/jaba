@@ -6,7 +6,7 @@ module JABA
 
     it 'defaults to false' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr :a, type: :bool
         end
         test :t do
@@ -18,7 +18,7 @@ module JABA
     it 'requires default to be true or false' do
       check_fail ':bool attributes only accept [true|false] but got \'1\'', line: [__FILE__, 'tagP'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :b, type: :bool do
               default 1 # tagP
             end
@@ -26,7 +26,7 @@ module JABA
         end
       end
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr :b, type: :bool do
             default true
           end
@@ -44,7 +44,7 @@ module JABA
     it 'only allows boolean values' do
       check_fail ':bool attributes only accept [true|false]', line: [__FILE__, 'tagW'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :c, type: :bool do
               default true
             end
@@ -55,7 +55,7 @@ module JABA
         end
       end
       jaba do
-        define :test do
+        type :test do
           attr :b, type: :bool do
             default true
           end
@@ -75,7 +75,7 @@ module JABA
     it 'works with :required flag' do
       check_fail "'t.a' attribute requires a value", line: [__FILE__, 'tagY'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a, type: :bool do
               flags :required
             end
@@ -106,7 +106,7 @@ module JABA
             default true
           end
         end
-        define :test
+        type :test
         test :t do
           globals.a1.must_equal true
           globals.a2.must_equal false

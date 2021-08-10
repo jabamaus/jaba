@@ -11,7 +11,7 @@ module JABA
       d_uuid = '{C1ACE80B-6A8A-501F-924C-652DE5E19B50}'
 
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr :a, type: :uuid do
             default 'a'
           end

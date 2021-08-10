@@ -34,12 +34,12 @@ module JABA
     end
     
     it 'detects duplicate ids with definitions of the same type' do
-      [:cpp, :defaults, :define, :shared, :text, :workspace].each do |type|
-        check_fail "':a' multiply defined. See #{__FILE__.basename}:#{find_line_number(__FILE__, 'tagX')}.", line: [__FILE__, 'tagI'] do
+      [:cpp, :defaults, :type, :shared, :text, :workspace].each do |item|
+        check_fail "'#{item}|:a' multiply defined. First definition at #{__FILE__.basename}:#{find_line_number(__FILE__, 'tagX')}.", line: [__FILE__, 'tagI'] do
           jaba do
-            __send__(type, :a) do # tagX
+            __send__(item, :a) do # tagX
             end
-            __send__(type, :a) do # tagI
+            __send__(item, :a) do # tagI
             end
           end
         end
@@ -61,7 +61,7 @@ module JABA
     
     it 'allows definition id to be accessed from all definitions' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           id.must_equal(:test)
           attr :b do
             id.must_equal(:b)
@@ -95,7 +95,7 @@ module JABA
           a :c do
             print '3;'
           end
-          define :a do
+          type :a do
             print 'a;'
           end
         end
@@ -112,7 +112,7 @@ module JABA
 
     it 'supports per-type defaults' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr :a
           attr_array :b do
             default [1]

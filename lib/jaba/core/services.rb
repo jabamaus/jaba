@@ -615,7 +615,7 @@ module JABA
       validate_id(id)
       existing = @jaba_type_defs.find{|d| d.id == id}
       if existing
-        JABA.error("Type '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc.describe}.")
+        JABA.error("'type|#{id.inspect_unquoted}' multiply defined. First definition at #{existing.src_loc.describe}.")
       end
       d = make_definition(id, block, caller_locations(2, 1)[0])
       if id == :globals
@@ -637,7 +637,7 @@ module JABA
 
       existing = get_shared_definition(id, fail_if_not_found: false)
       if existing
-        JABA.error("Shared definition '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc.describe}.")
+        JABA.error("'shared|#{id.inspect_unquoted}' multiply defined. First definition at #{existing.src_loc.describe}.")
       end
 
       @shared_def_lookup[id] = make_definition(id, block, caller_locations(2, 1)[0])
@@ -666,7 +666,7 @@ module JABA
 
       existing = get_instance_definition(type_id, id, fail_if_not_found: false)
       if existing
-        JABA.error("Type instance '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc.describe}.")
+        JABA.error("'#{type_id}|#{id.inspect_unquoted}' multiply defined. First definition at #{existing.src_loc.describe}.")
       end
       
       d = make_definition(id, block, caller_locations(2, 1)[0])
@@ -705,7 +705,7 @@ module JABA
       log "  Defining defaults [id=#{id}]"
       existing = @default_defs.find {|d| d.id == id}
       if existing
-        JABA.error("Defaults block '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc.describe}.")
+        JABA.error("'defaults|#{id.inspect_unquoted}' multiply defined. First definition at #{existing.src_loc.describe}.")
       end
       @default_defs << make_definition(id, block, caller_locations(2, 1)[0])
       nil
@@ -742,7 +742,7 @@ module JABA
       log "  Defining translator [id=#{id}]"
       existing = get_translator_definition(id, fail_if_not_found: false)
       if existing
-        JABA.error("Translator block '#{id.inspect_unquoted}' multiply defined. See #{existing.src_loc.describe}.")
+        JABA.error("'translator|#{id.inspect_unquoted}' multiply defined. First definition at #{existing.src_loc.describe}.")
       end
       @translator_defs << make_definition(id, block, caller_locations(2, 1)[0])
       nil
@@ -911,10 +911,10 @@ module JABA
     # down in this file). These calls will come from user definitions via the api files.
     #
     def execute_jdl(file: nil, str: nil, &block)
-      log "Executing #{file}" if file
       if str
         @top_level_api.instance_eval(str, file)
       elsif file
+        log "Executing #{file}"
         @top_level_api.instance_eval(file_manager.read(file), file)
       end
       if block_given?

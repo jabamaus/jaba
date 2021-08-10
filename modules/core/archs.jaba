@@ -1,6 +1,6 @@
 SUPPORTED_ARCHS = [:x86, :x86_64, :arm64].freeze
 
-define :arch do
+type :arch do
   
   title 'Target architecture type'
 

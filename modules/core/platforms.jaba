@@ -1,7 +1,7 @@
 # TODO: make this a global
 SUPPORTED_PLATFORMS = [:windows, :ios, :macos].freeze
 
-define :platform do
+type :platform do
 
   title 'Target platform type'
   note 'Manages attribute definitions required by platforms'

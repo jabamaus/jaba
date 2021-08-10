@@ -44,7 +44,7 @@ module JABA
     it 'reports lines correctly when using shared modules' do
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagH)}: 't.a' attribute invalid: :bool attributes only accept [true|false] but got 'invalid'.", trace: [__FILE__, :tagh] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a, type: :bool
           end
           shared :s do
@@ -60,7 +60,7 @@ module JABA
     it 'allows errors to be raised from definitions' do
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagW)}: Error msg." do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             fail "Error msg" # tagW
           end
         end

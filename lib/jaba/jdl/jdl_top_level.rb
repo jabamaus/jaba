@@ -61,7 +61,7 @@ module JABA
     ##
     # EXTENSION API
     #
-    def define(id, &block)
+    def type(id, &block)
       @services.define_type(id, &block)
     end
     

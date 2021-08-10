@@ -7,7 +7,7 @@ module JABA
     it 'allows inclusion of shared definitions in any object' do
       # check that all types support include directive
       #
-      [:text, :workspace, :category, :define].each do |type|
+      [:text, :workspace, :category, :type].each do |type|
         check_fail 'Included', line: [__FILE__, "fail 'Included'"], trace: [__FILE__, 'tagG'] do
           jaba do
             shared :a do
@@ -30,7 +30,7 @@ module JABA
             include :attr_setup
           end
         end
-        define :test do
+        type :test do
           include :attrs
         end
         test :t do
@@ -53,7 +53,7 @@ module JABA
         jaba(barebones: true) do
           shared :a do
           end
-          define :test
+          type :test
           test :c do
             include :b # tagT
           end
@@ -66,7 +66,7 @@ module JABA
         shared :a do |n1, s1, s2, s3, n2|
           c "#{s3}#{s1}#{n2}#{s2}#{n1}"
         end
-        define :test do
+        type :test do
           attr :c
         end
         1.upto(10) do |n|

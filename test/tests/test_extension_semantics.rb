@@ -6,7 +6,7 @@ module JABA
 
     it 'supports creating new node types' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr :a
         end
         test :t do
@@ -32,7 +32,7 @@ module JABA
       end
       # TODO: test opening sub types
       jaba do
-        define :test do
+        type :test do
           attr :a do
             default 1
           end
@@ -99,14 +99,14 @@ module JABA
     it 'supports dependencies between types' do
       assert_output 'def a;def b;def c;a;b;c;' do
         jaba(barebones: true) do
-          define :a do
+          type :a do
             print 'def a;'
           end
-          define :b do
+          type :b do
             print 'def b;'
             dependencies [:a]
           end
-          define :c do
+          type :c do
             dependencies [:b]
             print 'def c;'
           end
@@ -126,13 +126,13 @@ module JABA
     it 'checks for cyclic dependencies' do
       check_fail '\'a\' type contains a cyclic dependency', line: [__FILE__, 'tagF'] do
         jaba(barebones: true) do
-          define :a do # tagF
+          type :a do # tagF
             dependencies :c
           end
-          define :b do
+          type :b do
             dependencies :a
           end
-          define :c do
+          type :c do
             dependencies :b
           end
         end
@@ -142,7 +142,7 @@ module JABA
     it 'supports a generate hook per-definition' do
       assert_output 'generate' do
         jaba(barebones: true) do
-          define :test
+          type :test
           test :t do
             generate do
               print 'generate'
@@ -155,14 +155,14 @@ module JABA
     it 'can build a tree of nodes' do
       assert_output 'only called once' do
         jaba do
-          define :test_project do
+          type :test_project do
             attr :root do
               default '.'
             end
             attr_array :platforms do
               flags :no_sort, :required
             end
-            define :project do
+            type :project do
               attr :platform do
                 flags :read_only
               end
@@ -175,7 +175,7 @@ module JABA
               end
             end
               
-            define :config do
+            type :config do
               attr :config
               attr :configname
             end

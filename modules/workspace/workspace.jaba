@@ -1,4 +1,4 @@
-define :workspace do
+type :workspace do
 
   title 'Workspace of projects'
 

@@ -7,7 +7,7 @@ module JABA
     it 'warns if dir not clean' do
       check_warn "Directory 'a\\b' not specified cleanly: contains backslashes", __FILE__, 'tagA' do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a, type: :dir do
               basedir_spec :definition_root
             end

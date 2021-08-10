@@ -1,4 +1,4 @@
-define :text do
+type :text do
   
   title 'Basic text file that is written to HDD'
 

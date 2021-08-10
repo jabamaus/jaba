@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-define :cpp do
+type :cpp do
 
   title 'Cross platform C++ project definition'
 
@@ -9,7 +9,7 @@ define :cpp do
     flags :required
   end
   
-  define :project do
+  type :project do
 
     attr :root, type: :dir do
       title 'Root directory relative to which all other paths are specified'
@@ -197,7 +197,7 @@ define :cpp do
 
   # Sub-grouping of attributes that pertain to a build configuration
   #
-  define :config do
+  type :config do
 
     attr :arch, type: :symbol_or_string do
       title 'Target architecture as an id'

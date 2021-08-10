@@ -7,7 +7,7 @@ module JABA
     it 'validates default' do
       check_fail ':int attributes only accept integer values', line: [__FILE__, 'tagP'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a, type: :int do
               default 'not an int' # tagP
             end
@@ -19,7 +19,7 @@ module JABA
     it 'validates value' do
       check_fail ':int attributes only accept integer values', line: [__FILE__, 'tagW'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a, type: :int
           end
           test :t do
@@ -32,7 +32,7 @@ module JABA
     it 'fails if value not supplied when :required flag specified' do
       check_fail "'t.a' attribute requires a value", line: [__FILE__, 'tagY'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a, type: :bool do
               flags :required
             end
@@ -44,7 +44,7 @@ module JABA
 
     it 'supports standard ops' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr :a, type: :int
           attr :b, type: :int do
             default 1
@@ -99,7 +99,7 @@ module JABA
           attr :a3, type: :int
           attr :a4, type: :int
         end
-        define :test
+        type :test
         test :t do
           globals.a1.must_equal(1)
           globals.a2.must_equal(3433409)

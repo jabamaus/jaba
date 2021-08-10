@@ -7,13 +7,13 @@ module JABA
     it 'accepts a string or a symbol as id' do
       check_fail '\'123\' is an invalid id', line: [__FILE__, 'tagL'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr 123 # tagL
           end
         end
       end
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr 'attr1' do
             default 1
           end
@@ -30,7 +30,7 @@ module JABA
     
     it 'does not require a block to be supplied' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr :a
         end
         test :t do
@@ -43,7 +43,7 @@ module JABA
     it 'detects duplicate attribute ids' do
       check_fail "'a' attribute multiply defined", line: [__FILE__, 'tagQ'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a
             attr :a # tagQ
           end
@@ -54,7 +54,7 @@ module JABA
     it 'checks for invalid attribute types' do
       check_fail "'not_a_type' attribute type is undefined", line: [__FILE__, 'tagY'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a, type: :not_a_type # tagY
           end
         end
@@ -64,7 +64,7 @@ module JABA
     it 'checks for duplicate flags' do
       check_warn("Duplicate flag ':read_only' specified", __FILE__, 'tagH') do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a do
               flags :read_only, :read_only # tagH
             end
@@ -81,7 +81,7 @@ module JABA
     it 'checks for duplicate flag options' do
       check_warn("Duplicate flag option ':export' specified in 'a' attribute", __FILE__, 'tagD') do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a do
               flag_options :export, :export # tagD
             end
@@ -98,7 +98,7 @@ module JABA
     it 'checks for invalid flags' do
       check_fail(/':invalid' is an invalid flag. Valid flags: \[.*\]/, line: [__FILE__, 'tagE']) do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a do
               flags :invalid # tagE
             end
@@ -110,7 +110,7 @@ module JABA
     it 'enforces max title length' do
       check_fail "Title must be 100 characters or less but was 166", line: [__FILE__, 'tagF'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a do
               title 'This title exceeds the max attribute title length that Jaba allows. If titles were allowed to be this long it would look bad in command line help and reference manual' # tagF
             end
@@ -121,7 +121,7 @@ module JABA
 
     it 'supports supplying defaults in block form' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr :a do
             default '1'
           end
@@ -150,7 +150,7 @@ module JABA
     it 'fails if default block references an unset attribute that does not have a default block' do
       check_fail "Cannot read uninitialised 't.a' attribute - it might need a default value", line: [__FILE__, 'tagP'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a
             attr :b do
               default do
@@ -174,7 +174,7 @@ module JABA
     it 'fails if non-block default value trys to reference another attribute' do
       check_fail "'b.a' undefined. Are you setting default in terms of another attribute? If so block form must be used.", line: [__FILE__, 'tagZ'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a
               #default :b
             attr :b do
@@ -192,7 +192,7 @@ module JABA
     it 'supports specifying a validator' do
       assert_jaba_error "Error at #{src_loc(__FILE__, :tags)}: 't.a' attribute invalid: Val must not be 2.", trace: [__FILE__, :tagS] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a do
               validate do |val|
                 fail "Val must not be 2" if val == 2 # tags
@@ -210,7 +210,7 @@ module JABA
     it 'ensures flag options are symbols' do
       check_fail 'Flag options must be specified as symbols, eg :option', line: [__FILE__, 'tagJ'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a do
               flag_options 'a' # tagJ
             end
@@ -222,7 +222,7 @@ module JABA
     it 'ensures value options are symbols' do
       check_fail 'value_option id must be specified as a symbol, eg :option', line: [__FILE__, 'tagW'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr :a do
               value_option 'a' # tagW
             end
@@ -233,7 +233,7 @@ module JABA
 
     it 'supports specifying valid value options' do
       jaba(barebones: true) do
-        define :test do
+        type :test do
           attr_array :a do
             value_option :group
             value_option :condition
@@ -246,7 +246,7 @@ module JABA
       end
       check_fail "Invalid value option ':undefined'. Valid 'a' array attribute options: [:group, :condition]", line: [__FILE__, 'tagA'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_array :a do
               value_option :group
               value_option :condition
@@ -259,7 +259,7 @@ module JABA
       end
       check_fail "Invalid value option ':undefined' - no options defined in 'a' array attribute", line: [__FILE__, 'tagB'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_array :a
           end
           test :t do
@@ -272,7 +272,7 @@ module JABA
     it 'supports flagging value options as required' do
       check_fail "'group' option requires a value", line: [__FILE__, 'tagI'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_hash :a, key_type: :symbol do
               value_option :group, required: true
             end
@@ -287,7 +287,7 @@ module JABA
     it 'supports specifying a valid set of values for value option' do
       check_fail "In 't.a' hash attribute invalid value ':d' passed to ':group' option. Valid values: [:a, :b, :c]", line: [__FILE__, 'tagX'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_hash :a, key_type: :symbol do
               value_option :group, items: [:a, :b, :c]
             end
@@ -302,7 +302,7 @@ module JABA
     it 'supports specifying a valid set of values for required value option' do
       check_fail "'group' option requires a value. Valid values are [:a, :b, :c]", line: [__FILE__, 'tagO'] do
         jaba(barebones: true) do
-          define :test do
+          type :test do
             attr_hash :a, key_type: :symbol do
               value_option :group, required: true, items: [:a, :b, :c]
             end

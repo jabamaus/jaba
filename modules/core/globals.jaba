@@ -1,4 +1,4 @@
-define :globals do
+type :globals do
   title 'Global attribute definitions'
   singleton true
 

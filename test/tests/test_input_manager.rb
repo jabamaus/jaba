@@ -29,7 +29,7 @@ module JABA
     it 'supports commands' do
       assert_output 'cmd1' do
         jaba(barebones: true, argv: ['cmd1']) do
-          define :test_im
+          type :test_im
         end
       end
     end
@@ -52,7 +52,7 @@ module JABA
     it 'supports value options' do
       assert_output 'value' do
         jaba(barebones: true, argv: ['--value-opt', 'value']) do
-          define :test_im
+          type :test_im
         end
       end
       
@@ -60,12 +60,12 @@ module JABA
       #
       assert_output '--value' do
         jaba(barebones: true, argv: ['--value-opt', '--value']) do
-          define :test_im
+          type :test_im
         end
       end
       assert_raises JabaError  do
         jaba(barebones: true, argv: ['--value-opt']) do
-          define :test_im
+          type :test_im
         end
       end.message.must_equal("-v [--value-opt] expects a value")
       # TODO: check that only one value supplied
@@ -74,19 +74,19 @@ module JABA
     it 'supports array options' do
       assert_output '["e1", "e2", "e3"]' do
         jaba(barebones: true, argv: ['--array-opt', 'e1', 'e2', 'e3']) do
-          define :test_im
+          type :test_im
         end
       end
       # test that values can be anything, even something that looks like an option (unless it is actually an option)
       #
       assert_output '["--e1", "--e2", "--e3"]' do
         jaba(barebones: true, argv: ['--array-opt', '--e1', '--e2', '--e3']) do
-          define :test_im
+          type :test_im
         end
       end
       assert_raises JabaError do
         jaba(barebones: true, argv: ['--array-opt']) do
-          define :test_im
+          type :test_im
         end
       end.message.must_equal("-a [--array-opt] expects 1 or more values")
     end
@@ -97,7 +97,7 @@ module JABA
         open_type :globals do
           attr :bool, type: :bool
         end
-        define :test
+        type :test
         test :t do
           globals.bool.must_equal(true)
         end
@@ -128,7 +128,7 @@ module JABA
           attr_hash :hash1, key_type: :symbol, type: :string
           attr_hash :hash2, key_type: :string, type: :symbol
         end
-        define :test
+        type :test
         test :t do
           globals.bool1.must_equal(true)
           globals.bool2.must_equal(false)

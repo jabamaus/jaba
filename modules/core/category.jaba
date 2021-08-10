@@ -1,4 +1,4 @@
-define :category do
+type :category do
   
   title 'Project category type'
 
