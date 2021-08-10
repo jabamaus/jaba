@@ -66,6 +66,7 @@ module JABA
     ##
     #
     def process
+      return if @definitions.empty?
       services.log "Processing #{describe}", section: true
 
       @definitions.each do |d|
