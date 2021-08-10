@@ -56,6 +56,14 @@ module JABA
               end
             end
           end
+          proj_type = project_node.attrs.type
+          if proj_type == :app || proj_type == :console
+            services.execute_jdl do
+              workspace root_node.defn_id do
+                projects root_node.defn_id
+              end
+            end
+          end
         end
       end
       root_node
@@ -64,6 +72,13 @@ module JABA
     ##
     #
     def make_host_objects
+      services.execute_jdl do
+        workspace :all do
+          puts all_instance_ids(:cpp)
+          projects all_instance_ids(:cpp)
+        end
+      end
+      
       @project_nodes.sort!{|x, y| x.handle.casecmp(y.handle)}
       @project_nodes.sort_topological! do |n, &b|
         n.attrs.deps.each(&b)
