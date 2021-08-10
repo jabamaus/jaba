@@ -13,7 +13,3 @@ cpp :CodegenExample do
     msg '$(input.basename) -> $(output.basename)'
   end
 end
-
-workspace :all do
-  projects :CodegenExample
-end
