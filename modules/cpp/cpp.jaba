@@ -21,6 +21,12 @@ define :cpp do
       basedir_spec :jaba_file
     end
     
+    attr :type, type: :choice do
+      title 'Project type'
+      items [:app, :console, :lib, :dll]
+      flags :required
+    end
+    
     # Control flow attributes
     #
     attr :host, type: :symbol do
@@ -202,14 +208,6 @@ define :cpp do
     attr :arch_ref, type: :node_ref do
       title 'Target architecture as an object'
       node_type :arch
-    end
-
-    # Required attributes that the user must provide a value for.
-    #
-    attr :type, type: :choice do
-      title 'Project type'
-      items [:app, :console, :lib, :dll]
-      flags :required
     end
 
     # Control flow attributes
