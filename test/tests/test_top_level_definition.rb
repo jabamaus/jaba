@@ -142,6 +142,7 @@ module JABA
 
     it 'supports include statement' do
       # TODO
+      # TODO: test include by glob
     end
     
   end

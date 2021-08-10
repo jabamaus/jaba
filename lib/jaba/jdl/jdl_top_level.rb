@@ -5,10 +5,10 @@ module JABA
   class JDL_TopLevel < BasicObject
     
     ##
-    # Include another jdl file.
+    # Include another .jaba file or directory containing .jaba files.
     #
-    def include(filename)
-      @services.include_jdl_file(filename)
+    def include(path)
+      @services.include_jaba_path(path)
     end
 
     ##

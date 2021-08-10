@@ -913,12 +913,16 @@ module JABA
 
     ##
     #
-    def include_jdl_file(filename)
-      if !filename.absolute_path?
+    def include_jaba_path(path)
+      if !path.absolute_path?
         src_loc = caller_locations(2, 1)[0]
-        filename = "#{src_loc.absolute_path.dirname}/#{filename}"
+        path = "#{src_loc.absolute_path.dirname}/#{path}"
       end
-      @jdl_includes << filename
+      if path.wildcard?
+        @jdl_includes.concat(Dir.glob(path))
+      else
+        @jdl_includes << path
+      end
     end
 
     ##
@@ -1047,8 +1051,10 @@ module JABA
       f = f.cleanpath
 
       if @jdl_file_lookup.has_key?(f)
-        JABA.error("'#{f}' multiply included")
+        # Already included. Ignore.
+        return
       end
+      
       @jdl_file_lookup[f] = nil
       @jdl_files << f
 
