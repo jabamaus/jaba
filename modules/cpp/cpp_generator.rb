@@ -74,7 +74,6 @@ module JABA
     def make_host_objects
       services.execute_jdl do
         workspace :all do
-          puts all_instance_ids(:cpp)
           projects all_instance_ids(:cpp)
         end
       end
