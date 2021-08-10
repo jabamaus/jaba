@@ -52,8 +52,8 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\..\example_src\ExampleLib\include;..\..\..\example_src\ExampleDll\include;..\..\..\example_src\3rdParty\ThirdPartyLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WITH_EXAMPLE_LIB;WITH_EXAMPLE_DLL;WITH_THIRD_PARTY_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\02-basic_static_lib\include;..\..\..\03-basic_dynamic_lib\include;..\..\..\example_src\3rdParty\ThirdPartyLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WITH_THIRD_PARTY_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>..\..\build\lib\x86_64\Debug\BasicStaticLib.lib;..\..\build\lib\x86_64\Debug\BasicDynamicLib.lib;..\..\build\lib\x86_64\Debug\ThirdPartyLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -66,8 +66,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\..\example_src\ExampleLib\include;..\..\..\example_src\ExampleDll\include;..\..\..\example_src\3rdParty\ThirdPartyLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WITH_EXAMPLE_LIB;WITH_EXAMPLE_DLL;WITH_THIRD_PARTY_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\02-basic_static_lib\include;..\..\..\03-basic_dynamic_lib\include;..\..\..\example_src\3rdParty\ThirdPartyLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WITH_THIRD_PARTY_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>..\..\build\lib\x86_64\Release\BasicStaticLib.lib;..\..\build\lib\x86_64\Release\BasicDynamicLib.lib;..\..\build\lib\x86_64\Release\ThirdPartyLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -79,7 +79,7 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\example_src\ExampleApp\main.cpp" />
+    <ClCompile Include="..\..\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="BasicDynamicLib.vcxproj">

@@ -3,6 +3,6 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\example_src\ExampleApp\main.cpp" />
+    <ClCompile Include="..\..\main.cpp" />
   </ItemGroup>
 </Project>

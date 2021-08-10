@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="include\ExampleDll">
-      <UniqueIdentifier>{351BEDDA-866D-5D0F-8390-13E8BBCE5075}</UniqueIdentifier>
+    <Filter Include="include\BasicDynamicLib">
+      <UniqueIdentifier>{09400305-A43D-5E83-8321-537BCAD35707}</UniqueIdentifier>
     </Filter>
     <Filter Include="include">
       <UniqueIdentifier>{C57306A2-A788-597C-87C5-3BDD9FF4C5BA}</UniqueIdentifier>
@@ -12,10 +12,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\example_src\ExampleDll\include\ExampleDll\ExampleDll.h">
-      <Filter>include\ExampleDll</Filter>
+    <ClInclude Include="..\..\..\03-basic_dynamic_lib\include\BasicDynamicLib\BasicDynamicLib.h">
+      <Filter>include\BasicDynamicLib</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\..\example_src\ExampleDll\src\ExampleDll.cpp">
+    <ClCompile Include="..\..\..\03-basic_dynamic_lib\src\BasicDynamicLib.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

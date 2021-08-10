@@ -3,7 +3,6 @@ include '../03-basic_dynamic_lib'
 include '../example_src/3rdParty/ThirdPartyLib'
 
 cpp :AppWithDependencies do
-  root '../example_src/ExampleApp'
   type :console
   platforms [:windows_x86_64]
   configs [:Debug, :Release]

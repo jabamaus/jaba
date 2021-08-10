@@ -1,5 +1,4 @@
 cpp :AppWithCustomisedBuildTree do
-  root '../example_src/ExampleApp'
   type :console
   platforms [:windows_x86_64]
   configs [:Debug, :Release]
