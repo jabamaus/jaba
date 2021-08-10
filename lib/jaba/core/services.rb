@@ -130,6 +130,7 @@ module JABA
       @null_nodes = {}
       
       @in_attr_default_block = false
+      @processing_generators = false
 
       @top_level_api = JDL_TopLevel.new(self)
       @file_manager = FileManager.new(self)
@@ -297,6 +298,8 @@ module JABA
         sd.open_defs << d
       end
 
+      @processing_generators = true
+
       # Globals can be set via the command line so need to partition generators into those up to and
       # including the globals type and the rest, processing the command line in between.
       #
@@ -325,6 +328,8 @@ module JABA
       post_globals.each do |g|
         g.process
       end
+
+      @processing_generators = false
 
       # Output definition input data as a json file, before generation. This is raw data as generated from the definitions.
       # Can be used for debugging and testing.
@@ -673,7 +678,17 @@ module JABA
       d.jaba_type_id = type_id
 
       @instance_def_lookup.push_value(type_id, d)
-      @instance_defs << d
+
+      # Generators are allowed to create more instances while they are being processed. eg the cpp generator
+      # automatically creates workspaces. If generators are already being processed create the instance
+      # immediately, otherwise save for later (as jaba types will not have been created yet).
+      #
+      if @processing_generators
+        jt = get_top_level_jaba_type(d.jaba_type_id, errobj: d)
+        jt.generator.register_instance_definition(d)
+      else
+        @instance_defs << d
+      end
       nil
     end
     
