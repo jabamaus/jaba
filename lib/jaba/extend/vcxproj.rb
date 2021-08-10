@@ -113,7 +113,9 @@ module JABA
         if !method.nil?
           repl = repl.send(method)
         end
-        str.gsub!(full_var, repl)
+        # Important to use block form of gsub to disable backreferencing
+        #
+        str.gsub!(full_var){ repl }
       end
       str
     end
