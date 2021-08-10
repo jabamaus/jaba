@@ -2,13 +2,13 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="include\ExampleLib">
-      <UniqueIdentifier>{05823CAA-45FE-5489-A6B7-45A287FF46FF}</UniqueIdentifier>
+      <UniqueIdentifier>{21A0124D-70ED-552A-8B69-58E8636E1FB8}</UniqueIdentifier>
     </Filter>
     <Filter Include="include">
-      <UniqueIdentifier>{58E7A06E-9095-5C42-A895-F75CF198CF9D}</UniqueIdentifier>
+      <UniqueIdentifier>{8D8D8CE4-672D-5240-BA09-0FA3C8BE95AD}</UniqueIdentifier>
     </Filter>
     <Filter Include="src">
-      <UniqueIdentifier>{9658037B-6FE1-5010-A881-8EAF754C3EEA}</UniqueIdentifier>
+      <UniqueIdentifier>{193121B0-7A71-5DC3-A2F2-223A9EC6468C}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

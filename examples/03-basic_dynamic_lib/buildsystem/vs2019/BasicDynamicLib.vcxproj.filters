@@ -2,13 +2,13 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="include\ExampleDll">
-      <UniqueIdentifier>{85F239DA-4615-53AF-907D-78334BFF3C4B}</UniqueIdentifier>
+      <UniqueIdentifier>{351BEDDA-866D-5D0F-8390-13E8BBCE5075}</UniqueIdentifier>
     </Filter>
     <Filter Include="include">
-      <UniqueIdentifier>{0FD8CED6-94F6-50E7-9CF3-59CB793F44AA}</UniqueIdentifier>
+      <UniqueIdentifier>{C57306A2-A788-597C-87C5-3BDD9FF4C5BA}</UniqueIdentifier>
     </Filter>
     <Filter Include="src">
-      <UniqueIdentifier>{4ACAB708-28F9-5099-9AA3-58478B98D702}</UniqueIdentifier>
+      <UniqueIdentifier>{C4260EC3-02FE-56B5-8EDC-41257B8ECC9D}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

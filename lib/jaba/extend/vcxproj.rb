@@ -352,8 +352,9 @@ module JABA
         filters.each_key do |f|
           w << "    <Filter Include=\"#{f}\">"
           # According to Visual Studio docs UniqueIdentifier allows automation interfaces to find the filter.
+          # Seed the GUID from project file basename rather than absolute path as that could change
           #
-          w << "      <UniqueIdentifier>#{JABA.generate_guid(namespace: @vcxproj_file, name: f)}</UniqueIdentifier>"
+          w << "      <UniqueIdentifier>#{JABA.generate_guid(namespace: @vcxproj_file.basename, name: f)}</UniqueIdentifier>"
           w << "    </Filter>"
         end
       end
