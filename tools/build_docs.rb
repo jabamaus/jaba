@@ -48,12 +48,12 @@ class DocBuilder
       c.dry_run
       c.src_root = c.build_root = doc_temp
     end
-    services = op[:services]
+    @services = op[:services]
 
-    @file_manager = services.file_manager
-    @top_level_jaba_types = services.instance_variable_get(:@top_level_jaba_types)
-    @jaba_attr_types = services.jaba_attr_types
-    @jaba_attr_flags = services.instance_variable_get(:@jaba_attr_flags)
+    @file_manager = @services.file_manager
+    @top_level_jaba_types = @services.instance_variable_get(:@top_level_jaba_types)
+    @jaba_attr_types = @services.jaba_attr_types
+    @jaba_attr_flags = @services.instance_variable_get(:@jaba_attr_flags)
 
     Dir.glob("#{DOCS_HANDWRITTEN_DIR}/*.md").each do |md|
       FileUtils.copy_file(md, "#{DOCS_MARKDOWN_DIR}/#{md.basename}")
@@ -148,11 +148,11 @@ class DocBuilder
       end
       w << ""
       jt.all_attr_defs_sorted.each do |ad|
-        w << "<a id=\"#{ad.defn_id}\"></a>" # anchor for the attribute eg cpp-src
+        w << "<a id=\"#{ad.defn_id}\"></a>" # anchor for the attribute eg 'src_ext'
         w << "#### #{ad.defn_id}"
         w << "> _#{ad.title}_"
         w << "> "
-        w << "> #{ad.notes.make_sentence.to_markdown_links}" if !ad.notes.empty?
+        w << "> #{ad.notes.make_sentence.to_markdown_links(@services)}" if !ad.notes.empty?
         w << "> "
         w << "> | Property | Value  |"
         w << "> |-|-|"
@@ -324,11 +324,19 @@ end
 class String
 
   # Convert all variables specified as $(cpp#varname) (which themselves reference attribute names) into markdown links
-  # eg [$(cpp#varname)](#cpp-varname).
+  # eg [$(cpp#varname)](#jaba_type_cpp.html#varname).
   #
-  def to_markdown_links
+  def to_markdown_links(services)
     gsub(/(\$\((.*?)\))/) do
-      "[#{$1}](##{$2.sub('#', '-')})"
+      mdl = "[#{$1}]"
+      attr_ref = $2
+      mdl << if attr_ref =~ /^(.*?)#(.*)/
+        type = services.get_top_level_jaba_type($1.to_sym)
+        "(#{type.reference_manual_page}##{$2})"
+      else
+        "(##{attr_ref})"
+      end
+      mdl
     end
   end
 
