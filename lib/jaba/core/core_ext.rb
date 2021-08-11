@@ -445,8 +445,8 @@ module JABACoreExt
     # Joins array elements (paths) into a separted string with all the necessary quoting applied and
     # convert to backslashes. Returns nil if array is empty, unless forced.
     #
-    def vs_join_paths(**args)
-      map(&:vs_quote!).vs_join(**args)&.to_backslashes!
+    def vs_join_paths(...)
+      map(&:vs_quote!).vs_join(...)&.to_backslashes!
     end
 
   end
