@@ -1,0 +1,11 @@
+# This example demonstrates easily creating multiple similar apps
+
+glob('examples/*') do |e| # eg examples/example1.cpp
+  id = e.basename_no_ext # eg example1  
+  cpp id do
+    type :console
+    platforms [:windows_x86_64]
+    configs [:Debug, :Release]
+    src e
+  end
+end

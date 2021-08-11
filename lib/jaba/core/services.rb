@@ -811,6 +811,19 @@ module JABA
     end
 
     ##
+    # Called from JDL API.
+    #
+    def glob(spec, &block)
+      jaba_file_dir = caller_locations(2, 1)[0].absolute_path.dirname
+      if !spec.absolute_path?
+        spec = "#{jaba_file_dir}/#{spec}"
+      end
+      files = @file_manager.glob(spec)
+      files = files.map{|f| f.relative_path_from(jaba_file_dir)}
+      files.each(&block)
+    end
+
+    ##
     #
     def get_generator(top_level_type_id)
       g = @generators.find {|g| g.type_id == top_level_type_id}

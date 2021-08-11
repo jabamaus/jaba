@@ -52,6 +52,18 @@ module JABA
     end
     
     ##
+    #
+    def glob(pattern, &block)
+      @services.glob(pattern, &block)
+    end
+
+    ##
+    #
+    def puts(msg)
+      ::Kernel.puts(msg)
+    end
+
+    ##
     # All undefined methods are treated as defining instances of jaba types.
     #
     def method_missing(type_id, id, &block)
