@@ -310,11 +310,12 @@ module JABA
 
   ##
   #
-  class FSM
+  class FSM < OpenStruct
     
     ##
     #
     def initialize
+      super
       @states = []
       @on_run = nil
       if block_given?
@@ -336,15 +337,6 @@ module JABA
       end
       s.on_init(...) if s.respond_to?(:on_init)
       @states << s
-    end
-
-    ##
-    #
-    def set_var(var, val)
-      instance_variable_set("@#{var}", val)
-      define_singleton_method var do
-        val
-      end
     end
 
     ##

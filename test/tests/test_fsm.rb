@@ -59,7 +59,7 @@ module JABA
     end
   end
 
-  class TestFSM < JabaTest
+  class TestFsm < JabaTest
 
     it 'starts in first state' do
       assert_output 'a:on_init(1)|b:on_init|a:on_enter|a:on_exit|' do
@@ -99,8 +99,8 @@ module JABA
       assert_output 'e:on_enter|var1=1|var2=[1, 2]|' do
         FSM.new do |fsm|
           fsm.add_state(StateE)
-          fsm.set_var(:var1, 1)
-          fsm.set_var(:var2, [1, 2])
+          fsm.var1 = 1
+          fsm.var2 = [1, 2]
         end
       end
     end

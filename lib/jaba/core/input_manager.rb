@@ -171,15 +171,15 @@ module JABA
         fsm.add_state(ArrayState)
         fsm.add_state(GlobalAttrState)
 
-        fsm.set_var(:argv, input.argv)
-        fsm.set_var(:input_manager, self)
-        fsm.set_var(:input, @input)
-        fsm.set_var(:default_cmd, @default_cmd)
-        fsm.set_var(:unknown, unknown)
+        fsm.argv = input.argv
+        fsm.input_manager = self
+        fsm.input = @input
+        fsm.default_cmd = @default_cmd
+        fsm.unknown = unknown
 
         fsm.on_run do
-          while !@argv.empty?
-            arg = @argv.shift
+          while !argv.empty?
+            arg = argv.shift
             send_event(:process_arg, arg)
           end
         end
