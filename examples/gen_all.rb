@@ -1,6 +1,6 @@
 def iterate_examples
   Dir.chdir(__dir__) do
-    Dir.glob('*').select{|d| File.directory?(d) && d =~ /^[\d]+-/}.each do |dir|
+    Dir.glob('*-*').each do |dir|
       yield dir, "#{__dir__}/#{dir}"
     end
   end
