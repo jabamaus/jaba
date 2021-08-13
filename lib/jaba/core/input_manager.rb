@@ -153,6 +153,28 @@ module JABA
         @passthru_args.concat(@input.argv.slice!(i, @input.argv.size - 1))
         @passthru_args.shift
       end
+
+      @fsm = FSM.new
+      @fsm.add_state(WantCmdState)
+      @fsm.add_state(WantOptionState)
+      @fsm.add_state(UnknownOptionState)
+      @fsm.add_state(ValueState)
+      @fsm.add_state(ArrayState)
+      @fsm.add_state(GlobalAttrState)
+
+      @fsm.argv = input.argv
+      @fsm.input_manager = self
+      @fsm.input = @input
+      @fsm.default_cmd = @default_cmd
+      @fsm.unknown = []
+
+      @fsm.on_run do
+        while !argv.empty?
+          arg = argv.shift
+          send_event(:process_arg, arg)
+        end
+      end
+
       process_cmd_line
     end
 
@@ -161,30 +183,10 @@ module JABA
     #
     def process_cmd_line
       return if input.argv.empty?
-      unknown = []
       
-      FSM.new do |fsm|
-        fsm.add_state(WantCmdState)
-        fsm.add_state(WantOptionState)
-        fsm.add_state(UnknownOptionState)
-        fsm.add_state(ValueState)
-        fsm.add_state(ArrayState)
-        fsm.add_state(GlobalAttrState)
-
-        fsm.argv = input.argv
-        fsm.input_manager = self
-        fsm.input = @input
-        fsm.default_cmd = @default_cmd
-        fsm.unknown = unknown
-
-        fsm.on_run do
-          while !argv.empty?
-            arg = argv.shift
-            send_event(:process_arg, arg)
-          end
-        end
-      end
-      input.argv = unknown
+      @fsm.run
+      input.argv.replace(@fsm.unknown)
+      @fsm.unknown.clear
     end
 
     ##
