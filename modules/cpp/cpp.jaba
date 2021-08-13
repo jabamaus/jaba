@@ -193,6 +193,10 @@ type :cpp do
       end
     end
 
+    attr :workspace, type: :bool do
+      title 'Generate a workspace for app and dependencies'
+      default false
+    end
   end
 
   # Sub-grouping of attributes that pertain to a build configuration

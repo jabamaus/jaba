@@ -56,8 +56,7 @@ module JABA
               end
             end
           end
-          proj_type = project_node.attrs.type
-          if proj_type == :app || proj_type == :console
+          if project_node.attrs.workspace
             services.execute_jdl do
               workspace root_node.defn_id do
                 projects root_node.defn_id
