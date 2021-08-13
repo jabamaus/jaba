@@ -378,16 +378,19 @@ module JABA
         input.src_root = cached_src_root
       end
 
-      if input.src_root.nil?
-        input.src_root = @invoking_dir
+      input.src_root = if input.src_root.nil?
+        @invoking_dir if !JABA.running_tests?
+      else
+        input.src_root.to_absolute(base: @invoking_dir, clean: true)
       end
 
-      input.src_root = input.src_root.to_absolute(base: @invoking_dir, clean: true)
-      if !File.exist?(input.src_root)
-        JABA.error("source root '#{input.src_root}' does not exist", want_backtrace: false)
-      end
+      if input.src_root
+        if !File.exist?(input.src_root)
+          JABA.error("source root '#{input.src_root}' does not exist", want_backtrace: false)
+        end
 
-      IO.write(src_root_cache, "src_root=#{input.src_root}")
+        IO.write(src_root_cache, "src_root=#{input.src_root}")
+      end
   
       log "src_root=#{input.src_root}"
       log "build_root=#{input.build_root}"
@@ -999,7 +1002,9 @@ module JABA
         process_jaba_file(@config_file)
       end
 
-      process_load_path(input.src_root, fail_if_empty: true)
+      if input.src_root
+        process_load_path(input.src_root, fail_if_empty: true)
+      end
 
       # Definitions can also be provided in a block form
       #

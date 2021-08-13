@@ -15,8 +15,6 @@ module JABA
     if File.exist?(JabaTest.temp_root)
       FileUtils.remove_dir(JabaTest.temp_root)
     end
-    FileUtils.makedirs(JabaTest.dummy_src_root.dirname)
-    IO.write(JabaTest.dummy_src_root, "")
     @@running_tests = true
     args_index = ARGV.index('--')
     argv = args_index.nil? ? [] : ARGV[args_index+1..-1]
@@ -41,7 +39,7 @@ module JABA
       td = temp_dir(create: false)
       build_root = build_root || td
       op = JABA.run(want_exceptions: want_exceptions) do |c|
-        c.src_root = src_root || JabaTest.dummy_src_root
+        c.src_root = src_root # Most unit tests don't have a src_root as everything is defined inline in code
         c.build_root = build_root
         c.argv = Array(argv) if argv
         c.definitions(&block) if block_given?
@@ -79,12 +77,6 @@ module JABA
       "#{__dir__}/tests/temp"
     end
     
-    ##
-    #
-    def self.dummy_src_root
-      "#{JabaTest.temp_root}/dummy_src_root/dummy.jaba"
-    end
-
     ##
     #
     def temp_dir(create: true)
