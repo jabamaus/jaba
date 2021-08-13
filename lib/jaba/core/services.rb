@@ -885,7 +885,10 @@ module JABA
 
       @generated = @file_manager.generated.map{|f| f.relative_path_from(out_dir)}
 
-      @output[:version] = '1.0'
+      @output[:jaba_version] = VERSION
+      @output[:format_version] = 1
+      @output[:src_root] = input.src_root
+      @output[:build_root] = input.build_root
       @output[:generated] = @generated
 
       @generators.each do |g|
