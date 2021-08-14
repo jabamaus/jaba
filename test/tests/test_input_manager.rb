@@ -10,8 +10,13 @@ module JABA
       register_cmdline_option('--value-opt', short: '-v', help: 'value opt', var: :value_opt, type: :value)
       register_cmdline_option('--array-opt', short: '-a', help: 'array opt', var: :array_opt, type: :array)
 
-      register_cmdline_cmd(:cmd1, help: 'cmd1 help')
-      register_cmdline_cmd(:cmd2, help: 'cmd2 help')
+      register_cmdline_cmd(:cmd1, help: 'cmd1 help') do |c|
+        c.add_option('--cmd1-opt', help: 'cmd1 opt', var: :value_opt, type: :value)
+      end
+
+      register_cmdline_cmd(:cmd2, help: 'cmd2 help') do |c|
+        c.add_option('--cmd2-opt', help: 'cmd2 opt', var: :value_opt, type: :value)
+      end
     end
 
     def generate
@@ -20,6 +25,9 @@ module JABA
       print i.array_opt if !i.array_opt.empty?
       if services.input_manager.cmd_specified?(:cmd1)
         print 'cmd1'
+      end
+      if services.input_manager.cmd_specified?(:cmd2)
+        print 'cmd2'
       end
     end
   end
@@ -32,6 +40,18 @@ module JABA
           type :test_im
         end
       end
+      assert_output 'cmd2' do
+        jaba(barebones: true, argv: ['cmd2']) do
+          type :test_im
+        end
+      end
+=begin
+      assert_jaba_error "cmd1 does not support --cmd2-opt option" do
+        jaba(barebones: true, argv: ['cmd1', '--cmd2-opt']) do
+          type :test_im
+        end
+      end
+=end
     end
 
     # TODO: should duplicate array options be allowed?

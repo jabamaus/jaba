@@ -82,7 +82,6 @@ module JABA
       @input.instance_variable_set(:@build_root, nil)
       @input.instance_variable_set(:@src_root, nil)
       @input.instance_variable_set(:@definitions, [])
-      @input.instance_variable_set(:@cmd, nil)
       @input.instance_variable_set(:@global_attrs, {})
 
       @output = {}

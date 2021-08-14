@@ -8,59 +8,25 @@ module JABA
 
   ##
   #
-  class InputManager
+  class Cmd
 
-    attr_reader :input
+    attr_reader :id
+    attr_reader :help
+    attr_reader :dev_only
+    attr_reader :options
 
-    ##
-    #
-    def initialize(services)
-      @services = services
-      @input = services.input
-      @passthru_args = []
+    def initialize(input, id, help, dev_only, &block)
+      @input = input
+      @id = id
+      @help = help
+      @dev_only = dev_only
       @options = []
-      @cmds = []
-
-      argv  = JABA.running_tests? ? [] : ARGV.dup
-      @input.instance_variable_set(:@argv, argv)
-
-      # General non-cmd-specific options
-      #
-      register_option('--help', help: 'Show help', type: :flag, var: :show_help)
-      register_option('--dry-run', help: 'Perform a dry run', type: :flag, var: :dry_run)
-      register_option('--profile', help: 'Profiles with ruby-prof gem', type: :flag, var: :profile, dev_only: true)
-      register_option('--barebones', help: 'Loads minimal modules', type: :flag, var: :barebones, dev_only: true)
-
-      @default_cmd = register_cmd(:gen, help: 'Regenerate buildsystem')
-      register_option('--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root, cmd: :gen)
-      register_option('--build-root', short: '-B', help: 'Set build root', type: :value, var: :build_root, cmd: :gen)
-      register_option('--define', short: '-D', help: 'Set global attribute value', cmd: :gen)
-      register_option('--dump-state', help: 'Dump state to json for debugging', type: :flag, var: :dump_state, cmd: :gen)
-      
-      register_cmd(:build, help: 'Execute build')
-      register_cmd(:clean, help: 'Clean build')
-      register_cmd(:help, help: 'Open jaba web help')
+      yield self if block_given?
     end
 
     ##
     #
-    def register_cmd(id, help:, dev_only: false)
-      JABA.error("cmd id must be a symbol") if !id.symbol?
-      if id !~ /^[a-zA-Z0-9\-]+$/
-        JABA.error("Invalid cmd id '#{id}' specified. Can only contain [a-zA-Z0-9-]")
-      end
-      c = OpenStruct.new
-      c.id = id
-      c.help = help
-      c.options = []
-      c.dev_only = dev_only
-      @cmds << c
-      c
-    end
-
-    ##
-    #
-    def register_option(long, short: nil, help:, type: nil, var: nil, dev_only: false, cmd: nil)
+    def add_option(long, short: nil, help:, type: nil, var: nil, dev_only: false)
       if long !~ /^--[a-zA-Z0-9\-]+$/
         JABA.error("Invalid long option format '#{long}' specified. Must be of form --my-long-option")
       end
@@ -75,13 +41,7 @@ module JABA
       o.type = type
       o.inst_var = var ? "@#{var}" : nil
       o.dev_only = dev_only
-      o.cmd = cmd
       o.describe = short ? "#{short} [#{long}]" : long
-      
-      if cmd
-        c = get_cmd(cmd, fail_if_not_found: true)
-        c.options << o
-      end
 
       @options << o
 
@@ -108,9 +68,83 @@ module JABA
 
     ##
     #
+    def get_option(arg)
+      @options.find do |o|
+        arg == o.long || arg == o.short
+      end
+    end
+
+    ##
+    #
+    def option_defined?(arg)
+      get_option(arg) != nil
+    end
+
+  end
+
+  ##
+  #
+  class InputManager
+
+    attr_reader :input
+    attr_reader :cmd
+
+    ##
+    #
+    def initialize(services)
+      @services = services
+      @input = services.input
+      @passthru_args = []
+      @cmds = []
+      @cmd = nil
+
+      argv  = JABA.running_tests? ? [] : ARGV.dup
+      @input.instance_variable_set(:@argv, argv)
+
+      # General non-cmd-specific options
+      #
+      @null_cmd = register_cmd(:null, help: '') do |c|
+        c.add_option('--help', help: 'Show help', type: :flag, var: :show_help)
+        c.add_option('--dry-run', help: 'Perform a dry run', type: :flag, var: :dry_run)
+        c.add_option('--profile', help: 'Profiles with ruby-prof gem', type: :flag, var: :profile, dev_only: true)
+        c.add_option('--barebones', help: 'Loads minimal modules', type: :flag, var: :barebones, dev_only: true)
+      end
+
+      @default_cmd = register_cmd(:gen, help: 'Regenerate buildsystem') do |c|
+        c.add_option('--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root)
+        c.add_option('--build-root', short: '-B', help: 'Set build root', type: :value, var: :build_root)
+        c.add_option('--define', short: '-D', help: 'Set global attribute value')
+        c.add_option('--dump-state', help: 'Dump state to json for debugging', type: :flag, var: :dump_state)
+      end
+      
+      register_cmd(:build, help: 'Execute build')
+      register_cmd(:clean, help: 'Clean build')
+      register_cmd(:help, help: 'Open jaba web help')
+    end
+
+    ##
+    #
+    def register_cmd(id, help:, dev_only: false, &block)
+      JABA.error("cmd id must be a symbol") if !id.symbol?
+      if id !~ /^[a-zA-Z0-9\-]+$/
+        JABA.error("Invalid cmd id '#{id}' specified. Can only contain [a-zA-Z0-9-]")
+      end
+      c = Cmd.new(@input, id, help, dev_only, &block)
+      @cmds << c
+      c
+    end
+
+    ##
+    #
+    def register_option(...)
+      @null_cmd.add_option(...)
+    end
+
+    ##
+    #
     def cmd_specified?(id)
       get_cmd(id, fail_if_not_found: true) # Validate cmd exists
-      input.instance_variable_get(:@cmd) == id
+      @cmd&.id == id
     end
 
     ##
@@ -125,16 +159,14 @@ module JABA
 
     ##
     #
-    def get_option(arg)
-      @options.find do |o|
-        arg == o.long || arg == o.short
-      end
+    def get_option(id)
+      @null_cmd.get_option(id) || @cmd&.get_option(id)
     end
 
     ##
     #
-    def option_defined?(arg)
-      get_option(arg) != nil
+    def option_defined?(id)
+      @null_cmd.option_defined?(id) || @cmd&.option_defined?(id)
     end
 
     ##
@@ -166,7 +198,7 @@ module JABA
       @fsm.input_manager = self
       @fsm.input = @input
       @fsm.default_cmd = @default_cmd
-      @fsm.unknown = []
+      @fsm.unknown_argv = []
 
       @fsm.on_run do
         while !argv.empty?
@@ -185,8 +217,8 @@ module JABA
       return if input.argv.empty?
       
       @fsm.run
-      input.argv.replace(@fsm.unknown)
-      @fsm.unknown.clear
+      input.argv.replace(@fsm.unknown_argv)
+      @fsm.unknown_argv.clear
     end
 
     ##
@@ -228,7 +260,7 @@ module JABA
 
       w << "General options:"
       w << ""
-      print_cmd_help(nil, w)
+      print_cmd_help(@null_cmd, w)
 
       w << ""
 
@@ -244,7 +276,7 @@ module JABA
       help_items = []
       option_indent = 4
 
-      if cmd
+      if cmd != @null_cmd
         opts.concat(cmd.options.select{|o| !o.dev_only})
         cmd_str = "  #{cmd.id}"
         if cmd == @default_cmd
@@ -253,7 +285,7 @@ module JABA
         items << cmd_str
         help_items << cmd
       else
-        opts.concat(@options.select{|o| !o.cmd && !o.dev_only && o.long != '--help'})
+        opts.concat(cmd.options.select{|o| !o.dev_only && o.long != '--help'})
         option_indent = 2
       end
       
@@ -280,7 +312,7 @@ module JABA
         fsm.input_manager.get_cmd(arg.to_sym, fail_if_not_found: false)
       end
       if cmd
-        fsm.input.instance_variable_set(:@cmd, cmd.id)
+        fsm.input_manager.instance_variable_set(:@cmd, cmd)
         goto WantOptionState
       else
         goto UnknownOptionState, arg
@@ -313,14 +345,14 @@ module JABA
   
   class UnknownOptionState
     def on_enter(arg)
-      fsm.unknown << arg
+      fsm.unknown_argv << arg
     end
     def on_process_arg(arg)
       if fsm.input_manager.option_defined?(arg)
         fsm.argv.unshift(arg)
         goto WantOptionState
       else
-        fsm.unknown << arg
+        fsm.unknown_argv << arg
       end
     end
   end
