@@ -232,77 +232,6 @@ module JABA
       end
     end
 
-    ##
-    #
-    def show_help
-      @max_width = 120
-      w = StringWriter.new
-      w << "Jaba build system generator v#{VERSION}"
-      w << "Copyright (C) 2020-#{Time.now.year} James French"
-      w << "Built on ruby #{RUBY_VERSION}p#{RUBY_PATCHLEVEL} #{RUBY_RELEASE_DATE} [#{RUBY_PLATFORM}] #{RUBY_COPYRIGHT.sub('ruby', '')}"
-      w << ""
-      if @services.src_root_valid?
-        w << "Current src_root: #{@input.src_root}"
-        w << ""
-      end
-      w << "Usage:"
-      w << ""
-      w << "  jaba cmd [options]"
-      w << ""
-      w << "Commands:"
-      w << ""
-      
-      @cmds.each do |c|
-        next if c.dev_only
-        print_cmd_help(c, w)
-        w << ""
-      end
-
-      w << "General options:"
-      w << ""
-      print_cmd_help(@null_cmd, w)
-
-      w << ""
-
-      puts w
-      exit!
-    end
-
-    ##
-    #
-    def print_cmd_help(cmd, w)
-      opts = []
-      items = []
-      help_items = []
-      option_indent = 4
-
-      if cmd != @null_cmd
-        opts.concat(cmd.options.select{|o| !o.dev_only})
-        cmd_str = "  #{cmd.id}"
-        if cmd == @default_cmd
-          cmd_str << ' (default)'
-        end
-        items << cmd_str
-        help_items << cmd
-      else
-        opts.concat(cmd.options.select{|o| !o.dev_only && o.long != '--help'})
-        option_indent = 2
-      end
-      
-      items.concat(opts.map{|o| "#{' ' * option_indent}#{o.describe}"})
-      help_items.concat(opts)
-
-      max_len = items.map{|i| i.length}.max
-      help_start = max_len + 2
-
-      items.each_with_index do |i, index|
-        hi = help_items[index]
-        w << "#{i}#{' ' * (max_len - i.size)}  #{hi.help.wrap(@max_width, prefix: (' ' * help_start), trim_leading_prefix: true)}"
-      end
-    end
-
-  end
-
   class WantCmdState
     def on_process_arg(arg)
       cmd = if arg.start_with?('-')
@@ -431,6 +360,78 @@ module JABA
         end
       end
     end
+
+        ##
+    #
+    def show_help
+      @max_width = 120
+      w = StringWriter.new
+      w << "Jaba build system generator v#{VERSION}"
+      w << "Copyright (C) 2020-#{Time.now.year} James French"
+      w << "Built on ruby #{RUBY_VERSION}p#{RUBY_PATCHLEVEL} #{RUBY_RELEASE_DATE} [#{RUBY_PLATFORM}] #{RUBY_COPYRIGHT.sub('ruby', '')}"
+      w << ""
+      if @services.src_root_valid?
+        w << "Current src_root: #{@input.src_root}"
+        w << ""
+      end
+      w << "Usage:"
+      w << ""
+      w << "  jaba cmd [options]"
+      w << ""
+      w << "Commands:"
+      w << ""
+      
+      @cmds.each do |c|
+        next if c.dev_only
+        print_cmd_help(c, w)
+        w << ""
+      end
+
+      w << "General options:"
+      w << ""
+      print_cmd_help(@null_cmd, w)
+
+      w << ""
+
+      puts w
+      exit!
+    end
+
+    ##
+    #
+    def print_cmd_help(cmd, w)
+      opts = []
+      items = []
+      help_items = []
+      option_indent = 4
+
+      if cmd != @null_cmd
+        opts.concat(cmd.options.select{|o| !o.dev_only})
+        cmd_str = "  #{cmd.id}"
+        if cmd == @default_cmd
+          cmd_str << ' (default)'
+        end
+        items << cmd_str
+        help_items << cmd
+      else
+        opts.concat(cmd.options.select{|o| !o.dev_only && o.long != '--help'})
+        option_indent = 2
+      end
+      
+      items.concat(opts.map{|o| "#{' ' * option_indent}#{o.describe}"})
+      help_items.concat(opts)
+
+      max_len = items.map{|i| i.length}.max
+      help_start = max_len + 2
+
+      items.each_with_index do |i, index|
+        hi = help_items[index]
+        w << "#{i}#{' ' * (max_len - i.size)}  #{hi.help.wrap(@max_width, prefix: (' ' * help_start), trim_leading_prefix: true)}"
+      end
+    end
+
+  end
+
   end
 
 end
