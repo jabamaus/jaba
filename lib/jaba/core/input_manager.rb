@@ -110,7 +110,7 @@ module JABA
         c.add_option('--barebones', help: 'Loads minimal modules', type: :flag, var: :barebones, dev_only: true)
       end
 
-      @default_cmd = register_cmd(:gen, help: 'Regenerate buildsystem') do |c|
+      @cmd = register_cmd(:gen, help: 'Regenerate buildsystem') do |c|
         c.add_option('--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root)
         c.add_option('--build-root', short: '-B', help: 'Set build root', type: :value, var: :build_root)
         c.add_option('--define', short: '-D', help: 'Set global attribute value')
@@ -177,192 +177,6 @@ module JABA
 
     ##
     #
-    def process
-      # Strip pasthru args from argv and store.
-      #
-      i = @input.argv.find_index{|a| a == '--'}
-      if !i.nil?
-        @passthru_args.concat(@input.argv.slice!(i, @input.argv.size - 1))
-        @passthru_args.shift
-      end
-
-      @fsm = FSM.new
-      @fsm.add_state(WantCmdState)
-      @fsm.add_state(WantOptionState)
-      @fsm.add_state(UnknownOptionState)
-      @fsm.add_state(ValueState)
-      @fsm.add_state(ArrayState)
-      @fsm.add_state(GlobalAttrState)
-
-      @fsm.argv = input.argv
-      @fsm.input_manager = self
-      @fsm.input = @input
-      @fsm.default_cmd = @default_cmd
-      @fsm.unknown_argv = []
-
-      @fsm.on_run do
-        while !argv.empty?
-          arg = argv.shift
-          send_event(:process_arg, arg)
-        end
-      end
-
-      process_cmd_line
-    end
-
-    ##
-    # This is called twice as generators can register additional commands and options after the first pass.
-    #
-    def process_cmd_line
-      return if input.argv.empty?
-      
-      @fsm.run
-      input.argv.replace(@fsm.unknown_argv)
-      @fsm.unknown_argv.clear
-    end
-
-    ##
-    #
-    def finalise
-      if !input.argv.empty?
-        usage_error("#{input.argv[0]} option not recognised")
-      end
-      if input.show_help
-        show_help
-      end
-    end
-
-  class WantCmdState
-    def on_process_arg(arg)
-      cmd = if arg.start_with?('-')
-        fsm.argv.unshift(arg)
-        fsm.default_cmd
-      else
-        fsm.input_manager.get_cmd(arg.to_sym, fail_if_not_found: false)
-      end
-      if cmd
-        fsm.input_manager.instance_variable_set(:@cmd, cmd)
-        goto WantOptionState
-      else
-        goto UnknownOptionState, arg
-      end
-    end
-  end
-
-  class WantOptionState
-    def on_process_arg(arg)
-      opt = fsm.input_manager.get_option(arg)
-      if opt
-        case opt.long
-        when '--define'
-          goto GlobalAttrState
-        else
-          case opt.type
-          when :flag
-            fsm.input.instance_variable_set(opt.inst_var, true)
-          when :value
-            goto ValueState, opt
-          when :array
-            goto ArrayState, opt
-          end
-        end
-      else
-        goto UnknownOptionState, arg
-      end
-    end
-  end
-  
-  class UnknownOptionState
-    def on_enter(arg)
-      fsm.unknown_argv << arg
-    end
-    def on_process_arg(arg)
-      if fsm.input_manager.option_defined?(arg)
-        fsm.argv.unshift(arg)
-        goto WantOptionState
-      else
-        fsm.unknown_argv << arg
-      end
-    end
-  end
-  
-  class ValueState
-    def on_enter(opt)
-      @opt = opt
-      @val = nil
-    end
-    def on_exit
-      if @val.nil?
-        fsm.input_manager.usage_error("#{@opt.describe} expects a value")
-      end
-      fsm.input.instance_variable_set(@opt.inst_var, @val)
-    end
-    def on_process_arg(arg)
-      if fsm.input_manager.option_defined?(arg)
-        fsm.argv.unshift(arg)
-      else
-        @val = arg
-      end
-      goto WantOptionState
-    end
-  end
-
-  class ArrayState
-    def on_enter(opt)
-      @opt = opt
-      @elems = []
-    end
-    def on_exit
-      if @elems.empty?
-        fsm.input_manager.usage_error("#{@opt.describe} expects 1 or more values")
-      end
-      ary = fsm.input.instance_variable_get(@opt.inst_var)
-      ary.concat(@elems)
-    end
-    def on_process_arg(arg)
-      if fsm.input_manager.option_defined?(arg)
-        fsm.argv.unshift(arg)
-        goto WantOptionState
-      else
-        @elems << arg
-      end
-    end
-  end
-
-  class GlobalAttrState
-    def on_enter
-      @values = []
-    end
-    def on_exit
-      if @values.empty?
-        fsm.input_manager.usage_error('No attribute name supplied')
-      else
-        @attr_name = @values.shift
-      end
-      if @values.empty?
-        fsm.input_manager.usage_error("'#{@attr_name}' expects a value")
-      end
-      fsm.input.global_attrs.push_value(@attr_name, @values)
-    end
-    def on_process_arg(arg)
-      if fsm.input_manager.option_defined?(arg)
-        fsm.argv.unshift(arg)
-        goto WantOptionState
-      else
-        case arg
-        when /^(.+)=(.+)$/
-          @values << Regexp.last_match(1)
-          @values << Regexp.last_match(2)
-        when /,/
-          @values.concat(arg.split(','))
-        else
-          @values << arg
-        end
-      end
-    end
-
-        ##
-    #
     def show_help
       @max_width = 120
       w = StringWriter.new
@@ -408,7 +222,7 @@ module JABA
       if cmd != @null_cmd
         opts.concat(cmd.options.select{|o| !o.dev_only})
         cmd_str = "  #{cmd.id}"
-        if cmd == @default_cmd
+        if cmd == @cmd
           cmd_str << ' (default)'
         end
         items << cmd_str
@@ -430,8 +244,194 @@ module JABA
       end
     end
 
-  end
+    ##
+    #
+    def process
+      # Strip pasthru args from argv and store.
+      #
+      i = @input.argv.find_index{|a| a == '--'}
+      if !i.nil?
+        @passthru_args.concat(@input.argv.slice!(i, @input.argv.size - 1))
+        @passthru_args.shift
+      end
 
-  end
+      @fsm = FSM.new
+      @fsm.add_state(WantCmdState)
+      @fsm.add_state(WantOptionState)
+      @fsm.add_state(UnknownOptionState)
+      @fsm.add_state(ValueState)
+      @fsm.add_state(ArrayState)
+      @fsm.add_state(GlobalAttrState)
 
+      @fsm.argv = input.argv
+      @fsm.input_manager = self
+      @fsm.input = @input
+      @fsm.unknown_argv = []
+
+      @fsm.on_run do
+        while !argv.empty?
+          arg = argv.shift
+          send_event(:process_arg, arg)
+        end
+      end
+
+      process_cmd_line
+    end
+
+    ##
+    # This is called twice as generators can register additional commands and options after the first pass.
+    #
+    def process_cmd_line
+      return if input.argv.empty?
+      
+      @fsm.run
+      input.argv.replace(@fsm.unknown_argv)
+      @fsm.unknown_argv.clear
+    end
+
+    ##
+    #
+    def finalise
+      if !input.argv.empty?
+        if input.argv.size == 1
+          usage_error("'#{@cmd.id}' command does not support #{input.argv[0]} option")
+        else
+          usage_error("'#{@cmd.id}' command does not support #{input.argv.join(', ')} options")
+        end
+      end
+      if input.show_help
+        show_help
+      end
+    end
+
+    class WantCmdState
+      def on_process_arg(arg)
+        if arg.start_with?('-')
+          fsm.argv.unshift(arg)
+          goto WantOptionState
+        else
+          cmd = fsm.input_manager.get_cmd(arg.to_sym, fail_if_not_found: false)
+          if cmd
+            fsm.input_manager.instance_variable_set(:@cmd, cmd)
+            goto WantOptionState
+          else
+            goto UnknownOptionState, arg
+          end
+        end
+      end
+    end
+
+    class WantOptionState
+      def on_process_arg(arg)
+        opt = fsm.input_manager.get_option(arg)
+        if opt
+          case opt.long
+          when '--define'
+            goto GlobalAttrState
+          else
+            case opt.type
+            when :flag
+              fsm.input.instance_variable_set(opt.inst_var, true)
+            when :value
+              goto ValueState, opt
+            when :array
+              goto ArrayState, opt
+            end
+          end
+        else
+          goto UnknownOptionState, arg
+        end
+      end
+    end
+    
+    class UnknownOptionState
+      def on_enter(arg)
+        fsm.unknown_argv << arg
+      end
+      def on_process_arg(arg)
+        if fsm.input_manager.option_defined?(arg)
+          fsm.argv.unshift(arg)
+          goto WantOptionState
+        else
+          fsm.unknown_argv << arg
+        end
+      end
+    end
+    
+    class ValueState
+      def on_enter(opt)
+        @opt = opt
+        @val = nil
+      end
+      def on_exit
+        if @val.nil?
+          fsm.input_manager.usage_error("#{@opt.describe} expects a value")
+        end
+        fsm.input.instance_variable_set(@opt.inst_var, @val)
+      end
+      def on_process_arg(arg)
+        if fsm.input_manager.option_defined?(arg)
+          fsm.argv.unshift(arg)
+        else
+          @val = arg
+        end
+        goto WantOptionState
+      end
+    end
+
+    class ArrayState
+      def on_enter(opt)
+        @opt = opt
+        @elems = []
+      end
+      def on_exit
+        if @elems.empty?
+          fsm.input_manager.usage_error("#{@opt.describe} expects 1 or more values")
+        end
+        ary = fsm.input.instance_variable_get(@opt.inst_var)
+        ary.concat(@elems)
+      end
+      def on_process_arg(arg)
+        if fsm.input_manager.option_defined?(arg)
+          fsm.argv.unshift(arg)
+          goto WantOptionState
+        else
+          @elems << arg
+        end
+      end
+    end
+
+    class GlobalAttrState
+      def on_enter
+        @values = []
+      end
+      def on_exit
+        if @values.empty?
+          fsm.input_manager.usage_error('No attribute name supplied')
+        else
+          @attr_name = @values.shift
+        end
+        if @values.empty?
+          fsm.input_manager.usage_error("'#{@attr_name}' expects a value")
+        end
+        fsm.input.global_attrs.push_value(@attr_name, @values)
+      end
+      def on_process_arg(arg)
+        if fsm.input_manager.option_defined?(arg)
+          fsm.argv.unshift(arg)
+          goto WantOptionState
+        else
+          case arg
+          when /^(.+)=(.+)$/
+            @values << Regexp.last_match(1)
+            @values << Regexp.last_match(2)
+          when /,/
+            @values.concat(arg.split(','))
+          else
+            @values << arg
+          end
+        end
+      end
+    end
+  end
 end

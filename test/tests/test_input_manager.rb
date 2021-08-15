@@ -21,20 +21,27 @@ module JABA
 
     def generate
       i = services.input
-      print i.value_opt if i.value_opt
-      print i.array_opt if !i.array_opt.empty?
-      if services.input_manager.cmd_specified?(:cmd1)
-        print 'cmd1'
+      op = "#{services.input_manager.cmd.id}"
+      if i.value_opt
+        op << ' '
+        op << "--value-opt=#{i.value_opt}"
       end
-      if services.input_manager.cmd_specified?(:cmd2)
-        print 'cmd2'
+      if !i.array_opt.empty?
+        op << ' '
+        op << "--array-opt=#{i.array_opt}"
       end
+      print op
     end
   end
 
   class TestInputManager < JabaTest
 
     it 'supports commands' do
+      assert_output 'gen' do # default cmd
+        jaba(barebones: true, argv: []) do
+          type :test_im
+        end
+      end
       assert_output 'cmd1' do
         jaba(barebones: true, argv: ['cmd1']) do
           type :test_im
@@ -45,13 +52,6 @@ module JABA
           type :test_im
         end
       end
-=begin
-      assert_jaba_error "cmd1 does not support --cmd2-opt option" do
-        jaba(barebones: true, argv: ['cmd1', '--cmd2-opt']) do
-          type :test_im
-        end
-      end
-=end
     end
 
     # TODO: should duplicate array options be allowed?
@@ -59,18 +59,23 @@ module JABA
     end
 
     it 'handles unknown options' do
-      assert_raises JabaError do
+      assert_jaba_error "'gen' command does not support --unknown option", trace: nil do
         jaba(barebones: true, argv: ['--unknown'])
-      end.message.must_equal("--unknown option not recognised")
-      assert_raises JabaError do
+      end
+      assert_jaba_error "'gen' command does not support -Z option", trace: nil do
         jaba(barebones: true, argv: ['-Z'])
-      end.message.must_equal("-Z option not recognised")
+      end
+      assert_jaba_error "'cmd1' command does not support --cmd2-opt option", trace: nil do
+        jaba(barebones: true, argv: ['cmd1', '--cmd2-opt']) do
+          type :test_im
+        end
+      end
       # everything after -- is ignored
       jaba(barebones: true, argv: ['--value-opt', 'value', '--', 'ignore', 'after', '--'])
     end
 
     it 'supports value options' do
-      assert_output 'value' do
+      assert_output 'gen --value-opt=value' do
         jaba(barebones: true, argv: ['--value-opt', 'value']) do
           type :test_im
         end
@@ -78,7 +83,7 @@ module JABA
       
       # test that values can be anything, even something that looks like an option (unless it is actually an option)
       #
-      assert_output '--value' do
+      assert_output 'gen --value-opt=--value' do
         jaba(barebones: true, argv: ['--value-opt', '--value']) do
           type :test_im
         end
@@ -92,14 +97,14 @@ module JABA
     end
 
     it 'supports array options' do
-      assert_output '["e1", "e2", "e3"]' do
+      assert_output 'gen --array-opt=["e1", "e2", "e3"]' do
         jaba(barebones: true, argv: ['--array-opt', 'e1', 'e2', 'e3']) do
           type :test_im
         end
       end
       # test that values can be anything, even something that looks like an option (unless it is actually an option)
       #
-      assert_output '["--e1", "--e2", "--e3"]' do
+      assert_output 'gen --array-opt=["--e1", "--e2", "--e3"]' do
         jaba(barebones: true, argv: ['--array-opt', '--e1', '--e2', '--e3']) do
           type :test_im
         end
