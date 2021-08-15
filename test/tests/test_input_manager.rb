@@ -71,7 +71,8 @@ module JABA
         end
       end
       # everything after -- is ignored
-      jaba(barebones: true, argv: ['--value-opt', 'value', '--', 'ignore', 'after', '--'])
+      op = jaba(barebones: true, argv: ['--value-opt', 'value', '--', 'ignore', 'after', '--'])
+      op[:services].input_manager.passthru_args.must_equal ['ignore', 'after', '--']
     end
 
     it 'supports value options' do

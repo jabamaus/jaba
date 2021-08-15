@@ -88,6 +88,7 @@ module JABA
 
     attr_reader :input
     attr_reader :cmd
+    attr_reader :passthru_args
 
     ##
     #
