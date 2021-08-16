@@ -197,7 +197,7 @@ module JABA
       w << ""
       
       @cmds.each do |c|
-        next if c.dev_only
+        next if c.dev_only || c == @null_cmd
         print_cmd_help(c, w)
         w << ""
       end
