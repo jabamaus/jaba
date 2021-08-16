@@ -114,7 +114,7 @@ module JABA
     it 'supports platform-specific default src extensions' do
       make_file('a.cpp', 'b.natvis', 'c.xcconfig', 'e.def', 'f.rc')
       td = temp_dir
-      op = jaba(dry_run: true, argv: ["-D", "cpp_hosts", "vs2019", "xcode"]) do
+      op = jaba(dry_run: true, argv: ["-D", "target_hosts", "vs2019", "xcode"]) do
         cpp :app do
           type :app
           root td

@@ -299,33 +299,25 @@ module JABA
 
       @processing_generators = true
 
-      # Globals can be set via the command line so need to partition generators into those up to and
-      # including the globals type and the rest, processing the command line in between.
+      # Process globals first, separately so that it is possible to get in and set them from the command line.
+      # For this reason delay post_create checking until the command line has been processed. If this was not
+      # done a global attribute flagged as :required could fail if it is supplied on the command line.
       #
-      globals_generator = nil
-      globals_and_deps, post_globals = @generators.partition do |g|
-        if !globals_generator
-          if g.type_id == :globals
-            globals_generator = g
-          end
-          true
-        else
-          false
-        end
-      end
-
-      globals_and_deps.each do |g|
-        g.process
-      end
+      globals_generator = @generators[0]
+      globals_generator.process(delay_post_create: true)
 
       @globals_node = globals_generator.root_nodes.first
       @globals = @globals_node.attrs
 
       set_global_attrs_from_cmdline
-      process_config_file if !JABA.running_tests?
+      @globals_node.post_create
 
-      post_globals.each do |g|
-        g.process
+      # Don't generate config file for the moment...
+=begin
+      process_config_file if !JABA.running_tests?
+=end
+      1.upto(@generators.size-1) do |i|
+        @generators[i].process
       end
 
       @processing_generators = false
@@ -987,8 +979,9 @@ module JABA
     ##
     #
     def load_jaba_files
-      if input.barebones?
-        process_jaba_file("#{JABA.modules_dir}/core/globals.jaba") # globals always needs loading
+      if input.barebones? # optimisation for unit testing
+        process_jaba_file("#{JABA.modules_dir}/core/globals.jaba")
+        process_jaba_file("#{JABA.modules_dir}/core/hosts.jaba")
       else
         @@module_jaba_files.each do |f|
           process_jaba_file(f)

@@ -120,3 +120,11 @@ end
 host :ninja do
   ninja? true
 end
+
+open_type :globals do
+  attr_array :target_hosts, type: :choice do
+    title 'Target host'
+    items all_instance_ids(:host)
+    flags :required
+  end
+end

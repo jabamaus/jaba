@@ -43,8 +43,10 @@ module JABA
     def make_host_objects
       # TODO: pass this in
       cpp_gen = get_generator(:cpp)
+      host_gen = get_generator(:host)
       @candidate_projects = cpp_gen.get_projects
-      services.globals.cpp_hosts.each do |target_host|
+      services.globals.target_hosts.each do |target_host_id|
+        target_host = host_gen.node_from_handle(target_host_id.to_s)
         classname = target_host.attrs.workspace_classname
         next if classname.empty?
         @root_nodes.each do |wsn|

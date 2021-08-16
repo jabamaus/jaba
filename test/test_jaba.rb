@@ -56,6 +56,7 @@ module JABA
         end
         c.definitions do
           open_instance :globals, type: :globals do
+            target_hosts :vs2019
             dump_output dump_output
             jaba_output_file "#{build_root}/jaba.output.json"
           end

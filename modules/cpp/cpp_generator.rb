@@ -34,7 +34,10 @@ module JABA
         target_platform_to_archs.push_value(platform, arch)
       end
 
-      services.globals.cpp_hosts.each do |target_host|
+      host_gen = get_generator(:host)
+
+      services.globals.target_hosts.each do |target_host_id|
+        target_host = host_gen.node_from_handle(target_host_id.to_s)
         supported_platforms = target_host.attrs.cpp_supported_platforms
         target_platform_to_archs.each do |target_platform, target_archs|
           next if !supported_platforms.include?(target_platform)

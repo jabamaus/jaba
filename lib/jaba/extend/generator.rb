@@ -42,6 +42,7 @@ module JABA
     def initialize(services)
       @services = services
       @definitions = []
+      @delay_post_create = false
       @root_nodes = []
       @nodes = []
       @node_lookup = {}
@@ -65,10 +66,12 @@ module JABA
 
     ##
     #
-    def process
+    def process(delay_post_create: false)
       return if @definitions.empty?
       services.log "Processing #{describe}", section: true
 
+      @delay_post_create = delay_post_create
+      
       @definitions.each do |d|
         push_definition(d) do
           @root_nodes << make_node_tree
@@ -202,7 +205,10 @@ module JABA
         JABA.error('Cannot modify read only value', callstack: e.backtrace)
       end
 
-      jn.post_create
+      if !@delay_post_create # used by globals node when being set from the command line
+        jn.post_create
+      end
+
       jn
     end
 

@@ -448,12 +448,6 @@ open_type :platform do
 end
 
 open_type :globals do
-  attr_array :cpp_hosts, type: :node_ref do
-    title 'Target hosts'
-    node_type :host
-    flags :required
-  end
-
   attr :cpp_default_lib_type, type: :choice do
     title 'Default lib type'
     items [:lib, :dll]
@@ -466,9 +460,4 @@ open_type :globals do
       end
     }
   end
- 
-end
-
-open_instance :globals, type: :globals do
-  cpp_hosts [:vs2019] # TODO: for now...
-end
+ end
