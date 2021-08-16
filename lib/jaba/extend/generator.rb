@@ -67,7 +67,6 @@ module JABA
     ##
     #
     def process(delay_post_create: false)
-      return if @definitions.empty?
       services.log "Processing #{describe}", section: true
 
       @delay_post_create = delay_post_create
@@ -85,6 +84,8 @@ module JABA
           JABA.error("singleton type '#{type_id}' must be instantiated exactly once", errobj: @root_nodes.last)
         end
       end
+
+      return if @root_nodes.empty?
 
       @reference_attrs_to_resolve.each do |a|
         a.map_value! do |ref|
