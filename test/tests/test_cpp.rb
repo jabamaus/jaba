@@ -66,7 +66,7 @@ module JABA
     it 'prevents nil access when attributes not set up yet' do
       proj = jaba(dry_run: true, cpp_app: true) do
         cpp :app, platforms: [:windows_x86, :windows_x86_64] do
-          projname "app_#{host&.upcase}" # TODO: remove safe call
+          projname "app_#{host.upcase}"
           src ['main.cpp'], :force
         end
       end
