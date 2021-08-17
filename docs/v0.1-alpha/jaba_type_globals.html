@@ -27,7 +27,7 @@
 </tr>
 <tr>
 <td><em>depends on</em></td>
-<td><a href="jaba_type_host.html">host</a></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -36,9 +36,9 @@
 <ul>
 <li><a href="#buildsystem_root">buildsystem_root</a></li>
 <li><a href="#cpp_default_lib_type">cpp_default_lib_type</a></li>
-<li><a href="#cpp_hosts">cpp_hosts</a></li>
 <li><a href="#dump_output">dump_output</a></li>
 <li><a href="#jaba_output_file">jaba_output_file</a></li>
+<li><a href="#target_hosts">target_hosts</a></li>
 <li><a href="#vcfiletype">vcfiletype</a></li>
 </ul>
 <p><a id="buildsystem_root"></a></p>
@@ -121,45 +121,6 @@
   <span style="color:#111">type</span> <span style="color:#111">globals</span><span style="color:#f92672">.</span><span style="color:#111">cpp_default_lib_type</span>
 <span style="color:#00a8c8">end</span>
 </pre></blockquote>
-<p><a id="cpp_hosts"></a></p>
-<h4 id="cpp-hosts">cpp_hosts</h4>
-<blockquote>
-<p><em>Target hosts</em></p>
-<table>
-<thead>
-<tr>
-<th>Property</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>type</em></td>
-<td>:node_ref []</td>
-</tr>
-<tr>
-<td><em>references</em></td>
-<td><a href="jaba_type_host.html">host</a></td>
-</tr>
-<tr>
-<td><em>default</em></td>
-<td>[]</td>
-</tr>
-<tr>
-<td><em>flags</em></td>
-<td>:required</td>
-</tr>
-<tr>
-<td><em>options</em></td>
-<td></td>
-</tr>
-<tr>
-<td><em>defined in</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-</tbody>
-</table>
-</blockquote>
 <p><a id="dump_output"></a></p>
 <h4 id="dump-output">dump_output</h4>
 <blockquote>
@@ -227,6 +188,45 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/core/globals.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="target_hosts"></a></p>
+<h4 id="target-hosts">target_hosts</h4>
+<blockquote>
+<p><em>Target host</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:choice []</td>
+</tr>
+<tr>
+<td><em>choices</em></td>
+<td>[:vs2010, :vs2012, :vs2013, :vs2015, :vs2017, :vs2019, :xcode, :ninja]</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>[]</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td>:required</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/core/hosts.jaba</td>
 </tr>
 </tbody>
 </table>

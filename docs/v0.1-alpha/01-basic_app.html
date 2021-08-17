@@ -12,9 +12,8 @@
 <a href="index.html">0.1-alpha home</a></p>
 <pre style="color:#272822;background-color:#fafafa"><span style="color:#75715e"># Demonstrates the minimum required to create a C++ console app</span>
 <span style="color:#75715e">#</span>
-<span style="color:#111">cpp</span> <span style="color:#d88200">:BasicApp</span> <span style="color:#00a8c8">do</span>
+<span style="color:#111">cpp</span> <span style="color:#d88200">:BasicApp</span><span style="color:#111">,</span> <span style="color:#d88200">platforms</span><span style="color:#111">:</span> <span style="color:#f92672">[</span><span style="color:#d88200">:windows_x86_64</span><span style="color:#f92672">]</span> <span style="color:#00a8c8">do</span>
   <span style="color:#111">type</span> <span style="color:#d88200">:console</span>
-  <span style="color:#111">platforms</span> <span style="color:#f92672">[</span><span style="color:#d88200">:windows_x86_64</span><span style="color:#f92672">]</span>
   <span style="color:#111">configs</span> <span style="color:#f92672">[</span><span style="color:#d88200">:Debug</span><span style="color:#111">,</span> <span style="color:#d88200">:Release</span><span style="color:#f92672">]</span>
   <span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;main.cpp&#39;</span><span style="color:#f92672">]</span>
 <span style="color:#00a8c8">end</span>

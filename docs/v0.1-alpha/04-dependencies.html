@@ -14,9 +14,8 @@
 <span style="color:#00a8c8">include</span> <span style="color:#d88200">&#39;../03-basic_dynamic_lib&#39;</span>
 <span style="color:#00a8c8">include</span> <span style="color:#d88200">&#39;../example_src/3rdParty/ThirdPartyLib&#39;</span>
 
-<span style="color:#111">cpp</span> <span style="color:#d88200">:AppWithDependencies</span> <span style="color:#00a8c8">do</span>
+<span style="color:#111">cpp</span> <span style="color:#d88200">:AppWithDependencies</span><span style="color:#111">,</span> <span style="color:#d88200">platforms</span><span style="color:#111">:</span> <span style="color:#f92672">[</span><span style="color:#d88200">:windows_x86_64</span><span style="color:#f92672">]</span> <span style="color:#00a8c8">do</span>
   <span style="color:#111">type</span> <span style="color:#d88200">:console</span>
-  <span style="color:#111">platforms</span> <span style="color:#f92672">[</span><span style="color:#d88200">:windows_x86_64</span><span style="color:#f92672">]</span>
   <span style="color:#111">configs</span> <span style="color:#f92672">[</span><span style="color:#d88200">:Debug</span><span style="color:#111">,</span> <span style="color:#d88200">:Release</span><span style="color:#f92672">]</span>
   <span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;main.cpp&#39;</span><span style="color:#f92672">]</span>
   <span style="color:#111">deps</span> <span style="color:#f92672">[</span><span style="color:#d88200">:BasicStaticLib</span><span style="color:#111">,</span> <span style="color:#d88200">:BasicDynamicLib</span><span style="color:#111">,</span> <span style="color:#d88200">:ThirdPartyLib</span><span style="color:#f92672">]</span>

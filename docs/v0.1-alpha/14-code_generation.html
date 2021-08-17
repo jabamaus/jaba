@@ -10,9 +10,8 @@
         <h2 id="14-code-generation-v01-alpha">14-code_generation v0.1-alpha</h2>
 <p><a href="../index.html">home</a><br />
 <a href="index.html">0.1-alpha home</a></p>
-<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">cpp</span> <span style="color:#d88200">:CodegenExample</span> <span style="color:#00a8c8">do</span>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">cpp</span> <span style="color:#d88200">:CodegenExample</span><span style="color:#111">,</span> <span style="color:#d88200">platforms</span><span style="color:#111">:</span> <span style="color:#f92672">[</span><span style="color:#d88200">:windows_x86_64</span><span style="color:#f92672">]</span> <span style="color:#00a8c8">do</span>
   <span style="color:#111">type</span> <span style="color:#d88200">:console</span>
-  <span style="color:#111">platforms</span> <span style="color:#f92672">[</span><span style="color:#d88200">:windows_x86_64</span><span style="color:#f92672">]</span>
   <span style="color:#111">configs</span> <span style="color:#f92672">[</span><span style="color:#d88200">:Debug</span><span style="color:#111">,</span> <span style="color:#d88200">:Release</span><span style="color:#f92672">]</span>
   <span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;main.cpp&#39;</span><span style="color:#111">,</span> <span style="color:#d88200">&#39;generator.rb&#39;</span><span style="color:#111">,</span> <span style="color:#d88200">&#39;*.xyz&#39;</span><span style="color:#f92672">]</span>
   <span style="color:#111">src</span> <span style="color:#d88200">%w(</span><span style="color:#d88200">src1.h src2.h src1.cpp src2.cpp</span><span style="color:#d88200">)</span><span style="color:#111">,</span> <span style="color:#d88200">:force</span><span style="color:#111">,</span> <span style="color:#d88200">prefix</span><span style="color:#111">:</span> <span style="color:#d88200">&#39;generated/&#39;</span>
