@@ -28,7 +28,7 @@ module JABA
     end
 
     it 'fails if explicitly specified files do not exist unless forced' do
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagA)}: 'a.cpp' does not exist on disk. Use :force to add anyway." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagA)}: '#{temp_dir}/a.cpp' does not exist on disk. Use :force to add anyway." do
         jaba(cpp_app: true, dry_run: true) do
           cpp :app do
             src ['a.cpp'] # tagA
@@ -58,7 +58,7 @@ module JABA
 
     it 'supports adding files beginning with dot but only explicitly' do
       make_file('.a', 'b/.cpp', 'c.cpp')
-      check_warn "'b/*' did not match any src files", __FILE__, 'tagF' do
+      check_warn "'#{temp_dir}/b/*' did not match any src files", __FILE__, 'tagF' do
         proj = jaba(cpp_app: true, dry_run: true) do
           cpp :app do
             src ['b/*'] # tagF

@@ -55,6 +55,7 @@ module JABA
       op = JABA.run(want_exceptions: false) do |c|
         c.build_root = br
         c.src_root = "#{JABA.examples_dir}/02-advanced"
+        c.argv = ['-D', 'target_hosts=vs2019']
       end
       op[:error].must_equal("Source root already set to '#{sr}' - cannot change")
 
@@ -100,6 +101,7 @@ module JABA
       op = nil
       Dir.chdir(sr) do
         op = JABA.run do |c|
+          c.argv = ['-D', 'target_hosts=vs2019']
           c.src_root = sr
         end
       end
@@ -109,6 +111,7 @@ module JABA
     it 'supports specifying src_root and build_root in jaba input' do
       each_src_root_build_root do |sr, br|
         op = JABA.run do |c|
+          c.argv = ['-D', 'target_hosts=vs2019']
           c.src_root = sr
           c.build_root = br
         end
@@ -119,7 +122,7 @@ module JABA
     it 'supports specifying src_root and build_root on cmd line' do
       each_src_root_build_root do |sr, br|
         op = JABA.run do |c|
-          c.argv = ['--src-root', sr, '--build-root', br]
+          c.argv = ['--src-root', sr, '--build-root', br, '-D', 'target_hosts=vs2019']
         end
         check_src_and_build_root(op, sr, br)
       end
