@@ -4,11 +4,6 @@ type :cpp do
 
   title 'Cross platform C++ project definition'
 
-   attr_array :platforms do
-    title 'Target platforms'
-    flags :required
-  end
-  
   type :project do
 
     attr :root, type: :dir do

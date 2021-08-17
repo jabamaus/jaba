@@ -3,10 +3,9 @@
 # jaba -D cpp_default_lib_type lib
 # jaba -D cpp_default_lib_type dll
 
-cpp :BasicLib do
+cpp :BasicLib, platforms: [:windows_x86_64] do
   root '../example_src/ExampleLib'
   type globals.cpp_default_lib_type
-  platforms [:windows_x86_64]
   configs [:Debug, :Release]
   src ['.']
   inc ['include'], :export

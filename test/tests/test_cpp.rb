@@ -17,11 +17,10 @@ module JABA
     it 'supports defaults' do
       op = jaba(dry_run: true) do
         defaults :cpp do
-          platforms [:windows_x86]
           configs [:debug, :release]
           rtti false
         end
-        cpp :app do
+        cpp :app, platforms: [:windows_x86, :windows_x86_64] do
           type :app
           src ['main.cpp'], :force
           if config == :debug
@@ -53,8 +52,7 @@ module JABA
       invalid_keys.each do |key|
         assert_jaba_error "Error at #{err_loc}: 'app.vcprop' hash attribute invalid: Must be of form <group>|<property> but was '#{key}'.", trace: [__FILE__, :tagJ] do
           jaba(dry_run: true) do
-            cpp :app do
-              platforms [:windows_x86_64]
+            cpp :app, platforms: [:windows_x86_64] do
               configs [:Release]
               src ['main.cpp'], :force
               vcprop key, 'val' # tagJ
@@ -67,7 +65,7 @@ module JABA
 
     it 'prevents nil access when attributes not set up yet' do
       proj = jaba(dry_run: true, cpp_app: true) do
-        cpp :app do
+        cpp :app, platforms: [:windows_x86, :windows_x86_64] do
           projname "app_#{host&.upcase}" # TODO: remove safe call
           src ['main.cpp'], :force
         end
@@ -79,7 +77,7 @@ module JABA
     # but how to test this as don't have acceess to any appropriate platforms
     it 'has a flexible approach to platforms' do
       jaba(dry_run: true, cpp_app: true) do
-        cpp :app do
+        cpp :app, platforms: [:windows_x86, :windows_x86_64] do
           src ['main.cpp'], :force
         end
       end
@@ -90,13 +88,10 @@ module JABA
       make_file("app/main.cpp")
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagG)}: ':lib' dependency not found." do
         jaba do
-          defaults :cpp do
-            platforms [:windows_x86, :windows_x86_64]
-            configs [:Debug, :Release]
-          end
-          cpp :app do
+          cpp :app, platforms: [:windows_x86, :windows_x86_64] do
             root "#{td}/app"
             type :console
+            configs [:Debug, :Release]
             deps [:lib] # tagG
             src ['main.cpp']
           end
@@ -113,10 +108,9 @@ module JABA
       make_file("lib/main.cpp")
       op = jaba do
         defaults :cpp do
-          platforms [:windows_x86, :windows_x86_64]
           configs [:Debug, :Release]
         end
-        cpp :app do
+        cpp :app, platforms: [:windows_x86, :windows_x86_64] do
           root "#{td}/app"
           type :console
           deps [:lib]
@@ -124,7 +118,7 @@ module JABA
           define ['F', 'A']
           src ['main.cpp']
         end
-        cpp :lib do
+        cpp :lib, platforms: [:windows_x86, :windows_x86_64] do
           root "#{td}/lib"
           type :lib
           src ['main.cpp']
@@ -163,7 +157,7 @@ module JABA
 
     it 'supports opening translators' do
       proj = jaba(dry_run: true, cpp_app: true) do
-        cpp :app do
+        cpp :app, platforms: [:windows_x86, :windows_x86_64] do
           src ['main.cpp'], :force
         end
         open_translator :vcxproj_windows do

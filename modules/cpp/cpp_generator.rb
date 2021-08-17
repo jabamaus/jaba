@@ -22,10 +22,10 @@ module JABA
     ##
     #
     def make_node_tree
-      root_node = make_node
+      platforms = @definition.options[:platforms]
 
       target_platform_to_archs = {}
-      root_node.attrs.platforms.each do |pspec|
+      platforms.each do |pspec|
         if pspec !~ /^(.*?)_(.*)/
           JABA.error("Cannot extract platform and architecture from '#{pspec}'")
         end
@@ -41,7 +41,7 @@ module JABA
         supported_platforms = target_host.attrs.cpp_supported_platforms
         target_platform_to_archs.each do |target_platform, target_archs|
           next if !supported_platforms.include?(target_platform)
-          project_node = make_node(sub_type_id: :project, name: "#{target_host.defn_id}|#{target_platform}", parent: root_node) do
+          project_node = make_node(sub_type_id: :project, name: "#{target_host.defn_id}|#{target_platform}") do
             host target_host.defn_id
             host_ref target_host
             platform target_platform
@@ -60,15 +60,16 @@ module JABA
             end
           end
           if project_node.attrs.workspace
+            defn_id = @definition.id
             services.execute_jdl do
-              workspace root_node.defn_id do
-                projects root_node.defn_id
+              workspace defn_id do
+                projects defn_id
               end
             end
           end
         end
       end
-      root_node
+      @project_nodes
     end
 
     ##

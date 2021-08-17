@@ -527,13 +527,14 @@ module JABA
 
     ##
     #
-    def make_definition(id, block, src_loc)
+    def make_definition(id, block, src_loc, options: nil)
       d = OpenStruct.new
       d.id = id
       d.block = block
       d.src_loc = src_loc
       d.open_defs = []
       d.jaba_type_id = nil
+      d.options = options
       d
     end
 
@@ -652,7 +653,7 @@ module JABA
 
     ##
     #
-    def define_instance(type_id, id, &block)
+    def define_instance(type_id, id, **options, &block)
       JABA.error("type_id is required") if type_id.nil?
       JABA.error("id is required") if id.nil?
 
@@ -665,7 +666,7 @@ module JABA
         JABA.error("'#{type_id}|#{id.inspect_unquoted}' multiply defined. First definition at #{existing.src_loc.describe}.")
       end
       
-      d = make_definition(id, block, caller_locations(2, 1)[0])
+      d = make_definition(id, block, caller_locations(2, 1)[0], options: options)
       d.jaba_type_id = type_id
 
       @instance_def_lookup.push_value(type_id, d)

@@ -11,22 +11,22 @@ module JABA
       td = temp_dir
       
       op = jaba(cpp_defaults: true, dry_run: true) do
-        cpp :a do
+        cpp :a, platforms: [:windows_x86_64] do
           type :app
           root "#{td}/a"
           src ['.']
         end
-        cpp :b do
+        cpp :b, platforms: [:windows_x86_64] do
           type :app
           root "#{td}/b"
           src ['.']
         end
-        cpp :c do
+        cpp :c, platforms: [:windows_x86_64] do
           type :app
           root "#{td}/c/d"
           src ['.']
         end
-        cpp :d do
+        cpp :d, platforms: [:windows_x86_64] do
           type :app
           root "#{td}/c/e"
           src ['.']
@@ -67,7 +67,7 @@ module JABA
       #
       check_warn "No projects matching spec 'b/**/*' found", __FILE__, 'tagR' do
         jaba(cpp_app: true, dry_run: true) do
-          cpp :app do
+          cpp :app, platforms: [:windows_x86, :windows_x86_64] do
             src ['a.cpp'], :force
           end
           workspace :a do

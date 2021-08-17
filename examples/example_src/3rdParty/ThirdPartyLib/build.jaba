@@ -1,6 +1,5 @@
-cpp :ThirdPartyLib do
+cpp :ThirdPartyLib, platforms: [:windows_x86_64] do
   type :lib
-  platforms [:windows_x86_64]
   configs [:Debug, :Release]
   src ['.']
   inc ['include'], :export

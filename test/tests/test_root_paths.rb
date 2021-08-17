@@ -54,14 +54,14 @@ module JABA
       #
       op = JABA.run(want_exceptions: false) do |c|
         c.build_root = br
-        c.src_root = "#{JABA.examples_dir}/02-advanced"
+        c.src_root = "#{JABA.examples_dir}/02-basic_static_lib"
         c.argv = ['-D', 'target_hosts=vs2019']
       end
       op[:error].must_equal("Source root already set to '#{sr}' - cannot change")
 
       op = JABA.run(want_exceptions: false) do |c|
         c.build_root = br
-        c.argv = ['-S', "#{JABA.examples_dir}/02-advanced"]
+        c.argv = ['-S', "#{JABA.examples_dir}/02-basic_static_lib"]
       end
       op[:error].must_equal("Source root already set to '#{sr}' - cannot change")
     end

@@ -50,7 +50,7 @@ module JABA
       jaba(cpp_app: true, dry_run: true) do
         shared :a do
         end
-        cpp :app do
+        cpp :app, platforms: [:windows_x86, :windows_x86_64] do
           src ['a.cpp'], :force
         end
         workspace :a do

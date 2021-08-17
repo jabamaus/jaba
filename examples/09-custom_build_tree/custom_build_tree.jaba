@@ -1,6 +1,5 @@
-cpp :AppWithCustomisedBuildTree do
+cpp :AppWithCustomisedBuildTree, platforms: [:windows_x86_64] do
   type :console
-  platforms [:windows_x86_64]
   configs [:Debug, :Release]
   src ['main.cpp']
   bindir "custom_build_tree/bin/#{config}"

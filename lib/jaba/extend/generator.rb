@@ -73,7 +73,7 @@ module JABA
       
       @definitions.each do |d|
         push_definition(d) do
-          @root_nodes << make_node_tree
+          @root_nodes.concat(Array(make_node_tree))
         end
       end
       
@@ -155,8 +155,8 @@ module JABA
         handle = "#{parent.handle}|#{name}"
         depth = parent.depth + 1
       else
-        JABA.error('name not required for root nodes') if name
         handle = "#{@definition.id}"
+        handle << "|#{name}" if name
       end
 
       services.log "#{'  ' * depth}Instancing node [type=#{type_id}, handle=#{handle}]"

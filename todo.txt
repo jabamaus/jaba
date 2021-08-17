@@ -1,3 +1,4 @@
+- validate that platforms passed in correctly to cpp module
 - Experiment with using macros instead of direct object access. Would solve a few problems...
 - Disallow nested src_roots 
 - Add a jaba plugin example that defines a generator

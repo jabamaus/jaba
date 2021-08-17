@@ -14,8 +14,8 @@ module JABA
     ##
     # Define a cpp project.
     #
-    def cpp(id, &block)
-      @services.define_instance(:cpp, id, &block)
+    def cpp(id, **options, &block)
+      @services.define_instance(:cpp, id, **options, &block)
     end
     
     ##
