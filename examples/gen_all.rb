@@ -10,7 +10,7 @@ if __FILE__ == $PROGRAM_NAME
   iterate_examples do |dir|
     Dir.chdir(dir) do
       puts "Running jaba in #{dir}..."
-      if !system('jaba.bat')
+      if !system('jaba.bat -D target_hosts vs2019')
         puts "Jaba FAILED"
         exit!
       end
