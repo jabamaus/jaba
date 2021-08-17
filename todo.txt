@@ -1,13 +1,18 @@
+- Experiment with using macros instead of direct object access. Would solve a few problems...
+- Disallow nested src_roots 
+- Add a jaba plugin example that defines a generator
+- should string attr be allowed to be set to nil? Probably not.
+- Stop globals from having dependencies.
+- Add a 'referenced by' doc item for types.
+- make jaba clean clean the generated src, the .vs folder, the 'build' folder and optionally the 'buildsystem' folder.
+- Disallow ruby keywords as attr names, eg 'in' fails
+- Consider making all attributes require a type
 - Bed down value option type - eg call validators, testing
-- Stop ruby_stdlib being absolute in jabaruby.exe
 - reorg tests into core folder and cpp folder
 - Stronger spec for value_options. Need to flag as array.
-- Add src vpath example
-- Add a cpp_current_host global?
 - Overhaul workspace project glob matching
 - Should buildsystem_root include host? Then projdir would operate inside. Probably.
 - consider tracking last call loc in properties, for better reporting
-- Prevent defaults referencing attrs when block not used.
 - give all unit tests a dummy src_root
 - implement warn level
 - add cmd line test for
