@@ -193,9 +193,21 @@ module JABA
         end
       end
 
-      summary = "Generated #{@generated.size} files, #{@added.size} added, #{@modified.size} modified in #{duration}"
+      summary = "Generated #{@generated.size} files, #{@added.size} added, #{@modified.size} modified, #{@unchanged.size} unchanged in #{duration}"
       summary << " [dry run]" if input.dry_run?
-      # TODO: verbose mode prints all generated
+      summary << "\n"
+
+      @added.each do |f|
+        summary << "  #{f} [A]\n"
+      end
+      @modified.each do |f|
+        summary << "  #{f} [M]\n"
+      end
+      if input.verbose
+        @unchanged.each do |f|
+          summary << "  #{f} [UNCHANGED]\n"
+        end
+      end
 
       log summary
       log "Done! (#{duration})"
@@ -210,11 +222,15 @@ module JABA
     #
     def do_run
       if input_manager.cmd_specified?(:help)
-        if OS.windows?
-          system("start #{JABA.jaba_docs_url}/v#{VERSION}")
+        url = "#{JABA.jaba_docs_url}/v#{VERSION}"
+        cmd = if OS.windows?
+          'start'
         elsif OS.mac?
-          system("open #{JABA.jaba_docs_url}v#{VERSION}")
+          'open'
+        else
+          JABA.error("Unsupported platform")
         end
+        system("#{cmd} #{url}")
         exit!
       end
       
@@ -912,11 +928,13 @@ module JABA
       @generated = @file_manager.generated.map{|f| f.relative_path_from(input.build_root)}
       @added = @file_manager.added.map{|f| f.relative_path_from(input.build_root)}.sort_no_case!
       @modified = @file_manager.modified.map{|f| f.relative_path_from(input.build_root)}.sort_no_case!
+      @unchanged = @file_manager.unchanged.map{|f| f.relative_path_from(input.build_root)}.sort_no_case!
 
       # These are not included in the output file but are returned to outer context
       #
       @output[:added] = @added
       @output[:modified] = @modified
+      @output[:unchanged] = @unchanged
     end
 
     ##

@@ -8,9 +8,5 @@ if output[:error]
 end
 
 puts output[:summary]
-
-output[:added].each {|f| puts "  #{f} [A]"}
-output[:modified].each {|f| puts "  #{f} [M]"}
-
 puts output[:warnings]
 

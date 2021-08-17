@@ -109,6 +109,7 @@ module JABA
     attr_reader :services
     attr_reader :added
     attr_reader :modified
+    attr_reader :unchanged
     attr_reader :generated
 
     ValidEols = [:unix, :windows, :native].freeze
@@ -121,6 +122,7 @@ module JABA
       @generated_lookup = {}
       @added = []
       @modified = []
+      @unchanged = []
       @untracked = []
     end
 
@@ -158,6 +160,7 @@ module JABA
         @modified << fn
         :MODIFIED
       else
+        @unchanged << fn
         :UNCHANGED
       end
 

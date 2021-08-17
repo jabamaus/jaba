@@ -56,7 +56,7 @@ module JABA
               end
             end
           end
-          test :t # need an intance of test in order for block style defaults to be called
+          test :t # need an instance of test in order for block style defaults to be called
         end
       end
 

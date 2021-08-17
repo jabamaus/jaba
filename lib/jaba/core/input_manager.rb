@@ -109,6 +109,7 @@ module JABA
         c.add_option('--dry-run', help: 'Perform a dry run', type: :flag, var: :dry_run)
         c.add_option('--profile', help: 'Profiles with ruby-prof gem', type: :flag, var: :profile, dev_only: true)
         c.add_option('--barebones', help: 'Loads minimal modules', type: :flag, var: :barebones, dev_only: true)
+        c.add_option('--verbose', help: 'Prints extra information', type: :flag, var: :verbose)
       end
 
       @cmd = register_cmd(:gen, help: 'Regenerate buildsystem') do |c|
