@@ -119,7 +119,8 @@ module JABA
             end
           end
           if @parent
-            return @parent.get_attr(attr_id, fail_if_not_found: false, search: true)
+            a = @parent.get_attr(attr_id, fail_if_not_found: false, search: true)
+            return a if a
           end
         end
         if fail_if_not_found
