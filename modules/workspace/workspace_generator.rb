@@ -15,11 +15,11 @@ module JABA
     ##
     # For use by workspace generator. spec is either a defn_id or a wildcard match against projdir.
     # 
-    def get_matching_projects(projects, root, specs, errobj:)
+    def get_matching_projects(candidate_projects, projects, root, specs, errobj:)
       specs.each do |spec|
         if spec.string? && spec.wildcard?
           abs_spec = "#{root}/#{spec}"
-          matches = @candidate_projects.select do |p|
+          matches = candidate_projects.select do |p|
             File.fnmatch?(abs_spec, p.root)
            end
           if matches.empty?
@@ -27,7 +27,7 @@ module JABA
           end
           projects.concat(matches)
         else # its an id
-          matches = @candidate_projects.select do |p|
+          matches = candidate_projects.select do |p|
             p.handle.start_with?("#{spec}|")
           end
           if matches.empty?
@@ -44,18 +44,19 @@ module JABA
       # TODO: pass this in
       cpp_gen = get_generator(:cpp)
       host_gen = get_generator(:host)
-      @candidate_projects = cpp_gen.get_projects
       services.globals.target_hosts.each do |target_host_id|
         target_host = host_gen.node_from_handle(target_host_id.to_s)
         classname = target_host.attrs.workspace_classname
         next if classname.empty?
+        candidate_projects = cpp_gen.get_projects.select{|p| p.attrs.host == target_host_id}
+
         @root_nodes.each do |wsn|
           root = make_node_paths_absolute(wsn)
 
           projects = []
           projects_attr = wsn.get_attr(:projects)
           project_specs = projects_attr.value
-          get_matching_projects(projects, root, project_specs, errobj: projects_attr)
+          get_matching_projects(candidate_projects, projects, root, project_specs, errobj: projects_attr)
     
           if projects.empty?
             JABA.error("No projects matched specs", errobj: projects_attr)
