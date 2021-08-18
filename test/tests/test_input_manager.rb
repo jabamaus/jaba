@@ -7,14 +7,14 @@ module JABA
       super
       # General options, available to all commands
       #
-      register_cmdline_option('--value-opt', short: '-v', help: 'value opt', var: :value_opt, type: :value)
-      register_cmdline_option('--array-opt', short: '-a', help: 'array opt', var: :array_opt, type: :array)
+      services.input_manager.register_option('--value-opt', short: '-v', help: 'value opt', var: :value_opt, type: :value)
+      services.input_manager.register_option('--array-opt', short: '-a', help: 'array opt', var: :array_opt, type: :array)
 
-      register_cmdline_cmd(:cmd1, help: 'cmd1 help') do |c|
+      services.input_manager.register_cmd(:cmd1, help: 'cmd1 help') do |c|
         c.add_option('--cmd1-opt', help: 'cmd1 opt', var: :value_opt, type: :value)
       end
 
-      register_cmdline_cmd(:cmd2, help: 'cmd2 help') do |c|
+      services.input_manager.register_cmd(:cmd2, help: 'cmd2 help') do |c|
         c.add_option('--cmd2-opt', help: 'cmd2 opt', var: :value_opt, type: :value)
       end
     end

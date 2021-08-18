@@ -122,18 +122,6 @@ module JABA
 
     ##
     #
-    def register_cmdline_cmd(...)
-      services.input_manager.register_cmd(...)
-    end
-
-    ##
-    #
-    def register_cmdline_option(...)
-      services.input_manager.register_option(...)
-    end
-
-    ##
-    #
     def push_definition(d)
       @definition = d
       yield
