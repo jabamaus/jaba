@@ -21,7 +21,7 @@ module JABA
 
     ##
     #
-    def make_node_tree
+    def process_definition
       platforms = @definition.options[:platforms]
 
       target_platform_to_archs = {}

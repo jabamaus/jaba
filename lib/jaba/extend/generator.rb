@@ -73,7 +73,7 @@ module JABA
       
       @definitions.each do |d|
         push_definition(d) do
-          @root_nodes.concat(Array(make_node_tree))
+          @root_nodes.concat(Array(process_definition))
         end
       end
       
@@ -256,7 +256,7 @@ module JABA
     ##
     # Override this in sublcass if type needs to be split into more than one node.
     #
-    def make_node_tree
+    def process_definition
       make_node
     end
     

@@ -263,7 +263,7 @@ module JABA
     end
 
     ##
-    # Temporarily allow setting read only attrs. Used in generator make_node_tree methods when initialising read only attributes
+    # Temporarily allow setting read only attrs. Used in generator process_definition methods when initialising read only attributes
     #
     def allow_set_read_only_attrs
       @allow_set_read_only_attrs = true

@@ -234,7 +234,7 @@ module JABA
     
     ##
     #
-    def make_node_tree
+    def process_definition
       root_node = make_node
       
       root_node.attrs.platforms.each do |p|
