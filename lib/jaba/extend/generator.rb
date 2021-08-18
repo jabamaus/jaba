@@ -149,9 +149,6 @@ module JABA
 
       if parent
         JABA.error('name is required for child nodes') if !name
-        if name.is_a?(JabaNode)
-          name = name.defn_id
-        end
         handle = "#{parent.handle}|#{name}"
         depth = parent.depth + 1
       else
