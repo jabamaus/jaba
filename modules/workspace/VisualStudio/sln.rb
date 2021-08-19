@@ -20,7 +20,7 @@ module JABA
     def generate
       services.log "Generating #{@sln_file}", section: true
 
-      file = services.file_manager.new_file(@sln_file, eol: :windows, encoding: 'UTF-8', capacity: 32 * 1024)
+      file = services.new_file(@sln_file, eol: :windows, encoding: 'UTF-8', capacity: 32 * 1024)
       w = file.writer
 
       w << "Microsoft Visual Studio Solution File, Format Version 12.00" # TODO: soft code

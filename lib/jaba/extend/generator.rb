@@ -7,14 +7,15 @@ module JABA
   using JABACoreExt
   
   ##
-  # TODO: split this. Not nice having internal code mixed with generator code.
   #
   class Generator
     
     attr_reader :services
     attr_reader :type_id # eg :cpp, :text
     attr_reader :top_level_jaba_type
+    attr_reader :nodes
     attr_reader :root_nodes
+    attr_reader :plugin
 
     ##
     #
@@ -22,6 +23,7 @@ module JABA
       @services = services
       @definitions = []
       @delay_post_create = false
+      @plugin = nil
       @root_nodes = []
       @nodes = [] # all nodes
       @node_lookup = {}
@@ -58,7 +60,7 @@ module JABA
       
       @definitions.each do |d|
         push_definition(d) do
-          @root_nodes.concat(Array(process_definition))
+          @root_nodes.concat(Array(@plugin.process_definition(d)))
         end
       end
       
@@ -78,7 +80,7 @@ module JABA
         end
       end
 
-      make_host_objects
+      @plugin.make_host_objects
       
       @nodes.each do |n|
         n.each_attr do |a|
@@ -94,25 +96,6 @@ module JABA
     end
 
     ##
-    # Override this in sublcass if type needs to be split into more than one node.
-    #
-    def process_definition
-      make_node
-    end
-    
-    ##
-    # Override this in subclass
-    #
-    def make_host_objects
-    end
-
-    ##
-    #
-    def get_generator(top_level_type_id)
-      services.get_generator(top_level_type_id)
-    end
-
-    ##
     #
     def push_definition(d)
       @definition = d
@@ -121,7 +104,6 @@ module JABA
     end
 
     ##
-    # Call this from subclass
     #
     def make_node(sub_type_id: nil, name: nil, parent: nil, block_args: nil, &block)
       depth = 0
@@ -296,31 +278,28 @@ module JABA
       @root_nodes.each do |n|
         n.call_hook(:generate, receiver: n, use_api: false)
       end
-      generate
-    end
-
-    ##
-    # Override this in subclass
-    #
-    def generate
-    end
-
-    ##
-    # Override this in subclass.
-    #
-    def build_jaba_output(g_root, out_dir)
+      @plugin.generate
     end
 
   end
-  
+
   ##
-  # The default generator for a JabaType if none exists. Does no generation.
   #
   class DefaultGenerator < Generator
+  end
+  
+  ##
+  # The default plugin for a JabaType if none exists. Does no generation.
+  #
+  class DefaultPlugin < Plugin
+
+    def process_definition(definition)
+      services.make_node
+    end
 
     def make_host_objects
-      @root_nodes.each do |n|
-        make_node_paths_absolute(n)
+      services.root_nodes.each do |n|
+        services.make_node_paths_absolute(n)
       end
     end
   end

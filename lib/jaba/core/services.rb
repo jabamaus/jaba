@@ -21,6 +21,7 @@ require_relative 'jaba_attribute_hash'
 require_relative 'jaba_node'
 require_relative 'jaba_translator'
 require_relative 'jaba_type'
+require_relative '../extend/plugin'
 require_relative '../extend/generator'
 require_relative '../extend/project'
 require_relative '../extend/src'
@@ -507,6 +508,19 @@ module JABA
           klass = JABA.const_get(c)
           g = klass.new(self)
           @generator_lookup[id] = g
+
+          plugin_classname = "#{id}Plugin"
+          plugin_class = if JABA.const_defined?(plugin_classname)
+            JABA.const_get(plugin_classname)
+          else
+            Plugin
+          end
+          plugin = plugin_class.new
+          plugin_services = PluginServices.new
+          plugin_services.instance_variable_set(:@generator, g)
+          plugin.instance_variable_set(:@services, plugin_services)
+          g.instance_variable_set(:@plugin, plugin)
+          plugin.init
         end
       end
       @jaba_attr_types.sort_by!(&:id)
@@ -567,6 +581,12 @@ module JABA
       generator = @generator_lookup[generator_id]
       if generator.nil?
         generator = DefaultGenerator.new(self)
+        plugin_services = PluginServices.new
+        plugin_services.instance_variable_set(:@generator, generator)
+        default_plugin = DefaultPlugin.new
+        default_plugin.instance_variable_set(:@services, plugin_services)
+        generator.instance_variable_set(:@plugin, default_plugin)
+        default_plugin.init
       end
 
       tlt = TopLevelJabaType.new(self, dfn.id, dfn.src_loc, dfn.block, handle, generator)
@@ -905,7 +925,7 @@ module JABA
       @generators.each do |g|
         next if g.is_a?(DefaultGenerator)
         g_root = {}
-        g.build_jaba_output(g_root, out_dir)
+        g.plugin.build_jaba_output(g_root, out_dir)
         if !g_root.empty?
           @output[g.type_id] = g_root
         end

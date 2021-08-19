@@ -29,7 +29,6 @@
 - flag to control whether absolute paths allowed in file/dir attrs. Eg build_root_offset is not an offset if absolute path used.
   Is it even a path attr?
 - move bindir/libdir/objdir into globals.
-- Generate a default solution if none specified
 - Finish cutting over from check_fail to assert_jaba_error
 - ability to have build tree out of src but projects in src? config option to base projdir off src_root instead of dest_root?
 - Decide on format of jaba.output.json

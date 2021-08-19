@@ -174,7 +174,7 @@ module JABA
     def write_vcxproj
       services.log "Generating #{@vcxproj_file}", section: true
       
-      file = services.file_manager.new_file(@vcxproj_file, eol: :windows, encoding: 'UTF-8', capacity: 128 * 1024)
+      file = services.new_file(@vcxproj_file, eol: :windows, encoding: 'UTF-8', capacity: 128 * 1024)
       w = file.writer
       c = 32 * 1024
       @pc = file.work_area(capacity: c)
@@ -335,7 +335,7 @@ module JABA
     # See https://docs.microsoft.com/en-us/cpp/build/reference/vcxproj-filters-files?view=vs-2019
     #
     def write_vcxproj_filters
-      file = services.file_manager.new_file(@vcxproj_filters_file, eol: :windows, encoding: 'UTF-8', capacity: 16 * 1024)
+      file = services.new_file(@vcxproj_filters_file, eol: :windows, encoding: 'UTF-8', capacity: 16 * 1024)
       w = file.writer
 
       write_xml_version(w)

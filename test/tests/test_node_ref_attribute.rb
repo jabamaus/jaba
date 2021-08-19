@@ -268,17 +268,20 @@ module JABA
     end
   end
 
+  # TODO: remove
   class TestprojGenerator < Generator
-          
-    def process_definition
-      platforms_node = make_node
+  end
+  
+  class TestprojPlugin < Plugin
+    def process_definition(definition)
+      platforms_node = services.make_node
       
       platforms_node.attrs.platforms.each do |p|
-        hosts_node = make_node(sub_type_id: :platform, name: p, parent: platforms_node) do
+        hosts_node = services.make_node(sub_type_id: :platform, name: p, parent: platforms_node) do
           platform p
         end
         hosts_node.attrs.hosts.each do |h|
-          make_node(sub_type_id: :main, name: h, parent: hosts_node) do 
+          services.make_node(sub_type_id: :main, name: h, parent: hosts_node) do 
             host h
           end
         end

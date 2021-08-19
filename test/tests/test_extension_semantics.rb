@@ -204,13 +204,15 @@ module JABA
   end
 
   ##
-  #
+  # TODO: remove
   class Test_projectGenerator < Generator
+  end
+    
+  class Test_projectPlugin < Plugin
     
     ##
     #
-    def initialize(services)
-      super
+    def init
       @projects = []
     end
 
@@ -234,18 +236,18 @@ module JABA
     
     ##
     #
-    def process_definition
-      root_node = make_node
+    def process_definition(definition)
+      root_node = services.make_node
       
       root_node.attrs.platforms.each do |p|
-        project = make_node(sub_type_id: :project, name: p, parent: root_node) do 
+        project = services.make_node(sub_type_id: :project, name: p, parent: root_node) do 
           platform p
           platform_ref p
         end
         @projects << project
         
         project.attrs.configs.each do |c|
-          make_node(sub_type_id: :config, name: c, parent: project) { config c }
+          services.make_node(sub_type_id: :config, name: c, parent: project) { config c }
         end
       end
       root_node

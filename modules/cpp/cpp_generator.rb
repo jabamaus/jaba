@@ -6,14 +6,18 @@ module JABA
 
   using JABACoreExt
 
+  class CppGenerator < Generator
+  end
+  
   ##
   #
-  class CppGenerator < Generator
+  class CppPlugin < Plugin
     
+    attr_reader :projects
+
     ##
     #
-    def initialize(services)
-      super
+    def init
       @all_project_nodes = []
       @host_to_project_nodes = {}
       @projects = []
@@ -22,8 +26,8 @@ module JABA
 
     ##
     #
-    def process_definition
-      platforms = @definition.options[:platforms]
+    def process_definition(definition)
+      platforms = definition.options[:platforms]
 
       target_platform_to_archs = {}
       platforms.each do |pspec|
@@ -35,16 +39,17 @@ module JABA
         target_platform_to_archs.push_value(platform, arch)
       end
 
-      host_gen = get_generator(:host)
+      # TODO: tidy up by making node_from_handle better
+      host_plugin = services.get_plugin(:host)
 
       services.globals.target_hosts.each do |target_host_id|
-        target_host = host_gen.node_from_handle(target_host_id.to_s)
+        target_host = host_plugin.services.node_from_handle(target_host_id.to_s)
         supported_platforms = target_host.attrs.cpp_supported_platforms
 
         target_platform_to_archs.each do |tp, target_archs|
           next if !supported_platforms.include?(tp)
           
-          project_node = make_node(sub_type_id: :project, name: "#{target_host.defn_id}|#{tp}") do
+          project_node = services.make_node(sub_type_id: :project, name: "#{target_host.defn_id}|#{tp}") do
             host target_host.defn_id
             host_ref target_host
             platform tp
@@ -56,7 +61,7 @@ module JABA
 
           project_node.attrs.configs.each do |cfg|
             target_archs.each do |ta|
-              make_node(sub_type_id: :config, name: "#{ta}|#{cfg}", parent: project_node) do
+              services.make_node(sub_type_id: :config, name: "#{ta}|#{cfg}", parent: project_node) do
                 config cfg
                 arch ta
                 arch_ref ta
@@ -65,7 +70,7 @@ module JABA
           end
 
           if project_node.attrs.workspace
-            defn_id = @definition.id
+            defn_id = definition.id
             services.execute_jdl do
               workspace defn_id do
                 projects defn_id
@@ -92,7 +97,7 @@ module JABA
       end
 
       @all_project_nodes.each do |pn|
-        make_node_paths_absolute(pn)
+        services.make_node_paths_absolute(pn)
       end
       
       @all_project_nodes.reverse_each do |node|
@@ -141,12 +146,6 @@ module JABA
         JABA.error("'#{node.describe}' not found")
       end
       p
-    end
-
-    ##
-    #
-    def get_projects
-      @projects
     end
 
     ##

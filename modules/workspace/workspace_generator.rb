@@ -9,11 +9,15 @@ module JABA
   ##
   #
   class WorkspaceGenerator < Generator
+  end
     
+  ##
+  #
+  class WorkspacePlugin < Plugin
+
     ##
     #
-    def initialize(services)
-      super
+    def init
       @workspaces = []
     end
 
@@ -28,7 +32,7 @@ module JABA
             File.fnmatch?(abs_spec, p.root)
            end
           if matches.empty?
-            @services.jaba_warn("No projects matching spec '#{spec.inspect_unquoted}' found", errobj: errobj)
+            services.jaba_warn("No projects matching spec '#{spec.inspect_unquoted}' found", errobj: errobj)
           end
           projects.concat(matches)
         else # its an id
@@ -45,18 +49,24 @@ module JABA
 
     ##
     #
+    def process_definition(definition)
+      services.make_node
+    end
+
+    ##
+    #
     def make_host_objects
       # TODO: pass this in
-      cpp_gen = get_generator(:cpp)
-      host_gen = get_generator(:host)
+      cpp_plugin = services.get_plugin(:cpp)
+      host_plugin = services.get_plugin(:host)
       services.globals.target_hosts.each do |target_host_id|
-        target_host = host_gen.node_from_handle(target_host_id.to_s)
+        target_host = host_plugin.services.node_from_handle(target_host_id.to_s)
         classname = target_host.attrs.workspace_classname
         next if classname.empty?
-        candidate_projects = cpp_gen.get_projects.select{|p| p.attrs.host == target_host_id}
+        candidate_projects = cpp_plugin.projects.select{|p| p.attrs.host == target_host_id}
 
-        @root_nodes.each do |wsn|
-          root = make_node_paths_absolute(wsn)
+        services.root_nodes.each do |wsn|
+          root = services.make_node_paths_absolute(wsn)
 
           projects = []
           projects_attr = wsn.get_attr(:projects)
@@ -101,7 +111,7 @@ module JABA
     ##
     # 
     def build_jaba_output(g_root, out_dir)
-      @root_nodes.each do |w|
+      @workspaces.each do |w|
         w_root = {}
         g_root[w.handle] = w_root
         #p.build_jaba_output(p_root, out_dir)

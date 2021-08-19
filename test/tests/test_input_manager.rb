@@ -2,19 +2,23 @@
 
 module JABA
 
+  # TODO: remove
   class Test_imGenerator < Generator
-    def initialize(services)
-      super
+  end
+
+  class Test_imPlugin < Plugin
+
+    def init
       # General options, available to all commands
       #
-      services.input_manager.register_option('--value-opt', short: '-v', help: 'value opt', var: :value_opt, type: :value)
-      services.input_manager.register_option('--array-opt', short: '-a', help: 'array opt', var: :array_opt, type: :array)
+      services.register_option('--value-opt', short: '-v', help: 'value opt', var: :value_opt, type: :value)
+      services.register_option('--array-opt', short: '-a', help: 'array opt', var: :array_opt, type: :array)
 
-      services.input_manager.register_cmd(:cmd1, help: 'cmd1 help') do |c|
+      services.register_cmd(:cmd1, help: 'cmd1 help') do |c|
         c.add_option('--cmd1-opt', help: 'cmd1 opt', var: :value_opt, type: :value)
       end
 
-      services.input_manager.register_cmd(:cmd2, help: 'cmd2 help') do |c|
+      services.register_cmd(:cmd2, help: 'cmd2 help') do |c|
         c.add_option('--cmd2-opt', help: 'cmd2 opt', var: :value_opt, type: :value)
       end
     end
