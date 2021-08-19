@@ -87,7 +87,8 @@ module JABA
     attr_reader :title
     attr_reader :notes
     attr_reader :singleton
-    attr_reader :generator
+    attr_reader :plugin
+    attr_reader :node_manager
     attr_reader :defaults_definition
     attr_reader :dependencies
     attr_reader :all_attr_defs_sorted
@@ -95,10 +96,11 @@ module JABA
 
     ##
     #
-    def initialize(services, defn_id, src_loc, block, handle, generator)
+    def initialize(services, defn_id, src_loc, block, handle, plugin, node_manager)
       super(services, defn_id, src_loc, handle, self)
 
-      @generator = generator
+      @plugin = plugin
+      @node_manager = node_manager
       @defaults_definition = services.get_defaults_definition(@defn_id)
 
       @all_attr_defs = {}

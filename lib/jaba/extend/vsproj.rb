@@ -19,7 +19,7 @@ module JABA
 
     ##
     #
-    def initialize(generator, node)
+    def initialize(plugin, node)
       super
       @projdir = @attrs.projdir
       @host = @attrs.host_ref

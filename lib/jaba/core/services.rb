@@ -10,6 +10,7 @@ require_relative 'core_ext'
 require_relative 'utils'
 require_relative 'file_manager'
 require_relative 'input_manager'
+require_relative 'node_manager'
 require_relative 'standard_paths'
 require_relative 'jaba_object'
 require_relative 'jaba_attribute_type'
@@ -22,7 +23,6 @@ require_relative 'jaba_node'
 require_relative 'jaba_translator'
 require_relative 'jaba_type'
 require_relative '../extend/plugin'
-require_relative '../extend/generator'
 require_relative '../extend/project'
 require_relative '../extend/src'
 require_relative '../extend/vsproj'
@@ -119,8 +119,7 @@ module JABA
       @jaba_type_lookup = {}
       @translators = {}
 
-      @generators = []
-      @generator_lookup = {}
+      @plugin_lookup = {}
 
       @globals_type_def = nil
       @globals = nil
@@ -130,7 +129,7 @@ module JABA
       @null_nodes = {}
       
       @in_attr_default_block = false
-      @processing_generators = false
+      @processing_top_level_types = false
 
       @top_level_api = JDL_TopLevel.new(self)
       @file_manager = FileManager.new(self)
@@ -248,7 +247,7 @@ module JABA
       #
       @jaba_type_defs.prepend(@globals_type_def)
 
-      # Create JabaTypes and any associated Generators
+      # Create JabaTypes and any associated plugins
       #
       @jaba_type_defs.each do |d|
         make_top_level_type(d.id, d)
@@ -275,15 +274,11 @@ module JABA
 
       log 'Initialisation of JabaTypes complete'
 
-      # Now that the JabaTypes are dependency sorted build generator list from them, so they are in dependency order too
-      #
-      @generators = @top_level_jaba_types.map(&:generator)
-
-      # Process instance definitions and assign them to a generator
+      # Process instance definitions and assign them to a top level type/node manager
       #
       @instance_defs.each do |d|
-        jt = get_top_level_jaba_type(d.jaba_type_id, errobj: d)
-        jt.generator.register_instance_definition(d)
+        tlt = get_top_level_jaba_type(d.jaba_type_id, errobj: d)
+        tlt.node_manager.register_instance_definition(d)
       end
 
       # Register instance open defs
@@ -314,16 +309,16 @@ module JABA
         sd.open_defs << d
       end
 
-      @processing_generators = true
+      @processing_top_level_types = true
 
       # Process globals first, separately so that it is possible to get in and set them from the command line.
       # For this reason delay post_create checking until the command line has been processed. If this was not
       # done a global attribute flagged as :required could fail if it is supplied on the command line.
       #
-      globals_generator = @generators[0]
-      globals_generator.process(delay_post_create: true)
+      globals_type = @top_level_jaba_types.first
+      globals_type.node_manager.process(delay_post_create: true)
 
-      @globals_node = globals_generator.root_nodes.first
+      @globals_node = globals_type.node_manager.root_nodes.first
       @globals = @globals_node.attrs
 
       set_global_attrs_from_cmdline
@@ -333,11 +328,11 @@ module JABA
 =begin
       process_config_file if !JABA.running_tests?
 =end
-      1.upto(@generators.size-1) do |i|
-        @generators[i].process
+      1.upto(@top_level_jaba_types.size-1) do |i|
+        @top_level_jaba_types[i].node_manager.process
       end
 
-      @processing_generators = false
+      @processing_top_level_types = false
 
       # Output definition input data as a json file, before generation. This is raw data as generated from the definitions.
       # Can be used for debugging and testing.
@@ -350,7 +345,14 @@ module JABA
 
       # Write final files
       #
-      @generators.each(&:generate)
+      @top_level_jaba_types.each do |pt|
+        # Call generate blocks defined per-node instance, in the context of the node itself, not its api
+        #
+        pt.node_manager.root_nodes.each do |n|
+          n.call_hook(:generate, receiver: n, use_api: false)
+        end
+        pt.plugin.generate
+      end
     end
     
     ##
@@ -497,34 +499,39 @@ module JABA
           make_attr_type(JABA.const_get(c))
         when /^JabaAttrDefFlag./
           make_attr_flag(JABA.const_get(c))
-        when /^(.+)Generator$/
-          # Create non-default generators up front (eg CppGenerator, WorkspaceGenerator). There will only be one instance
-          # of each of these. DefaultGenerators will be created later as there will be one created for each jaba type that
-          # has not defined its own generator. Creating generators up front allows generators to register early with the
+        when /^(.+)Plugin$/
+          # Create non-default plugins up front (eg CppPlugin, WorkspacePlugin). There will only be one instance
+          # of each of these. DefaultPlugins will be created later as there will be one created for each jaba type that
+          # has not defined its own plugin. Creating plugins up front allows plugins to register early with the
           # system.
           #
-          next if c == :DefaultGenerator
+          next if c == :DefaultPlugin
+          
           id = Regexp.last_match(1)
           klass = JABA.const_get(c)
-          g = klass.new(self)
-          @generator_lookup[id] = g
-
-          plugin_classname = "#{id}Plugin"
-          plugin_class = if JABA.const_defined?(plugin_classname)
-            JABA.const_get(plugin_classname)
-          else
-            Plugin
-          end
-          plugin = plugin_class.new
-          plugin_services = PluginServices.new
-          plugin_services.instance_variable_set(:@generator, g)
-          plugin.instance_variable_set(:@services, plugin_services)
-          g.instance_variable_set(:@plugin, plugin)
-          plugin.init
+          plugin = make_plugin(klass)
+          @plugin_lookup[id] = plugin
         end
       end
       @jaba_attr_types.sort_by!(&:id)
       @jaba_attr_flags.sort_by!(&:id)
+    end
+
+    ##
+    #
+    def make_plugin(klass)
+      ps = PluginServices.new
+      ps.instance_variable_set(:@services, self)
+
+      nm = NodeManager.new(self)
+      ps.instance_variable_set(:@node_manager, nm)
+
+      plugin = klass.new
+      plugin.instance_variable_set(:@services, ps)
+      nm.instance_variable_set(:@plugin, plugin)
+
+      plugin.init
+      plugin
     end
 
     ##
@@ -577,20 +584,15 @@ module JABA
         JABA.error("'#{handle}' jaba type multiply defined")
       end
 
-      generator_id = dfn.id.to_s.capitalize_first
-      generator = @generator_lookup[generator_id]
-      if generator.nil?
-        generator = DefaultGenerator.new(self)
-        plugin_services = PluginServices.new
-        plugin_services.instance_variable_set(:@generator, generator)
-        default_plugin = DefaultPlugin.new
-        default_plugin.instance_variable_set(:@services, plugin_services)
-        generator.instance_variable_set(:@plugin, default_plugin)
-        default_plugin.init
+      plugin_id = dfn.id.to_s.capitalize_first # egg Cpp/Workspace
+      plugin = @plugin_lookup[plugin_id]
+      if !plugin
+        plugin = make_plugin(DefaultPlugin)
       end
 
-      tlt = TopLevelJabaType.new(self, dfn.id, dfn.src_loc, dfn.block, handle, generator)
-      generator.set_top_level_type(tlt)
+      nm = plugin.services.instance_variable_get(:@node_manager)
+      tlt = TopLevelJabaType.new(self, dfn.id, dfn.src_loc, dfn.block, handle, plugin, nm)
+      nm.set_top_level_type(tlt)
 
       @top_level_jaba_types  << tlt
       @jaba_type_lookup[handle] = tlt
@@ -707,13 +709,13 @@ module JABA
 
       @instance_def_lookup.push_value(type_id, d)
 
-      # Generators are allowed to create more instances while they are being processed. eg the cpp generator
-      # automatically creates workspaces. If generators are already being processed create the instance
+      # Top level types are allowed to create more instances while they are being processed. eg the cpp plugin
+      # automatically creates workspaces. If top evel types are already being processed create the instance
       # immediately, otherwise save for later (as jaba types will not have been created yet).
       #
-      if @processing_generators
+      if @processing_top_level_types
         jt = get_top_level_jaba_type(d.jaba_type_id, errobj: d)
-        jt.generator.register_instance_definition(d)
+        jt.node_manager.register_instance_definition(d)
       else
         @instance_defs << d
       end
@@ -853,10 +855,9 @@ module JABA
 
     ##
     #
-    def get_generator(top_level_type_id)
-      g = @generators.find {|g| g.type_id == top_level_type_id}
-      JABA.error("'#{top_level_type_id.inspect_unquoted}' generator not found") if !g
-      g
+    def get_plugin(top_level_type_id)
+      jt = get_top_level_jaba_type(top_level_type_id)
+      jt.plugin
     end
 
     ##
@@ -877,11 +878,11 @@ module JABA
       root = {}
       root[:jdl_files] = @jdl_files
 
-      @generators.each do |g|
-        g.root_nodes.each do |rn|
+      @top_level_jaba_types.each do |tlt|
+        tlt.node_manager.root_nodes.each do |rn|
           obj = {}
-          root["#{g.type_id}|#{rn.handle}"] = obj
-          write_node_json(g, root, rn, obj)
+          root["#{p.type_id}|#{rn.handle}"] = obj
+          write_node_json(p, root, rn, obj)
         end
       end
       json = JSON.pretty_generate(root)
@@ -893,15 +894,15 @@ module JABA
 
     ##
     #
-    def write_node_json(generator, root, node, obj)
+    def write_node_json(plugin, root, node, obj)
       node.visit_attr(top_level: true) do |attr, val|
         obj[attr.defn_id] = val
       end
       if !node.children.empty?
         node.children.each do |child|
           child_obj = {}
-          root["#{generator.type_id}|#{child.handle}"] = child_obj
-          write_node_json(generator, root, child, child_obj)
+          root["#{plugin.type_id}|#{child.handle}"] = child_obj
+          write_node_json(plugin, root, child, child_obj)
         end
       end
     end
@@ -922,12 +923,12 @@ module JABA
       @output[:build_root] = input.build_root
       @output[:generated] = @generated
 
-      @generators.each do |g|
-        next if g.is_a?(DefaultGenerator)
-        g_root = {}
-        g.plugin.build_jaba_output(g_root, out_dir)
-        if !g_root.empty?
-          @output[g.type_id] = g_root
+      @top_level_jaba_types.each do |tlt|
+        next if tlt.plugin.is_a?(DefaultPlugin)
+        root = {}
+        tlt.plugin.build_jaba_output(root, out_dir)
+        if !root.empty?
+          @output[tlt.defn_id] = root
         end
       end
 

@@ -10,8 +10,8 @@ module JABA
 
     ##
     #
-    def initialize(generator, node, projects, configs)
-      super(generator, node)
+    def initialize(plugin, node, projects, configs)
+      super(plugin, node)
       @projects = projects
       @configs = configs
       @name = @attrs.name

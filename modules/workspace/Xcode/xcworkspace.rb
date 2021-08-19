@@ -8,7 +8,7 @@ module JABA
 
     ##
     #
-    def initialize(generator, node, projects, configs)
+    def initialize(plugin, node, projects, configs)
       super
     end
 

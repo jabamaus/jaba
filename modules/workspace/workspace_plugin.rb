@@ -5,11 +5,6 @@
 module JABA
 
   using JABACoreExt
-
-  ##
-  #
-  class WorkspaceGenerator < Generator
-  end
     
   ##
   #
@@ -22,7 +17,6 @@ module JABA
     end
 
     ##
-    # For use by workspace generator. spec is either a defn_id or a wildcard match against projdir.
     # 
     def get_matching_projects(candidate_projects, projects, root, specs, errobj:)
       specs.each do |spec|
@@ -110,10 +104,10 @@ module JABA
     
     ##
     # 
-    def build_jaba_output(g_root, out_dir)
+    def build_jaba_output(root, out_dir)
       @workspaces.each do |w|
         w_root = {}
-        g_root[w.handle] = w_root
+        root[w.handle] = w_root
         #p.build_jaba_output(p_root, out_dir)
       end
     end

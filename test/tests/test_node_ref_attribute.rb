@@ -267,10 +267,6 @@ module JABA
       end
     end
   end
-
-  # TODO: remove
-  class TestprojGenerator < Generator
-  end
   
   class TestprojPlugin < Plugin
     def process_definition(definition)

@@ -281,7 +281,7 @@ module JABA
     end
 
     ##
-    # This is called twice as generators can register additional commands and options after the first pass.
+    # This is called twice as plugins can register additional commands and options after the first pass.
     #
     def process_cmd_line
       return if input.argv.empty?

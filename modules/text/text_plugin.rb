@@ -5,11 +5,6 @@
 module JABA
 
   using JABACoreExt
-  
-  ##
-  #
-  class TextGenerator < Generator
-  end
 
   ##
   #
@@ -40,9 +35,9 @@ module JABA
     
     ##
     #
-    def build_jaba_output(g_root, out_dir)
+    def build_jaba_output(root, out_dir)
       services.nodes.each do |n|
-        g_root[:filename] = n.attrs.filename.relative_path_from(out_dir)
+        root[:filename] = n.attrs.filename.relative_path_from(out_dir)
       end
     end
 

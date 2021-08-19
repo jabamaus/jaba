@@ -2,7 +2,7 @@
 - validate that platforms passed in correctly to cpp module
 - Experiment with using macros instead of direct object access. Would solve a few problems...
 - Disallow nested src_roots 
-- Add a jaba plugin example that defines a generator
+- Add a jaba plugin example
 - should string attr be allowed to be set to nil? Probably not.
 - Stop globals from having dependencies.
 - Add a 'referenced by' doc item for types.
@@ -59,7 +59,6 @@
 - Have a command line switch to make all error messages contain absolute paths
 - How customise jaba output file? Subclass vcxproj or jdl definition, or something else?
 - support for 'overriding' attribute defs when opening types
-- make_generator should be able to make subclasses of eg CppGenerator
 - make paths in jaba.output.json relative to itself. Introduce json node writing api to wrap this up and to make it robust.
 - Have a way of globally setting default for :platforms, :hosts and :configs (and for clearing)
 - Make :nocheckexists do something
@@ -94,7 +93,7 @@ if there are multiple attrs, with a warning.
     flags :required, :no_sort
   end
 
-- check for duplicate filenames at generator level, with proper error reporting
+- check for duplicate filenames at plugin level, with proper error reporting
 - Make contents of attr def defaults overidable by user, including calling super
 - Make _ID be id of the definition the code is in, such that it works even inside a block that is being executed in the context of a different jaba object
 - Ability to reverse engineer jaba definitions from existing vsprojects

@@ -128,9 +128,9 @@ module JABA
         JABA.error("Only for use with :node attribute type")
       end
       node_type = @attr_def.node_type
-      g = services.get_generator(node_type)
-      g.push_definition(services.make_definition(@attr_def.defn_id, block, __jdl_call_loc)) do
-        return g.make_node(name: id, parent: @node, block_args: block_args)
+      nm = services.get_top_level_jaba_type(node_type).node_manager
+      nm.push_definition(services.make_definition(@attr_def.defn_id, block, __jdl_call_loc)) do
+        return nm.make_node(name: id, parent: @node, block_args: block_args)
       end
     end
 
@@ -258,7 +258,7 @@ module JABA
           # of the same type will have been created by this point whereas nodes of a different type will all have been created
           # due to having been dependency sorted. References to the same type are resolved after all nodes have been created.
           #
-          @value = @node.jaba_type.top_level_type.generator.resolve_reference(self, new_value, ignore_if_same_type: true)
+          @value = @node.jaba_type.top_level_type.node_manager.resolve_reference(self, new_value, ignore_if_same_type: true)
         end
       else
         @value.freeze # Prevents value from being changed directly after it has been returned by 'value' method

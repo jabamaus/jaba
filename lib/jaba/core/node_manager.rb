@@ -8,7 +8,7 @@ module JABA
   
   ##
   #
-  class Generator
+  class NodeManager
     
     attr_reader :services
     attr_reader :type_id # eg :cpp, :text
@@ -48,7 +48,7 @@ module JABA
     ##
     #
     def describe
-      "'#{@type_id}' generator"
+      "'#{@type_id}' node manager"
     end
 
     ##
@@ -200,7 +200,7 @@ module JABA
       else
         "#{ref_node_id}"
       end
-      ref_node = rjt.generator.node_from_handle(handle, fail_if_not_found: false)
+      ref_node = rjt.node_manager.node_from_handle(handle, fail_if_not_found: false)
       if ref_node.nil?
         unresolved_msg_block = attr_def.unresolved_msg
         err_msg = if unresolved_msg_block
@@ -268,39 +268,6 @@ module JABA
         end
       end
       root
-    end
-    
-    ##
-    #
-    def generate
-      # Call generator blocks defined per-node instance, in the context of the node itself, not its api
-      #
-      @root_nodes.each do |n|
-        n.call_hook(:generate, receiver: n, use_api: false)
-      end
-      @plugin.generate
-    end
-
-  end
-
-  ##
-  #
-  class DefaultGenerator < Generator
-  end
-  
-  ##
-  # The default plugin for a JabaType if none exists. Does no generation.
-  #
-  class DefaultPlugin < Plugin
-
-    def process_definition(definition)
-      services.make_node
-    end
-
-    def make_host_objects
-      services.root_nodes.each do |n|
-        services.make_node_paths_absolute(n)
-      end
     end
   end
 

@@ -2,10 +2,6 @@
 
 module JABA
 
-  # TODO: remove
-  class Test_imGenerator < Generator
-  end
-
   class Test_imPlugin < Plugin
 
     def init

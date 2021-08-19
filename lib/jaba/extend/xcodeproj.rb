@@ -14,7 +14,7 @@ module JABA
     
     ##
     #
-    def initialize(generator, node)
+    def initialize(plugin, node)
       super
       @projdir = @attrs.projdir
       @projname = @attrs.projname

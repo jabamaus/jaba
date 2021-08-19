@@ -15,7 +15,7 @@ module JABA
     
     ##
     #
-    def initialize(generator, node)
+    def initialize(plugin, node)
       super
       @projname = @attrs.projname
       @vcxproj_file = "#{@projdir}/#{@projname}.vcxproj"
@@ -303,7 +303,7 @@ module JABA
       if !deps.empty?
         item_group(w) do
           deps.each do |dep|
-            proj_ref = @generator.project_from_node(dep)
+            proj_ref = @plugin.project_from_node(dep)
             w << "    <ProjectReference Include=\"#{proj_ref.vcxproj_file.relative_path_from(projdir, backslashes: true)}\">"
             w << "      <Project>#{proj_ref.guid}</Project>"
             # TODO: reference properties

@@ -203,21 +203,12 @@ module JABA
 
   end
 
-  ##
-  # TODO: remove
-  class Test_projectGenerator < Generator
-  end
-    
   class Test_projectPlugin < Plugin
     
-    ##
-    #
     def init
       @projects = []
     end
 
-    ##
-    #
     def generate
       @projects.size.must_equal 1
 
@@ -234,8 +225,6 @@ module JABA
       end
     end
     
-    ##
-    #
     def process_definition(definition)
       root_node = services.make_node
       

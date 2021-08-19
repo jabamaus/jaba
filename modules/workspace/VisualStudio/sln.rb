@@ -10,7 +10,7 @@ module JABA
 
     ##
     #
-    def initialize(generator, node, projects, configs)
+    def initialize(plugin, node, projects, configs)
       super
       @sln_file = "#{@workspacedir}/#{@name}.sln"
     end
