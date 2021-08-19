@@ -41,6 +41,11 @@ module JABA
 
     ##
     #
+    def generate
+    end
+    
+    ##
+    #
     def each_config(&block)
       @node.visit_node(type_id: :config, &block)
     end
