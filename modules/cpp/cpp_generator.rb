@@ -16,7 +16,8 @@ module JABA
     #
     def initialize(services)
       super
-      @project_nodes = []
+      @all_project_nodes = []
+      @host_to_project_nodes = {}
     end
 
     ##
@@ -39,26 +40,30 @@ module JABA
       services.globals.target_hosts.each do |target_host_id|
         target_host = host_gen.node_from_handle(target_host_id.to_s)
         supported_platforms = target_host.attrs.cpp_supported_platforms
-        target_platform_to_archs.each do |target_platform, target_archs|
-          next if !supported_platforms.include?(target_platform)
-          project_node = make_node(sub_type_id: :project, name: "#{target_host.defn_id}|#{target_platform}") do
+
+        target_platform_to_archs.each do |tp, target_archs|
+          next if !supported_platforms.include?(tp)
+          
+          project_node = make_node(sub_type_id: :project, name: "#{target_host.defn_id}|#{tp}") do
             host target_host.defn_id
             host_ref target_host
-            platform target_platform
-            platform_ref target_platform
+            platform tp
+            platform_ref tp
           end
 
-          @project_nodes << project_node
+          @all_project_nodes << project_node
+          @host_to_project_nodes.push_value(target_host, project_node)
 
           project_node.attrs.configs.each do |cfg|
-            target_archs.each do |target_arch|
-              make_node(sub_type_id: :config, name: "#{target_arch}|#{cfg}", parent: project_node) do
+            target_archs.each do |ta|
+              make_node(sub_type_id: :config, name: "#{ta}|#{cfg}", parent: project_node) do
                 config cfg
-                arch target_arch
-                arch_ref target_arch
+                arch ta
+                arch_ref ta
               end
             end
           end
+          
           if project_node.attrs.workspace
             defn_id = @definition.id
             services.execute_jdl do
@@ -69,7 +74,7 @@ module JABA
           end
         end
       end
-      @project_nodes
+      @all_project_nodes
     end
 
     ##
@@ -81,16 +86,16 @@ module JABA
         end
       end
       
-      @project_nodes.sort!{|x, y| x.handle.casecmp(y.handle)}
-      @project_nodes.sort_topological! do |n, &b|
+      @all_project_nodes.sort!{|x, y| x.handle.casecmp(y.handle)}
+      @all_project_nodes.sort_topological! do |n, &b|
         n.attrs.deps.each(&b)
       end
 
-      @project_nodes.each do |pn|
+      @all_project_nodes.each do |pn|
         make_node_paths_absolute(pn)
       end
       
-      @project_nodes.reverse_each do |node|
+      @all_project_nodes.reverse_each do |node|
         node.attrs.deps.each do |dep_node|
           process_node_exports(node, dep_node)
           dep_node.children.each do |dep_cfg|
@@ -107,10 +112,15 @@ module JABA
         end
       end
 
-      @project_nodes.each do |pn|
-        klass = pn.attrs.host_ref.attrs.cpp_project_classname
-        proj = make_project(klass, pn)
-        proj.post_create
+      @host_to_project_nodes.each do |host, project_nodes|
+        if host.defn_id == :ninja
+        else
+          klass = host.attrs.cpp_project_classname
+          project_nodes.each do |pn|
+            proj = make_project(klass, pn)
+            proj.post_create
+          end
+        end
       end
     end
 
