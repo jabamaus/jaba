@@ -6,16 +6,27 @@ module JABA
 
   using JABACoreExt
   
-  class Workspace < Project
+  class Workspace
+
+    attr_reader :services
 
     ##
     #
     def initialize(plugin, node, projects, configs)
-      super(plugin, node)
+      @plugin = plugin
+      @services = @plugin.services
+      @node = node
+      @attrs = node.attrs
       @projects = projects
       @configs = configs
       @name = @attrs.name
       @workspacedir = @attrs.workspacedir
+    end
+
+    ##
+    #
+    def handle
+      @node.handle
     end
 
   end

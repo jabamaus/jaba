@@ -8,27 +8,40 @@ module JABA
 
   ##
   #
-  class VSProj < Project
+  class VSProj
   
     include SrcFileSupport
     
+    attr_reader :services
+    attr_reader :attrs
     attr_reader :projdir
     attr_reader :host
     attr_reader :platform # In theory multiple platforms need to be supported...
     attr_reader :guid
+    attr_reader :root
 
     ##
     #
     def initialize(plugin, node)
-      super
+      @plugin = plugin
+      @services = plugin.services
+      @node = node
+      @attrs = node.attrs
       @projdir = @attrs.projdir
       @host = @attrs.host_ref
       @platform = @attrs.platform_ref
       @guid = @attrs.guid
+      @root = @attrs.root
     end
-    
+
     ##
-    # Overridden from Project
+    #
+    def handle
+      @node.handle
+    end
+
+    ##
+    # Required by SrcFileSupport
     #
     def want_backslashes?
       true

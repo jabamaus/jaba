@@ -12,6 +12,11 @@ module JABA
       super
     end
 
+    ##
+    #
+    def generate
+    end
+
   end
 
 end

@@ -8,17 +8,29 @@ module JABA
 
   ##
   #
-  class Xcodeproj < Project
+  class Xcodeproj
   
     include SrcFileSupport
     
+    attr_reader :services
+    attr_reader :attrs
+
     ##
     #
     def initialize(plugin, node)
-      super
+      @plugin = plugin
+      @node = node
+      @attrs = node.attrs
       @projdir = @attrs.projdir
       @projname = @attrs.projname
       @host = @attrs.host_ref
+      @root = @attrs.root
+    end
+
+    ##
+    #
+    def handle
+      @node.handle
     end
 
     ##

@@ -15,7 +15,6 @@ module JABA
     attr_reader :top_level_jaba_type
     attr_reader :nodes
     attr_reader :root_nodes
-    attr_reader :plugin
 
     ##
     #
@@ -48,7 +47,7 @@ module JABA
     ##
     #
     def describe
-      "'#{@type_id}' node manager"
+      "'#{type_id}' node manager"
     end
 
     ##
