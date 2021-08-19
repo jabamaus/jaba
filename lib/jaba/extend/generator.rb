@@ -272,8 +272,8 @@ module JABA
     
     ##
     #
-    def perform_generation
-      # Call generators defined per-node instance, in the context of the node itself, not its api
+    def generate
+      # Call generator blocks defined per-node instance, in the context of the node itself, not its api
       #
       @root_nodes.each do |n|
         n.call_hook(:generate, receiver: n, use_api: false)

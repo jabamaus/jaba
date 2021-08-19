@@ -350,7 +350,7 @@ module JABA
 
       # Write final files
       #
-      @generators.each(&:perform_generation)
+      @generators.each(&:generate)
     end
     
     ##
