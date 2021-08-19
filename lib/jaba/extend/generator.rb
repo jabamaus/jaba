@@ -11,27 +11,6 @@ module JABA
   #
   class Generator
     
-    # Define wrappers so that Generator subclass can work with the kind of objects it wants and not have to
-    # call everything a 'host_object' which would get very confusing. Using :project here would be very 
-    # common but the WorkspaceGenerator uses :workspace, for example.
-    #
-    def self.work_with(type)
-      class_eval %Q{
-        def make_#{type}(...)
-          make_host_object(...)
-        end
-        def #{type}_from_node(...)
-          host_object_from_node(...)
-        end
-        def each_#{type}(&block)
-          @host_objects.each(&block)
-        end
-        def get_#{type}s
-          @host_objects
-        end
-      }, __FILE__, __LINE__
-    end
-
     attr_reader :services
     attr_reader :type_id # eg :cpp, :text
     attr_reader :top_level_jaba_type
@@ -44,18 +23,24 @@ module JABA
       @definitions = []
       @delay_post_create = false
       @root_nodes = []
-      @nodes = []
+      @nodes = [] # all nodes
       @node_lookup = {}
-      @host_objects = []
-      @node_to_host_object = {}
       @reference_attrs_to_resolve = []
     end
 
     ##
+    # Part of internal initialisation.
     #
     def set_top_level_type(tlt)
       @top_level_jaba_type = tlt
       @type_id = tlt.defn_id
+    end
+
+    ##
+    # Part of internal initialisation.
+    #
+    def register_instance_definition(d)
+      @definitions << d
     end
 
     ##
@@ -109,9 +94,16 @@ module JABA
     end
 
     ##
+    # Override this in sublcass if type needs to be split into more than one node.
     #
-    def register_instance_definition(d)
-      @definitions << d
+    def process_definition
+      make_node
+    end
+    
+    ##
+    # Override this in subclass
+    #
+    def make_host_objects
     end
 
     ##
@@ -247,46 +239,6 @@ module JABA
       ref_node
     end
 
-    ##
-    #
-    def jaba_warn(...)
-      services.jaba_warn(...)
-    end
-
-    ##
-    # Override this in sublcass if type needs to be split into more than one node.
-    #
-    def process_definition
-      make_node
-    end
-    
-    ##
-    # Override this in subclass
-    #
-    def make_host_objects
-    end
-
-    ##
-    # Call this from subclass but using the wrapper defined by Generator.work_with.
-    #
-    def make_host_object(klass, node, *args, **keyval_args)
-      klass = klass.string? ? JABA.const_get(klass) : klass
-      ho = klass.new(self, node, *args, **keyval_args)
-      @host_objects << ho
-      @node_to_host_object[node] = ho
-      ho
-    end
-
-    ##
-    #
-    def host_object_from_node(node, fail_if_not_found: true)
-      ho = @node_to_host_object[node]
-      if !ho && fail_if_not_found
-        JABA.error("'#{ho}' not found")
-      end
-      ho
-    end
-    
     ##
     #
     def make_node_paths_absolute(node)

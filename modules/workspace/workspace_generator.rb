@@ -10,8 +10,13 @@ module JABA
   #
   class WorkspaceGenerator < Generator
     
-    Generator.work_with(:workspace)
-    
+    ##
+    #
+    def initialize(services)
+      super
+      @workspaces = []
+    end
+
     ##
     # For use by workspace generator. spec is either a defn_id or a wildcard match against projdir.
     # 
@@ -23,7 +28,7 @@ module JABA
             File.fnmatch?(abs_spec, p.root)
            end
           if matches.empty?
-            jaba_warn("No projects matching spec '#{spec.inspect_unquoted}' found", errobj: errobj)
+            @services.jaba_warn("No projects matching spec '#{spec.inspect_unquoted}' found", errobj: errobj)
           end
           projects.concat(matches)
         else # its an id
@@ -79,8 +84,18 @@ module JABA
 
     ##
     #
+    def make_workspace(classname, node, *args, **keyval_args)
+      klass = JABA.const_get(classname)
+      ws = klass.new(self, node, *args, **keyval_args)
+      @workspaces << ws
+    end
+
+    ##
+    #
     def generate
-      each_workspace(&:generate)
+      @workspaces.each do |w|
+        w.generate
+      end
     end
     
     ##

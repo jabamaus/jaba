@@ -10,14 +10,14 @@ module JABA
   #
   class CppGenerator < Generator
     
-    Generator.work_with(:project)
-     
     ##
     #
     def initialize(services)
       super
       @all_project_nodes = []
       @host_to_project_nodes = {}
+      @projects = []
+      @node_to_project = {}
     end
 
     ##
@@ -63,7 +63,7 @@ module JABA
               end
             end
           end
-          
+
           if project_node.attrs.workspace
             defn_id = @definition.id
             services.execute_jdl do
@@ -115,13 +115,38 @@ module JABA
       @host_to_project_nodes.each do |host, project_nodes|
         if host.defn_id == :ninja
         else
-          klass = host.attrs.cpp_project_classname
+          classname = host.attrs.cpp_project_classname
           project_nodes.each do |pn|
-            proj = make_project(klass, pn)
-            proj.post_create
+            make_project(classname, pn)
           end
         end
       end
+    end
+
+    ##
+    #
+    def make_project(classname, node, *args, **keyval_args)
+      klass = JABA.const_get(classname)
+      project = klass.new(self, node, *args, **keyval_args)
+      @projects << project
+      @node_to_project[node] = project
+      project.post_create
+    end
+
+    ##
+    #
+    def project_from_node(node, fail_if_not_found: true)
+      p = @node_to_project[node]
+      if !p && fail_if_not_found
+        JABA.error("'#{node.describe}' not found")
+      end
+      p
+    end
+
+    ##
+    #
+    def get_projects
+      @projects
     end
 
     ##
@@ -173,13 +198,15 @@ module JABA
     ##
     #
     def generate
-      each_project(&:generate)
+      @projects.each do |p|
+        p.generate
+      end
     end
     
     ##
     # 
     def build_jaba_output(g_root, out_dir)
-      each_project do |p|
+      @projects.each do |p|
         p_root = {}
         g_root[p.handle] = p_root
         p.build_jaba_output(p_root, out_dir)
