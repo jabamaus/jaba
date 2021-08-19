@@ -29,7 +29,6 @@ require_relative '../extend/vsproj'
 require_relative '../extend/vcxproj'
 require_relative '../extend/workspace'
 require_relative '../extend/xcodeproj'
-require_relative '../extend/ninjaproj'
 
 ##
 #
