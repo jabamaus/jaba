@@ -192,6 +192,11 @@ type :cpp do
       title 'Generate a workspace for app and dependencies'
       default false
     end
+
+    attr :category, type: :node_ref do
+      title 'Workspace categorisation'
+      node_type :category
+    end
   end
 
   # Sub-grouping of attributes that pertain to a build configuration
