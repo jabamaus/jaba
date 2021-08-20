@@ -30,7 +30,7 @@ module JABA
   # made absolute based on the supplied base dir (unless absolute already).
   #
   def self.spec_to_absolute_path(spec, base_dir, node)
-    abs_path = if spec.absolute_path?
+    abs_path = if (spec.absolute_path? || spec.start_with?('$('))
       spec
     elsif spec.start_with?('./')
       "#{node.source_dir}#{spec.delete_prefix('.')}"
