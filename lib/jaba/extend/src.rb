@@ -44,6 +44,7 @@ module JABA
 
       file_manager = services.file_manager
       src = instance_variable_set("@#{src_attr_id}", [])
+      src_lookup = {}
 
       spec_files = []
 
@@ -91,6 +92,10 @@ module JABA
         end
 
         spec_files.each do |f|
+          # Different specs could match the same file so ignore duplicates
+          next if src_lookup.key?(f)
+          src_lookup[f] = true
+
           bs = want_backslashes? # Does this project require backslashes (eg Visual Studio)
           
           vpath = if vpath_option

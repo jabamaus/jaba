@@ -152,6 +152,25 @@ module JABA
       proj[:src].must_equal ['a.cpp', 'b.cpp']
     end
 
+    it 'strips duplicate src' do
+      # It strips items that are exactly the same, and warns
+      check_warn "When setting 'app.src' array attribute stripping duplicate value 'a.cpp'" do
+        jaba(cpp_app: true, dry_run: true) do
+          cpp :app, platforms: [:windows_x86, :windows_x86_64] do
+            src ['a.cpp', 'a.cpp'], :force
+          end
+        end
+      end
+      # It strips files that match different specs
+      make_file('a/a.cpp', 'a/a.h')
+      proj = jaba(cpp_app: true, dry_run: true) do
+        cpp :app, platforms: [:windows_x86, :windows_x86_64] do
+          src ['a']
+          src ['**/*.h']
+        end
+      end
+      proj[:src].must_equal ['a/a.cpp', 'a/a.h']
+    end
     # TODO: test fail when no src file matches
   end
 
