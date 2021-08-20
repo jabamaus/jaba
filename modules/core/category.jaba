@@ -4,8 +4,10 @@ type :category do
 
   attr :name, type: :string do
     title 'Display name of category'
-    note 'Maps to name of solution folder in a Visual Studio solution'
-    flags :required
+    note 'Maps to name of solution folder in a Visual Studio solution. Defaults to category id.'
+    default do
+      id
+    end
   end
   
   attr :parent, type: :node_ref do
