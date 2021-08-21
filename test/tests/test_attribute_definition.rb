@@ -20,6 +20,7 @@ module JABA
           attr :attr2 do
             default 2
           end
+          attr :Attr3 # caps allowed
         end
         test :t do
           attr1.must_equal 1

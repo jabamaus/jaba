@@ -8,7 +8,14 @@ module JABA
     # Include another .jaba file or directory containing .jaba files.
     #
     def include(path)
-      @services.include_jaba_path(path)
+      @services.include_jaba_path(path, base: :jaba_file)
+    end
+
+    ##
+    # Include a jaba file or files from jaba's grab bag.
+    #
+    def grab(path)
+      @services.include_jaba_path(path, base: :grab_bag)
     end
 
     ##

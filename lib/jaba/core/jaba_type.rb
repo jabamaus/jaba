@@ -46,7 +46,7 @@ module JABA
     ##
     #
     def define_attr(id, variant, type: nil, key_type: nil, &block)
-      services.log "  Defining '#{id}' attribute [variant=#{variant}, type=#{type}]"
+      services.log "  Adding '#{id}' attribute [variant=#{variant}, type=#{type}]"
       
       if key_type && variant != :hash
         JABA.error("Only attr_hash supports :key_type argument")
@@ -169,8 +169,9 @@ module JABA
     ##
     #
     def register_attr_def(id, attr_def)
-      if @all_attr_defs.key?(id)
-        JABA.error("'#{id}' attribute multiply defined in '#{defn_id}'")
+      existing = @all_attr_defs[id]
+      if existing
+        JABA.error("'#{id}' attribute multiply defined in '#{defn_id}'. Previous at #{existing.src_loc.describe}")
       end
       @all_attr_defs[id] = attr_def
     end

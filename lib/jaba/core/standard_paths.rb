@@ -22,6 +22,12 @@ module JABA
 
   ##
   #
+  def self.grab_bag_dir
+    "#{install_dir}/grab_bag"
+  end
+
+  ##
+  #
   def self.examples_dir
     "#{install_dir}/examples"
   end

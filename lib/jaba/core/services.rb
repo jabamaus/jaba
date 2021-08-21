@@ -251,9 +251,11 @@ module JABA
       # Open top level JabaTypes so more attributes can be added
       #
       @open_type_defs.each do |d|
+        log "Opening #{d.id} type"
         tlt = get_top_level_jaba_type(d.id, errobj: d)
         tlt.eval_jdl(&d.block)
         tlt.open_sub_type_defs.each do |std|
+          log "Opening #{std.id} sub type"
           st = tlt.get_sub_type(std.id)
           st.eval_jdl(&std.block)
         end
@@ -573,7 +575,7 @@ module JABA
     ##
     #
     def make_top_level_type(handle, dfn)
-      log "Instancing top level JabaType [handle=#{handle}]"
+      log "Creating '#{handle}' type at #{dfn.src_loc.describe}"
 
       if @jaba_type_lookup.key?(handle)
         JABA.error("'#{handle}' jaba type multiply defined")
@@ -641,13 +643,14 @@ module JABA
     #
     def define_type(id, &block)
       JABA.error("id is required") if id.nil?
-      log "  Defining type [id=#{id}]"
+      src_loc = caller_locations(2, 1)[0]
+      log "  Defining '#{id}' type at #{src_loc.describe}"
       validate_id(id)
       existing = @jaba_type_defs.find{|d| d.id == id}
       if existing
         JABA.error("'type|#{id.inspect_unquoted}' multiply defined. First definition at #{existing.src_loc.describe}.")
       end
-      d = make_definition(id, block, caller_locations(2, 1)[0])
+      d = make_definition(id, block, src_loc)
       if id == :globals
         @globals_type_def = d
       else
@@ -662,7 +665,9 @@ module JABA
       JABA.error("id is required") if id.nil?
       JABA.error("A block is required") if !block_given?
 
-      log "  Defining shared definition [id=#{id}]"
+      src_loc = caller_locations(2, 1)[0]
+
+      log "  Defining '#{id}' shared definition at #{src_loc.describe}"
       validate_id(id)
 
       existing = get_shared_definition(id, fail_if_not_found: false)
@@ -670,7 +675,7 @@ module JABA
         JABA.error("'shared|#{id.inspect_unquoted}' multiply defined. First definition at #{existing.src_loc.describe}.")
       end
 
-      @shared_def_lookup[id] = make_definition(id, block, caller_locations(2, 1)[0])
+      @shared_def_lookup[id] = make_definition(id, block, src_loc)
       nil
     end
 
@@ -692,14 +697,16 @@ module JABA
 
       validate_id(id)
 
-      log "  Defining instance [id=#{id}, type=#{type_id}]"
+      src_loc = caller_locations(2, 1)[0]
+
+      log "  Defining '#{id}' instance [type=#{type_id}] at #{src_loc.describe}"
 
       existing = get_instance_definition(type_id, id, fail_if_not_found: false)
       if existing
         JABA.error("'#{type_id}|#{id.inspect_unquoted}' multiply defined. First definition at #{existing.src_loc.describe}.")
       end
       
-      d = make_definition(id, block, caller_locations(2, 1)[0], options: options)
+      d = make_definition(id, block, src_loc, options: options)
       d.jaba_type_id = type_id
 
       @instance_def_lookup.push_value(type_id, d)
@@ -742,12 +749,13 @@ module JABA
     #
     def define_defaults(id, &block)
       JABA.error("id is required") if id.nil?
-      log "  Defining defaults [id=#{id}]"
+      src_loc = caller_locations(2, 1)[0]
+      log "  Defining '#{id}' defaults at #{src_loc.describe}"
       existing = @default_defs.find {|d| d.id == id}
       if existing
         JABA.error("'defaults|#{id.inspect_unquoted}' multiply defined. First definition at #{existing.src_loc.describe}.")
       end
-      @default_defs << make_definition(id, block, caller_locations(2, 1)[0])
+      @default_defs << make_definition(id, block, src_loc)
       nil
     end
 
@@ -779,12 +787,13 @@ module JABA
     #
     def define_translator(id, &block)
       JABA.error("id is required") if id.nil?
-      log "  Defining translator [id=#{id}]"
+      src_loc = caller_locations(2, 1)[0]
+      log "  Defining '#{id}' translator at #{src_loc.describe}"
       existing = get_translator_definition(id, fail_if_not_found: false)
       if existing
         JABA.error("'translator|#{id.inspect_unquoted}' multiply defined. First definition at #{existing.src_loc.describe}.")
       end
-      @translator_defs << make_definition(id, block, caller_locations(2, 1)[0])
+      @translator_defs << make_definition(id, block, src_loc)
       nil
     end
 
@@ -817,19 +826,19 @@ module JABA
 
       case what
       when :type
-        log "  Opening type [id=#{id}]"
+        log "  Opening '#{id}' type at #{src_loc.describe}"
         @open_type_defs << make_definition(id, block, src_loc)
       when :instance
-        log "  Opening instance [id=#{id} type=#{type}]"
+        log "  Opening '#{id}' instance [type=#{type}] at #{src_loc.describe}"
         JABA.error("type is required") if type.nil?
         d = make_definition(id, block, src_loc)
         d.jaba_type_id = type
         @open_instance_defs << d
       when :translator
-        log "  Opening translator [id=#{id}]"
+        log "  Opening '#{id}' translator at #{src_loc.describe}"
         @open_translator_defs << make_definition(id, block, src_loc)
       when :shared
-        log "  Opening shared definition [id=#{id}]"
+        log "  Opening '#{id}' shared definition at #{src_loc.describe}"
         @open_shared_defs << make_definition(id, block, src_loc)
       end
       nil
@@ -955,8 +964,13 @@ module JABA
 
     ##
     #
-    def include_jaba_path(path)
-      if !path.absolute_path?
+    def include_jaba_path(path, base:)
+      if base == :grab_bag
+        if path.absolute_path?
+          JABA.error("'#{path}' must not be absolute if basing it on jaba grab_bag directory")
+        end
+        path = "#{JABA.grab_bag_dir}/#{path}"
+      elsif !path.absolute_path?
         src_loc = caller_locations(2, 1)[0]
         path = "#{src_loc.absolute_path.dirname}/#{path}"
       end
