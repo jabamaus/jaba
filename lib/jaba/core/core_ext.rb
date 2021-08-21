@@ -129,14 +129,17 @@ module JABACoreExt
     #
     def relative_path_from(base, backslashes: false, nil_if_dot: false, no_dot_dot: false, trailing: false)
       return self if base.nil?
-      return self if start_with?('$(')
+      start_with_macro = start_with?('$(')
+      if start_with_macro
+        no_dot_dot = true
+      end
       parts = split_path(preserve_absolute_unix: true)
       base_parts = base.split_path(preserve_absolute_unix: true)
       while (!parts.empty? && !base_parts.empty? && parts[0] == base_parts[0])
         parts.shift
         base_parts.shift
       end
-      if (!parts.empty? && parts[0].absolute_path?) || (!base_parts.empty? && base_parts[0].absolute_path?)
+      if (!parts.empty? && parts[0].absolute_path?) || (!base_parts.empty? && base_parts[0].absolute_path?) && !start_with_macro
         JABA.error("Cannot turn '#{self}' into a relative path from '#{base}' - paths are unrelated")
       end
       result = []
