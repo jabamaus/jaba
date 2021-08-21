@@ -116,6 +116,12 @@ module JABA
         'a'.relative_path_from('a/b/c', no_dot_dot: true).must_equal('.')
         'a'.relative_path_from('a/b/c', no_dot_dot: true, nil_if_dot: true).must_be_nil
         'e'.relative_path_from('a/b/c', no_dot_dot: true).must_equal('e')
+        '$(SolutionDir)/a/b'.relative_path_from('c/d').must_equal('$(SolutionDir)/a/b')
+        
+        # Still adds trailing slash even if no path change
+        '$(SolutionDir)/a/b'.relative_path_from('c/d', trailing: true).must_equal('$(SolutionDir)/a/b/')
+        # Still converts to backslashes even if no path change
+        '$(SolutionDir)/a/b'.relative_path_from('c/d', backslashes: true).must_equal('$(SolutionDir)\\a\\b\\')
       end
       
       it 'supports absolute_unix_path?' do
