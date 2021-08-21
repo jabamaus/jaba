@@ -1,0 +1,140 @@
+type :ispc_rule do
+
+  title 'TODO'
+
+  attr :AddInstrumentation, type: :bool do
+    title 'Enable Instrumentation Injection'
+    note 'Emit instrumentation to gather performance data. Sets --instrument'
+  end
+
+  attr :AdditionalOptions, type: :string do
+    title 'Additional Options'
+  end
+
+  attr :AlignedLoads, type: :bool do
+    title 'Force Aligned Loads'
+    note 'Always issue "aligned" vector load and store instructions. Sets --opt=force-aligned-memory'
+  end
+
+  attr :Architecture, type: :choice do
+    title 'Target Architecture'
+    note 'Select target architecture.'
+    items ["x86", "x64", "arm", "aarch64", "wasm32"]
+  end
+
+  attr :Assertions, type: :bool do
+    title 'Disable Assertions'
+    note 'Remove assertion statements from final code. Sets --opt=disable-assertions'
+  end
+
+  attr :CPU, type: :choice do
+    title 'Target CPU'
+    note 'Select CPU targeting.'
+    items ["ps4", "xb1", "atom", "core2", "corei7", "corei7-avx", "core-avx-i", "core-avx2", "broadwell", "skx", "knl", "slm", "icl", "arm-cortex-a15", "arm-cortex-a9", "arm-cortex-a35", "arm-cortex-a53", "arm-cortex-a57"]
+  end
+
+  attr :DisableFMA, type: :bool do
+    title 'Disable FMA'
+    note 'Disable "fused multiply-add" instructions (on targets that support them). Sets --opt=disable-fma'
+  end
+
+  attr :DisableLoopUnroll, type: :bool do
+    title 'Disable Loop Unroll'
+    note 'Disable loop unrolling. Sets --opt=disable-loop-unroll'
+  end
+
+  attr :EnableVectorcall, type: :bool do
+    title 'Enable vectorcall'
+    note 'Enable/disable vectorcall calling convention on Windows (x64 only). Sets --vectorcall'
+  end
+
+  attr :FastMath, type: :bool do
+    title 'Fast Math'
+    note 'Perform non-IEEE-compliant optimizations of numeric expressions. Sets --opt=fast-math'
+  end
+
+  attr :ForceAligned, type: :int do
+    title 'Force Memory Alignment'
+    note 'Force alignment in memory allocations routine. Sets --force-alignment=[value]'
+  end
+
+  attr :GenerateDebugInformation, type: :bool do
+    title 'Generate Debug Information'
+    note 'Generates Debug Information. (-g). Sets -g'
+  end
+
+  attr :HeaderFile, type: :string do
+    title 'Header File Name'
+    note 'Interface Header File. Sets -h "[value]"'
+  end
+
+  attr_array :IncludePaths, type: :string do
+    title 'Include Paths'
+    note 'Sets path for include files. Sets -I "[value]"'
+  end
+
+  attr :MathLibrary, type: :choice do
+    title 'Math Library'
+    note 'Select Math Library.'
+    items ["default", "fast", "svml", "system"]
+  end
+
+  attr :NoWarnings, type: :bool do
+    title 'Disable Warnings'
+    note 'Sets --woff'
+  end
+
+  attr :OS, type: :choice do
+    title 'Target Operating System'
+    note 'Select target operating system.'
+    items ["windows", "ps4", "linux", "custom_linux", "freebsd", "macos", "android", "web"]
+  end
+
+  attr :ObjectFileName, type: :string do
+    title 'Object File Name'
+    note 'Specifies the name of the output object file. Sets -o "[value]"'
+  end
+
+  attr :Opt, type: :choice do
+    title 'Optimization Level'
+    items ["disabled", "size", "speed", "maximum"]
+  end
+
+  attr :PIC, type: :bool do
+    title 'Position Independent Code'
+    note 'Generate Position Independent Code. Sets --pic'
+  end
+
+  attr_array :PreprocessorDefinitions, type: :string do
+    title 'Preprocessor Definitions'
+    note 'Defines a text macro with the given name. Sets -D"[value]"'
+  end
+
+  attr :TargetISA, type: :choice do
+    title 'Target ISA'
+    note 'Select Target ISA.'
+    items ["unspecified", "host", "sse2-i32x4", "sse2-i32x8", "sse4-i32x4", "sse4-i32x8", "sse4-i16x8", "sse4-i8x16", "avx1-i32x4", "avx1-i32x8", "avx1-i32x16", "avx1-i64x4", "avx2-i8x32", "avx2-i16x16", "avx2-i32x4", "avx2-i32x8", "avx2-i32x16", "avx2-i64x4", "avx512skx-i8x64", "avx512skx-i16x32", "avx512knl-i32x16", "avx512skx-i32x16", "avx512skx-i32x8", "neon-i8x16", "neon-i16x8", "neon-i32x4", "neon-i32x8", "wasm-i32x4"]
+  end
+
+  attr :WarningLevel, type: :choice do
+    title 'Warning Level'
+    note 'Sets the warning level.'
+    items ["0", "1", "2"]
+  end
+
+  attr :WarningsAsErrors, type: :bool do
+    title 'Treat Warnings as Errors'
+    note 'Treat Warnings as Errors. Sets --werror'
+  end
+
+end
+
+open_type :cpp do
+  open_type :config do
+    attr :ispc, type: :node do
+      title 'ispc custom build tool'
+      node_type :ispc_rule
+    end
+  end
+end
+
