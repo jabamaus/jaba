@@ -4,6 +4,15 @@ require_relative '../lib/jaba'
 require 'minitest'
 require 'minitest/spec'
 
+# Disallow describe statements. They don't play well with automatic per-test temp dirs
+module Kernel
+  remove_method :describe
+
+  def describe(...)
+    raise 'describe statements cannot be used in jaba tests'
+  end
+end
+
 module JABA
 
   using JABACoreExt
@@ -11,7 +20,7 @@ module JABA
   ##
   #
   def self.run_tests
-    Dir.glob("#{__dir__}/tests/*.rb").each {|f| require f}
+    Dir.glob("#{__dir__}/tests/**/*.rb").each {|f| require f}
     if File.exist?(JabaTest.temp_root)
       FileUtils.remove_dir(JabaTest.temp_root)
     end
@@ -70,7 +79,7 @@ module JABA
       end
       op
     end
-    
+
     ##
     #
     def self.temp_root
@@ -80,7 +89,6 @@ module JABA
     ##
     #
     def temp_dir(create: true)
-      # TODO: this does not work well with describe statements
       dir = "#{JabaTest.temp_root}/#{self.class.name_no_namespace}/#{name.delete(':')}"
       if create && !File.exist?(dir)
         FileUtils.makedirs(dir)

@@ -16,15 +16,21 @@ class LaunchJsonGenerator
     @configs = []
     root['configurations'] = @configs
 
+    separator 'examples'
+
     iterate_examples do |dirname|
       add_config(name: dirname, program: '${workspaceRoot}/bin/jaba.rb', cwd: "${workspaceRoot}/examples/#{dirname}")
     end
 
-    Dir.glob("#{JABA.install_dir}/test/tests/test_*.rb").each do |t|
+    separator 'tests'
+
+    Dir.glob("#{JABA.install_dir}/test/tests/**/test_*.rb").each do |t|
       testclass = t.basename_no_ext.split('_').collect(&:capitalize).join
       add_config(name: testclass, program: '${workspaceRoot}/test/test_jaba.rb', args: ['--', '--name', "/#{testclass}/"])
     end
     
+    separator 'tools'
+
     Dir.glob("#{JABA.install_dir}/tools/*.rb").each do |t|
       tool = t.basename
       next if tool == 'common.rb'
@@ -45,7 +51,13 @@ class LaunchJsonGenerator
     c['request'] = 'launch'
     c['program'] = program
     c['cwd'] = cwd if cwd
-    c['args'] = Array(args) if args
+    c['args'] = Array(args)
+    @configs << c
+  end
+
+  def separator(name)
+    c = {}
+    c['name'] = "------------- #{name} -------------"
     @configs << c
   end
 
