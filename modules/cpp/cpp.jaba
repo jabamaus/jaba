@@ -214,6 +214,12 @@ type :cpp do
       node_type :arch
     end
 
+    attr :cpp_standard, type: :choice do
+      title 'C++ language standard'
+      items ['C++11', 'C++14', 'C++17', 'C++20', 'C++23']
+      default 'C++14'
+    end
+    
     # Control flow attributes
     #
     attr :config, type: :symbol_or_string do
@@ -270,6 +276,7 @@ type :cpp do
         "#{build_root_offset}/obj/#{arch}/#{config}/#{projname}"
       end
       flags :no_check_exist
+      notes 'Defaults to $(build_root_offset)/obj/$(arch)/$(config)/$(projname)'
     end
 
     attr_array :libs, type: :file do

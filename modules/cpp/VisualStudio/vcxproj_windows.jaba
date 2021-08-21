@@ -87,6 +87,21 @@ translator :vcxproj_config_windows do |vcxproj, cfg_type|
     end
   end
 
+  vcprop 'ClCompile|LanguageStandard' do
+    case cpp_standard
+    when 'C++11'
+      :stdcpp11
+    when 'C++14'
+      :stdcpp14
+    when 'C++17'
+      :stdcpp17
+    when 'C++20'
+      :stdcpplatest
+    when 'C++23'
+      fail "#{cpp_standard} not supported in Visual Studio yet"
+    end
+  end
+
   vcprop 'ClCompile|PreprocessorDefinitions' do
     define.vs_join(inherit: '%(PreprocessorDefinitions)')
   end
