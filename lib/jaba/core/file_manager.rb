@@ -189,6 +189,7 @@ module JABA
           IO.binwrite(fn, file.str)
         end
       end
+      status
     end
 
     ##
