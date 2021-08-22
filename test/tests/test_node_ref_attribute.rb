@@ -272,7 +272,7 @@ module JABA
       platforms_node = services.make_node
       
       platforms_node.attrs.platforms.each do |p|
-        hosts_node = services.make_node(child_type_id: :platform, name: p, parent: platforms_node) do
+        hosts_node = services.make_node(child_type_id: :platform_, name: p, parent: platforms_node) do
           platform p
         end
         hosts_node.attrs.hosts.each do |h|
