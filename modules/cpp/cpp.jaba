@@ -4,199 +4,196 @@ type :cpp do
 
   title 'Cross platform C++ project definition'
 
-  type :project do
-
-    attr :root, type: :dir do
-      title 'Root directory relative to which all other paths are specified'
-      note 'Root of the project specified as an offset from the .jaba file that contains the project definition. ' \
-           'All paths are specified relative to this. Project files will be generated here unless $(projdir) is set. ' \
-           'Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible ' \
-           'in order to not damage portability'
-      default '.'
-      basedir_spec :jaba_file
-    end
-    
-    attr :type, type: :choice do
-      title 'Project type'
-      items [:app, :console, :lib, :dll]
-      flags :required
-    end
-    
-    # Control flow attributes
-    #
-    attr :host, type: :symbol do
-      title 'Target host as an id'
-      note 'Query current target host'
-      flags :read_only
-      example %q{
-        case host
-        when :vs2019
-          ...
-        when :xcode
-          ...
-        end
-      }
-    end
-
-    attr :host_ref, type: :node_ref do
-      title 'Target host as object'
-      note 'Use when access to host attributes is required'
-      node_type :host
-    end
-
-    attr :platform, type: :symbol do
-      title 'Target platform as an id'
-      note 'Query current target platform'
-      flags :read_only
-      example %Q{
-        case platform
-        when :windows
-          ...
-        when :macos
-          ...
-        end
-      }
-    end
-      
-    attr :platform_ref, type: :node_ref do
-      title 'Target platform as an object'
-      note 'Use when access to platform attributes is required'
-      node_type :platform
-    end
+  attr :root, type: :dir do
+    title 'Root directory relative to which all other paths are specified'
+    note 'Root of the project specified as an offset from the .jaba file that contains the project definition. ' \
+          'All paths are specified relative to this. Project files will be generated here unless $(projdir) is set. ' \
+          'Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible ' \
+          'in order to not damage portability'
+    default '.'
+    basedir_spec :jaba_file
+  end
   
-    # Common attributes
-    #
-    attr_array :configs, type: :symbol_or_string do
-      title 'Build configurations'
-      flags :required, :no_sort
-      flag_options :export, :export_only
-      example 'configs [:Debug, :Release]'
-    end
+  attr :type, type: :choice do
+    title 'Project type'
+    items [:app, :console, :lib, :dll]
+    flags :required
+  end
+  
+  # Control flow attributes
+  #
+  attr :host, type: :symbol do
+    title 'Target host as an id'
+    note 'Query current target host'
+    flags :read_only
+    example %q{
+      case host
+      when :vs2019
+        ...
+      when :xcode
+        ...
+      end
+    }
+  end
+
+  attr :host_ref, type: :node_ref do
+    title 'Target host as object'
+    note 'Use when access to host attributes is required'
+    node_type :host
+  end
+
+  attr :platform, type: :symbol do
+    title 'Target platform as an id'
+    note 'Query current target platform'
+    flags :read_only
+    example %Q{
+      case platform
+      when :windows
+        ...
+      when :macos
+        ...
+      end
+    }
+  end
     
-    attr_array :deps, type: :node_ref do
-      title 'Project dependencies'
-      note 'List of ids of other cpp definitions'
-      node_type :cpp
-      make_handle do |id|
-        "#{id}|#{host}|#{platform}"
+  attr :platform_ref, type: :node_ref do
+    title 'Target platform as an object'
+    note 'Use when access to platform attributes is required'
+    node_type :platform
+  end
+
+  # Common attributes
+  #
+  attr_array :configs, type: :symbol_or_string do
+    title 'Build configurations'
+    flags :required, :no_sort
+    flag_options :export, :export_only
+    example 'configs [:Debug, :Release]'
+  end
+  
+  attr_array :deps, type: :node_ref do
+    title 'Project dependencies'
+    note 'List of ids of other cpp definitions'
+    node_type :cpp
+    make_handle do |id|
+      "#{id}|#{host}|#{platform}"
+    end
+    unresolved_msg do |id|
+      "'#{id.inspect}' dependency not found"
+    end
+    example %Q{
+      cpp :MyApp do
+        type :app
+        ...
+        deps [:MyLib]
       end
-      unresolved_msg do |id|
-        "'#{id.inspect}' dependency not found"
+      
+      cpp :MyLib do
+        type :lib
+        ...
       end
-      example %Q{
-        cpp :MyApp do
-          type :app
-          ...
-          deps [:MyLib]
-        end
-        
-        cpp :MyLib do
-          type :lib
-          ...
-        end
-      }
-    end
+    }
+  end
 
-    attr :projdir, type: :dir do
-      title 'Directory in which projects will be generated'
-      default do
-        "#{host}"
+  attr :projdir, type: :dir do
+    title 'Directory in which projects will be generated'
+    default do
+      "#{host}"
+    end
+    flags :no_check_exist # May get created during generation
+    basedir_spec :buildsystem_root
+    example %Q{
+      cpp :MyApp do
+        src ['**/*'] # Get all src in $(root), which defaults to directory of definition file
+        projdir 'projects' # Place generated projects in 'projects' directory
       end
-      flags :no_check_exist # May get created during generation
-      basedir_spec :buildsystem_root
-      example %Q{
-        cpp :MyApp do
-          src ['**/*'] # Get all src in $(root), which defaults to directory of definition file
-          projdir 'projects' # Place generated projects in 'projects' directory
-        end
-      }
+    }
+  end
+  
+  attr :projname, type: :string do
+    title 'Base name of project files'
+    note 'Defaults to $(id)$(projsuffix)'
+    default do
+      "#{id}#{projsuffix}"
     end
-    
-    attr :projname, type: :string do
-      title 'Base name of project files'
-      note 'Defaults to $(id)$(projsuffix)'
-      default do
-        "#{id}#{projsuffix}"
-      end
+  end
+
+  attr :projsuffix, type: :string do
+    title 'Optional suffix to be applied to $(projname)'
+    note 'Has no effect if $(projname) is set explicitly'
+  end
+
+  attr_array :src, type: :src_spec do
+    title 'Source file specification'
+    basedir_spec :definition_root
+    flags :required # Must be specified by user
+    flags :no_sort # Final source will be sorted so no need to sort this
+    flag_options :force # Specify when explicitly specidied src does not exist on disk but still want to add to project
+    flag_options :export, :export_only
+    value_option :vpath # For organising files in a generated project
+    # TODO: examples for excludes
+    example %Q{
+      # Add all src in $(root) whose extension is in $(src_ext)
+      src ['*']
+
+      # Add all src in $(root)/src whose extension is in $(src_ext), recursively
+      src ['src/**/*']
+
+      # Glob matches are not required to add whole directory recursively (whose extension is in $(src_ext))
+      src ['src']
+
+      # Add src explicitly
+      src ['main.c', 'io.c']
+
+      # Array brackets not required for one item
+      src 'main.c'
+
+      # Add src explicitly even if extension not in $(src_ext)
+      src ['build.jaba']
+
+      # Add src by glob match even if extension not in $(src_ext) only if has explicit extension
+      src ['*.jaba']
+
+      # Force addition of file not on disk
+      src ['does_not_exist.cpp'], :force
+
+      # Precede with ./ to force path to be relative to current jaba file even if $(root) points elsewhere.
+      # Useful if you want to make $(root) point to a 3rd party distro but you want to add a local file
+      src ['./local.cxx']
+
+      # Add src in bulk without needing quotes, commas or square brackets. Options can be added as normal.
+      src %w(main.c dmydln.c miniinit.c array.c ast.c bignum.c class.c compar.c compile.c)
+      src %w(
+        main.c dmydln.c miniinit.c array.c
+        ast.c bignum.c class.c compar.c compile.c
+      )
+
+      # Place matching files in a specific folder location within the project file
+      src '*_win.cpp', vpath: 'win32'
+    }
+  end
+  
+  attr_array :src_ext, type: :string do
+    title 'File extensions used when matching src files'
+    note 'Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.'
+    flags :no_sort
+    flag_options :export, :export_only
+    default do
+      ext = ['.cpp', '.h', '.inl', '.c', '.cc', '.cxx', '.hpp']
+      ext.concat(host_ref.cpp_src_ext)
+      ext.concat(platform_ref.cpp_src_ext)
+      ext
     end
+  end
 
-    attr :projsuffix, type: :string do
-      title 'Optional suffix to be applied to $(projname)'
-      note 'Has no effect if $(projname) is set explicitly'
-    end
+  attr :workspace, type: :bool do
+    title 'Generate a workspace for app and dependencies'
+    default false
+  end
 
-    attr_array :src, type: :src_spec do
-      title 'Source file specification'
-      basedir_spec :definition_root
-      flags :required # Must be specified by user
-      flags :no_sort # Final source will be sorted so no need to sort this
-      flag_options :force # Specify when explicitly specidied src does not exist on disk but still want to add to project
-      flag_options :export, :export_only
-      value_option :vpath # For organising files in a generated project
-      # TODO: examples for excludes
-      example %Q{
-        # Add all src in $(root) whose extension is in $(src_ext)
-        src ['*']
-
-        # Add all src in $(root)/src whose extension is in $(src_ext), recursively
-        src ['src/**/*']
-
-        # Glob matches are not required to add whole directory recursively (whose extension is in $(src_ext))
-        src ['src']
-
-        # Add src explicitly
-        src ['main.c', 'io.c']
-
-        # Array brackets not required for one item
-        src 'main.c'
-
-        # Add src explicitly even if extension not in $(src_ext)
-        src ['build.jaba']
-
-        # Add src by glob match even if extension not in $(src_ext) only if has explicit extension
-        src ['*.jaba']
-
-        # Force addition of file not on disk
-        src ['does_not_exist.cpp'], :force
-
-        # Precede with ./ to force path to be relative to current jaba file even if $(root) points elsewhere.
-        # Useful if you want to make $(root) point to a 3rd party distro but you want to add a local file
-        src ['./local.cxx']
-
-        # Add src in bulk without needing quotes, commas or square brackets. Options can be added as normal.
-        src %w(main.c dmydln.c miniinit.c array.c ast.c bignum.c class.c compar.c compile.c)
-        src %w(
-          main.c dmydln.c miniinit.c array.c
-          ast.c bignum.c class.c compar.c compile.c
-        )
-
-        # Place matching files in a specific folder location within the project file
-        src '*_win.cpp', vpath: 'win32'
-      }
-    end
-    
-    attr_array :src_ext, type: :string do
-      title 'File extensions used when matching src files'
-      note 'Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.'
-      flags :no_sort
-      flag_options :export, :export_only
-      default do
-        ext = ['.cpp', '.h', '.inl', '.c', '.cc', '.cxx', '.hpp']
-        ext.concat(host_ref.cpp_src_ext)
-        ext.concat(platform_ref.cpp_src_ext)
-        ext
-      end
-    end
-
-    attr :workspace, type: :bool do
-      title 'Generate a workspace for app and dependencies'
-      default false
-    end
-
-    attr :category, type: :node_ref do
-      title 'Workspace categorisation'
-      node_type :category
-    end
+  attr :category, type: :node_ref do
+    title 'Workspace categorisation'
+    node_type :category
   end
 
   # Sub-grouping of attributes that pertain to a build configuration

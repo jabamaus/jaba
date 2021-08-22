@@ -45,35 +45,33 @@ open_instance :arm64, type: :arch do
 end
 
 open_type :cpp do
-  open_type :project do
-    attr :guid, type: :uuid do
-      title 'Globally unique id (GUID)'
-      note 'Seeded by $(projname). Required by Visual Studio project files'
-      default do
-        projname
-      end
+  attr :guid, type: :uuid do
+    title 'Globally unique id (GUID)'
+    note 'Seeded by $(projname). Required by Visual Studio project files'
+    default do
+      projname
     end
+  end
 
-    attr_hash :vcglobal, key_type: :symbol, type: :to_s do
-      title 'Address Globals property group in a vcxproj directly'
-      value_option :condition
-      flag_options :export, :export_only
-    end
+  attr_hash :vcglobal, key_type: :symbol, type: :to_s do
+    title 'Address Globals property group in a vcxproj directly'
+    value_option :condition
+    flag_options :export, :export_only
+  end
 
-    attr :winsdkver, type: :choice do
-      title 'Windows SDK version'
-      items [
-        '10.0.16299.0',  # Included in VS2017 ver.15.4
-        '10.0.17134.0',  # Included in VS2017 ver.15.7
-        '10.0.17763.0',  # Included in VS2017 ver.15.8
-        '10.0.18362.0',  # Included in VS2019
-        nil
-      ]
-      default nil
-      example "winsdkver '10.0.18362.0'"
-      example "# wrapper for"
-      example "vcglobal :WindowsTargetPlatformVersion, winsdkver"
-    end
+  attr :winsdkver, type: :choice do
+    title 'Windows SDK version'
+    items [
+      '10.0.16299.0',  # Included in VS2017 ver.15.4
+      '10.0.17134.0',  # Included in VS2017 ver.15.7
+      '10.0.17763.0',  # Included in VS2017 ver.15.8
+      '10.0.18362.0',  # Included in VS2019
+      nil
+    ]
+    default nil
+    example "winsdkver '10.0.18362.0'"
+    example "# wrapper for"
+    example "vcglobal :WindowsTargetPlatformVersion, winsdkver"
   end
 
   open_type :config do
