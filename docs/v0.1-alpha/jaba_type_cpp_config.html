@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+    <head>
+        <title>jaba_type_cpp_config</title>
+        <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code&display=swap"> 
+        <link rel="stylesheet" href="../mamd.css">
+    </head>
+    <body>
+        <h2 id="cpp-config-v01-alpha">cpp_config v0.1-alpha</h2>
+<p><a href="../index.html">home</a><br />
+<a href="index.html">0.1-alpha home</a></p>
+<blockquote>
+<p><em>Per configuration C++ attributes</em></p>
+<p>Manages attribute definitions for 'cpp_config' type.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+<tr>
+<td><em>depends on</em></td>
+<td><a href="jaba_type_arch.html">arch</a>, <a href="jaba_type_rule.html">rule</a></td>
+</tr>
+<tr>
+<td><em>contains</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>Attributes:</p>
+<ul>
+<li><a href="#arch">arch</a></li>
+<li><a href="#arch_ref">arch_ref</a></li>
+<li><a href="#bindir">bindir</a></li>
+<li><a href="#build_root_offset">build_root_offset</a></li>
+<li><a href="#cflags">cflags</a></li>
+<li><a href="#character_set">character_set</a></li>
+<li><a href="#config">config</a></li>
+<li><a href="#configname">configname</a></li>
+<li><a href="#cpp_standard">cpp_standard</a></li>
+<li><a href="#debug">debug</a></li>
+<li><a href="#define">define</a></li>
+<li><a href="#exceptions">exceptions</a></li>
+<li><a href="#importlib">importlib</a></li>
+<li><a href="#inc">inc</a></li>
+<li><a href="#libdir">libdir</a></li>
+<li><a href="#libs">libs</a></li>
+<li><a href="#nowarn">nowarn</a></li>
+<li><a href="#objdir">objdir</a></li>
+<li><a href="#rtti">rtti</a></li>
+<li><a href="#rule">rule</a></li>
+<li><a href="#shell">shell</a></li>
+<li><a href="#syslibs">syslibs</a></li>
+<li><a href="#targetext">targetext</a></li>
+<li><a href="#targetname">targetname</a></li>
+<li><a href="#targetprefix">targetprefix</a></li>
+<li><a href="#targetsuffix">targetsuffix</a></li>
+<li><a href="#toolset">toolset</a></li>
+<li><a href="#vcfprop">vcfprop</a></li>
+<li><a href="#vcprop">vcprop</a></li>
+<li><a href="#warnerror">warnerror</a></li>
+</ul>
+<p><a id="arch"></a></p>
+<h4 id="arch">arch</h4>
+<blockquote>
+<p><em>Target architecture as an id</em></p>
+<p>Query current architecture being processed. Use to define control flow to set config-specific atttributes.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:symbol_or_string</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td>:read_only</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="arch_ref"></a></p>
+<h4 id="arch-ref">arch_ref</h4>
+<blockquote>
+<p><em>Target architecture as an object</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:node_ref</td>
+</tr>
+<tr>
+<td><em>references</em></td>
+<td><a href="jaba_type_arch.html">arch</a></td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="bindir"></a></p>
+<h4 id="bindir">bindir</h4>
+<blockquote>
+<p><em>Output directory for executables</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:dir</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td>:no_check_exist</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="build_root_offset"></a></p>
+<h4 id="build-root-offset">build_root_offset</h4>
+<blockquote>
+<p><em>Root directory for build artifacts</em></p>
+<p>Specified as a relative path from main build root.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:dir</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;build&quot;</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td>:no_check_exist</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="cflags"></a></p>
+<h4 id="cflags">cflags</h4>
+<blockquote>
+<p><em>Raw compiler command line switches</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:string []</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>[]</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:export, :export_only</td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="character_set"></a></p>
+<h4 id="character-set">character_set</h4>
+<blockquote>
+<p><em>Character set</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:choice</td>
+</tr>
+<tr>
+<td><em>choices</em></td>
+<td>[:mbcs, :unicode, nil]</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">character_set</span> <span style="color:#d88200">:unicode</span>
+</pre></blockquote>
+<p><a id="config"></a></p>
+<h4 id="config">config</h4>
+<blockquote>
+<p><em>Current target config as an id</em></p>
+<p>Returns current config being processed. Use to define control flow to set config-specific atttributes.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:symbol_or_string</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td>:read_only</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="configname"></a></p>
+<h4 id="configname">configname</h4>
+<blockquote>
+<p><em>Display name of config as seen in IDE</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:symbol_or_string</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="cpp_standard"></a></p>
+<h4 id="cpp-standard">cpp_standard</h4>
+<blockquote>
+<p><em>C++ language standard</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:choice</td>
+</tr>
+<tr>
+<td><em>choices</em></td>
+<td>[&quot;C++11&quot;, &quot;C++14&quot;, &quot;C++17&quot;, &quot;C++20&quot;, &quot;C++23&quot;]</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;C++14&quot;</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="debug"></a></p>
+<h4 id="debug">debug</h4>
+<blockquote>
+<p><em>Flags config as a debug config</em></p>
+<p>Defaults to true if config id contains 'debug'.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:bool</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="define"></a></p>
+<h4 id="define">define</h4>
+<blockquote>
+<p><em>Preprocessor defines</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:symbol_or_string []</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>[]</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:export, :export_only</td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="exceptions"></a></p>
+<h4 id="exceptions">exceptions</h4>
+<blockquote>
+<p><em>Enables C++ exceptions</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:choice</td>
+</tr>
+<tr>
+<td><em>choices</em></td>
+<td>[true, false, :structured]</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>true</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">exceptions</span> <span style="color:#00a8c8">false</span> <span style="color:#75715e"># disable exceptions</span>
+</pre></blockquote>
+<p><a id="importlib"></a></p>
+<h4 id="importlib">importlib</h4>
+<blockquote>
+<p><em>Name of import lib for use will dlls</em></p>
+<p>Defaults to <a href="#projname">$(projname)</a><a href="#targetsuffix">$(targetsuffix)</a>.lib.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="inc"></a></p>
+<h4 id="inc">inc</h4>
+<blockquote>
+<p><em>Include paths</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:dir []</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>[]</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td>:no_sort</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:export, :export_only</td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">inc</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;mylibrary/include&#39;</span><span style="color:#f92672">]</span>
+<span style="color:#111">inc</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;mylibrary/include&#39;</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">:export</span> <span style="color:#75715e"># Export include path to dependents</span>
+</pre></blockquote>
+<p><a id="libdir"></a></p>
+<h4 id="libdir">libdir</h4>
+<blockquote>
+<p><em>Output directory for libs</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:dir</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td>:no_check_exist</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="libs"></a></p>
+<h4 id="libs">libs</h4>
+<blockquote>
+<p><em>Paths to required non-system libs</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:file []</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>[]</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td>:no_sort, :no_check_exist</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="nowarn"></a></p>
+<h4 id="nowarn">nowarn</h4>
+<blockquote>
+<p><em>Warnings to disable</em></p>
+<p>Placed directly into projects as is, with no validation.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>[]</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>[]</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:export, :export_only</td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">nowarn</span> <span style="color:#f92672">[</span><span style="color:#ae81ff">4100</span><span style="color:#f92672"></span><span style="color:#111">,</span> <span style="color:#ae81ff">4127</span><span style="color:#f92672"></span><span style="color:#111">,</span> <span style="color:#ae81ff">4244</span><span style="color:#f92672"></span><span style="color:#f92672">]</span> <span style="color:#00a8c8">if</span> <span style="color:#111">visual_studio?</span>
+</pre></blockquote>
+<p><a id="objdir"></a></p>
+<h4 id="objdir">objdir</h4>
+<blockquote>
+<p><em>Output directory for object files</em></p>
+<p>Defaults to <a href="#build_root_offset">$(build_root_offset)</a>/obj/<a href="#arch">$(arch)</a>/<a href="#config">$(config)</a>/<a href="#projname">$(projname)</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:dir</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td>:no_check_exist</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="rtti"></a></p>
+<h4 id="rtti">rtti</h4>
+<blockquote>
+<p><em>Enables runtime type information</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:bool</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>false</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">rtti</span> <span style="color:#00a8c8">true</span>
+</pre></blockquote>
+<p><a id="rule"></a></p>
+<h4 id="rule">rule</h4>
+<blockquote>
+<p><em>Custom build rule</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:node []</td>
+</tr>
+<tr>
+<td><em>node_type</em></td>
+<td>:rule</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>[]</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="shell"></a></p>
+<h4 id="shell">shell</h4>
+<blockquote>
+<p><em>Shell commands to execute during build</em></p>
+<p>Maps to build events in Visual Studio.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:string []</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>[]</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:export, :export_only</td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="syslibs"></a></p>
+<h4 id="syslibs">syslibs</h4>
+<blockquote>
+<p><em>System libs</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:string []</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>[]</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td>:no_sort</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:export, :export_only</td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="targetext"></a></p>
+<h4 id="targetext">targetext</h4>
+<blockquote>
+<p><em>Extension to apply to $(targetname)</em></p>
+<p>Defaults to standard extension for <a href="#type">$(type)</a> of project for target <a href="#platform">$(platform)</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:string</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="targetname"></a></p>
+<h4 id="targetname">targetname</h4>
+<blockquote>
+<p><em>Base name of output file without extension</em></p>
+<p>Defaults to <a href="#targetprefix">$(targetprefix)</a><a href="#projname">$(projname)</a><a href="#targetsuffix">$(targetsuffix)</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:string</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="targetprefix"></a></p>
+<h4 id="targetprefix">targetprefix</h4>
+<blockquote>
+<p><em>Prefix to apply to $(targetname)</em></p>
+<p>Has no effect if <a href="#targetname">$(targetname)</a> specified.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:string</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;&quot;</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="targetsuffix"></a></p>
+<h4 id="targetsuffix">targetsuffix</h4>
+<blockquote>
+<p><em>Suffix to apply to $(targetname)</em></p>
+<p>Has no effect if <a href="#targetname">$(targetname)</a> specified.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:string</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;&quot;</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="toolset"></a></p>
+<h4 id="toolset">toolset</h4>
+<blockquote>
+<p><em>Toolset version to use</em></p>
+<p>Defaults to host's default toolset.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:string</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="vcfprop"></a></p>
+<h4 id="vcfprop">vcfprop</h4>
+<blockquote>
+<p><em>Add per-configuration per-file property</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:to_s {}</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>{}</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:export, :export_only</td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba</td>
+</tr>
+</tbody>
+</table>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#75715e"># Set a property on win32/file.c</span>
+<span style="color:#111">vcfprop</span> <span style="color:#d88200">&#39;win32/file.c|ObjectFileName&#39;</span><span style="color:#111">,</span> <span style="color:#d88200">&#39;$(IntDir)win32_file.obj&#39;</span>
+
+<span style="color:#75715e"># Set same property on all matching files</span>
+<span style="color:#111">vcfprop</span> <span style="color:#d88200">&#39;win32/*|DisableSpecificWarnings&#39;</span><span style="color:#111">,</span> <span style="color:#ae81ff">4096</span>
+<span style="color:#f92672"></span></pre></blockquote>
+<p><a id="vcprop"></a></p>
+<h4 id="vcprop">vcprop</h4>
+<blockquote>
+<p><em>Address per-configuration sections of a vcxproj directly</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:to_s {}</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>{}</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:export, :export_only</td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="warnerror"></a></p>
+<h4 id="warnerror">warnerror</h4>
+<blockquote>
+<p><em>Enable warnings as errors</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:bool</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>false</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">warnerror</span> <span style="color:#00a8c8">true</span>
+</pre></blockquote>
+<p><sub><sup>Generated by <a href="https://github.com/ishani/MaMD">MaMD</a> which uses <a href="https://github.com/yuin/goldmark">Goldmark</a>, <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a></sup></sub></p>
+
+    </body>
+</html>
