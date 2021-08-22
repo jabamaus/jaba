@@ -39,6 +39,7 @@ module JABA
       # TODO: tidy up by making node_from_handle better
       host_plugin = services.get_plugin(:host)
 
+      project_nodes = []
       services.globals.target_hosts.each do |target_host_id|
         target_host = host_plugin.services.node_from_handle(target_host_id.to_s)
         supported_platforms = target_host.attrs.cpp_supported_platforms
@@ -53,6 +54,7 @@ module JABA
             platform_ref tp
           end
 
+          project_nodes << project_node
           @all_project_nodes << project_node
           @host_to_project_nodes.push_value(target_host, project_node)
 
@@ -76,7 +78,7 @@ module JABA
           end
         end
       end
-      @all_project_nodes
+      project_nodes
     end
 
     ##
