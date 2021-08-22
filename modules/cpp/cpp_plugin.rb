@@ -47,7 +47,7 @@ module JABA
         target_platform_to_archs.each do |tp, target_archs|
           next if !supported_platforms.include?(tp)
           
-          project_node = services.make_node(name: "#{target_host.defn_id}|#{tp}") do
+          project_node = services.make_node(child_type_id: :cpp_project, name: "#{target_host.defn_id}|#{tp}") do
             host target_host.defn_id
             host_ref target_host
             platform tp

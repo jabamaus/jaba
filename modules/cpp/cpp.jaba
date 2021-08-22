@@ -4,7 +4,13 @@ type :cpp do
 
   title 'Cross platform C++ project definition'
 
-  child_types :cpp_config
+  child_types :cpp_project, :cpp_config
+
+end
+
+type :cpp_project do
+
+  title 'C++ project level attributes'
 
   attr :root, type: :dir do
     title 'Root directory relative to which all other paths are specified'
@@ -203,7 +209,7 @@ end
 type :cpp_config do
 
   title 'Per configuration C++ attributes'
-  
+
   attr :arch, type: :symbol_or_string do
     title 'Target architecture as an id'
     note 'Query current architecture being processed. Use to define control flow to set config-specific atttributes'
