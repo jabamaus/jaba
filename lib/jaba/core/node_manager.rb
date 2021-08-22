@@ -188,8 +188,8 @@ module JABA
       attr_def = attr.attr_def
       node = attr.node
       rt = attr_def.node_type
-      rjt = services.get_jaba_type(rt) # TOO: improve. Maybe expand node_type into a JabaType earlier
-      if ignore_if_same_type && rt == node.jaba_type.defn_id
+      rjt = services.get_jaba_type(rt)
+      if ignore_if_same_type && rt == node.top_level_jaba_type.defn_id
         @reference_attrs_to_resolve << attr
         return ref_node_id
       end
