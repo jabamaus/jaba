@@ -426,7 +426,7 @@ module JABA
     ##
     #
     def get_reference_manual_rows(attr_def)
-      ref_type = services.get_top_level_jaba_type(attr_def.node_type)
+      ref_type = services.get_jaba_type(attr_def.node_type)
       { references: "[#{attr_def.node_type}](#{ref_type.reference_manual_page})" }
     end
 

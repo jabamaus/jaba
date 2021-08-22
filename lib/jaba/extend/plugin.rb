@@ -44,8 +44,8 @@ module JABA
 
     ##
     #
-    def get_plugin(top_level_type_id)
-      @services.get_plugin(top_level_type_id)
+    def get_plugin(jaba_type_id)
+      @services.get_plugin(jaba_type_id)
     end
 
     ##

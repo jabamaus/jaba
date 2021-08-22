@@ -110,7 +110,7 @@ module JABA
       @jaba_attr_type_lookup = {}
       @jaba_attr_flags = []
       @jaba_attr_flag_lookup = {}
-      @top_level_jaba_types = []
+      @jaba_types = []
       @jaba_type_lookup = {}
       @translators = {}
 
@@ -124,7 +124,7 @@ module JABA
       @null_nodes = {}
       
       @in_attr_default_block = false
-      @processing_top_level_types = false
+      @processing_jaba_types = false
 
       @top_level_api = JDL_TopLevel.new(self)
       @file_manager = FileManager.new(self)
@@ -245,31 +245,31 @@ module JABA
       # Create JabaTypes and any associated plugins
       #
       @jaba_type_defs.each do |d|
-        make_top_level_type(d.id, d)
+        make_jaba_type(d.id, d)
       end
 
-      # Open top level JabaTypes so more attributes can be added
+      # Open JabaTypes so more attributes can be added
       #
       @open_type_defs.each do |d|
         log "Opening #{d.id} type"
-        tlt = get_top_level_jaba_type(d.id, errobj: d)
+        tlt = get_jaba_type(d.id, errobj: d)
         tlt.eval_jdl(&d.block)
       end
 
-      @top_level_jaba_types.each(&:post_create)
+      @jaba_types.each(&:post_create)
 
       # When an attribute defined in a JabaType will reference a differernt JabaType a dependency on that
       # type is added. JabaTypes are dependency order sorted to ensure that referenced JabaNodes are created
       # before the JabaNode that are referencing it.
       #
-      @top_level_jaba_types.sort_topological!(:dependencies)
+      @jaba_types.sort_topological!(:dependencies)
 
       log 'Initialisation of JabaTypes complete'
 
       # Process instance definitions and assign them to a top level type/node manager
       #
       @instance_defs.each do |d|
-        tlt = get_top_level_jaba_type(d.jaba_type_id, errobj: d)
+        tlt = get_jaba_type(d.jaba_type_id, errobj: d)
         tlt.node_manager.register_instance_definition(d)
       end
 
@@ -301,13 +301,13 @@ module JABA
         sd.open_defs << d
       end
 
-      @processing_top_level_types = true
+      @processing_jaba_types = true
 
       # Process globals first, separately so that it is possible to get in and set them from the command line.
       # For this reason delay post_create checking until the command line has been processed. If this was not
       # done a global attribute flagged as :required could fail if it is supplied on the command line.
       #
-      globals_type = @top_level_jaba_types.first
+      globals_type = @jaba_types.first
       globals_type.node_manager.process(delay_post_create: true)
 
       @globals_node = globals_type.node_manager.root_nodes.first
@@ -320,11 +320,11 @@ module JABA
 =begin
       process_config_file if !JABA.running_tests?
 =end
-      1.upto(@top_level_jaba_types.size-1) do |i|
-        @top_level_jaba_types[i].node_manager.process
+      1.upto(@jaba_types.size-1) do |i|
+        @jaba_types[i].node_manager.process
       end
 
-      @processing_top_level_types = false
+      @processing_jaba_types = false
 
       # Output definition input data as a json file, before generation. This is raw data as generated from the definitions.
       # Can be used for debugging and testing.
@@ -337,7 +337,7 @@ module JABA
 
       # Write final files
       #
-      @top_level_jaba_types.each do |pt|
+      @jaba_types.each do |pt|
         # Call generate blocks defined per-node instance, in the context of the node itself, not its api
         #
         pt.node_manager.root_nodes.each do |n|
@@ -569,7 +569,7 @@ module JABA
 
     ##
     #
-    def make_top_level_type(id, dfn)
+    def make_jaba_type(id, dfn)
       log "Creating '#{id}' type at #{dfn.src_loc.describe}"
 
       if @jaba_type_lookup.key?(id)
@@ -584,9 +584,9 @@ module JABA
 
       nm = plugin.services.instance_variable_get(:@node_manager)
       tlt = JabaType.new(self, dfn.id, dfn.src_loc, dfn.block, plugin, nm)
-      nm.set_top_level_type(tlt)
+      nm.set_jaba_type(tlt)
 
-      @top_level_jaba_types  << tlt
+      @jaba_types  << tlt
       @jaba_type_lookup[id] = tlt
 
       tlt
@@ -594,7 +594,7 @@ module JABA
 
     ##
     #
-    def get_top_level_jaba_type(id, fail_if_not_found: true, errobj: nil)
+    def get_jaba_type(id, fail_if_not_found: true, errobj: nil)
       jt = @jaba_type_lookup[id]
       if !jt && fail_if_not_found
         JABA.error("'#{id}' type not defined", errobj: errobj)
@@ -706,12 +706,12 @@ module JABA
 
       @instance_def_lookup.push_value(type_id, d)
 
-      # Top level types are allowed to create more instances while they are being processed. eg the cpp plugin
-      # automatically creates workspaces. If top evel types are already being processed create the instance
+      # Plugins are allowed to create more instances while they are being processed. eg the cpp plugin
+      # automatically creates workspaces. If jaba types are already being processed create the instance
       # immediately, otherwise save for later (as jaba types will not have been created yet).
       #
-      if @processing_top_level_types
-        jt = get_top_level_jaba_type(d.jaba_type_id, errobj: d)
+      if @processing_jaba_types
+        jt = get_jaba_type(d.jaba_type_id, errobj: d)
         jt.node_manager.register_instance_definition(d)
       else
         @instance_defs << d
@@ -854,8 +854,8 @@ module JABA
 
     ##
     #
-    def get_plugin(top_level_type_id)
-      jt = get_top_level_jaba_type(top_level_type_id)
+    def get_plugin(jaba_type_id)
+      jt = get_jaba_type(jaba_type_id)
       jt.plugin
     end
 
@@ -864,7 +864,7 @@ module JABA
     def get_null_node(type_id)
       nn = @null_nodes[type_id]
       if !nn
-        jt = get_top_level_jaba_type(type_id)
+        jt = get_jaba_type(type_id)
         nn = JabaNode.new(self, jt.defn_id, jt.src_loc, jt, "Null#{jt.defn_id}", nil, 0)
         @null_nodes[type_id] = nn
       end
@@ -877,7 +877,7 @@ module JABA
       root = {}
       root[:jdl_files] = @jdl_files
 
-      @top_level_jaba_types.each do |tlt|
+      @jaba_types.each do |tlt|
         tlt.node_manager.root_nodes.each do |rn|
           obj = {}
           root["#{p.type_id}|#{rn.handle}"] = obj
@@ -922,7 +922,7 @@ module JABA
       @output[:build_root] = input.build_root
       @output[:generated] = @generated
 
-      @top_level_jaba_types.each do |tlt|
+      @jaba_types.each do |tlt|
         next if tlt.plugin.is_a?(DefaultPlugin)
         root = {}
         tlt.plugin.build_jaba_output(root, out_dir)

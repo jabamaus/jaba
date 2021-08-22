@@ -129,7 +129,7 @@ module JABA
     ##
     #
     def post_create
-      @child_types.map!{|id| services.get_top_level_jaba_type(id)}
+      @child_types.map!{|id| services.get_jaba_type(id)}
       @attribute_defs.sort_by! {|ad| ad.defn_id}
 
       to_register = []
@@ -144,7 +144,7 @@ module JABA
         if attr_def.node_by_reference?
           rt_id = attr_def.node_type
           if rt_id != defn_id
-            jt = attr_def.services.get_top_level_jaba_type(rt_id)
+            jt = attr_def.services.get_jaba_type(rt_id)
             jt.attribute_defs.each do |d|
               if d.has_flag?(:expose)
                 to_register << d
@@ -160,7 +160,7 @@ module JABA
       # Convert dependencies specified as ids to jaba type objects
       #
       @dependencies.uniq!
-      @dependencies.map! {|dep| services.get_top_level_jaba_type(dep)}
+      @dependencies.map! {|dep| services.get_jaba_type(dep)}
     end
 
     ##

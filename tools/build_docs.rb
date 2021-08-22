@@ -51,7 +51,7 @@ class DocBuilder
     @services = op[:services]
 
     @file_manager = @services.file_manager
-    @top_level_jaba_types = @services.instance_variable_get(:@top_level_jaba_types)
+    @jaba_types = @services.instance_variable_get(:@jaba_types)
     @jaba_attr_types = @services.jaba_attr_types
     @jaba_attr_flags = @services.instance_variable_get(:@jaba_attr_flags)
 
@@ -92,14 +92,14 @@ class DocBuilder
     write_markdown_page('jaba_reference.md', 'Jaba language reference', versioned: true) do |w|
       w << ""
       w << "- Types"
-      @top_level_jaba_types.sort_by {|jt| jt.defn_id}.each do |jt|
+      @jaba_types.sort_by {|jt| jt.defn_id}.each do |jt|
         w << "  - [#{jt.defn_id}](#{jt.reference_manual_page})"
         jt.attribute_defs.each do |ad|
           w << "    - [#{ad.defn_id}](#{jt.reference_manual_page}##{ad.defn_id})"
         end
       end
 
-      @top_level_jaba_types.each do |jt|
+      @jaba_types.each do |jt|
         generate_jaba_type_reference(jt)
       end
 
@@ -326,7 +326,7 @@ class String
       mdl = "[#{$1}]"
       attr_ref = $2
       mdl << if attr_ref =~ /^(.*?)#(.*)/
-        type = services.get_top_level_jaba_type($1.to_sym)
+        type = services.get_jaba_type($1.to_sym)
         "(#{type.reference_manual_page}##{$2})"
       else
         "(##{attr_ref})"

@@ -12,7 +12,7 @@ module JABA
     
     attr_reader :services
     attr_reader :type_id # eg :cpp, :text
-    attr_reader :top_level_jaba_type
+    attr_reader :jaba_type
     attr_reader :nodes
     attr_reader :root_nodes
 
@@ -32,8 +32,8 @@ module JABA
     ##
     # Part of internal initialisation.
     #
-    def set_top_level_type(tlt)
-      @top_level_jaba_type = tlt
+    def set_jaba_type(tlt)
+      @jaba_type = tlt
       @type_id = tlt.defn_id
     end
 
@@ -63,9 +63,9 @@ module JABA
         end
       end
       
-      if @top_level_jaba_type.singleton
+      if @jaba_type.singleton
         if @root_nodes.size == 0
-          JABA.error("singleton type '#{type_id}' must be instantiated exactly once", errobj: @top_level_jaba_type)
+          JABA.error("singleton type '#{type_id}' must be instantiated exactly once", errobj: @jaba_type)
         elsif @root_nodes.size > 1
           JABA.error("singleton type '#{type_id}' must be instantiated exactly once", errobj: @root_nodes.last)
         end
@@ -124,12 +124,12 @@ module JABA
       end
 
       jt = if child_type_id
-        @top_level_jaba_type.get_child_type(child_type_id)
+        @jaba_type.get_child_type(child_type_id)
       else
-        @top_level_jaba_type
+        @jaba_type
       end
 
-      jn = JabaNode.new(@services, @definition.id, @definition.src_loc, jt, @top_level_jaba_type, handle, parent, depth)
+      jn = JabaNode.new(@services, @definition.id, @definition.src_loc, jt, @jaba_type, handle, parent, depth)
 
       @nodes << jn
       @node_lookup[handle] = jn
@@ -147,7 +147,7 @@ module JABA
         
         # Next execute defaults block if there is one defined for this type.
         #
-        defaults = @top_level_jaba_type.defaults_definition
+        defaults = @jaba_type.defaults_definition
         if defaults
           jn.eval_jdl(&defaults.block)
         end
@@ -188,7 +188,7 @@ module JABA
       attr_def = attr.attr_def
       node = attr.node
       rt = attr_def.node_type
-      rjt = services.get_top_level_jaba_type(rt) # TOO: improve. Maybe expand node_type into a JabaType earlier
+      rjt = services.get_jaba_type(rt) # TOO: improve. Maybe expand node_type into a JabaType earlier
       if ignore_if_same_type && rt == node.jaba_type.defn_id
         @reference_attrs_to_resolve << attr
         return ref_node_id

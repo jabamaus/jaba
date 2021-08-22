@@ -128,7 +128,7 @@ module JABA
         JABA.error("Only for use with :node attribute type")
       end
       node_type = @attr_def.node_type
-      nm = services.get_top_level_jaba_type(node_type).node_manager
+      nm = services.get_jaba_type(node_type).node_manager
       nm.push_definition(services.make_definition(@attr_def.defn_id, block, __jdl_call_loc)) do
         return nm.make_node(name: id, parent: @node, block_args: block_args)
       end
