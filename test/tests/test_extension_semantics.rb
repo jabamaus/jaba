@@ -96,49 +96,6 @@ module JABA
       # TODO
     end
 
-    it 'supports dependencies between types' do
-      assert_output 'def a;def b;def c;a;b;c;' do
-        jaba(barebones: true) do
-          type :a do
-            print 'def a;'
-          end
-          type :b do
-            print 'def b;'
-            dependencies [:a]
-          end
-          type :c do
-            dependencies [:b]
-            print 'def c;'
-          end
-          c :c do
-            print 'c;' # evaluated third
-          end
-          a :a do
-            print 'a;' # evaluated first
-          end
-          b :b do
-            print 'b;' # evaluated second
-          end
-        end
-      end
-    end
-    
-    it 'checks for cyclic dependencies' do
-      check_fail '\'a\' type contains a cyclic dependency', line: [__FILE__, 'tagF'] do
-        jaba(barebones: true) do
-          type :a do # tagF
-            dependencies :c
-          end
-          type :b do
-            dependencies :a
-          end
-          type :c do
-            dependencies :b
-          end
-        end
-      end
-    end
-    
     it 'supports a generate hook per-definition' do
       assert_output 'generate' do
         jaba(barebones: true) do
