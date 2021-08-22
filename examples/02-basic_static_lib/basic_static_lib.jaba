@@ -1,5 +1,6 @@
-cpp :BasicStaticLib, platforms: [:windows_x86_64] do
+cpp :BasicStaticLib do
   type :lib
+  platforms [:windows_x86_64]
   configs [:Debug, :Release]
   src ['.']
   inc ['include'], :export

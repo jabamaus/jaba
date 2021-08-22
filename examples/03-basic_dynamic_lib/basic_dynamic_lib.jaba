@@ -1,5 +1,6 @@
-cpp :BasicDynamicLib, platforms: [:windows_x86_64] do
+cpp :BasicDynamicLib do
   type :dll
+  platforms [:windows_x86_64]
   configs [:Debug, :Release]
   src ['.']
   inc ['include'], :export

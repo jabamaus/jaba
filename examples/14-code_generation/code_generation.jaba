@@ -1,5 +1,6 @@
-cpp :CodegenExample, platforms: [:windows_x86_64] do
+cpp :CodegenExample do
   type :console
+  platforms [:windows_x86_64]
   configs [:Debug, :Release]
   src ['main.cpp', 'generator.rb', '*.xyz']
   src %w(src1.h src2.h src1.cpp src2.cpp), :force, prefix: 'generated/'

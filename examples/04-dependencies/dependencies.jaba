@@ -2,8 +2,9 @@ include '../02-basic_static_lib'
 include '../03-basic_dynamic_lib'
 include '../example_src/3rdParty/ThirdPartyLib'
 
-cpp :AppWithDependencies, platforms: [:windows_x86_64] do
+cpp :AppWithDependencies do
   type :console
+  platforms [:windows_x86_64]
   configs [:Debug, :Release]
   src ['main.cpp']
   deps [:BasicStaticLib, :BasicDynamicLib, :ThirdPartyLib]

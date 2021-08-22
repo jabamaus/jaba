@@ -6,6 +6,11 @@ type :cpp do
 
   child_types :cpp_project, :cpp_config
 
+  attr_array :platforms do
+    title 'Target platforms'
+    flags :required
+  end
+
 end
 
 type :cpp_project do

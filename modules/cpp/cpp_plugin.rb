@@ -24,10 +24,10 @@ module JABA
     ##
     #
     def process_definition(definition)
-      platforms = definition.options[:platforms]
+      root_node = services.make_node
 
       target_platform_to_archs = {}
-      platforms.each do |pspec|
+      root_node.attrs.platforms.each do |pspec|
         if pspec !~ /^(.*?)_(.*)/
           JABA.error("Cannot extract platform and architecture from '#{pspec}'")
         end
@@ -39,7 +39,6 @@ module JABA
       # TODO: tidy up by making node_from_handle better
       host_plugin = services.get_plugin(:host)
 
-      project_nodes = []
       services.globals.target_hosts.each do |target_host_id|
         target_host = host_plugin.services.node_from_handle(target_host_id.to_s)
         supported_platforms = target_host.attrs.cpp_supported_platforms
@@ -47,14 +46,13 @@ module JABA
         target_platform_to_archs.each do |tp, target_archs|
           next if !supported_platforms.include?(tp)
           
-          project_node = services.make_node(child_type_id: :cpp_project, name: "#{target_host.defn_id}|#{tp}") do
+          project_node = services.make_node(child_type_id: :cpp_project, name: "#{target_host.defn_id}|#{tp}", parent: root_node) do
             host target_host.defn_id
             host_ref target_host
             platform tp
             platform_ref tp
           end
 
-          project_nodes << project_node
           @all_project_nodes << project_node
           @host_to_project_nodes.push_value(target_host, project_node)
 
@@ -78,7 +76,7 @@ module JABA
           end
         end
       end
-      project_nodes
+      root_node
     end
 
     ##
