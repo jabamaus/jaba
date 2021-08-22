@@ -115,7 +115,12 @@ module JABA
     #
     def value_from_block(__jdl_call_loc, id:, block_args: nil, &block)
       if @attr_def.node_by_value?
-        make_node(id: id, block_args: block_args, __jdl_call_loc: __jdl_call_loc, &block)
+        if @value # If node has already been made but the node attr is being set again, re-evaluate existing value against block
+          @value.eval_jdl(&block)
+          return @value
+        else
+          make_node(id: id, block_args: block_args, __jdl_call_loc: __jdl_call_loc, &block)
+        end
       else
         return @node.eval_jdl(&block)
       end

@@ -66,6 +66,27 @@ module JABA
           node_single.c.must_equal({e: 'f'})
           node_single.d.e.f.must_equal(1)
 
+          # Repeating overwrites/appends
+          node_single do
+            a 'a1'
+            b ['c1', 'd1']
+            if windows?
+              c :e1, 'f1'
+            end
+            if ios?
+              b ['e1']
+            end
+            d do
+              e do
+                f 2
+              end
+            end
+          end
+          node_single.a.must_equal('a1')
+          node_single.b.must_equal ['c', 'd', 'c1', 'd1']
+          node_single.c.must_equal({e: 'f', e1: 'f1'})
+          node_single.d.e.f.must_equal(2)
+
           node_array do
             a 'a'
             b ['c', 'd']
