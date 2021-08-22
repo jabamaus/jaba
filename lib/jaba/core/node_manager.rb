@@ -104,7 +104,7 @@ module JABA
 
     ##
     #
-    def make_node(sub_type_id: nil, name: nil, parent: nil, block_args: nil, &block)
+    def make_node(child_type_id: nil, name: nil, parent: nil, block_args: nil, &block)
       depth = 0
       handle = nil
 
@@ -117,19 +117,19 @@ module JABA
         handle << "|#{name}" if name
       end
 
-      services.log "#{'  ' * depth}Instancing node [type=#{type_id}, handle=#{handle}]"
+      services.log "#{'  ' * depth}Instancing node [type=#{child_type_id}, handle=#{handle}]" # TODO: fix logging of type
 
       if node_from_handle(handle, fail_if_not_found: false)
         JABA.error("Duplicate node handle '#{handle}'")
       end
 
-      jt = if sub_type_id
-        @top_level_jaba_type.get_sub_type(sub_type_id)
+      jt = if child_type_id
+        @top_level_jaba_type.get_child_type(child_type_id)
       else
         @top_level_jaba_type
       end
 
-      jn = JabaNode.new(@services, @definition.id, @definition.src_loc, jt, handle, parent, depth)
+      jn = JabaNode.new(@services, @definition.id, @definition.src_loc, jt, @top_level_jaba_type, handle, parent, depth)
 
       @nodes << jn
       @node_lookup[handle] = jn
@@ -147,7 +147,7 @@ module JABA
         
         # Next execute defaults block if there is one defined for this type.
         #
-        defaults = jt.top_level_type.defaults_definition
+        defaults = @top_level_jaba_type.defaults_definition
         if defaults
           jn.eval_jdl(&defaults.block)
         end

@@ -12,35 +12,50 @@ module JABA
 
     include PropertyMethods
 
-    # The type id given to the jaba type in define() method, whether a top level type or a subtype.
-    # Contrast this with defn_id which will return the top level type's id even if it is called
-    # on a subtype.
-    #
-    attr_reader :handle
-    attr_reader :top_level_type
+    attr_reader :title
+    attr_reader :notes
+    attr_reader :singleton
+    attr_reader :plugin
+    attr_reader :node_manager
+    attr_reader :defaults_definition
+    attr_reader :dependencies
     attr_reader :attribute_defs
 
     ##
     #
-    def initialize(services, defn_id, src_loc, handle, top_level_type)
+    def initialize(services, defn_id, src_loc, block, plugin, node_manager)
       super(services, defn_id, src_loc, JDL_Type.new(self))
 
-      @handle = handle
-      @top_level_type = top_level_type
       @attribute_defs = []
-    end
+      @all_attr_defs = {}
+      @plugin = plugin
+      @node_manager = node_manager
+      @defaults_definition = services.get_defaults_definition(@defn_id)
 
-    ##
-    #
-    def to_s
-      @handle.to_s
+      define_property :title
+      define_array_property :notes
+      define_property :singleton
+      define_array_property :dependencies # TODO: validate explicitly specified deps
+      define_array_property :child_types
+
+      set_property(:notes, "Manages attribute definitions for '#{@defn_id}' type")
+
+      if block
+        eval_jdl(&block)
+      end
+
+      validate
+
+      @title.freeze
+      @notes.freeze
+      @singleton.freeze
     end
 
     ##
     # Used in error messages.
     #
     def describe
-      "'#{@handle}' type"
+      "'#{@defn_id}' type"
     end
 
     ##
@@ -58,106 +73,8 @@ module JABA
       ad = JabaAttributeDefinition.new(@services, id, caller_locations(2, 1)[0], block, type, key_type, variant, self)
       @attribute_defs << ad
 
-      top_level_type.register_attr_def(id, ad)
+      register_attr_def(id, ad)
       ad  
-    end
-
-    ##
-    #
-    def define_sub_type(id, &block)
-      JABA.error("Sub type '#{handle.inspect_unquoted}' cannot have another subtype '#{id.inspect_unquoted}'")
-    end
-
-    ##
-    #
-    def validate_id(id)
-      if !(id.symbol? || id.string?) || id !~ /^[a-zA-Z0-9_\?]+$/
-        JABA.error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol " \
-          "(underscore permitted), eg :my_id or 'my_id'")
-      end
-    end
-
-  end
-
-  ##
-  # eg project/workspace/category etc.
-  #
-  class TopLevelJabaType < JabaType
-
-    attr_reader :title
-    attr_reader :notes
-    attr_reader :singleton
-    attr_reader :plugin
-    attr_reader :node_manager
-    attr_reader :defaults_definition
-    attr_reader :dependencies
-    attr_reader :all_attr_defs_sorted
-    attr_reader :open_sub_type_defs
-
-    ##
-    #
-    def initialize(services, defn_id, src_loc, block, handle, plugin, node_manager)
-      super(services, defn_id, src_loc, handle, self)
-
-      @plugin = plugin
-      @node_manager = node_manager
-      @defaults_definition = services.get_defaults_definition(@defn_id)
-
-      @all_attr_defs = {}
-      @sub_types = []
-      @open_sub_type_defs = []
-
-      define_property(:title)
-      define_array_property(:notes)
-      define_property(:singleton)
-      define_array_property(:dependencies) # TODO: validate explicitly specified deps
-
-      set_property(:notes, "Manages attribute definitions for '#{@defn_id}' type")
-
-      if block
-        eval_jdl(&block)
-      end
-
-      validate
-
-      @title.freeze
-      @notes.freeze
-      @singleton.freeze
-    end
-
-    ##
-    #
-    def define_sub_type(id, &block)
-      # TODO: check for multiply defined sub types
-      
-      # Sub types share the top level defintion block info rather than having the info of their local block.
-      # This is because sub types are very self contained and are not important to the rest of the system.
-      # When something wants to ask it its definition id it is more helpful to return the id of the
-      # top level definition than its local id, which nothing external to JabaType is interested in.
-      #
-      st = JabaType.new(@services, defn_id, caller_locations(2, 1)[0], id, self)
-      if block_given?
-        st.eval_jdl(&block)
-      end
-      
-      @sub_types << st
-      st
-    end
-
-    ##
-    #
-    def open_sub_type(subtype_id, &block)
-      @open_sub_type_defs << services.make_definition(subtype_id, block, caller_locations(2, 1)[0])
-    end
-
-    ##
-    #
-    def get_sub_type(id)
-      st = @sub_types.find{|st| st.handle == id}
-      if !st
-        JABA.error("'#{id.inspect_unquoted}' sub type not found in '#{@defn_id.inspect_unquoted}' top level type")
-      end
-      st
     end
 
     ##
@@ -178,6 +95,25 @@ module JABA
 
     ##
     #
+    def validate_id(id)
+      if !(id.symbol? || id.string?) || id !~ /^[a-zA-Z0-9_\?]+$/
+        JABA.error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol " \
+          "(underscore permitted), eg :my_id or 'my_id'")
+      end
+    end
+
+    ##
+    #
+    def get_child_type(type_id)
+      ct = @child_types.find{|jt| jt.defn_id == type_id}
+      if !ct
+        JABA.error("#{describe} does not have '#{type_id}' child type")
+      end
+      ct
+    end
+
+    ##
+    #
     def validate
       # Insist on the attribute having a title, unless running unit tests or in barebones mode. Barebones mode
       # is useful for testing little jaba snippets where adding titles would be cumbersome.
@@ -193,11 +129,17 @@ module JABA
     ##
     #
     def post_create
+      @child_types.map!{|id| services.get_top_level_jaba_type(id)}
       @attribute_defs.sort_by! {|ad| ad.defn_id}
+
+      to_register = []
+
+      @child_types.each do |ct|
+        to_register.concat(ct.attribute_defs)
+      end
 
       # Register referenced attributes
       #
-      to_register = []
       @all_attr_defs.each do |id, attr_def|
         if attr_def.node_by_reference?
           rt_id = attr_def.node_type
@@ -212,12 +154,7 @@ module JABA
         end
       end
 
-      # Store sorted list of all attributes (including sub_types). Do this before referenced attributes
-      # are registered so list only contains attributes from this jaba type.
-      # Used in reference manual.
-      #
-      @all_attr_defs_sorted = @all_attr_defs.values.sort_by {|ad| ad.defn_id}
-   
+ 
       to_register.each{|d| register_attr_def(d.defn_id, d)}
 
       # Convert dependencies specified as ids to jaba type objects

@@ -51,22 +51,16 @@ module JABA
     end
 
     ##
-    # Define sub type. Useful for grouping attributes.
+    # Specify child types. Useful for grouping attributes.
     #
-    def type(id, &block)
-      @jaba_type.define_sub_type(id, &block)
+    def child_types(*ids)
+      @jaba_type.set_property(:child_types, ids)
     end
 
     ##
     #
-    def open_type(id, &block)
-      @jaba_type.open_sub_type(id, &block)
-    end
-    
-    ##
-    #
     def dependencies(*deps)
-      @jaba_type.top_level_type.set_property(:dependencies, deps)
+      @jaba_type.set_property(:dependencies, deps)
     end
 
     private

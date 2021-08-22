@@ -91,15 +91,10 @@ class DocBuilder
   def generate_reference_doc
     write_markdown_page('jaba_reference.md', 'Jaba language reference', versioned: true) do |w|
       w << ""
-
-      # TODO: document include statement
-      # TODO: document top level types
-      # TODO: document how to define new types and attributes
-      
       w << "- Types"
       @top_level_jaba_types.sort_by {|jt| jt.defn_id}.each do |jt|
         w << "  - [#{jt.defn_id}](#{jt.reference_manual_page})"
-        jt.all_attr_defs_sorted.each do |ad|
+        jt.attribute_defs.each do |ad|
           w << "    - [#{ad.defn_id}](#{jt.reference_manual_page}##{ad.defn_id})"
         end
       end
@@ -143,11 +138,11 @@ class DocBuilder
       w << "> "
       w << ""
       w << "Attributes:  "
-      jt.all_attr_defs_sorted.each do |ad|
+      jt.attribute_defs.each do |ad|
         w << "- [#{ad.defn_id}](##{ad.defn_id})"
       end
       w << ""
-      jt.all_attr_defs_sorted.each do |ad|
+      jt.attribute_defs.each do |ad|
         w << "<a id=\"#{ad.defn_id}\"></a>" # anchor for the attribute eg 'src_ext'
         w << "#### #{ad.defn_id}"
         w << "> _#{ad.title}_"
@@ -156,7 +151,7 @@ class DocBuilder
         w << "> "
         w << "> | Property | Value  |"
         w << "> |-|-|"
-        # TODO: need to flag whether per-project/per-config etc
+        
         type = String.new
         if ad.type_id
           type << "#{ad.type_id.inspect}"

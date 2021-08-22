@@ -446,7 +446,7 @@ module JABA
         JABA.error("'node_type' must be set")
       end
       if attr_def.jaba_type.defn_id != t
-        attr_def.jaba_type.top_level_type.set_property(:dependencies, t)
+        attr_def.jaba_type.set_property(:dependencies, t)
       end
     end
 
@@ -484,7 +484,7 @@ module JABA
       if attr_def.jaba_type.defn_id == t
         JABA.error("node_type attribute cannot be set to owning type")
       else
-        attr_def.jaba_type.top_level_type.set_property(:dependencies, t)
+        attr_def.jaba_type.set_property(:dependencies, t)
       end
     end
 

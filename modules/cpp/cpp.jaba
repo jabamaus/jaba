@@ -4,6 +4,8 @@ type :cpp do
 
   title 'Cross platform C++ project definition'
 
+  child_types :cpp_config
+
   attr :root, type: :dir do
     title 'Root directory relative to which all other paths are specified'
     note 'Root of the project specified as an offset from the .jaba file that contains the project definition. ' \
@@ -196,227 +198,227 @@ type :cpp do
     node_type :category
   end
 
-  # Sub-grouping of attributes that pertain to a build configuration
+end
+
+type :cpp_config do
+
+  title 'Per configuration C++ attributes'
+  
+  attr :arch, type: :symbol_or_string do
+    title 'Target architecture as an id'
+    note 'Query current architecture being processed. Use to define control flow to set config-specific atttributes'
+    flags :read_only
+  end
+
+  attr :arch_ref, type: :node_ref do
+    title 'Target architecture as an object'
+    node_type :arch
+  end
+
+  attr :cpp_standard, type: :choice do
+    title 'C++ language standard'
+    items ['C++11', 'C++14', 'C++17', 'C++20', 'C++23']
+    default 'C++14'
+  end
+  
+  # Control flow attributes
   #
-  type :config do
+  attr :config, type: :symbol_or_string do
+    title 'Current target config as an id'
+    note 'Returns current config being processed. Use to define control flow to set config-specific atttributes'
+    flags :read_only
+    # TODO: examples, including regexes
+  end
 
-    attr :arch, type: :symbol_or_string do
-      title 'Target architecture as an id'
-      note 'Query current architecture being processed. Use to define control flow to set config-specific atttributes'
-      flags :read_only
-    end
+  attr_array :rule, type: :node do
+    title 'Custom build rule'
+    node_type :rule
+  end
 
-    attr :arch_ref, type: :node_ref do
-      title 'Target architecture as an object'
-      node_type :arch
-    end
+  # Common attributes. These are the attributes that most definitions will set/use.
+  #
+  attr_array :shell, type: :string do
+    title 'Shell commands to execute during build'
+    note 'Maps to build events in Visual Studio'
+    flag_options :export, :export_only
+    value_option :when, required: true, items: [:PreBuild, :PreLink, :PostBuild]
+  end
 
-    attr :cpp_standard, type: :choice do
-      title 'C++ language standard'
-      items ['C++11', 'C++14', 'C++17', 'C++20', 'C++23']
-      default 'C++14'
-    end
-    
-    # Control flow attributes
-    #
-    attr :config, type: :symbol_or_string do
-      title 'Current target config as an id'
-      note 'Returns current config being processed. Use to define control flow to set config-specific atttributes'
-      flags :read_only
-      # TODO: examples, including regexes
-    end
+  attr :build_root_offset, type: :dir do
+    title 'Root directory for build artifacts'
+    note 'Specified as a relative path from main build root'
+    basedir_spec :build_root
+    default 'build'
+    flags :no_check_exist
+  end
 
-    attr_array :rule, type: :node do
-      title 'Custom build rule'
-      node_type :rule
+  attr :bindir, type: :dir do
+    title 'Output directory for executables'
+    basedir_spec :build_root
+    default do
+      "#{build_root_offset}/bin/#{arch}/#{config}"
     end
+    flags :no_check_exist
+  end
 
-    # Common attributes. These are the attributes that most definitions will set/use.
-    #
-    attr_array :shell, type: :string do
-      title 'Shell commands to execute during build'
-      note 'Maps to build events in Visual Studio'
-      flag_options :export, :export_only
-      value_option :when, required: true, items: [:PreBuild, :PreLink, :PostBuild]
+  attr :libdir, type: :dir do
+    title 'Output directory for libs'
+    basedir_spec :build_root
+    default do
+      "#{build_root_offset}/lib/#{arch}/#{config}"
     end
+    flags :no_check_exist
+  end
 
-    attr :build_root_offset, type: :dir do
-      title 'Root directory for build artifacts'
-      note 'Specified as a relative path from main build root'
-      basedir_spec :build_root
-      default 'build'
-      flags :no_check_exist
+  attr :objdir, type: :dir do
+    title 'Output directory for object files'
+    basedir_spec :build_root
+    default do
+      "#{build_root_offset}/obj/#{arch}/#{config}/#{projname}"
     end
+    flags :no_check_exist
+    notes 'Defaults to $(build_root_offset)/obj/$(arch)/$(config)/$(projname)'
+  end
 
-    attr :bindir, type: :dir do
-      title 'Output directory for executables'
-      basedir_spec :build_root
-      default do
-        "#{build_root_offset}/bin/#{arch}/#{config}"
-      end
-      flags :no_check_exist
-    end
+  attr_array :libs, type: :file do
+    title 'Paths to required non-system libs'
+    basedir_spec :definition_root
+    flags :no_sort, :no_check_exist
+  end
 
-    attr :libdir, type: :dir do
-      title 'Output directory for libs'
-      basedir_spec :build_root
-      default do
-        "#{build_root_offset}/lib/#{arch}/#{config}"
-      end
-      flags :no_check_exist
-    end
+  attr_array :syslibs, type: :string do
+    title 'System libs'
+    flags :no_sort
+    flag_options :export, :export_only
+  end
 
-    attr :objdir, type: :dir do
-      title 'Output directory for object files'
-      basedir_spec :build_root
-      default do
-        "#{build_root_offset}/obj/#{arch}/#{config}/#{projname}"
-      end
-      flags :no_check_exist
-      notes 'Defaults to $(build_root_offset)/obj/$(arch)/$(config)/$(projname)'
-    end
+  attr_array :cflags, type: :string do
+    title 'Raw compiler command line switches'
+    flag_options :export, :export_only
+  end
 
-    attr_array :libs, type: :file do
-      title 'Paths to required non-system libs'
-      basedir_spec :definition_root
-      flags :no_sort, :no_check_exist
+  attr :configname, type: :symbol_or_string do
+    title 'Display name of config as seen in IDE'
+    default do
+      config
     end
+  end
 
-    attr_array :syslibs, type: :string do
-      title 'System libs'
-      flags :no_sort
-      flag_options :export, :export_only
+  attr :debug, type: :bool do
+    title 'Flags config as a debug config'
+    notes'Defaults to true if config id contains \'debug\''
+    default do
+      config =~ /debug/i ? true : false
     end
+  end
+  
+  attr_array :define, type: :symbol_or_string do
+    title 'Preprocessor defines'
+    flag_options :export, :export_only
+  end
 
-    attr_array :cflags, type: :string do
-      title 'Raw compiler command line switches'
-      flag_options :export, :export_only
-    end
+  attr_array :inc, type: :dir do
+    title 'Include paths'
+    basedir_spec :definition_root
+    flags :no_sort
+    flag_options :export, :export_only
+    example "inc ['mylibrary/include']"
+    example "inc ['mylibrary/include'], :export # Export include path to dependents"
+  end
 
-    attr :configname, type: :symbol_or_string do
-      title 'Display name of config as seen in IDE'
-      default do
-        config
-      end
+  attr :importlib do
+    title 'Name of import lib for use will dlls'
+    note 'Defaults to $(projname)$(targetsuffix).lib'
+    default do
+      "#{projname}#{targetsuffix}.lib"
     end
+  end
 
-    attr :debug, type: :bool do
-      title 'Flags config as a debug config'
-      notes'Defaults to true if config id contains \'debug\''
-      default do
-        config =~ /debug/i ? true : false
-      end
-    end
-    
-    attr_array :define, type: :symbol_or_string do
-      title 'Preprocessor defines'
-      flag_options :export, :export_only
-    end
+  attr_array :nowarn do
+    title 'Warnings to disable'
+    note 'Placed directly into projects as is, with no validation'
+    flag_options :export, :export_only
+    example "nowarn [4100, 4127, 4244] if visual_studio?"
+  end
 
-    attr_array :inc, type: :dir do
-      title 'Include paths'
-      basedir_spec :definition_root
-      flags :no_sort
-      flag_options :export, :export_only
-      example "inc ['mylibrary/include']"
-      example "inc ['mylibrary/include'], :export # Export include path to dependents"
+  attr :targetname, type: :string do
+    title 'Base name of output file without extension'
+    note 'Defaults to $(targetprefix)$(projname)$(targetsuffix)'
+    default do
+      "#{targetprefix}#{projname}#{targetsuffix}"
     end
+  end
+  
+  attr :targetprefix, type: :string do
+    title 'Prefix to apply to $(targetname)'
+    note 'Has no effect if $(targetname) specified'
+  end
+  
+  attr :targetsuffix, type: :string do
+    title 'Suffix to apply to $(targetname)'
+    note 'Has no effect if $(targetname) specified'
+  end
 
-    attr :importlib do
-      title 'Name of import lib for use will dlls'
-      note 'Defaults to $(projname)$(targetsuffix).lib'
-      default do
-        "#{projname}#{targetsuffix}.lib"
-      end
-    end
-
-    attr_array :nowarn do
-      title 'Warnings to disable'
-      note 'Placed directly into projects as is, with no validation'
-      flag_options :export, :export_only
-      example "nowarn [4100, 4127, 4244] if visual_studio?"
-    end
-
-    attr :targetname, type: :string do
-      title 'Base name of output file without extension'
-      note 'Defaults to $(targetprefix)$(projname)$(targetsuffix)'
-      default do
-        "#{targetprefix}#{projname}#{targetsuffix}"
-      end
-    end
-    
-    attr :targetprefix, type: :string do
-      title 'Prefix to apply to $(targetname)'
-      note 'Has no effect if $(targetname) specified'
-    end
-    
-    attr :targetsuffix, type: :string do
-      title 'Suffix to apply to $(targetname)'
-      note 'Has no effect if $(targetname) specified'
-    end
-
-    attr :targetext, type: :string do
-      title 'Extension to apply to $(targetname)'
-      note 'Defaults to standard extension for $(type) of project for target $(platform)'
-      default do
-        case platform
-        when :windows
-          case type
-          when :app, :console
-            '.exe'
-          when :lib
-            '.lib'
-          when :dll
-            '.dll'
-          end
-        when :ios
-          case type
-          when :app, :console
-            '.app'
-          when :lib
-            '.a'
-          end
+  attr :targetext, type: :string do
+    title 'Extension to apply to $(targetname)'
+    note 'Defaults to standard extension for $(type) of project for target $(platform)'
+    default do
+      case platform
+      when :windows
+        case type
+        when :app, :console
+          '.exe'
+        when :lib
+          '.lib'
+        when :dll
+          '.dll'
+        end
+      when :ios
+        case type
+        when :app, :console
+          '.app'
+        when :lib
+          '.a'
         end
       end
     end
+  end
 
-    attr :warnerror, type: :bool do
-      title 'Enable warnings as errors'
-      example 'warnerror true'
-    end
+  attr :warnerror, type: :bool do
+    title 'Enable warnings as errors'
+    example 'warnerror true'
+  end
 
-    # Not so common attributes. Often used but not fundamental.
-    #
-    attr :character_set, type: :choice do
-      title 'Character set'
-      items [
-        :mbcs,    # Visual Studio only
-        :unicode,
-        nil
-      ]
-      default nil
-      example 'character_set :unicode'
-    end
+  # Not so common attributes. Often used but not fundamental.
+  #
+  attr :character_set, type: :choice do
+    title 'Character set'
+    items [
+      :mbcs,    # Visual Studio only
+      :unicode,
+      nil
+    ]
+    default nil
+    example 'character_set :unicode'
+  end
 
-    attr :exceptions, type: :choice do
-      title 'Enables C++ exceptions'
-      items [true, false]
-      items [:structured] # Windows only
-      default true
-      example 'exceptions false # disable exceptions'
-    end
+  attr :exceptions, type: :choice do
+    title 'Enables C++ exceptions'
+    items [true, false]
+    items [:structured] # Windows only
+    default true
+    example 'exceptions false # disable exceptions'
+  end
 
-    attr :rtti, type: :bool do
-      title 'Enables runtime type information'
-      example 'rtti true'
-    end
+  attr :rtti, type: :bool do
+    title 'Enables runtime type information'
+    example 'rtti true'
+  end
 
-    attr :toolset, type: :string do
-      title 'Toolset version to use'
-      note 'Defaults to host\'s default toolset'
-      default { host_ref.toolset }
-    end
-
+  attr :toolset, type: :string do
+    title 'Toolset version to use'
+    note 'Defaults to host\'s default toolset'
+    default { host_ref.toolset }
   end
 
 end

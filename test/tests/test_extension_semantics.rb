@@ -30,7 +30,7 @@ module JABA
           end
         end
       end
-      # TODO: test opening sub types
+      
       jaba do
         type :test do
           attr :a do
@@ -87,7 +87,7 @@ module JABA
         end
       end
     end
-    
+
     it 'supports defining new attribute types' do
       # TODO
     end
@@ -156,29 +156,30 @@ module JABA
       assert_output 'only called once' do
         jaba do
           type :test_project do
+            child_types :project, :config
             attr :root do
               default '.'
             end
             attr_array :platforms do
               flags :no_sort, :required
             end
-            type :project do
-              attr :platform do
-                flags :read_only
-              end
-              attr :platform_ref, type: :node_ref do
-                node_type :platform
-              end
-              attr :src
-              attr_array :configs do
-                flags :required, :no_sort
-              end
+          end
+          type :project do
+            attr :platform do
+              flags :read_only
             end
-              
-            type :config do
-              attr :config
-              attr :configname
+            attr :platform_ref, type: :node_ref do
+              node_type :platform
             end
+            attr :src
+            attr_array :configs do
+              flags :required, :no_sort
+            end
+          end
+            
+          type :config do
+            attr :config
+            attr :configname
           end
 
           test_project :t do
@@ -229,14 +230,14 @@ module JABA
       root_node = services.make_node
       
       root_node.attrs.platforms.each do |p|
-        project = services.make_node(sub_type_id: :project, name: p, parent: root_node) do 
+        project = services.make_node(child_type_id: :project, name: p, parent: root_node) do 
           platform p
           platform_ref p
         end
         @projects << project
         
         project.attrs.configs.each do |c|
-          services.make_node(sub_type_id: :config, name: c, parent: project) { config c }
+          services.make_node(child_type_id: :config, name: c, parent: project) { config c }
         end
       end
       root_node

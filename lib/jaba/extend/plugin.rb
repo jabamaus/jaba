@@ -8,8 +8,8 @@ module JABA
 
     ##
     #
-    def make_node(sub_type_id: nil, name: nil, parent: nil, block_args: nil, &block)
-      @node_manager.make_node(sub_type_id: sub_type_id, name: name, parent: parent, block_args: block_args, &block)
+    def make_node(child_type_id: nil, name: nil, parent: nil, block_args: nil, &block)
+      @node_manager.make_node(child_type_id: child_type_id, name: name, parent: parent, block_args: block_args, &block)
     end
 
     ##

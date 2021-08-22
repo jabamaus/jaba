@@ -58,7 +58,7 @@ module JABA
 
           project_node.attrs.configs.each do |cfg|
             target_archs.each do |ta|
-              services.make_node(sub_type_id: :config, name: "#{ta}|#{cfg}", parent: project_node) do
+              services.make_node(child_type_id: :cpp_config, name: "#{ta}|#{cfg}", parent: project_node) do
                 config cfg
                 arch ta
                 arch_ref ta

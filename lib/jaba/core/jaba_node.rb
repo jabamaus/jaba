@@ -11,6 +11,7 @@ module JABA
   class JabaNode < JabaObject
 
     attr_reader :jaba_type
+    attr_reader :top_level_jaba_type
     attr_reader :handle
     attr_reader :attrs
     attr_reader :attrs_read_only
@@ -20,10 +21,11 @@ module JABA
     
     ##
     #
-    def initialize(services, defn_id, src_loc, jaba_type, handle, parent, depth)
+    def initialize(services, defn_id, src_loc, jaba_type, top_level_jaba_type, handle, parent, depth)
       super(services, defn_id, src_loc, JDL_Node.new(self))
 
-      @jaba_type = jaba_type # Won't always be the same as the JabaType in definition
+      @jaba_type = jaba_type
+      @top_level_jaba_type = top_level_jaba_type
       @handle = handle
       @children = []
       @parent = parent
@@ -42,7 +44,7 @@ module JABA
       @attribute_lookup = {}
       
       i = 0
-      adefs = jaba_type.attribute_defs
+      adefs = @jaba_type.attribute_defs
       s = adefs.size
       while i < s
         attr_def = adefs[i]
@@ -133,7 +135,7 @@ module JABA
     ##
     #
     def visit_node(visit_self: false, type_id: nil, &block)
-      jaba_type_id = @jaba_type.handle
+      jaba_type_id = @jaba_type.defn_id
       if (visit_self && (!type_id || type_id == jaba_type_id))
         yield self
       end
@@ -212,7 +214,7 @@ module JABA
         a = get_attr(id, search: true, fail_if_not_found: false)
         
         if !a
-          attr_def = @jaba_type.top_level_type.get_attr_def(id)
+          attr_def = @top_level_jaba_type.get_attr_def(id)
           if !attr_def
             JABA.error("'#{id}' attribute not defined in #{describe}")
           elsif attr_def.node_by_reference?
@@ -227,11 +229,12 @@ module JABA
         a = get_attr(id, search: false, fail_if_not_found: false)
         
         if !a
-          attr_def = @jaba_type.top_level_type.get_attr_def(id)
+          attr_def = @top_level_jaba_type.get_attr_def(id)
           if !attr_def
             JABA.error("'#{id}' attribute not defined")
-          elsif attr_def.jaba_type.defn_id != @jaba_type.defn_id
-            JABA.error("Cannot change referenced '#{id}' attribute")
+            # TODO: reinstate
+          #elsif attr_def.jaba_type.defn_id != @jaba_type.defn_id
+            #JABA.error("Cannot change referenced '#{id}' attribute")
           end
           return nil
         end

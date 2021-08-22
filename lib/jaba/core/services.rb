@@ -254,11 +254,6 @@ module JABA
         log "Opening #{d.id} type"
         tlt = get_top_level_jaba_type(d.id, errobj: d)
         tlt.eval_jdl(&d.block)
-        tlt.open_sub_type_defs.each do |std|
-          log "Opening #{std.id} sub type"
-          st = tlt.get_sub_type(std.id)
-          st.eval_jdl(&std.block)
-        end
       end
 
       @top_level_jaba_types.each(&:post_create)
@@ -574,25 +569,25 @@ module JABA
 
     ##
     #
-    def make_top_level_type(handle, dfn)
-      log "Creating '#{handle}' type at #{dfn.src_loc.describe}"
+    def make_top_level_type(id, dfn)
+      log "Creating '#{id}' type at #{dfn.src_loc.describe}"
 
-      if @jaba_type_lookup.key?(handle)
-        JABA.error("'#{handle}' jaba type multiply defined")
+      if @jaba_type_lookup.key?(id)
+        JABA.error("'#{id}' jaba type multiply defined")
       end
 
-      plugin_id = dfn.id.to_s.capitalize_first # egg Cpp/Workspace
+      plugin_id = id.to_s.capitalize_first # egg Cpp/Workspace
       plugin = @plugin_lookup[plugin_id]
       if !plugin
         plugin = make_plugin(DefaultPlugin)
       end
 
       nm = plugin.services.instance_variable_get(:@node_manager)
-      tlt = TopLevelJabaType.new(self, dfn.id, dfn.src_loc, dfn.block, handle, plugin, nm)
+      tlt = JabaType.new(self, dfn.id, dfn.src_loc, dfn.block, plugin, nm)
       nm.set_top_level_type(tlt)
 
       @top_level_jaba_types  << tlt
-      @jaba_type_lookup[handle] = tlt
+      @jaba_type_lookup[id] = tlt
 
       tlt
     end

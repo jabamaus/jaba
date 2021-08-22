@@ -234,26 +234,25 @@ module JABA
     end
     # TODO: test attribute name clashes
 
-    # TODO: what about referencing sub types?
-
     # TODO: test referencing a node in a tree, using make_handle
 
     it 'prevents nil access when building tree of nodes' do
       jaba do
         type :testproj do
+          child_types :platform_, :main
           attr_array :platforms
-          type :platform do
-            attr :platform, type: :node_ref do
-              node_type :platform
-            end
-            attr_array :hosts
+        end
+        type :platform_ do
+          attr :platform, type: :node_ref do
+            node_type :platform
           end
-          type :main do
-            attr :host, type: :node_ref do
-              node_type :host
-            end
-            attr :path
+          attr_array :hosts
+        end
+        type :main do
+          attr :host, type: :node_ref do
+            node_type :host
           end
+          attr :path
         end
 
         testproj :t do
@@ -273,11 +272,11 @@ module JABA
       platforms_node = services.make_node
       
       platforms_node.attrs.platforms.each do |p|
-        hosts_node = services.make_node(sub_type_id: :platform, name: p, parent: platforms_node) do
+        hosts_node = services.make_node(child_type_id: :platform, name: p, parent: platforms_node) do
           platform p
         end
         hosts_node.attrs.hosts.each do |h|
-          services.make_node(sub_type_id: :main, name: h, parent: hosts_node) do 
+          services.make_node(child_type_id: :main, name: h, parent: hosts_node) do 
             host h
           end
         end

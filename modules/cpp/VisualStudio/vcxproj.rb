@@ -132,7 +132,7 @@ module JABA
     ##
     #
     def each_config(&block)
-      @node.visit_node(type_id: :config, &block)
+      @node.visit_node(type_id: :cpp_config, &block)
     end
 
     ##
