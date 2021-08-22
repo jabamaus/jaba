@@ -135,6 +135,7 @@ class DocBuilder
       w << "> |-|-|"
       md_row(w, 'defined in', "$(jaba_install)/#{jt.src_loc.describe(style: :rel_jaba_install, line: false)}")
       md_row(w, 'depends on', jt.dependencies.map{|d| "[#{d}](#{d.reference_manual_page})"}.join(", "))
+      md_row(w, 'contains', jt.child_types.map{|t| "[#{t}](#{t.reference_manual_page})"}.join(", "))
       w << "> "
       w << ""
       w << "Attributes:  "
