@@ -12,7 +12,6 @@ if __FILE__ == $PROGRAM_NAME
       puts "Running jaba in #{dir}..."
       if !system('jaba.bat -D target_hosts vs2019')
         puts "Jaba FAILED"
-        exit!
       end
     end
   end
