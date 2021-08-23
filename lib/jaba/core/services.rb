@@ -424,7 +424,7 @@ module JABA
           end
           value = type.from_cmdline(values[0], attr_def)
           if attr.type_id == :file || attr.type_id == :dir
-            value.to_absolute!(base: @services.invoking_dir, clean: true) # TODO: need to do this for array/hash elems too
+            value = value.to_absolute(base: invoking_dir, clean: true) # TODO: need to do this for array/hash elems too
           end
           attr.set(value)
         when :array
