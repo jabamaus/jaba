@@ -207,16 +207,15 @@ class DocBuilder
     # TODO: check for duplicate ids
     write_markdown_page('jaba_faqs.md', 'Jaba FAQs', versioned: false) do |w|
       faqs = {}
-      IO.read("#{DOCS_HANDWRITTEN_DIR}/faqs_src.txt").scan(/^(.*?):(.*?)---/m) do |section, entry|
+      IO.read("#{DOCS_HANDWRITTEN_DIR}/faqs_src.txt").scan(/^\[(.*?)\]\s*\[(.*?)\](.*?)----[-]*/m) do |anchor, section, entry|
         lines = entry.split("\n")
         faq = lines.shift.lstrip
-        faq_id = faq.slice(0, 20).delete(' ')
         answer = lines.join("\n").strip
         entry = faqs[section]
         if entry.nil?
           faqs[section] = []
         end
-        faqs[section] << [faq, faq_id, answer]
+        faqs[section] << [faq, anchor, answer]
       end
       w << ""
       faqs.each do |s, entries|
