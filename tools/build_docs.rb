@@ -261,11 +261,10 @@ class DocBuilder
     puts "Writing #{fn}"
     file = @file_manager.new_file(fn, capacity: 16 * 1024)
     w = file.writer
-    title = "## #{title}"
+    w << "## #{title}"
     if versioned
-      title << " v#{JABA::VERSION}"
+      md_small(w, "This page applies to v#{JABA::VERSION}<br>")
     end
-    w << title
     if want_home
       w << if versioned
         "[home](../index.html)  "
