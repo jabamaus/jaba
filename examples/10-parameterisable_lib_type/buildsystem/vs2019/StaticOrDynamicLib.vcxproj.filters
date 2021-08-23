@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include\StaticOrDynamicLib">
+      <UniqueIdentifier>{CD5DBAB4-F544-5463-9E21-96A16865B456}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{CE154EDE-0993-52A4-90AF-47ACDC3AD99D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{1BA080E9-C873-5832-989E-4A74D36F88A5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\StaticOrDynamicLib\include\StaticOrDynamicLib\StaticOrDynamicLib.h">
+      <Filter>include\StaticOrDynamicLib</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\StaticOrDynamicLib\src\StaticOrDynamicLib.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

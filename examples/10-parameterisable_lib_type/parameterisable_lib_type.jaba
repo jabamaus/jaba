@@ -1,20 +1,31 @@
+# This example demonstrates how to set up a lib so that it can be either static or dynamic without duplicating code or
+# changing the app that depends on it.
+# 
 # To change default lib type from command line:
 #
 # jaba -D cpp_default_lib_type lib
 # jaba -D cpp_default_lib_type dll
 
-cpp :BasicLib do
-  root '../example_src/ExampleLib'
-  type globals.cpp_default_lib_type
+defaults :cpp do
   platforms [:windows_x86_64]
   configs [:Debug, :Release]
+end
+
+cpp :AppWithStaticOrDynamicLib do
+  type :console
+  src 'main.cpp'
+  deps [:StaticOrDynamicLib]
+end
+
+cpp :StaticOrDynamicLib do
+  type globals.cpp_default_lib_type
+  root 'StaticOrDynamicLib'
   src ['.']
   inc ['include'], :export
-  define ['WITH_BASICLIB'], :export_only
   case type
   when :lib
-    define ['BASICLIB_STATIC'], :export
+    define ['SODL_STATIC'], :export
   when :dll
-    define ['BASICLIB_DYNAMIC'], :export
+    define ['DLL_EXPORT']
   end
 end
