@@ -52,7 +52,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\..\02-basic_static_lib\include;..\..\..\03-basic_dynamic_lib\include;..\..\..\example_src\3rdParty\ThirdPartyLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\02-basic_static_lib\include;..\..\..\03-basic_dynamic_lib\include;..\..\3rdParty\ThirdPartyLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <PreprocessorDefinitions>WITH_THIRD_PARTY_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -67,7 +67,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\..\02-basic_static_lib\include;..\..\..\03-basic_dynamic_lib\include;..\..\..\example_src\3rdParty\ThirdPartyLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\02-basic_static_lib\include;..\..\..\03-basic_dynamic_lib\include;..\..\3rdParty\ThirdPartyLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <PreprocessorDefinitions>WITH_THIRD_PARTY_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
