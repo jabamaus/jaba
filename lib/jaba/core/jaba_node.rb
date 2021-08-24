@@ -214,10 +214,8 @@ module JABA
         a = get_attr(id, search: true, fail_if_not_found: false)
         
         if !a
-          attr_def = @top_level_jaba_type.get_attr_def(id)
-          if !attr_def
-            JABA.error("'#{id}' attribute not defined in #{describe}")
-          elsif attr_def.node_by_reference?
+          attr_def = get_callable_attr_def(id)
+          if attr_def.node_by_reference?
             null_node = services.get_null_node(attr_def.node_type)
             return null_node.attrs_read_only
           end
@@ -229,13 +227,11 @@ module JABA
         a = get_attr(id, search: false, fail_if_not_found: false)
         
         if !a
-          attr_def = @top_level_jaba_type.get_attr_def(id)
-          if !attr_def
-            JABA.error("'#{id}' attribute not defined")
-            # TODO: reinstate
-          #elsif attr_def.jaba_type.defn_id != @jaba_type.defn_id
+          attr_def = get_callable_attr_def(id)
+          # TODO: reinstate
+          #if attr_def.jaba_type.defn_id != @jaba_type.defn_id
             #JABA.error("Cannot change referenced '#{id}' attribute")
-          end
+          #end
           return nil
         end
 
@@ -248,6 +244,16 @@ module JABA
       end
     end
     
+    ##
+    #
+    def get_callable_attr_def(id)
+      attr_def = @top_level_jaba_type.get_attr_def(id)
+      if !attr_def
+        JABA.error("'#{id}' attribute cannot be called in #{describe}. Available: #{@top_level_jaba_type.all_callable_attr_ids.sort.inspect}")
+      end
+      attr_def
+    end
+
     ##
     #
     def wipe_attrs(ids)

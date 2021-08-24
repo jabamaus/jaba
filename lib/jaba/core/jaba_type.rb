@@ -26,8 +26,8 @@ module JABA
     def initialize(services, defn_id, src_loc, block, plugin, node_manager)
       super(services, defn_id, src_loc, JDL_Type.new(self))
 
-      @attribute_defs = []
-      @all_attr_defs = {}
+      @attribute_defs = [] # The type's actual attribute defs
+      @callable_attr_defs = {} # All the attributes that can actually be called against this type. Includes child types and referenced types
       @plugin = plugin
       @node_manager = node_manager
       @defaults_definition = services.get_defaults_definition(@defn_id)
@@ -80,17 +80,23 @@ module JABA
     ##
     #
     def get_attr_def(id)
-      @all_attr_defs[id]
+      @callable_attr_defs[id]
     end
 
     ##
     #
     def register_attr_def(id, attr_def)
-      existing = @all_attr_defs[id]
+      existing = @callable_attr_defs[id]
       if existing
         JABA.error("'#{id}' attribute multiply defined in '#{defn_id}'. Previous at #{existing.src_loc.describe}")
       end
-      @all_attr_defs[id] = attr_def
+      @callable_attr_defs[id] = attr_def
+    end
+
+    ##
+    #
+    def all_callable_attr_ids
+      @callable_attr_defs.keys
     end
 
     ##
@@ -140,7 +146,7 @@ module JABA
 
       # Register referenced attributes
       #
-      @all_attr_defs.each do |id, attr_def|
+      @callable_attr_defs.each do |id, attr_def|
         if attr_def.node_by_reference?
           rt_id = attr_def.node_type
           if rt_id != defn_id
@@ -155,7 +161,9 @@ module JABA
       end
 
  
-      to_register.each{|d| register_attr_def(d.defn_id, d)}
+      to_register.each do |d|
+        register_attr_def(d.defn_id, d)
+      end
 
       # Convert dependencies specified as ids to jaba type objects
       #

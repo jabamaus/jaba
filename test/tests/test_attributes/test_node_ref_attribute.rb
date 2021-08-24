@@ -145,7 +145,7 @@ module JABA
     end
     
     it 'imports exposed referenced attributes' do
-      check_fail "'height' attribute not defined", line: [__FILE__, 'tagI'] do
+      check_fail "'height' attribute cannot be called in 't' node. Available: [:length, :square]", line: [__FILE__, 'tagI'] do
         jaba(barebones: true) do
           type :square do
             attr :length do
