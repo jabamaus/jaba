@@ -257,6 +257,7 @@ module JABA
       end
 
       @jaba_types.each(&:post_create)
+      @jaba_types.each(&:process_child_types)
 
       # When an attribute defined in a JabaType will reference a differernt JabaType a dependency on that
       # type is added. JabaTypes are dependency order sorted to ensure that referenced JabaNodes are created

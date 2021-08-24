@@ -249,7 +249,7 @@ module JABA
     def get_callable_attr_def(id)
       attr_def = @top_level_jaba_type.get_attr_def(id)
       if !attr_def
-        JABA.error("'#{id}' attribute cannot be called in #{describe}. Available: #{@top_level_jaba_type.all_callable_attr_ids.sort.inspect}")
+        JABA.error("'#{id}' attribute cannot be called in #{describe}. Available: #{@top_level_jaba_type.callable_attr_defs.map{|ad| ad.defn_id}.inspect}")
       end
       attr_def
     end

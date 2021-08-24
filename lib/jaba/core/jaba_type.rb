@@ -20,6 +20,7 @@ module JABA
     attr_reader :defaults_definition
     attr_reader :dependencies
     attr_reader :attribute_defs
+    attr_reader :callable_attr_defs
 
     ##
     #
@@ -27,7 +28,8 @@ module JABA
       super(services, defn_id, src_loc, JDL_Type.new(self))
 
       @attribute_defs = [] # The type's actual attribute defs
-      @callable_attr_defs = {} # All the attributes that can actually be called against this type. Includes child types and referenced types
+      @callable_attr_def_lookup = {} # All the attributes that can actually be called against this type. Includes child types and referenced types
+      @callable_attr_defs = []
       @plugin = plugin
       @node_manager = node_manager
       @defaults_definition = services.get_defaults_definition(@defn_id)
@@ -73,30 +75,26 @@ module JABA
       ad = JabaAttributeDefinition.new(@services, id, caller_locations(2, 1)[0], block, type, key_type, variant, self)
       @attribute_defs << ad
 
-      register_attr_def(id, ad)
+      register_attr_def(ad)
       ad  
     end
 
     ##
     #
     def get_attr_def(id)
-      @callable_attr_defs[id]
+      @callable_attr_def_lookup[id]
     end
 
     ##
     #
-    def register_attr_def(id, attr_def)
-      existing = @callable_attr_defs[id]
+    def register_attr_def(attr_def)
+      id = attr_def.defn_id
+      existing = @callable_attr_def_lookup[id]
       if existing
         JABA.error("'#{id}' attribute multiply defined in '#{defn_id}'. Previous at #{existing.src_loc.describe}")
       end
-      @callable_attr_defs[id] = attr_def
-    end
-
-    ##
-    #
-    def all_callable_attr_ids
-      @callable_attr_defs.keys
+      @callable_attr_def_lookup[id] = attr_def
+      @callable_attr_defs << attr_def
     end
 
     ##
@@ -133,42 +131,47 @@ module JABA
     end
 
     ##
+    # Convert dependencies specified as ids to jaba type objects
+    #
+    def expand_dependencies
+
+    end
+
+    ##
     #
     def post_create
       @child_types.map!{|id| services.get_jaba_type(id)}
-      @attribute_defs.sort_by! {|ad| ad.defn_id}
+      @attribute_defs.sort_by!{|ad| ad.defn_id}
+      @dependencies.uniq!
+      @dependencies.map!{|d| services.get_jaba_type(d)}
 
-      to_register = []
-
-      @child_types.each do |ct|
-        to_register.concat(ct.attribute_defs)
-      end
-
-      # Register referenced attributes
+      # Regiser referenced attr defs
       #
-      @callable_attr_defs.each do |id, attr_def|
+      @attribute_defs.each do |attr_def|
         if attr_def.node_by_reference?
           rt_id = attr_def.node_type
           if rt_id != defn_id
             jt = attr_def.services.get_jaba_type(rt_id)
             jt.attribute_defs.each do |d|
               if d.has_flag?(:expose)
-                to_register << d
+                register_attr_def(d)
               end
             end
           end
         end
       end
+    end
 
- 
-      to_register.each do |d|
-        register_attr_def(d.defn_id, d)
+    ##
+    #
+    def process_child_types
+      @child_types.each do |ct|
+        ct.callable_attr_defs.each do |ad|
+          register_attr_def(ad)
+        end
       end
 
-      # Convert dependencies specified as ids to jaba type objects
-      #
-      @dependencies.uniq!
-      @dependencies.map! {|dep| services.get_jaba_type(dep)}
+      @callable_attr_defs.sort_by!{|ad| ad.defn_id}
     end
 
     ##
