@@ -155,12 +155,15 @@ module JABA
       cfg_root = {}
       p_root[:configs] = cfg_root
       each_config do |c|
-        cfg = {}
         attrs = c.attrs
-        cfg_root[attrs.config] = cfg
+        arch_root = cfg_root[attrs.arch_ref.defn_id]
+        if !arch_root
+          arch_root = {}
+          cfg_root[attrs.arch_ref.defn_id] = arch_root
+        end
+        cfg = {}
+        arch_root[attrs.config] = cfg
         # TODO: organise by group. Build at the same time is generating
-        cfg[:arch] = attrs.arch_ref.defn_id
-        cfg[:name] = attrs.configname
         cfg[:define] = attrs.define
         cfg[:inc] = attrs.inc.map{|f| f.relative_path_from(out_dir)}
         cfg[:rtti] = attrs.rtti

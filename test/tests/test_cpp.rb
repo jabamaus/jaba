@@ -32,12 +32,12 @@ module JABA
       proj = op[:cpp]['app|vs2019|windows']
       proj.wont_be_nil
 
-      cfg_debug = proj[:configs][:debug]
+      cfg_debug = proj[:configs][:x86][:debug]
       cfg_debug.wont_be_nil
       cfg_debug[:rtti].wont_be_nil
       cfg_debug[:rtti].must_equal(true)
 
-      cfg_release = proj[:configs][:release]
+      cfg_release = proj[:configs][:x86][:release]
       cfg_release.wont_be_nil
       cfg_release[:rtti].wont_be_nil
       cfg_release[:rtti].must_equal(false)
@@ -93,7 +93,7 @@ module JABA
           cpp :app do
             root "#{td}/app"
             type :console
-            platforms [:windows_x86, :windows_x86_64]
+            platforms [:windows_x86]
             configs [:Debug, :Release]
             deps [:lib] # tagG
             src ['main.cpp']
@@ -111,7 +111,7 @@ module JABA
       make_file("lib/main.cpp")
       op = jaba do
         defaults :cpp do
-          platforms [:windows_x86, :windows_x86_64]
+          platforms [:windows_x86]
           configs [:Debug, :Release]
         end
         cpp :app do
@@ -142,17 +142,17 @@ module JABA
       app[:vcglobal][:BoolAttr].must_equal(true)
       app[:vcglobal][:StringAttr2].must_equal('s2')
       app[:vcglobal][:StringAttr3].must_equal('s3')
-      app[:configs][:Debug][:define].must_equal ['A', 'B', 'C', 'F']
-      app[:configs][:Release][:define].must_equal ['A', 'B', 'C', 'F', 'R']
-      app[:configs][:Debug][:inc].must_equal ['lib/include']
-      app[:configs][:Release][:inc].must_equal ['lib/include']
+      app[:configs][:x86][:Debug][:define].must_equal ['A', 'B', 'C', 'F']
+      app[:configs][:x86][:Release][:define].must_equal ['A', 'B', 'C', 'F', 'R']
+      app[:configs][:x86][:Debug][:inc].must_equal ['lib/include']
+      app[:configs][:x86][:Release][:inc].must_equal ['lib/include']
 
       lib = op[:cpp]['lib|vs2019|windows']
       lib[:vcglobal][:StringAttr].must_equal('s')
       lib[:vcglobal].has_key?(:StringAttr2).must_equal(false)
       lib[:vcglobal][:StringAttr3].must_equal('s3')
-      lib[:configs][:Debug][:define].must_equal ['D', 'E']
-      lib[:configs][:Release][:define].must_equal ['D', 'E', 'R']
+      lib[:configs][:x86][:Debug][:define].must_equal ['D', 'E']
+      lib[:configs][:x86][:Release][:define].must_equal ['D', 'E', 'R']
     end
 
     it 'only allows :export on array and hash properties' do
@@ -172,10 +172,50 @@ module JABA
         end
       end
       proj[:vcglobal][:NewGlobal].must_equal('g')
-      proj[:configs][:Debug][:vcprop]['PG1|NewProperty'].must_equal('p')
-      proj[:configs][:Release][:vcprop]['PG1|NewProperty'].must_equal('p')
+      proj[:configs][:x86][:Debug][:vcprop]['PG1|NewProperty'].must_equal('p')
+      proj[:configs][:x86][:Release][:vcprop]['PG1|NewProperty'].must_equal('p')
+      proj[:configs][:x86_64][:Debug][:vcprop]['PG1|NewProperty'].must_equal('p')
+      proj[:configs][:x86_64][:Release][:vcprop]['PG1|NewProperty'].must_equal('p')
     end
-
+=begin
+    it 'supports export only definitions' do
+      td = temp_dir
+      jaba(dry_run: true) do
+        op = cpp :app do
+          platforms [:windows_x86, :windows_x86_64]
+          configs [:Debug, :Release]
+          root td
+          type :app
+          src ['main.cpp'], :force
+          deps :lib
+        end
+        cpp :lib, :export_only do
+          if debug
+            define 'D'
+            if x86_64?
+              syslibs 'libdebug_x64.lib'
+            else
+              syslibs 'libdebug_x86.lib'
+            end
+          else
+            define 'R'
+            if x86_64?
+              syslibs 'librelease_x64.lib'
+            else
+              syslibs 'librelease_x86.lib'
+            end
+          end
+        end
+        app_x = op[:cpp]['app|vs2019|windows']
+        app.wont_be_nil
+        app[:config][:Debug][:define].must_equal ['D']
+        app[:config][:Debug][:syslibs].must_equal ['libdebug_x86.lib']
+        app[:config][:Release][:define].must_equal ['R']
+        app[:config][:Release][:syslibs].must_equal ['libdebug_x86.lib']
+        op[:cpp]['lib|vs2019|windows'].must_be_nil
+      end
+    end
+=end
   end
 
 end
