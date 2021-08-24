@@ -401,7 +401,8 @@ module JABACoreExt
         if c.size == 1
           result << c.first
         else
-          JABA.error("#{c.first.describe} contains a cyclic dependency", errobj: c.first)
+          obj = c.shift
+          JABA.error("#{obj.describe} contains a cyclic dependency on #{c.map{|o| "'#{o}'"}.join(', ')}", errobj: obj)
         end
       end
       replace(result)
