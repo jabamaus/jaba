@@ -8,20 +8,20 @@ module JABA
 
     ##
     #
-    def push_definition(defn, &block)
-      @node_manager.push_definition(defn, &block)
+    def push_definition(...)
+      @node_manager.push_definition(...)
     end
 
     ##
     #
-    def make_node(child_type_id: nil, name: nil, parent: nil, block_args: nil, &block)
-      @node_manager.make_node(child_type_id: child_type_id, name: name, parent: parent, block_args: block_args, &block)
+    def make_node(...)
+      @node_manager.make_node(...)
     end
 
     ##
     #
-    def make_node_paths_absolute(node)
-      @node_manager.make_node_paths_absolute(node)
+    def make_node_paths_absolute(...)
+      @node_manager.make_node_paths_absolute(...)
     end
 
     ##
@@ -38,32 +38,32 @@ module JABA
 
     ##
     #
-    def execute_jdl(&block)
-      @services.execute_jdl(&block)
+    def execute_jdl(...)
+      @services.execute_jdl(...)
     end
 
     ##
     #
-    def node_from_handle(handle, fail_if_not_found: true, errobj: nil)
-      @node_manager.node_from_handle(handle, fail_if_not_found: fail_if_not_found, errobj: errobj)
+    def node_from_handle(...)
+      @node_manager.node_from_handle(...)
     end
 
     ##
     #
-    def get_plugin(jaba_type_id)
-      @services.get_plugin(jaba_type_id)
+    def get_plugin(...)
+      @services.get_plugin(...)
     end
 
     ##
     #
-    def get_translator(id, fail_if_not_found: true)
-      @services.get_translator(id, fail_if_not_found: fail_if_not_found)
+    def get_translator(...)
+      @services.get_translator(...)
     end
 
     ##
     #
-    def get_instance_definition(type_id, id, fail_if_not_found: true, errobj: nil)
-      @services.get_instance_definition(type_id, id, fail_if_not_found: fail_if_not_found, errobj: errobj)
+    def get_instance_definition(...)
+      @services.get_instance_definition(...)
     end
 
     ##
@@ -74,32 +74,32 @@ module JABA
     
     ##
     #
-    def new_file(filename, eol: :unix, encoding: nil, capacity: nil, track: true)
-      @services.file_manager.new_file(filename, eol: eol, encoding: encoding, capacity: capacity, track: track)
+    def new_file(...)
+      @services.file_manager.new_file(...)
     end
 
     ##
     #
-    def jaba_warn(msg, errobj: nil)
-      @services.jaba_warn(msg, errobj: errobj)
+    def jaba_warn(...)
+      @services.jaba_warn(...)
     end
 
     ##
     #
-    def log(msg, severity = :INFO, section: false)
-      @services.log(msg, severity, section: section)
+    def log(...)
+      @services.log(...)
     end
 
     ##
     #
-    def register_cmd(id, help:, dev_only: false, &block)
-      @services.input_manager.register_cmd(id, help: help, dev_only: dev_only, &block)
+    def register_cmd(...)
+      @services.input_manager.register_cmd(...)
     end
 
     ##
     #
-    def register_option(long, short: nil, help:, type: nil, var: nil, dev_only: false)
-      @services.input_manager.register_option(long, short: short, help: help, type: type, var: var, dev_only: dev_only)
+    def register_option(...)
+      @services.input_manager.register_option(...)
     end
     
   end
