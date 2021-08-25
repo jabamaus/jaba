@@ -5,7 +5,29 @@ type :cpp do
   title 'Cross platform C++ project definition'
 
   child_types :cpp_project, :cpp_config
-
+  # TODO: implement
+=begin
+  define_flag :export_only do
+    title 'Flags a cpp definition\'s purpose as only exporting attributes'
+    note 'A definition flagged with :export_only will not be generated and can only contain array attributes that are exportable and the $(root) attribute.'
+    note 'Useful for specifying pre-built distros'
+    example %Q{
+      cpp :MyApp do
+        ...
+        deps :ThirdPartyLib
+      end
+      cpp :ThirdPartyLib, :export_only do
+        root '../external/ThirdPartyLibrary'
+        inc 'ThirdPartyLibrary'
+        if debug
+          libs 'lib/ThirdPartyLibrary_debug.lib'
+        else
+          libs 'lib/ThirdPartyLibrary'
+        end
+      end
+    }
+  end
+=end
   attr_array :platforms do
     title 'Target platforms'
     flags :required
@@ -39,7 +61,7 @@ type :cpp_project do
     title 'Target host as an id'
     note 'Query current target host'
     flags :read_only
-    example %q{
+    example %Q{
       case host
       when :vs2019
         ...

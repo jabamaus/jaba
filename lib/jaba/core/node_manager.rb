@@ -13,6 +13,7 @@ module JABA
     attr_reader :services
     attr_reader :type_id # eg :cpp, :text
     attr_reader :jaba_type
+    attr_reader :plugin
     attr_reader :nodes
     attr_reader :root_nodes
 
@@ -173,6 +174,12 @@ module JABA
 
     ##
     #
+    def make_dynamic_node(name: nil, parent: nil, block_args: nil, track: true, &block)
+      # TODO
+    end
+
+    ##
+    #
     def node_from_handle(handle, fail_if_not_found: true, errobj: nil)
       n = @node_lookup[handle]
       if !n && fail_if_not_found
@@ -214,7 +221,8 @@ module JABA
       # happens after all the nodes have been set up, by which time the functionality is not needed.
       # The node references are used in the attribute search path in JabaNode#get_attr.
       #
-      if ignore_if_same_type 
+      # TODO: check this. Looks a bit iffy, and definitely confusing
+      if ignore_if_same_type
         node.add_node_reference(ref_node)
       end
       ref_node

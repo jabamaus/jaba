@@ -557,13 +557,17 @@ module JABA
 
     ##
     #
-    def make_definition(id, block, src_loc)
+    def make_definition(id, block, src_loc, flags=[])
       d = OpenStruct.new
       d.id = id
       d.block = block
       d.src_loc = src_loc
       d.open_defs = []
       d.jaba_type_id = nil
+      d.flags = flags
+      d.define_singleton_method(:has_flag?) do |f|
+        flags.include?(f)
+      end
       d
     end
 
@@ -686,7 +690,7 @@ module JABA
 
     ##
     #
-    def define_instance(type_id, id, &block)
+    def define_instance(type_id, id, flags=[], &block)
       JABA.error("type_id is required") if type_id.nil?
       JABA.error("id is required") if id.nil?
 
@@ -701,7 +705,7 @@ module JABA
         JABA.error("'#{type_id}|#{id.inspect_unquoted}' multiply defined. First definition at #{existing.src_loc.describe}.")
       end
       
-      d = make_definition(id, block, src_loc)
+      d = make_definition(id, block, src_loc, flags)
       d.jaba_type_id = type_id
 
       @instance_def_lookup.push_value(type_id, d)

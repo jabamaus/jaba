@@ -8,6 +8,12 @@ module JABA
 
     ##
     #
+    def push_definition(defn, &block)
+      @node_manager.push_definition(defn, &block)
+    end
+
+    ##
+    #
     def make_node(child_type_id: nil, name: nil, parent: nil, block_args: nil, &block)
       @node_manager.make_node(child_type_id: child_type_id, name: name, parent: parent, block_args: block_args, &block)
     end
@@ -52,6 +58,12 @@ module JABA
     #
     def get_translator(id, fail_if_not_found: true)
       @services.get_translator(id, fail_if_not_found: fail_if_not_found)
+    end
+
+    ##
+    #
+    def get_instance_definition(type_id, id, fail_if_not_found: true, errobj: nil)
+      @services.get_instance_definition(type_id, id, fail_if_not_found: fail_if_not_found, errobj: errobj)
     end
 
     ##
@@ -121,6 +133,12 @@ module JABA
     ##
     #
     def build_jaba_output(root, out_dir)
+    end
+
+    ##
+    #
+    def custom_handle_array_reference(attr, ref_node_id)
+      false
     end
     
   end

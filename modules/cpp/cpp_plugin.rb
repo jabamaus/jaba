@@ -18,12 +18,24 @@ module JABA
       @all_project_nodes = []
       @host_to_project_nodes = {}
       @projects = []
+      @project_ids = []
       @node_to_project = {}
+      @export_only_dependencies_to_resolve = {}
     end
 
     ##
     #
     def process_definition(definition)
+      # If its an export only definition, ignore it as it should not get turned into a generatable project,
+      # rather it is just there to export attributes. This definition will be processed later at dependency
+      # resolution time.
+      #
+      if definition.has_flag?(:export_only)
+        return nil
+      end
+
+      @project_ids << definition.id
+
       root_node = services.make_node
 
       target_platform_to_archs = {}
@@ -81,13 +93,23 @@ module JABA
 
     ##
     #
-    def make_host_objects
-      services.execute_jdl do
-        workspace :all do
-          projects all_instance_ids(:cpp)
+    def custom_handle_array_reference(attr, ref_node_id)
+      if attr.attr_def.defn_id == :deps
+        dep_def = services.get_instance_definition(:cpp, ref_node_id, fail_if_not_found: false)
+        if !dep_def
+          JABA.error("'#{ref_node_id.inspect}' dependency not found")
+        end
+        if dep_def.has_flag?(:export_only)
+          @export_only_dependencies_to_resolve.push_value(attr, dep_def)
+          return true
         end
       end
-      
+      false
+    end
+
+    ##
+    #
+    def make_host_objects
       @all_project_nodes.sort!{|x, y| x.handle.casecmp(y.handle)}
       @all_project_nodes.sort_topological! do |n, &b|
         n.attrs.deps.each(&b)
@@ -114,6 +136,34 @@ module JABA
         end
       end
 
+=begin
+      @export_only_dependencies_to_resolve.each do |attr, export_only_defs|
+        export_only_defs.each do |export_only_def|
+          # Get the project that depends on the export only module
+          #
+          project_node = attr.node
+          # Create a temporary untracked node from the definition, parented to the project node which will mean that it will be able to
+          # read its attributes (eg platform, config, host etc)
+          # 
+          services.push_definition(export_only_def) do
+            # TODO: disable execution of defaults
+            export_only_node = services.make_node(child_type_id: :cpp_project, name: "#{export_only_def.id}|export_only", parent: project_node, track: false, delay_post_create: true)
+            export_only_node.post_create(no_check_required: true)
+            services.make_node_paths_absolute(export_only_node)
+
+            # Now merge the node's attributes into its parenet node attrs
+            #
+            export_only_node.each_attr do |a|
+              # TODO: validate only exportable arrays
+              if a.variant == :array
+                project_node.get_attr(a.defn_id).set(a.value) # TODO: improve
+              end
+            end
+            export_only_node.unparent
+          end
+        end
+      end
+=end
       @host_to_project_nodes.each do |host, project_nodes|
         if host.defn_id == :ninja
         else
@@ -121,6 +171,13 @@ module JABA
           project_nodes.each do |pn|
             make_project(classname, pn)
           end
+        end
+      end
+
+      project_ids = @project_ids
+      services.execute_jdl do
+        workspace :all do
+          projects project_ids
         end
       end
     end
@@ -140,7 +197,7 @@ module JABA
     def project_from_node(node, fail_if_not_found: true)
       p = @node_to_project[node]
       if !p && fail_if_not_found
-        JABA.error("'#{node.describe}' not found")
+        JABA.error("#{node.describe} not found")
       end
       p
     end

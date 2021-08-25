@@ -30,7 +30,7 @@ module JABA
       @children = []
       @parent = parent
       if parent
-        parent.instance_variable_get(:@children) << self
+        parent.children << self
       end
       @depth = depth
       @referenced_nodes = []
@@ -43,20 +43,15 @@ module JABA
       @attributes = []
       @attribute_lookup = {}
       
-      i = 0
-      adefs = @jaba_type.attribute_defs
-      s = adefs.size
-      while i < s
-        attr_def = adefs[i]
-        i += 1
+      @jaba_type.attribute_defs.each do |attr_def|
         a = case attr_def.variant
-            when :single
-              JabaAttributeSingle.new(attr_def, self)
-            when :array
-              JabaAttributeArray.new(attr_def, self)
-            when :hash
-              JabaAttributeHash.new(attr_def, self)
-            end
+        when :single
+          JabaAttributeSingle.new(attr_def, self)
+        when :array
+          JabaAttributeArray.new(attr_def, self)
+        when :hash
+          JabaAttributeHash.new(attr_def, self)
+        end
         @attributes << a
         @attribute_lookup[attr_def.defn_id] = a
       end
@@ -106,11 +101,7 @@ module JABA
       a = @attribute_lookup[attr_id]
       if !a
         if search
-          i = 0
-          s = @referenced_nodes.size
-          while i < s
-            ref_node = @referenced_nodes[i]
-            i += 1
+          @referenced_nodes.each do |ref_node|
             a = ref_node.get_attr(attr_id, fail_if_not_found: false, search: false)
             if a
               if a.attr_def.has_flag?(:expose)
@@ -158,11 +149,7 @@ module JABA
       if attr_id
         get_attr(attr_id).visit_attr(&block)
       else
-        i = 0
-        s = @attributes.size
-        while i < s
-          a = @attributes[i]
-          i += 1
+        @attributes.each do |a|
           next if skip_attr && a.defn_id == skip_attr
           next if type && !Array(type).include?(a.attr_def.type_id)
           next if skip_variant && skip_variant == a.attr_def.variant
@@ -182,11 +169,7 @@ module JABA
     ##
     # 
     def post_create
-      i = 0
-      s = @attributes.size
-      while i < s
-        a = @attributes[i]
-        i += 1
+      @attributes.each do |a|
         if !a.set? && a.required?
           JABA.error("#{a.describe} requires a value. See #{a.attr_def.src_loc.describe}", errobj: self)
         end
@@ -292,6 +275,13 @@ module JABA
         @attrs = old_attrs
         @read_only = false
       end
+    end
+
+    ##
+    #
+    def unparent
+      @parent.children.delete(self)
+      @parent = nil
     end
 
   end

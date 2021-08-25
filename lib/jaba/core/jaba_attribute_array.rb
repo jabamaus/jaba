@@ -86,12 +86,18 @@ module JABA
         values.prepend(*default_values)
       end
 
-      i = 0
-      s = values.size
-      while i < s
-        val = apply_pre_post_fix(prefix, postfix, values[i])
+      values.each do |val|
+        val = apply_pre_post_fix(prefix, postfix, val)
+        plugin = @node.top_level_jaba_type.plugin
+
+        # Give plugin a chance to custom handle if its a reference. This is used by cpp plugin to custom handle dependencies
+        # on 'export only' cpp definitions.
+        #
+        if type_id == :node_ref && plugin.custom_handle_array_reference(self, val)
+          next
+        end
+
         elem = make_elem(val, *args, add: false, **keyval_args)
-        i += 1
         existing = nil
         if !@attr_def.has_flag?(:allow_dupes) && !@attr_def.node_by_value?
           existing = @elems.find{|e| e.raw_value == elem.raw_value}
