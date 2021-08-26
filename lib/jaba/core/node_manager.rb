@@ -105,7 +105,17 @@ module JABA
 
     ##
     #
-    def make_node(child_type_id: nil, name: nil, parent: nil, block_args: nil, &block)
+    def make_node(
+      child_type_id: nil,
+      name: nil,
+      parent: nil,
+      block_args: nil,
+      track: true,
+      want_defaults: true,
+      want_post_create: true,
+      exclude_self_from_attr_search: false,
+      &block
+    )
       depth = 0
       handle = nil
 
@@ -120,7 +130,7 @@ module JABA
 
       services.log "#{'  ' * depth}Instancing node [type=#{child_type_id}, handle=#{handle}]" # TODO: fix logging of type
 
-      if node_from_handle(handle, fail_if_not_found: false)
+      if track && node_from_handle(handle, fail_if_not_found: false)
         JABA.error("Duplicate node handle '#{handle}'")
       end
 
@@ -131,9 +141,12 @@ module JABA
       end
 
       jn = JabaNode.new(@services, @definition.id, @definition.src_loc, jt, @jaba_type, handle, parent, depth)
+      jn.exclude_self_from_attr_search = exclude_self_from_attr_search
 
-      @nodes << jn
-      @node_lookup[handle] = jn
+      if track
+        @nodes << jn
+        @node_lookup[handle] = jn
+      end
       
       begin
         # Give calling block a chance to initialise attributes. This block is in library code as opposed to user
@@ -148,9 +161,11 @@ module JABA
         
         # Next execute defaults block if there is one defined for this type.
         #
-        defaults = @jaba_type.defaults_definition
-        if defaults
-          jn.eval_jdl(&defaults.block)
+        if want_defaults
+          defaults = @jaba_type.defaults_definition
+          if defaults
+            jn.eval_jdl(&defaults.block)
+          end
         end
 
         if @definition.block
@@ -165,17 +180,11 @@ module JABA
         JABA.error('Cannot modify read only value', callstack: e.backtrace)
       end
 
-      if !@delay_post_create # used by globals node when being set from the command line
+      if want_post_create && !@delay_post_create # used by globals node when being set from the command line
         jn.post_create
       end
 
       jn
-    end
-
-    ##
-    #
-    def make_dynamic_node(name: nil, parent: nil, block_args: nil, track: true, &block)
-      # TODO
     end
 
     ##
@@ -258,7 +267,9 @@ module JABA
           end
 
           a.map_value! do |p|
-            JABA.spec_to_absolute_path(p, base_dir, n)
+            if p
+              JABA.spec_to_absolute_path(p, base_dir, n)
+            end
           end
 
           # TODO: this could be done for all attrs not just :file, :dir and :src_spec because in theory other attribute types

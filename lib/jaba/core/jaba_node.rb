@@ -18,6 +18,7 @@ module JABA
     attr_reader :parent
     attr_reader :children
     attr_reader :depth
+    attr_bool :exclude_self_from_attr_search
     
     ##
     #
@@ -39,6 +40,7 @@ module JABA
       @attrs_read_only = AttributeAccessor.new(self, read_only: true)
       @read_only = false
       @allow_set_read_only_attrs = false
+      @exclude_self_from_attr_search = false
 
       @attributes = []
       @attribute_lookup = {}
@@ -94,35 +96,7 @@ module JABA
       # TODO: handle duplicates
       @referenced_nodes << node
     end
-
-    ##
-    #
-    def get_attr(attr_id, fail_if_not_found: true, search: false)
-      a = @attribute_lookup[attr_id]
-      if !a
-        if search
-          @referenced_nodes.each do |ref_node|
-            a = ref_node.get_attr(attr_id, fail_if_not_found: false, search: false)
-            if a
-              if a.attr_def.has_flag?(:expose)
-                return a
-              else
-                return nil
-              end
-            end
-          end
-          if @parent
-            a = @parent.get_attr(attr_id, fail_if_not_found: false, search: true)
-            return a if a
-          end
-        end
-        if fail_if_not_found
-          JABA.error("'#{@defn_id}.#{attr_id}' attribute not found")
-        end
-      end
-      a
-    end
-    
+   
     ##
     #
     def visit_node(visit_self: false, type_id: nil, &block)
@@ -181,6 +155,37 @@ module JABA
       end
     end
     
+    ##
+    #
+    def get_attr(attr_id, fail_if_not_found: true, search: false)
+      a = nil
+      if !search || !@exclude_self_from_attr_search
+        a = @attribute_lookup[attr_id]
+      end
+      if !a
+        if search
+          @referenced_nodes.each do |ref_node|
+            a = ref_node.get_attr(attr_id, fail_if_not_found: false, search: false)
+            if a
+              if a.attr_def.has_flag?(:expose)
+                return a
+              else
+                return nil
+              end
+            end
+          end
+          if @parent
+            a = @parent.get_attr(attr_id, fail_if_not_found: false, search: true)
+            return a if a
+          end
+        end
+        if fail_if_not_found
+          JABA.error("'#{@defn_id}.#{attr_id}' attribute not found")
+        end
+      end
+      a
+    end
+
     ##
     # If an attribute set operation is being performed, args contains the 'value' and then a list optional symbols
     # which act as options. eg my_attr 'val', :export, :exclude would make args equal to ['val', :opt1, :opt2]. If
@@ -279,9 +284,14 @@ module JABA
 
     ##
     #
-    def unparent
-      @parent.children.delete(self)
-      @parent = nil
+    def set_parent(parent)
+      if @parent
+        @parent.children.delete(self)
+      end
+      @parent = parent
+      if @parent
+        @parent.children << self
+      end
     end
 
   end

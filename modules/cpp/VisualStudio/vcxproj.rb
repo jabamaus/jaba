@@ -167,6 +167,7 @@ module JABA
         cfg[:define] = attrs.define
         cfg[:inc] = attrs.inc.map{|f| f.relative_path_from(out_dir)}
         cfg[:rtti] = attrs.rtti
+        cfg[:syslibs] = attrs.syslibs
         cfg[:vcprop] = attrs.vcprop
       end
     end

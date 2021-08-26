@@ -136,34 +136,62 @@ module JABA
         end
       end
 
-=begin
+      # Process dependencies on 'export only' cpp definitions, whose purpose is to export all their attributes but not to actually generate anything.
+      # These dependencies are special because the export only definition is evaluated in the context of the cpp definition that depends on it.
+      # This means that it will 'bind' to the platform and configs, and any other readable values of the depending definition.
+      #
+      # TODO: export only code needs much more explanation
       @export_only_dependencies_to_resolve.each do |attr, export_only_defs|
         export_only_defs.each do |export_only_def|
           # Get the project that depends on the export only module
           #
           project_node = attr.node
+
           # Create a temporary untracked node from the definition, parented to the project node which will mean that it will be able to
-          # read its attributes (eg platform, config, host etc)
+          # read its attributes (eg platform, config, host etc).
           # 
           services.push_definition(export_only_def) do
-            # TODO: disable execution of defaults
-            export_only_node = services.make_node(child_type_id: :cpp_project, name: "#{export_only_def.id}|export_only", parent: project_node, track: false, delay_post_create: true)
-            export_only_node.post_create(no_check_required: true)
+            export_only_node = services.make_node(
+              child_type_id: :cpp_project,
+              name: 'project_export_only', 
+              parent: project_node,
+              track: false, # Only used here, don't want the system to remember it
+              want_post_create: false,
+              want_defaults: false,
+              exclude_self_from_attr_search: true
+            ) 
+            export_only_node.set_parent(nil)
+            export_only_node.exclude_self_from_attr_search = false
+
             services.make_node_paths_absolute(export_only_node)
 
-            # Now merge the node's attributes into its parenet node attrs
+            # Now merge the node's attributes into project node attrs
             #
-            export_only_node.each_attr do |a|
-              # TODO: validate only exportable arrays
-              if a.variant == :array
-                project_node.get_attr(a.defn_id).set(a.value) # TODO: improve
-              end
+            process_export_only_node_exports(project_node, export_only_node)
+
+            project_node.children.each do |cfg_node|
+              export_only_cfg_node = services.make_node(
+                child_type_id: :cpp_config,
+                name: 'config_export_only',
+                parent: cfg_node,
+                track: false,
+                want_post_create: false,
+                want_defaults: false,
+                exclude_self_from_attr_search: true
+              )
+              export_only_cfg_node.set_parent(export_only_node)
+              export_only_cfg_node.exclude_self_from_attr_search = false
+
+              services.make_node_paths_absolute(export_only_cfg_node)
+
+              # Now merge the node's attributes into its config node attrs
+              #
+              process_export_only_node_exports(cfg_node, export_only_cfg_node)
             end
-            export_only_node.unparent
           end
         end
       end
-=end
+
       @host_to_project_nodes.each do |host, project_nodes|
         if host.defn_id == :ninja
         else
@@ -234,8 +262,7 @@ module JABA
           export_only = elem.has_flag_option?(:export_only)
           if elem.has_flag_option?(:export) || export_only
 
-            # Get the corresponding attr in this project node. Only consider this node so don't set search: true.
-            # This will always be a hash or an array.
+            # Get the corresponding attr in this project node. This will always be a hash or an array.
             #
             attr = target_node.get_attr(elem.defn_id) if !attr
             attr.insert_clone(elem)
@@ -243,6 +270,29 @@ module JABA
             # Exported items are deleted from the exporting module if :export_only specified
             #
             :delete if export_only
+          end
+        end
+      end
+    end
+
+    ##
+    #
+    def process_export_only_node_exports(target_node, dep_node)
+      dep_node.visit_attr(top_level: true) do |dep_attr|
+        attr = nil
+
+        # visit all attribute elements in array/hash
+        #
+        dep_attr.visit_attr do |elem|
+          if elem.set?
+            if elem.attr_def.variant == :single
+              # TODO
+            else
+              # Get the corresponding attr in this project node. This will always be a hash or an array.
+              #
+              attr = target_node.get_attr(elem.defn_id) if !attr
+              attr.insert_clone(elem)
+            end
           end
         end
       end

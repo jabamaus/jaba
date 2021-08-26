@@ -177,7 +177,7 @@ module JABA
       proj[:configs][:x86_64][:Debug][:vcprop]['PG1|NewProperty'].must_equal('p')
       proj[:configs][:x86_64][:Release][:vcprop]['PG1|NewProperty'].must_equal('p')
     end
-=begin
+
     it 'supports export only definitions' do
       td = temp_dir
       op = jaba(dry_run: true) do
@@ -190,7 +190,10 @@ module JABA
           deps :lib
         end
         cpp :lib, :export_only do
+          # TODO: test paths with root
+          root "#{td}/lib"
           src ['lib.cpp'], :force # test exporting an attribute that belongs to project
+          inc 'lib.h'
           if debug
             define 'D'
             if x86_64?
@@ -211,16 +214,16 @@ module JABA
       app = op[:cpp]['app|vs2019|windows']
       app.wont_be_nil
       app[:configs][:x86][:Debug][:define].must_equal ['D']
+      app[:configs][:x86][:Debug][:inc].must_equal ['lib/lib.h']
       app[:configs][:x86][:Debug][:syslibs].must_equal ['libdebug_x86.lib']
       app[:configs][:x86][:Release][:define].must_equal ['R']
       app[:configs][:x86][:Release][:syslibs].must_equal ['librelease_x86.lib']
       app[:configs][:x86_64][:Debug][:define].must_equal ['D']
-      app[:configs][:x86_64][:Debug][:syslibs].must_equal ['libdebug_x86_64.lib']
+      app[:configs][:x86_64][:Debug][:syslibs].must_equal ['libdebug_x64.lib']
       app[:configs][:x86_64][:Release][:define].must_equal ['R']
-      app[:configs][:x86_64][:Release][:syslibs].must_equal ['librelease_x86_64.lib']
+      app[:configs][:x86_64][:Release][:syslibs].must_equal ['librelease_x64.lib']
       op[:cpp]['lib|vs2019|windows'].must_be_nil
     end
-=end
   end
 
 end

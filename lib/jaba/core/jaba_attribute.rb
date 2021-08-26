@@ -217,41 +217,43 @@ module JABA
       #
       @value_options = keyval_args.empty? ? {} : Marshal.load(Marshal.dump(keyval_args))
 
-      @flag_options.each do |f|
-        if !@attr_def.flag_options.include?(f)
-          attr_error("Invalid flag option '#{f.inspect_unquoted}' passed to #{describe}. Valid flags are #{@attr_def.flag_options}")
+      if validate
+        @flag_options.each do |f|
+          if !@attr_def.flag_options.include?(f)
+            attr_error("Invalid flag option '#{f.inspect_unquoted}' passed to #{describe}. Valid flags are #{@attr_def.flag_options}")
+          end
         end
-      end
 
-      # Validate that value options flagged as required have been supplied
-      #
-      @attr_def.each_value_option do |vo|
-        if vo.required
-          if !@value_options.key?(vo.id)
-            if !vo.items.empty?
-              attr_error("In #{describe} '#{vo.id}' option requires a value. Valid values are #{vo.items.inspect}")
-            else
-              attr_error("In #{describe} '#{vo.id}' option requires a value")
+        # Validate that value options flagged as required have been supplied
+        #
+        @attr_def.each_value_option do |vo|
+          if vo.required
+            if !@value_options.key?(vo.id)
+              if !vo.items.empty?
+                attr_error("In #{describe} '#{vo.id}' option requires a value. Valid values are #{vo.items.inspect}")
+              else
+                attr_error("In #{describe} '#{vo.id}' option requires a value")
+              end
             end
           end
         end
-      end
 
-      # Validate that all supplied value options exist and have valid values
-      #
-      @value_options.each do |k, v|
-        vo = @attr_def.get_value_option(k)
-        if !vo.items.empty?
-          if !vo.items.include?(v)
-            attr_error("In #{describe} invalid value '#{v.inspect_unquoted}' passed to '#{k.inspect_unquoted}' option. Valid values: #{vo.items.inspect}")
+        # Validate that all supplied value options exist and have valid values
+        #
+        @value_options.each do |k, v|
+          vo = @attr_def.get_value_option(k)
+          if !vo.items.empty?
+            if !vo.items.include?(v)
+              attr_error("In #{describe} invalid value '#{v.inspect_unquoted}' passed to '#{k.inspect_unquoted}' option. Valid values: #{vo.items.inspect}")
+            end
           end
         end
-      end
 
-      if validate && !new_value.nil?
-        call_validators do
-          attr_type.validate_value(@attr_def, new_value)
-          @attr_def.call_hook(:validate, new_value, @flag_options, **@value_options)
+        if !new_value.nil?
+          call_validators do
+            attr_type.validate_value(@attr_def, new_value)
+            @attr_def.call_hook(:validate, new_value, @flag_options, **@value_options)
+          end
         end
       end
 
