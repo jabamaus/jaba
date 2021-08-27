@@ -40,9 +40,16 @@ module JABA
     end
 
     ##
+    # Override this to customise attr def.
     #
     def compatible?
       true
+    end
+
+    ##
+    # Override this to customise attr def.
+    #
+    def init_attr_def(attr_def)
     end
 
   end
@@ -167,6 +174,33 @@ module JABA
       if attr_def.type_id != :file && attr_def.type_id != :dir
         JABA.error("#{describe} can only be used with :file and :dir attribute types")
       end
+    end
+
+  end
+
+    ##
+  #
+  class JabaAttrDefFlagExportable < JabaAttrDefFlag
+
+    ##
+    #
+    def initialize
+      super(:exportable, 'Attribute is exportable')
+      @notes = 'Flags an attribute as being able to be exported to dependents. Only array and hash attributes can be flagged with this.'
+    end
+
+    ##
+    #
+    def compatible?(attr_def)
+      if !attr_def.array? && !attr_def.hash?
+        JABA.error("#{describe} is only allowed on array and hash attributes")
+      end 
+    end
+
+    ##
+    #
+    def init_attr_def(attr_def)
+      attr_def.set_property(:flag_options, [:export, :export_only])
     end
 
   end

@@ -161,7 +161,7 @@ module JABA
         trace.each_slice(2) do |elem|
           backtrace << "#{elem[0]}:#{find_line_number(elem[0], elem[1])}"
         end
-        e.backtrace.slice(1, backtrace.size).must_equal(backtrace)
+        e.backtrace.slice(1, backtrace.size).must_equal(backtrace, 'backtrace did not match')
       end
       e
     end
@@ -185,7 +185,7 @@ module JABA
         #
         bt = e.backtrace
         bt.shift
-        bt.must_equal(backtrace)
+        bt.must_equal(backtrace, 'backtrace did not match')
       end
       e
     end

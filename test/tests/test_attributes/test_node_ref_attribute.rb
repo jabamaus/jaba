@@ -198,7 +198,7 @@ module JABA
       end
     end
     
-    it 'treats references read only when caled through object' do
+    it 'treats references read only when called through object' do
       check_fail "'a.length' attribute is read only", line: [__FILE__, 'tagD'] do
         jaba(barebones: true) do
           type :line do
@@ -224,9 +224,9 @@ module JABA
       check_warn 'Object reference attribute does not need to be flagged with :read_only as they always are', __FILE__, 'tagX' do
         jaba do
           type :test do
-            attr :platform, type: :node_ref do # tagX
+            attr :platform, type: :node_ref do
               node_type :platform
-              flags :read_only
+              flags :read_only # tagX
             end
           end
         end

@@ -59,6 +59,7 @@ module JABA
       
       @jaba_attr_type = services.get_attribute_type(@type_id)
       @jaba_attr_key_type = nil
+      
 
       # Custom hash attribute setup
       #
@@ -82,6 +83,13 @@ module JABA
         @in_eval_block = true
         eval_jdl(&block)
         @in_eval_block = false
+      end
+
+      # Allow attribute definition flag specs to modify attr def, eg the :exportable flag adds the
+      # :export and :export_ony options.
+      #
+      @jaba_attr_flags.each do |jaf|
+        jaf.init_attr_def(self)
       end
 
       # If default not specified by the user (single value attributes only), fall back to default for the attribute
@@ -228,7 +236,9 @@ module JABA
           jaba_warn("Duplicate flag '#{f.inspect_unquoted}' specified in #{describe}")
           return :ignore
         end
-        @jaba_attr_flags << services.get_attribute_flag(f) # check flag exists
+        jaf = services.get_attribute_flag(f) # check flag exists
+        jaf.compatible?(self)
+        @jaba_attr_flags << jaf
       when :flag_options
         f = incoming
         if !f.symbol?
@@ -292,10 +302,6 @@ module JABA
         end
 
         @jaba_attr_type.post_init_attr_def(self)
-  
-        @jaba_attr_flags.each do |jaf|
-          jaf.compatible?(self)
-        end
       end
     end
 

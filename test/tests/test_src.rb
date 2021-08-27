@@ -97,7 +97,7 @@ module JABA
         end
       end
       # src files are sorted by absolute path which gives odd ordering here
-      proj[:src].must_equal(["../../../missing.rb", "a/a.cpp", "../../../test_cpp.rb", "../../../test_error_reporting.rb", "../../../test_extension_semantics.rb"])
+      proj[:src].must_equal(["../../../missing.rb", "a/a.cpp", "../../../test_cpp.rb", "../../../test_error_reporting.rb", "../../../test_export_system.rb", "../../../test_extension_semantics.rb"])
     end
 
     it 'supports adding whole src directories recursively' do

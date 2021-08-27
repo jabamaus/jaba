@@ -58,7 +58,16 @@ module JABA
     end
 
     it 'only allows :export on array and hash properties' do
-      # TODO
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagQ)}: :exportable attribute definition flag is only allowed on array and hash attributes.",
+                        trace: [__FILE__, :tagW] do
+        jaba(dry_run: true) do
+          type :test do
+            attr :a do # tagW
+              flags :exportable # tagQ
+            end
+          end
+        end
+      end
     end
 
     it 'supports export only definitions' do

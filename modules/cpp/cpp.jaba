@@ -101,8 +101,7 @@ type :cpp_project do
   #
   attr_array :configs, type: :symbol_or_string do
     title 'Build configurations'
-    flags :required, :no_sort
-    flag_options :export, :export_only
+    flags :required, :no_sort, :exportable
     example 'configs [:Debug, :Release]'
   end
   
@@ -163,8 +162,8 @@ type :cpp_project do
     basedir_spec :definition_root
     flags :required # Must be specified by user
     flags :no_sort # Final source will be sorted so no need to sort this
+    flags :exportable
     flag_options :force # Specify when explicitly specidied src does not exist on disk but still want to add to project
-    flag_options :export, :export_only
     value_option :vpath # For organising files in a generated project
     # TODO: examples for excludes
     example %Q{
@@ -211,8 +210,7 @@ type :cpp_project do
   attr_array :src_ext, type: :string do
     title 'File extensions used when matching src files'
     note 'Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.'
-    flags :no_sort
-    flag_options :export, :export_only
+    flags :no_sort, :exportable
     default do
       ext = ['.cpp', '.h', '.inl', '.c', '.cc', '.cxx', '.hpp']
       ext.concat(host_ref.cpp_src_ext)
@@ -273,7 +271,7 @@ type :cpp_config do
   attr_array :shell, type: :string do
     title 'Shell commands to execute during build'
     note 'Maps to build events in Visual Studio'
-    flag_options :export, :export_only
+    flags :exportable
     value_option :when, required: true, items: [:PreBuild, :PreLink, :PostBuild]
   end
 
@@ -322,12 +320,12 @@ type :cpp_config do
   attr_array :syslibs, type: :string do
     title 'System libs'
     flags :no_sort
-    flag_options :export, :export_only
+    flags :exportable
   end
 
   attr_array :cflags, type: :string do
     title 'Raw compiler command line switches'
-    flag_options :export, :export_only
+    flags :exportable
   end
 
   attr :configname, type: :symbol_or_string do
@@ -347,14 +345,13 @@ type :cpp_config do
   
   attr_array :define, type: :symbol_or_string do
     title 'Preprocessor defines'
-    flag_options :export, :export_only
+    flags :exportable
   end
 
   attr_array :inc, type: :dir do
     title 'Include paths'
     basedir_spec :definition_root
-    flags :no_sort
-    flag_options :export, :export_only
+    flags :no_sort, :exportable
     example "inc ['mylibrary/include']"
     example "inc ['mylibrary/include'], :export # Export include path to dependents"
   end
@@ -370,7 +367,7 @@ type :cpp_config do
   attr_array :nowarn do
     title 'Warnings to disable'
     note 'Placed directly into projects as is, with no validation'
-    flag_options :export, :export_only
+    flags :exportable
     example "nowarn [4100, 4127, 4244] if visual_studio?"
   end
 

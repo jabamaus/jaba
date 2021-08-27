@@ -80,16 +80,16 @@ module JABA
     end
 
     it 'checks for duplicate flag options' do
-      check_warn("Duplicate flag option ':export' specified in 'a' attribute", __FILE__, 'tagD') do
+      check_warn("Duplicate flag option ':option' specified in 'a' attribute", __FILE__, 'tagD') do
         jaba(barebones: true) do
           type :test do
             attr :a do
-              flag_options :export, :export # tagD
+              flag_options :option, :option # tagD
             end
           end
           test :t do
             generate do
-              get_attr(:a).attr_def.flag_options.must_equal [:export]
+              get_attr(:a).attr_def.flag_options.must_equal [:option]
             end
           end
         end

@@ -250,12 +250,12 @@ module JABA
     end
 
     it 'disallows :no_sort' do
-      check_fail "'a' hash attribute invalid: :no_sort attribute definition flag is only allowed on array attributes",
-                line: [__FILE__, 'tagQ'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagQ)}: :no_sort attribute definition flag is only allowed on array attributes.",
+                trace: [__FILE__, 'tagT'] do
         jaba(barebones: true) do
           type :test do
-            attr_hash :a, key_type: :symbol do # tagQ
-              flags :no_sort
+            attr_hash :a, key_type: :symbol do # tagT
+              flags :no_sort # tagQ
             end
           end
         end
@@ -263,12 +263,12 @@ module JABA
     end
     
     it 'disallows :allow_dupes' do
-      check_fail "'a' hash attribute invalid: :allow_dupes attribute definition flag is only allowed on array attributes",
-                 line: [__FILE__, 'tagP'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagK)}: :allow_dupes attribute definition flag is only allowed on array attributes.",
+                 trace: [__FILE__, 'tagP'] do
         jaba(barebones: true) do
           type :test do
             attr_hash :a, key_type: :symbol do # tagP
-              flags :allow_dupes
+              flags :allow_dupes # tagK
             end
           end
         end
