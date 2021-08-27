@@ -113,7 +113,7 @@ module JABA
       track: true,
       want_defaults: true,
       want_post_create: true,
-      exclude_self_from_attr_search: false,
+      lazy: false,
       &block
     )
       depth = 0
@@ -140,8 +140,7 @@ module JABA
         @jaba_type
       end
 
-      jn = JabaNode.new(@services, @definition.id, @definition.src_loc, jt, @jaba_type, handle, parent, depth)
-      jn.exclude_self_from_attr_search = exclude_self_from_attr_search
+      jn = JabaNode.new(@services, @definition.id, @definition.src_loc, jt, @jaba_type, handle, parent, depth, lazy)
 
       if track
         @nodes << jn

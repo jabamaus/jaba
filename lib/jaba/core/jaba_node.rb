@@ -18,11 +18,10 @@ module JABA
     attr_reader :parent
     attr_reader :children
     attr_reader :depth
-    attr_bool :exclude_self_from_attr_search
     
     ##
     #
-    def initialize(services, defn_id, src_loc, jaba_type, top_level_jaba_type, handle, parent, depth)
+    def initialize(services, defn_id, src_loc, jaba_type, top_level_jaba_type, handle, parent, depth, lazy)
       super(services, defn_id, src_loc, JDL_Node.new(self))
 
       @jaba_type = jaba_type
@@ -34,28 +33,21 @@ module JABA
         parent.children << self
       end
       @depth = depth
+      @lazy = lazy
       @referenced_nodes = []
       
       @attrs = AttributeAccessor.new(self)
       @attrs_read_only = AttributeAccessor.new(self, read_only: true)
       @read_only = false
       @allow_set_read_only_attrs = false
-      @exclude_self_from_attr_search = false
 
       @attributes = []
       @attribute_lookup = {}
       
-      @jaba_type.attribute_defs.each do |attr_def|
-        a = case attr_def.variant
-        when :single
-          JabaAttributeSingle.new(attr_def, self)
-        when :array
-          JabaAttributeArray.new(attr_def, self)
-        when :hash
-          JabaAttributeHash.new(attr_def, self)
+      if !lazy
+        @jaba_type.attribute_defs.each do |attr_def|
+          create_attr(attr_def)
         end
-        @attributes << a
-        @attribute_lookup[attr_def.defn_id] = a
       end
 
       # Define a generate hook on root node only
@@ -158,10 +150,7 @@ module JABA
     ##
     #
     def get_attr(attr_id, fail_if_not_found: true, search: false)
-      a = nil
-      if !search || !@exclude_self_from_attr_search
-        a = @attribute_lookup[attr_id]
-      end
+      a = @attribute_lookup[attr_id]
       if !a
         if search
           @referenced_nodes.each do |ref_node|
@@ -214,6 +203,13 @@ module JABA
       else
         a = get_attr(id, search: false, fail_if_not_found: false)
         
+        if !a && @lazy
+          attr_def = @jaba_type.get_attr_def(id)
+          if attr_def
+            a = create_attr(attr_def)
+          end
+        end
+
         if !a
           attr_def = get_callable_attr_def(id)
           # TODO: reinstate
@@ -292,6 +288,24 @@ module JABA
       if @parent
         @parent.children << self
       end
+    end
+
+  private
+
+    ##
+    #
+    def create_attr(attr_def)
+      a = case attr_def.variant
+      when :single
+        JabaAttributeSingle.new(attr_def, self)
+      when :array
+        JabaAttributeArray.new(attr_def, self)
+      when :hash
+        JabaAttributeHash.new(attr_def, self)
+      end
+      @attributes << a
+      @attribute_lookup[attr_def.defn_id] = a
+      a
     end
 
   end

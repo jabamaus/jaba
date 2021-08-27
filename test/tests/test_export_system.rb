@@ -6,6 +6,29 @@ module JABA
   
   class TestExportSystem < JabaTest
 
+    it 'only allows :export on array and hash properties' do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagQ)}: :exportable attribute definition flag is only allowed on array and hash attributes.",
+                        trace: [__FILE__, :tagW] do
+        jaba(dry_run: true) do
+          type :test do
+            attr :a do # tagW
+              flags :exportable # tagQ
+            end
+          end
+        end
+      end
+      jaba(dry_run: true) do
+        type :test do
+          attr_array :a do
+            flags :exportable
+          end
+          attr_hash :b, key_type: :string do
+            flags :exportable
+          end
+        end
+      end
+    end
+
     # TODO: test exporting references
     it 'supports exporting array attributes to dependents' do
       td = temp_dir
@@ -57,19 +80,7 @@ module JABA
       lib[:configs][:x86][:Release][:define].must_equal ['D', 'E', 'R']
     end
 
-    it 'only allows :export on array and hash properties' do
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagQ)}: :exportable attribute definition flag is only allowed on array and hash attributes.",
-                        trace: [__FILE__, :tagW] do
-        jaba(dry_run: true) do
-          type :test do
-            attr :a do # tagW
-              flags :exportable # tagQ
-            end
-          end
-        end
-      end
-    end
-
+    # TODO: incorporate host query
     it 'supports export only definitions' do
       td = temp_dir
       op = jaba(dry_run: true) do
@@ -82,7 +93,6 @@ module JABA
           deps :lib
         end
         cpp :lib, :export_only do
-          # TODO: test paths with root
           root "#{td}/lib"
           src ['lib.cpp'], :force # test exporting an attribute that belongs to project
           inc 'lib.h'
@@ -115,6 +125,26 @@ module JABA
       app[:configs][:x86_64][:Release][:define].must_equal ['R']
       app[:configs][:x86_64][:Release][:syslibs].must_equal ['librelease_x64.lib']
       op[:cpp]['lib|vs2019|windows'].must_be_nil
+    end
+
+    it 'only allows exportable attrs to be set in export only definitions' do
+      td = temp_dir
+      
+      op = jaba(dry_run: true, cpp_app: true) do
+        cpp :app do
+          src ['main.cpp'], :force
+          deps :lib
+        end
+        cpp :lib, :export_only do
+          root "#{td}/lib" # root is the only non-exportable attr allowed
+          platforms [:windows_x86, :windows_x86_64] # TODO: how to detect that this is not valid?
+          deps [:lib2]
+        end
+        cpp :lib2 do
+          type :lib
+          src ['main.cpp'], :force
+        end
+      end
     end
 
   end

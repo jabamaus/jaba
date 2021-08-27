@@ -158,10 +158,9 @@ module JABA
               track: false, # Only used here, don't want the system to remember it
               want_post_create: false,
               want_defaults: false,
-              exclude_self_from_attr_search: true
+              lazy: true
             ) 
             export_only_node.set_parent(nil)
-            export_only_node.exclude_self_from_attr_search = false
 
             services.make_node_paths_absolute(export_only_node)
 
@@ -177,10 +176,9 @@ module JABA
                 track: false,
                 want_post_create: false,
                 want_defaults: false,
-                exclude_self_from_attr_search: true
+                lazy: true
               )
               export_only_cfg_node.set_parent(export_only_node)
-              export_only_cfg_node.exclude_self_from_attr_search = false
 
               services.make_node_paths_absolute(export_only_cfg_node)
 
@@ -284,15 +282,15 @@ module JABA
         # visit all attribute elements in array/hash
         #
         dep_attr.visit_attr do |elem|
-          if elem.set?
-            if elem.attr_def.variant == :single
-              # TODO
-            else
-              # Get the corresponding attr in this project node. This will always be a hash or an array.
-              #
-              attr = target_node.get_attr(elem.defn_id) if !attr
-              attr.insert_clone(elem)
+          if !elem.attr_def.has_flag?(:exportable)
+            if elem.attr_def.defn_id != :root
+              services.jaba_warn("Ignoring #{elem.describe}")
             end
+          else
+            # Get the corresponding attr in this project node. This will always be a hash or an array.
+            #
+            attr = target_node.get_attr(elem.defn_id) if !attr
+            attr.insert_clone(elem)
           end
         end
       end

@@ -869,7 +869,7 @@ module JABA
       nn = @null_nodes[type_id]
       if !nn
         jt = get_jaba_type(type_id)
-        nn = JabaNode.new(self, jt.defn_id, jt.src_loc, jt, jt, "Null#{jt.defn_id}", nil, 0)
+        nn = JabaNode.new(self, jt.defn_id, jt.src_loc, jt, jt, "Null#{jt.defn_id}", nil, 0, false)
         @null_nodes[type_id] = nn
       end
       nn
