@@ -34,9 +34,10 @@ module JABA
         return nil
       end
 
+      project_nodes = []
       @project_ids << definition.id
 
-      root_node = services.make_node
+      root_node = services.make_node(track: false)
 
       target_platform_to_archs = {}
       root_node.attrs.platforms.each do |pspec|
@@ -58,19 +59,21 @@ module JABA
         target_platform_to_archs.each do |tp, target_archs|
           next if !supported_platforms.include?(tp)
           
-          project_node = services.make_node(child_type_id: :cpp_project, name: "#{target_host.defn_id}|#{tp}", parent: root_node) do
+          pn = services.make_node(child_type_id: :cpp_project, name: "#{target_host.defn_id}|#{tp}", parent: root_node) do
             host target_host.defn_id
             host_ref target_host
             platform tp
             platform_ref tp
           end
+          pn.set_parent(nil)
 
-          @all_project_nodes << project_node
-          @host_to_project_nodes.push_value(target_host, project_node)
+          project_nodes << pn
+          @all_project_nodes << pn
+          @host_to_project_nodes.push_value(target_host, pn)
 
-          project_node.attrs.configs.each do |cfg|
+          pn.attrs.configs.each do |cfg|
             target_archs.each do |ta|
-              services.make_node(child_type_id: :cpp_config, name: "#{ta}|#{cfg}", parent: project_node) do
+              services.make_node(child_type_id: :cpp_config, name: "#{ta}|#{cfg}", parent: pn) do
                 config cfg
                 arch ta
                 arch_ref ta
@@ -78,7 +81,7 @@ module JABA
             end
           end
 
-          if project_node.attrs.workspace
+          if pn.attrs.workspace
             defn_id = definition.id
             services.execute_jdl do
               workspace defn_id do
@@ -88,7 +91,7 @@ module JABA
           end
         end
       end
-      root_node
+      project_nodes
     end
 
     ##

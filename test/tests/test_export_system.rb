@@ -130,7 +130,7 @@ module JABA
     it 'only allows exportable attrs to be set in export only definitions' do
       td = temp_dir
       
-      op = jaba(dry_run: true, cpp_app: true) do
+      jaba(dry_run: true, cpp_app: true) do
         cpp :app do
           src ['main.cpp'], :force
           deps :lib

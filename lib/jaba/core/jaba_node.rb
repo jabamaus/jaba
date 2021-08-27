@@ -50,11 +50,7 @@ module JABA
         end
       end
 
-      # Define a generate hook on root node only
-      #
-      if !parent
-        define_hook(:generate)
-      end
+      define_hook(:generate)
     end
 
     ##
@@ -207,6 +203,8 @@ module JABA
           attr_def = @jaba_type.get_attr_def(id)
           if attr_def
             a = create_attr(attr_def)
+          elsif !get_callable_attr_def(id)
+            JABA.error("#{id} not callable")
           end
         end
 
