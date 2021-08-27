@@ -314,13 +314,12 @@ type :cpp_config do
   attr_array :libs, type: :file do
     title 'Paths to required non-system libs'
     basedir_spec :definition_root
-    flags :no_sort, :no_check_exist
+    flags :no_sort, :no_check_exist, :exportable
   end
 
   attr_array :syslibs, type: :string do
     title 'System libs'
-    flags :no_sort
-    flags :exportable
+    flags :no_sort, :exportable
   end
 
   attr_array :cflags, type: :string do
