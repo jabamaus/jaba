@@ -1,6 +1,10 @@
+- Split JabaAttributeDefinition into variants
+- dump :exclude flag. Confusing. Use a 'remove' or 'exclude' call instead.
+- auto document plugin API
+- Add a flag to jaba type to say its not top level instantiatable
+- Add a file copy feature (install?). Could use custom build rule.
+- Stats in docs, eg number of files in jaba release, size of zip.
 - Finish off input manager cmd work
-- validate that platforms passed in correctly to cpp module
-- Experiment with using macros instead of direct object access. Would solve a few problems...
 - Disallow nested src_roots 
 - Add a jaba plugin example
 - should string attr be allowed to be set to nil? Probably not.
@@ -15,7 +19,6 @@
 - Overhaul workspace project glob matching
 - Should buildsystem_root include host? Then projdir would operate inside. Probably.
 - consider tracking last call loc in properties, for better reporting
-- give all unit tests a dummy src_root
 - implement warn level
 - add cmd line test for
   - symbol attr
@@ -32,11 +35,8 @@
 - Finish cutting over from check_fail to assert_jaba_error
 - ability to have build tree out of src but projects in src? config option to base projdir off src_root instead of dest_root?
 - Decide on format of jaba.output.json
-- Make defaults work per-file. Introduce global_defaults.
-- Change config system. Move config attrs out of globals and into new config type. Always generate a config file (not just out of source builds).
-  Load config file first. Prevent config from being modified once loaded. Introduce new type for congig and stop using globals.
-- Add example modules to docs, including comment docs.
-- I think its time to move setting config attrs into their own block. Prevents problems with attributes having nil values when evaluating in the context of the project.
+- Make defaults work per-file. Introduce global_defaults. Or a scope option to defaults.
+- Decide what's going on with config system
 * Automatically pull in dependencies into workspace
 - attr def properties should have help string/notes...
 - Disallow globals from referencing itself
@@ -47,22 +47,18 @@
 - validate when --src-root can be specified. Should be required if no .jaba files in cwd and disallowed if there are.
 - Check attribute validators when parsing cmd line.
 - Should jaba target one 'language' (type) per run? Eg C++, C#
-- Use did_you_mean? Eg
+- Employ did you mean style error reporting
   Error at basic_dll.jaba:8: 'defines' attribute not defined. Did you mean 'define'?
-- Combine jaba.input.json and jaba.output.json into one file
 - validate platforms and architecture specs
-- cpp attrs need to be split into project and config in reference manual
 - tag attrs as control flow attrs somehow for benefit of docs
 - add slnproperty which can address sln sections. Particularly useful when used with ExtensibilityGlobals
 - disband VSProj in favour of VSUtilities module
 - Move title/note/example into module and include
 - Have a command line switch to make all error messages contain absolute paths
-- How customise jaba output file? Subclass vcxproj or jdl definition, or something else?
 - support for 'overriding' attribute defs when opening types
-- make paths in jaba.output.json relative to itself. Introduce json node writing api to wrap this up and to make it robust.
 - Have a way of globally setting default for :platforms, :hosts and :configs (and for clearing)
 - Make :nocheckexists do something
-- Think more about project 'skus'. Also, platforms support specific hosts. Where is that info stored?
+- Think more about project 'skus'.
 - test :required flag compatibility
 - Revisit set_to_default and wipe. Have way of clearing to default and clearing fully, but don't count that as set=true
 - In defaults block are paths relative to the defaults file or the file of the definition being instanced?
@@ -101,10 +97,8 @@ if there are multiple attrs, with a warning.
 - consistent method names across tests and consistent brackets on must_equal
 - Create a table of attr mappings from jaba->premake->cmake
 - Bring back boolean reader, eg if debug?
-- Add 'underlying type' to attribute types? eg file.dir/src_spec are strings. Use this for extra
-  validation and also to sort using casecmp
+- Add 'underlying type' to attribute types? eg file.dir/src_spec are strings. Use this for extra validation and also to sort using casecmp
 - resolve issues around sorting with mixed type elements
-- sortable arrays must be of same type
 - Add wildcard validation to dir property
 
 * Jaba does not try to be a complete cross platform 'API' to underlying build systems. It recognises where there is obvious commonality,
@@ -119,3 +113,17 @@ A: Because Jaba cares a lot about a clean build, and about deterministic minimum
 
 Q: Why is Jaba library code style not very 'ruby'?
 A: The code is written in a style that is the easiest to step through in an IDE debugger, which is an essential tool in the development process
+
+
+ouroveon todo
+- workspace categories
+- ispc extension
+- warnlevel
+- pch
+- Allow debug?
+- Fix and test excluding src. Add src_exclude attr. Review current exclude option - is it any good?
+- Support **.h as alternative to **/*.h
+- Make shell build events use macros
+- review whether static libs should have hard dependencies
+- get rid of jaba.bat and Introduce jaba.exe
+- add grab bag to reference docs
