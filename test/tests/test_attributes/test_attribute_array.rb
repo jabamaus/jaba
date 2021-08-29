@@ -287,86 +287,80 @@ module JABA
       end
     end
     
-    # TODO: merge exclude tests
-    it 'supports excluding elements' do
+    it 'supports deleting elements' do
       jaba(barebones: true) do
         type :test do
           attr_array :a
-          attr_array :b
         end
         test :t do
-          a [:a]
-          a [:b], exclude: [:c]
-          a [:c, :d, :e], exclude: [:d, :e]
-          b [1, 2, 3, 4]
-          b exclude: [2, 3]
-          generate do # excludes are not processed immediately so test in generate block
-            attrs.a.must_equal [:a, :b]
-            attrs.b.must_equal [1, 4]
-          end
+          a [:a, :b], delete: [:a, :b]
+          a.must_equal []
+          a [:c, :d, :e]
+          a delete: :d
+          a delete: :e
+          a.must_equal [:c]
+          a delete: :c
+          a.must_equal []
+
+          a [1, 2, 3, 4]
+          a delete: [2, 3]
+          a.must_equal [1, 4]
+          a delete: 1
+          a delete: 4
+          a.must_equal []
+
+          # delete works with prefix and postfix options
+          #
+          a ['abc', 'acc', 'adc', 'aec']
+          a delete: ['c', 'd'], prefix: 'a', postfix: 'c'
+          a.must_equal ['abc', 'aec']
+          a delete: ['abc', 'aec']
+          a.must_equal []
+
+          # delete works with regexes
+          #
+          a ['one', 'two', 'three', 'four']
+          a delete: [/o/, 'three']
+          a.must_equal []
+
+          a [:one, :two, :three, :four]
+          a delete: [/o/, :three]
+          a.must_equal []
+
+          # deletion can be conditional
+          #
+          a [:a, :b, :c, :d, :e]
+          a delete: ->(e) {(e == :d) || (e == :c)}
+          a.must_equal [:a, :b, :e]
+          a delete: ->(e) {true}
+          a.must_equal []
+          a [1, 2, 3, 4], delete: ->(e) {e > 2}
+          a.must_equal [1, 2]
         end
       end
     end
 
-    it 'supports :prefix and :postfix in conjunction with :exclude' do
-      jaba(barebones: true) do
-        type :test do
-          attr_array :a do
-            flags :no_sort
-          end
-        end
-        test :t do
-          a ['abc', 'acc', 'adc', 'aec']
-          a exclude: ['c', 'd'], prefix: 'a', postfix: 'c'
-          generate do
-            attrs.a.must_equal ['abc', 'aec']
-          end
-        end
-      end
-    end
-    
-    it 'supports excluding elements with regexes' do
-      jaba(barebones: true) do
-        type :test do
-          attr_array :a
-        end
-        test :t do
-          a ['one', 'two', 'three', 'four']
-          a exclude: [/o/, 'three']
-          generate do
-            attrs.a.must_equal []
-          end
-        end
-      end
-    end
-    
-    it 'fails if excluding with regex on non-strings' do
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagR)}: When setting 't.a' array attribute exclude regex can only operate on strings." do
+    it 'fails if deleting with regex on non-strings' do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagR)}: Deletion using a regex can only operate on strings or symbols." do
         jaba(barebones: true) do
           type :test do
             attr_array :a
           end
           test :t do
-            a [1, 2, 3, 4, 43], exclude: [/3/] # tagR
+            a [1, 2, 3, 4, 43], delete: [/3/] # tagR
           end
         end
       end
     end
-    
-    it 'supports conditional excluding' do
-      jaba(barebones: true) do
-        type :test do
-          attr_array :a
-          attr_array :b
-        end
-        test :t do
-          a [:a]
-          a [:b, :c], exclude: ->(e) {e == :e}
-          a [:d, :e], exclude: ->(e) {(e == :d) || (e == :c)}
-          b [1, 2, 3, 4], exclude: ->(e) {e > 2}
-          generate do
-            attrs.a.must_equal [:a, :b]
-            attrs.b.must_equal [1, 2]
+
+    it 'warns if nothing deleted' do
+      check_warn "'[7, 8]' did not match any elements - nothing removed", __FILE__, :tagH do
+        jaba(barebones: true) do
+          type :test do
+            attr_array :a
+          end
+          test :t do
+            a [1, 2, 3, 4, 43], delete: [7, 8] # tagH
           end
         end
       end

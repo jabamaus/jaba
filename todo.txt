@@ -1,5 +1,5 @@
+- Implement element deletion for hash attribute
 - Split JabaAttributeDefinition into variants
-- dump :exclude flag. Confusing. Use a 'remove' or 'exclude' call instead.
 - auto document plugin API
 - Add a flag to jaba type to say its not top level instantiatable
 - Add a file copy feature (install?). Could use custom build rule.
@@ -120,7 +120,7 @@ ouroveon todo
 - warnlevel
 - pch
 - Allow debug?
-- Fix and test excluding src. Add src_exclude attr. Review current exclude option - is it any good?
+- Fix and test excluding src. Add src_exclude attr.
 - Support **.h as alternative to **/*.h
 - Make shell build events use macros
 - review whether static libs should have hard dependencies

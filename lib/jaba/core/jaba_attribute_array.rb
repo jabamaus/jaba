@@ -15,7 +15,6 @@ module JABA
     def initialize(attr_def, node)
       super(attr_def, node, self)
       @elems = []
-      @excludes = []
       if attr_def.default_set? && !@default_block
         set(attr_def.default)
       end
@@ -57,11 +56,11 @@ module JABA
     
     ##
     #
-    def set(*args, __jdl_call_loc: nil, prefix: nil, postfix: nil, exclude: nil, **keyval_args, &block)
+    def set(*args, __jdl_call_loc: nil, prefix: nil, postfix: nil, delete: nil, **keyval_args, &block)
       @last_call_location = __jdl_call_loc if __jdl_call_loc
       
       # It is possible for values to be nil, which happens if no args are passed. This can happen if the user
-      # wants to just set some excludes.
+      # wants to remove something from the array
       #
       values = if block_given?
         value_from_block(__jdl_call_loc, id: "#{@attr_def.defn_id}[#{@elems.size}]", &block)
@@ -110,9 +109,26 @@ module JABA
         end
       end
       
-      if exclude
-        Array(exclude).each do |e|
-          @excludes << apply_pre_post_fix(prefix, postfix, e)
+      if delete
+        to_delete = Array(delete).map{|r| apply_pre_post_fix(prefix, postfix, r)}
+        n_elems = @elems.size
+        @elems.delete_if do |e|
+          to_delete.any? do |d|
+            val = e.value
+            if d.proc?
+              d.call(val)
+            elsif d.is_a?(Regexp)
+              if !val.string? && !val.symbol?
+                attr_error("Deletion using a regex can only operate on strings or symbols")
+              end
+              val.match(d)
+            else
+              d == val
+            end
+          end
+        end
+        if @elems.size == n_elems
+          services.jaba_warn("'#{delete}' did not match any elements - nothing removed")
         end
       end
 
@@ -187,25 +203,8 @@ module JABA
     end
 
     ##
-    # TODO: warn if nothing excluded
+    #
     def process_flags
-      if @excludes
-        @elems.delete_if do |e|
-          @excludes.any? do |ex|
-            val = e.value
-            if ex.proc?
-              ex.call(val)
-            elsif ex.is_a?(Regexp)
-              if !val.string?
-                attr_error("When setting #{describe} exclude regex can only operate on strings")
-              end
-              val.match(ex)
-            else
-              ex == val
-            end
-          end
-        end
-      end
       if !@attr_def.has_flag?(:no_sort)
         begin
           @elems.stable_sort!
