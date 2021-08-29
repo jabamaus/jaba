@@ -2,82 +2,82 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="jaba">
-      <UniqueIdentifier>{A13AD66A-F62A-52CC-AC80-5533C3167327}</UniqueIdentifier>
+      <UniqueIdentifier>{2834D4CF-E71F-5F66-8EB9-5442138B5C22}</UniqueIdentifier>
     </Filter>
     <Filter Include="coroutine\win64">
-      <UniqueIdentifier>{CCC07D71-DC3E-5B02-859E-06D172C94C36}</UniqueIdentifier>
+      <UniqueIdentifier>{8469BAB1-EE98-5F11-A072-E65B7841C04F}</UniqueIdentifier>
     </Filter>
     <Filter Include="coroutine">
-      <UniqueIdentifier>{FA5B6D83-E09A-5C5E-9A45-5DD556512961}</UniqueIdentifier>
+      <UniqueIdentifier>{C60C3BAA-BF73-575F-9012-CF30E1652CE8}</UniqueIdentifier>
     </Filter>
     <Filter Include="enc">
-      <UniqueIdentifier>{4B4BC903-9EC1-559C-81EB-A2FFB9838050}</UniqueIdentifier>
+      <UniqueIdentifier>{A133B3E0-2711-527A-88EF-690AA9E02019}</UniqueIdentifier>
     </Filter>
     <Filter Include="enc\trans">
-      <UniqueIdentifier>{43FBFF94-1C8A-5CDE-853F-C9004EE21117}</UniqueIdentifier>
+      <UniqueIdentifier>{144267EF-3945-53E1-9C8E-D5EFCB9DEB7B}</UniqueIdentifier>
     </Filter>
     <Filter Include="ext\digest">
-      <UniqueIdentifier>{3AA29C60-3ABF-517A-A492-0A835CBA1EDD}</UniqueIdentifier>
+      <UniqueIdentifier>{E5ED4D77-B8A2-5D39-B2BF-CCB934C996F4}</UniqueIdentifier>
     </Filter>
     <Filter Include="ext">
-      <UniqueIdentifier>{5C814673-3CFE-50BD-9546-9E464203B522}</UniqueIdentifier>
+      <UniqueIdentifier>{AD5D1A83-982C-5A68-A386-B2A107326F79}</UniqueIdentifier>
     </Filter>
     <Filter Include="ext\digest\sha1">
-      <UniqueIdentifier>{1A6BEEDF-643D-579D-930F-F35067076F6A}</UniqueIdentifier>
+      <UniqueIdentifier>{79914C93-5C00-51E9-A4F1-2B5C1CF4E2D6}</UniqueIdentifier>
     </Filter>
     <Filter Include="ext\json">
-      <UniqueIdentifier>{CB8F4A4C-255F-561F-94F8-C66B5BAC1C44}</UniqueIdentifier>
+      <UniqueIdentifier>{C2CFD9B5-77FA-54C4-A4F8-D8AE110A705A}</UniqueIdentifier>
     </Filter>
     <Filter Include="ext\json\fbuffer">
-      <UniqueIdentifier>{C816E2BF-965E-575D-BA6E-6865C9DAC730}</UniqueIdentifier>
+      <UniqueIdentifier>{4003A34B-31FD-53D0-A304-9DC0A7B943D6}</UniqueIdentifier>
     </Filter>
     <Filter Include="ext\json\generator">
-      <UniqueIdentifier>{483C0D85-38DD-57B9-BF11-899FEBDBF9F0}</UniqueIdentifier>
+      <UniqueIdentifier>{13A8BE6B-EFC9-51A1-AD47-D74574D56BCF}</UniqueIdentifier>
     </Filter>
     <Filter Include="ext\json\parser">
-      <UniqueIdentifier>{09C71F21-258D-5A16-AA4D-CAFF72DFF5FB}</UniqueIdentifier>
+      <UniqueIdentifier>{1C36E7F8-44D2-5505-B6A4-6FEA61169270}</UniqueIdentifier>
     </Filter>
     <Filter Include="include">
-      <UniqueIdentifier>{23C510CA-019D-5302-92A0-26CE4C2BCDDF}</UniqueIdentifier>
+      <UniqueIdentifier>{BBC7AB63-15F0-5F16-8F20-03D21A1B26A7}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\ruby">
-      <UniqueIdentifier>{72F72323-A02F-5AFD-8D84-9D90D384909C}</UniqueIdentifier>
+      <UniqueIdentifier>{7CB10AE5-9524-543E-B85D-5064AB434850}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\ruby\backward\2">
-      <UniqueIdentifier>{6DA9DB63-D73B-5052-80C2-0600309BD0E1}</UniqueIdentifier>
+      <UniqueIdentifier>{0571F81B-6331-5E78-91B3-B428BFB95ADB}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\ruby\backward">
-      <UniqueIdentifier>{C3D6F116-9528-5B33-BBF8-69AD8B82F2F1}</UniqueIdentifier>
+      <UniqueIdentifier>{758A551B-C4CF-50FB-AFDD-BB0C40C9ADB9}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\ruby\internal">
-      <UniqueIdentifier>{7F72CE0A-96D4-5C6C-8690-8705A7B6FE3C}</UniqueIdentifier>
+      <UniqueIdentifier>{8482F25D-FA18-56CE-BADA-56649F9326E7}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\ruby\internal\arithmetic">
-      <UniqueIdentifier>{BF518A68-8A95-5863-8F72-0580E0E700C3}</UniqueIdentifier>
+      <UniqueIdentifier>{3645A96F-A05B-50DA-B953-78786A221AEF}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\ruby\internal\attr">
-      <UniqueIdentifier>{ABA1E8A9-81E6-5777-8E78-75F18EF5F732}</UniqueIdentifier>
+      <UniqueIdentifier>{8D680C84-5768-5EA4-A491-1D69C833E665}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\ruby\internal\compiler_is">
-      <UniqueIdentifier>{06B2C16E-12D5-5EB9-A88A-38D96293F958}</UniqueIdentifier>
+      <UniqueIdentifier>{109F508B-F998-5BA5-A923-3F7BBAE015C5}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\ruby\internal\core">
-      <UniqueIdentifier>{D21B9284-2C78-5353-B007-335B5EB1F762}</UniqueIdentifier>
+      <UniqueIdentifier>{28F0EAA9-2559-544E-B3E3-72D0A978D1CC}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\ruby\internal\has">
-      <UniqueIdentifier>{C11C3008-6546-502E-AEC1-E216CAE12C63}</UniqueIdentifier>
+      <UniqueIdentifier>{5EB604EC-0C73-53A0-9E6E-A2E994D664A2}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\ruby\internal\intern">
-      <UniqueIdentifier>{7A3C8D33-FD87-5F39-A0A8-9F4D63109EBF}</UniqueIdentifier>
+      <UniqueIdentifier>{D1139902-BEC4-5F5B-8151-95FC59FF13A6}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\ruby\internal\intern\select">
-      <UniqueIdentifier>{C16B8E8C-8D76-573F-B1C3-7ADAC4FFC95F}</UniqueIdentifier>
+      <UniqueIdentifier>{872A248C-EA26-56A0-94DC-0093E79D75F5}</UniqueIdentifier>
     </Filter>
     <Filter Include="missing">
-      <UniqueIdentifier>{E0F4B17E-7281-5280-B597-397700F74102}</UniqueIdentifier>
+      <UniqueIdentifier>{2C9D9AD4-9D7A-5323-B80F-281839789CFB}</UniqueIdentifier>
     </Filter>
     <Filter Include="win32">
-      <UniqueIdentifier>{57DF9A96-9874-5075-AF15-72079B9D7313}</UniqueIdentifier>
+      <UniqueIdentifier>{A3D280FD-2942-57A3-9C86-54FD6388E80E}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

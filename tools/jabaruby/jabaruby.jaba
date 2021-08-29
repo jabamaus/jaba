@@ -1,56 +1,54 @@
 cpp :jabaruby do
-  type :console
   root 'C:/projects/ruby-3.0.2'
   platforms [:windows_x86_64]
-  configs [:Debug, :Release]
-  src './jaba_ext.c', vpath: 'jaba'
-  src %w(
-    main.c dmydln.c array.c ast.c bignum.c class.c compar.c compile.c
-    complex.c cont.c debug.c debug_counter.c dir.c dln_find.c encoding.c enum.c enumerator.c error.c
-    eval.c file.c gc.c hash.c inits.c io.c iseq.c load.c marshal.c math.c memory_view.c mjit.c mjit_compile.c
-    node.c numeric.c object.c pack.c parse.c proc.c process.c ractor.c random.c range.c rational.c re.c
-    regcomp.c regenc.c regerror.c regexec.c regparse.c regsyntax.c ruby.c scheduler.c signal.c sprintf.c
-    st.c strftime.c string.c struct.c symbol.c thread.c time.c transcode.c transient_heap.c util.c
-    variable.c version.c vm.c vm_backtrace.c vm_dump.c vm_sync.c vm_trace.c
-  )
+  project do
+    type :console
+    configs [:Debug, :Release]
+    src './jaba_ext.c', vpath: 'jaba'
+    src %w(
+      main.c dmydln.c array.c ast.c bignum.c class.c compar.c compile.c
+      complex.c cont.c debug.c debug_counter.c dir.c dln_find.c encoding.c enum.c enumerator.c error.c
+      eval.c file.c gc.c hash.c inits.c io.c iseq.c load.c marshal.c math.c memory_view.c mjit.c mjit_compile.c
+      node.c numeric.c object.c pack.c parse.c proc.c process.c ractor.c random.c range.c rational.c re.c
+      regcomp.c regenc.c regerror.c regexec.c regparse.c regsyntax.c ruby.c scheduler.c signal.c sprintf.c
+      st.c strftime.c string.c struct.c symbol.c thread.c time.c transcode.c transient_heap.c util.c
+      variable.c version.c vm.c vm_backtrace.c vm_dump.c vm_sync.c vm_trace.c
+    )
 
-  src ['coroutine/win64/Context.asm']
-  src ['enc/ascii.c', 'enc/us_ascii.c', 'enc/unicode.c', 'enc/utf_8.c', 'enc/trans/newline.c'], :force
-  src ['crypt.c', 'ffs.c', 'langinfo.c', 'lgamma_r.c', 'strlcat.c',
-       'strlcpy.c', 'setproctitle.c', 'explicit_bzero.c'], prefix: 'missing/'
-  src ['win32/win32.c', 'win32/file.c']
-
-  # TODO: make jaba do something like this automatically when duplicate found
-  vcfprop 'win32/file.c|ObjectFileName', '$(IntDir)win32_file.obj'
-  
-  # Statically link in extensions that jaba requires
-  #
-  src ['ext/digest/digest.*', 'ext/digest/sha1']
-  src ['ext/json']
-  define ['JSON_GENERATOR']
-
-  src ['*.h', 'include']
-  inc ['.', 'include', '.ext/include/x64-mswin64_140', 'enc/unicode/12.1.0']
-
-  define ['RUBY_EXPORT', 'CANONICALIZATION_FOR_MATHN', 'DISABLE_RUBYGEMS=1','_WIN32_WINNT=0x0600']
-  syslibs ['imagehlp.lib', 'iphlpapi.lib', 'ws2_32.lib']
-
-  vcprop 'Link|LinkIncremental', false
-
-  if debug
-    targetname 'jabaruby_debug'
-  else
-    bindir '../../bin' # TODO: this should actually be an install step
-    vcprop 'Link|OptimizeReferences', true
-    vcprop 'Link|EnableCOMDATFolding', true
+    src ['coroutine/win64/Context.asm']
+    src ['enc/ascii.c', 'enc/us_ascii.c', 'enc/unicode.c', 'enc/utf_8.c', 'enc/trans/newline.c'], :force
+    src ['crypt.c', 'ffs.c', 'langinfo.c', 'lgamma_r.c', 'strlcat.c',
+        'strlcpy.c', 'setproctitle.c', 'explicit_bzero.c'], prefix: 'missing/'
+    src ['win32/win32.c', 'win32/file.c']
+    src ['ext/digest/digest.*', 'ext/digest/sha1']
+    src ['ext/json']
+    src ['*.h', 'include']
   end
-end
+  
+  config do
+    inc ['.', 'include', '.ext/include/x64-mswin64_140', 'enc/unicode/12.1.0']
+    
+    # TODO: should this be the default?
+    vcprop 'Link|LinkIncremental', false
+    # TODO: make jaba do something like this automatically when duplicate found
+    vcfprop 'win32/file.c|ObjectFileName', '$(IntDir)win32_file.obj'
+  
+    define [
+      'RUBY_EXPORT',
+      'CANONICALIZATION_FOR_MATHN',
+      'DISABLE_RUBYGEMS=1',
+      '_WIN32_WINNT=0x0600',
+      'JSON_GENERATOR',
+    ]
 
-workspace :jabaruby do
-  projects [:jabaruby]
-end
+    syslibs ['imagehlp.lib', 'iphlpapi.lib', 'ws2_32.lib']
 
-
-open_instance :globals, type: :globals do
-  vcfiletype '.d', :CustomBuild # TODO: remove
+    if debug
+      targetname 'jabaruby_debug'
+    else
+      bindir '../../bin' # TODO: this should actually be an install step
+      vcprop 'Link|OptimizeReferences', true
+      vcprop 'Link|EnableCOMDATFolding', true
+    end
+  end
 end
