@@ -264,18 +264,6 @@ module JABA
               JABA.spec_to_absolute_path(p, base_dir, n)
             end
           end
-
-          # TODO: this could be done for all attrs not just :file, :dir and :src_spec because in theory other attribute types
-          # could have an option of type file/dir/src_spec. They would however need a base_dir_spec option too.
-          #
-          a.map_value_option! do |id, type, value|
-            case type
-            when :file, :dir, :src_spec
-              JABA.spec_to_absolute_path(value, base_dir, n)
-            else
-              value
-            end
-          end
         end
       end
       root
