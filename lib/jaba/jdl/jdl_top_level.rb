@@ -101,6 +101,13 @@ module JABA
     ##
     # EXTENSION API
     #
+    def open_globals(&block)
+      @services.open(:instance, :globals, :globals, &block)
+    end
+
+    ##
+    # EXTENSION API
+    #
     def translator(id, &block)
       @services.define_translator(id, &block)
     end

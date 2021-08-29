@@ -68,7 +68,7 @@ module JABA
           end
         end
         c.definitions do
-          open_instance :globals, type: :globals do
+          open_globals do
             if !argv.include?('target_hosts')
               target_hosts :vs2019
             end

@@ -1124,7 +1124,7 @@ module JABA
         if !@config_loaded
           @config_loaded = true
           content = @file_manager.read(f, freeze: false)
-          content.prepend("open_instance :globals, type: :globals do\n")
+          content.prepend("open_globals do\n")
           content << "end"
           execute_jdl(file: f, str: content)
         end

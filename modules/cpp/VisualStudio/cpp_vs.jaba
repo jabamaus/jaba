@@ -5,7 +5,7 @@ open_type :globals do
   end
 end
 
-open_instance :globals, type: :globals do
+open_globals do
   vcfiletype '.h', :ClInclude
   vcfiletype '.inl', :ClInclude
   vcfiletype '.hpp', :ClInclude
