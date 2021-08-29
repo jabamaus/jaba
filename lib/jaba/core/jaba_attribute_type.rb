@@ -490,4 +490,36 @@ module JABA
 
   end
 
+    ##
+  #
+  class JabaAttributeTypeBlock < JabaAttributeType
+    
+    ##
+    #
+    def initialize
+      super(:block, 'Block attribute type')
+    end
+
+    ##
+    #
+    def from_cmdline(str, attr_def)
+      JABA.error("block attributes cannot be specified on command line")
+    end
+
+    ##
+    #
+    def post_init_attr_def(attr_def)
+      if attr_def.array?
+        attr_def.set_property(:flags, [:no_sort, :allow_dupes])
+      end
+    end
+
+    ##
+    #
+    def validate_value(attr_def, value)
+      JABA.error("must be a block") if !value.proc?
+    end
+
+  end
+
 end

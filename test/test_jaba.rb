@@ -47,25 +47,31 @@ module JABA
              cpp_defaults: false, &block)
       td = temp_dir(create: false)
       build_root = build_root || td
+      argv = Array(argv)
+
       op = JABA.run(want_exceptions: want_exceptions) do |c|
         c.src_root = src_root # Most unit tests don't have a src_root as everything is defined inline in code
         c.build_root = build_root
-        c.argv = Array(argv) if argv
+        c.argv = argv
         c.definitions(&block) if block_given?
         c.barebones = barebones
         if cpp_app || cpp_defaults
           c.definitions do
             defaults :cpp do
               platforms [:windows_x86, :windows_x86_64]
-              configs [:Debug, :Release]
               root td
-              type :app if cpp_app
+              project do
+                configs [:Debug, :Release]
+                type :app if cpp_app
+              end
             end
           end
         end
         c.definitions do
           open_instance :globals, type: :globals do
-            target_hosts :vs2019
+            if !argv.include?('target_hosts')
+              target_hosts :vs2019
+            end
             dump_output dump_output
             jaba_output_file "#{build_root}/jaba.output.json"
           end
@@ -203,7 +209,7 @@ module JABA
         expected_line = find_line_number(expected_file, tag)
 
         if out !~ /Warning at (.+?):(\d+)/
-          raise "couldn't extract file and line number from warning"
+          raise "couldn't extract file and line number from #{out}"
         end
         
         actual_file = Regexp.last_match(1)

@@ -121,6 +121,8 @@ module JABA
         else
           make_node(id: id, block_args: block_args, __jdl_call_loc: __jdl_call_loc, &block)
         end
+      elsif @attr_def.block_attr?
+        block # If its a block attr the value is the block itself
       else
         return @node.eval_jdl(&block)
       end
@@ -265,7 +267,7 @@ module JABA
           # of the same type will have been created by this point whereas nodes of a different type will all have been created
           # due to having been dependency sorted. References to the same type are resolved after all nodes have been created.
           #
-          @value = @node.top_level_jaba_type.node_manager.resolve_reference(self, new_value, ignore_if_same_type: true)
+          @value = @node.node_manager.resolve_reference(self, new_value, ignore_if_same_type: true)
         end
       else
         @value.freeze # Prevents value from being changed directly after it has been returned by 'value' method
@@ -284,7 +286,7 @@ module JABA
         full_var = match[0]
         attr_id = match[1]
         method = match[3]
-        attr = @node.get_attr(attr_id.to_sym, search: true) # TODO: error checking
+        attr = @node.search_attr(attr_id.to_sym) # TODO: error checking
         attr_val = attr.value
         # TODO: demacroise recursively
         if !method.nil?

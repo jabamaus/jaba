@@ -201,6 +201,12 @@ module JABA
     def node_by_value?
       @type_id == :node
     end
+
+    ##
+    #
+    def block_attr?
+      @type_id == :block
+    end
     
     ##
     # Special case handling to try and catch the attribute definition writer from trying to read an attribute when setting a default

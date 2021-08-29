@@ -45,7 +45,7 @@ module JABA
     
     it 'strips duplicates' do
       line = find_line_number(__FILE__, 'tagL')
-      check_warn("When setting 'a.ref' array attribute stripping duplicate value ':b'. See previous at test_node_ref_attribute.rb:#{line}", __FILE__, 'tagM') do
+      check_warn("Stripping duplicate ':b' from 'a.ref' array attribute. See previous at test_node_ref_attribute.rb:#{line}", __FILE__, 'tagM') do
         jaba(barebones: true) do
           type :type_a do
             attr_array :ref, type: :node_ref do
@@ -145,7 +145,7 @@ module JABA
     end
     
     it 'imports exposed referenced attributes' do
-      check_fail "'height' attribute cannot be called in 't' node. Available: [:length, :square]", line: [__FILE__, 'tagI'] do
+      check_fail "'height' attribute not found. Available: [:length, :square]", line: [__FILE__, 'tagI'] do
         jaba(barebones: true) do
           type :square do
             attr :length do
@@ -185,12 +185,12 @@ module JABA
           line :a do
             length 1
           end
-          type :has_line do
+          type :references_line do
             attr :line, type: :node_ref do
               node_type :line
             end
           end
-          has_line :t do
+          references_line :t do
             line :a
             length 3 # tagF
           end
@@ -235,54 +235,5 @@ module JABA
     # TODO: test attribute name clashes
 
     # TODO: test referencing a node in a tree, using make_handle
-
-    it 'prevents nil access when building tree of nodes' do
-      jaba do
-        type :testproj do
-          child_types :platform_, :main
-          attr_array :platforms
-        end
-        type :platform_ do
-          attr :platform, type: :node_ref do
-            node_type :platform
-          end
-          attr_array :hosts
-        end
-        type :main do
-          attr :host, type: :node_ref do
-            node_type :host
-          end
-          attr :path
-        end
-
-        testproj :t do
-          platforms [:windows]
-          hosts [:vs2019]
-          path "#{platform.valid_archs[0]}/#{host.version_year}"
-          generate do
-            children[0].children[0].attrs.path.must_equal("x86/2019")
-          end
-        end
-      end
-    end
   end
-  
-  class TestprojPlugin < Plugin
-    def process_definition(definition)
-      platforms_node = services.make_node
-      
-      platforms_node.attrs.platforms.each do |p|
-        hosts_node = services.make_node(child_type_id: :platform_, name: p, parent: platforms_node) do
-          platform p
-        end
-        hosts_node.attrs.hosts.each do |h|
-          services.make_node(child_type_id: :main, name: h, parent: hosts_node) do 
-            host h
-          end
-        end
-      end
-      platforms_node
-    end
-  end
-
 end

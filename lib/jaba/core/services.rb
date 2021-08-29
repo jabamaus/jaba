@@ -79,11 +79,9 @@ module JABA
       @input.instance_variable_set(:@src_root, nil)
       @input.instance_variable_set(:@definitions, [])
       @input.instance_variable_set(:@global_attrs, {})
-
       @output = {}
       
       @log_msgs = JABA.running_tests? ? nil : [] # Disable logging when running tests
-      
       @warnings = []
       
       @jdl_files = []
@@ -105,6 +103,8 @@ module JABA
 
       @instance_def_lookup = {}
       @shared_def_lookup = {}
+      @node_lookup = {}
+      @plugin_lookup = {}
 
       @jaba_attr_types = []
       @jaba_attr_type_lookup = {}
@@ -114,14 +114,11 @@ module JABA
       @jaba_type_lookup = {}
       @translators = {}
 
-      @plugin_lookup = {}
-
       @globals_type_def = nil
       @globals = nil
       @globals_node = nil
 
       @null_attr_type = JabaAttributeType.new(:null, 'Null attribute type')
-      @null_nodes = {}
       
       @in_attr_default_block = false
       @processing_jaba_types = false
@@ -257,7 +254,6 @@ module JABA
       end
 
       @jaba_types.each(&:post_create)
-      @jaba_types.each(&:process_child_types)
 
       # When an attribute defined in a JabaType will reference a differernt JabaType a dependency on that
       # type is added. JabaTypes are dependency order sorted to ensure that referenced JabaNodes are created
@@ -338,13 +334,13 @@ module JABA
 
       # Write final files
       #
-      @jaba_types.each do |pt|
+      @jaba_types.each do |jt|
         # Call generate blocks defined per-node instance, in the context of the node itself, not its api
         #
-        pt.node_manager.root_nodes.each do |n|
+        jt.node_manager.root_nodes.each do |n|
           n.call_hook(:generate, receiver: n, use_api: false)
         end
-        pt.plugin.generate
+        jt.plugin.generate
       end
     end
     
@@ -844,6 +840,26 @@ module JABA
     end
 
     ##
+    #
+    def register_node(node)
+      handle = node.handle
+      if @node_lookup.key?(handle)
+        JABA.error("Duplicate node handle '#{handle}'")
+      end
+      @node_lookup[handle] = node
+    end
+
+    ##
+    #
+    def node_from_handle(handle, fail_if_not_found: true, errobj: nil)
+      n = @node_lookup[handle]
+      if !n && fail_if_not_found
+        JABA.error("Node with handle '#{handle}' not found", errobj: errobj)
+      end
+      n
+    end
+
+    ##
     # Called from JDL API.
     #
     def glob(spec, &block)
@@ -861,18 +877,6 @@ module JABA
     def get_plugin(jaba_type_id)
       jt = get_jaba_type(jaba_type_id)
       jt.plugin
-    end
-
-    ##
-    #
-    def get_null_node(type_id)
-      nn = @null_nodes[type_id]
-      if !nn
-        jt = get_jaba_type(type_id)
-        nn = JabaNode.new(self, jt.defn_id, jt.src_loc, jt, jt, "Null#{jt.defn_id}", nil, 0, false)
-        @null_nodes[type_id] = nn
-      end
-      nn
     end
 
     ##

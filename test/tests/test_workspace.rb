@@ -12,24 +12,32 @@ module JABA
       
       op = jaba(cpp_defaults: true, dry_run: true) do
         cpp :a do
-          type :app
           root "#{td}/a"
-          src ['.']
+          project do
+            type :app
+            src ['.']
+          end
         end
         cpp :b do
-          type :app
           root "#{td}/b"
-          src ['.']
+          project do
+            type :app
+            src ['.']
+          end
         end
         cpp :c do
-          type :app
           root "#{td}/c/d"
-          src ['.']
+          project do
+            type :app
+            src ['.']
+          end
         end
         cpp :d do
-          type :app
           root "#{td}/c/e"
-          src ['.']
+          project do
+            type :app
+            src ['.']
+          end
         end
         workspace :w do
           root "#{td}"
@@ -68,7 +76,9 @@ module JABA
       check_warn "No projects matching spec 'b/**/*' found", __FILE__, 'tagR' do
         jaba(cpp_app: true, dry_run: true) do
           cpp :app do
-            src ['a.cpp'], :force
+            project do
+              src ['a.cpp'], :force
+            end
           end
           workspace :a do
             projects [:app]

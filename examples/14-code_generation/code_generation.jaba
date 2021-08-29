@@ -1,15 +1,19 @@
 cpp :CodegenExample do
-  type :console
   platforms [:windows_x86_64]
-  configs [:Debug, :Release]
-  src ['main.cpp', 'generator.rb', '*.xyz']
-  src %w(src1.h src2.h src1.cpp src2.cpp), :force, prefix: 'generated/'
+  project do
+    type :console
+    configs [:Debug, :Release]
+    src ['main.cpp', 'generator.rb', '*.xyz']
+    src %w(src1.h src2.h src1.cpp src2.cpp), :force, prefix: 'generated/'
+  end
 
-  rule do
-    input '*.xyz'
-    output 'generated/$(input.basename_no_ext).cpp'
-    implicit_input 'generator.rb'
-    cmd 'jabaruby $(implicit_input) $(input) $(output)'
-    msg '$(input.basename) -> $(output.basename)'
+  config do
+    rule do
+      input '*.xyz'
+      output 'generated/$(input.basename_no_ext).cpp'
+      implicit_input 'generator.rb'
+      cmd 'jabaruby $(implicit_input) $(input) $(output)'
+      msg '$(input.basename) -> $(output.basename)'
+    end
   end
 end

@@ -37,30 +37,40 @@ module JABA
       op = jaba do
         defaults :cpp do
           platforms [:windows_x86]
-          configs [:Debug, :Release]
+          project do
+            configs [:Debug, :Release]
+          end
         end
         cpp :app do
           root "#{td}/app"
-          type :console
-          deps [:lib]
-          vcglobal :BoolAttr, true
-          define ['F', 'A']
-          src ['main.cpp']
+          project do
+            type :console
+            deps [:lib]
+            vcglobal :BoolAttr, true
+            src ['main.cpp']
+          end
+          config do
+            define ['F', 'A']
+          end
         end
         cpp :lib do
           root "#{td}/lib"
-          type :lib
-          src ['main.cpp']
-          vcglobal :StringAttr, 's'
-          vcglobal :StringAttr2, 's2', :export_only # will be sent to dependents but won't be defined on self
-          vcglobal :StringAttr3, 's3', :export
-          # TODO: what happens if export :BoolAttr, false ? will it overwrite? Probably fail. Warn if same value.
-          define ['D']
-          define ['C', 'B'], :export_only
-          define ['R'], :export if config == :Release
-          define ['E']
-          inc ['include'], :export
-          # TODO: test vcprop
+          project do
+            type :lib
+            src ['main.cpp']
+            vcglobal :StringAttr, 's'
+            vcglobal :StringAttr2, 's2', :export_only # will be sent to dependents but won't be defined on self
+            vcglobal :StringAttr3, 's3', :export
+          end
+          config do
+            # TODO: what happens if export :BoolAttr, false ? will it overwrite? Probably fail. Warn if same value.
+            define ['D']
+            define ['C', 'B'], :export_only
+            define ['R'], :export if config == :Release
+            define ['E']
+            inc ['include'], :export
+            # TODO: test vcprop
+          end
         end
       end
       app = op[:cpp]['app|vs2019|windows']
@@ -85,30 +95,36 @@ module JABA
       td = temp_dir
       op = jaba(dry_run: true) do
         cpp :app do
-          platforms [:windows_x86, :windows_x86_64]
-          configs [:Debug, :Release]
           root td
-          type :app
-          src ['main.cpp'], :force
-          deps :lib
+          platforms [:windows_x86, :windows_x86_64]
+          project do
+            configs [:Debug, :Release]
+            type :app
+            src ['main.cpp'], :force
+            deps :lib
+          end
         end
         cpp :lib, :export_only do
           root "#{td}/lib"
-          src ['lib.cpp'], :force # test exporting an attribute that belongs to project
-          inc 'lib.h'
-          if debug
-            define 'D'
-            if x86_64?
-              syslibs 'libdebug_x64.lib'
+          project do
+            src ['lib.cpp'], :force # test exporting an attribute that belongs to project
+          end
+          config do
+            inc 'lib.h'
+            if debug
+              define 'D'
+              if x86_64?
+                syslibs 'libdebug_x64.lib'
+              else
+                syslibs 'libdebug_x86.lib'
+              end
             else
-              syslibs 'libdebug_x86.lib'
-            end
-          else
-            define 'R'
-            if x86_64?
-              syslibs 'librelease_x64.lib'
-            else
-              syslibs 'librelease_x86.lib'
+              define 'R'
+              if x86_64?
+                syslibs 'librelease_x64.lib'
+              else
+                syslibs 'librelease_x86.lib'
+              end
             end
           end
         end
@@ -129,23 +145,31 @@ module JABA
 
     it 'only allows exportable attrs to be set in export only definitions' do
       td = temp_dir
-      
-      jaba(dry_run: true, cpp_app: true) do
-        cpp :app do
-          src ['main.cpp'], :force
-          deps :lib
-        end
-        cpp :lib, :export_only do
-          root "#{td}/lib" # root is the only non-exportable attr allowed
-          platforms [:windows_x86, :windows_x86_64] # TODO: how to detect that this is not valid?
-          deps [:lib2]
-        end
-        cpp :lib2 do
-          type :lib
-          src ['main.cpp'], :force
+      check_warn "Ignoring 'lib.deps' array attribute as attribute definition not flagged with :exportable", __FILE__, :tagR do
+        jaba(dry_run: true, cpp_app: true) do
+          cpp :app do
+            project do
+              src ['main.cpp'], :force
+              deps :lib
+            end
+          end
+          cpp :lib, :export_only do
+            root "#{td}/lib"
+            project do
+              deps [:lib2] # tagR
+            end
+          end
+          cpp :lib2 do
+            project do
+              type :lib
+              src ['main.cpp'], :force
+            end
+          end
         end
       end
     end
+
+    # TODO: test that if export only module has specified valid platforms they are respected
 
   end
 

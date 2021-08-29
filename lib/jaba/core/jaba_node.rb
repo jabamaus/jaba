@@ -10,8 +10,8 @@ module JABA
   #
   class JabaNode < JabaObject
 
+    attr_reader :node_manager
     attr_reader :jaba_type
-    attr_reader :top_level_jaba_type
     attr_reader :handle
     attr_reader :attrs
     attr_reader :attrs_read_only
@@ -21,17 +21,13 @@ module JABA
     
     ##
     #
-    def initialize(services, defn_id, src_loc, jaba_type, top_level_jaba_type, handle, parent, depth, lazy)
-      super(services, defn_id, src_loc, JDL_Node.new(self))
+    def initialize(node_manager, defn_id, src_loc, jaba_type, handle, parent, depth, lazy)
+      super(node_manager.services, defn_id, src_loc, JDL_Node.new(self))
 
+      @node_manager = node_manager
       @jaba_type = jaba_type
-      @top_level_jaba_type = top_level_jaba_type
       @handle = handle
       @children = []
-      @parent = parent
-      if parent
-        parent.children << self
-      end
       @depth = depth
       @lazy = lazy
       @referenced_nodes = []
@@ -44,6 +40,8 @@ module JABA
       @attributes = []
       @attribute_lookup = {}
       
+      set_parent(parent)
+
       if !lazy
         @jaba_type.attribute_defs.each do |attr_def|
           create_attr(attr_def)
@@ -145,28 +143,33 @@ module JABA
     
     ##
     #
-    def get_attr(attr_id, fail_if_not_found: true, search: false)
-      a = @attribute_lookup[attr_id]
+    def get_attr(id, fail_if_not_found: true)
+      a = @attribute_lookup[id]
+      if !a && fail_if_not_found
+        attr_not_found_error(id)
+      end
+      a
+    end
+
+    ##
+    #
+    def search_attr(id, fail_if_not_found: true)
+      a = get_attr(id, fail_if_not_found: false)
       if !a
-        if search
-          @referenced_nodes.each do |ref_node|
-            a = ref_node.get_attr(attr_id, fail_if_not_found: false, search: false)
-            if a
-              if a.attr_def.has_flag?(:expose)
-                return a
-              else
-                return nil
-              end
-            end
-          end
-          if @parent
-            a = @parent.get_attr(attr_id, fail_if_not_found: false, search: true)
-            return a if a
+        @referenced_nodes.each do |rn|
+          a = rn.get_attr(id, fail_if_not_found: false)
+          if a && a.attr_def.has_flag?(:expose)
+            return a
+          else
+            a = nil
           end
         end
-        if fail_if_not_found
-          JABA.error("'#{@defn_id}.#{attr_id}' attribute not found")
+        if @parent
+          a = @parent.search_attr(id, fail_if_not_found: false)
         end
+      end
+      if !a && fail_if_not_found
+        attr_not_found_error(id)
       end
       a
     end
@@ -181,40 +184,27 @@ module JABA
       #
       is_get = (args.empty? && keyval_args.empty? && !block_given?)
 
+      # If its a get operation, search for attribute in this node, all referenced nodes and all parent nodes
+      #
       if is_get
-        # If its a get operation, look for attribute in this node and all parent nodes
-        #
-        a = get_attr(id, search: true, fail_if_not_found: false)
-        
-        if !a
-          attr_def = get_callable_attr_def(id)
-          if attr_def.node_by_reference?
-            null_node = services.get_null_node(attr_def.node_type)
-            return null_node.attrs_read_only
-          end
-          return nil
-        end
-        
+        a = search_attr(id)
         return a.value(__jdl_call_loc)
       else
-        a = get_attr(id, search: false, fail_if_not_found: false)
+        a = get_attr(id, fail_if_not_found: false)
         
         if !a && @lazy
           attr_def = @jaba_type.get_attr_def(id)
           if attr_def
             a = create_attr(attr_def)
-          elsif !get_callable_attr_def(id)
-            JABA.error("#{id} not callable")
           end
         end
-
+          
         if !a
-          attr_def = get_callable_attr_def(id)
-          # TODO: reinstate
-          #if attr_def.jaba_type.defn_id != @jaba_type.defn_id
-            #JABA.error("Cannot change referenced '#{id}' attribute")
-          #end
-          return nil
+          attr_def = @jaba_type.get_attr_def(id)
+          if attr_def && attr_def.jaba_type.defn_id != @jaba_type.defn_id
+            JABA.error("Cannot change referenced '#{id}' attribute")
+          end
+          attr_not_found_error(id)
         end
 
         if (__read_only || @read_only) && !@allow_set_read_only_attrs
@@ -225,15 +215,12 @@ module JABA
         return nil
       end
     end
-    
+
     ##
+    # TODO: 'did you mean' style error msg
     #
-    def get_callable_attr_def(id)
-      attr_def = @top_level_jaba_type.get_attr_def(id)
-      if !attr_def
-        JABA.error("'#{id}' attribute cannot be called in #{describe}. Available: #{@top_level_jaba_type.callable_attr_defs.map{|ad| ad.defn_id}.inspect}")
-      end
-      attr_def
+    def attr_not_found_error(id)
+      JABA.error("'#{id}' attribute not found. Available: #{@jaba_type.callable_attr_defs.map{|ad| ad.defn_id}.inspect}")
     end
 
     ##

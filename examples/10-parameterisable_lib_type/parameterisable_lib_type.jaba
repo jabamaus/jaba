@@ -8,24 +8,32 @@
 
 defaults :cpp do
   platforms [:windows_x86_64]
-  configs [:Debug, :Release]
+  project do
+    configs [:Debug, :Release]
+  end
 end
 
 cpp :AppWithStaticOrDynamicLib do
-  type :console
-  src 'main.cpp'
-  deps [:StaticOrDynamicLib]
+  project do
+    type :console
+    src 'main.cpp'
+    deps [:StaticOrDynamicLib]
+  end
 end
 
 cpp :StaticOrDynamicLib do
-  type globals.cpp_default_lib_type
   root 'StaticOrDynamicLib'
-  src ['.']
-  inc ['include'], :export
-  case type
-  when :lib
-    define ['SODL_STATIC'], :export
-  when :dll
-    define ['DLL_EXPORT']
+  project do
+    type globals.cpp_default_lib_type
+    src ['.']
+  end
+  config do
+    inc ['include'], :export
+    case type
+    when :lib
+      define ['SODL_STATIC'], :export
+    when :dll
+      define ['DLL_EXPORT']
+    end
   end
 end

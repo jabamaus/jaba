@@ -52,9 +52,8 @@ module JABA
     def make_host_objects
       # TODO: pass this in
       cpp_plugin = services.get_plugin(:cpp)
-      host_plugin = services.get_plugin(:host)
       services.globals.target_hosts.each do |target_host_id|
-        target_host = host_plugin.services.node_from_handle(target_host_id.to_s)
+        target_host = services.node_from_handle(target_host_id.to_s)
         classname = target_host.attrs.workspace_classname
         next if classname.empty?
         candidate_projects = cpp_plugin.projects.select{|p| p.attrs.host == target_host_id}

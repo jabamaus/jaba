@@ -45,7 +45,7 @@ module JABA
     ##
     #
     def node_from_handle(...)
-      @node_manager.node_from_handle(...)
+      @services.node_from_handle(...)
     end
 
     ##

@@ -28,7 +28,7 @@ module JABA
       super(services, defn_id, src_loc, JDL_Type.new(self))
 
       @attribute_defs = [] # The type's actual attribute defs
-      @callable_attr_def_lookup = {} # All the attributes that can actually be called against this type. Includes child types and referenced types
+      @callable_attr_def_lookup = {} # All the attributes that can actually be called against this type. Includes referenced types.
       @callable_attr_defs = []
       @plugin = plugin
       @node_manager = node_manager
@@ -38,7 +38,6 @@ module JABA
       define_array_property :notes
       define_property :singleton
       define_array_property :dependencies # TODO: validate explicitly specified deps
-      define_array_property :child_types
 
       set_property(:notes, "Manages attribute definitions for '#{@defn_id}' type")
 
@@ -108,16 +107,6 @@ module JABA
 
     ##
     #
-    def get_child_type(type_id)
-      ct = @child_types.find{|jt| jt.defn_id == type_id}
-      if !ct
-        JABA.error("#{describe} does not have '#{type_id}' child type")
-      end
-      ct
-    end
-
-    ##
-    #
     def validate
       # Insist on the attribute having a title, unless running unit tests or in barebones mode. Barebones mode
       # is useful for testing little jaba snippets where adding titles would be cumbersome.
@@ -131,17 +120,8 @@ module JABA
     end
 
     ##
-    # Convert dependencies specified as ids to jaba type objects
-    #
-    def expand_dependencies
-
-    end
-
-    ##
     #
     def post_create
-      @child_types.map!{|id| services.get_jaba_type(id)}
-      @attribute_defs.sort_by!{|ad| ad.defn_id}
       @dependencies.uniq!
       @dependencies.map!{|d| services.get_jaba_type(d)}
 
@@ -160,17 +140,8 @@ module JABA
           end
         end
       end
-    end
 
-    ##
-    #
-    def process_child_types
-      @child_types.each do |ct|
-        ct.callable_attr_defs.each do |ad|
-          register_attr_def(ad)
-        end
-      end
-
+      @attribute_defs.sort_by!{|ad| ad.defn_id}
       @callable_attr_defs.sort_by!{|ad| ad.defn_id}
     end
 

@@ -3,9 +3,11 @@ include '../03-basic_dynamic_lib'
 include '3rdParty/ThirdPartyLib'
 
 cpp :AppWithDependencies do
-  type :console
   platforms [:windows_x86_64]
-  configs [:Debug, :Release]
-  src ['main.cpp']
-  deps [:BasicStaticLib, :BasicDynamicLib, :ThirdPartyLib]
+  project do
+    type :console
+    configs [:Debug, :Release]
+    src ['main.cpp']
+    deps [:BasicStaticLib, :BasicDynamicLib, :ThirdPartyLib]
+  end
 end

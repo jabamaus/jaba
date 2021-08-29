@@ -19,7 +19,12 @@ class LaunchJsonGenerator
     separator 'examples'
 
     iterate_examples do |dirname|
-      add_config(name: dirname, program: '${workspaceRoot}/bin/jaba.rb', cwd: "${workspaceRoot}/examples/#{dirname}")
+      add_config(
+        name: dirname,
+        program: '${workspaceRoot}/bin/jaba.rb',
+        cwd: "${workspaceRoot}/examples/#{dirname}",
+        args: ['-D', 'target_hosts', 'vs2019']
+      )
     end
 
     separator 'tests'

@@ -99,7 +99,7 @@ module JABA
       @cmds = []
       @cmd = nil
 
-      argv  = JABA.running_tests? ? [] : ARGV.dup
+      argv  = JABA.running_tests? ? [] : ARGV
       @input.instance_variable_set(:@argv, argv)
 
       # General non-cmd-specific options
@@ -249,6 +249,8 @@ module JABA
     ##
     #
     def process
+      @input.argv = @input.argv.dup # Leave original argv untouched
+
       # Strip pasthru args from argv and store.
       #
       i = @input.argv.find_index{|a| a == '--'}

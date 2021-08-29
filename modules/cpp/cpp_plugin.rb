@@ -34,10 +34,9 @@ module JABA
         return nil
       end
 
-      project_nodes = []
       @project_ids << definition.id
 
-      root_node = services.make_node(track: false)
+      root_node = services.make_node
 
       target_platform_to_archs = {}
       root_node.attrs.platforms.each do |pspec|
@@ -49,31 +48,29 @@ module JABA
         target_platform_to_archs.push_value(platform, arch)
       end
 
-      # TODO: tidy up by making node_from_handle better
-      host_plugin = services.get_plugin(:host)
+      project_blocks = root_node.attrs.project
+      config_blocks = root_node.attrs.config
 
       services.globals.target_hosts.each do |target_host_id|
-        target_host = host_plugin.services.node_from_handle(target_host_id.to_s)
+        target_host = services.node_from_handle(target_host_id.to_s)
         supported_platforms = target_host.attrs.cpp_supported_platforms
 
         target_platform_to_archs.each do |tp, target_archs|
           next if !supported_platforms.include?(tp)
           
-          pn = services.make_node(child_type_id: :cpp_project, name: "#{target_host.defn_id}|#{tp}", parent: root_node) do
+          pn = services.make_node(type_id: :cpp_project, name: "#{target_host.defn_id}|#{tp}", parent: root_node, blocks: project_blocks) do
             host target_host.defn_id
             host_ref target_host
             platform tp
             platform_ref tp
           end
-          pn.set_parent(nil)
 
-          project_nodes << pn
           @all_project_nodes << pn
           @host_to_project_nodes.push_value(target_host, pn)
 
           pn.attrs.configs.each do |cfg|
             target_archs.each do |ta|
-              services.make_node(child_type_id: :cpp_config, name: "#{ta}|#{cfg}", parent: pn) do
+              services.make_node(type_id: :cpp_config, name: "#{ta}|#{cfg}", parent: pn, blocks: config_blocks) do
                 config cfg
                 arch ta
                 arch_ref ta
@@ -91,7 +88,7 @@ module JABA
           end
         end
       end
-      project_nodes
+      root_node
     end
 
     ##
@@ -134,7 +131,7 @@ module JABA
             if !cfg
               JABA.error("Could not find config in #{node.describe} to match #{dep_cfg.describe}")
             end
-            process_node_exports(cfg, dep_cfg)
+            process_node_exports(cfg, dep_cfg, is_config: true)
           end
         end
       end
@@ -154,16 +151,27 @@ module JABA
           # read its attributes (eg platform, config, host etc).
           # 
           services.push_definition(export_only_def) do
+            export_only_root = services.make_node(
+              name: 'export_only_root',
+              want_post_create: false,
+              want_defaults: false,
+              track: false
+            )
+
+            project_blocks = export_only_root.attrs.project
+            config_blocks = export_only_root.attrs.config
+
             export_only_node = services.make_node(
-              child_type_id: :cpp_project,
+              type_id: :cpp_project,
               name: 'project_export_only', 
               parent: project_node,
               track: false, # Only used here, don't want the system to remember it
               want_post_create: false,
               want_defaults: false,
-              lazy: true
+              lazy: true,
+              blocks: project_blocks
             ) 
-            export_only_node.set_parent(nil)
+            export_only_node.set_parent(export_only_root)
 
             services.make_node_paths_absolute(export_only_node)
 
@@ -173,13 +181,14 @@ module JABA
 
             project_node.children.each do |cfg_node|
               export_only_cfg_node = services.make_node(
-                child_type_id: :cpp_config,
+                type_id: :cpp_config,
                 name: 'config_export_only',
                 parent: cfg_node,
                 track: false,
                 want_post_create: false,
                 want_defaults: false,
-                lazy: true
+                lazy: true,
+                blocks: config_blocks
               )
               export_only_cfg_node.set_parent(export_only_node)
 
@@ -233,19 +242,21 @@ module JABA
 
     ##
     #
-    def process_node_exports(target_node, dep_node)
+    def process_node_exports(target_node, dep_node, is_config: false)
       dep_attrs = dep_node.attrs
 
-      case dep_attrs.type
-      when :lib
-        if target_node.attrs.type != :lib
-          target_node.attrs.libs ["#{dep_attrs.libdir}/#{dep_attrs.targetname}#{dep_attrs.targetext}"]
-        end
-      when :dll
-        if target_node.attrs.type != :lib
-          il = dep_attrs.importlib
-          if il # dlls don't always have import libs - eg plugins
-            target_node.attrs.libs ["#{dep_attrs.libdir}/#{il}"]
+      if is_config
+        case dep_attrs.type
+        when :lib
+          if target_node.attrs.type != :lib
+            target_node.attrs.libs ["#{dep_attrs.libdir}/#{dep_attrs.targetname}#{dep_attrs.targetext}"]
+          end
+        when :dll
+          if target_node.attrs.type != :lib
+            il = dep_attrs.importlib
+            if il # dlls don't always have import libs - eg plugins
+              target_node.attrs.libs ["#{dep_attrs.libdir}/#{il}"]
+            end
           end
         end
       end
@@ -286,9 +297,7 @@ module JABA
         #
         dep_attr.visit_attr do |elem|
           if !elem.attr_def.has_flag?(:exportable)
-            if elem.attr_def.defn_id != :root
-              services.jaba_warn("Ignoring #{elem.describe}")
-            end
+            services.jaba_warn("Ignoring #{elem.describe} as attribute definition not flagged with :exportable", errobj: elem)
           else
             # Get the corresponding attr in this project node. This will always be a hash or an array.
             #

@@ -11,7 +11,9 @@ module JABA
       check_warn "Src spec 'a\\b.cpp' not specified cleanly: contains backslashes", __FILE__, 'tagW' do
         jaba(cpp_app: true, dry_run: true) do
           cpp :app  do
-            src ['a\\b.cpp'] # tagW
+            project do
+              src ['a\\b.cpp'] # tagW
+            end
           end
         end
       end
@@ -21,7 +23,9 @@ module JABA
       make_file('a.cpp', 'b.z')
       proj = jaba(cpp_app: true, dry_run: true) do
         cpp :app do
-          src ['a.cpp', 'b.z']
+          project do
+            src ['a.cpp', 'b.z']
+          end
         end
       end
       proj[:src].must_equal(['a.cpp', 'b.z'])
@@ -31,14 +35,18 @@ module JABA
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagA)}: '#{temp_dir}/a.cpp' does not exist on disk. Use :force to add anyway." do
         jaba(cpp_app: true, dry_run: true) do
           cpp :app do
-            src ['a.cpp'] # tagA
-            src ['c.cpp'], :force
+            project do
+              src ['a.cpp'] # tagA
+              src ['c.cpp'], :force
+            end
           end
         end
       end
       proj = jaba(cpp_app: true, dry_run: true) do
         cpp :app do
-          src ['main.cpp'], :force
+          project do
+            src ['main.cpp'], :force
+          end
         end
       end
       proj[:src].must_equal(['main.cpp'])
@@ -49,8 +57,10 @@ module JABA
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagB)}: Wildcards are not allowed when force adding src - only explicitly specified source files." do
         jaba(cpp_app: true, dry_run: true) do
           cpp :app do
-            src ['a/*.*'], :force # tagB
-            src ['b.cpp'], :force
+            project do
+              src ['a/*.*'], :force # tagB
+              src ['b.cpp'], :force
+            end
           end
         end
       end
@@ -61,8 +71,10 @@ module JABA
       check_warn "'#{temp_dir}/b/*' did not match any src files", __FILE__, 'tagF' do
         proj = jaba(cpp_app: true, dry_run: true) do
           cpp :app do
-            src ['b/*'] # tagF
-            src ['.a']
+            project do
+              src ['b/*'] # tagF
+              src ['.a']
+            end
           end
         end
         proj[:src].must_equal(['.a'])
@@ -74,7 +86,9 @@ module JABA
       fn = "#{temp_dir}/a.cpp"
       proj = jaba(cpp_app: true, dry_run: true) do
         cpp :app do
-          src [fn]
+          project do
+            src [fn]
+          end
         end
       end
       proj[:src].must_equal(['a.cpp'])
@@ -86,14 +100,18 @@ module JABA
       proj = jaba(cpp_app: true, dry_run: true) do
         cpp :app do
           root r
-          src ['./missing.rb'], :force
-          src ['a.cpp']
-          src ['./test_cpp.rb'] # force relative to this definition file (this src file) rather than root
-          src ['./test_e*.rb'] # extension explicitly specified even though .rb not a cpp file type so will be added
-          src ['./test_*.*'] # nothing will be added because glob will not match any cpp file extensions
-          vcfprop './missing.rb|Foo', 'bar'
-          vcfprop 'a.cpp|Foo', 'bar'
-          vcfprop './test_cpp.rb|Foo', 'bar'
+          project do
+            src ['./missing.rb'], :force
+            src ['a.cpp']
+            src ['./test_cpp.rb'] # force relative to this definition file (this src file) rather than root
+            src ['./test_e*.rb'] # extension explicitly specified even though .rb not a cpp file type so will be added
+            src ['./test_*.*'] # nothing will be added because glob will not match any cpp file extensions
+          end
+          config do
+            vcfprop './missing.rb|Foo', 'bar'
+            vcfprop 'a.cpp|Foo', 'bar'
+            vcfprop './test_cpp.rb|Foo', 'bar'
+          end
         end
       end
       # src files are sorted by absolute path which gives odd ordering here
@@ -105,7 +123,9 @@ module JABA
       make_file('a/b.z') # won't match as .z not in src_ext attr
       proj = jaba(cpp_app: true, dry_run: true) do
         cpp :app do
-          src ['a']
+          project do
+            src ['a']
+          end
         end
       end
       proj[:src].must_equal(['a/b.cpp', 'a/c.cpp', 'a/d.cpp', 'a/e/f/g.cpp'])
@@ -116,11 +136,13 @@ module JABA
       td = temp_dir
       op = jaba(dry_run: true, argv: ["-D", "target_hosts", "vs2019", "xcode"]) do
         cpp :app do
-          platforms [:windows_x86, :windows_x86_64, :ios_arm64]
-          type :app
           root td
-          configs [:Debug, :Release]
-          src ['*']
+          platforms [:windows_x86, :windows_x86_64, :ios_arm64]
+          project do
+            type :app
+            configs [:Debug, :Release]
+            src ['*']
+          end
         end
       end
       vsproj = op[:cpp]['app|vs2019|windows']
@@ -136,8 +158,10 @@ module JABA
       make_file('a/b.z', 'a/e/f/g/h.y')
       proj = jaba(cpp_app: true, dry_run: true) do
         cpp :app do
-          src_ext ['.z', '.y']
-          src ['a']
+          project do
+            src_ext ['.z', '.y']
+            src ['a']
+          end
         end
       end
       proj[:src].must_equal(['a/b.cpp', 'a/b.z', 'a/c.cpp', 'a/d.cpp', 'a/e/f/g.cpp', 'a/e/f/g/h.y'])
@@ -147,7 +171,9 @@ module JABA
       make_file('a.cpp', 'b.cpp', 'c/d.cpp', 'd/e/f/g.cpp')
       proj = jaba(cpp_app: true, dry_run: true) do
         cpp :app do
-          src ['*'] # should not recurse
+          project do
+            src ['*'] # should not recurse
+          end
         end
       end
       proj[:src].must_equal ['a.cpp', 'b.cpp']
@@ -155,10 +181,12 @@ module JABA
 
     it 'strips duplicate src' do
       # It strips items that are exactly the same, and warns
-      check_warn "When setting 'app.src' array attribute stripping duplicate value 'a.cpp'" do
+      check_warn "Stripping duplicate 'a.cpp' from 'app.src' array attribute" do
         jaba(cpp_app: true, dry_run: true) do
           cpp :app do
-            src ['a.cpp', 'a.cpp'], :force
+            project do
+              src ['a.cpp', 'a.cpp'], :force
+            end
           end
         end
       end
@@ -166,8 +194,10 @@ module JABA
       make_file('a/a.cpp', 'a/a.h')
       proj = jaba(cpp_app: true, dry_run: true) do
         cpp :app do
-          src ['a']
-          src ['**/*.h']
+          project do
+            src ['a']
+            src ['**/*.h']
+          end
         end
       end
       proj[:src].must_equal ['a/a.cpp', 'a/a.h']

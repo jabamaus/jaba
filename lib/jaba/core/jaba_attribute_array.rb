@@ -88,12 +88,11 @@ module JABA
 
       values.each do |val|
         val = apply_pre_post_fix(prefix, postfix, val)
-        plugin = @node.top_level_jaba_type.plugin
 
         # Give plugin a chance to custom handle if its a reference. This is used by cpp plugin to custom handle dependencies
         # on 'export only' cpp definitions.
         #
-        if type_id == :node_ref && plugin.custom_handle_array_reference(self, val)
+        if type_id == :node_ref && @node.node_manager.plugin.custom_handle_array_reference(self, val)
           next
         end
 
@@ -104,7 +103,7 @@ module JABA
         end
 
         if existing
-          jaba_warn("When setting #{describe} stripping duplicate value '#{val.inspect_unquoted}'. See previous at #{existing.src_loc.describe}. " \
+          jaba_warn("Stripping duplicate '#{val.inspect_unquoted}' from #{describe}. See previous at #{existing.src_loc.describe}. " \
             "Flag with :allow_dupes to allow.")
         else
           @elems << elem

@@ -17,15 +17,23 @@ module JABA
     it 'supports defaults' do
       op = jaba(dry_run: true) do
         defaults :cpp do
-          configs [:debug, :release]
-          rtti false
+          project do
+            configs [:debug, :release]
+          end
+          config do
+            rtti false
+          end
         end
         cpp :app do
-          type :app
           platforms [:windows_x86, :windows_x86_64]
-          src ['main.cpp'], :force
-          if config == :debug
-            rtti true
+          project do
+            type :app
+            src ['main.cpp'], :force
+          end
+          config do
+            if config == :debug
+              rtti true
+            end
           end
         end
       end
@@ -54,22 +62,29 @@ module JABA
         assert_jaba_error "Error at #{err_loc}: 'app.vcprop' hash attribute invalid: Must be of form <group>|<property> but was '#{key}'.", trace: [__FILE__, :tagJ] do
           jaba(dry_run: true) do
             cpp :app do
-              platforms [:windows_x86_64] 
-              configs [:Release]
-              src ['main.cpp'], :force
-              vcprop key, 'val' # tagJ
-              type :console
+              platforms [:windows_x86_64]
+              project do
+                type :console
+                configs [:Release]
+                src ['main.cpp'], :force
+              end
+              config do
+                vcprop key, 'val' # tagJ
+              end
             end
           end
         end
       end
     end
 
+    # TODO: not much of a test....
     it 'prevents nil access when attributes not set up yet' do
       proj = jaba(dry_run: true, cpp_app: true) do
         cpp :app do
-          projname "app_#{host&.upcase}" # TODO: remove safe call
-          src ['main.cpp'], :force
+          project do
+            projname "app_#{host.upcase}"
+            src ['main.cpp'], :force
+          end
         end
       end
       proj[:projname].must_equal('app_VS2019')
@@ -80,7 +95,9 @@ module JABA
     it 'has a flexible approach to platforms' do
       jaba(dry_run: true, cpp_app: true) do
         cpp :app do
-          src ['main.cpp'], :force
+          project do
+            src ['main.cpp'], :force
+          end
         end
       end
     end
@@ -92,11 +109,13 @@ module JABA
         jaba do
           cpp :app do
             root "#{td}/app"
-            type :console
             platforms [:windows_x86]
-            configs [:Debug, :Release]
-            deps [:lib] # tagG
-            src ['main.cpp']
+            project do
+              type :console
+              configs [:Debug, :Release]
+              deps [:lib] # tagG
+              src ['main.cpp']
+            end
           end
         end
       end
@@ -105,7 +124,9 @@ module JABA
     it 'supports opening translators' do
       proj = jaba(dry_run: true, cpp_app: true) do
         cpp :app do
-          src ['main.cpp'], :force
+          project do
+            src ['main.cpp'], :force
+          end
         end
         open_translator :vcxproj_windows do
           vcglobal :NewGlobal, 'g'

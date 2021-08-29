@@ -189,7 +189,7 @@ module JABA
 
     it 'handles duplicates' do
       line = find_line_number(__FILE__, 'tagL')
-      check_warn("When setting 't.a' array attribute stripping duplicate value '5'. See previous at test_attribute_array.rb:#{line}", __FILE__, 'tagU') do
+      check_warn("Stripping duplicate '5' from 't.a' array attribute. See previous at test_attribute_array.rb:#{line}", __FILE__, 'tagU') do
         jaba(barebones: true) do
           type :test do
             attr_array :a # Duplicates will be stripped by default
@@ -423,7 +423,7 @@ module JABA
     end
 
     it 'catches invalid args to wipe' do
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagS)}: 't.b' attribute not found." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagS)}: 'b' attribute not found. Available: [:a]" do
         jaba(barebones: true) do
           type :test do
             attr_array :a

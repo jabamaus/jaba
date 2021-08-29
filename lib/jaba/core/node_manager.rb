@@ -26,7 +26,6 @@ module JABA
       @plugin = nil
       @root_nodes = []
       @nodes = [] # all nodes
-      @node_lookup = {}
       @reference_attrs_to_resolve = []
     end
 
@@ -106,7 +105,7 @@ module JABA
     ##
     #
     def make_node(
-      child_type_id: nil,
+      type_id: nil,
       name: nil,
       parent: nil,
       block_args: nil,
@@ -114,6 +113,7 @@ module JABA
       want_defaults: true,
       want_post_create: true,
       lazy: false,
+      blocks: nil,
       &block
     )
       depth = 0
@@ -128,23 +128,19 @@ module JABA
         handle << "|#{name}" if name
       end
 
-      services.log "#{'  ' * depth}Instancing node [type=#{child_type_id}, handle=#{handle}]" # TODO: fix logging of type
+      services.log "#{'  ' * depth}Instancing node [type=#{type_id}, handle=#{handle}]" # TODO: fix logging of type
 
-      if track && node_from_handle(handle, fail_if_not_found: false)
-        JABA.error("Duplicate node handle '#{handle}'")
-      end
-
-      jt = if child_type_id
-        @jaba_type.get_child_type(child_type_id)
+      jt = if type_id
+        services.get_jaba_type(type_id)
       else
         @jaba_type
       end
 
-      jn = JabaNode.new(@services, @definition.id, @definition.src_loc, jt, @jaba_type, handle, parent, depth, lazy)
+      jn = JabaNode.new(self, @definition.id, @definition.src_loc, jt, handle, parent, depth, lazy)
 
       if track
+        @services.register_node(jn)
         @nodes << jn
-        @node_lookup[handle] = jn
       end
       
       begin
@@ -158,21 +154,27 @@ module JABA
           end
         end
         
-        # Next execute defaults block if there is one defined for this type.
-        #
-        if want_defaults
-          defaults = @jaba_type.defaults_definition
-          if defaults
-            jn.eval_jdl(&defaults.block)
+        if blocks
+          Array(blocks).each do |b|
+            jn.eval_jdl(&b)
           end
-        end
+        else
+          # Next execute defaults block if there is one defined for this type.
+          #
+          if want_defaults
+            defaults = @jaba_type.defaults_definition
+            if defaults
+              jn.eval_jdl(&defaults.block)
+            end
+          end
+ 
+          if @definition.block
+            jn.eval_jdl(*block_args, &@definition.block)
+          end
 
-        if @definition.block
-          jn.eval_jdl(*block_args, &@definition.block)
-        end
-
-        @definition.open_defs.each do |d|
-          jn.eval_jdl(&d.block)
+          @definition.open_defs.each do |d|
+            jn.eval_jdl(&d.block)
+          end
         end
         
       rescue FrozenError => e
@@ -187,34 +189,26 @@ module JABA
     end
 
     ##
-    #
-    def node_from_handle(handle, fail_if_not_found: true, errobj: nil)
-      n = @node_lookup[handle]
-      if !n && fail_if_not_found
-        JABA.error("Node with handle '#{handle}' not found", errobj: errobj)
-      end
-      n
-    end
-
-    ##
     # Given a reference attribute and the definition id it is pointing at, returns the node instance.
     #
     def resolve_reference(attr, ref_node_id, ignore_if_same_type: false)
       attr_def = attr.attr_def
       node = attr.node
-      rt = attr_def.node_type
-      rjt = services.get_jaba_type(rt)
-      if ignore_if_same_type && rt == node.top_level_jaba_type.defn_id
+      ref_type = attr_def.node_type
+
+      if ignore_if_same_type && ref_type == node.jaba_type.defn_id
         @reference_attrs_to_resolve << attr
         return ref_node_id
       end
+
       make_handle_block = attr_def.make_handle
       handle = if make_handle_block
         "#{node.eval_jdl(ref_node_id, &make_handle_block)}"
       else
         "#{ref_node_id}"
       end
-      ref_node = rjt.node_manager.node_from_handle(handle, fail_if_not_found: false)
+
+      ref_node = @services.node_from_handle(handle, fail_if_not_found: false)
       if ref_node.nil?
         unresolved_msg_block = attr_def.unresolved_msg
         err_msg = if unresolved_msg_block
@@ -241,7 +235,7 @@ module JABA
     def make_node_paths_absolute(node)
       # Turn root into absolute path, if present
       #
-      root = node.get_attr(:root, search: true, fail_if_not_found: false)&.map_value! do |r|
+      root = node.search_attr(:root, fail_if_not_found: false)&.map_value! do |r|
         r.absolute_path? ? r : "#{node.source_dir}/#{r}".cleanpath
       end
 

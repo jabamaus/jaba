@@ -51,7 +51,9 @@ module JABA
         shared :a do
         end
         cpp :app do
-          src ['a.cpp'], :force
+          project do
+            src ['a.cpp'], :force
+          end
         end
         workspace :a do
           projects [:app]
