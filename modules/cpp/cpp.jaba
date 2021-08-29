@@ -245,6 +245,12 @@ type :cpp_project do
     }
   end
   
+  attr_array :src_exclude, type: :src_spec do
+    title 'Source file excludes'
+    basedir_spec :definition_root
+    flags :no_sort, :exportable
+  end
+
   attr_array :src_ext, type: :string do
     title 'File extensions used when matching src files'
     note 'Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.'

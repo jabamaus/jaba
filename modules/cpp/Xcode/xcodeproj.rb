@@ -36,7 +36,7 @@ module JABA
     ##
     #
     def post_create
-      process_src(:src, :src_ext)
+      process_src(:src, :src_ext, :src_exclude)
     end
 
     ##

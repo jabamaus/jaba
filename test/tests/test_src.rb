@@ -203,6 +203,37 @@ module JABA
       proj[:src].must_equal ['a/a.cpp', 'a/a.h']
     end
     # TODO: test fail when no src file matches
-  end
 
+    it 'supports excludes' do
+      files = ['a.cpp', 'b.cpp', 'c.cpp', 'd.x', 'e.y', 'a/b/e.cpp', 'a/b/h.y', 'b/c/d.cpp']
+      make_file(*files)
+
+      proj = jaba(cpp_app: true, dry_run: true) do
+        cpp :app do
+          project do
+            src ['a.cpp', 'b.cpp', 'c.cpp', 'd.x', 'e.y', 'a/b/e.cpp', 'a/b/h.y', 'b/c/d.cpp']
+            src_exclude [
+              'b.cpp', # exclude explicit file
+              '*.x', # exclude with glob match 
+              'a/**/*.cpp', # exclude with glob match recursively
+              'b' # exclude whole dir. Equivalent to b/**/*
+            ]
+          end
+        end
+      end
+      proj[:src].must_equal ['a.cpp', 'a/b/h.y', 'c.cpp', 'e.y']
+    end
+
+    it 'fails if no src matched' do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagD)}: 'app|vs2019|windows' node does not have any source files.", trace: nil do
+        jaba(cpp_app: true, dry_run: true) do
+          cpp :app do # tagD
+            project do
+              src ['**/*.h']
+            end
+          end
+        end
+      end
+    end
+  end
 end

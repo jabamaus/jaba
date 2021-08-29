@@ -28,7 +28,7 @@ module JABA
     ##
     #
     def post_create
-      process_src(:src, :src_ext)
+      process_src(:src, :src_ext, :src_exclude)
 
       # Call translator for this platform to initialse project level Visual Studio-specific attributes
       # (vcglobals), based on cross platform definition.

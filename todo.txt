@@ -120,7 +120,6 @@ ouroveon todo
 - warnlevel
 - pch
 - Allow debug?
-- Fix and test excluding src. Add src_exclude attr.
 - Support **.h as alternative to **/*.h
 - Make shell build events use macros
 - review whether static libs should have hard dependencies

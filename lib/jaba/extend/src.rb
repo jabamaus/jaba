@@ -27,11 +27,10 @@ module JABA
     ##
     # Builds sorted array of absolute src paths and stores in @<src_attr_id> instance variable.
     #
-    def process_src(src_attr_id, src_ext_attr_id)
+    def process_src(src_attr_id, src_ext_attr_id, src_exclude_attr_id)
       if !defined?(@node)
         JABA.error("process_src requires @node instance variable to be set")
       end
-      services = @node.services
       if !defined?(@root)
         JABA.error("process_src requires @root instance variable to be set")
       end
@@ -39,8 +38,18 @@ module JABA
         JABA.error("process_src requires @projdir instance variable to be set")
       end
 
+      services = @node.services
+
       src_attr = @node.get_attr(src_attr_id)
       extensions = @node.get_attr(src_ext_attr_id).value
+      src_exclude = @node.get_attr(src_exclude_attr_id).value.map do |abs_excl|
+        if File.directory?(abs_excl)
+          "#{abs_excl}/**/*"
+        else
+          abs_excl
+        end
+      end
+      
 
       file_manager = services.file_manager
       src = instance_variable_set("@#{src_attr_id}", [])
@@ -95,6 +104,10 @@ module JABA
           # Different specs could match the same file so ignore duplicates
           next if src_lookup.key?(f)
           src_lookup[f] = true
+
+          if src_exclude.any?{|e| File.fnmatch?(e, f)}
+            next
+          end
 
           bs = want_backslashes? # Does this project require backslashes (eg Visual Studio)
           
