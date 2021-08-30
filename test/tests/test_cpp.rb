@@ -37,7 +37,7 @@ module JABA
           end
         end
       end
-      proj = op[:cpp]['app|vs2019|windows']
+      proj = op[:cpp]['app|windows']
       proj.wont_be_nil
 
       cfg_debug = proj[:configs][:x86][:debug]

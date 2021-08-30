@@ -145,7 +145,7 @@ module JABA
           end
         end
       end
-      vsproj = op[:cpp]['app|vs2019|windows']
+      vsproj = op[:cpp]['app|windows']
       vsproj.wont_be_nil
       vsproj[:src].must_equal ['a.cpp', 'b.natvis', 'e.def', 'f.rc']
       xcodeproj = op[:cpp]['app|xcode|ios']
@@ -225,7 +225,7 @@ module JABA
     end
 
     it 'fails if no src matched' do
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagD)}: 'app|vs2019|windows' node does not have any source files.", trace: nil do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagD)}: 'app|windows' node does not have any source files.", trace: nil do
         jaba(cpp_app: true, dry_run: true) do
           cpp :app do # tagD
             project do

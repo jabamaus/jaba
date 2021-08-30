@@ -19,7 +19,7 @@ module JABA
 
   ##
   #
-  def self.run_tests
+  def self.run_tests 
     Dir.glob("#{__dir__}/tests/**/*.rb").each {|f| require f}
     if File.exist?(JabaTest.temp_root)
       FileUtils.remove_dir(JabaTest.temp_root)
@@ -81,7 +81,7 @@ module JABA
       warnings = op[:warnings]
       puts warnings if warnings
       if cpp_app
-        op = op[:cpp]['app|vs2019|windows']
+        op = op[:cpp]['app|windows']
         op.wont_be_nil
       end
       op

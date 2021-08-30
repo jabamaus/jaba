@@ -47,15 +47,15 @@ module JABA
           projects [:a, :b, 'c/*']
         end
       end
-      proj_a = op[:cpp]['a|vs2019|windows']
+      proj_a = op[:cpp]['a|windows']
       proj_a.wont_be_nil
-      proj_b = op[:cpp]['b|vs2019|windows']
+      proj_b = op[:cpp]['b|windows']
       proj_b.wont_be_nil
-      proj_c = op[:cpp]['c|vs2019|windows']
+      proj_c = op[:cpp]['c|windows']
       proj_c.wont_be_nil
-      proj_d = op[:cpp]['d|vs2019|windows']
+      proj_d = op[:cpp]['d|windows']
       proj_d.wont_be_nil
-      #ws = op[:workspace]['w|vs2019|windows']
+      #ws = op[:workspace]['w|windows']
       #ws.wont_be_nil
       #ws.projects.size.must_equal(4)
       #ws.projects[0].id.must_equal(:a)

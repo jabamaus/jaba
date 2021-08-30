@@ -148,7 +148,7 @@ type :cpp_project do
     note 'List of ids of other cpp definitions'
     node_type :cpp_project
     make_handle do |id|
-      "#{id}|#{host}|#{platform}"
+      "#{id}|#{platform}"
     end
     unresolved_msg do |id|
       "'#{id.inspect}' dependency not found"

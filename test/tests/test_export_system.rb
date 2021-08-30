@@ -73,7 +73,7 @@ module JABA
           end
         end
       end
-      app = op[:cpp]['app|vs2019|windows']
+      app = op[:cpp]['app|windows']
       app[:vcglobal][:BoolAttr].must_equal(true)
       app[:vcglobal][:StringAttr2].must_equal('s2')
       app[:vcglobal][:StringAttr3].must_equal('s3')
@@ -82,7 +82,7 @@ module JABA
       app[:configs][:x86][:Debug][:inc].must_equal ['lib/include']
       app[:configs][:x86][:Release][:inc].must_equal ['lib/include']
 
-      lib = op[:cpp]['lib|vs2019|windows']
+      lib = op[:cpp]['lib|windows']
       lib[:vcglobal][:StringAttr].must_equal('s')
       lib[:vcglobal].has_key?(:StringAttr2).must_equal(false)
       lib[:vcglobal][:StringAttr3].must_equal('s3')
@@ -129,7 +129,7 @@ module JABA
           end
         end
       end
-      app = op[:cpp]['app|vs2019|windows']
+      app = op[:cpp]['app|windows']
       app.wont_be_nil
       app[:configs][:x86][:Debug][:define].must_equal ['D']
       app[:configs][:x86][:Debug][:inc].must_equal ['lib/lib.h']
@@ -140,7 +140,7 @@ module JABA
       app[:configs][:x86_64][:Debug][:syslibs].must_equal ['libdebug_x64.lib']
       app[:configs][:x86_64][:Release][:define].must_equal ['R']
       app[:configs][:x86_64][:Release][:syslibs].must_equal ['librelease_x64.lib']
-      op[:cpp]['lib|vs2019|windows'].must_be_nil
+      op[:cpp]['lib|windows'].must_be_nil
     end
 
     it 'only allows exportable attrs to be set in export only definitions' do
