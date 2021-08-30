@@ -38,7 +38,6 @@
 <li><a href="#arch">arch</a></li>
 <li><a href="#arch_ref">arch_ref</a></li>
 <li><a href="#bindir">bindir</a></li>
-<li><a href="#build_root_offset">build_root_offset</a></li>
 <li><a href="#cflags">cflags</a></li>
 <li><a href="#character_set">character_set</a></li>
 <li><a href="#config">config</a></li>
@@ -160,42 +159,6 @@
 <tr>
 <td><em>default</em></td>
 <td></td>
-</tr>
-<tr>
-<td><em>flags</em></td>
-<td>:no_check_exist</td>
-</tr>
-<tr>
-<td><em>options</em></td>
-<td></td>
-</tr>
-<tr>
-<td><em>defined in</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-</tbody>
-</table>
-</blockquote>
-<p><a id="build_root_offset"></a></p>
-<h4 id="build-root-offset">build_root_offset</h4>
-<blockquote>
-<p><em>Root directory for build artifacts</em></p>
-<p>Specified as a relative path from main build root.</p>
-<table>
-<thead>
-<tr>
-<th>Property</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>type</em></td>
-<td>:dir</td>
-</tr>
-<tr>
-<td><em>default</em></td>
-<td>&quot;build&quot;</td>
 </tr>
 <tr>
 <td><em>flags</em></td>
@@ -696,7 +659,7 @@
 <h4 id="objdir">objdir</h4>
 <blockquote>
 <p><em>Output directory for object files</em></p>
-<p>Defaults to <a href="#build_root_offset">$(build_root_offset)</a>/obj/<a href="#arch">$(arch)</a>/<a href="#config">$(config)</a>/<a href="#projname">$(projname)</a>.</p>
+<p>Defaults to obj/<a href="#arch">$(arch)</a>/<a href="#config">$(config)</a>/<a href="#projname">$(projname)</a>.</p>
 <table>
 <thead>
 <tr>

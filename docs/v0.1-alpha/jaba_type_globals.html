@@ -35,13 +35,51 @@
 </blockquote>
 <p>Attributes:</p>
 <ul>
+<li><a href="#artefact_root">artefact_root</a></li>
 <li><a href="#buildsystem_root">buildsystem_root</a></li>
 <li><a href="#cpp_default_lib_type">cpp_default_lib_type</a></li>
 <li><a href="#dump_output">dump_output</a></li>
 <li><a href="#jaba_output_file">jaba_output_file</a></li>
+<li><a href="#target_host">target_host</a></li>
 <li><a href="#target_hosts">target_hosts</a></li>
 <li><a href="#vcfiletype">vcfiletype</a></li>
 </ul>
+<p><a id="artefact_root"></a></p>
+<h4 id="artefact-root">artefact_root</h4>
+<blockquote>
+<p><em>Root of build artefacts the build system generates</em></p>
+<p>Specfied as an offset from main build_root.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:dir</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/core/globals.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
 <p><a id="buildsystem_root"></a></p>
 <h4 id="buildsystem-root">buildsystem_root</h4>
 <blockquote>
@@ -61,7 +99,7 @@
 </tr>
 <tr>
 <td><em>default</em></td>
-<td>&quot;buildsystem&quot;</td>
+<td></td>
 </tr>
 <tr>
 <td><em>flags</em></td>
@@ -193,6 +231,41 @@
 </tbody>
 </table>
 </blockquote>
+<p><a id="target_host"></a></p>
+<h4 id="target-host">target_host</h4>
+<blockquote>
+<p><em>Current target host</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td>:read_only</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/core/globals.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
 <p><a id="target_hosts"></a></p>
 <h4 id="target-hosts">target_hosts</h4>
 <blockquote>
@@ -227,7 +300,7 @@
 </tr>
 <tr>
 <td><em>defined in</em></td>
-<td>$(jaba_install)/modules/core/hosts.jaba</td>
+<td>$(jaba_install)/modules/core/globals.jaba</td>
 </tr>
 </tbody>
 </table>
