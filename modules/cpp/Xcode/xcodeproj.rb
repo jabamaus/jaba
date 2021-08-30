@@ -56,7 +56,7 @@ module JABA
       p_root[:projdir] = @projdir
       p_root[:projname] = @projname
       p_root[:host] = @host.defn_id
-      p_root[:platform] = @attrs.platform_ref.defn_id
+      p_root[:platform] = @attrs.platform.defn_id
       p_root[:src] = @src.map{|f| f.absolute_path}
       cfg_root = {}
       p_root[:configs] = cfg_root

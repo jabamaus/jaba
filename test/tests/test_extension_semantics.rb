@@ -124,10 +124,7 @@ module JABA
             attr_array :config, type: :block
           end
           type :project do
-            attr :platform do
-              flags :read_only
-            end
-            attr :platform_ref, type: :node_ref do
+            attr :platform, type: :node_ref do
               node_type :platform
             end
             attr :src
@@ -147,7 +144,7 @@ module JABA
             platforms.must_equal [:windows, :ios]
             project do
               configs [:debug, :release]
-              src "#{platform}_src"
+              src "#{platform.id}_src"
             end
             config do
               case config
@@ -179,7 +176,6 @@ module JABA
       root_node.attrs.platforms.each do |p|
         project = services.make_node(type_id: :project, name: p, parent: root_node, blocks: root_node.attrs.project) do 
           platform p
-          platform_ref p
         end
         @projects << project
         
@@ -196,11 +192,11 @@ module JABA
       @projects.size.must_equal 2
 
       proj1 = @projects[0]
-      proj1.attrs.platform_ref.defn_id.must_equal(:windows)
+      proj1.attrs.platform.defn_id.must_equal(:windows)
       proj1.attrs.src.must_equal 'windows_src'
 
       proj2 = @projects[1]
-      proj2.attrs.platform_ref.defn_id.must_equal(:ios)
+      proj2.attrs.platform.defn_id.must_equal(:ios)
       proj2.attrs.src.must_equal 'ios_src'
 
       begin

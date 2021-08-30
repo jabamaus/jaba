@@ -1,3 +1,4 @@
+- Regression tests for generated files!
 - consider putting .jaba inside buildsystem
 - Make build_jaba_output use an API so it can check that paths are absolute
 - Not sure about build_root now. Is there one root too many? buildsystem_root and artefact can be set relative to jaba file in definitions or if runnning with jaba -B, that could set the buildsystem_root. 

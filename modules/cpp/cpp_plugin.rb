@@ -60,7 +60,6 @@ module JABA
         
         pn = services.make_node(type_id: :cpp_project, name: tp, parent: root_node, blocks: project_blocks) do
           platform tp
-          platform_ref tp
         end
 
         @all_project_nodes << pn

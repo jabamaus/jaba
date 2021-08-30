@@ -117,24 +117,18 @@ type :cpp_project do
   end
 
   # TODO: mark as control flow for docs
-  attr :platform, type: :symbol do
-    title 'Target platform as an id'
+  attr :platform, type: :node_ref do
+    title 'Target platform as an object'
     note 'Query current target platform'
-    flags :read_only
+    node_type :platform
     example %Q{
-      case platform
+      case platform.id
       when :windows
         ...
       when :macos
         ...
       end
     }
-  end
-    
-  attr :platform_ref, type: :node_ref do
-    title 'Target platform as an object'
-    note 'Use when access to platform attributes is required'
-    node_type :platform
   end
 
   # Common attributes
@@ -257,7 +251,7 @@ type :cpp_project do
     default do
       ext = ['.cpp', '.h', '.inl', '.c', '.cc', '.cxx', '.hpp']
       ext.concat(host.cpp_src_ext)
-      ext.concat(platform_ref.cpp_src_ext)
+      ext.concat(platform.cpp_src_ext)
       ext
     end
   end
@@ -427,7 +421,7 @@ type :cpp_config do
     title 'Extension to apply to $(targetname)'
     note 'Defaults to standard extension for $(type) of project for target $(platform)'
     default do
-      case platform
+      case platform.id
       when :windows
         case type
         when :app, :console

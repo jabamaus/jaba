@@ -148,7 +148,7 @@ module JABA
       p_root[:projdir] = @projdir
       p_root[:projname] = @projname
       p_root[:host] = @host.defn_id
-      p_root[:platform] = @attrs.platform_ref.defn_id
+      p_root[:platform] = @attrs.platform.defn_id
       p_root[:vcxproj] = @vcxproj_file
       p_root[:src] = @src.map{|f| f.absolute_path}
       p_root[:vcglobal] = @attrs.vcglobal
