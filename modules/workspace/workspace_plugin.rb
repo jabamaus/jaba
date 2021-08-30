@@ -57,8 +57,8 @@ module JABA
 
       classname = target_host.attrs.workspace_classname
       return if classname.empty?
-      candidate_projects = cpp_plugin.projects.select{|p| p.attrs.host == target_host_id}
-
+      candidate_projects = cpp_plugin.projects
+      
       services.root_nodes.each do |wsn|
         root = services.make_node_paths_absolute(wsn)
 

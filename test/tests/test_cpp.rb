@@ -82,7 +82,7 @@ module JABA
       proj = jaba(dry_run: true, cpp_app: true) do
         cpp :app do
           project do
-            projname "app_#{host.upcase}"
+            projname "app_#{host.id.upcase}"
             src ['main.cpp'], :force
           end
         end

@@ -28,7 +28,7 @@ module JABA
       @node = node
       @attrs = node.attrs
       @projdir = @attrs.projdir
-      @host = @attrs.host_ref
+      @host = @attrs.host
       @platform = @attrs.platform_ref
       @guid = @attrs.guid
       @root = @attrs.root

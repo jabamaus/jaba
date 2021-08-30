@@ -76,6 +76,29 @@ type :cpp do
     }
   end
 
+  # TODO: mark as a control flow attr for docs
+  attr :host, type: :node_ref do
+    title 'Target host'
+    note 'Returns target host as an object. Common host methods are automatically imported so can be accessed directly. Should only be needed rarely.'
+    note 'Takes its value from globals.target_host and is read only.'
+    node_type :host
+    default do
+      globals.target_host
+    end
+    example %Q{
+      case host.id
+      when :vs2019
+        ...
+      when :xcode
+        ...
+      end
+      if vs2019? # no need for host.vs2019?
+        ...
+      end
+      host.version
+    }
+  end
+
   attr :generate, type: :block do
     title 'Generation hook'
     note 'Called at generation time'
@@ -92,29 +115,8 @@ type :cpp_project do
     items [:app, :console, :lib, :dll]
     flags :required
   end
-  
-  # Control flow attributes
-  #
-  attr :host, type: :symbol do
-    title 'Target host as an id'
-    note 'Query current target host'
-    flags :read_only
-    example %Q{
-      case host
-      when :vs2019
-        ...
-      when :xcode
-        ...
-      end
-    }
-  end
 
-  attr :host_ref, type: :node_ref do
-    title 'Target host as object'
-    note 'Use when access to host attributes is required'
-    node_type :host
-  end
-
+  # TODO: mark as control flow for docs
   attr :platform, type: :symbol do
     title 'Target platform as an id'
     note 'Query current target platform'
@@ -254,7 +256,7 @@ type :cpp_project do
     flags :no_sort, :exportable
     default do
       ext = ['.cpp', '.h', '.inl', '.c', '.cc', '.cxx', '.hpp']
-      ext.concat(host_ref.cpp_src_ext)
+      ext.concat(host.cpp_src_ext)
       ext.concat(platform_ref.cpp_src_ext)
       ext
     end
@@ -480,7 +482,7 @@ type :cpp_config do
   attr :toolset, type: :string do
     title 'Toolset version to use'
     note 'Defaults to host\'s default toolset'
-    default { host_ref.toolset }
+    default { host.toolset }
   end
 
 end

@@ -59,8 +59,6 @@ module JABA
         next if !supported_platforms.include?(tp)
         
         pn = services.make_node(type_id: :cpp_project, name: tp, parent: root_node, blocks: project_blocks) do
-          host target_host.defn_id
-          host_ref target_host
           platform tp
           platform_ref tp
         end

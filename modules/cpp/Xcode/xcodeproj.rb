@@ -23,7 +23,7 @@ module JABA
       @attrs = node.attrs
       @projdir = @attrs.projdir
       @projname = @attrs.projname
-      @host = @attrs.host_ref
+      @host = @attrs.host
       @root = @attrs.root
     end
 
