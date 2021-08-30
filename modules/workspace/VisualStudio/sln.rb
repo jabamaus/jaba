@@ -60,7 +60,7 @@ module JABA
           match = true
           proj_cfg = cfg.attrs.configname
           sln_cfg = proj_cfg # TODO
-          proj_cfg_platform = cfg.attrs.arch_ref.attrs.vsname
+          proj_cfg_platform = cfg.attrs.arch.attrs.vsname
           sln_cfg_platform = proj_cfg_platform # TODO: sln config platform could be different 
           w << "\t\t#{proj.guid}.#{sln_cfg}|#{sln_cfg_platform}.ActiveCfg = #{proj_cfg}|#{proj_cfg_platform}"
           if match

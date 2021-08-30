@@ -70,7 +70,6 @@ module JABA
             services.make_node(type_id: :cpp_config, name: "#{ta}|#{cfg}", parent: pn, blocks: config_blocks) do
               config cfg
               arch ta
-              arch_ref ta
             end
           end
         end

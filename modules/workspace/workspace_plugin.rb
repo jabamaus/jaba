@@ -76,7 +76,7 @@ module JABA
           p.each_config do |cfg|
             cfg_id = cfg.handle[/^.*?\|(.*)/, 1] # TODO: nasty
             if !configs.key?(cfg_id)
-              configs[cfg_id] = [cfg.attrs.configname, cfg.attrs.arch_ref.attrs.vsname]
+              configs[cfg_id] = [cfg.attrs.configname, cfg.attrs.arch.attrs.vsname]
             end
           end
         end

@@ -272,14 +272,10 @@ type :cpp_config do
 
   title 'Per configuration C++ attributes'
 
-  attr :arch, type: :symbol_or_string do
-    title 'Target architecture as an id'
-    note 'Query current architecture being processed. Use to define control flow to set config-specific atttributes'
-    flags :read_only
-  end
-
-  attr :arch_ref, type: :node_ref do
+  # TODO: flag as a control flow attr in docs
+  attr :arch, type: :node_ref do
     title 'Target architecture as an object'
+    note 'Query current architecture being processed. Use to define control flow to set config-specific atttributes'
     node_type :arch
   end
 

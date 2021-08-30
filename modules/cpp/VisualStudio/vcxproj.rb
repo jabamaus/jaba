@@ -42,7 +42,7 @@ module JABA
       #
       each_config do |cfg|
         cfg_name = cfg.attrs.configname
-        platform_name = cfg.attrs.arch_ref.attrs.vsname
+        platform_name = cfg.attrs.arch.attrs.vsname
         t = services.get_translator("vcxproj_config_#{platform}".to_sym)
         t.execute(node: cfg, args: [self, cfg.attrs.type])
 
@@ -156,10 +156,10 @@ module JABA
       p_root[:configs] = cfg_root
       each_config do |c|
         attrs = c.attrs
-        arch_root = cfg_root[attrs.arch_ref.defn_id]
+        arch_root = cfg_root[attrs.arch.defn_id]
         if !arch_root
           arch_root = {}
-          cfg_root[attrs.arch_ref.defn_id] = arch_root
+          cfg_root[attrs.arch.defn_id] = arch_root
         end
         cfg = {}
         arch_root[attrs.config] = cfg
@@ -187,7 +187,7 @@ module JABA
       @idg = file.work_area(capacity: c)
 
       each_config do |cfg|
-        platform = cfg.attrs.arch_ref.attrs.vsname
+        platform = cfg.attrs.arch.attrs.vsname
         cfg_name = cfg.attrs.configname
         @item_def_groups = {}
 
