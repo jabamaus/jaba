@@ -28,7 +28,7 @@
 </tr>
 <tr>
 <td><em>depends on</em></td>
-<td><a href="jaba_type_host.html">host</a>, <a href="jaba_type_platform.html">platform</a>, <a href="jaba_type_category.html">category</a></td>
+<td><a href="jaba_type_platform.html">platform</a>, <a href="jaba_type_category.html">category</a></td>
 </tr>
 </tbody>
 </table>
@@ -39,10 +39,7 @@
 <li><a href="#configs">configs</a></li>
 <li><a href="#deps">deps</a></li>
 <li><a href="#guid">guid</a></li>
-<li><a href="#host">host</a></li>
-<li><a href="#host_ref">host_ref</a></li>
 <li><a href="#platform">platform</a></li>
-<li><a href="#platform_ref">platform_ref</a></li>
 <li><a href="#projdir">projdir</a></li>
 <li><a href="#projname">projname</a></li>
 <li><a href="#projsuffix">projsuffix</a></li>
@@ -217,137 +214,11 @@
 </tbody>
 </table>
 </blockquote>
-<p><a id="host"></a></p>
-<h4 id="host">host</h4>
-<blockquote>
-<p><em>Target host as an id</em></p>
-<p>Query current target host.</p>
-<table>
-<thead>
-<tr>
-<th>Property</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>type</em></td>
-<td>:symbol</td>
-</tr>
-<tr>
-<td><em>default</em></td>
-<td></td>
-</tr>
-<tr>
-<td><em>flags</em></td>
-<td>:read_only</td>
-</tr>
-<tr>
-<td><em>options</em></td>
-<td></td>
-</tr>
-<tr>
-<td><em>defined in</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-</tbody>
-</table>
-<p><em>Examples</em></p>
-<pre style="color:#272822;background-color:#fafafa"><span style="color:#00a8c8">case</span> <span style="color:#111">host</span>
-<span style="color:#00a8c8">when</span> <span style="color:#d88200">:vs2019</span>
-  <span style="color:#f92672">...</span>
-<span style="color:#00a8c8">when</span> <span style="color:#d88200">:xcode</span>
-  <span style="color:#f92672">...</span>
-<span style="color:#00a8c8">end</span>
-</pre></blockquote>
-<p><a id="host_ref"></a></p>
-<h4 id="host-ref">host_ref</h4>
-<blockquote>
-<p><em>Target host as object</em></p>
-<p>Use when access to host attributes is required.</p>
-<table>
-<thead>
-<tr>
-<th>Property</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>type</em></td>
-<td>:node_ref</td>
-</tr>
-<tr>
-<td><em>references</em></td>
-<td><a href="jaba_type_host.html">host</a></td>
-</tr>
-<tr>
-<td><em>default</em></td>
-<td></td>
-</tr>
-<tr>
-<td><em>flags</em></td>
-<td></td>
-</tr>
-<tr>
-<td><em>options</em></td>
-<td></td>
-</tr>
-<tr>
-<td><em>defined in</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-</tbody>
-</table>
-</blockquote>
 <p><a id="platform"></a></p>
 <h4 id="platform">platform</h4>
 <blockquote>
-<p><em>Target platform as an id</em></p>
-<p>Query current target platform.</p>
-<table>
-<thead>
-<tr>
-<th>Property</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>type</em></td>
-<td>:symbol</td>
-</tr>
-<tr>
-<td><em>default</em></td>
-<td></td>
-</tr>
-<tr>
-<td><em>flags</em></td>
-<td>:read_only</td>
-</tr>
-<tr>
-<td><em>options</em></td>
-<td></td>
-</tr>
-<tr>
-<td><em>defined in</em></td>
-<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
-</tr>
-</tbody>
-</table>
-<p><em>Examples</em></p>
-<pre style="color:#272822;background-color:#fafafa"><span style="color:#00a8c8">case</span> <span style="color:#111">platform</span>
-<span style="color:#00a8c8">when</span> <span style="color:#d88200">:windows</span>
-  <span style="color:#f92672">...</span>
-<span style="color:#00a8c8">when</span> <span style="color:#d88200">:macos</span>
-  <span style="color:#f92672">...</span>
-<span style="color:#00a8c8">end</span>
-</pre></blockquote>
-<p><a id="platform_ref"></a></p>
-<h4 id="platform-ref">platform_ref</h4>
-<blockquote>
 <p><em>Target platform as an object</em></p>
-<p>Use when access to platform attributes is required.</p>
+<p>Query current target platform.</p>
 <table>
 <thead>
 <tr>
@@ -382,7 +253,14 @@
 </tr>
 </tbody>
 </table>
-</blockquote>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#00a8c8">case</span> <span style="color:#111">platform</span><span style="color:#f92672">.</span><span style="color:#111">id</span>
+<span style="color:#00a8c8">when</span> <span style="color:#d88200">:windows</span>
+  <span style="color:#f92672">...</span>
+<span style="color:#00a8c8">when</span> <span style="color:#d88200">:macos</span>
+  <span style="color:#f92672">...</span>
+<span style="color:#00a8c8">end</span>
+</pre></blockquote>
 <p><a id="projdir"></a></p>
 <h4 id="projdir">projdir</h4>
 <blockquote>
