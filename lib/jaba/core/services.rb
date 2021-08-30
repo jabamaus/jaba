@@ -248,8 +248,8 @@ module JABA
       #
       @open_type_defs.each do |d|
         log "Opening #{d.id} type"
-        tlt = get_jaba_type(d.id, errobj: d)
-        tlt.eval_jdl(&d.block)
+        jt = get_jaba_type(d.id, errobj: d)
+        jt.eval_jdl(&d.block)
       end
 
       @jaba_types.each(&:post_create)
@@ -265,8 +265,8 @@ module JABA
       # Process instance definitions and assign them to a top level type/node manager
       #
       @instance_defs.each do |d|
-        tlt = get_jaba_type(d.jaba_type_id, errobj: d)
-        tlt.node_manager.register_instance_definition(d)
+        jt = get_jaba_type(d.jaba_type_id, errobj: d)
+        jt.node_manager.register_instance_definition(d)
       end
 
       # Register instance open defs
@@ -536,13 +536,13 @@ module JABA
       end
 
       nm = plugin.services.instance_variable_get(:@node_manager)
-      tlt = JabaType.new(self, dfn.id, dfn.src_loc, dfn.block, plugin, nm)
-      nm.set_jaba_type(tlt)
+      jt = JabaType.new(self, dfn.id, dfn.src_loc, dfn.block, plugin, nm)
+      nm.set_jaba_type(jt)
 
-      @jaba_types  << tlt
-      @jaba_type_lookup[id] = tlt
+      @jaba_types  << jt
+      @jaba_type_lookup[id] = jt
 
-      tlt
+      jt
     end
 
     ##
@@ -838,8 +838,8 @@ module JABA
       root = {}
       root[:jdl_files] = @jdl_files
 
-      @jaba_types.each do |tlt|
-        tlt.node_manager.root_nodes.each do |rn|
+      @jaba_types.each do |jt|
+        jt.node_manager.root_nodes.each do |rn|
           obj = {}
           root["#{p.type_id}|#{rn.handle}"] = obj
           write_node_json(p, root, rn, obj)

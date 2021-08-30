@@ -48,9 +48,9 @@ module JABA
     ##
     # Part of internal initialisation.
     #
-    def set_jaba_type(tlt)
-      @jaba_type = tlt
-      @type_id = tlt.defn_id
+    def set_jaba_type(jt)
+      @jaba_type = jt
+      @type_id = jt.defn_id
     end
 
     ##
