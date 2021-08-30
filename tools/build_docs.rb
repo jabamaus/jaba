@@ -152,7 +152,7 @@ class DocBuilder
       md_row(w, 'depends on', jt.dependencies.map{|d| "[#{d}](#{d.reference_manual_page})"}.join(", "))
       w << "> "
       w << ""
-      w << "Attributes:  "
+      w << "#{jt.attribute_defs.size} attributes:  "
       jt.attribute_defs.each do |ad|
         w << "- [#{ad.defn_id}](##{ad.defn_id})"
       end
