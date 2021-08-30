@@ -52,6 +52,9 @@ module JABA
       config_blocks = root_node.attrs.config
 
       services.globals.target_hosts.each do |target_host_id|
+        services.globals_node.allow_set_read_only_attrs do
+          services.globals.target_host target_host_id
+        end
         target_host = services.node_from_handle(target_host_id.to_s)
         supported_platforms = target_host.attrs.cpp_supported_platforms
 

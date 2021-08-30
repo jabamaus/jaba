@@ -6,6 +6,23 @@ module JABA
 
   using JABACoreExt
   
+  class GlobalsPlugin < DefaultPlugin
+
+    def process_definition(definition)
+      globals_node = services.make_node(want_post_create: false)
+      main_services = services.instance_variable_get(:@services)
+      main_services.instance_variable_set(:@globals_node, globals_node)
+      main_services.instance_variable_set(:@globals, globals_node.attrs)
+
+      main_services.set_global_attrs_from_cmdline
+
+      globals_node.attrs.target_host nil
+      globals_node.post_create
+      globals_node
+    end
+
+  end
+
   ##
   #
   class NodeManager
@@ -22,7 +39,6 @@ module JABA
     def initialize(services)
       @services = services
       @definitions = []
-      @delay_post_create = false
       @plugin = nil
       @root_nodes = []
       @nodes = [] # all nodes
@@ -52,11 +68,9 @@ module JABA
 
     ##
     #
-    def process(delay_post_create: false)
+    def process
       services.log "Processing #{describe}", section: true
 
-      @delay_post_create = delay_post_create
-      
       @definitions.each do |d|
         push_definition(d) do
           @root_nodes.concat(Array(@plugin.process_definition(d)))
@@ -65,9 +79,9 @@ module JABA
       
       if @jaba_type.singleton
         if @root_nodes.size == 0
-          JABA.error("singleton type '#{type_id}' must be instantiated exactly once", errobj: @jaba_type)
+          JABA.error("singleton type '#{type_id}' must be instantiated", errobj: @jaba_type)
         elsif @root_nodes.size > 1
-          JABA.error("singleton type '#{type_id}' must be instantiated exactly once", errobj: @root_nodes.last)
+          JABA.error("singleton type '#{type_id}' must only be instantiated once", errobj: @root_nodes.last)
         end
       end
 
@@ -181,7 +195,7 @@ module JABA
         JABA.error('Cannot modify read only value', callstack: e.backtrace)
       end
 
-      if want_post_create && !@delay_post_create # used by globals node when being set from the command line
+      if want_post_create # used by globals node when being set from the command line
         jn.post_create
       end
 
@@ -249,6 +263,8 @@ module JABA
             services.input.build_root
           when :buildsystem_root
             "#{services.globals.buildsystem_root}"
+          when :artefact_root
+            "#{services.globals.artefact_root}"
           when :definition_root
             root
           when :jaba_file

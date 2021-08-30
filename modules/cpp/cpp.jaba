@@ -319,42 +319,34 @@ type :cpp_config do
     value_option :when, required: true, items: [:PreBuild, :PreLink, :PostBuild]
   end
 
-  attr :build_root_offset, type: :dir do
-    title 'Root directory for build artifacts'
-    note 'Specified as a relative path from main build root'
-    basedir_spec :build_root
-    default 'build'
-    flags :no_check_exist
-  end
-
   attr :bindir, type: :dir do
     title 'Output directory for executables'
-    basedir_spec :build_root
+    basedir_spec :artefact_root
     default do
-      "#{build_root_offset}/bin/#{arch}/#{config}"
+      "bin/#{arch}/#{config}"
     end
     flags :no_check_exist
   end
 
   attr :libdir, type: :dir do
     title 'Output directory for libs'
-    basedir_spec :build_root
+    basedir_spec :artefact_root
     default do
-      "#{build_root_offset}/lib/#{arch}/#{config}"
+      "lib/#{arch}/#{config}"
     end
     flags :no_check_exist
   end
 
   attr :objdir, type: :dir do
     title 'Output directory for object files'
-    basedir_spec :build_root
+    basedir_spec :artefact_root
     default do
-      "#{build_root_offset}/obj/#{arch}/#{config}/#{projname}"
+      "obj/#{arch}/#{config}/#{projname}"
     end
     flags :no_check_exist
-    notes 'Defaults to $(build_root_offset)/obj/$(arch)/$(config)/$(projname)'
+    notes 'Defaults to obj/$(arch)/$(config)/$(projname)'
   end
-
+  
   attr_array :libs, type: :file do
     title 'Paths to required non-system libs'
     basedir_spec :definition_root

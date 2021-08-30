@@ -68,6 +68,12 @@ module JABA
 
     ##
     #
+    def globals_node
+      @services.globals_node
+    end
+
+    ##
+    #
     def globals
       @services.globals
     end

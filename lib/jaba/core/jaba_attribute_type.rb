@@ -313,6 +313,7 @@ module JABA
       :definition_root,   # path will be based on the specified root of the jaba definition the path was set in
       :build_root,        # path will be based on build_root
       :buildsystem_root,  # path will be based on buildsystem (itself based on build_root)
+      :artefact_root,     # path will be based on build artefact root
       :jaba_file          # path will be based on the directory of the jaba definition file the path was set in
     ]
     

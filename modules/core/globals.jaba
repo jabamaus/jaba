@@ -2,13 +2,35 @@ type :globals do
   title 'Global attribute definitions'
   singleton true
 
+  attr_array :target_hosts, type: :choice do
+    title 'Target host'
+    items all_instance_ids(:host)
+    flags :required
+  end
+
+  attr :target_host do
+    title 'Current target host'
+    flags :read_only
+  end
+
   attr :buildsystem_root, type: :dir do
     title 'Root of generated build system'
     note 'Specfied as an offset from main build_root'
-    default 'buildsystem'
+    default do
+      "buildsystem/#{target_host}"
+    end
     basedir_spec :build_root
   end
   
+  attr :artefact_root, type: :dir do
+    title 'Root of build artefacts the build system generates'
+    note 'Specfied as an offset from main build_root'
+    default do
+      "#{buildsystem_root}/artefact"
+    end
+    basedir_spec :build_root
+  end
+
   attr :jaba_output_file, type: :file do
     title 'Name/path of file to contain Jaba output in json format'
     note 'Jaba output can be later used by another process (eg the build process) to do things like looking up paths by id rather ' \

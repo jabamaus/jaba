@@ -10,7 +10,6 @@ require_relative 'core_ext'
 require_relative 'utils'
 require_relative 'file_manager'
 require_relative 'input_manager'
-require_relative 'node_manager'
 require_relative 'standard_paths'
 require_relative 'jaba_object'
 require_relative 'jaba_attribute_type'
@@ -25,6 +24,7 @@ require_relative 'jaba_type'
 require_relative '../extend/plugin'
 require_relative '../extend/src'
 require_relative '../extend/vsproj'
+require_relative 'node_manager'
 
 ##
 #
@@ -300,18 +300,11 @@ module JABA
 
       @processing_jaba_types = true
 
-      # Process globals first, separately so that it is possible to get in and set them from the command line.
-      # For this reason delay post_create checking until the command line has been processed. If this was not
-      # done a global attribute flagged as :required could fail if it is supplied on the command line.
+      # Process globals first as everything should have access to them. Globals have no dependencies.
+      # See GlobalsPlugin.
       #
       globals_type = @jaba_types.first
-      globals_type.node_manager.process(delay_post_create: true)
-
-      @globals_node = globals_type.node_manager.root_nodes.first
-      @globals = @globals_node.attrs
-
-      set_global_attrs_from_cmdline
-      @globals_node.post_create
+      globals_type.node_manager.process
 
       # Don't generate config file for the moment...
 =begin

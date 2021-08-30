@@ -1,3 +1,6 @@
+- combine host and host_ref
+- Should there be an implicit reference on globals? Or should it be explicit? eg globals.target_host
+- rename node_ref to just ref
 - Implement element deletion for hash attribute
 - Split JabaAttributeDefinition into variants
 - auto document plugin API
