@@ -11,7 +11,7 @@
 *.vcxproj.user
 .vs/
 .vscode*
-*build/
+*buildsystem/
 .jaba/
 tools/release_temp
 tools/doc_temp
