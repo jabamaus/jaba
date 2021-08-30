@@ -1,4 +1,3 @@
-# TODO: make this a global
 SUPPORTED_VS_VERSIONS = [2010, 2012, 2013, 2015, 2017, 2019].freeze
 
 type :host do
