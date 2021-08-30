@@ -169,9 +169,6 @@ type :cpp_project do
 
   attr :projdir, type: :dir do
     title 'Directory in which projects will be generated'
-    default do
-      "#{host}"
-    end
     flags :no_check_exist # May get created during generation
     basedir_spec :buildsystem_root
     example %Q{
@@ -346,7 +343,7 @@ type :cpp_config do
     flags :no_check_exist
     notes 'Defaults to obj/$(arch)/$(config)/$(projname)'
   end
-  
+
   attr_array :libs, type: :file do
     title 'Paths to required non-system libs'
     basedir_spec :definition_root

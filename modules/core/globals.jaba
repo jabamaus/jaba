@@ -2,15 +2,10 @@ type :globals do
   title 'Global attribute definitions'
   singleton true
 
-  attr_array :target_hosts, type: :choice do
+  attr :target_host, type: :choice do
     title 'Target host'
     items all_instance_ids(:host)
     flags :required
-  end
-
-  attr :target_host do
-    title 'Current target host'
-    flags :read_only
   end
 
   attr :buildsystem_root, type: :dir do

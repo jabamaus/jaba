@@ -36,6 +36,10 @@ module JABA
 
       @project_ids << definition.id
 
+      target_host_id = services.globals.target_host
+      target_host = services.node_from_handle(target_host_id.to_s) # TODO: move to services
+      supported_platforms = target_host.attrs.cpp_supported_platforms
+
       root_node = services.make_node
 
       target_platform_to_archs = {}
@@ -51,42 +55,34 @@ module JABA
       project_blocks = root_node.attrs.project
       config_blocks = root_node.attrs.config
 
-      services.globals.target_hosts.each do |target_host_id|
-        services.globals_node.allow_set_read_only_attrs do
-          services.globals.target_host target_host_id
+      target_platform_to_archs.each do |tp, target_archs|
+        next if !supported_platforms.include?(tp)
+        
+        pn = services.make_node(type_id: :cpp_project, name: "#{target_host.defn_id}|#{tp}", parent: root_node, blocks: project_blocks) do
+          host target_host.defn_id
+          host_ref target_host
+          platform tp
+          platform_ref tp
         end
-        target_host = services.node_from_handle(target_host_id.to_s)
-        supported_platforms = target_host.attrs.cpp_supported_platforms
 
-        target_platform_to_archs.each do |tp, target_archs|
-          next if !supported_platforms.include?(tp)
-          
-          pn = services.make_node(type_id: :cpp_project, name: "#{target_host.defn_id}|#{tp}", parent: root_node, blocks: project_blocks) do
-            host target_host.defn_id
-            host_ref target_host
-            platform tp
-            platform_ref tp
-          end
+        @all_project_nodes << pn
+        @host_to_project_nodes.push_value(target_host, pn)
 
-          @all_project_nodes << pn
-          @host_to_project_nodes.push_value(target_host, pn)
-
-          pn.attrs.configs.each do |cfg|
-            target_archs.each do |ta|
-              services.make_node(type_id: :cpp_config, name: "#{ta}|#{cfg}", parent: pn, blocks: config_blocks) do
-                config cfg
-                arch ta
-                arch_ref ta
-              end
+        pn.attrs.configs.each do |cfg|
+          target_archs.each do |ta|
+            services.make_node(type_id: :cpp_config, name: "#{ta}|#{cfg}", parent: pn, blocks: config_blocks) do
+              config cfg
+              arch ta
+              arch_ref ta
             end
           end
+        end
 
-          if pn.attrs.workspace
-            defn_id = definition.id
-            services.execute_jdl do
-              workspace defn_id do
-                projects defn_id
-              end
+        if pn.attrs.workspace
+          defn_id = definition.id
+          services.execute_jdl do
+            workspace defn_id do
+              projects defn_id
             end
           end
         end

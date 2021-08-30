@@ -69,8 +69,8 @@ module JABA
         end
         c.definitions do
           open_globals do
-            if !argv.include?('target_hosts')
-              target_hosts :vs2019
+            if !argv.include?('target_host')
+              target_host :vs2019
             end
             dump_output dump_output
             jaba_output_file "#{build_root}/jaba.output.json"

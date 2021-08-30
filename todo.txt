@@ -1,3 +1,4 @@
+- enforce that paths stay within their base dir spec
 - combine host and host_ref
 - Should there be an implicit reference on globals? Or should it be explicit? eg globals.target_host
 - rename node_ref to just ref

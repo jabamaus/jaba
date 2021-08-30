@@ -23,7 +23,7 @@ class LaunchJsonGenerator
         name: dirname,
         program: '${workspaceRoot}/bin/jaba.rb',
         cwd: "${workspaceRoot}/examples/#{dirname}",
-        args: ['-D', 'target_hosts', 'vs2019']
+        args: ['-D', 'target_host', 'vs2019']
       )
     end
 
