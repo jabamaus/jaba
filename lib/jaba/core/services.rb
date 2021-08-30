@@ -1017,7 +1017,11 @@ module JABA
         end
       end
       plugin_files.each do |f|
-        require f
+        begin
+          require f
+        rescue ScriptError => e
+          JABA.error("Failed to load #{f}: #{e.message}")
+        end
       end
     end
 
