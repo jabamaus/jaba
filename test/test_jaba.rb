@@ -55,6 +55,13 @@ module JABA
         c.argv = argv
         c.definitions(&block) if block_given?
         c.barebones = barebones
+        c.dump_output = dump_output
+        c.dry_run = dry_run
+        
+        if !argv.include?('target_host')
+          c.global_attrs[:target_host] = :vs2019
+        end
+
         if cpp_app || cpp_defaults
           c.definitions do
             defaults :cpp do
@@ -67,19 +74,11 @@ module JABA
             end
           end
         end
-        c.definitions do
-          open_globals do
-            if !argv.include?('target_host')
-              target_host :vs2019
-            end
-            dump_output dump_output
-            jaba_output_file "#{build_root}/jaba.output.json"
-          end
-        end
-        c.dry_run = dry_run
       end
+
       warnings = op[:warnings]
       puts warnings if warnings
+      
       if cpp_app
         op = op[:cpp]['app|windows']
         op.wont_be_nil

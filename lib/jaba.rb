@@ -71,6 +71,10 @@ module JABA
 
     ##
     #
+    attr_bool :dump_output
+    
+    ##
+    #
     attr_bool :dump_state
 
     ##

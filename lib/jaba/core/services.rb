@@ -79,6 +79,7 @@ module JABA
       @input.instance_variable_set(:@src_root, nil)
       @input.instance_variable_set(:@definitions, [])
       @input.instance_variable_set(:@global_attrs, {})
+      @input.instance_variable_set(:@dump_output, true)
       @output = {}
       
       @log_msgs = JABA.running_tests? ? nil : [] # Disable logging when running tests
@@ -400,6 +401,8 @@ module JABA
     #
     def set_global_attrs_from_cmdline
       input.global_attrs.each do |name, values|
+        values = Array(values).map{|e| e.to_s}
+
         attr = @globals_node.get_attr(name.to_sym, fail_if_not_found: false)
         if attr.nil?
           @input_manager.usage_error("'#{name}' attribute not defined in :globals type")
@@ -410,7 +413,7 @@ module JABA
         case attr_def.variant
         when :single
           if values.size > 1
-            @input_manager.usage_error("'#{name}' attribute only expects one value but #{values} provided")
+            @input_manager.usage_error("'#{name}' attribute only expects one value but #{values.inspect} provided")
           end
           value = type.from_cmdline(values[0], attr_def)
           if attr.type_id == :file || attr.type_id == :dir
@@ -912,7 +915,7 @@ module JABA
     def build_jaba_output
       log 'Building output...'
       
-      out_file = globals.jaba_output_file
+      out_file = "#{@jaba_temp_dir}/jaba.output.#{globals.target_host}.json"
       out_dir = out_file.dirname
 
       @generated = @file_manager.generated.map{|f| f.relative_path_from(out_dir)}
@@ -932,7 +935,7 @@ module JABA
         end
       end
 
-      if globals.dump_output
+      if input.dump_output?
         json = JSON.pretty_generate(@output)
         file = @file_manager.new_file(out_file, eol: :native)
         w = file.writer

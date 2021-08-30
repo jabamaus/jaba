@@ -1,3 +1,6 @@
+- Not sure about build_root now. Is there one root too many? buildsystem_root and artefact can be set relative to jaba file in definitions or if runnning with jaba -B, that could set the buildsystem_root. 
+- wrap -D target_host vs2019 into a command line switch
+- sort out input system
 - enforce that paths stay within their base dir spec
 - combine host and host_ref
 - Should there be an implicit reference on globals? Or should it be explicit? eg globals.target_host
