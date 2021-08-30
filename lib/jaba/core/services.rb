@@ -64,7 +64,6 @@ module JABA
     attr_reader :globals_node
     attr_reader :jaba_attr_types
     attr_reader :jaba_temp_dir
-    attr_reader :config_file
 
     @@module_ruby_files_loaded = false
     @@module_jaba_files = []
@@ -88,7 +87,6 @@ module JABA
       @jdl_files = []
       @jdl_includes = []
       @jdl_file_lookup = {}
-      @config_loaded = false
       
       @attr_type_defs = []
       @attr_flag_defs = []
@@ -307,10 +305,6 @@ module JABA
       globals_type = @jaba_types.first
       globals_type.node_manager.process
 
-      # Don't generate config file for the moment...
-=begin
-      process_config_file if !JABA.running_tests?
-=end
       1.upto(@jaba_types.size-1) do |i|
         @jaba_types[i].node_manager.process
       end
@@ -350,7 +344,6 @@ module JABA
       end
 
       @jaba_temp_dir = "#{input.build_root}/.jaba"
-      @config_file = "#{@jaba_temp_dir}/config.jaba"
 
       # Ensure build_root and temp dir exists
       #
@@ -388,7 +381,6 @@ module JABA
       log "src_root=#{input.src_root}"
       log "build_root=#{input.build_root}"
       log "temp_dir=#{@jaba_temp_dir}"
-      log "config_file=#{@config_file}"    
     end
 
     ##
@@ -436,41 +428,6 @@ module JABA
             attr.set(key, value)
           end
         end
-      end
-    end
-
-    ##
-    #
-    def process_config_file
-      # Create config.jaba if it does not exist, which will write in any config options defined on the command line
-      #
-      # TODO: automatically patch in new attrs
-      if !File.exist?(@config_file)
-        file = @file_manager.new_file(@config_file, track: false, eol: :native)
-        w = file.writer
-
-        @globals_node.visit_attr(top_level: true) do |attr, value|
-          attr_def = attr.attr_def
-
-          # TODO: include ref manual type docs, eg type, definition location etc
-          comment = String.new("#{attr_def.title}. #{attr_def.notes.join("\n")}")
-          comment.wrap!(130, prefix: '# ')
-
-          w << "##"
-          w << comment
-          w << "#"
-          if attr.hash?
-            value.each do |k, v|
-              w << "#{attr_def.defn_id} #{k.inspect}, #{v.inspect}"
-            end
-          else
-            w << "#{attr_def.defn_id} #{value.inspect}"
-          end
-          w << ''
-        end
-        w.chomp!
-
-        file.write
       end
     end
 
@@ -1040,12 +997,6 @@ module JABA
         end
       end
 
-      # Process config file
-      #
-      if File.exist?(@config_file)
-        process_jaba_file(@config_file)
-      end
-
       if input.src_root
         process_load_path(input.src_root, fail_if_empty: true)
       end
@@ -1118,19 +1069,7 @@ module JABA
       @jdl_file_lookup[f] = nil
       @jdl_files << f
 
-      # Special handling for config.jaba
-      #
-      if f.basename == 'config.jaba'
-        if !@config_loaded
-          @config_loaded = true
-          content = @file_manager.read(f, freeze: false)
-          content.prepend("open_globals do\n")
-          content << "end"
-          execute_jdl(file: f, str: content)
-        end
-      else
-        execute_jdl(file: f)
-      end
+      execute_jdl(file: f)
     end
 
     ##
