@@ -138,7 +138,7 @@ module JABA
 
     ##
     #
-    def build_jaba_output(root, out_dir)
+    def build_jaba_output(root)
     end
 
     ##

@@ -2,6 +2,8 @@
 
 module JABA
 
+  using JABACoreExt
+
   class TestSrc < JabaTest
 
     # TODO: test case sensitivity
@@ -28,7 +30,7 @@ module JABA
           end
         end
       end
-      proj[:src].must_equal(['a.cpp', 'b.z'])
+      proj[:src].must_equal ["#{temp_dir}/a.cpp", "#{temp_dir}/b.z"]
     end
 
     it 'fails if explicitly specified files do not exist unless forced' do
@@ -49,7 +51,7 @@ module JABA
           end
         end
       end
-      proj[:src].must_equal(['main.cpp'])
+      proj[:src].must_equal ["#{temp_dir}/main.cpp"]
     end
 
     it 'disallows wildcards when force adding src' do
@@ -77,7 +79,7 @@ module JABA
             end
           end
         end
-        proj[:src].must_equal(['.a'])
+        proj[:src].must_equal ["#{temp_dir}/.a"]
       end
     end
 
@@ -91,31 +93,43 @@ module JABA
           end
         end
       end
-      proj[:src].must_equal(['a.cpp'])
+      proj[:src].must_equal ["#{temp_dir}/a.cpp"]
     end
 
     it 'supports adding src relative to jaba file or root' do
       r = "#{temp_dir}/a"
-      make_file('a/a.cpp')
       proj = jaba(cpp_app: true, dry_run: true) do
         cpp :app do
           root r
           project do
             src ['./missing.rb'], :force
-            src ['a.cpp']
-            src ['./test_cpp.rb'] # force relative to this definition file (this src file) rather than root
+            src ['missing.rb'], :force
+            src ['./b.cpp'], :force # force relative to this definition file (this src file) rather than root
             src ['./test_e*.rb'] # extension explicitly specified even though .rb not a cpp file type so will be added
             src ['./test_*.*'] # nothing will be added because glob will not match any cpp file extensions
+            src ['../missing.rb'], :force
+            src ['b/c.cpp'], :force
+            src ['./a/b/c.cpp'], :force
           end
           config do
             vcfprop './missing.rb|Foo', 'bar'
-            vcfprop 'a.cpp|Foo', 'bar'
-            vcfprop './test_cpp.rb|Foo', 'bar'
+            vcfprop 'missing.rb|Foo', 'bar'
+            vcfprop './b.cpp|Foo', 'bar'
           end
         end
       end
-      # src files are sorted by absolute path which gives odd ordering here
-      proj[:src].must_equal(["../../../missing.rb", "a/a.cpp", "../../../test_cpp.rb", "../../../test_error_reporting.rb", "../../../test_export_system.rb", "../../../test_extension_semantics.rb"])
+
+      proj[:src].must_equal [
+        "#{__dir__}/missing.rb",
+        "#{temp_dir}/a/missing.rb",
+        "#{__dir__}/b.cpp",
+        "#{__dir__}/test_error_reporting.rb",
+        "#{__dir__}/test_export_system.rb",
+        "#{__dir__}/test_extension_semantics.rb",
+        "#{temp_dir}/missing.rb",
+        "#{temp_dir}/a/b/c.cpp",
+        "#{__dir__}/a/b/c.cpp",
+      ].sort
     end
 
     it 'supports adding whole src directories recursively' do
@@ -128,7 +142,12 @@ module JABA
           end
         end
       end
-      proj[:src].must_equal(['a/b.cpp', 'a/c.cpp', 'a/d.cpp', 'a/e/f/g.cpp'])
+      proj[:src].must_equal [
+        "#{temp_dir}/a/b.cpp",
+        "#{temp_dir}/a/c.cpp",
+        "#{temp_dir}/a/d.cpp",
+        "#{temp_dir}/a/e/f/g.cpp"
+      ]
     end
 
     it 'supports platform-specific default src extensions' do
@@ -147,10 +166,32 @@ module JABA
       end
       vsproj = op[:cpp]['app|windows']
       vsproj.wont_be_nil
-      vsproj[:src].must_equal ['a.cpp', 'b.natvis', 'e.def', 'f.rc']
-      xcodeproj = op[:cpp]['app|xcode|ios']
+
+      vsproj[:src].must_equal [
+        "#{temp_dir}/a.cpp",
+        "#{temp_dir}/b.natvis",
+        "#{temp_dir}/e.def",
+        "#{temp_dir}/f.rc"
+      ]
+
+      op = jaba(dry_run: true, argv: ["-D", "target_host", "xcode"]) do
+        cpp :app do
+          root td
+          platforms [:windows_x86, :windows_x86_64, :ios_arm64]
+          project do
+            type :app
+            configs [:Debug, :Release]
+            src ['*']
+          end
+        end
+      end
+      xcodeproj = op[:cpp]['app|ios']
       xcodeproj.wont_be_nil
-      xcodeproj[:src].must_equal ['a.cpp', 'c.xcconfig']
+      
+      xcodeproj[:src].must_equal [
+        "#{temp_dir}/a.cpp",
+        "#{temp_dir}/c.xcconfig"
+      ]
     end
 
     it 'supports adding custom extensions' do
@@ -164,7 +205,14 @@ module JABA
           end
         end
       end
-      proj[:src].must_equal(['a/b.cpp', 'a/b.z', 'a/c.cpp', 'a/d.cpp', 'a/e/f/g.cpp', 'a/e/f/g/h.y'])
+      proj[:src].must_equal [
+        "#{temp_dir}/a/b.cpp",
+        "#{temp_dir}/a/b.z",
+        "#{temp_dir}/a/c.cpp",
+        "#{temp_dir}/a/d.cpp",
+        "#{temp_dir}/a/e/f/g.cpp",
+        "#{temp_dir}/a/e/f/g/h.y"
+      ]
     end
 
     it 'supports glob matches' do
@@ -176,7 +224,10 @@ module JABA
           end
         end
       end
-      proj[:src].must_equal ['a.cpp', 'b.cpp']
+      proj[:src].must_equal [
+        "#{temp_dir}/a.cpp",
+        "#{temp_dir}/b.cpp"
+      ]
     end
 
     it 'strips duplicate src' do
@@ -200,9 +251,11 @@ module JABA
           end
         end
       end
-      proj[:src].must_equal ['a/a.cpp', 'a/a.h']
+      proj[:src].must_equal [
+        "#{temp_dir}/a/a.cpp",
+        "#{temp_dir}/a/a.h"
+      ]
     end
-    # TODO: test fail when no src file matches
 
     it 'supports excludes' do
       files = ['a.cpp', 'b.cpp', 'c.cpp', 'd.x', 'e.y', 'a/b/e.cpp', 'a/b/h.y', 'b/c/d.cpp']
@@ -221,7 +274,12 @@ module JABA
           end
         end
       end
-      proj[:src].must_equal ['a.cpp', 'a/b/h.y', 'c.cpp', 'e.y']
+      proj[:src].must_equal [
+        "#{temp_dir}/a.cpp",
+        "#{temp_dir}/a/b/h.y",
+        "#{temp_dir}/c.cpp", 
+        "#{temp_dir}/e.y"
+      ]
     end
 
     it 'fails if no src matched' do

@@ -37,7 +37,7 @@ module JABA
       services.input.build_root.must_equal(br)
       
       File.exist?("#{br}/.jaba").must_equal(true)
-      File.exist?("#{br}/.jaba/jaba.output.json").must_equal(true)
+      File.exist?("#{br}/.jaba/jaba.output.vs2019.json").must_equal(true)
       File.exist?("#{br}/.jaba/src_root.cache").must_equal(true)
       IO.read("#{br}/.jaba/src_root.cache").must_equal("src_root=#{sr}")
 

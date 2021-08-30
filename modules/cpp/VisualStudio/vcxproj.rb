@@ -144,13 +144,13 @@ module JABA
     
     ##
     #
-    def build_jaba_output(p_root, out_dir)
-      p_root[:projdir] = @projdir.relative_path_from(out_dir)
+    def build_jaba_output(p_root)
+      p_root[:projdir] = @projdir
       p_root[:projname] = @projname
       p_root[:host] = @host.defn_id
       p_root[:platform] = @attrs.platform_ref.defn_id
-      p_root[:vcxproj] = @vcxproj_file.relative_path_from(out_dir)
-      p_root[:src] = @src.map{|f| f.absolute_path.relative_path_from(out_dir)}
+      p_root[:vcxproj] = @vcxproj_file
+      p_root[:src] = @src.map{|f| f.absolute_path}
       p_root[:vcglobal] = @attrs.vcglobal
       cfg_root = {}
       p_root[:configs] = cfg_root
@@ -163,9 +163,8 @@ module JABA
         end
         cfg = {}
         arch_root[attrs.config] = cfg
-        # TODO: organise by group. Build at the same time is generating
         cfg[:define] = attrs.define
-        cfg[:inc] = attrs.inc.map{|f| f.relative_path_from(out_dir)}
+        cfg[:inc] = attrs.inc
         cfg[:rtti] = attrs.rtti
         cfg[:syslibs] = attrs.syslibs
         cfg[:vcprop] = attrs.vcprop

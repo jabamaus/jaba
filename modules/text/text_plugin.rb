@@ -35,9 +35,9 @@ module JABA
     
     ##
     #
-    def build_jaba_output(root, out_dir)
+    def build_jaba_output(root)
       services.nodes.each do |n|
-        root[:filename] = n.attrs.filename.relative_path_from(out_dir)
+        root[:filename] = n.attrs.filename
       end
     end
 

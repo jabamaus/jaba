@@ -79,8 +79,8 @@ module JABA
       app[:vcglobal][:StringAttr3].must_equal('s3')
       app[:configs][:x86][:Debug][:define].must_equal ['A', 'B', 'C', 'F']
       app[:configs][:x86][:Release][:define].must_equal ['A', 'B', 'C', 'F', 'R']
-      app[:configs][:x86][:Debug][:inc].must_equal ['lib/include']
-      app[:configs][:x86][:Release][:inc].must_equal ['lib/include']
+      app[:configs][:x86][:Debug][:inc].must_equal ["#{temp_dir}/lib/include"]
+      app[:configs][:x86][:Release][:inc].must_equal ["#{temp_dir}/lib/include"]
 
       lib = op[:cpp]['lib|windows']
       lib[:vcglobal][:StringAttr].must_equal('s')
@@ -132,13 +132,16 @@ module JABA
       app = op[:cpp]['app|windows']
       app.wont_be_nil
       app[:configs][:x86][:Debug][:define].must_equal ['D']
-      app[:configs][:x86][:Debug][:inc].must_equal ['lib/lib.h']
+      app[:configs][:x86][:Debug][:inc].must_equal ["#{temp_dir}/lib/lib.h"]
       app[:configs][:x86][:Debug][:syslibs].must_equal ['libdebug_x86.lib']
       app[:configs][:x86][:Release][:define].must_equal ['R']
+      app[:configs][:x86][:Release][:inc].must_equal ["#{temp_dir}/lib/lib.h"]
       app[:configs][:x86][:Release][:syslibs].must_equal ['librelease_x86.lib']
       app[:configs][:x86_64][:Debug][:define].must_equal ['D']
+      app[:configs][:x86_64][:Debug][:inc].must_equal ["#{temp_dir}/lib/lib.h"]
       app[:configs][:x86_64][:Debug][:syslibs].must_equal ['libdebug_x64.lib']
       app[:configs][:x86_64][:Release][:define].must_equal ['R']
+      app[:configs][:x86_64][:Release][:inc].must_equal ["#{temp_dir}/lib/lib.h"]
       app[:configs][:x86_64][:Release][:syslibs].must_equal ['librelease_x64.lib']
       op[:cpp]['lib|windows'].must_be_nil
     end

@@ -103,11 +103,11 @@ module JABA
     
     ##
     # 
-    def build_jaba_output(root, out_dir)
+    def build_jaba_output(root)
       @workspaces.each do |w|
         w_root = {}
         root[w.handle] = w_root
-        #p.build_jaba_output(p_root, out_dir)
+        #p.build_jaba_output(p_root)
       end
     end
 

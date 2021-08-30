@@ -1,3 +1,6 @@
+- rename dirname to parent_path
+- condider putting .jaba inside buildsystem
+- Make build_jaba_output use an API so it can check that paths are absolute
 - Not sure about build_root now. Is there one root too many? buildsystem_root and artefact can be set relative to jaba file in definitions or if runnning with jaba -B, that could set the buildsystem_root. 
 - wrap -D target_host vs2019 into a command line switch
 - sort out input system
@@ -24,7 +27,6 @@
 - reorg tests into core folder and cpp folder
 - Stronger spec for value_options. Need to flag as array.
 - Overhaul workspace project glob matching
-- Should buildsystem_root include host? Then projdir would operate inside. Probably.
 - consider tracking last call loc in properties, for better reporting
 - implement warn level
 - add cmd line test for
@@ -33,17 +35,13 @@
   - symbol or string attr
 - add --list-globals option
 - rename items to choices
-- patch new attrs into config
 * Implement jaba build command to build vs2019 solution
 * Categories in solution files.
 - flag to control whether absolute paths allowed in file/dir attrs. Eg build_root_offset is not an offset if absolute path used.
   Is it even a path attr?
-- move bindir/libdir/objdir into globals.
 - Finish cutting over from check_fail to assert_jaba_error
 - ability to have build tree out of src but projects in src? config option to base projdir off src_root instead of dest_root?
-- Decide on format of jaba.output.json
 - Make defaults work per-file. Introduce global_defaults. Or a scope option to defaults.
-- Decide what's going on with config system
 * Automatically pull in dependencies into workspace
 - attr def properties should have help string/notes...
 - Disallow globals from referencing itself

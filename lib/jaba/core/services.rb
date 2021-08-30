@@ -873,9 +873,8 @@ module JABA
       log 'Building output...'
       
       out_file = "#{@jaba_temp_dir}/jaba.output.#{globals.target_host}.json"
-      out_dir = out_file.dirname
 
-      @generated = @file_manager.generated.map{|f| f.relative_path_from(out_dir)}
+      @generated = @file_manager.generated
 
       @output[:jaba_version] = VERSION
       @output[:format_version] = 1
@@ -883,12 +882,12 @@ module JABA
       @output[:build_root] = input.build_root
       @output[:generated] = @generated
 
-      @jaba_types.each do |tlt|
-        next if tlt.plugin.is_a?(DefaultPlugin)
+      @jaba_types.each do |jt|
+        next if jt.plugin.is_a?(DefaultPlugin)
         root = {}
-        tlt.plugin.build_jaba_output(root, out_dir)
+        jt.plugin.build_jaba_output(root)
         if !root.empty?
-          @output[tlt.defn_id] = root
+          @output[jt.defn_id] = root
         end
       end
 
