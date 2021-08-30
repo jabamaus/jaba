@@ -42,7 +42,7 @@ class ReleaseBuilder
     dest_dirs_to_create = []
 
     @files.each do |f|
-      dest_dir = "#{@dest_root}/#{File.dirname(f)}"
+      dest_dir = "#{@dest_root}/#{f.parent_path}"
       dest_dirs_to_create << dest_dir if !dest_dirs_to_create.include?(dest_dir)
     end
 
@@ -76,3 +76,4 @@ b.build
 
 # TODO: link to versioned docs
 # TODO: copy docs to docs branch, build and publish
+# TODO: check for accidentally checked in .jaba dirs in release

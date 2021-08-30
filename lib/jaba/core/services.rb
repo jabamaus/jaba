@@ -816,7 +816,7 @@ module JABA
     # Called from JDL API.
     #
     def glob(spec, &block)
-      jaba_file_dir = caller_locations(2, 1)[0].absolute_path.dirname
+      jaba_file_dir = caller_locations(2, 1)[0].absolute_path.parent_path
       if !spec.absolute_path?
         spec = "#{jaba_file_dir}/#{spec}"
       end
@@ -927,7 +927,7 @@ module JABA
         path = "#{JABA.grab_bag_dir}/#{path}"
       elsif !path.absolute_path?
         src_loc = caller_locations(2, 1)[0]
-        path = "#{src_loc.absolute_path.dirname}/#{path}"
+        path = "#{src_loc.absolute_path.parent_path}/#{path}"
       end
       if path.wildcard?
         @jdl_includes.concat(Dir.glob(path))
@@ -1093,7 +1093,7 @@ module JABA
       if File.exist?(log_fn)
         File.delete(log_fn)
       else
-        FileUtils.makedirs(log_fn.dirname)
+        FileUtils.makedirs(log_fn.parent_path)
       end
       IO.write(log_fn, @log_msgs.join("\n"))
     end

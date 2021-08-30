@@ -350,7 +350,7 @@ module JABA
           vp = sf.vpath
           while vp && vp != '.' && !filters.key?(vp)
             filters[vp] = nil
-            vp = vp.dirname
+            vp = vp.parent_path
           end
         end
         

@@ -18,6 +18,6 @@ IO.readlines(src_file, chomp: true).each do |method_name|
   header << "void #{method_name}();\n"
 end
 
-FileUtils.mkdir(cpp_file.dirname) if !File.exist?(cpp_file.dirname)
+FileUtils.mkdir(cpp_file.parent_path) if !File.exist?(cpp_file.parent_path)
 IO.write(cpp_file, cpp)
 IO.write(header_file, header)

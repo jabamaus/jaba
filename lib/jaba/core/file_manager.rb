@@ -180,7 +180,7 @@ module JABA
           services.log "Writing #{fn}"
         end
 
-        dir = fn.dirname
+        dir = fn.parent_path
         if !exist?(dir)
           FileUtils.makedirs(dir)
         end

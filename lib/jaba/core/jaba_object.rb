@@ -43,7 +43,7 @@ module JABA
     ##
     #
     def source_dir
-      @src_loc.path.dirname
+      @src_loc.path.parent_path
     end
 
     ##

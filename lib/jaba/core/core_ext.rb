@@ -231,7 +231,7 @@ module JABACoreExt
 
     ##
     #
-    def dirname
+    def parent_path
       File.dirname(self)
     end
 
