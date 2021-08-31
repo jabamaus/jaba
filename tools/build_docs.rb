@@ -140,7 +140,7 @@ class DocBuilder
   #
   def generate_jaba_type_reference(jt)
     write_markdown_page(jt.reference_manual_page(ext: '.md'), "#{jt.defn_id}", versioned: true) do |w|
-      w << ""
+      w << "[#{JABA::VERSION} reference home](jaba_reference.html)  "
       w << "> "
       w << "> _#{jt.title}_"
       w << "> "
@@ -271,7 +271,7 @@ class DocBuilder
         "[home](index.html)  "
       end
       if versioned && versioned_home
-        w << "[#{JABA::VERSION} home](index.html)"
+        w << "[#{JABA::VERSION} home](index.html)  "
       end
     end
     yield w

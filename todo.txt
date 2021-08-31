@@ -1,4 +1,3 @@
-- Add a 'reference home' to each separate type ref page in docs
 - make platforms a choice attribute
 - Regression tests for generated files!
 - consider putting .jaba inside buildsystem
