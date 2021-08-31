@@ -37,6 +37,8 @@ module JABA
       t = services.get_translator("vcxproj_#{platform}".to_sym)
       t.execute(node: @node, args: [self])
       
+      pchsrc = @node.attrs.pchsrc
+
       # Call translator to initialise configuration level Visual Studio-specific attributes (vcprop)
       # based on cross platform definition.
       #
@@ -45,6 +47,13 @@ module JABA
         platform_name = cfg.attrs.arch.attrs.vsname
         t = services.get_translator("vcxproj_config_#{platform}".to_sym)
         t.execute(node: cfg, args: [self, cfg.attrs.type])
+
+        if pchsrc
+          # Check pchsrc is a valid src file
+          #
+          get_matching_src_objs(pchsrc, @src, errobj: @node.get_attr(:pchsrc))
+          cfg.attrs.vcfprop "#{pchsrc}|PrecompiledHeader", :Create
+        end
 
         # Build events. Standard across platforms.
         #
@@ -302,15 +311,18 @@ module JABA
         w.write_raw(src_area)
       end
       
-      deps = @attrs.deps
-      if !deps.empty?
+      if !@attrs.deps.empty?
         item_group(w) do
-          deps.each do |dep|
-            proj_ref = @plugin.project_from_node(dep)
-            w << "    <ProjectReference Include=\"#{proj_ref.vcxproj_file.relative_path_from(projdir, backslashes: true)}\">"
-            w << "      <Project>#{proj_ref.guid}</Project>"
-            # TODO: reference properties
-            w << '    </ProjectReference>'
+          @node.visit_attr(:deps) do |attr, value|
+            soft = attr.has_flag_option?(:soft)
+            if !soft
+              dep_node = value
+              proj_ref = @plugin.project_from_node(dep_node)
+              w << "    <ProjectReference Include=\"#{proj_ref.vcxproj_file.relative_path_from(projdir, backslashes: true)}\">"
+              w << "      <Project>#{proj_ref.guid}</Project>"
+              # TODO: reference properties
+              w << '    </ProjectReference>'
+            end
           end
         end
       end

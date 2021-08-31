@@ -123,13 +123,15 @@ A: The code is written in a style that is the easiest to step through in an IDE 
 
 
 ouroveon todo
+- header only deps
 - workspace categories
 - ispc extension
 - warnlevel
-- pch
 - Allow debug?
 - Support **.h as alternative to **/*.h
 - Make shell build events use macros
 - review whether static libs should have hard dependencies
 - get rid of jaba.bat and Introduce jaba.exe
 - add grab bag to reference docs
+- characterset unicode the default?
+- optimisation settings

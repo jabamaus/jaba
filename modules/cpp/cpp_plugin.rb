@@ -131,7 +131,9 @@ module JABA
       end
       
       @all_project_nodes.reverse_each do |node|
-        node.attrs.deps.each do |dep_node|
+        node.visit_attr(:deps) do |attr, value|
+          dep_node = value
+          soft = attr.has_flag_option?(:soft)
           process_node_exports(node, dep_node)
           dep_node.children.each do |dep_cfg|
             # TODO: This is pretty nasty. Improve.
@@ -142,7 +144,7 @@ module JABA
             if !cfg
               JABA.error("Could not find config in #{node.describe} to match #{dep_cfg.describe}")
             end
-            process_node_exports(cfg, dep_cfg, is_config: true)
+            process_node_exports(cfg, dep_cfg, is_config: true, soft_dependency: soft)
           end
         end
       end
@@ -253,10 +255,10 @@ module JABA
 
     ##
     #
-    def process_node_exports(target_node, dep_node, is_config: false)
+    def process_node_exports(target_node, dep_node, is_config: false, soft_dependency: false)
       dep_attrs = dep_node.attrs
 
-      if is_config
+      if is_config && !soft_dependency
         case dep_attrs.type
         when :lib
           if target_node.attrs.type != :lib

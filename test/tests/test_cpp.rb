@@ -155,6 +155,8 @@ module JABA
       proj[:configs][:x86_64][:Release][:vcprop]['PG1|NewProperty'].must_equal('p')
     end
 
+    # TODO: test pch
+    # TODO: test soft dependencies
   end
 
 end

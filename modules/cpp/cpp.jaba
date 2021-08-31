@@ -131,8 +131,6 @@ type :cpp_project do
     }
   end
 
-  # Common attributes
-  #
   attr_array :configs, type: :symbol_or_string do
     title 'Build configurations'
     flags :required, :no_sort, :exportable
@@ -141,8 +139,10 @@ type :cpp_project do
   
   attr_array :deps, type: :node_ref do
     title 'Project dependencies'
-    note 'List of ids of other cpp definitions'
+    note 'List of ids of other cpp definitions. A dependency can be flagged with :soft, in which case only its exports will be imported - it will not be linked to. ' \
+      'This can be used for \'header only\' dependencies'
     node_type :cpp_project
+    flag_options :soft
     make_handle do |id|
       "#{id}|#{platform}"
     end
@@ -154,10 +154,18 @@ type :cpp_project do
         type :app
         ...
         deps [:MyLib]
+        deps [:MyLib2], :soft # Only its exports will be imported, will not be linked to
       end
       
       cpp :MyLib do
         type :lib
+        ...
+      end
+
+      cpp :MyLib2 do
+        type :lib
+        inc ['.'], :export
+        define ['MYLIB2], :export
         ...
       end
     }
@@ -264,6 +272,16 @@ type :cpp_project do
   attr :category, type: :node_ref do
     title 'Workspace categorisation'
     node_type :category
+  end
+
+  attr :pch, type: :src_spec do
+    title 'Precompiled header file'
+    basedir_spec :definition_root
+  end
+
+  attr :pchsrc, type: :src_spec do
+    title 'Precompiled source file'
+    basedir_spec :definition_root
   end
 
 end
@@ -443,8 +461,6 @@ type :cpp_config do
     example 'warnerror true'
   end
 
-  # Not so common attributes. Often used but not fundamental.
-  #
   attr :character_set, type: :choice do
     title 'Character set'
     items [
