@@ -71,7 +71,7 @@ module JABA
 
     @@id_to_var = {}
 
-    PropertyInfo = Struct.new(:variant, :accepts_block)
+    PropertyInfo = Struct.new(:variant, :store_block)
 
     ##
     #
@@ -93,14 +93,14 @@ module JABA
 
     ##
     #
-    def define_property(p_id, variant: :single, accepts_block: false)
+    def define_property(p_id, variant: :single, store_block: false)
       case variant
       when :single
-        do_define_property(p_id, :single, accepts_block, nil)
+        do_define_property(p_id, :single, store_block, nil)
       when :array
-        define_array_property(p_id, accepts_block: accepts_block)
+        define_array_property(p_id, store_block: store_block)
       when :hash
-        define_hash_property(p_id, accepts_block: accepts_block)
+        define_hash_property(p_id, store_block: store_block)
       when :block
         define_block_property(p_id)
       end
@@ -108,14 +108,14 @@ module JABA
 
     ##
     #
-    def define_array_property(p_id, accepts_block: false)
-      do_define_property(p_id, :array, accepts_block, [])
+    def define_array_property(p_id, store_block: false)
+      do_define_property(p_id, :array, store_block, [])
     end
 
     ##
     #
-    def define_hash_property(p_id, accepts_block: false)
-      do_define_property(p_id, :hash, accepts_block, {})
+    def define_hash_property(p_id, store_block: false)
+      do_define_property(p_id, :hash, store_block, {})
     end
 
     ##
@@ -135,16 +135,19 @@ module JABA
       inst_var = PropertyMethods.get_var(p_id)
 
       if block_given?
-        if !info.accepts_block
-          JABA.error('Only properties flagged with :accepts_block can accept a block')
-        end
         if !val.nil?
           JABA.error('Must provide a value or a block but not both')
         end
-        do_set(p_id, block) do
-          instance_variable_set(inst_var, block)
+        if info.store_block
+          do_set(p_id, block) do
+            instance_variable_set(inst_var, block)
+          end
+          return
         end
-      elsif info.variant == :array
+        val = block.call
+      end
+      
+      if info.variant == :array
         if val.hash?
           JABA.error("'#{p_id}' expects an array but got '#{val}'")
         end
@@ -219,11 +222,11 @@ module JABA
 
     ##
     #
-    def do_define_property(p_id, variant, accepts_block, initial)
+    def do_define_property(p_id, variant, store_block, initial)
       if @properties.key?(p_id)
         JABA.error("'#{p_id}' property multiply defined")
       end
-      @properties[p_id] = PropertyInfo.new(variant, accepts_block)
+      @properties[p_id] = PropertyInfo.new(variant, store_block)
 
       var = PropertyMethods.get_var(p_id)
       instance_variable_set(var, initial)

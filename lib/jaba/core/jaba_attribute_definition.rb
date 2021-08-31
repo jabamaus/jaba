@@ -50,7 +50,7 @@ module JABA
       define_property(:title)
       define_array_property(:notes)
       define_array_property(:examples)
-      define_property(:default, variant: variant, accepts_block: true)
+      define_property(:default, variant: variant, store_block: true)
       define_array_property(:flags)
       define_array_property(:flag_options)
       

@@ -63,13 +63,27 @@ module JABA
       pc.set_property(:a, 2)
       pc.a.must_equal(2)
 
-      pc.define_property(:b, accepts_block: true)
+      # It can store a block as value
+      #
+      pc.define_property(:b, store_block: true)
       pc.set_property(:b) do
-        print 'can accept block if flagged'
+        print 'can store block if flagged'
       end
-      assert_output 'can accept block if flagged' do
+      assert_output 'can store block if flagged' do
         pc.b.call
       end
+
+      # It can take its value from block
+      #
+      pc.define_property(:c)
+      pc.set_property(:c) do
+        1
+      end
+      pc.c.must_equal(1)
+      pc.set_property(:c) do
+        2
+      end
+      pc.c.must_equal(2)
     end
 
     it 'supports array properties' do
@@ -88,13 +102,27 @@ module JABA
       pc.set_property(:a, [[4, 5], [6, 7]]) # gets flattened
       pc.a.must_equal [1, 2, 3, 4, 5, 6, 7]
 
-      pc.define_array_property(:b, accepts_block: true)
+      # It can store a block as value
+      #
+      pc.define_array_property(:b, store_block: true)
       pc.set_property(:b) do
-        print 'can accept block if flagged'
+        print 'can store block if flagged'
       end
-      assert_output 'can accept block if flagged' do
+      assert_output 'can store block if flagged' do
         pc.b.call
       end
+
+      # It can take its value from block
+      #
+      pc.define_array_property(:c)
+      pc.set_property(:c) do
+        [1, 2, 3]
+      end
+      pc.c.must_equal [1, 2, 3]
+      pc.set_property(:c) do
+        4
+      end
+      pc.c.must_equal [1, 2, 3, 4]
     end
 
     it 'supports hash properties' do
@@ -112,13 +140,27 @@ module JABA
       pc.set_property(:a, {c: :d})
       pc.a.must_equal({a: :b, c: :d})
 
-      pc.define_hash_property(:b, accepts_block: true)
+      # It can store a block as value
+      #
+      pc.define_hash_property(:b, store_block: true)
       pc.set_property(:b) do
-        print 'can accept block if flagged'
+        print 'can store block if flagged'
       end
-      assert_output 'can accept block if flagged' do
+      assert_output 'can store block if flagged' do
         pc.b.call
       end
+
+      # It can take its value from block
+      #
+      pc.define_hash_property(:c)
+      pc.set_property(:c) do
+        {a: :b}
+      end
+      pc.c.must_equal({a: :b})
+      pc.set_property(:c) do
+        {c: :d}
+      end
+      pc.c.must_equal({a: :b, c: :d})
     end
 
     it 'supports block properties' do
@@ -176,17 +218,41 @@ module JABA
     end
 
     it 'calls pre_property_set and post_property_set with incoming value' do
-      assert_output "pre a->1\npost a->1\npre b->2\npost b->2\npre b->3\npost b->3\npre b->4\npost b->4\npre c->{:a=>:b}\npost c->{:a=>:b}\npre d->block\npost d->block\n" do
+      assert_output %Q{pre a->1
+post a->1
+pre a->2
+post a->2
+pre b->2
+post b->2
+pre b->3
+post b->3
+pre b->4
+post b->4
+pre c->{:a=>:b}
+post c->{:a=>:b}
+pre c->{:c=>:d}
+post c->{:c=>:d}
+pre d->block
+post d->block
+} do
         pc = PropertyContainer.new(on_prop_set: true)
         pc.define_property(:a)
         pc.set_property(:a, 1)
+        pc.set_property(:a) do
+          2
+        end
         pc.define_array_property(:b)
         pc.set_property(:b, [2])
         pc.ignore_next
         pc.set_property(:b, [5]) # Won't get set
-        pc.set_property(:b, [3, 4])
+        pc.set_property(:b) do
+          [3, 4]
+        end
         pc.define_hash_property(:c)
         pc.set_property(:c, {a: :b})
+        pc.set_property(:c) do
+          {c: :d}
+        end
         pc.define_block_property(:d) # doesn't call pre/post set for block properties
         pc.set_property(:d) do
         end
