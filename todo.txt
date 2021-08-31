@@ -1,4 +1,6 @@
-- make platforms a choice attribute
+- rename windows_x86 to win_86?
+- Combine :symbol, :string and :symbol_or_string? Allow strings and symbols to be completely interchangeable?
+- Standardise 'expected/available' error msg, eg Available: [a|b|c|]
 - Regression tests for generated files!
 - consider putting .jaba inside buildsystem
 - Make build_jaba_output use an API so it can check that paths are absolute

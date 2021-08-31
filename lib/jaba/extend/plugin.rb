@@ -116,11 +116,19 @@ module JABA
 
     attr_reader :services
 
-    ##
-    #
+    ##s
+    # Local constructor initialisation only.
+    # 
     def init
     end
     
+    ##
+    # Give plugin a chance to do some initialisation before nodes are created. Dependent plugins that have already
+    # been processed can be accessed here.
+    #
+    def pre_process_definitions
+    end
+
     ##
     #
     def process_definition(definition)

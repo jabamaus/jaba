@@ -8,6 +8,19 @@ module JABA
 
     CPP_VS_JDL_FILE = "#{__dir__}/../../modules/cpp/VisualStudio/cpp_vs.jaba".cleanpath
 
+    it 'detects invalid platform specs' do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagN)}: Invalid platform spec ':windows_x87'. Available: [:ios_arm64, :windows_x86, :windows_x86_64, :windows_arm64]" do
+        jaba(dry_run: true, cpp_app: true) do
+          cpp :app do
+            platforms [:windows_x87] # tagN
+            project do
+              src ['main.cpp'], :force
+            end
+          end
+        end
+      end
+    end
+
     # TODO
     it 'is evaluated per-type, per-sku and per-config' do
       jaba do

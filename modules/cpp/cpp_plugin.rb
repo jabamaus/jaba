@@ -21,6 +21,22 @@ module JABA
       @project_ids = []
       @node_to_project = {}
       @export_only_dependencies_to_resolve = {}
+      @valid_platforms = []
+    end
+
+    ##
+    #
+    def pre_process_definitions
+      target_host_id = services.globals.target_host
+      @target_host = services.node_from_handle(target_host_id.to_s) # TODO: move to services
+      @supported_platforms = @target_host.attrs.cpp_supported_platforms
+
+      platform_plugin = services.get_plugin(:platform)
+      platform_plugin.services.root_nodes.each do |platform|
+        platform.attrs.valid_archs.each do |arch|
+          @valid_platforms << "#{platform}_#{arch}".to_sym
+        end
+      end
     end
 
     ##
@@ -36,34 +52,34 @@ module JABA
 
       @project_ids << definition.id
 
-      target_host_id = services.globals.target_host
-      target_host = services.node_from_handle(target_host_id.to_s) # TODO: move to services
-      supported_platforms = target_host.attrs.cpp_supported_platforms
-
       root_node = services.make_node
+      project_blocks = root_node.attrs.project
+      config_blocks = root_node.attrs.config
 
+      # Validate platform specification
+      #
       target_platform_to_archs = {}
       root_node.attrs.platforms.each do |pspec|
+        if !@valid_platforms.include?(pspec)
+          JABA.error("Invalid platform spec '#{pspec.inspect_unquoted}'. Available: #{@valid_platforms}", errobj: root_node.get_attr(:platforms))
+        end
         if pspec !~ /^(.*?)_(.*)/
           JABA.error("Cannot extract platform and architecture from '#{pspec}'")
         end
         platform = Regexp.last_match(1).to_sym
         arch = Regexp.last_match(2).to_sym
-        target_platform_to_archs.push_value(platform, arch)
+        if @supported_platforms.include?(platform)
+          target_platform_to_archs.push_value(platform, arch)
+        end
       end
 
-      project_blocks = root_node.attrs.project
-      config_blocks = root_node.attrs.config
-
       target_platform_to_archs.each do |tp, target_archs|
-        next if !supported_platforms.include?(tp)
-        
         pn = services.make_node(type_id: :cpp_project, name: tp, parent: root_node, blocks: project_blocks) do
           platform tp
         end
 
         @all_project_nodes << pn
-        @host_to_project_nodes.push_value(target_host, pn)
+        @host_to_project_nodes.push_value(@target_host, pn)
 
         pn.attrs.configs.each do |cfg|
           target_archs.each do |ta|

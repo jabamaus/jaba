@@ -71,6 +71,11 @@ module JABA
     def process
       services.log "Processing #{describe}", section: true
 
+      # Give plugin a chance to do some initialisation before nodes are created. Dependent plugins that have already
+      # been processed can be accessed here.
+      #
+      @plugin.pre_process_definitions
+
       @definitions.each do |d|
         push_definition(d) do
           @root_nodes.concat(Array(@plugin.process_definition(d)))

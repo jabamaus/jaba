@@ -51,7 +51,7 @@ end
 platform :ios do
   ios? true
   apple? true
-  valid_archs [] # TODO
+  valid_archs [:arm64]
 end
 
 # macos platform instance for use in definitions

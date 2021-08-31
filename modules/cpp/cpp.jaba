@@ -38,7 +38,7 @@ type :cpp do
     basedir_spec :jaba_file
   end
 
-  attr_array :platforms do
+  attr_array :platforms, type: :symbol do
     title 'Target platforms'
     flags :required
   end
