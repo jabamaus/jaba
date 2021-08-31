@@ -136,7 +136,7 @@ module JABA
 
       if block_given?
         if !info.accepts_block
-          JABA.error('Only properties flagged with accept_block can accept a block')
+          JABA.error('Only properties flagged with :accepts_block can accept a block')
         end
         if !val.nil?
           JABA.error('Must provide a value or a block but not both')
