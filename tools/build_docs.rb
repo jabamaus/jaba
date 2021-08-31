@@ -172,9 +172,9 @@ class DocBuilder
           type << "#{ad.type_id.inspect}"
         end
         if ad.array?
-          type << " []"
+          type << " array"
         elsif ad.hash?
-          type << " {}"
+          type << " hash"
         end
         md_row(w, :type, type)
         ad.jaba_attr_type.get_reference_manual_rows(ad)&.each do |id, value|
