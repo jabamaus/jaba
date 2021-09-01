@@ -34,7 +34,7 @@
 </tbody>
 </table>
 </blockquote>
-<p>28 attributes:</p>
+<p>29 attributes:</p>
 <ul>
 <li><a href="#arch">arch</a></li>
 <li><a href="#bindir">bindir</a></li>
@@ -63,6 +63,7 @@
 <li><a href="#toolset">toolset</a></li>
 <li><a href="#vcfprop">vcfprop</a></li>
 <li><a href="#vcprop">vcprop</a></li>
+<li><a href="#vcwarnlevel">vcwarnlevel</a></li>
 <li><a href="#warnerror">warnerror</a></li>
 </ul>
 <p><a id="arch"></a></p>
@@ -193,11 +194,11 @@
 </tr>
 <tr>
 <td><em>choices</em></td>
-<td>[:mbcs, :unicode, nil]</td>
+<td>[:ascii, :mbcs, :unicode]</td>
 </tr>
 <tr>
 <td><em>default</em></td>
-<td></td>
+<td>:unicode</td>
 </tr>
 <tr>
 <td><em>flags</em></td>
@@ -854,7 +855,7 @@
 <tbody>
 <tr>
 <td><em>type</em></td>
-<td>:string</td>
+<td>:basename</td>
 </tr>
 <tr>
 <td><em>default</em></td>
@@ -1051,6 +1052,45 @@
 <tr>
 <td><em>options</em></td>
 <td>:export, :export_only</td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="vcwarnlevel"></a></p>
+<h4 id="vcwarnlevel">vcwarnlevel</h4>
+<blockquote>
+<p><em>Visual Studio warning level</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:choice</td>
+</tr>
+<tr>
+<td><em>choices</em></td>
+<td>[1, 2, 3, 4]</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>3</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
 </tr>
 <tr>
 <td><em>defined in</em></td>

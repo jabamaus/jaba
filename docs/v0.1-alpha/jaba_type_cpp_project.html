@@ -34,12 +34,14 @@
 </tbody>
 </table>
 </blockquote>
-<p>15 attributes:</p>
+<p>17 attributes:</p>
 <ul>
 <li><a href="#category">category</a></li>
 <li><a href="#configs">configs</a></li>
 <li><a href="#deps">deps</a></li>
 <li><a href="#guid">guid</a></li>
+<li><a href="#pch">pch</a></li>
+<li><a href="#pchsrc">pchsrc</a></li>
 <li><a href="#platform">platform</a></li>
 <li><a href="#projdir">projdir</a></li>
 <li><a href="#projname">projname</a></li>
@@ -132,7 +134,7 @@
 <h4 id="deps">deps</h4>
 <blockquote>
 <p><em>Project dependencies</em></p>
-<p>List of ids of other cpp definitions.</p>
+<p>List of ids of other cpp definitions. A dependency can be flagged with :soft, in which case only its exports will be imported - it will not be linked to. This can be used for 'header only' dependencies.</p>
 <table>
 <thead>
 <tr>
@@ -159,7 +161,7 @@
 </tr>
 <tr>
 <td><em>options</em></td>
-<td></td>
+<td>:soft</td>
 </tr>
 <tr>
 <td><em>defined in</em></td>
@@ -172,10 +174,18 @@
   <span style="color:#111">type</span> <span style="color:#d88200">:app</span>
   <span style="color:#f92672">...</span>
   <span style="color:#111">deps</span> <span style="color:#f92672">[</span><span style="color:#d88200">:MyLib</span><span style="color:#f92672">]</span>
+  <span style="color:#111">deps</span> <span style="color:#f92672">[</span><span style="color:#d88200">:MyLib2</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">:soft</span> <span style="color:#75715e"># Only its exports will be imported, will not be linked to</span>
 <span style="color:#00a8c8">end</span>
 
 <span style="color:#111">cpp</span> <span style="color:#d88200">:MyLib</span> <span style="color:#00a8c8">do</span>
   <span style="color:#111">type</span> <span style="color:#d88200">:lib</span>
+  <span style="color:#f92672">...</span>
+<span style="color:#00a8c8">end</span>
+
+<span style="color:#111">cpp</span> <span style="color:#d88200">:MyLib2</span> <span style="color:#00a8c8">do</span>
+  <span style="color:#111">type</span> <span style="color:#d88200">:lib</span>
+  <span style="color:#111">inc</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;.&#39;</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">:export</span>
+  <span style="color:#111">define</span> <span style="color:#f92672">[</span><span style="color:#960050;background-color:#1e0010">&#39;</span><span style="color:#00a8c8">MYLIB2</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">:export</span>
   <span style="color:#f92672">...</span>
 <span style="color:#00a8c8">end</span>
 </pre></blockquote>
@@ -211,6 +221,76 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="pch"></a></p>
+<h4 id="pch">pch</h4>
+<blockquote>
+<p><em>Precompiled header file</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:src_spec</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="pchsrc"></a></p>
+<h4 id="pchsrc">pchsrc</h4>
+<blockquote>
+<p><em>Precompiled source file</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:src_spec</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/cpp.jaba</td>
 </tr>
 </tbody>
 </table>
@@ -317,7 +397,7 @@
 <tbody>
 <tr>
 <td><em>type</em></td>
-<td>:string</td>
+<td>:basename</td>
 </tr>
 <tr>
 <td><em>default</em></td>
