@@ -123,6 +123,8 @@ translator :vcxproj_config_windows do |vcxproj, cfg_type|
 
   vcprop 'ClCompile|TreatWarningAsError', true if warnerror
 
+  vcprop 'ClCompile|WarningLevel', "Level#{vcwarnlevel}"
+
   # Link
   #
   vcprop "#{cfg_type == :lib ? :Lib : :Link}|AdditionalDependencies" do

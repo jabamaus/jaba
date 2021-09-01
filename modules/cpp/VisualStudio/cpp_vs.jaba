@@ -103,6 +103,13 @@ open_type :cpp_config do
       vcfprop 'win32/*|DisableSpecificWarnings', 4096
     }
   end
+
+  attr :vcwarnlevel, type: :choice do
+    title 'Visual Studio warning level'
+    items [1, 2, 3, 4]
+    default 3
+  end
+  
 end
 
 open_type :category do
