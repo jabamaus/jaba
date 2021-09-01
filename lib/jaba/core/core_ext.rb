@@ -265,6 +265,12 @@ module JABACoreExt
       tr!('/', '\\')
       self
     end
+
+    ##
+    #
+    def contains_slashes?
+      self =~ /(\\)|(\/)/ ? true : false
+    end
     
     ##
     #

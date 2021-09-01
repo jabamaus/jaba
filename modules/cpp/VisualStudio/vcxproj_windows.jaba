@@ -3,7 +3,6 @@ open_instance :windows, type: :platform do
 end
 
 translator :vcxproj_windows do |vcxproj|
-  vcglobal :ProjectName, projname
   vcglobal :ProjectGuid, guid
   vcglobal :Keyword, 'Win32Proj'
   vcglobal :RootNamespace, projname
@@ -43,6 +42,12 @@ translator :vcxproj_config_windows do |vcxproj, cfg_type|
 
   # Second set of property groups
   #
+  if cfg_type != :lib
+    vcprop 'PG2|LinkIncremental' do
+      debug # true for debug else false
+    end
+  end
+
   vcprop 'PG2|OutDir' do
     if cfg_type == :lib
       libdir.relative_path_from(vcxproj.projdir, backslashes: true, trailing: true)

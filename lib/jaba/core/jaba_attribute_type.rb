@@ -398,6 +398,27 @@ module JABA
 
   ##
   #
+  class JabaAttributeTypeBasename < JabaAttributeType
+  
+    ##
+    #
+    def initialize
+      super(:basename, 'basename attribute type')
+      @notes = 'Basename of a file. Slashes are rejected.'
+    end
+
+    ##
+    #
+    def validate_value(attr_def, value)
+      if value.contains_slashes?
+        JABA.error("'#{value}' must not contain slashes")
+      end
+    end
+
+  end
+
+  ##
+  #
   class JabaAttributeTypeUUID < JabaAttributeType
     
     ##

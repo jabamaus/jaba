@@ -1,3 +1,5 @@
+- Review whether '.' is allowed in :basename type. Maybe Introduce and allow_ext option.
+- Introduce :extension type. Use for src_ext
 - Add allowed platform specs to cpp#platforms reference doc somehow
 - rename windows_x86 to win_86?
 - Combine :symbol, :string and :symbol_or_string? Allow strings and symbols to be completely interchangeable?
@@ -135,3 +137,4 @@ ouroveon todo
 - add grab bag to reference docs
 - characterset unicode the default?
 - optimisation settings
+- Is ToolsVersion='16.0' needed?

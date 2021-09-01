@@ -186,6 +186,14 @@ module JABA
       '$(Var)'.vs_quote!.must_equal('"$(Var)"')   # macro, quote
     end
 
+    it 'supports contains_slashes' do
+      'a'.contains_slashes?.must_equal false
+      'a/b'.contains_slashes?.must_equal true
+      'a\\b'.contains_slashes?.must_equal true
+      '/'.contains_slashes?.must_equal true
+      '\\'.contains_slashes?.must_equal true
+    end
+
   end
 
 end

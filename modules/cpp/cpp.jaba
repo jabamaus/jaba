@@ -183,7 +183,7 @@ type :cpp_project do
     }
   end
   
-  attr :projname, type: :string do
+  attr :projname, type: :basename do
     title 'Base name of project files'
     note 'Defaults to $(id)$(projsuffix)'
     default do
@@ -413,7 +413,7 @@ type :cpp_config do
     example "nowarn [4100, 4127, 4244] if visual_studio?"
   end
 
-  attr :targetname, type: :string do
+  attr :targetname, type: :basename do
     title 'Base name of output file without extension'
     note 'Defaults to $(targetprefix)$(projname)$(targetsuffix)'
     default do
@@ -464,11 +464,11 @@ type :cpp_config do
   attr :character_set, type: :choice do
     title 'Character set'
     items [
+      :ascii,
       :mbcs,    # Visual Studio only
-      :unicode,
-      nil
+      :unicode
     ]
-    default nil
+    default :unicode
     example 'character_set :unicode'
   end
 

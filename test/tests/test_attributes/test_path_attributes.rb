@@ -22,6 +22,22 @@ module JABA
     # TODO: test all base_dir specs
 
     # TODO: test paths starting with ./
+
+    it 'rejects slashes in basename' do
+      ['a\b', 'a/b'].each do |val|
+        assert_jaba_error "Error at #{src_loc(__FILE__, :tagB)}: 't.a' attribute invalid: '#{val}' must not contain slashes." do
+          jaba(barebones: true) do
+            type :test do
+              attr :a, type: :basename
+            end
+            test :t do
+              a val # tagB
+            end
+          end
+        end
+      end
+    end
+
   end
 
 end
