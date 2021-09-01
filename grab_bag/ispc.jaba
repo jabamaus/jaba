@@ -1,6 +1,6 @@
 type :ispc_rule do
 
-  title 'TODO'
+  title 'Intel SPMD Program Compiler (ISPC)'
 
   attr :AddInstrumentation, type: :bool do
     title 'Enable Instrumentation Injection'

@@ -1,4 +1,5 @@
 require_relative 'common'
+require 'rexml'
 
 using JABACoreExt
 
@@ -11,25 +12,33 @@ class JabaTypeBuilder
       raise "#{xml_file} does not exist"
     end
     @attrs = []
-    @content = IO.read(xml_file)
+    doc = REXML::Document.new(IO.read(xml_file))
+    rule_elem = doc.elements['ProjectSchemaDefinitions/Rule']
 
-    @name = 'ispc' # TODO
-    @type_name = "#{@name}_rule"
-    
-    scan_for_props('<BoolProperty', '(</BoolProperty>| />)') do |c|
-      add_attr(c, :bool)
-    end
-    scan_for_props('<IntProperty', '(</IntProperty>| />)') do |c|
-      add_attr(c, :int)
-    end
-    scan_for_props('<StringProperty', '(</StringProperty>| />)') do |c|
-      add_attr(c, :string)
-    end
-    scan_for_props('<StringListProperty', '(</StringListProperty>| />)') do |c|
-      add_attr(c, :string, array: true)
-    end
-    scan_for_props('<EnumProperty', '</EnumProperty>') do |c|
-      add_attr(c, :choice)
+    @name = rule_elem.attributes['Name'].downcase
+    @display_name = rule_elem.attributes['DisplayName']
+
+    rule_elem.elements.each do |e|
+      # Skip if property has a data source child elem, eg StringListProperty.DataSource
+      #
+      next if e.elements["#{e.name}.DataSource"]
+      
+      case e.name
+      when 'BoolProperty'
+        add_attr(e, :bool)
+      when 'StringProperty'
+        add_attr(e, :string)
+      when 'StringListProperty'
+        add_attr(e, :string, array: true)
+      when 'IntProperty'
+        add_attr(e, :int)
+      when 'EnumProperty'
+        add_attr(e, :choice)
+      when 'Rule.DataSource', 'Rule.Categories', 'DynamicEnumProperty'
+        # nothing
+      else
+        raise "Unrecognised <Rule> child '#{e.name}'"
+      end
     end
 
     @attrs.sort_by!{|a| a.id}
@@ -39,9 +48,11 @@ class JabaTypeBuilder
     file = fm.new_file("#{JABA.grab_bag_dir}/#{@name}.jaba")
     w = file.writer
 
+    @type_name = "#{@name}_rule"
+
     w << "type :#{@type_name} do" # TODO
     w << ""
-    w << "  title 'TODO'"
+    w << "  title '#{@display_name}'"
     w << ""
 
     @attrs.each do |a|
@@ -83,68 +94,36 @@ class JabaTypeBuilder
 
   ##
   #
-  def scan_for_props(start, end_)
-    blocks = []
-    @content.scan(/(#{start}(.*?)#{end_})/m) do |match|
-      blocks << match[0]
-      yield match[1].strip
-    end
-    blocks.each do |b|
-      @content.sub!(b, '')
-    end
-  end
+  def add_attr(elem, type, array: false)
+    attrs = elem.attributes
 
-  ##
-  #
-  def get_prop(c, prop, optional: false)
-    if c !~ /#{prop}="(.*?)"/
-      if optional
-        return nil
-      else
-        raise "Could not read '#{prop}' from #{c}"
-      end
-    end
-    Regexp.last_match(1)
-  end
+    return if attrs['Visible']&.downcase == 'false'
 
-  ##
-  #
-  def add_attr(c, type, array: false)
-    return if c =~ /<DataSource/
+    name = attrs['Name']
+    subtype = attrs['Subtype']
 
-    visible = get_prop(c, 'Visible', optional: true)
-    return if (visible && visible.downcase == 'false')
-
-    has_subtype = get_prop(c, 'Subtype', optional: true) ? true : false
-
-    name = get_prop(c, 'Name')
-
-    display_name = if has_subtype
-      if c !~ /DisplayName>.*?<sys:String>(.*?)<\/sys:String>/m
-        raise "Could not extract sub type display name from #{c}"
-      end
-      Regexp.last_match(1)
+    display_name = if subtype
+      elem.elements["#{elem.name}.DisplayName/sys:String"].text
     else
-      get_prop(c, 'DisplayName')
-    end
-    
-    desc = if has_subtype
-      if c !~ /Description>.*?<sys:String>(.*?)<\/sys:String>/m
-        raise "Could not extract sub type display name from #{c}"
-      end
-      Regexp.last_match(1)
-    else
-      get_prop(c, 'Description', optional: true)
+      attrs['DisplayName']
     end
 
-    switch = type != :choice ? get_prop(c, 'Switch', optional: true) : nil
+    desc = if subtype
+      elem.elements["#{elem.name}.Description/sys:String"].text
+    else
+      attrs['Description']
+    end
+
+    switch = attrs['Switch']
 
     notes = ''
     notes << desc.strip.ensure_end_with('.') if (desc && desc != display_name)
-    if switch
+
+    if switch && !switch.strip.empty?
       notes << ' ' if !notes.empty?
       notes << "Sets #{switch}"
     end
+    
     notes.gsub!("'",  "\"")
     notes.gsub!('&quot;', '"')
 
@@ -157,13 +136,14 @@ class JabaTypeBuilder
 
     if type == :choice
       a.choices = []
-      c.scan(/<EnumValue(.*?)\/>/m) do |match|
-        a.choices << get_prop(match[0], 'Name')
+      elem.elements.each('EnumValue') do |ev|
+        a.choices << ev.attributes['Name']
       end
     end
 
     @attrs << a
   end
+
 end
 
 # TODO: get from command line
