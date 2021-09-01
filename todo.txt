@@ -1,3 +1,4 @@
+- Support vcfprop at project level too
 - Review whether '.' is allowed in :basename type. Maybe Introduce and allow_ext option.
 - Introduce :extension type. Use for src_ext
 - Add allowed platform specs to cpp#platforms reference doc somehow

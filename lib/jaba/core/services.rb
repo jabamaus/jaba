@@ -820,7 +820,7 @@ module JABA
       if !spec.absolute_path?
         spec = "#{jaba_file_dir}/#{spec}"
       end
-      files = @file_manager.glob(spec)
+      files = @file_manager.glob_files(spec)
       files = files.map{|f| f.relative_path_from(jaba_file_dir)}
       files.each(&block)
     end
@@ -1019,7 +1019,7 @@ module JABA
     ##
     #
     def load_path_valid?(path)
-      !@file_manager.glob("#{path}/*.jaba").empty?
+      !@file_manager.glob_files("#{path}/*.jaba").empty?
     end
 
     ##
@@ -1034,7 +1034,7 @@ module JABA
       end
 
       if File.directory?(p)
-        files = @file_manager.glob("#{p}/*.jaba")
+        files = @file_manager.glob_files("#{p}/*.jaba")
         if files.empty?
           msg = "No .jaba files found in '#{p}'"
           if fail_if_empty

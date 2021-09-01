@@ -68,7 +68,7 @@ module JABA
             JABA.error('Wildcards are not allowed when force adding src - ' \
               'only explicitly specified source files', errobj: elem)
           end
-          glob_matches = file_manager.glob(abs_path)
+          glob_matches = file_manager.glob_files(abs_path)
         else # else its an explicitly specified file or directory
           if !file_manager.exist?(abs_path) && !force
             JABA.error("'#{abs_path}' does not exist on disk. Use :force to add anyway.", errobj: elem)
@@ -77,7 +77,7 @@ module JABA
           # If its a directory add files recursively, else add single file
           #          
           if File.directory?(abs_path)
-            glob_matches = file_manager.glob("#{abs_path}/**/*")
+            glob_matches = file_manager.glob_files("#{abs_path}/**/*")
           else
             spec_files << abs_path
           end

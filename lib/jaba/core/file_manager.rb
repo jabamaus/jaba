@@ -225,16 +225,18 @@ module JABA
     end
 
     ##
+    # Only returns files, not directories.
     #
-    def glob(spec, flags=0)
+    def glob_files(spec, flags: 0)
       if !spec.absolute_path?
         JABA.error("'#{spec}' must be an absolute path")
       end
-      files = glob_cache[spec]
+      key = "#{spec}#{flags}"
+      files = glob_cache[key]
       if files.nil?
-        files = Dir.glob(spec, flags)
+        files = Dir.glob(spec, flags).reject{|f| File.directory?(f)}
         files.freeze # Don't want cache entries being inadvertently modified
-        glob_cache[spec] = files
+        glob_cache[key] = files
       end
       files
     end

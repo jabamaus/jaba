@@ -165,7 +165,7 @@ type :cpp_project do
       cpp :MyLib2 do
         type :lib
         inc ['.'], :export
-        define ['MYLIB2], :export
+        define ['MYLIB2'], :export
         ...
       end
     }
