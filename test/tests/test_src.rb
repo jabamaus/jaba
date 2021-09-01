@@ -134,11 +134,14 @@ module JABA
 
     it 'supports adding whole src directories recursively' do
       make_file('a/b.cpp', 'a/c.cpp', 'a/d.cpp', 'a/e/f/g.cpp')
+      make_file('dir.with.dots/a/h.cpp')
+      make_file('dir.with.dots/b/h.xyz')
       make_file('a/b.z') # won't match as .z not in src_ext attr
       proj = jaba(cpp_app: true, dry_run: true) do
         cpp :app do
           project do
             src ['a']
+            src ['dir.with.dots']
           end
         end
       end
@@ -146,8 +149,9 @@ module JABA
         "#{temp_dir}/a/b.cpp",
         "#{temp_dir}/a/c.cpp",
         "#{temp_dir}/a/d.cpp",
-        "#{temp_dir}/a/e/f/g.cpp"
-      ]
+        "#{temp_dir}/a/e/f/g.cpp",
+        "#{temp_dir}/dir.with.dots/a/h.cpp"
+      ].sort
     end
 
     it 'supports platform-specific default src extensions' do

@@ -62,6 +62,7 @@ module JABA
         spec_files.clear
         vpath_option = elem.get_option_value(:vpath, fail_if_not_found: false)
         glob_matches = nil
+        is_dir = File.directory?(abs_path)
 
         if abs_path.wildcard?
           if force
@@ -74,9 +75,9 @@ module JABA
             JABA.error("'#{abs_path}' does not exist on disk. Use :force to add anyway.", errobj: elem)
           end
 
-          # If its a directory add files recursively, else add single file
+          # If its a directory add files recursively, else add single file, regardless of extension.
           #          
-          if File.directory?(abs_path)
+          if is_dir
             glob_matches = file_manager.glob_files("#{abs_path}/**/*")
           else
             spec_files << abs_path
@@ -88,9 +89,11 @@ module JABA
             services.jaba_warn("'#{abs_path}' did not match any #{src_attr_id} files ", errobj: elem)
           else
             extname = abs_path.extname
-            # Glob matches will ignore files of unwanted extensions, unless the extension is explicitly specified
+            # Glob matches will ignore files of unwanted extensions, unless the extension is explicitly specified.
+            # Need to check if abs_path is a directory here too to catch case where directories have dots in their
+            # name which would be taken as an extname.
             #
-            if !extname.empty? && !extname.wildcard?
+            if !is_dir && !extname.empty? && !extname.wildcard?
               spec_files.concat(glob_matches)
             else
               matching = glob_matches.select{|f| extensions.include?(f.extname)}
