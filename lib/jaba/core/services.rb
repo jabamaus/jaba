@@ -800,10 +800,6 @@ module JABA
         JABA.error("Duplicate node handle '#{handle}'")
       end
       @node_lookup[handle] = node
-      if node.jaba_type.defn_id == :globals
-        @globals_node = node
-        @globals = node.attrs
-      end
     end
 
     ##
