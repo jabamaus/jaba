@@ -7,24 +7,25 @@ using JABACoreExt
 
 class LaunchJsonGenerator
 
+  ##
+  #
+  def initialize
+    @configs = []
+  end
+  
+  ##
+  #
   def generate
     vscode_dir = "#{JABA.install_dir}/.vscode"
     launch_json = "#{vscode_dir}/launch.json"
     root = {}
     root["version"] = "0.2.0"
-
-    @configs = []
     root['configurations'] = @configs
 
     separator 'examples'
 
     iterate_examples do |dirname|
-      add_config(
-        name: dirname,
-        program: '${workspaceRoot}/bin/jaba.rb',
-        cwd: "${workspaceRoot}/examples/#{dirname}",
-        args: ['-D', 'target_host', 'vs2019']
-      )
+      add_src_root("${workspaceRoot}/examples/#{dirname}", name: dirname, args: ['-D', 'target_host', 'vs2019'])
     end
 
     separator 'tests'
@@ -49,6 +50,24 @@ class LaunchJsonGenerator
     IO.write(launch_json, JSON.pretty_generate(root))
   end
 
+  ##
+  #
+  def add_src_root(src_root, name:, args: nil)
+    add_config(name: name,  program: '${workspaceRoot}/bin/jaba.rb', cwd: src_root, args: args)
+  end
+
+  ##
+  #
+  def separator(name)
+    c = {}
+    c['name'] = "------------- #{name} -------------"
+    @configs << c
+  end
+  
+private
+
+  ##
+  #
   def add_config(name:, program:, cwd: nil, args: nil)
     c = {}
     c['name'] = "Debug #{name}"
@@ -60,12 +79,11 @@ class LaunchJsonGenerator
     @configs << c
   end
 
-  def separator(name)
-    c = {}
-    c['name'] = "------------- #{name} -------------"
-    @configs << c
-  end
-
 end
 
-LaunchJsonGenerator.new.generate
+lg = LaunchJsonGenerator.new
+
+# TEMP
+lg.add_src_root('C:/projects/GitHub/OUROVEON/build', name: 'OUROVEON',  args: ['-D', 'target_host', 'vs2019'])
+
+lg.generate
