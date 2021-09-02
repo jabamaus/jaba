@@ -249,11 +249,17 @@ module JABA
     ##
     #
     def make_node_paths_absolute(node)
-      # Turn root into absolute path, if present
+      # Determine definition root and turn root and ensure its an absolute path
       #
-      root = node.search_attr(:root, fail_if_not_found: false)&.map_value! do |r|
-        r.absolute_path? ? r : "#{node.source_dir}/#{r}".cleanpath
+      root_attr = node.search_attr(:root, fail_if_not_found: false)
+      definition_root = if root_attr
+        root_attr.map_value! do |r|
+          r.absolute_path? ? r : "#{node.source_dir}/#{r}".cleanpath
+        end
+      else
+        node.source_dir
       end
+
 
       # Make all file path attributes (those of type :file, :dir and :src_spec) into absolute paths based on basedir_spec
       #
@@ -268,7 +274,7 @@ module JABA
           when :artefact_root
             "#{services.globals.artefact_root}"
           when :definition_root
-            root
+            definition_root
           when :jaba_file
             n.source_dir
           when :cwd
@@ -284,7 +290,7 @@ module JABA
           end
         end
       end
-      root
+      definition_root
     end
   end
 
