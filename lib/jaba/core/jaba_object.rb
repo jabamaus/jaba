@@ -10,7 +10,7 @@ module JABA
   #
   class JabaObject
     
-    include HookMethods
+    include PropertyMethods
     
     attr_reader :services
     attr_reader :api
@@ -57,6 +57,15 @@ module JABA
     def eval_jdl(*args, use_api: true, **keyval_args, &block)
       receiver = use_api ? @api : self
       receiver.instance_exec(*args, **keyval_args, &block)
+    end
+
+    ##
+    #
+    def call_block_property(p_id, *args, **keyval_args)
+      b = get_property(p_id)
+      if b
+        eval_jdl(*args, **keyval_args, &b)
+      end
     end
     
     ##

@@ -172,7 +172,7 @@ module JABA
 
       if validate
         call_validators do
-          @attr_def.call_hook(:validate_key, key)
+          @attr_def.call_block_property(:validate_key, key)
         end
       end
 

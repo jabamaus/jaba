@@ -15,8 +15,6 @@ module JABA
   #
   class JabaAttributeDefinition < JabaObject
 
-    include PropertyMethods
-
     attr_reader :type_id # eg :bool, :string, :file etc
     attr_reader :variant # :single, :array, :hash
     attr_reader :jaba_attr_type # JabaAttributeType object
@@ -54,8 +52,8 @@ module JABA
       define_array_property(:flags)
       define_array_property(:flag_options)
       
-      define_hook(:validate)
-      define_hook(:validate_key)
+      define_block_property(:validate)
+      define_block_property(:validate_key)
       
       @jaba_attr_type = services.get_attribute_type(@type_id)
       @jaba_attr_key_type = nil
@@ -253,6 +251,10 @@ module JABA
           jaba_warn("Duplicate flag option '#{f.inspect_unquoted}' specified in #{describe}")
           return :ignore
         end
+      when :validate_key
+        if !hash?
+          JABA.error("#{describe} cannot specify 'validate_key' - only supported by hash attributes")
+        end
       end
     end
 
@@ -279,17 +281,6 @@ module JABA
       when :title
         if incoming.size > MAX_TITLE_CHARS
           JABA.error("Title must be #{MAX_TITLE_CHARS} characters or less but was #{incoming.size}")
-        end
-      end
-    end
-
-    ##
-    #
-    def on_hook_defined(hook)
-      case hook
-      when :validate_key
-        if !hash?
-          JABA.error("#{describe} cannot specify 'validate_key' - only supported by hash attributes")
         end
       end
     end

@@ -10,8 +10,6 @@ module JABA
   #
   class JabaType < JabaObject
 
-    include PropertyMethods
-
     attr_reader :title
     attr_reader :notes
     attr_reader :singleton

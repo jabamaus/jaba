@@ -48,7 +48,7 @@ module JABA
         end
       end
 
-      define_hook(:generate)
+      define_block_property(:generate)
     end
 
     ##

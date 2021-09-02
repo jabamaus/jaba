@@ -326,7 +326,7 @@ module JABA
         # Call generate blocks defined per-node instance, in the context of the node itself, not its api
         #
         jt.node_manager.root_nodes.each do |n|
-          n.call_hook(:generate, receiver: n, use_api: false)
+          n.call_block_property(:generate, use_api: false)
         end
         jt.plugin.generate
       end

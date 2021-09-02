@@ -23,7 +23,7 @@ module JABA
     ##
     #
     def generate(&block)
-      @jaba_node.set_hook(:generate, &block)
+      @jaba_node.set_property(:generate, &block)
     end
 
     ##

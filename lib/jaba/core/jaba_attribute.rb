@@ -254,7 +254,7 @@ module JABA
         if !new_value.nil?
           call_validators do
             attr_type.validate_value(@attr_def, new_value)
-            @attr_def.call_hook(:validate, new_value, @flag_options, **@value_options)
+            @attr_def.call_block_property(:validate, new_value, @flag_options, **@value_options)
           end
         end
       end

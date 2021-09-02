@@ -74,14 +74,14 @@ module JABA
     # Called for single value attributes and each element of array attributes.
     #
     def validate(&block)
-      @attr_def.set_hook(:validate, &block)
+      @attr_def.set_property(:validate, &block)
     end
     
     ##
     # Use to validate the key of a hash attribute. Cannot be used with single value of array attributes.
     #
     def validate_key(&block)
-      @attr_def.set_hook(:validate_key, &block)
+      @attr_def.set_property(:validate_key, &block)
     end
 
     ##
