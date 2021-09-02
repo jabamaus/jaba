@@ -12,9 +12,6 @@ module JABA
       globals_node = services.make_node(want_post_create: false)
       
       main_services = services.instance_variable_get(:@services)
-      main_services.instance_variable_set(:@globals_node, globals_node)
-      main_services.instance_variable_set(:@globals, globals_node.attrs)
-
       main_services.set_global_attrs_from_cmdline
 
       globals_node.post_create
