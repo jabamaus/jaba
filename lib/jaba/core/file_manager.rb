@@ -246,7 +246,7 @@ module JABA
     #
     def exist?(fn)
       if !fn.absolute_path?
-        JABA.error("'#{spec}' must be an absolute path")
+        JABA.error("'#{fn}' must be an absolute path")
       end
       exist = file_exist_cache[fn]
       if exist.nil?
