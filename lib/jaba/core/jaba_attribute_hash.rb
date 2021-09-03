@@ -15,9 +15,10 @@ module JABA
     def initialize(attr_def, node)
       super(attr_def, node, self)
       @hash = {}
+      @in_on_set = false
       if attr_def.default_set? && !@default_block
         attr_def.default.each do |k, v|
-          set(k, v)
+          insert_key(k, v, call_on_set: false)
         end
       end
     end
@@ -167,7 +168,7 @@ module JABA
 
     ##
     #
-    def insert_key(key, val, *args, validate: true, **keyval_args)
+    def insert_key(key, val, *args, validate: true, call_on_set: true, **keyval_args)
       attr = JabaAttributeElement.new(@attr_def, @node, self)
 
       if validate
@@ -176,7 +177,16 @@ module JABA
         end
       end
 
-      attr.set(val, *args, validate: validate, __jdl_call_loc: @last_call_location, __key: key, **keyval_args)
+      attr.set(val, *args, validate: validate, __jdl_call_loc: @last_call_location, __key: key, call_on_set: false, **keyval_args)
+
+      if call_on_set
+        if @in_on_set
+          JABA.error("Reentrancy detected in #{describe} on_set")
+        end
+        @in_on_set = true
+        @attr_def.call_block_property(:on_set, key, val, receiver: @node)
+        @in_on_set = false
+      end
 
       # Log overwrites. This behaviour could be beefed up and customised with options if necessary
       #

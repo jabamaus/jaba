@@ -16,7 +16,7 @@ module JABA
       super(attr_def, node, self)
       @elems = []
       if attr_def.default_set? && !@default_block
-        set(attr_def.default)
+        set(attr_def.default, call_on_set: false)
       end
     end
     

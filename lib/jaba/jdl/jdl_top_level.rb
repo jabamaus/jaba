@@ -19,42 +19,15 @@ module JABA
     end
 
     ##
-    # Define a cpp project.
-    #
-    def cpp(id, *flags, &block)
-      @services.define_instance(:cpp, id, flags, &block)
-    end
-    
-    ##
-    # Define a workspace.
-    #
-    def workspace(id, &block)
-      @services.define_instance(:workspace, id, &block)
-    end
-    
-    ##
-    # Define a category.
-    #
-    def category(id, &block)
-      @services.define_instance(:category, id, &block)
-    end
-    
-    ##
     # Define definition to be included by other definitions.
     #
-    def shared(id, &block)
+    def shared(id=nil, &block)
       @services.define_shared(id, &block)
     end
     
     ##
     #
-    def text(id, &block)
-      @services.define_instance(:text, id, &block)
-    end
-    
-    ##
-    #
-    def defaults(id, &block)
+    def defaults(id=nil, &block)
       @services.define_defaults(id, &block)
     end
     
@@ -73,28 +46,28 @@ module JABA
     ##
     # All undefined methods are treated as defining instances of jaba types.
     #
-    def method_missing(type_id, id, &block)
-      @services.define_instance(type_id, id, &block)
+    def method_missing(type_id=nil, id=nil, *flags, &block)
+      @services.define_instance(type_id, id, flags, &block)
     end
     
     ##
     # EXTENSION API
     #
-    def type(id, &block)
+    def type(id=nil, &block)
       @services.define_type(id, &block)
     end
     
     ##
     # EXTENSION API
     #
-    def open_type(id, &block)
+    def open_type(id=nil, &block)
       @services.open(:type, id, nil, &block)
     end
 
     ##
     # EXTENSION API
     #
-    def open_instance(id, type:, &block)
+    def open_instance(id=nil, type:, &block)
       @services.open(:instance, id, type, &block)
     end
 
@@ -108,21 +81,21 @@ module JABA
     ##
     # EXTENSION API
     #
-    def translator(id, &block)
+    def translator(id=nil, &block)
       @services.define_translator(id, &block)
     end
     
     ##
     # EXTENSION API
     #
-    def open_translator(id, &block)
+    def open_translator(id=nil, &block)
       @services.open(:translator, id, &block)
     end
 
     ##
     # EXTENSION API
     #
-    def open_shared(id, &block)
+    def open_shared(id=nil, &block)
       @services.open(:shared, id, &block)
     end
 

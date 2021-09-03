@@ -234,7 +234,8 @@ module JABA
       key = "#{spec}#{flags}"
       files = glob_cache[key]
       if files.nil?
-        files = Dir.glob(spec, flags).reject{|f| File.directory?(f)}
+        files = Dir.glob(spec, flags)
+        files.reject!{|f| directory?(f)}
         files.freeze # Don't want cache entries being inadvertently modified
         glob_cache[key] = files
       end
@@ -255,6 +256,17 @@ module JABA
       exist
     end
 
+    ##
+    #
+    def directory?(fn)
+      is_dir = is_directory_cache[fn]
+      if is_dir.nil?
+        is_dir = File.directory?(fn)
+        is_directory_cache[fn] = is_dir
+      end
+      is_dir
+    end
+
     # If running tests use the same file cache across all runs to speed them up as nothing odd happens to files
     # between tests. In production mode do caching per-jaba invocation (of which normally there would be only one),
     # but this allows flexibility to do more than one run with potentially anything changing between runs.
@@ -266,6 +278,16 @@ module JABA
         @@file_exist_cache ||= {}
       else
         @file_exist_cache ||= {}
+      end
+    end
+
+    ##
+    #
+    def is_directory_cache
+      if JABA.running_tests?
+        @@is_directory_cache ||= {}
+      else
+        @is_directory_cache ||= {}
       end
     end
 

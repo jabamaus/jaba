@@ -2,6 +2,15 @@ type :ispc_rule do
 
   title 'Intel SPMD Program Compiler (ISPC)'
 
+  attr :ispc_msbuild, type: :dir do
+    title 'Location of build customisation files'
+    basedir_spec :definition_root
+    flags :required
+    #on_set do |dir|
+    #  vcbuild_customisation_dir '.ispc', dir
+    #end
+  end
+
   attr :AddInstrumentation, type: :bool do
     title 'Enable Instrumentation Injection'
     note 'Emit instrumentation to gather performance data. Sets --instrument'
@@ -20,6 +29,9 @@ type :ispc_rule do
     title 'Target Architecture'
     note 'Select target architecture.'
     items ["x86", "x64", "arm", "aarch64", "wasm32"]
+    #on_set do |val|
+    #  vcproperty 'ISPC|Architecture', val
+    #end
   end
 
   attr :Assertions, type: :bool do
@@ -127,6 +139,14 @@ type :ispc_rule do
     note 'Treat Warnings as Errors. Sets --werror'
   end
 
+end
+
+open_globals do
+  vcfiletype '.ispc', :ISPC
+end
+
+open_shared :vs_host_common do
+  cpp_src_ext '.ispc'
 end
 
 open_type :cpp_config do

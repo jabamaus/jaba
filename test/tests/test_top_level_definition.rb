@@ -7,27 +7,48 @@ module JABA
   class TestTopLevelDefinition < JabaTest
 
     it 'rejects invalid ids' do
-      jaba(barebones: true) do
-        shared :Alpha_Num3r1cs_With_Underscores_Are_Valid_Everything_Else_Is_Not do
-        end
-        shared 'Str1ngs_also_allowed' do
-        end
-        shared 'this.is.valid' do
-        end
-        shared 'this-is-valid' do
-        end
-      end
-      
-      check_fail "'Space invalid' is an invalid id. Must be an alphanumeric string or symbol", line: [__FILE__, 'tagS'] do
-        jaba(barebones: true) do
-          shared 'Space invalid' do # tagS
+      [:cpp, :shared, :type].each do |item|
+        jaba(dry_run: true) do
+          case item
+          when :cpp
+            defaults :cpp do
+              platforms [:windows_x86]
+              project do
+                type :app
+                configs [:debug, :release]
+                src 'main.cpp', :force
+              end
+            end
+          end
+          __send__(item, :Alpha_Num3r1cs_With_Underscores_Are_Valid_Everything_Else_Is_Not) do
+          end
+          __send__(item, 'Str1ngs_also_allowed') do
+          end
+          __send__(item, 'this.is.valid') do
+          end
+          __send__(item, 'this-is-valid') do
           end
         end
-      end
-      
-      check_fail "'1' is an invalid id", line: [__FILE__, 'tagZ'] do
-        jaba(barebones: true) do
-          shared 1 do # tagZ
+        
+        errmsg = "Must be an alphanumeric string or symbol (-_. permitted), eg :my_id, 'my-id', 'my.id'."
+        assert_jaba_error "Error at #{src_loc(__FILE__, :tagS)}: 'Space invalid' is an invalid id. #{errmsg}" do
+          jaba(barebones: true) do
+            __send__(item, 'Space invalid') do # tagS
+            end
+          end
+        end
+        
+        assert_jaba_error "Error at #{src_loc(__FILE__, :tagZ)}: '1' is an invalid id. #{errmsg}" do
+          jaba(barebones: true) do
+            __send__(item, 1) do # tagZ
+            end
+          end
+        end
+
+        assert_jaba_error "Error at #{src_loc(__FILE__, :tagL)}: '#{item}' requires an id. #{errmsg}" do
+          jaba(barebones: true) do
+            __send__(item) do # tagL
+            end
           end
         end
       end

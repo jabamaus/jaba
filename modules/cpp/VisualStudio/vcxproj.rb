@@ -23,6 +23,7 @@ module JABA
       @file_type_hash = services.globals.vcfiletype
       @masm_required = false
       @per_file_props = {}
+      @extension_targets = []
     end
 
     ##
@@ -286,6 +287,12 @@ module JABA
         else
           src_area << " />"
         end
+
+        h = @attrs.vcbuild_customisation_dir
+        d = h[sf.extname]
+        if d
+          @extension_targets << d.relative_path_from(projdir)
+        end
         if ft == :MASM
           @masm_required = true
         end
@@ -330,7 +337,9 @@ module JABA
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />'
       
       import_group(w, label: :ExtensionTargets) do
-        # TODO: extension targets
+        @extension_targets.each do |t|
+          w << "    <Import Project=\"#{t}.targets\" />"
+        end
         if @masm_required
           w << '    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />'
         end

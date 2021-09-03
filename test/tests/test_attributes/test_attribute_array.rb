@@ -508,6 +508,31 @@ module JABA
       end
     end
 
+    it 'supports on_set hook' do
+      jaba(barebones: true) do
+        type :test do
+          attr_array :a do
+            # on_set executed in context of node so all attributes available
+            on_set do |new_val|
+              b "#{new_val}_b"
+            end
+          end
+          attr_array :b do
+            # new value can be taken from block arg
+            on_set do |new_val|
+              c "#{new_val}_c"
+            end
+          end
+          attr :c
+        end
+        test :t do
+          a [1, 2]
+          b.must_equal ['1_b', '2_b']
+          c.must_equal '2_b_c'
+        end
+      end
+    end
+
   end
 
 end

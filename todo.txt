@@ -1,3 +1,7 @@
+- Have a look at RubyVM to try and precompile ruby
+- Should :definition_root basedir_spec be able to take its value from the setting attr? Eg if globals attr specifies a definition root base spec it be relative to the user definition.
+- Could be moving towards concept of a type requiring configuration
+- Think about idea of lazy initialisation of types. Eg could move grab_bag into modules so they are always loaded but flag the type as lazy. When its is 'grabbed' it is initialised. 
 - Support vcfprop at project level too
 - Review whether '.' is allowed in :basename type. Maybe Introduce and allow_ext option.
 - Introduce :extension type. Use for src_ext

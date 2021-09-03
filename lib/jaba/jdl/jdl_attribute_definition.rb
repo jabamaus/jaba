@@ -85,6 +85,12 @@ module JABA
     end
 
     ##
+    #
+    def on_set(&block)
+      @attr_def.set_property(:on_set, &block)
+    end
+    
+    ##
     # Returns attribute type id, eg :bool, :string, :choice, :node_ref, :file etc
     #
     def type

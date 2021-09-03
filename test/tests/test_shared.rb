@@ -41,7 +41,7 @@ module JABA
     end
 
     it 'fails if no block supplied' do
-      check_fail "A block is required", line: [__FILE__, 'tagP'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagP)}: 'shared' definition requires a block." do
         jaba(barebones: true) do
           shared :a # tagP
         end

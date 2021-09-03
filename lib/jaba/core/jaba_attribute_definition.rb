@@ -29,6 +29,7 @@ module JABA
     attr_reader :flags
     attr_reader :flag_options
     attr_reader :node_type # Defined and used by node_ref/node attribute types but give access here for efficiency
+    attr_reader :on_set
     
     ##
     #
@@ -54,6 +55,7 @@ module JABA
       
       define_block_property(:validate)
       define_block_property(:validate_key)
+      define_block_property(:on_set)
       
       @jaba_attr_type = services.get_attribute_type(@type_id)
       @jaba_attr_key_type = nil
@@ -124,13 +126,19 @@ module JABA
       "'#{@defn_id}' #{@variant == :single ? "" : "#{@variant} "}attribute"
     end
 
+    ValueOption = Struct.new(
+      :id,
+      :required,
+      :items
+    )
+
     ##
     #
     def add_value_option(id, required, items)
       if !id.symbol?
         JABA.error("In #{describe} value_option id must be specified as a symbol, eg :option")
       end
-      vo = OpenStruct.new
+      vo = ValueOption.new
       vo.id = id
       vo.required = required
       vo.items = items

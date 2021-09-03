@@ -53,6 +53,11 @@ open_type :cpp_project do
     end
   end
 
+  attr_hash :vcbuild_customisation_dir, key_type: :string, type: :src_spec do # TODO: make key type :ext
+    title 'Directory containing .props, .targets and .xml file'
+    basedir_spec :definition_root
+  end
+  
   attr_hash :vcglobal, key_type: :symbol, type: :to_s do
     title 'Address Globals property group in a vcxproj directly'
     value_option :condition

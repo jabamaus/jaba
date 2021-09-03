@@ -10,6 +10,14 @@ module JABA
   #
   module SrcFileSupport
 
+    SrcFileInfo = Struct.new(
+      :absolute_path,
+      :projdir_rel,
+      :vpath,
+      :file_type,
+      :extname
+    )
+
     ##
     # Override in subclass if project format uses backslashes (eg Visual Studio)
     #
@@ -39,11 +47,12 @@ module JABA
       end
 
       services = @node.services
+      file_manager = services.file_manager
 
       src_attr = @node.get_attr(src_attr_id)
       extensions = @node.get_attr(src_ext_attr_id).value
       src_exclude = @node.get_attr(src_exclude_attr_id).value.map do |abs_excl|
-        if File.directory?(abs_excl)
+        if file_manager.directory?(abs_excl)
           "#{abs_excl}/**/*"
         else
           abs_excl
@@ -62,7 +71,7 @@ module JABA
         spec_files.clear
         vpath_option = elem.get_option_value(:vpath, fail_if_not_found: false)
         glob_matches = nil
-        is_dir = File.directory?(abs_path)
+        is_dir = file_manager.directory?(abs_path)
 
         if abs_path.wildcard?
           if force
@@ -123,11 +132,14 @@ module JABA
             f.parent_path.relative_path_from(@root, backslashes: bs, nil_if_dot: true, no_dot_dot: true)
           end
 
-          sf = OpenStruct.new
+          extname = f.extname
+
+          sf = SrcFileInfo.new
           sf.absolute_path = f
           sf.projdir_rel = f.relative_path_from(@projdir, backslashes: bs)
           sf.vpath = vpath
-          sf.file_type = file_type_from_extension(f.extname)
+          sf.file_type = file_type_from_extension(extname)
+          sf.extname = extname
 
           src << sf
         end

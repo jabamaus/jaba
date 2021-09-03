@@ -54,9 +54,10 @@ module JABA
 
     ##
     #
-    def eval_jdl(*args, use_api: true, **keyval_args, &block)
-      receiver = use_api ? @api : self
-      receiver.instance_exec(*args, **keyval_args, &block)
+    def eval_jdl(*args, use_api: true, receiver: nil, **keyval_args, &block)
+      obj = receiver ? receiver : self
+      obj = use_api ? obj.api : obj
+      obj.instance_exec(*args, **keyval_args, &block)
     end
 
     ##

@@ -416,7 +416,32 @@ module JABA
     end
 
     # TODO: test wipe
-    
+
+    it 'supports on_set hook' do
+      jaba(barebones: true) do
+        type :test do
+          attr_hash :a, key_type: :string do
+            # on_set executed in context of node so all attributes available
+            on_set do |k, v|
+              b "#{k}_b", "#{v}_b"
+            end
+          end
+          attr_hash :b, key_type: :string do
+            # new value can be taken from block arg
+            on_set do |k, v|
+              c "#{k}#{v}"
+            end
+          end
+          attr :c
+        end
+        test :t do
+          a 1, 2
+          b.must_equal({'1_b' => '2_b'})
+          c.must_equal '1_b2_b'
+        end
+      end
+    end
+
   end
 
 end

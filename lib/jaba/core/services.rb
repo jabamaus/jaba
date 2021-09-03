@@ -504,10 +504,19 @@ module JABA
       af
     end
 
+    Definition = Struct.new(
+      :id,
+      :block,
+      :src_loc,
+      :open_defs,
+      :jaba_type_id,
+      :flags
+    )
+
     ##
     #
     def make_definition(id, block, src_loc, flags=[])
-      d = OpenStruct.new
+      d = Definition.new
       d.id = id
       d.block = block
       d.src_loc = src_loc
@@ -557,10 +566,15 @@ module JABA
 
     ##
     #
-    def validate_id(id)
+    def validate_id(id, type_id)
       if !(id.symbol? || id.string?) || id !~ /^[a-zA-Z0-9_\-.]+$/
-        JABA.error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol " \
-          "(-_. permitted), eg :my_id, 'my-id', 'my.id'")
+        msg = if id.nil?
+          "'#{type_id}' requires an id"
+        else
+          "'#{id}' is an invalid id"
+        end
+        msg << ". Must be an alphanumeric string or symbol (-_. permitted), eg :my_id, 'my-id', 'my.id'"
+        JABA.error(msg)
       end
     end
 
@@ -590,10 +604,9 @@ module JABA
     ##
     #
     def define_type(id, &block)
-      JABA.error("id is required") if id.nil?
+      validate_id(id, :type)
       src_loc = caller_locations(2, 1)[0]
       log "  Defining '#{id}' type at #{src_loc.describe}"
-      validate_id(id)
       existing = @jaba_type_defs.find{|d| d.id == id}
       if existing
         JABA.error("'type|#{id.inspect_unquoted}' multiply defined. First definition at #{existing.src_loc.describe}.")
@@ -610,13 +623,10 @@ module JABA
     ##
     #
     def define_shared(id, &block)
-      JABA.error("id is required") if id.nil?
-      JABA.error("A block is required") if !block_given?
-
+      validate_id(id, :shared)
+      JABA.error("'shared' definition requires a block") if !block_given?
       src_loc = caller_locations(2, 1)[0]
-
       log "  Defining '#{id}' shared definition at #{src_loc.describe}"
-      validate_id(id)
 
       existing = get_shared_definition(id, fail_if_not_found: false)
       if existing
@@ -641,12 +651,9 @@ module JABA
     #
     def define_instance(type_id, id, flags=[], &block)
       JABA.error("type_id is required") if type_id.nil?
-      JABA.error("id is required") if id.nil?
-
-      validate_id(id)
+      validate_id(id, type_id)
 
       src_loc = caller_locations(2, 1)[0]
-
       log "  Defining '#{id}' instance [type=#{type_id}] at #{src_loc.describe}"
 
       existing = get_instance_definition(type_id, id, fail_if_not_found: false)
@@ -696,7 +703,7 @@ module JABA
     ##
     #
     def define_defaults(id, &block)
-      JABA.error("id is required") if id.nil?
+      validate_id(id, :defaults)
       src_loc = caller_locations(2, 1)[0]
       log "  Defining '#{id}' defaults at #{src_loc.describe}"
       existing = @default_defs.find {|d| d.id == id}
@@ -734,7 +741,7 @@ module JABA
     ##
     #
     def define_translator(id, &block)
-      JABA.error("id is required") if id.nil?
+      validate_id(id, :translator)
       src_loc = caller_locations(2, 1)[0]
       log "  Defining '#{id}' translator at #{src_loc.describe}"
       existing = get_translator_definition(id, fail_if_not_found: false)
@@ -768,8 +775,8 @@ module JABA
     ##
     #
     def open(what, id, type=nil, &block)
-      JABA.error("id is required") if id.nil?
-      JABA.error("A block is required") if !block_given?
+      validate_id(id, what)
+      JABA.error("'#{what.inspect_unquoted}' requires a block") if !block_given?
       src_loc = caller_locations(2, 1)[0]
 
       case what
@@ -1033,7 +1040,7 @@ module JABA
         JABA.error("'#{p}' does not exist", want_backtrace: false)
       end
 
-      if File.directory?(p)
+      if @file_manager.directory?(p)
         files = @file_manager.glob_files("#{p}/*.jaba")
         if files.empty?
           msg = "No .jaba files found in '#{p}'"

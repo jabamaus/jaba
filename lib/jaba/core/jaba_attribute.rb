@@ -157,6 +157,7 @@ module JABA
       @value = nil
       @flag_options = nil
       @value_options = nil
+      @in_on_set = false
     end
     
     ##
@@ -181,7 +182,7 @@ module JABA
     
     ##
     #
-    def set(*args, __jdl_call_loc: nil, validate: true, __resolve_ref: true, **keyval_args, &block)
+    def set(*args, __jdl_call_loc: nil, validate: true, __resolve_ref: true, call_on_set: true, **keyval_args, &block)
       @last_call_location = __jdl_call_loc if __jdl_call_loc
 
       # Check for read only if calling from definitions, or if not calling from definitions but from library code,
@@ -274,6 +275,16 @@ module JABA
       end
 
       @set = true
+
+      if call_on_set
+        if @in_on_set
+          JABA.error("Reentrancy detected in #{describe} on_set")
+        end
+        @in_on_set = true
+        @attr_def.call_block_property(:on_set, new_value, receiver: @node)
+        @in_on_set = false
+      end
+
       nil
     end
 
@@ -390,7 +401,7 @@ module JABA
       super(attr_def, node, self)
       
       if attr_def.default_set? && !@default_block
-        set(attr_def.default)
+        set(attr_def.default, call_on_set: false)
       end
     end
 
