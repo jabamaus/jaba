@@ -173,12 +173,16 @@ module JABA
     
     ##
     #
-    def assert_jaba_error(msg, trace: [])
+    def assert_jaba_error(msg, trace: [], match_start: false)
       e = assert_raises JabaError do
         yield
       end
       
-      e.message.must_equal(msg)
+      if match_start
+        e.message.slice(0, msg.length).must_equal(msg)
+      else
+        e.message.must_equal(msg)
+      end
 
       if trace
         backtrace = []
