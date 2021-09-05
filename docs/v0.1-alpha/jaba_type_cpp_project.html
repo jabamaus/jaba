@@ -34,7 +34,7 @@
 </tbody>
 </table>
 </blockquote>
-<p>17 attributes:</p>
+<p>19 attributes:</p>
 <ul>
 <li><a href="#category">category</a></li>
 <li><a href="#configs">configs</a></li>
@@ -50,6 +50,8 @@
 <li><a href="#src_exclude">src_exclude</a></li>
 <li><a href="#src_ext">src_ext</a></li>
 <li><a href="#type">type</a></li>
+<li><a href="#vc_extension_settings">vc_extension_settings</a></li>
+<li><a href="#vc_extension_targets">vc_extension_targets</a></li>
 <li><a href="#vcglobal">vcglobal</a></li>
 <li><a href="#winsdkver">winsdkver</a></li>
 <li><a href="#workspace">workspace</a></li>
@@ -185,7 +187,7 @@
 <span style="color:#111">cpp</span> <span style="color:#d88200">:MyLib2</span> <span style="color:#00a8c8">do</span>
   <span style="color:#111">type</span> <span style="color:#d88200">:lib</span>
   <span style="color:#111">inc</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;.&#39;</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">:export</span>
-  <span style="color:#111">define</span> <span style="color:#f92672">[</span><span style="color:#960050;background-color:#1e0010">&#39;</span><span style="color:#00a8c8">MYLIB2</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">:export</span>
+  <span style="color:#111">define</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;MYLIB2&#39;</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">:export</span>
   <span style="color:#f92672">...</span>
 <span style="color:#00a8c8">end</span>
 </pre></blockquote>
@@ -633,6 +635,76 @@
 <tr>
 <td><em>defined in</em></td>
 <td>$(jaba_install)/modules/cpp/cpp.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="vc_extension_settings"></a></p>
+<h4 id="vc-extension-settings">vc_extension_settings</h4>
+<blockquote>
+<p><em>Path to a .props file</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:src_spec hash</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>{}</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="vc_extension_targets"></a></p>
+<h4 id="vc-extension-targets">vc_extension_targets</h4>
+<blockquote>
+<p><em>Path to a .targets file</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:src_spec hash</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>{}</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/modules/cpp/VisualStudio/cpp_vs.jaba</td>
 </tr>
 </tbody>
 </table>
