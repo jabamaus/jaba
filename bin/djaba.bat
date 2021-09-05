@@ -1,2 +1,2 @@
 @echo off
-ruby %~dp0..\tools\build_docs.rb
+jabaruby %~dp0..\tools\build_docs.rb %*

@@ -1,3 +1,2 @@
 @echo off
-jabaruby.exe -w %~dp0jaba.rb %*
-
+jabaruby -w %~dp0jaba.rb %*
