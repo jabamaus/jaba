@@ -119,7 +119,11 @@ module JABA
           @value.eval_jdl(&block)
           return @value
         else
-          make_node(id: id, block_args: block_args, __jdl_call_loc: __jdl_call_loc, &block)
+          node_type = @attr_def.node_type
+          nm = services.get_jaba_type(node_type).node_manager
+          nm.push_definition(services.make_definition(@attr_def.defn_id, block, __jdl_call_loc)) do
+            return nm.make_node(name: id, parent: @node, block_args: block_args, __jdl_call_loc: __jdl_call_loc, &block)
+          end
         end
       elsif @attr_def.block_attr?
         block # If its a block attr the value is the block itself
@@ -128,19 +132,6 @@ module JABA
       end
     end
     
-    ##
-    #
-    def make_node(id:, block_args: nil, __jdl_call_loc: nil, &block)
-      if !@attr_def.node_by_value?
-        JABA.error("Only for use with :node attribute type")
-      end
-      node_type = @attr_def.node_type
-      nm = services.get_jaba_type(node_type).node_manager
-      nm.push_definition(services.make_definition(@attr_def.defn_id, block, __jdl_call_loc)) do
-        return nm.make_node(name: id, parent: @node, block_args: block_args)
-      end
-    end
-
   end
 
   ##
