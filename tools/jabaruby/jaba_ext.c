@@ -136,6 +136,8 @@ Init_ext(void)
 	Init_sha1();
 	Init_parser(); // json parser
 	Init_generator(); // json generator
+
+	rb_require("digest/sha1");
 }
 
 #include "mini_builtin.c"
