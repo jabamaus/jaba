@@ -83,9 +83,9 @@ module JABA
         JABA.error("Shared definition '#{id}' expects #{n_expected} arguments but #{n_actual} were passed")
       end
       
-      eval_jdl(args, &sd.block)
+      eval_jdl(*args, &sd.block)
       sd.open_defs.each do |d|
-        eval_jdl(args, &d.block)
+        eval_jdl(*args, &d.block)
       end
     end
     
