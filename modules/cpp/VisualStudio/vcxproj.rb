@@ -39,8 +39,6 @@ module JABA
       t = services.get_translator("vcxproj_#{platform}".to_sym)
       t.execute(node: @node, args: [self])
       
-      pchsrc = @node.attrs.pchsrc
-
       # Call translator to initialise configuration level Visual Studio-specific attributes (vcprop)
       # based on cross platform definition.
       #
@@ -50,10 +48,12 @@ module JABA
         t = services.get_translator("vcxproj_config_#{platform}".to_sym)
         t.execute(node: cfg, args: [self, cfg.attrs.type])
 
+        pchsrc_attr = cfg.get_attr(:pchsrc)
+        pchsrc = pchsrc_attr.value
         if pchsrc
           # Check pchsrc is a valid src file
           #
-          get_matching_src_objs(pchsrc, @src, errobj: @node.get_attr(:pchsrc))
+          get_matching_src_objs(pchsrc, @src, errobj: pchsrc_attr)
           cfg.attrs.vcfprop "#{pchsrc}|PrecompiledHeader", :Create
         end
 

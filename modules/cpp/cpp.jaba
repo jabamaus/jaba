@@ -274,16 +274,6 @@ type :cpp_project do
     node_type :category
   end
 
-  attr :pch, type: :src_spec do
-    title 'Precompiled header file'
-    basedir_spec :definition_root
-  end
-
-  attr :pchsrc, type: :src_spec do
-    title 'Precompiled source file'
-    basedir_spec :definition_root
-  end
-
 end
 
 type :cpp_config do
@@ -491,6 +481,16 @@ type :cpp_config do
     default { host.toolset }
   end
 
+  attr :pch, type: :src_spec do
+    title 'Precompiled header file'
+    basedir_spec :definition_root
+  end
+
+  attr :pchsrc, type: :src_spec do
+    title 'Precompiled source file'
+    basedir_spec :definition_root
+  end
+  
 end
 
 open_type :host do
