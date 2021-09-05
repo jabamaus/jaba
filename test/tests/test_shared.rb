@@ -71,7 +71,7 @@ module JABA
         end
         1.upto(10) do |n|
           test "t#{n}" do
-            include :a, args: [n, 'a', 'b', 'c', 4]
+            include :a, n, 'a', 'b', 'c', 4
             c.must_equal("ca4b#{n}")
           end
         end
@@ -93,7 +93,7 @@ module JABA
           shared :e do
           end
           text :t do
-            include :e, args: [1] # tagU
+            include :e, 1 # tagU
           end
         end
       end
@@ -102,7 +102,7 @@ module JABA
           shared :f do |a1, a2|
           end
           text :t do
-            include :f, args: [1, 2, 3] # tagB
+            include :f, 1, 2, 3 # tagB
           end
         end
       end
