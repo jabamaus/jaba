@@ -163,7 +163,7 @@ module JABA
         if !s && fail_if_not_found
           JABA.error("'#{spec}' src file not in project", errobj: errobj)
         end
-        Array(s)
+        [s] # Note that Array(s) did something unexpected - added all the struct elements to the array where the actual struct is wanted
       end
     end
 
