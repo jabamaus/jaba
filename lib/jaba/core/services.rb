@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-# The only ruby library files that Jaba core depends on
+# The only ruby library files that Jaba core depends on. When run in test mode these will be taken from the ruby
+# distro and when jaba is run standalone they are taken from the ones in $(jaba_install)/lib/ruby_stdlib.
+#
 require 'digest/sha1'
 require 'json'
 require 'fileutils'
