@@ -4,13 +4,9 @@ require_relative '../lib/jaba'
 require 'minitest'
 require 'minitest/spec'
 
-# Disallow describe statements. They don't play well with automatic per-test temp dirs
+# Disallow describe statements. They don't play well with automatic per-test temp dirs and they hide problems with internal describe methods
 module Kernel
   remove_method :describe
-
-  def describe(...)
-    raise 'describe statements cannot be used in jaba tests'
-  end
 end
 
 module JABA
