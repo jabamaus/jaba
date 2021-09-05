@@ -84,6 +84,40 @@ module JABA
 
     ##
     #
+    def post_create
+      @dependencies.uniq!
+      @dependencies.map!{|d| services.get_jaba_type(d)}
+
+      # Regiser referenced attr defs
+      #
+      @attribute_defs.each do |attr_def|
+        if attr_def.node_by_reference?
+          rt_id = attr_def.node_type
+          if rt_id != defn_id
+            jt = attr_def.services.get_jaba_type(rt_id)
+            jt.attribute_defs.each do |d|
+              if d.has_flag?(:expose)
+                register_attr_def(d)
+              end
+            end
+          end
+        end
+      end
+
+      @attribute_defs.sort_by!{|ad| ad.defn_id}
+      @callable_attr_defs.sort_by!{|ad| ad.defn_id}
+    end
+
+    ##
+    #
+    def reference_manual_page(ext: '.html')
+      "jaba_type_#{defn_id}#{ext}"
+    end
+
+  private
+
+    ##
+    #
     def register_attr_def(attr_def)
       id = attr_def.defn_id
       existing = @callable_attr_def_lookup[id]
@@ -115,38 +149,6 @@ module JABA
 
     rescue => e
       JABA.error("#{describe} invalid: #{e.message}", errobj: self)
-    end
-
-    ##
-    #
-    def post_create
-      @dependencies.uniq!
-      @dependencies.map!{|d| services.get_jaba_type(d)}
-
-      # Regiser referenced attr defs
-      #
-      @attribute_defs.each do |attr_def|
-        if attr_def.node_by_reference?
-          rt_id = attr_def.node_type
-          if rt_id != defn_id
-            jt = attr_def.services.get_jaba_type(rt_id)
-            jt.attribute_defs.each do |d|
-              if d.has_flag?(:expose)
-                register_attr_def(d)
-              end
-            end
-          end
-        end
-      end
-
-      @attribute_defs.sort_by!{|ad| ad.defn_id}
-      @callable_attr_defs.sort_by!{|ad| ad.defn_id}
-    end
-
-    ##
-    #
-    def reference_manual_page(ext: '.html')
-      "jaba_type_#{defn_id}#{ext}"
     end
 
   end
