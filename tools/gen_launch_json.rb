@@ -47,7 +47,9 @@ class LaunchJsonGenerator
       FileUtils.mkdir(vscode_dir)
     end
 
+    puts "Writing #{launch_json}"
     IO.write(launch_json, JSON.pretty_generate(root))
+    puts 'Done!'
   end
 
   ##
