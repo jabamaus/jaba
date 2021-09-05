@@ -100,7 +100,7 @@ module JABA
       IO.write("#{sr}/test.jaba", "")
       op = nil
       Dir.chdir(sr) do
-        op = JABA.run do |c|
+        op = JABA.run(want_exceptions: true) do |c|
           c.argv = ['-D', 'target_host=vs2019']
           c.src_root = sr
         end
@@ -110,7 +110,7 @@ module JABA
 
     it 'supports specifying src_root and build_root in jaba input' do
       each_src_root_build_root do |sr, br|
-        op = JABA.run do |c|
+        op = JABA.run(want_exceptions: true) do |c|
           c.argv = ['-D', 'target_host=vs2019']
           c.src_root = sr
           c.build_root = br
@@ -121,7 +121,7 @@ module JABA
 
     it 'supports specifying src_root and build_root on cmd line' do
       each_src_root_build_root do |sr, br|
-        op = JABA.run do |c|
+        op = JABA.run(want_exceptions: true) do |c|
           c.argv = ['--src-root', sr, '--build-root', br, '-D', 'target_host=vs2019']
         end
         check_src_and_build_root(op, sr, br)

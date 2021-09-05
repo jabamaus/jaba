@@ -166,9 +166,7 @@ module JABA
           services.push_definition(export_only_def) do
             export_only_root = services.make_node(
               name: 'export_only_root',
-              want_post_create: false,
-              want_defaults: false,
-              track: false
+              flags: NodeFlags::NO_POST_CREATE | NodeFlags::NO_DEFAULTS | NodeFlags::NO_TRACK,
             )
 
             project_blocks = export_only_root.attrs.project
@@ -178,10 +176,7 @@ module JABA
               type_id: :cpp_project,
               name: 'project_export_only', 
               parent: project_node,
-              track: false, # Only used here, don't want the system to remember it
-              want_post_create: false,
-              want_defaults: false,
-              lazy: true,
+              flags: NodeFlags::NO_POST_CREATE | NodeFlags::NO_DEFAULTS | NodeFlags::NO_TRACK | NodeFlags::LAZY,
               blocks: project_blocks
             ) 
             export_only_node.set_parent(export_only_root)
@@ -197,10 +192,7 @@ module JABA
                 type_id: :cpp_config,
                 name: 'config_export_only',
                 parent: cfg_node,
-                track: false,
-                want_post_create: false,
-                want_defaults: false,
-                lazy: true,
+                flags: NodeFlags::NO_POST_CREATE | NodeFlags::NO_DEFAULTS | NodeFlags::NO_TRACK | NodeFlags::LAZY,
                 blocks: config_blocks
               )
               export_only_cfg_node.set_parent(export_only_node)

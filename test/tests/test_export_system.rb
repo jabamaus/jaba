@@ -144,6 +144,26 @@ module JABA
       app[:configs][:x86_64][:Release][:inc].must_equal ["#{temp_dir}/lib/lib.h"]
       app[:configs][:x86_64][:Release][:syslibs].must_equal ['librelease_x64.lib']
       op[:cpp]['lib|windows'].must_be_nil
+
+      # It fails if attribute not defined
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagP)}: 'does_not_exist' attribute not found", match_start: true do
+        jaba(dry_run: true) do
+          cpp :app do
+            platforms [:windows_x86_64]
+            project do
+              configs [:Debug, :Release]
+              type :app
+              src ['main.cpp'], :force
+              deps :lib
+            end
+          end
+          cpp :lib, :export_only do
+            project do
+              does_not_exist 1 # tagP
+            end
+          end
+        end
+      end
     end
 
     it 'only allows exportable attrs to be set in export only definitions' do

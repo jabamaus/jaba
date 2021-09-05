@@ -145,7 +145,7 @@ module JABA
     end
     
     it 'imports exposed referenced attributes' do
-      check_fail "'height' attribute not found. Available: [:length, :square]", line: [__FILE__, 'tagI'] do
+      check_fail "'height' attribute not found. The following attributes are available in this context:\n\n  Read/write:\n    square\n\n  Read only:\n    length\n\n.", line: [__FILE__, 'tagI'] do
         jaba(barebones: true) do
           type :square do
             attr :length do
@@ -232,7 +232,32 @@ module JABA
         end
       end
     end
-    # TODO: test attribute name clashes
+
+    it 'catches attribute name clashes' do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagC)}: 'a' attribute multiply imported into 'test'. See previous at #{src_loc(__FILE__, :tagY)}." do
+        jaba(barebones: true) do
+          type :ref1 do
+            attr :a do # tagY
+              flags :expose
+            end
+          end
+          type :ref2 do
+            attr :a do # tagC
+              flags :expose
+            end
+          end
+          type :test do
+            attr :r1, type: :node_ref do
+              node_type :ref1
+            end
+            attr :r2, type: :node_ref do
+              node_type :ref2
+            end
+          end
+          test :t
+        end
+      end
+    end
 
     # TODO: test referencing a node in a tree, using make_handle
   end

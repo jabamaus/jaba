@@ -1,3 +1,6 @@
+- optimise copying of value options once they are more locked down.
+- move JabaAttributeType base class into extend folder
+- rename type :node to :compound?
 - Have a look at RubyVM to try and precompile ruby
 - Should :definition_root basedir_spec be able to take its value from the setting attr? Eg if globals attr specifies a definition root base spec it be relative to the user definition.
 - Could be moving towards concept of a type requiring configuration

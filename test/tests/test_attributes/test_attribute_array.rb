@@ -417,7 +417,7 @@ module JABA
     end
 
     it 'catches invalid args to wipe' do
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagS)}: 'b' attribute not found. Available: [:a]" do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagS)}: 'b' attribute not found", match_start: true do
         jaba(barebones: true) do
           type :test do
             attr_array :a

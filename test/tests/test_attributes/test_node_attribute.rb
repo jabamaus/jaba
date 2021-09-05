@@ -12,80 +12,99 @@ module JABA
     # TODO: test works with :export
     # TODO: what about sorting? Disable?
 
+    # TODO: split on_set tests out
     it 'works with all attribute variants' do
       jaba do
         type :test do
           attr :node_single, type: :node do
-            node_type :node
+            node_type :compound
           end
           attr_array :node_array, type: :node do
-            node_type :node
+            node_type :compound
           end
           attr_hash :node_hash, key_type: :symbol, type: :node do
-            node_type :node
+            node_type :compound
           end
           attr :platform, type: :node_ref do
             node_type :platform
           end
+          attr :sibling_single
+          attr_array :sibling_array do
+            flags :allow_dupes
+          end
+          attr_hash :sibling_hash, key_type: :symbol
         end
-        type :node do
-          attr :a
+        type :compound do
+          attr :a do
+            # members of a compound attr can set values in 'sibling' attrs, which are actually in the parent node
+            on_set do |val|
+              sibling_single val * 2
+              sibling_array val * 2
+              sibling_hash val, val * 2
+            end
+          end
           attr_array :b
           attr_hash :c, key_type: :symbol
           attr :d, type: :node do
-            node_type :node2
+            node_type :nested1
           end
         end
-        type :node2 do
+        type :nested1 do
           attr :e, type: :node do
-            node_type :node3
+            node_type :nested2
           end
         end
-        type :node3 do
+        type :nested2 do
           attr :f
         end
         test :t do
           platform :windows
           node_single do
-            a 'a'
-            b ['c', 'd']
-            if windows?
-              c :e, 'f'
+            a 1
+            b [2, 3]
+            if windows? # It can query attrs in parent node
+              c 4, 5
             end
             if ios?
-              b ['e']
+              b [6]
             end
             d do
-              e do
-                f 1
+              e do # they can be nested
+                f 7
               end
             end
           end
-          node_single.a.must_equal('a')
-          node_single.b.must_equal ['c', 'd']
-          node_single.c.must_equal({e: 'f'})
-          node_single.d.e.f.must_equal(1)
+          node_single.a.must_equal(1)
+          node_single.b.must_equal [2, 3]
+          node_single.c.must_equal({4 => 5})
+          node_single.d.e.f.must_equal(7)
+          sibling_single.must_equal(2)
+          sibling_array.must_equal [2]
+          sibling_hash.must_equal({1 => 2})
 
           # Repeating overwrites/appends
           node_single do
-            a 'a1'
-            b ['c1', 'd1']
+            a 8
+            b [9, 10]
             if windows?
-              c :e1, 'f1'
+              c 11, 12
             end
             if ios?
-              b ['e1']
+              b [13]
             end
             d do
               e do
-                f 2
+                f 14
               end
             end
           end
-          node_single.a.must_equal('a1')
-          node_single.b.must_equal ['c', 'd', 'c1', 'd1']
-          node_single.c.must_equal({e: 'f', e1: 'f1'})
-          node_single.d.e.f.must_equal(2)
+          node_single.a.must_equal(8)
+          node_single.b.must_equal [2, 3, 9, 10]
+          node_single.c.must_equal({4 => 5, 11 => 12})
+          node_single.d.e.f.must_equal(14)
+          sibling_single.must_equal(16)
+          sibling_array.must_equal [2, 16]
+          sibling_hash.must_equal({1 => 2, 8 => 16})
 
           node_array do
             a 'a'

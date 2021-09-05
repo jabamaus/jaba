@@ -18,7 +18,6 @@ module JABA
     attr_reader :defaults_definition
     attr_reader :dependencies
     attr_reader :attribute_defs
-    attr_reader :callable_attr_defs
 
     ##
     #
@@ -26,8 +25,9 @@ module JABA
       super(services, defn_id, src_loc, JDL_Type.new(self))
 
       @attribute_defs = [] # The type's actual attribute defs
-      @callable_attr_def_lookup = {} # All the attributes that can actually be called against this type. Includes referenced types.
-      @callable_attr_defs = []
+      @attribute_def_lookup = {}
+      @attribute_def_imported_lookup = {}
+
       @plugin = plugin
       @node_manager = node_manager
       @defaults_definition = services.get_defaults_definition(@defn_id)
@@ -70,16 +70,15 @@ module JABA
       id = id.to_sym
       
       ad = JabaAttributeDefinition.new(@services, id, caller_locations(2, 1)[0], block, type, key_type, variant, self)
-      @attribute_defs << ad
 
-      register_attr_def(ad)
-      ad  
+      register_attr_def(ad, :local)
+      ad
     end
 
     ##
     #
-    def get_attr_def(id)
-      @callable_attr_def_lookup[id]
+    def get_attribute_def(id)
+      @attribute_def_lookup[id]
     end
 
     ##
@@ -97,7 +96,7 @@ module JABA
             jt = attr_def.services.get_jaba_type(rt_id)
             jt.attribute_defs.each do |d|
               if d.has_flag?(:expose)
-                register_attr_def(d)
+                register_attr_def(d, :imported)
               end
             end
           end
@@ -105,7 +104,6 @@ module JABA
       end
 
       @attribute_defs.sort_by!{|ad| ad.defn_id}
-      @callable_attr_defs.sort_by!{|ad| ad.defn_id}
     end
 
     ##
@@ -118,14 +116,27 @@ module JABA
 
     ##
     #
-    def register_attr_def(attr_def)
-      id = attr_def.defn_id
-      existing = @callable_attr_def_lookup[id]
-      if existing
-        JABA.error("'#{id}' attribute multiply defined in '#{defn_id}'. Previous at #{existing.src_loc.describe}")
+    def register_attr_def(ad, type)
+      id = ad.defn_id
+      case type
+      when :local
+        existing = @attribute_def_lookup[id]
+        if existing
+          JABA.error("'#{id}' attribute multiply defined in '#{defn_id}'. See previous at #{existing.src_loc.describe}", errobj: ad)
+        end
+        
+        @attribute_defs << ad
+        @attribute_def_lookup[id] = ad
+      when :imported
+        existing = @attribute_def_imported_lookup[id]
+        if existing
+          JABA.error("'#{id}' attribute multiply imported into '#{defn_id}'. See previous at #{existing.src_loc.describe}", errobj: ad)
+        end
+
+        @attribute_def_imported_lookup[id] = ad
+      else
+        JABA.error("Unrecognised type '#{type}'")
       end
-      @callable_attr_def_lookup[id] = attr_def
-      @callable_attr_defs << attr_def
     end
 
     ##

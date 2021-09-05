@@ -9,7 +9,7 @@ module JABA
   class GlobalsPlugin < DefaultPlugin
 
     def process_definition(definition)
-      globals_node = services.make_node(want_post_create: false)
+      globals_node = services.make_node(flags: NodeFlags::NO_POST_CREATE)
       
       main_services = services.instance_variable_get(:@services)
       main_services.instance_variable_set(:@globals_node, globals_node)
@@ -21,6 +21,16 @@ module JABA
       globals_node
     end
 
+  end
+
+  ##
+  #
+  module NodeFlags
+    NO_TRACK = 1
+    NO_DEFAULTS = 2
+    NO_POST_CREATE = 4
+    LAZY = 8
+    IS_COMPOUND_ATTR = 16
   end
 
   ##
@@ -128,10 +138,7 @@ module JABA
       name: nil,
       parent: nil,
       block_args: nil,
-      track: true,
-      want_defaults: true,
-      want_post_create: true,
-      lazy: false,
+      flags: 0,
       blocks: nil,
       &block
     )
@@ -155,9 +162,9 @@ module JABA
         @jaba_type
       end
 
-      jn = JabaNode.new(self, @definition.id, @definition.src_loc, jt, handle, parent, depth, lazy)
+      jn = JabaNode.new(self, @definition.id, @definition.src_loc, jt, handle, parent, depth, flags)
 
-      if track
+      if flags & NodeFlags::NO_TRACK == 0
         @services.register_node(jn)
         @nodes << jn
       end
@@ -180,7 +187,7 @@ module JABA
         else
           # Next execute defaults block if there is one defined for this type.
           #
-          if want_defaults
+          if flags & NodeFlags::NO_DEFAULTS == 0
             defaults = @jaba_type.defaults_definition
             if defaults
               jn.eval_jdl(&defaults.block)
@@ -200,7 +207,7 @@ module JABA
         JABA.error('Cannot modify read only value', callstack: e.backtrace)
       end
 
-      if want_post_create # used by globals node when being set from the command line
+      if flags & NodeFlags::NO_POST_CREATE == 0 # used by globals node when being set from the command line
         jn.post_create
       end
 

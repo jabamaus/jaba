@@ -21,7 +21,7 @@ module JABA
     
     ##
     #
-    def initialize(node_manager, defn_id, src_loc, jaba_type, handle, parent, depth, lazy)
+    def initialize(node_manager, defn_id, src_loc, jaba_type, handle, parent, depth, flags)
       super(node_manager.services, defn_id, src_loc, JDL_Node.new(self))
 
       @node_manager = node_manager
@@ -29,7 +29,7 @@ module JABA
       @handle = handle
       @children = []
       @depth = depth
-      @lazy = lazy
+      @flags = flags
       @referenced_nodes = []
       
       @attrs = AttributeAccessor.new(self)
@@ -42,7 +42,7 @@ module JABA
       
       set_parent(parent)
 
-      if !lazy
+      if @flags & NodeFlags::LAZY == 0
         @jaba_type.attribute_defs.each do |attr_def|
           create_attr(attr_def)
         end
@@ -152,7 +152,7 @@ module JABA
     end
 
     ##
-    #
+    # TODO: review. This is not recursive with regards references. Should it be?
     def search_attr(id, fail_if_not_found: true)
       a = get_attr(id, fail_if_not_found: false)
       if !a
@@ -180,31 +180,38 @@ module JABA
     # however the value being passed in is an array it could be eg [['val1', 'val2'], :opt1, :opt2].
     #  
     def handle_attr(id, *args, __jdl_call_loc: nil, __read_only: false, **keyval_args, &block)
-      # First determine if it is a set or a get operation
+      # Determine if it is a set or a get operation
       #
       is_get = (args.empty? && keyval_args.empty? && !block_given?)
+
+      a = search_attr(id)
 
       # If its a get operation, search for attribute in this node, all referenced nodes and all parent nodes
       #
       if is_get
-        a = search_attr(id)
         return a.value(__jdl_call_loc)
       else
-        a = get_attr(id, fail_if_not_found: false)
-        
-        if !a && @lazy
-          attr_def = @jaba_type.get_attr_def(id)
-          if attr_def
-            a = create_attr(attr_def)
+        if @flags & NodeFlags::LAZY != 0
+          a = get_attr(id, fail_if_not_found: false)
+          if !a
+            ad = @jaba_type.get_attribute_def(id)
+            if !ad
+              attr_not_found_error(id)
+            end
+            a = create_attr(ad)
           end
-        end
-          
-        if !a
-          attr_def = @jaba_type.get_attr_def(id)
-          if attr_def && attr_def.jaba_type.defn_id != @jaba_type.defn_id
-            JABA.error("Cannot change referenced '#{id}' attribute")
+        else
+          ad = a.attr_def
+          if @flags & NodeFlags::IS_COMPOUND_ATTR != 0
+            # TODO: only access to immediate parent
+          else
+            if ad.jaba_type.defn_id != @jaba_type.defn_id
+              JABA.error("Cannot change referenced '#{id}' attribute")
+            end
+            if a.node != self
+              attr_not_found_error(id)
+            end
           end
-          attr_not_found_error(id)
         end
 
         if (__read_only || @read_only) && !@allow_set_read_only_attrs
@@ -217,10 +224,45 @@ module JABA
     end
 
     ##
-    # TODO: 'did you mean' style error msg
+    # TODO: review. This is not recursive with regards references. Should it be?
+    def visit_callable_attrs(rdonly: false, &block)
+      @attributes.each do |a|
+        if rdonly || a.attr_def.has_flag?(:read_only)
+          yield a, :rdonly
+        else
+          yield a, :rw
+        end
+      end
+      @referenced_nodes.each do |rn|
+        rn.each_attr do |ra|
+          if ra.attr_def.has_flag?(:expose)
+            yield ra, :rdonly
+          end
+        end
+      end
+      if @parent
+        @parent.visit_callable_attrs(rdonly: true, &block)
+      end
+    end
+
+    ##
     #
     def attr_not_found_error(id)
-      JABA.error("'#{id}' attribute not found. Available: #{@jaba_type.callable_attr_defs.map{|ad| ad.defn_id}.inspect}")
+      rdonly_attributes = []
+      rw_attributes = []
+      visit_callable_attrs do |a, type|
+        case type
+        when :rw
+          rw_attributes << a
+        when :rdonly
+          rdonly_attributes << a
+        end
+      end
+
+      JABA.error("'#{id}' attribute not found. The following attributes are available in this context:\n\n  " \
+        "Read/write:\n    #{rw_attributes.map{|ad| ad.defn_id.to_s}.join(', ')}\n\n  " \
+        "Read only:\n    #{rdonly_attributes.map{|ad| ad.defn_id.to_s}.join(', ')}\n\n"
+      )
     end
 
     ##

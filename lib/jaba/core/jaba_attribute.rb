@@ -121,8 +121,9 @@ module JABA
         else
           node_type = @attr_def.node_type
           nm = services.get_jaba_type(node_type).node_manager
-          nm.push_definition(services.make_definition(@attr_def.defn_id, block, __jdl_call_loc)) do
-            return nm.make_node(name: id, parent: @node, block_args: block_args, __jdl_call_loc: __jdl_call_loc, &block)
+          dfn = services.make_definition(@attr_def.defn_id, block, __jdl_call_loc)
+          nm.push_definition(dfn) do
+            return nm.make_node(name: id, parent: @node, block_args: block_args, flags: NodeFlags::IS_COMPOUND_ATTR)
           end
         end
       elsif @attr_def.block_attr?
