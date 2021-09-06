@@ -51,13 +51,6 @@ module JABA
     end
 
     ##
-    # Specify child types. Useful for grouping attributes.
-    #
-    def child_types(*ids)
-      @jaba_type.set_property(:child_types, ids)
-    end
-
-    ##
     #
     def dependencies(*deps)
       @jaba_type.set_property(:dependencies, deps)
