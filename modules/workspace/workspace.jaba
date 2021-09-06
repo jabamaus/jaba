@@ -13,10 +13,6 @@ type :workspace do
 
   attr :workspacedir, type: :dir do
     title 'Directory in which workspaces will be generated'
-# TODO: can't put in host dir as workspace does not currently setup host attr
-#    default do
-#      "#{host}"
-#    end
     basedir_spec :buildsystem_root
     flags :no_check_exist # May get created during generation
   end
