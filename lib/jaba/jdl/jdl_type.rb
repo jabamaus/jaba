@@ -57,6 +57,7 @@ module JABA
     end
 
     private
+  private
   
     ##
     #
