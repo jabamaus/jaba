@@ -1,3 +1,4 @@
+- consider making all paths relative to jaba file when in defaults and shared definitions
 - optimise copying of value options once they are more locked down.
 - move JabaAttributeType base class into extend folder
 - rename type :node to :compound?
@@ -133,16 +134,13 @@ A: The code is written in a style that is the easiest to step through in an IDE 
 
 
 ouroveon todo
-- header only deps
 - workspace categories
-- ispc extension
-- warnlevel
 - Allow debug?
 - Support **.h as alternative to **/*.h
 - Make shell build events use macros
 - review whether static libs should have hard dependencies
 - get rid of jaba.bat and Introduce jaba.exe
 - add grab bag to reference docs
-- characterset unicode the default?
 - optimisation settings
 - Is ToolsVersion='16.0' needed?
+- support for debugger working directory via .user file

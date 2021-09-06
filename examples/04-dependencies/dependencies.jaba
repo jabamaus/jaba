@@ -11,3 +11,6 @@ cpp :AppWithDependencies do
     deps [:BasicStaticLib, :BasicDynamicLib, :ThirdPartyLib]
   end
 end
+
+# TODO: add soft dependency example
+# TODO: add export only example
