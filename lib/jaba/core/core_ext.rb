@@ -396,9 +396,13 @@ module JABACoreExt
     ##
     #
     def sort_topological!(by = nil, &each_child_block)
-      each_node = lambda {|&b| each(&b) }
+      each_node = lambda do |&b|
+        each(&b)
+      end
       each_child = if by
-        lambda {|n, &b| n.send(by).each(&b)}
+        lambda do |n, &b|
+          n.send(by).each(&b)
+        end
       else
         each_child_block
       end
