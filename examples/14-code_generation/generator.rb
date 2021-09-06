@@ -1,4 +1,4 @@
-require 'FileUtils'
+require 'fileutils'
 require_relative '../../lib/jaba/core/core_ext'
 
 using JABACoreExt
