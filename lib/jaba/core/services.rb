@@ -94,19 +94,18 @@ module JABA
       @attr_flag_defs = []
       @jaba_type_defs = []
       @default_defs = []
-      @instance_defs = []
       @translator_defs = []
-
-      @open_type_defs = []
-      @open_instance_defs = []
-      @open_translator_defs = []
       @open_shared_defs = []
 
+      @open_type_defs_lookup = {}
       @instance_def_lookup = {}
+      @open_instance_defs_lookup = {}
+      @open_translator_def_lookup = {}
       @shared_def_lookup = {}
       @node_lookup = {}
-      @plugin_lookup = {}
+      @node_manager_lookup = {}
 
+      @node_managers = []
       @jaba_attr_types = []
       @jaba_attr_type_lookup = {}
       @jaba_attr_flags = []
@@ -122,7 +121,6 @@ module JABA
       @null_attr_type = JabaAttributeType.new(:null, 'Null attribute type')
       
       @in_attr_default_block = false
-      @processing_jaba_types = false
 
       @top_level_api = JDL_TopLevel.new(self)
       @file_manager = FileManager.new(self)
@@ -232,66 +230,19 @@ module JABA
 
       @input_manager.process_cmd_line
       @input_manager.finalise
-
+      
       init_root_paths
       load_jaba_files
-
-      # Prepend globals type definition so globals are processed first, allowing everything else to access them
-      #
-      @jaba_type_defs.prepend(@globals_type_def)
-
-      # Create JabaTypes and any associated plugins
-      #
-      @jaba_type_defs.each do |d|
-        make_jaba_type(d.id, d)
-      end
-
-      # Open JabaTypes so more attributes can be added
-      #
-      @open_type_defs.each do |d|
-        log "Opening #{d.id} type"
-        jt = get_jaba_type(d.id, errobj: d)
-        jt.eval_jdl(&d.block)
-      end
-
-      @jaba_types.each(&:post_create)
-
-      # When an attribute defined in a JabaType will reference a differernt JabaType a dependency on that
-      # type is added. JabaTypes are dependency order sorted to ensure that referenced JabaNodes are created
-      # before the JabaNode that are referencing it.
-      #
-      @jaba_types.sort_topological!(:dependencies)
-
-      log 'Initialisation of JabaTypes complete'
-
-      # Process instance definitions and assign them to a top level type/node manager
-      #
-      @instance_defs.each do |d|
-        jt = get_jaba_type(d.jaba_type_id, errobj: d)
-        jt.node_manager.register_instance_definition(d)
-      end
-
-      # Register instance open defs
-      #
-      @open_instance_defs.each do |d|
-        inst_def = get_instance_definition(d.jaba_type_id, d.id, errobj: d)
-        inst_def.open_defs << d
-      end
-
-      # Register translator open defs
-      #
-      @open_translator_defs.each do |d|
-        tdef = get_translator_definition(d.id)
-        tdef.open_defs << d
-      end
 
       # Create translators
       #
       @translator_defs.each do |d|
-        t = Translator.new(self, d.id, d.src_loc, d.block)
-        @translators[d.id] = t
+        id = d.id
+        open_defs = @open_translator_def_lookup[id]
+        t = Translator.new(self, id, d.src_loc, d.block, open_defs)
+        @translators[id] = t
       end
-
+      
       # Register shared definition open blocks
       #
       @open_shared_defs.each do |d|
@@ -299,19 +250,53 @@ module JABA
         sd.open_defs << d
       end
 
-      @processing_jaba_types = true
-
-      # Process globals first as everything should have access to them. Globals have no dependencies.
-      # See GlobalsPlugin.
+      # Prepend globals type definition so globals are processed first, allowing everything else to access them
       #
-      globals_type = @jaba_types.first
-      globals_type.node_manager.process
+      @jaba_type_defs.prepend(@globals_type_def)
 
-      1.upto(@jaba_types.size-1) do |i|
-        @jaba_types[i].node_manager.process
+      # Create JabaTypes, without calling attribute definition blocks
+      #
+      @jaba_type_defs.each do |d|
+        id = d.id
+        log "Creating '#{id}' type at #{d.src_loc.describe}"
+        jt = make_jaba_type(id, d)
+
+        open_defs = @open_type_defs_lookup[id]
+        if open_defs
+          log "Opening #{id} type"
+          open_defs.each do |od|
+            jt.eval_jdl(&od.block)
+          end
+        end
+
+        nm = @node_manager_lookup[id]
+        if !nm
+          nm = make_plugin(id, DefaultPlugin)
+        end
+        @node_managers << nm
+        nm.set_jaba_type(jt)
       end
 
-      @processing_jaba_types = false
+      @jaba_types.each(&:post_create)
+      @jaba_types.sort_topological!(:dependencies)
+
+      @jaba_types.each do |jt|
+        jt.eval_attr_defs
+        node_manager = get_node_manager(jt.defn_id)
+
+        inst_defs = @instance_def_lookup[jt.defn_id]
+        if inst_defs
+          inst_defs.each do |inst_def|
+            open_inst_defs = @open_instance_defs_lookup[inst_def.id]
+            if open_inst_defs
+              inst_def.open_defs.concat(open_inst_defs)
+            end
+            node_manager.register_instance_definition(inst_def)
+          end
+        end
+
+        node_manager.process
+      end
 
       # Output definition input data as a json file, before generation. This is raw data as generated from the definitions.
       # Can be used for debugging and testing.
@@ -324,13 +309,13 @@ module JABA
 
       # Write final files
       #
-      @jaba_types.each do |jt|
+      @node_managers.each do |nm|
         # Call generate blocks defined per-node instance, in the context of the node itself, not its api
         #
-        jt.node_manager.root_nodes.each do |n|
+        nm.root_nodes.each do |n|
           n.call_block_property(:generate, use_api: false)
         end
-        jt.plugin.generate
+        nm.plugin.generate
       end
     end
     
@@ -443,18 +428,17 @@ module JABA
           make_attr_type(JABA.const_get(c))
         when /^JabaAttrDefFlag./
           make_attr_flag(JABA.const_get(c))
+        when :DefaultPlugin
+          # skip
         when /^(.+)Plugin$/
           # Create non-default plugins up front (eg CppPlugin, WorkspacePlugin). There will only be one instance
           # of each of these. DefaultPlugins will be created later as there will be one created for each jaba type that
           # has not defined its own plugin. Creating plugins up front allows plugins to register early with the
           # system.
           #
-          next if c == :DefaultPlugin
-          
-          id = Regexp.last_match(1)
+          id = Regexp.last_match(1).downcase.to_sym
           klass = JABA.const_get(c)
-          plugin = make_plugin(klass)
-          @plugin_lookup[id] = plugin
+          make_plugin(id, klass)
         end
       end
       @jaba_attr_types.sort_by!(&:id)
@@ -463,19 +447,21 @@ module JABA
 
     ##
     #
-    def make_plugin(klass)
+    def make_plugin(id, klass)
       ps = PluginServices.new
       ps.instance_variable_set(:@services, self)
 
       nm = NodeManager.new(self)
       ps.instance_variable_set(:@node_manager, nm)
 
+      @node_manager_lookup[id] = nm
+
       plugin = klass.new
       plugin.instance_variable_set(:@services, ps)
       nm.instance_variable_set(:@plugin, plugin)
 
       plugin.init
-      plugin
+      nm
     end
 
     ##
@@ -511,8 +497,8 @@ module JABA
       :block,
       :src_loc,
       :open_defs,
-      :jaba_type_id,
-      :flags
+      :flags,
+      :jaba_type_id # used by JabaType
     )
 
     ##
@@ -523,36 +509,25 @@ module JABA
       d.block = block
       d.src_loc = src_loc
       d.open_defs = []
-      d.jaba_type_id = nil
       d.flags = flags
       d.define_singleton_method(:has_flag?) do |f|
         flags.include?(f)
       end
+      d.jaba_type_id = nil
       d
     end
 
     ##
     #
     def make_jaba_type(id, dfn)
-      log "Creating '#{id}' type at #{dfn.src_loc.describe}"
-
       if @jaba_type_lookup.key?(id)
         JABA.error("'#{id}' jaba type multiply defined")
       end
 
-      plugin_id = id.to_s.capitalize_first # egg Cpp/Workspace
-      plugin = @plugin_lookup[plugin_id]
-      if !plugin
-        plugin = make_plugin(DefaultPlugin)
-      end
-
-      nm = plugin.services.instance_variable_get(:@node_manager)
-      jt = JabaType.new(self, dfn.id, dfn.src_loc, dfn.block, plugin, nm)
-      nm.set_jaba_type(jt)
+      jt = JabaType.new(self, dfn.id, dfn.src_loc, dfn.block)
 
       @jaba_types  << jt
       @jaba_type_lookup[id] = jt
-
       jt
     end
 
@@ -621,7 +596,7 @@ module JABA
       end
       nil
     end
-    
+
     ##
     #
     def define_shared(id, &block)
@@ -668,16 +643,6 @@ module JABA
 
       @instance_def_lookup.push_value(type_id, d)
 
-      # Plugins are allowed to create more instances while they are being processed. eg the cpp plugin
-      # automatically creates workspaces. If jaba types are already being processed create the instance
-      # immediately, otherwise save for later (as jaba types will not have been created yet).
-      #
-      if @processing_jaba_types
-        jt = get_jaba_type(d.jaba_type_id, errobj: d)
-        jt.node_manager.register_instance_definition(d)
-      else
-        @instance_defs << d
-      end
       nil
     end
     
@@ -784,16 +749,16 @@ module JABA
       case what
       when :type
         log "  Opening '#{id}' type at #{src_loc.describe}"
-        @open_type_defs << make_definition(id, block, src_loc)
+        @open_type_defs_lookup.push_value(id, make_definition(id, block, src_loc))
       when :instance
         log "  Opening '#{id}' instance [type=#{type}] at #{src_loc.describe}"
         JABA.error("type is required") if type.nil?
         d = make_definition(id, block, src_loc)
         d.jaba_type_id = type
-        @open_instance_defs << d
+        @open_instance_defs_lookup.push_value(id, d)
       when :translator
         log "  Opening '#{id}' translator at #{src_loc.describe}"
-        @open_translator_defs << make_definition(id, block, src_loc)
+        @open_translator_def_lookup.push_value(id, make_definition(id, block, src_loc))
       when :shared
         log "  Opening '#{id}' shared definition at #{src_loc.describe}"
         @open_shared_defs << make_definition(id, block, src_loc)
@@ -836,9 +801,18 @@ module JABA
 
     ##
     #
+    def get_node_manager(jaba_type_id)
+      nm = @node_manager_lookup[jaba_type_id]
+      if !nm
+        JABA.error("'#{jaba_type_id}' node manager not found")
+      end 
+      nm
+    end
+
+    ##
+    #
     def get_plugin(jaba_type_id)
-      jt = get_jaba_type(jaba_type_id)
-      jt.plugin
+      get_node_manager(jaba_type_id).plugin
     end
 
     ##
@@ -847,11 +821,11 @@ module JABA
       root = {}
       root[:jdl_files] = @jdl_files
 
-      @jaba_types.each do |jt|
-        jt.node_manager.root_nodes.each do |rn|
+      @node_managers.each do |nm|
+        nm.root_nodes.each do |rn|
           obj = {}
-          root["#{p.type_id}|#{rn.handle}"] = obj
-          write_node_json(p, root, rn, obj)
+          root["#{nm.type_id}|#{rn.handle}"] = obj
+          write_node_json(nm, root, rn, obj)
         end
       end
       json = JSON.pretty_generate(root)
@@ -863,15 +837,15 @@ module JABA
 
     ##
     #
-    def write_node_json(plugin, root, node, obj)
+    def write_node_json(nm, root, node, obj)
       node.visit_attr(top_level: true) do |attr, val|
         obj[attr.defn_id] = val
       end
       if !node.children.empty?
         node.children.each do |child|
           child_obj = {}
-          root["#{plugin.type_id}|#{child.handle}"] = child_obj
-          write_node_json(plugin, root, child, child_obj)
+          root["#{nm.type_id}|#{child.handle}"] = child_obj
+          write_node_json(nm, root, child, child_obj)
         end
       end
     end
@@ -891,12 +865,13 @@ module JABA
       @output[:build_root] = input.build_root
       @output[:generated] = @generated
 
-      @jaba_types.each do |jt|
-        next if jt.plugin.is_a?(DefaultPlugin)
+      @node_managers.each do |nm|
+        plugin = nm.plugin
+        next if plugin.is_a?(DefaultPlugin)
         root = {}
-        jt.plugin.build_jaba_output(root)
+        plugin.build_jaba_output(root)
         if !root.empty?
-          @output[jt.defn_id] = root
+          @output[nm.type_id] = root
         end
       end
 

@@ -222,9 +222,8 @@ open_shared :vs_host_common do
 end
 
 open_type :cpp_config do
-  attr :ispc, type: :node do
+  attr :ispc, type: :node, jaba_type: :ispc_rule do
     title 'ispc custom build tool'
-    node_type :ispc_rule
   end
 end
 

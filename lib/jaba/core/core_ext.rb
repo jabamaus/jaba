@@ -412,7 +412,7 @@ module JABACoreExt
           result << c.first
         else
           obj = c.shift
-          JABA.error("#{obj.describe} contains a cyclic dependency on #{c.map{|o| "'#{o}'"}.join(', ')}", errobj: obj)
+          JABA.error("#{obj.describe} contains a cyclic dependency on #{c.map{|o| o.describe}.join(', ')}", errobj: obj)
         end
       end
       replace(result)

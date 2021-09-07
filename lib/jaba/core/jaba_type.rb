@@ -13,24 +13,17 @@ module JABA
     attr_reader :title
     attr_reader :notes
     attr_reader :singleton
-    attr_reader :plugin
-    attr_reader :node_manager
-    attr_reader :defaults_definition
     attr_reader :dependencies
     attr_reader :attribute_defs
 
     ##
     #
-    def initialize(services, defn_id, src_loc, block, plugin, node_manager)
+    def initialize(services, defn_id, src_loc, block)
       super(services, defn_id, src_loc, JDL_Type.new(self))
 
       @attribute_defs = [] # The type's actual attribute defs
       @attribute_def_lookup = {}
       @attribute_def_imported_lookup = {}
-
-      @plugin = plugin
-      @node_manager = node_manager
-      @defaults_definition = services.get_defaults_definition(@defn_id)
 
       define_property :title
       define_array_property :notes
@@ -59,19 +52,37 @@ module JABA
 
     ##
     #
-    def define_attr(id, variant, type: nil, key_type: nil, &block)
+    def define_attr(id, variant, type: nil, key_type: nil, jaba_type: nil, &block)
       services.log "  Adding '#{id}' attribute [variant=#{variant}, type=#{type}]"
       
       if key_type && variant != :hash
-        JABA.error("Only attr_hash supports :key_type argument")
+        JABA.error("Only attr_hash supports key_type argument")
+      end
+      if jaba_type && type != :node_ref && type != :node
+        JABA.error("Only :node and :node_ref attribute types supports jaba_type argument")
+      end
+
+      if (type == :node_ref || type == :node) && !jaba_type
+        JABA.error(":node_ref/:compound attribute types must specify jaba_type, eg 'add_attr type: :node_ref, jaba_type: :platfom'")
       end
       
       validate_id(id)
       id = id.to_sym
       
-      ad = JabaAttributeDefinition.new(@services, id, caller_locations(2, 1)[0], block, type, key_type, variant, self)
-
+      ad = JabaAttributeDefinition.new(self, id, caller_locations(2, 1)[0], block, type, key_type, variant, jaba_type)
       register_attr_def(ad, :local)
+
+      # If referenced jaba type specified and its not this type, add a dependency on the type. Used to dependency sort types
+      # to ensure correct node instance creation order.
+      #
+      if jaba_type
+        if jaba_type != defn_id
+          set_property(:dependencies, jaba_type)
+        elsif type == :node
+          JABA.error(":compound attribute cannot set to jaba_type to owning type")
+        end
+      end
+
       ad
     end
 
@@ -83,15 +94,21 @@ module JABA
 
     ##
     #
+    def eval_attr_defs
+      @attribute_defs.each(&:eval_definition)
+    end
+
+    ##
+    #
     def post_create
       @dependencies.uniq!
       @dependencies.map!{|d| services.get_jaba_type(d)}
 
-      # Regiser referenced attr defs
+      # Register referenced attr defs
       #
       @attribute_defs.each do |attr_def|
         if attr_def.node_by_reference?
-          rt_id = attr_def.node_type
+          rt_id = attr_def.ref_jaba_type
           if rt_id != defn_id
             jt = attr_def.services.get_jaba_type(rt_id)
             jt.attribute_defs.each do |d|

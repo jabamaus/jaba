@@ -20,6 +20,7 @@ module JABA
     attr_reader :jaba_attr_type # JabaAttributeType object
     attr_reader :jaba_attr_key_type # JabaAttributeType object. Used by hash attribute.
     attr_reader :jaba_type
+    attr_reader :ref_jaba_type # Defined and used by node_ref/compound attribute types but give access here for efficiency
 
     attr_reader :title
     attr_reader :notes
@@ -28,18 +29,19 @@ module JABA
     attr_reader :default_block
     attr_reader :flags
     attr_reader :flag_options
-    attr_reader :node_type # Defined and used by node_ref/node attribute types but give access here for efficiency
     attr_reader :on_set
     
     ##
     #
-    def initialize(services, defn_id, src_loc, block, type_id, key_type_id, variant, jaba_type)
-      super(services, defn_id, src_loc, JDL_AttributeDefinition.new(self))
+    def initialize(jaba_type, defn_id, src_loc, block, type_id, key_type_id, variant, ref_jaba_type)
+      super(jaba_type.services, defn_id, src_loc, JDL_AttributeDefinition.new(self))
       
+      @jaba_type = jaba_type
+      @block = block
       @type_id = type_id
       @key_type_id = key_type_id # Only used with hash attributes
       @variant = variant
-      @jaba_type = jaba_type
+      @ref_jaba_type = ref_jaba_type # Used by compound attrs and reference attrs
       @value_options = []
       @jaba_attr_flags = []
       @default_set = false
@@ -60,7 +62,6 @@ module JABA
       @jaba_attr_type = services.get_attribute_type(@type_id)
       @jaba_attr_key_type = nil
       
-
       # Custom hash attribute setup
       #
       if hash?
@@ -78,10 +79,14 @@ module JABA
       end
       
       @jaba_attr_type.init_attr_def(self)
+    end
 
-      if block
+    ##
+    #
+    def eval_definition
+      if @block
         @in_eval_block = true
-        eval_jdl(&block)
+        eval_jdl(&@block)
         @in_eval_block = false
       end
 

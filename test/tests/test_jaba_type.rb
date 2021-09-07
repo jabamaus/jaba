@@ -24,18 +24,27 @@ module JABA
     end
 
     it 'supports dependencies between types' do
-      assert_output 'def a;def b;def c;a;b;c;' do
+      assert_output 'def c;def a;def b;def a1;a;def b1;b;def c1;c;' do
         jaba(barebones: true) do
+          type :c do
+            dependencies [:b]
+            print 'def c;'
+            attr :c1 do
+              print 'def c1;'
+            end
+          end
           type :a do
             print 'def a;'
+            attr :a1 do
+              print 'def a1;'
+            end
           end
           type :b do
             print 'def b;'
             dependencies [:a]
-          end
-          type :c do
-            dependencies [:b]
-            print 'def c;'
+            attr :b1 do
+              print 'def b1;'
+            end
           end
           c :c do
             print 'c;' # evaluated third
@@ -51,7 +60,7 @@ module JABA
     end
     
     it 'checks for cyclic dependencies' do
-      check_fail '\'a\' type contains a cyclic dependency on \'c\', \'b\'', line: [__FILE__, 'tagF'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagF)}: \'a\' type contains a cyclic dependency on \'c\' type, \'b\' type." do
         jaba(barebones: true) do
           type :a do # tagF
             dependencies :c

@@ -119,8 +119,7 @@ module JABA
           @value.eval_jdl(&block)
           return @value
         else
-          node_type = @attr_def.node_type
-          nm = services.get_jaba_type(node_type).node_manager
+          nm = services.get_node_manager(@attr_def.ref_jaba_type)
           dfn = services.make_definition(@attr_def.defn_id, block, __jdl_call_loc)
           nm.push_definition(dfn) do
             return nm.make_node(name: id, parent: @node, block_args: block_args, flags: NodeFlags::IS_COMPOUND_ATTR)

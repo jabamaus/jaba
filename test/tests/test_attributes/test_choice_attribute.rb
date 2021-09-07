@@ -5,7 +5,7 @@ module JABA
   class TestChoiceAttribute < JabaTest
 
     it 'requires items to be set' do
-      check_fail "'items' must be set", line: [__FILE__, 'tagA'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagA)}: 'a' attribute invalid: 'items' must be set." do
         jaba(barebones: true) do
           type :test do
             attr :a, type: :choice # tagA
@@ -15,7 +15,7 @@ module JABA
     end
 
     it 'warns if items contains duplicates' do
-      check_warn "'items' contains duplicates", __FILE__, 'tagK' do
+      check_warn "'items' contains duplicates", __FILE__, :tagK do
         jaba(barebones: true) do
           type :test do
             attr :a, type: :choice do # tagK
@@ -27,7 +27,7 @@ module JABA
     end
     
     it 'requires default to be in items' do
-      check_fail "Must be one of [1, 2, 3] but got '4'", line: [__FILE__, 'tagB'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagB)}: 'a' attribute default invalid: Must be one of [1, 2, 3] but got '4'." do
         jaba(barebones: true) do
           type :test do
             attr :a, type: :choice do
@@ -37,7 +37,7 @@ module JABA
           end
         end
       end
-      check_fail "Must be one of [1, 2, 3] but got '4'", line: [__FILE__, 'tagC'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagC)}: Must be one of [1, 2, 3] but got '4'" do
         jaba(barebones: true) do
           type :test do
             attr_array :a, type: :choice do

@@ -124,9 +124,7 @@ module JABA
             attr_array :config, type: :block
           end
           type :project do
-            attr :platform, type: :node_ref do
-              node_type :platform
-            end
+            attr :platform, type: :node_ref, jaba_type: :platform
             attr :src
             attr_array :configs do
               flags :required, :no_sort

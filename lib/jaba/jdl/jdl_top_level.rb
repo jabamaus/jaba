@@ -99,7 +99,7 @@ module JABA
       @services.open(:shared, id, &block)
     end
 
-    private
+  private
 
     ##
     #

@@ -134,7 +134,7 @@ module JABA
       @attr_def.handle_property(id, val, &block)
     end
     
-    private
+  private
   
     ##
     #

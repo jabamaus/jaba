@@ -32,22 +32,22 @@ module JABA
     ##
     # Define a new attribute.
     #
-    def attr(id, type: nil, &block)
-      @jaba_type.define_attr(id, :single, type: type, &block)
+    def attr(id, type: nil, jaba_type: nil, &block)
+      @jaba_type.define_attr(id, :single, type: type, jaba_type: jaba_type, &block)
     end
     
     ##
     # Define a new array attribute.
     #
-    def attr_array(id, type: nil, &block)
-      @jaba_type.define_attr(id, :array, type: type, &block)
+    def attr_array(id, type: nil, jaba_type: nil, &block)
+      @jaba_type.define_attr(id, :array, type: type, jaba_type: jaba_type, &block)
     end
     
     ##
     # Define a new hash attribute.
     #
-    def attr_hash(id, type: nil, key_type: nil, &block)
-      @jaba_type.define_attr(id, :hash, type: type, key_type: key_type, &block)
+    def attr_hash(id, type: nil, key_type: nil, jaba_type: nil, &block)
+      @jaba_type.define_attr(id, :hash, type: type, key_type: key_type, jaba_type: jaba_type, &block)
     end
 
     ##
@@ -56,7 +56,6 @@ module JABA
       @jaba_type.set_property(:dependencies, deps)
     end
 
-    private
   private
   
     ##

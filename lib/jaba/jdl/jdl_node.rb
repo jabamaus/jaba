@@ -32,7 +32,7 @@ module JABA
       @jaba_node.handle_attr(attr_id, *args, __jdl_call_loc: ::Kernel.caller_locations(1, 1)[0], **keyval_args, &block)
     end
 
-    private
+  private
 
     ##
     #

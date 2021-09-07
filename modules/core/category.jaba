@@ -10,10 +10,9 @@ type :category do
     end
   end
   
-  attr :parent, type: :node_ref do
+  attr :parent, type: :node_ref, jaba_type: :category do
     title 'Parent category'
     note 'Use this to build a category hierarchy that can be used to classify projects in workspaces'
-    node_type :category
   end
   
 end

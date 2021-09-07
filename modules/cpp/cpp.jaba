@@ -3,6 +3,7 @@
 type :cpp do
 
   title 'Cross platform C++ project definition'
+  dependencies :cpp_project, :cpp_config
 
   # TODO: implement
 =begin
@@ -77,11 +78,10 @@ type :cpp do
   end
 
   # TODO: mark as a control flow attr for docs
-  attr :host, type: :node_ref do
+  attr :host, type: :node_ref, jaba_type: :host do
     title 'Target host'
     note 'Returns target host as an object. Common host methods are automatically imported so can be accessed directly. Should only be needed rarely.'
     note 'Takes its value from globals.target_host and is read only.'
-    node_type :host
     default do
       globals.target_host
     end
@@ -117,10 +117,9 @@ type :cpp_project do
   end
 
   # TODO: mark as control flow for docs
-  attr :platform, type: :node_ref do
+  attr :platform, type: :node_ref, jaba_type: :platform do
     title 'Target platform as an object'
     note 'Query current target platform'
-    node_type :platform
     example %Q{
       case platform.id
       when :windows
@@ -137,11 +136,10 @@ type :cpp_project do
     example 'configs [:Debug, :Release]'
   end
   
-  attr_array :deps, type: :node_ref do
+  attr_array :deps, type: :node_ref, jaba_type: :cpp_project do
     title 'Project dependencies'
     note 'List of ids of other cpp definitions. A dependency can be flagged with :soft, in which case only its exports will be imported - it will not be linked to. ' \
       'This can be used for \'header only\' dependencies'
-    node_type :cpp_project
     flag_options :soft
     make_handle do |id|
       "#{id}|#{platform}"
@@ -269,9 +267,8 @@ type :cpp_project do
     default false
   end
 
-  attr :category, type: :node_ref do
+  attr :category, type: :node_ref, jaba_type: :category do
     title 'Workspace categorisation'
-    node_type :category
   end
 
 end
@@ -281,10 +278,9 @@ type :cpp_config do
   title 'Per configuration C++ attributes'
 
   # TODO: flag as a control flow attr in docs
-  attr :arch, type: :node_ref do
+  attr :arch, type: :node_ref, jaba_type: :arch do
     title 'Target architecture as an object'
     note 'Query current architecture being processed. Use to define control flow to set config-specific atttributes'
-    node_type :arch
   end
 
   attr :cpp_standard, type: :choice do
@@ -302,9 +298,8 @@ type :cpp_config do
     # TODO: examples, including regexes
   end
 
-  attr_array :rule, type: :node do
+  attr_array :rule, type: :node, jaba_type: :rule do
     title 'Custom build rule'
-    node_type :rule
   end
 
   # Common attributes. These are the attributes that most definitions will set/use.

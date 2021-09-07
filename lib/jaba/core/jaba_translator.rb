@@ -10,9 +10,10 @@ module JABA
 
     ##
     #
-    def initialize(services, defn_id, src_loc, block)
+    def initialize(services, defn_id, src_loc, block, open_defs)
       super(services, defn_id, src_loc, JDL_Translator.new(self))
       @block = block
+      @open_defs = open_defs
     end
 
     ##
@@ -21,8 +22,7 @@ module JABA
       @node = node
       eval_jdl(*args, &@block)
 
-      tdef = services.get_translator_definition(defn_id)
-      tdef.open_defs.each do |d|
+      @open_defs&.each do |d|
         eval_jdl(*args, &d.block)
       end
     end

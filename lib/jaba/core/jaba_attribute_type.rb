@@ -378,24 +378,13 @@ module JABA
     end
 
     def get_reference_manual_rows(attr_def)
-      ref_type = services.get_jaba_type(attr_def.node_type)
-      { references: "[#{attr_def.node_type}](#{ref_type.reference_manual_page})" }
+      ref_type = services.get_jaba_type(attr_def.ref_jaba_type)
+      { references: "[#{attr_def.ref_jaba_type}](#{ref_type.reference_manual_page})" }
     end
 
     def init_attr_def(attr_def)
-      attr_def.define_property(:node_type)
       attr_def.define_block_property(:make_handle)
       attr_def.define_block_property(:unresolved_msg)
-    end
-
-    def post_init_attr_def(attr_def)
-      t = attr_def.node_type
-      if t.nil?
-        JABA.error("'node_type' must be set")
-      end
-      if attr_def.jaba_type.defn_id != t
-        attr_def.jaba_type.set_property(:dependencies, t)
-      end
     end
 
   end
@@ -409,23 +398,8 @@ module JABA
     end
 
     def get_reference_manual_rows(attr_def)
-      { node_type: attr_def.node_type.inspect }
-    end
-
-    def init_attr_def(attr_def)
-      attr_def.define_property(:node_type)
-    end
-
-    def post_init_attr_def(attr_def)
-      t = attr_def.node_type
-      if t.nil?
-        JABA.error("'node_type' must be set")
-      end
-      if attr_def.jaba_type.defn_id == t
-        JABA.error("node_type attribute cannot be set to owning type")
-      else
-        attr_def.jaba_type.set_property(:dependencies, t)
-      end
+      ref_type = services.get_jaba_type(attr_def.ref_jaba_type)
+      { node_type: "[#{attr_def.ref_jaba_type}](#{ref_type.reference_manual_page})" }
     end
 
   end

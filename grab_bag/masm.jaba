@@ -129,9 +129,8 @@ type :masm_rule do
 end
 
 open_type :cpp_config do
-  attr :masm, type: :node do
+  attr :masm, type: :node, jaba_type: :masm_rule do
     title 'masm custom build tool'
-    node_type :masm_rule
   end
 end
 

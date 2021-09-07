@@ -81,6 +81,8 @@ module JABA
     def process
       services.log "Processing #{describe}", section: true
 
+      @defaults_definition = services.get_defaults_definition(@type_id)
+
       # Give plugin a chance to do some initialisation before nodes are created. Dependent plugins that have already
       # been processed can be accessed here.
       #
@@ -188,9 +190,8 @@ module JABA
           # Next execute defaults block if there is one defined for this type.
           #
           if flags & NodeFlags::NO_DEFAULTS == 0
-            defaults = @jaba_type.defaults_definition
-            if defaults
-              jn.eval_jdl(&defaults.block)
+            if @defaults_definition
+              jn.eval_jdl(&@defaults_definition.block)
             end
           end
  
@@ -220,7 +221,7 @@ module JABA
     def resolve_reference(attr, ref_node_id, ignore_if_same_type: false)
       attr_def = attr.attr_def
       node = attr.node
-      ref_type = attr_def.node_type
+      ref_type = attr_def.ref_jaba_type
 
       if ignore_if_same_type && ref_type == node.jaba_type.defn_id
         @reference_attrs_to_resolve << attr
