@@ -69,26 +69,13 @@ module JABA
   #
   module PropertyMethods
 
-    @@id_to_var = {}
-
-    PropertyInfo = Struct.new(:variant, :store_block)
+    PropertyInfo = Struct.new(:variant, :var, :store_block, :last_call_location)
 
     ##
     #
     def initialize(...)
       super
       @properties = {}
-    end
-
-    ##
-    #
-    def self.get_var(id)
-      v = @@id_to_var[id]
-      if !v
-        v = "@#{id}"
-        @@id_to_var[id] = v
-      end
-      v
     end
 
     ##
@@ -126,13 +113,15 @@ module JABA
 
     ##
     #
-    def set_property(p_id, val = nil, &block)
+    def set_property(p_id, val = nil, __jdl_call_loc: nil, &block)
       info = @properties[p_id]
       if !info
         JABA.error("Failed to set undefined '#{p_id}' property")
       end
 
-      inst_var = PropertyMethods.get_var(p_id)
+      if __jdl_call_loc
+        info.last_call_location = __jdl_call_loc
+      end
 
       if block_given?
         if !val.nil?
@@ -140,7 +129,7 @@ module JABA
         end
         if info.store_block
           do_set(p_id, block) do
-            instance_variable_set(inst_var, block)
+            instance_variable_set(info.var, block)
           end
           return
         end
@@ -151,7 +140,7 @@ module JABA
         if val.hash?
           JABA.error("'#{p_id}' expects an array but got '#{val}'")
         end
-        current_val = instance_variable_get(inst_var)
+        current_val = instance_variable_get(info.var)
         vals = if val.array?
           val.flatten # don't flatten! as might be frozen
         else
@@ -166,7 +155,7 @@ module JABA
         if !val.hash?
           JABA.error("'#{p_id}' expects a hash but got '#{val}'")
         end
-        current_val = instance_variable_get(inst_var)
+        current_val = instance_variable_get(info.var)
         do_set(p_id, val) do
           current_val.merge!(val)
         end
@@ -175,7 +164,7 @@ module JABA
           JABA.error("'#{p_id}' expects a single value but got '#{val}'")
         end
         do_set(p_id, val) do
-          instance_variable_set(inst_var, val)
+          instance_variable_set(info.var, val)
         end
       end
     end
@@ -196,29 +185,56 @@ module JABA
     ##
     #
     def get_property(p_id)
-      if !property_defined?(p_id)
-        JABA.error("Failed to get undefined '#{p_id}' property")
-      end
-      instance_variable_get(PropertyMethods.get_var(p_id))
+      info = get_property_info(p_id)
+      instance_variable_get(info.var)
     end
 
     ##
     #
     def property_defined?(p_id)
-      @properties.key?(p_id)
+      get_property_info(p_id, fail_if_not_found: false) != nil
     end
 
     ##
     #
-    def handle_property(p_id, val, &block)
+    def handle_property(p_id, val, __jdl_call_loc: nil, &block)
       if val.nil? && !block_given?
         get_property(p_id)
       else
-        set_property(p_id, val, &block)
+        set_property(p_id, val, __jdl_call_loc: __jdl_call_loc, &block)
       end
     end
     
-    private
+    ##
+    #
+    def property_last_call_loc(p_id)
+      info = get_property_info(p_id)
+      info.last_call_location
+    end
+
+    ##
+    #
+    def property_validation_error(p_id, msg)
+      JABA.error(msg, callstack: property_last_call_loc(p_id) || src_loc)
+    end
+
+    ##
+    #
+    def property_validation_warning(p_id, msg)
+      services.jaba_warn(msg, callstack: property_last_call_loc(p_id) || src_loc)
+    end
+
+  private
+
+    ##
+    #
+    def get_property_info(p_id, fail_if_not_found: true)
+      info = @properties[p_id]
+      if !info && fail_if_not_found
+        JABA.error("Failed to get undefined '#{p_id}' property")
+      end
+      info
+    end
 
     ##
     #
@@ -226,9 +242,9 @@ module JABA
       if @properties.key?(p_id)
         JABA.error("'#{p_id}' property multiply defined")
       end
-      @properties[p_id] = PropertyInfo.new(variant, store_block)
+      var = "@#{p_id}"
+      @properties[p_id] = PropertyInfo.new(variant, var, store_block, nil)
 
-      var = PropertyMethods.get_var(p_id)
       instance_variable_set(var, initial)
 
       # Core classes like JabaAttributeDefinition define their own attr_reader methods to retrieve property values

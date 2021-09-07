@@ -63,7 +63,7 @@ module JABA
       end
 
       if (type == :node_ref || type == :node) && !jaba_type
-        JABA.error(":node_ref/:compound attribute types must specify jaba_type, eg 'add_attr type: :node_ref, jaba_type: :platfom'")
+        JABA.error(":node_ref/:compound attribute types must specify jaba_type, eg 'add_attr type: :node_ref, jaba_type: :platform'")
       end
       
       validate_id(id)
@@ -94,16 +94,16 @@ module JABA
 
     ##
     #
-    def eval_attr_defs
-      @attribute_defs.each(&:eval_definition)
+    def post_create
+      @dependencies.uniq!
+      @dependencies.map!{|d| services.get_jaba_type(d)}
     end
 
     ##
     #
-    def post_create
-      @dependencies.uniq!
-      @dependencies.map!{|d| services.get_jaba_type(d)}
-
+    def eval_attr_defs
+      @attribute_defs.each(&:eval_definition)
+      
       # Register referenced attr defs
       #
       @attribute_defs.each do |attr_def|

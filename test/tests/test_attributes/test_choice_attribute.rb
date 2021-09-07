@@ -18,8 +18,8 @@ module JABA
       check_warn "'items' contains duplicates", __FILE__, :tagK do
         jaba(barebones: true) do
           type :test do
-            attr :a, type: :choice do # tagK
-              items [:a, :a, :b, :b]
+            attr :a, type: :choice do
+              items [:a, :a, :b, :b] # tagK
             end
           end
         end
@@ -27,21 +27,21 @@ module JABA
     end
     
     it 'requires default to be in items' do
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagB)}: 'a' attribute default invalid: Must be one of [1, 2, 3] but got '4'." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagB)}: 'a' attribute default invalid: Must be one of [1, 2, 3] but got '4'. See #{src_loc(__FILE__, :tagJ)}." do
         jaba(barebones: true) do
           type :test do
             attr :a, type: :choice do
-              items [1, 2, 3]
+              items [1, 2, 3] # tagJ
               default 4 # tagB
             end
           end
         end
       end
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagC)}: Must be one of [1, 2, 3] but got '4'" do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagC)}: 'a' array attribute default invalid: Must be one of [1, 2, 3] but got '4'. See #{src_loc(__FILE__, :tagH)}." do
         jaba(barebones: true) do
           type :test do
             attr_array :a, type: :choice do
-              items [1, 2, 3]
+              items [1, 2, 3] # tagH
               default [1, 2, 4] # tagC
             end
           end
@@ -50,11 +50,11 @@ module JABA
     end
 
     it 'rejects invalid choices' do
-      check_fail 'Must be one of [:a, :b, :c]', line: [__FILE__, 'tagD'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagD)}: 't.a' attribute invalid: Must be one of [:a, :b, :c] but got ':d'. See #{src_loc(__FILE__, :tagM)}." do
         jaba(barebones: true) do
           type :test do
             attr :a, type: :choice do
-              items [:a, :b, :c]
+              items [:a, :b, :c] # tagM
             end
           end
           test :t do
@@ -62,11 +62,11 @@ module JABA
           end
         end
       end
-      check_fail 'Must be one of [:a, :b, :c]', line: [__FILE__, 'tagE'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagE)}: 't.a' array attribute invalid: Must be one of [:a, :b, :c] but got ':d'. See #{src_loc(__FILE__, :tagX)}." do
         jaba(barebones: true) do
           type :test do
             attr_array :a, type: :choice do
-              items [:a, :b, :c]
+              items [:a, :b, :c] # tagX
             end
           end
           test :t do

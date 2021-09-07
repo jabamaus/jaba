@@ -56,7 +56,7 @@ module JABA
     
     it 'detects duplicate ids with definitions of the same type' do
       [:cpp, :defaults, :type, :shared, :text, :workspace].each do |item|
-        check_fail "'#{item}|:a' multiply defined. First definition at #{__FILE__.basename}:#{find_line_number(__FILE__, 'tagX')}.", line: [__FILE__, 'tagI'] do
+        assert_jaba_error "Error at #{src_loc(__FILE__, :tagI)}: '#{item}|:a' multiply defined. First definition at #{src_loc(__FILE__, :tagX)}." do
           jaba do
             __send__(item, :a) do # tagX
             end
@@ -126,7 +126,7 @@ module JABA
     end
 
     it 'rejects attempts to instance an unknown type' do
-      check_fail "'undefined' type not defined", line: [__FILE__, 'tagJ'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagJ)}: 'undefined' type not defined, cannot create ':a' instance." do
         jaba(barebones: true) do
           undefined :a # tagJ
         end

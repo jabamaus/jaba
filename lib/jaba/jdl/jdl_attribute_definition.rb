@@ -10,35 +10,35 @@ module JABA
     # Set title of attribute. Required. Will appear in generated reference manual.
     #
     def title(val = nil)
-      @attr_def.set_property(:title, val)
+      @attr_def.set_property(:title, val, __jdl_call_loc: ::Kernel.caller_locations(1, 1)[0])
     end
 
     ##
     # Add a help note for the attribute. Multiple can be added. Will appear in generated reference manual.
     #
     def note(val)
-      @attr_def.set_property(:notes, val)
+      @attr_def.set_property(:notes, val, __jdl_call_loc: ::Kernel.caller_locations(1, 1)[0])
     end
     
     ##
     # Add usage example. Will appear in generated reference manual.
     #
     def example(val)
-      @attr_def.set_property(:examples, val)
+      @attr_def.set_property(:examples, val, __jdl_call_loc: ::Kernel.caller_locations(1, 1)[0])
     end
 
     ##
     # Set any number of flags to control the behaviour of the attribute.
     #
     def flags(*flags)
-      @attr_def.set_property(:flags, flags)
+      @attr_def.set_property(:flags, flags, __jdl_call_loc: ::Kernel.caller_locations(1, 1)[0])
     end
     
     ##
     # Set attribute default value. Can be specified as a value or a block.
     #
     def default(val = nil, &block)
-      @attr_def.set_property(:default, val, &block)
+      @attr_def.set_property(:default, val, __jdl_call_loc: ::Kernel.caller_locations(1, 1)[0], &block)
     end
 
     ##
@@ -50,7 +50,7 @@ module JABA
     ##
     #
     def flag_options(*options)
-      @attr_def.set_property(:flag_options, options)
+      @attr_def.set_property(:flag_options, options, __jdl_call_loc: ::Kernel.caller_locations(1, 1)[0])
     end
 
     ##
@@ -74,20 +74,20 @@ module JABA
     # Called for single value attributes and each element of array attributes.
     #
     def validate(&block)
-      @attr_def.set_property(:validate, &block)
+      @attr_def.set_property(:validate, __jdl_call_loc: ::Kernel.caller_locations(1, 1)[0], &block)
     end
     
     ##
     # Use to validate the key of a hash attribute. Cannot be used with single value of array attributes.
     #
     def validate_key(&block)
-      @attr_def.set_property(:validate_key, &block)
+      @attr_def.set_property(:validate_key, __jdl_call_loc: ::Kernel.caller_locations(1, 1)[0], &block)
     end
 
     ##
     #
     def on_set(&block)
-      @attr_def.set_property(:on_set, &block)
+      @attr_def.set_property(:on_set, __jdl_call_loc: ::Kernel.caller_locations(1, 1)[0], &block)
     end
     
     ##
@@ -131,7 +131,7 @@ module JABA
     ##
     #
     def method_missing(id, val = nil, &block)
-      @attr_def.handle_property(id, val, &block)
+      @attr_def.handle_property(id, val, __jdl_call_loc: ::Kernel.caller_locations(1, 1)[0], &block)
     end
     
   private
@@ -141,7 +141,7 @@ module JABA
     def initialize(attr_def)
       @attr_def = @obj = attr_def
     end
-    
+
   end
 
 end

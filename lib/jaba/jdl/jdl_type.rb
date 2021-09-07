@@ -19,14 +19,14 @@ module JABA
     # Flag type as singleton.
     #
     def singleton(val)
-      @jaba_type.set_property(:singleton, val)
+      @jaba_type.set_property(:singleton, val, __jdl_call_loc: ::Kernel.caller_locations(1, 1)[0])
     end
 
     ##
     # Add a help note for this type. Multiple can be added. Will appear in generated reference manual.
     #
     def note(val)
-      @jaba_type.set_property(:notes, val)
+      @jaba_type.set_property(:notes, val, __jdl_call_loc: ::Kernel.caller_locations(1, 1)[0])
     end
 
     ##
@@ -53,7 +53,7 @@ module JABA
     ##
     #
     def dependencies(*deps)
-      @jaba_type.set_property(:dependencies, deps)
+      @jaba_type.set_property(:dependencies, deps, __jdl_call_loc: ::Kernel.caller_locations(1, 1)[0])
     end
 
   private

@@ -48,7 +48,11 @@ module JABA
         end
       end
 
-      define_block_property(:generate)
+      # Define generate hook on root nodes only
+      #
+      if !parent
+        define_block_property(:generate)
+      end
     end
 
     ##

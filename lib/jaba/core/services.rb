@@ -280,6 +280,12 @@ module JABA
       @jaba_types.each(&:post_create)
       @jaba_types.sort_topological!(:dependencies)
 
+      @instance_def_lookup.each do |id, inst_defs|
+        if !get_jaba_type(id, fail_if_not_found: false)
+          JABA.error("'#{id}' type not defined, cannot create '#{inst_defs[0].id.inspect_unquoted}' instance", errobj: inst_defs[0])
+        end
+      end
+
       @jaba_types.each do |jt|
         jt.eval_attr_defs
         node_manager = get_node_manager(jt.defn_id)
@@ -497,8 +503,7 @@ module JABA
       :block,
       :src_loc,
       :open_defs,
-      :flags,
-      :jaba_type_id # used by JabaType
+      :flags
     )
 
     ##
@@ -513,7 +518,6 @@ module JABA
       d.define_singleton_method(:has_flag?) do |f|
         flags.include?(f)
       end
-      d.jaba_type_id = nil
       d
     end
 
@@ -639,8 +643,6 @@ module JABA
       end
       
       d = make_definition(id, block, src_loc, flags)
-      d.jaba_type_id = type_id
-
       @instance_def_lookup.push_value(type_id, d)
 
       nil
@@ -754,7 +756,6 @@ module JABA
         log "  Opening '#{id}' instance [type=#{type}] at #{src_loc.describe}"
         JABA.error("type is required") if type.nil?
         d = make_definition(id, block, src_loc)
-        d.jaba_type_id = type
         @open_instance_defs_lookup.push_value(id, d)
       when :translator
         log "  Opening '#{id}' translator at #{src_loc.describe}"
@@ -1084,8 +1085,8 @@ module JABA
 
     ##
     #
-    def jaba_warn(msg, errobj: nil)
-      callstack = Array(errobj&.src_loc || caller)
+    def jaba_warn(msg, errobj: nil, callstack: nil)
+      callstack = Array(errobj&.src_loc || callstack || caller)
       jdl_bt = get_jdl_backtrace(callstack)
       if jdl_bt.empty?
         msg = "Warning: #{msg}"

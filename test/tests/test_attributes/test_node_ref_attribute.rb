@@ -5,7 +5,7 @@ module JABA
   class TestNodeRefAttribute < JabaTest
     
     it 'requires referent type to be specified' do
-      check_fail "'b' attribute invalid: 'jaba_type' must be set", line: [__FILE__, 'tagP'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagP)}: :node_ref/:compound attribute types must specify jaba_type, eg 'add_attr type: :node_ref, jaba_type: :platform'." do
         jaba(barebones: true) do
           type :a do
             attr :b, type: :node_ref # tagP
@@ -61,7 +61,7 @@ module JABA
 
     it 'catches invalid reference to different type' do
       # TODO: don't like this error message
-      check_fail 'Node with handle \'undefined\' not found', line: [__FILE__, 'tagW'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagW)}: Node with handle \'undefined\' not found." do
         jaba(barebones: true) do
           type :type_a do
             attr :ref, type: :node_ref, jaba_type: :type_b
@@ -103,7 +103,7 @@ module JABA
     end
     
     it 'catches invalid reference to same type' do
-      check_fail 'Node with handle \'undefined\' not found', line: [__FILE__, 'tagQ'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagQ)}: Node with handle \'undefined\' not found." do
         jaba(barebones: true) do
           type :a do
             attr :b, type: :node_ref, jaba_type: :a
@@ -132,7 +132,7 @@ module JABA
     end
     
     it 'imports exposed referenced attributes' do
-      check_fail "'height' attribute not found. The following attributes are available in this context:\n\n  Read/write:\n    square\n\n  Read only:\n    length\n\n.", line: [__FILE__, 'tagI'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagI)}: 'height' attribute not found. The following attributes are available in this context:\n\n  Read/write:\n    square\n\n  Read only:\n    length\n\n." do
         jaba(barebones: true) do
           type :square do
             attr :length do
@@ -160,7 +160,7 @@ module JABA
     end
 
     it 'treats references read only when imported' do
-      check_fail "Cannot change referenced 'length' attribute", line: [__FILE__, 'tagF'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagF)}: Cannot change referenced 'length' attribute." do
         jaba(barebones: true) do
           type :line do
             attr :length do
@@ -182,7 +182,7 @@ module JABA
     end
     
     it 'treats references read only when called through object' do
-      check_fail "'a.length' attribute is read only", line: [__FILE__, 'tagD'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagD)}: 'a.length' attribute is read only." do
         jaba(barebones: true) do
           type :line do
             attr :length

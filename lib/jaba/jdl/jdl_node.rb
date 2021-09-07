@@ -23,7 +23,7 @@ module JABA
     ##
     #
     def generate(&block)
-      @jaba_node.set_property(:generate, &block)
+      @jaba_node.set_property(:generate, __jdl_call_loc: ::Kernel.caller_locations(1, 1)[0], &block)
     end
 
     ##

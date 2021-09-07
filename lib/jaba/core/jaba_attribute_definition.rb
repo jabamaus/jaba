@@ -56,7 +56,6 @@ module JABA
       define_array_property(:flag_options)
       
       define_block_property(:validate)
-      define_block_property(:validate_key)
       define_block_property(:on_set)
       
       @jaba_attr_type = services.get_attribute_type(@type_id)
@@ -65,6 +64,8 @@ module JABA
       # Custom hash attribute setup
       #
       if hash?
+        define_block_property(:validate_key)
+
         if @key_type_id
           @jaba_attr_key_type = services.get_attribute_type(@key_type_id)
         else
@@ -231,7 +232,7 @@ module JABA
     #   "#{my_path_attribute}/#{my_name_ttribute}"
     # end
     #
-    def handle_property(p_id, val, &block)
+    def handle_property(p_id, val, __jdl_call_loc: nil, &block)
       if val.nil? && !block_given? && @in_eval_block && !property_defined?(p_id)
         JABA.error("'#{defn_id}.#{p_id}' undefined. Are you setting default in terms of another attribute? If so block form must be used")
       else
@@ -320,7 +321,7 @@ module JABA
       begin
         yield
       rescue => e
-        JABA.error("#{what} invalid: #{e.message}", callstack: e.backtrace)
+        JABA.error("#{what} invalid: #{e.message}", callstack: e.instance_variable_get(:@callstack))
       end
     end
 

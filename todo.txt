@@ -1,3 +1,4 @@
+- localise error strings into a single file, using macros for variable substitution. As well as being better for standardisation could support multiple languages.
 - jaba attr types could register option into JabaAttributeDefinition. noderef/compound types could use it.
 - remove text plugin. Or even better turn into a compound attr and add to cpp.
 - consider making all paths relative to jaba file when in defaults and shared definitions

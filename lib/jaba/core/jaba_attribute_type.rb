@@ -242,16 +242,16 @@ module JABA
     def post_init_attr_def(attr_def)
       items = attr_def.items
       if items.empty?
-        JABA.error("'items' must be set")
+        attr_def.property_validation_error(:items, "'items' must be set")
       elsif items.uniq!
-        services.jaba_warn("'items' contains duplicates")
+        attr_def.property_validation_warning(:items, "'items' contains duplicates")
       end
     end
 
     def validate_value(attr_def, value)
       items = attr_def.items
       if !items.include?(value)
-        JABA.error("Must be one of #{items} but got '#{value}'")
+        JABA.error("Must be one of #{items} but got '#{value.inspect_unquoted}'. See #{attr_def.property_last_call_loc(:items).describe}.")
       end
     end
 
@@ -279,7 +279,7 @@ module JABA
 
     def post_init_attr_def(attr_def)
       if !VALID_BASE_SPECS.include?(attr_def.basedir_spec)
-        JABA.error("'basedir_spec' must be one of #{VALID_BASE_SPECS}")
+        attr_def.property_validation_error(:basedir_spec, "'basedir_spec' must be one of #{VALID_BASE_SPECS}")
       end
     end
 
