@@ -10,7 +10,7 @@ module JABA
 
     it 'warns if src not specified cleanly' do
       make_file('a/b.cpp')
-      check_warn "Src spec 'a\\b.cpp' not specified cleanly: contains backslashes", __FILE__, 'tagW' do
+      assert_jaba_warn "Src spec 'a\\b.cpp' not specified cleanly: contains backslashes", __FILE__, 'tagW' do
         jaba(cpp_app: true, dry_run: true) do
           cpp :app  do
             project do
@@ -70,7 +70,7 @@ module JABA
 
     it 'supports adding files beginning with dot but only explicitly' do
       make_file('.a', 'b/.cpp', 'c.cpp')
-      check_warn "'#{temp_dir}/b/*' did not match any src files", __FILE__, 'tagF' do
+      assert_jaba_warn "'#{temp_dir}/b/*' did not match any src files", __FILE__, 'tagF' do
         proj = jaba(cpp_app: true, dry_run: true) do
           cpp :app do
             project do
@@ -236,7 +236,7 @@ module JABA
 
     it 'strips duplicate src' do
       # It strips items that are exactly the same, and warns
-      check_warn "Stripping duplicate 'a.cpp' from 'app.src' array attribute" do
+      assert_jaba_warn "Stripping duplicate 'a.cpp' from 'app.src' array attribute" do
         jaba(cpp_app: true, dry_run: true) do
           cpp :app do
             project do

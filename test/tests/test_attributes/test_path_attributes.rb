@@ -5,7 +5,7 @@ module JABA
   class TestPathAttributes < JabaTest
 
     it 'warns if dir not clean' do
-      check_warn "Directory 'a\\b' not specified cleanly: contains backslashes", __FILE__, 'tagA' do
+      assert_jaba_warn "Directory 'a\\b' not specified cleanly: contains backslashes", __FILE__, 'tagA' do
         jaba(barebones: true) do
           type :test do
             attr :a, type: :dir do

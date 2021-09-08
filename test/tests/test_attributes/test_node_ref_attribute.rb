@@ -43,7 +43,7 @@ module JABA
     
     it 'strips duplicates' do
       line = find_line_number(__FILE__, 'tagL')
-      check_warn("Stripping duplicate ':b' from 'a.ref' array attribute. See previous at test_node_ref_attribute.rb:#{line}", __FILE__, 'tagM') do
+      assert_jaba_warn("Stripping duplicate ':b' from 'a.ref' array attribute. See previous at test_node_ref_attribute.rb:#{line}", __FILE__, 'tagM') do
         jaba(barebones: true) do
           type :type_a do
             attr_array :ref, type: :node_ref, jaba_type: :type_b
@@ -202,7 +202,7 @@ module JABA
     end
 
     it 'warns on unnecessary use of :read_only flag' do
-      check_warn 'Object reference attribute does not need to be flagged with :read_only as they always are', __FILE__, 'tagX' do
+      assert_jaba_warn 'Object reference attribute does not need to be flagged with :read_only as they always are', __FILE__, 'tagX' do
         jaba do
           type :test do
             attr :platform, type: :node_ref, jaba_type: :platform do

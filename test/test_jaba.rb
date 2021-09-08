@@ -171,7 +171,7 @@ module JABA
 
     ##
     #
-    def check_warn(msg, expected_file = nil, tag = nil)
+    def assert_jaba_warn(msg, expected_file = nil, tag = nil)
       out, = capture_io do
         yield
       end

@@ -15,7 +15,7 @@ module JABA
     end
 
     it 'warns if items contains duplicates' do
-      check_warn "'items' contains duplicates", __FILE__, :tagK do
+      assert_jaba_warn "'items' contains duplicates", __FILE__, :tagK do
         jaba(barebones: true) do
           type :test do
             attr :a, type: :choice do

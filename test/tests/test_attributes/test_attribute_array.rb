@@ -188,7 +188,7 @@ module JABA
 
     it 'handles duplicates' do
       line = find_line_number(__FILE__, 'tagL')
-      check_warn("Stripping duplicate '5' from 't.a' array attribute. See previous at test_attribute_array.rb:#{line}", __FILE__, 'tagU') do
+      assert_jaba_warn("Stripping duplicate '5' from 't.a' array attribute. See previous at test_attribute_array.rb:#{line}", __FILE__, 'tagU') do
         jaba(barebones: true) do
           type :test do
             attr_array :a # Duplicates will be stripped by default
@@ -353,7 +353,7 @@ module JABA
     end
 
     it 'warns if nothing deleted' do
-      check_warn "'[7, 8]' did not match any elements - nothing removed", __FILE__, :tagH do
+      assert_jaba_warn "'[7, 8]' did not match any elements - nothing removed", __FILE__, :tagH do
         jaba(barebones: true) do
           type :test do
             attr_array :a

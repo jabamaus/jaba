@@ -63,7 +63,7 @@ module JABA
     end
 
     it 'checks for duplicate flags' do
-      check_warn("Duplicate flag ':read_only' specified", __FILE__, 'tagH') do
+      assert_jaba_warn("Duplicate flag ':read_only' specified", __FILE__, 'tagH') do
         jaba(barebones: true) do
           type :test do
             attr :a do
@@ -80,7 +80,7 @@ module JABA
     end
 
     it 'checks for duplicate flag options' do
-      check_warn("Duplicate flag option ':option' specified in ':a' attribute", __FILE__, 'tagD') do
+      assert_jaba_warn("Duplicate flag option ':option' specified in ':a' attribute", __FILE__, 'tagD') do
         jaba(barebones: true) do
           type :test do
             attr :a do

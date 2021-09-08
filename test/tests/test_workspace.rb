@@ -73,7 +73,7 @@ module JABA
 
       # Wildcard matches issue a warning if no projects matched
       #
-      check_warn "No projects matching spec 'b/**/*' found", __FILE__, 'tagR' do
+      assert_jaba_warn "No projects matching spec 'b/**/*' found", __FILE__, 'tagR' do
         jaba(cpp_app: true, dry_run: true) do
           cpp :app do
             project do

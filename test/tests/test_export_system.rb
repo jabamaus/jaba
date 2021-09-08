@@ -167,7 +167,7 @@ module JABA
 
     it 'only allows exportable attrs to be set in export only definitions' do
       td = temp_dir
-      check_warn "Ignoring 'lib.deps' array attribute as attribute definition not flagged with :exportable", __FILE__, :tagR do
+      assert_jaba_warn "Ignoring 'lib.deps' array attribute as attribute definition not flagged with :exportable", __FILE__, :tagR do
         jaba(dry_run: true, cpp_app: true) do
           cpp :app do
             project do
