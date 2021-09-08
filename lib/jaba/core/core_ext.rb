@@ -80,10 +80,8 @@ module JABACoreExt
     ##
     #
     def inspect_unquoted
-      str = inspect
-      str.delete_prefix!('"')
-      str.delete_suffix!('"')
-      str
+      # Don't modify return value of inspect in place as it can be frozen
+      inspect.delete_prefix('"').delete_suffix('"')
     end
     
   end

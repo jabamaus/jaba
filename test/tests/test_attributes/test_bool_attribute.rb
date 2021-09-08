@@ -16,7 +16,7 @@ module JABA
     end
 
     it 'requires default to be true or false' do
-      check_fail ':bool attributes only accept [true|false] but got \'1\'', line: [__FILE__, 'tagP'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagP)}: ':b' attribute default invalid: :bool attributes only accept [true|false] but got \'1\'." do
         jaba(barebones: true) do
           type :test do
             attr :b, type: :bool do
@@ -42,7 +42,7 @@ module JABA
     end
 
     it 'only allows boolean values' do
-      check_fail ':bool attributes only accept [true|false]', line: [__FILE__, 'tagW'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagW)}: 'b.c' attribute invalid: :bool attributes only accept [true|false] but got '1'." do
         jaba(barebones: true) do
           type :test do
             attr :c, type: :bool do
@@ -73,10 +73,10 @@ module JABA
     end
     
     it 'works with :required flag' do
-      check_fail "'t.a' attribute requires a value", line: [__FILE__, 'tagY'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagY)}: 't.a' attribute requires a value. See #{src_loc(__FILE__, :tagF)}." do
         jaba(barebones: true) do
           type :test do
-            attr :a, type: :bool do
+            attr :a, type: :bool do # tagF
               flags :required
             end
           end
@@ -120,7 +120,7 @@ module JABA
           attr :a, type: :bool
         end
       end
-      op[:error].must_equal "'10' invalid value for 'a' attribute - [true|false|0|1] expected"
+      op[:error].must_equal "'10' invalid value for ':a' attribute - [true|false|0|1] expected"
     end
 
   end

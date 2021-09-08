@@ -8,10 +8,10 @@ module JABA
       # check that all types support include directive
       #
       [:text, :workspace, :category, :type].each do |type|
-        check_fail 'Included', line: [__FILE__, "fail 'Included'"], trace: [__FILE__, 'tagG'] do
+        assert_jaba_error "Error at #{src_loc(__FILE__, :tagD)}: Included.", trace: [__FILE__, :tagG] do
           jaba do
             shared :a do
-              fail 'Included'
+              fail 'Included' # tagD
             end
             __send__(type, :t) do
               include :a # tagG
@@ -41,7 +41,7 @@ module JABA
     end
 
     it 'fails if no block supplied' do
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagP)}: 'shared' definition requires a block." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagP)}: 'shared' definition ':a' requires a block." do
         jaba(barebones: true) do
           shared :a # tagP
         end
@@ -49,7 +49,7 @@ module JABA
     end
 
     it 'fails if shared definition does not exist' do
-      check_fail "Shared definition 'b' not found", line: [__FILE__, 'tagT'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagT)}: Shared definition ':b' not found." do
         jaba(barebones: true) do
           shared :a do
           end
@@ -84,7 +84,7 @@ module JABA
     end
     
     it 'catches argument mismatches' do
-      check_fail "Shared definition 'd' expects 3 arguments but 0 were passed", line: [__FILE__, 'tagW'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagW)}: Shared definition ':d' expects 3 arguments but 0 were passed." do
         jaba do
           shared :d do |a1, a2, a3|
           end
@@ -93,7 +93,7 @@ module JABA
           end
         end
       end
-      check_fail "Shared definition 'e' expects 0 arguments but 1 were passed", line: [__FILE__, 'tagU'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagU)}: Shared definition ':e' expects 0 arguments but 1 were passed." do
         jaba do
           shared :e do
           end
@@ -102,7 +102,7 @@ module JABA
           end
         end
       end
-      check_fail "Shared definition 'f' expects 2 arguments but 3 were passed", line: [__FILE__, 'tagB'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagB)}: Shared definition ':f' expects 2 arguments but 3 were passed." do
         jaba do
           shared :f do |a1, a2|
           end

@@ -90,7 +90,7 @@ module JABA
     end
 
     ##
-    #
+    # TODO: review
     def attr_error(msg, callstack: nil)
       jdl_bt = services.get_jdl_backtrace(callstack || caller)
       if jdl_bt.empty?
@@ -224,9 +224,9 @@ module JABA
           if vo.required
             if !@value_options.key?(vo.id)
               if !vo.items.empty?
-                attr_error("In #{describe} '#{vo.id}' option requires a value. Valid values are #{vo.items.inspect}")
+                attr_error("When setting #{describe} '#{vo.id}' option requires a value. Valid values are #{vo.items.inspect}")
               else
-                attr_error("In #{describe} '#{vo.id}' option requires a value")
+                attr_error("When setting #{describe} '#{vo.id}' option requires a value")
               end
             end
           end
@@ -238,7 +238,7 @@ module JABA
           vo = @attr_def.get_value_option(k)
           if !vo.items.empty?
             if !vo.items.include?(v)
-              attr_error("In #{describe} invalid value '#{v.inspect_unquoted}' passed to '#{k.inspect_unquoted}' option. Valid values: #{vo.items.inspect}")
+              attr_error("When setting #{describe} invalid value '#{v.inspect_unquoted}' passed to '#{k.inspect_unquoted}' option. Valid values: #{vo.items.inspect}")
             end
           end
         end

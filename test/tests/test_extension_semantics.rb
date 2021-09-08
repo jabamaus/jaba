@@ -17,20 +17,27 @@ module JABA
     end
 
     it 'supports opening types and instances' do
-      check_fail "'undefined' type not defined", line: [__FILE__, 'tagL'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagL)}: Cannot open undefined type ':undefined'." do
         jaba(barebones: true) do
           open_type :undefined do # tagL
           end
         end
       end
-      # TODO: also check type
-      check_fail "'undefined_id' instance not defined", line: [__FILE__, 'tagA'] do
+      # TODO: reinstate
+=begin
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagN)}: Cannot open undefined instance ':undefined_id'." do
+        jaba(barebones: true) do
+          open_instance :undefined_id, type: :undefined_type do # tagN
+          end
+        end
+      end
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagA)}: Cannot open instance of undefined type ':undefined_id'." do
         jaba(barebones: true) do
           open_instance :undefined_id, type: :undefined_type do # tagA
           end
         end
       end
-      
+=end
       jaba do
         type :test do
           attr :a do

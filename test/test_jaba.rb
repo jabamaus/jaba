@@ -143,39 +143,12 @@ module JABA
 
     ##
     #
-    def check_fail(msg, line: nil, trace: nil)
+    def assert_jaba_error(msg, trace: [], ignore_rest: false)
       e = assert_raises JabaError do
         yield
       end
       
-      e.message.must_match(msg)
-
-      if line
-        file = line[0]
-        line = find_line_number(file, line[1])
-        
-        e.file.must_equal(file)
-        e.line.must_equal(line)
-      end
-
-      if trace
-        backtrace = []
-        trace.each_slice(2) do |elem|
-          backtrace << "#{elem[0]}:#{find_line_number(elem[0], elem[1])}"
-        end
-        e.backtrace.slice(1, backtrace.size).must_equal(backtrace, 'backtrace did not match')
-      end
-      e
-    end
-    
-    ##
-    #
-    def assert_jaba_error(msg, trace: [], match_start: false)
-      e = assert_raises JabaError do
-        yield
-      end
-      
-      if match_start
+      if ignore_rest
         e.message.slice(0, msg.length).must_equal(msg)
       else
         e.message.must_equal(msg)

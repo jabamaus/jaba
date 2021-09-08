@@ -34,7 +34,7 @@ module JABA
       
       # It validates default elements respect attribute type
       #
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagD)}: 'a' array attribute default invalid: 'not a symbol' must be a symbol but was a 'String'." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagD)}: ':a' array attribute default invalid: 'not a symbol' must be a symbol but was a 'String'." do
         jaba(barebones: true) do
           type :test do
             attr_array :a, type: :symbol do
@@ -159,7 +159,7 @@ module JABA
     end
     
     it 'is not possible to modify returned array' do
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagN)}: Cannot modify read only value." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagN)}: Can't modify read only Array: [:a]" do
         jaba(barebones: true) do
           type :test do
             attr_array :a do
@@ -416,7 +416,7 @@ module JABA
     end
 
     it 'catches invalid args to wipe' do
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagS)}: 'b' attribute not found", match_start: true do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagS)}: 'b' attribute not found", ignore_rest: true do
         jaba(barebones: true) do
           type :test do
             attr_array :a

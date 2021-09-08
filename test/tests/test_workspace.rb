@@ -63,7 +63,7 @@ module JABA
       #ws.modules[2].id.must_equal(:d)
       #ws.modules[3].id.must_equal(:e)
 
-      check_fail "No projects matching spec 'b' found", line: [__FILE__, 'tagL'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagL)}: No projects matching spec 'b' found." do
         jaba do
           workspace :a do
             projects ['b'] # tagL
@@ -89,7 +89,7 @@ module JABA
 
       # If spec only contains wildcard matches and none match, fail
       #
-      check_fail 'No projects matched specs', line: [__FILE__, 'tagZ'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagZ)}: No projects matched specs." do
         jaba do
           workspace :a do
             projects ['*', 'b/*'] # tagZ

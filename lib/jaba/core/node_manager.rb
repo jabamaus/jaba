@@ -205,7 +205,7 @@ module JABA
         end
         
       rescue FrozenError => e
-        JABA.error('Cannot modify read only value', callstack: e.backtrace)
+        JABA.error(e.message.sub('frozen', 'read only').capitalize_first, callstack: e.backtrace)
       end
 
       if flags & NodeFlags::NO_POST_CREATE == 0 # used by globals node when being set from the command line

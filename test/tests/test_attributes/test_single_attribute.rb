@@ -5,7 +5,7 @@ module JABA
   class TestSingleAttribute < JabaTest
 
     it 'only accepts single values' do
-      check_fail "'default' expects a single value but got '[]'", line: [__FILE__, 'tagV'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagV)}: 'default' expects a single value but got '[]'." do
         jaba(barebones: true) do
           type :test do
             attr :a do
@@ -15,7 +15,7 @@ module JABA
         end
       end
 
-      check_fail "'t.a' attribute must be a single value not a 'Array'", line: [__FILE__, 'tagK'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagK)}: 't.a' attribute must be a single value not a 'Array'." do
         jaba(barebones: true) do
           type :test do
             attr :a
@@ -43,8 +43,8 @@ module JABA
       end
     end
 
-    it 'prevents modifying read values' do
-      check_fail "Cannot modify read only value", line: [__FILE__, 'tagY'] do
+    it 'rehects modifying returned values' do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagY)}: Can't modify read only String: \"b\"" do
         jaba(barebones: true) do
           type :test do
             attr :a, type: :string do
@@ -58,7 +58,7 @@ module JABA
           end
         end
       end
-      check_fail "Cannot modify read only value", line: [__FILE__, 'tagS'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagS)}: Can't modify read only String: \"b\"" do
         jaba(barebones: true) do
           type :test do
             attr :a, type: :string do
@@ -68,6 +68,36 @@ module JABA
             a 'b'
             val = a
             val.upcase! # tagS
+          end
+        end
+      end
+    end
+
+    it 'rejects modifying read only attributes' do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagJ)}: 't.a' attribute is read only." do
+        jaba(barebones: true) do
+          type :test do
+            attr :a do
+              flags :read_only
+              default 1
+            end
+          end
+          test :t do
+            a.must_equal(1)
+            a 2 # tagJ
+          end
+        end
+      end
+
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagC)}: 't.a' attribute is read only." do
+        jaba(barebones: true) do
+          type :test do
+            attr :a do
+              flags :read_only
+            end
+          end
+          test :t do
+            a 1 # tagC
           end
         end
       end
@@ -131,7 +161,7 @@ module JABA
     end
 
     it 'fails if default block sets attribute' do
-      check_fail "'t.a' attribute is read only", line: [__FILE__, 'tagA'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagA)}: 't.a' attribute is read only." do
         jaba(barebones: true) do
           type :test do
             attr :a
@@ -148,7 +178,7 @@ module JABA
     end
 
     it 'validates flag options' do
-      check_fail "Invalid flag option ':d' passed to 't.a' attribute. Valid flags are [:a, :b, :c]", line: [__FILE__, 'tagD'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagD)}: Invalid flag option ':d' passed to 't.a' attribute. Valid flags are [:a, :b, :c]" do
         jaba(barebones: true) do
           type :test do
             attr :a do
@@ -222,38 +252,6 @@ module JABA
           b.must_equal('b')
           c.must_equal(:c)
           d.must_be_nil
-        end
-      end
-    end
-    
-    it 'rejects setting readonly attrs' do
-      check_fail "'t.a' attribute is read only", line: [__FILE__, 'tagJ'] do
-        jaba(barebones: true) do
-          type :test do
-            attr :a do
-              flags :read_only
-              default 1
-            end
-          end
-          test :t do
-            a.must_equal(1)
-            a 2 # tagJ
-          end
-        end
-      end
-
-      # Check not settable even if no default supplied
-      #
-      check_fail "'t.a' attribute is read only", line: [__FILE__, 'tagC'] do
-        jaba(barebones: true) do
-          type :test do
-            attr :a do
-              flags :read_only
-            end
-          end
-          test :t do
-            a 1 # tagC
-          end
         end
       end
     end

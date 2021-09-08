@@ -80,7 +80,7 @@ module JABA
       n_actual = args ? Array(args).size : 0
       
       if n_actual != n_expected
-        JABA.error("Shared definition '#{id}' expects #{n_expected} arguments but #{n_actual} were passed")
+        JABA.error("Shared definition '#{id.inspect_unquoted}' expects #{n_expected} arguments but #{n_actual} were passed")
       end
       
       eval_jdl(*args, &sd.block)

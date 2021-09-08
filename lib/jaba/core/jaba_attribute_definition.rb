@@ -129,7 +129,7 @@ module JABA
     # Used in error messages.
     #
     def describe
-      "'#{@defn_id}' #{@variant == :single ? "" : "#{@variant} "}attribute"
+      "'#{@defn_id.inspect_unquoted}' #{@variant == :single ? "" : "#{@variant} "}attribute"
     end
 
     ValueOption = Struct.new(
@@ -264,10 +264,6 @@ module JABA
         if @flag_options.include?(f)
           jaba_warn("Duplicate flag option '#{f.inspect_unquoted}' specified in #{describe}")
           return :ignore
-        end
-      when :validate_key
-        if !hash?
-          JABA.error("#{describe} cannot specify 'validate_key' - only supported by hash attributes")
         end
       end
     end

@@ -126,7 +126,7 @@ module JABA
     end
 
     it 'rejects attempts to instance an unknown type' do
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagJ)}: 'undefined' type not defined, cannot create ':a' instance." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagJ)}: Cannot instance undefined type ':undefined'." do
         jaba(barebones: true) do
           undefined :a # tagJ
         end

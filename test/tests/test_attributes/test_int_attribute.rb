@@ -5,7 +5,7 @@ module JABA
   class TestIntAttribute < JabaTest
 
     it 'validates default' do
-      check_fail ':int attributes only accept integer values', line: [__FILE__, 'tagP'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagP)}: ':a' attribute default invalid: :int attributes only accept integer values but got 'not an int'." do
         jaba(barebones: true) do
           type :test do
             attr :a, type: :int do
@@ -17,7 +17,7 @@ module JABA
     end
 
     it 'validates value' do
-      check_fail ':int attributes only accept integer values', line: [__FILE__, 'tagW'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagW)}: 't.a' attribute invalid: :int attributes only accept integer values but got 'true'." do
         jaba(barebones: true) do
           type :test do
             attr :a, type: :int
@@ -30,10 +30,10 @@ module JABA
     end
 
     it 'fails if value not supplied when :required flag specified' do
-      check_fail "'t.a' attribute requires a value", line: [__FILE__, 'tagY'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagY)}: 't.a' attribute requires a value. See #{src_loc(__FILE__, :tagM)}." do
         jaba(barebones: true) do
           type :test do
-            attr :a, type: :bool do
+            attr :a, type: :bool do # tagM
               flags :required
             end
           end
@@ -113,7 +113,7 @@ module JABA
           attr :a, type: :int
         end
       end
-      op[:error].must_equal "'foo' invalid value for 'a' attribute - integer expected"
+      op[:error].must_equal "'foo' invalid value for ':a' attribute - integer expected"
     end
 
   end

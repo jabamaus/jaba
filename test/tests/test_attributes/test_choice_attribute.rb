@@ -5,7 +5,7 @@ module JABA
   class TestChoiceAttribute < JabaTest
 
     it 'requires items to be set' do
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagA)}: 'a' attribute invalid: 'items' must be set." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagA)}: ':a' attribute invalid: 'items' must be set." do
         jaba(barebones: true) do
           type :test do
             attr :a, type: :choice # tagA
@@ -27,7 +27,7 @@ module JABA
     end
     
     it 'requires default to be in items' do
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagB)}: 'a' attribute default invalid: Must be one of [1, 2, 3] but got '4'. See #{src_loc(__FILE__, :tagJ)}." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagB)}: ':a' attribute default invalid: Must be one of [1, 2, 3] but got '4'. See #{src_loc(__FILE__, :tagJ)}." do
         jaba(barebones: true) do
           type :test do
             attr :a, type: :choice do
@@ -37,7 +37,7 @@ module JABA
           end
         end
       end
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagC)}: 'a' array attribute default invalid: Must be one of [1, 2, 3] but got '4'. See #{src_loc(__FILE__, :tagH)}." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagC)}: ':a' array attribute default invalid: Must be one of [1, 2, 3] but got '4'. See #{src_loc(__FILE__, :tagH)}." do
         jaba(barebones: true) do
           type :test do
             attr_array :a, type: :choice do
@@ -111,7 +111,7 @@ module JABA
           end
         end
       end
-      op[:error].must_equal "'d' invalid value for 'a' attribute - [a|b|c] expected"
+      op[:error].must_equal "'d' invalid value for ':a' attribute - [a|b|c] expected"
     end
   end
 

@@ -97,6 +97,7 @@ module JABA
       @translator_defs = []
       @open_shared_defs = []
 
+      @jaba_type_def_lookup = {}
       @open_type_defs_lookup = {}
       @instance_def_lookup = {}
       @open_instance_defs_lookup = {}
@@ -125,6 +126,22 @@ module JABA
       @top_level_api = JDL_TopLevel.new(self)
       @file_manager = FileManager.new(self)
       @input_manager = InputManager.new(self)
+=begin
+      register_toplevel_item :type
+      register_toplevel_item :instance
+      register_toplevel_item :shared
+      register_toplevel_item :default
+      register_toplevel_item :translator
+=end
+    end
+
+    ##
+    #
+    def register_toplevel_item(what)
+      instance_variable_set("@#{what}_defs", [])
+      instance_variable_set("@#{what}_defs_lookup", {})
+      instance_variable_set("@#{what}_open_defs", [])
+      instance_variable_set("@#{what}_open_defs_lookup", {})
     end
 
     ##
@@ -250,6 +267,25 @@ module JABA
         sd.open_defs << d
       end
 
+      @open_type_defs_lookup.each do |id, open_defs|
+        if !get_jaba_type_def(id, fail_if_not_found: false)
+          JABA.error("Cannot open undefined type '#{id.inspect_unquoted}'", errobj: open_defs[0])
+        end
+      end
+
+      @instance_def_lookup.each do |id, inst_defs|
+        if !get_jaba_type_def(id, fail_if_not_found: false)
+          JABA.error("Cannot instance undefined type '#{id.inspect_unquoted}'", errobj: inst_defs[0])
+        end
+      end
+
+      #@open_instance_defs.each do |id|
+      #  if !get_instance_definition(id)
+      #  if !get_jaba_type_def(id, fail_if_not_found: false)
+      #    JABA.error("Cannot open instance of undefined type '#{id.inspect_unquoted}'", errobj: inst_defs[0])
+      #  end
+      #end
+
       # Prepend globals type definition so globals are processed first, allowing everything else to access them
       #
       @jaba_type_defs.prepend(@globals_type_def)
@@ -279,12 +315,6 @@ module JABA
 
       @jaba_types.each(&:post_create)
       @jaba_types.sort_topological!(:dependencies)
-
-      @instance_def_lookup.each do |id, inst_defs|
-        if !get_jaba_type(id, fail_if_not_found: false)
-          JABA.error("'#{id}' type not defined, cannot create '#{inst_defs[0].id.inspect_unquoted}' instance", errobj: inst_defs[0])
-        end
-      end
 
       @jaba_types.each do |jt|
         jt.eval_attr_defs
@@ -588,7 +618,7 @@ module JABA
       validate_id(id, :type)
       src_loc = caller_locations(2, 1)[0]
       log "  Defining '#{id}' type at #{src_loc.describe}"
-      existing = @jaba_type_defs.find{|d| d.id == id}
+      existing = get_jaba_type_def(id, fail_if_not_found: false)
       if existing
         JABA.error("'type|#{id.inspect_unquoted}' multiply defined. First definition at #{existing.src_loc.describe}.")
       end
@@ -598,14 +628,25 @@ module JABA
       else
         @jaba_type_defs << d
       end
+      @jaba_type_def_lookup[id] = d
       nil
+    end
+
+    ##
+    #
+    def get_jaba_type_def(id, fail_if_not_found: true)
+      d = @jaba_type_def_lookup[id]
+      if !d && fail_if_not_found
+        JABA.error("'#{id.inspect_unquoted}' type not defined")
+      end
+      d
     end
 
     ##
     #
     def define_shared(id, &block)
       validate_id(id, :shared)
-      JABA.error("'shared' definition requires a block") if !block_given?
+      JABA.error("'shared' definition '#{id.inspect_unquoted}' requires a block") if !block_given?
       src_loc = caller_locations(2, 1)[0]
       log "  Defining '#{id}' shared definition at #{src_loc.describe}"
 
@@ -623,7 +664,7 @@ module JABA
     def get_shared_definition(id, fail_if_not_found: true)
       d = @shared_def_lookup[id]
       if !d && fail_if_not_found
-        JABA.error("Shared definition '#{id}' not found")
+        JABA.error("Shared definition '#{id.inspect_unquoted}' not found")
       end
       d
     end

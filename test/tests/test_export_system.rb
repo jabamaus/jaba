@@ -7,11 +7,10 @@ module JABA
   class TestExportSystem < JabaTest
 
     it 'only allows :export on array and hash properties' do
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagQ)}: :exportable attribute definition flag is only allowed on array and hash attributes.",
-                        trace: [__FILE__, :tagW] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagQ)}: :exportable attribute definition flag is only allowed on array and hash attributes." do
         jaba(dry_run: true) do
           type :test do
-            attr :a do # tagW
+            attr :a do
               flags :exportable # tagQ
             end
           end
@@ -146,7 +145,7 @@ module JABA
       op[:cpp]['lib|windows'].must_be_nil
 
       # It fails if attribute not defined
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagP)}: 'does_not_exist' attribute not found", match_start: true do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagP)}: 'does_not_exist' attribute not found", ignore_rest: true do
         jaba(dry_run: true) do
           cpp :app do
             platforms [:windows_x86_64]

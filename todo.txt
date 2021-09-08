@@ -1,3 +1,4 @@
+- not sure about using inspect_unquoted everywhere in error msgs to explicitly show symbols...
 - localise error strings into a single file, using macros for variable substitution. As well as being better for standardisation could support multiple languages.
 - jaba attr types could register option into JabaAttributeDefinition. noderef/compound types could use it.
 - remove text plugin. Or even better turn into a compound attr and add to cpp.
@@ -56,7 +57,6 @@
 * Categories in solution files.
 - flag to control whether absolute paths allowed in file/dir attrs. Eg build_root_offset is not an offset if absolute path used.
   Is it even a path attr?
-- Finish cutting over from check_fail to assert_jaba_error
 - ability to have build tree out of src but projects in src? config option to base projdir off src_root instead of dest_root?
 - Make defaults work per-file. Introduce global_defaults. Or a scope option to defaults.
 * Automatically pull in dependencies into workspace

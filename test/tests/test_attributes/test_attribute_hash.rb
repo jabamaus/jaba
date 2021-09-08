@@ -89,7 +89,7 @@ module JABA
 
       # validates that default is a hash
       #
-      check_fail "'default' expects a hash but got '[]'", line: [__FILE__, 'tagU'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagU)}: 'default' expects a hash but got '[]'." do
         jaba(barebones: true) do
           type :test do
             attr_hash :a, key_type: :symbol do
@@ -101,7 +101,7 @@ module JABA
 
       # It validates default is a hash when block form is used
       #
-      check_fail "'t.a' hash attribute default requires a hash not a 'Integer'", line: [__FILE__, 'tagO'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagO)}: 't.a' hash attribute default requires a hash not a 'Integer'." do
         jaba(barebones: true) do
           type :test do
             attr_hash :a, key_type: :symbol do # tagO
@@ -116,7 +116,7 @@ module JABA
 
       # It validates default elements respect attribute type
       #
-      check_fail "'a' hash attribute default invalid: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagL'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagL)}: ':a' hash attribute default invalid: 'not a symbol' must be a symbol but was a 'String'." do
         jaba(barebones: true) do
           type :test do
             attr_hash :a, key_type: :symbol, type: :symbol do
@@ -129,7 +129,7 @@ module JABA
       # TODO: validate key format
       # It validates default elements respect attribute type when block form used
       #
-      check_fail "'t.a' hash attribute invalid: 'not a symbol' must be a symbol but was a 'String'", line: [__FILE__, 'tagW'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagW)}: 't.a' hash attribute invalid: 'not a symbol' must be a symbol but was a 'String'." do
         jaba(barebones: true) do
           type :test do
             attr_hash :a, key_type: :symbol, type: :symbol do # tagW
@@ -166,7 +166,7 @@ module JABA
 
       # test with another attr using unset hash attr
       #
-      check_fail "Cannot read uninitialised 't.a' hash attribute", line: [__FILE__, 'tagF'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagF)}: Cannot read uninitialised 't.a' hash attribute - it might need a default value.", trace: [__FILE__, :tagX] do
         jaba(barebones: true) do
           type :test do
             attr_hash :a, key_type: :symbol
@@ -177,7 +177,7 @@ module JABA
             end
           end
           test :t do
-            b
+            b # tagX
           end
         end
       end
@@ -235,7 +235,7 @@ module JABA
     end
 
     it 'is not possible to modify returned hash' do
-      check_fail 'Cannot modify read only value', line: [__FILE__, 'tagN'] do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagN)}: Can't modify read only Hash: {:k=>:v}" do
         jaba(barebones: true) do
           type :test do
             attr_hash :a, key_type: :symbol do
@@ -343,7 +343,7 @@ module JABA
     end
 
     it 'validates key value supplied correctly' do
-      check_fail("'t.a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"", line: [__FILE__, 'tagM']) do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagM)}: 't.a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"" do
         jaba(barebones: true) do
           type :test do
             attr_hash :a, key_type: :symbol
@@ -353,7 +353,7 @@ module JABA
           end
         end
       end
-      check_fail("'t.a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"", line: [__FILE__, 'tagZ']) do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagZ)}: 't.a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"" do
         jaba(barebones: true) do
           type :test do
             attr_hash :a, key_type: :symbol
@@ -366,7 +366,8 @@ module JABA
     end
 
     it 'supports setting a validator' do
-      check_fail "'a' array attribute cannot specify 'validate_key' - only supported by hash attributes", line: [__FILE__, 'tagD'] do
+      # only hash attr has validate_key property
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagD)}: Failed to set undefined 'validate_key' property." do
         jaba(barebones: true) do
           type :test do
             attr_array :a do

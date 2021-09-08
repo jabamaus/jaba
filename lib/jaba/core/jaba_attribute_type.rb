@@ -170,7 +170,7 @@ module JABA
 
     def validate_value(attr_def, value)
       if !value.integer?
-        JABA.error(":int attributes only accept integer values but got [value=#{value}, class=#{value.class}]")
+        JABA.error(":int attributes only accept integer values but got '#{value.inspect_unquoted}'")
       end
     end
 
@@ -204,7 +204,7 @@ module JABA
 
     def validate_value(attr_def, value)
       if !value.boolean?
-        JABA.error(":bool attributes only accept [true|false] but got '#{value}'")
+        JABA.error(":bool attributes only accept [true|false] but got '#{value.inspect_unquoted}'")
       end
     end
 
