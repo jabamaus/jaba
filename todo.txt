@@ -1,3 +1,8 @@
+- Get rid of # frozen_string_literal: true
+- Get rid of using JABACoreExt statements
+- Move make_node_paths_absolute into core
+- Moving text into plugin has raised question about host. Need to set requied cpp_project_classname to ''. Not clean.
+  Also, the text plugin file is not executed. Need a way of loading it.
 - Should | be allowed in ids? Probably not.
 - Check error reporting in the case that there is an argument error inside Services#define. Needs to present internal callstack.
 - not sure about using inspect_unquoted everywhere in error msgs to explicitly show symbols...

@@ -1,11 +1,15 @@
+include 'text_plugin.rb'
+
 type :text do
   
   title 'Basic text file that is written to HDD'
 
   attr :filename, type: :file do
     title 'Path of the filename to be generated'
-    flags :required
-    basedir_spec :build_root
+    basedir_spec :definition_root
+    default do
+      "#{id}.txt"
+    end
   end
   
   attr :content, type: :to_s do
@@ -24,4 +28,15 @@ type :text do
     default :native
   end
   
+end
+
+text :example do
+  content %Q{Add a block of raw text using ruby's %Q string literal notation.
+Makes it easy to write formatted text including newlines
+}
+  line 'Add a line explictly'
+end
+
+host :text do
+  cpp_project_classname '' # TODO: remove
 end
