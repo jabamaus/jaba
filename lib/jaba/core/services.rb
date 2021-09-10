@@ -116,6 +116,8 @@ module JABA
       @top_level_api = JDL_TopLevel.new(self)
       @file_manager = FileManager.new(self)
       @input_manager = InputManager.new(self)
+
+      register_toplevel_item :type, :instance, :shared, :defaults, :translator
     end
 
     ##
@@ -217,14 +219,12 @@ module JABA
       end
       
       load_module_ruby_files
+      init_root_paths
+      load_jaba_files
       create_core_objects
 
       @input_manager.process_cmd_line
       @input_manager.finalise
-      
-      init_root_paths
-      register_toplevel_item :type, :instance, :shared, :defaults, :translator
-      load_jaba_files
 
       # Associate open definitions with definition they are opening
       # TODO: validation
@@ -855,10 +855,15 @@ module JABA
         src_loc = caller_locations(2, 1)[0]
         path = "#{src_loc.absolute_path.parent_path}/#{path}"
       end
-      if path.wildcard?
-        @jdl_includes.concat(Dir.glob(path))
+      if path.extname == '.rb'
+        log "  Loading #{path} plugin"
+        load_plugin(path)
       else
-        @jdl_includes << path
+        if path.wildcard?
+          @jdl_includes.concat(Dir.glob(path))
+        else
+          @jdl_includes << path
+        end
       end
     end
 
@@ -902,11 +907,17 @@ module JABA
         end
       end
       plugin_files.each do |f|
-        begin
-          require f
-        rescue ScriptError => e
-          JABA.error("Failed to load #{f}: #{e.message}")
-        end
+        load_plugin(f)
+      end
+    end
+
+    ##
+    #
+    def load_plugin(f)
+      begin
+        require f
+      rescue ScriptError => e
+        JABA.error("Failed to load #{f}: #{e.message}")
       end
     end
 
