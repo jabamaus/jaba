@@ -2,7 +2,7 @@
 
 module JABA
 
-  class TestSingleAttribute < JabaTest
+  class TestAttributeSingle < JabaTest
 
     it 'only accepts single values' do
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagV)}: 'default' expects a single value but got '[]'." do
