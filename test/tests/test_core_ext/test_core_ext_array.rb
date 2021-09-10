@@ -2,7 +2,7 @@ module JABA
 
   using JABACoreExt
 
-  class TestArray < JabaTest
+  class TestCoreExtArray < JabaTest
 
     it 'supports vs_join' do
       [].vs_join.must_be_nil

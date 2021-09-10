@@ -2,7 +2,7 @@ module JABA
 
   using JABACoreExt
 
-  class TestObject < JabaTest
+  class TestCoreExtObject < JabaTest
   end
 
 end

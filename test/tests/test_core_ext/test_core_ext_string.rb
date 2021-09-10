@@ -2,7 +2,7 @@ module JABA
 
   using JABACoreExt
 
-  class TestString < JabaTest
+  class TestCoreExtString < JabaTest
     
     it 'supports split_path' do
       '.'.split_path.must_equal []

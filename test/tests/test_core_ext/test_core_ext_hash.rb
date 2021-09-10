@@ -2,7 +2,7 @@ module JABA
 
   using JABACoreExt
 
-  class TestHash < JabaTest
+  class TestCoreExtHash < JabaTest
 
     it 'supports push_value' do
       {}.push_value(:a, :b).must_equal(a: [:b])
