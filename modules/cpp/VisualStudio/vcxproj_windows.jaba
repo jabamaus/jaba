@@ -1,4 +1,4 @@
-open_instance :windows, type: :platform do
+open_instance 'platform|windows' do
   cpp_src_ext ['.def', '.rc']
 end
 

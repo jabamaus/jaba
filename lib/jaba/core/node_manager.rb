@@ -81,7 +81,7 @@ module JABA
     def process
       services.log "Processing #{describe}", section: true
 
-      @defaults_definition = services.get_defaults_definition(@type_id)
+      @defaults_definition = services.get_definition(:defaults, @type_id, fail_if_not_found: false)
 
       # Give plugin a chance to do some initialisation before nodes are created. Dependent plugins that have already
       # been processed can be accessed here.
@@ -199,7 +199,7 @@ module JABA
             jn.eval_jdl(*block_args, &@definition.block)
           end
 
-          @definition.open_defs.each do |d|
+          @definition.open_defs&.each do |d|
             jn.eval_jdl(&d.block)
           end
         end

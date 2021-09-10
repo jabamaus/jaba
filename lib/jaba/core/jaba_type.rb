@@ -53,7 +53,7 @@ module JABA
     ##
     #
     def define_attr(id, variant, type: nil, key_type: nil, jaba_type: nil, &block)
-      services.log "  Adding '#{id}' attribute [variant=#{variant}, type=#{type}]"
+      services.log "  Defining '#{id}' attribute [variant=#{variant}, type=#{type}]"
       
       if key_type && variant != :hash
         JABA.error("Only attr_hash supports key_type argument")

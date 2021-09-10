@@ -1,8 +1,8 @@
-open_instance :ios, type: :platform do
+open_instance 'platform|ios' do
   cpp_src_ext []
 end
 
-open_instance :xcode, type: :host do
+open_instance 'host|xcode' do
   cpp_supported_platforms [:ios]
   cpp_project_classname 'Xcodeproj'
   cpp_src_ext ['.xcconfig']

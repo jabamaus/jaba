@@ -21,14 +21,14 @@ module JABA
     ##
     # Define definition to be included by other definitions.
     #
-    def shared(id=nil, &block)
-      @services.define_shared(id, &block)
+    def shared(...)
+      @services.define(:shared, ...)
     end
     
     ##
     #
-    def defaults(id=nil, &block)
-      @services.define_defaults(id, &block)
+    def defaults(...)
+      @services.define(:defaults, ...)
     end
     
     ##
@@ -46,57 +46,57 @@ module JABA
     ##
     # All undefined methods are treated as defining instances of jaba types.
     #
-    def method_missing(type_id=nil, id=nil, *flags, &block)
-      @services.define_instance(type_id, id, flags, &block)
+    def method_missing(type_id, ...)
+      @services.define(:instance, type_id, ...)
     end
     
     ##
     # EXTENSION API
     #
-    def type(id=nil, &block)
-      @services.define_type(id, &block)
+    def type(...)
+      @services.define(:type, ...)
     end
     
     ##
     # EXTENSION API
     #
-    def open_type(id=nil, &block)
-      @services.open(:type, id, nil, &block)
+    def open_type(...)
+      @services.open(:type, ...)
     end
 
     ##
     # EXTENSION API
     #
-    def open_instance(id=nil, type:, &block)
-      @services.open(:instance, id, type, &block)
+    def open_instance(...)
+      @services.open(:instance, ...)
     end
 
     ##
     # EXTENSION API
     #
-    def open_globals(&block)
-      @services.open(:instance, :globals, :globals, &block)
+    def open_globals(...)
+      @services.open(:instance, 'globals|globals', ...)
     end
 
     ##
     # EXTENSION API
     #
-    def translator(id=nil, &block)
-      @services.define_translator(id, &block)
+    def translator(...)
+      @services.define(:translator, ...)
     end
     
     ##
     # EXTENSION API
     #
-    def open_translator(id=nil, &block)
-      @services.open(:translator, id, &block)
+    def open_translator(...)
+      @services.open(:translator, ...)
     end
 
     ##
     # EXTENSION API
     #
-    def open_shared(id=nil, &block)
-      @services.open(:shared, id, &block)
+    def open_shared(...)
+      @services.open(:shared, ...)
     end
 
   private

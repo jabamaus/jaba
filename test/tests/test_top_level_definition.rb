@@ -56,7 +56,7 @@ module JABA
     
     it 'detects duplicate ids with definitions of the same type' do
       [:cpp, :defaults, :type, :shared, :text, :workspace].each do |item|
-        assert_jaba_error "Error at #{src_loc(__FILE__, :tagI)}: '#{item}|:a' multiply defined. First definition at #{src_loc(__FILE__, :tagX)}." do
+        assert_jaba_error "Error at #{src_loc(__FILE__, :tagI)}: '#{item}|a' multiply defined. First definition at #{src_loc(__FILE__, :tagX)}." do
           jaba do
             __send__(item, :a) do # tagX
             end

@@ -63,7 +63,7 @@ module JABA
     ##
     #
     def get_instance_definition(...)
-      @services.get_instance_definition(...)
+      @services.get_definition(:instance, ...)
     end
 
     ##

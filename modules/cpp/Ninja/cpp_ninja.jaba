@@ -1,4 +1,4 @@
-open_instance :ninja, type: :host do
+open_instance 'host|ninja' do
   cpp_supported_platforms [:windows]
   cpp_project_classname ''
   cpp_src_ext []

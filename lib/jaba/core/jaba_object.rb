@@ -74,7 +74,7 @@ module JABA
     def include_shared(id, args)
       services.log "  Including shared definition [id=#{id}]"
 
-      sd = services.get_shared_definition(id)
+      sd = services.get_definition(:shared, id)
       
       n_expected = sd.block.arity
       n_actual = args ? Array(args).size : 0
@@ -84,7 +84,7 @@ module JABA
       end
       
       eval_jdl(*args, &sd.block)
-      sd.open_defs.each do |d|
+      sd.open_defs&.each do |d|
         eval_jdl(*args, &d.block)
       end
     end

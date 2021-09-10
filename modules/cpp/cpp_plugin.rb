@@ -106,7 +106,7 @@ module JABA
     #
     def custom_handle_array_reference(attr, ref_node_id)
       if attr.attr_def.defn_id == :deps
-        dep_def = services.get_instance_definition(:cpp, ref_node_id, fail_if_not_found: false)
+        dep_def = services.get_instance_definition("cpp|#{ref_node_id}", fail_if_not_found: false)
         if !dep_def
           JABA.error("'#{ref_node_id.inspect}' dependency not found")
         end

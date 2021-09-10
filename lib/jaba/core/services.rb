@@ -90,19 +90,10 @@ module JABA
       @jdl_includes = []
       @jdl_file_lookup = {}
       
-      @attr_type_defs = []
-      @attr_flag_defs = []
-      @jaba_type_defs = []
-      @default_defs = []
-      @translator_defs = []
-      @open_shared_defs = []
+      @definition_registry = {}
+      @open_definitions_registry = {}
 
-      @jaba_type_def_lookup = {}
-      @open_type_defs_lookup = {}
-      @instance_def_lookup = {}
-      @open_instance_defs_lookup = {}
-      @open_translator_def_lookup = {}
-      @shared_def_lookup = {}
+      @type_to_instances = {}
       @node_lookup = {}
       @node_manager_lookup = {}
 
@@ -115,7 +106,6 @@ module JABA
       @jaba_type_lookup = {}
       @translators = {}
 
-      @globals_type_def = nil
       @globals = nil
       @globals_node = nil
 
@@ -126,22 +116,6 @@ module JABA
       @top_level_api = JDL_TopLevel.new(self)
       @file_manager = FileManager.new(self)
       @input_manager = InputManager.new(self)
-=begin
-      register_toplevel_item :type
-      register_toplevel_item :instance
-      register_toplevel_item :shared
-      register_toplevel_item :default
-      register_toplevel_item :translator
-=end
-    end
-
-    ##
-    #
-    def register_toplevel_item(what)
-      instance_variable_set("@#{what}_defs", [])
-      instance_variable_set("@#{what}_defs_lookup", {})
-      instance_variable_set("@#{what}_open_defs", [])
-      instance_variable_set("@#{what}_open_defs_lookup", {})
     end
 
     ##
@@ -249,58 +223,61 @@ module JABA
       @input_manager.finalise
       
       init_root_paths
+      register_toplevel_item :type, :instance, :shared, :defaults, :translator
       load_jaba_files
+
+      # Associate open definitions with definition they are opening
+      # TODO: validation
+      @definition_registry.each do |what, def_reg|
+        open_def_reg = @open_definitions_registry[what]
+        def_reg.defs.each do |d|
+          d.open_defs = open_def_reg.lookup[d.open_defs_lookup_id]
+        end
+      end
 
       # Create translators
       #
-      @translator_defs.each do |d|
-        id = d.id
-        open_defs = @open_translator_def_lookup[id]
-        t = Translator.new(self, id, d.src_loc, d.block, open_defs)
-        @translators[id] = t
+      iterate_defs(:translator) do |d|
+        t = Translator.new(self, d.id, d.src_loc, d.block, d.open_defs)
+        @translators[d.id] = t
       end
       
-      # Register shared definition open blocks
-      #
-      @open_shared_defs.each do |d|
-        sd = get_shared_definition(d.id)
-        sd.open_defs << d
-      end
+      #@open_type_defs_lookup.each do |id, open_defs|
+      #  if !get_definition(:type, id, fail_if_not_found: false)
+      #    JABA.error("Cannot open undefined type '#{id.inspect_unquoted}'", errobj: open_defs[0])
+      #  end
+      #end
 
-      @open_type_defs_lookup.each do |id, open_defs|
-        if !get_jaba_type_def(id, fail_if_not_found: false)
-          JABA.error("Cannot open undefined type '#{id.inspect_unquoted}'", errobj: open_defs[0])
-        end
-      end
-
-      @instance_def_lookup.each do |id, inst_defs|
-        if !get_jaba_type_def(id, fail_if_not_found: false)
-          JABA.error("Cannot instance undefined type '#{id.inspect_unquoted}'", errobj: inst_defs[0])
-        end
-      end
+      #iterate_defs(:instance) do |d|
+      #  if !get_definition(:type, d.id, fail_if_not_found: false)
+      #    JABA.error("Cannot instance undefined type '#{d.id.inspect_unquoted}'", errobj: d)
+      #  end
+      #end
 
       #@open_instance_defs.each do |id|
       #  if !get_instance_definition(id)
-      #  if !get_jaba_type_def(id, fail_if_not_found: false)
+      #  if !get_definition(:type, id, fail_if_not_found: false)
       #    JABA.error("Cannot open instance of undefined type '#{id.inspect_unquoted}'", errobj: inst_defs[0])
       #  end
       #end
 
       # Prepend globals type definition so globals are processed first, allowing everything else to access them
       #
-      @jaba_type_defs.prepend(@globals_type_def)
+      type_defs = get_defs(:type)
+      globals_type_def = type_defs.find{|td| td.id == :globals}
+      type_defs.delete(globals_type_def)
+      type_defs.prepend(globals_type_def)
 
       # Create JabaTypes, without calling attribute definition blocks
       #
-      @jaba_type_defs.each do |d|
+      type_defs.each do |d|
         id = d.id
         log "Creating '#{id}' type at #{d.src_loc.describe}"
         jt = make_jaba_type(id, d)
 
-        open_defs = @open_type_defs_lookup[id]
-        if open_defs
+        if d.open_defs
           log "Opening #{id} type"
-          open_defs.each do |od|
+          d.open_defs.each do |od|
             jt.eval_jdl(&od.block)
           end
         end
@@ -320,15 +297,9 @@ module JABA
         jt.eval_attr_defs
         node_manager = get_node_manager(jt.defn_id)
 
-        inst_defs = @instance_def_lookup[jt.defn_id]
-        if inst_defs
-          inst_defs.each do |inst_def|
-            open_inst_defs = @open_instance_defs_lookup[inst_def.id]
-            if open_inst_defs
-              inst_def.open_defs.concat(open_inst_defs)
-            end
-            node_manager.register_instance_definition(inst_def)
-          end
+        inst_defs = @type_to_instances[jt.defn_id]
+        inst_defs&.each do |inst_def|
+          node_manager.register_instance_definition(inst_def)
         end
 
         node_manager.process
@@ -528,22 +499,47 @@ module JABA
       af
     end
 
+    DefRegistry = Struct.new(:defs, :lookup)
+
+    ##
+    #
+    def register_toplevel_item(*items)
+      items.each do |what|
+        @definition_registry[what] = DefRegistry.new([], {})
+        @open_definitions_registry[what] = DefRegistry.new([], {})
+      end
+    end
+
+    ##
+    #
+    def get_defs(what)
+      @definition_registry[what].defs
+    end
+    
+    ##
+    #
+    def iterate_defs(what, &block)
+      get_defs(what).each(&block)
+    end
+    
     Definition = Struct.new(
       :id,
       :block,
       :src_loc,
       :open_defs,
+      :open_defs_lookup_id,
       :flags
     )
-
+    
     ##
     #
-    def make_definition(id, block, src_loc, flags=[])
+    def make_definition(id, block, src_loc, flags: [], open_defs_lookup_id: nil)
       d = Definition.new
       d.id = id
       d.block = block
       d.src_loc = src_loc
-      d.open_defs = []
+      d.open_defs = nil
+      d.open_defs_lookup_id = open_defs_lookup_id
       d.flags = flags
       d.define_singleton_method(:has_flag?) do |f|
         flags.include?(f)
@@ -577,10 +573,10 @@ module JABA
 
     ##
     #
-    def validate_id(id, type_id)
-      if !(id.symbol? || id.string?) || id !~ /^[a-zA-Z0-9_\-.]+$/
+    def validate_id(id, what)
+      if !(id.symbol? || id.string?) || id !~ /^[a-zA-Z0-9_\-.|]+$/
         msg = if id.nil?
-          "'#{type_id}' requires an id"
+          "'#{what}' requires an id"
         else
           "'#{id}' is an invalid id"
         end
@@ -614,120 +610,74 @@ module JABA
 
     ##
     #
-    def define_type(id, &block)
-      validate_id(id, :type)
-      src_loc = caller_locations(2, 1)[0]
-      log "  Defining '#{id}' type at #{src_loc.describe}"
-      existing = get_jaba_type_def(id, fail_if_not_found: false)
-      if existing
-        JABA.error("'type|#{id.inspect_unquoted}' multiply defined. First definition at #{existing.src_loc.describe}.")
-      end
-      d = make_definition(id, block, src_loc)
-      if id == :globals
-        @globals_type_def = d
-      else
-        @jaba_type_defs << d
-      end
-      @jaba_type_def_lookup[id] = d
-      nil
-    end
-
-    ##
-    #
-    def get_jaba_type_def(id, fail_if_not_found: true)
-      d = @jaba_type_def_lookup[id]
+    def get_definition(what, id, fail_if_not_found: true)
+      d =  @definition_registry[what].lookup[id]
       if !d && fail_if_not_found
-        JABA.error("'#{id.inspect_unquoted}' type not defined")
+        JABA.error("#{what} definition '#{id.inspect_unquoted}' not defined")
       end
       d
     end
 
     ##
-    #
-    def define_shared(id, &block)
-      validate_id(id, :shared)
-      JABA.error("'shared' definition '#{id.inspect_unquoted}' requires a block") if !block_given?
+    # TODO: validate which items require a block
+    def define(what, id, *args, **keyval_args, &block)
       src_loc = caller_locations(2, 1)[0]
-      log "  Defining '#{id}' shared definition at #{src_loc.describe}"
 
-      existing = get_shared_definition(id, fail_if_not_found: false)
-      if existing
-        JABA.error("'shared|#{id.inspect_unquoted}' multiply defined. First definition at #{existing.src_loc.describe}.")
+      lookup_id = id
+      if what == :instance
+        type_id = id
+        inst_id = args.shift
+        lookup_id = "#{type_id}|#{inst_id}" # eg 'cpp|MyApp'
+        id = inst_id
       end
 
-      @shared_def_lookup[id] = make_definition(id, block, src_loc)
-      nil
-    end
+      validate_id(id, what)
 
-    ##
-    #
-    def get_shared_definition(id, fail_if_not_found: true)
-      d = @shared_def_lookup[id]
-      if !d && fail_if_not_found
-        JABA.error("Shared definition '#{id.inspect_unquoted}' not found")
-      end
-      d
-    end
-
-    ##
-    #
-    def define_instance(type_id, id, flags=[], &block)
-      JABA.error("type_id is required") if type_id.nil?
-      validate_id(id, type_id)
-
-      src_loc = caller_locations(2, 1)[0]
-      log "  Defining '#{id}' instance [type=#{type_id}] at #{src_loc.describe}"
-
-      existing = get_instance_definition(type_id, id, fail_if_not_found: false)
-      if existing
-        JABA.error("'#{type_id}|#{id.inspect_unquoted}' multiply defined. First definition at #{existing.src_loc.describe}.")
-      end
+      log "  Defining '#{what}:#{lookup_id}' at #{src_loc.describe}"
       
-      d = make_definition(id, block, src_loc, flags)
-      @instance_def_lookup.push_value(type_id, d)
+      existing = get_definition(what, lookup_id, fail_if_not_found: false)
+      if existing
+        JABA.error("'#{lookup_id}' multiply defined. First definition at #{existing.src_loc.describe}.")
+      end
 
+      d = make_definition(id, block, src_loc, flags: args, open_defs_lookup_id: lookup_id)
+      
+      def_reg = @definition_registry[what]
+      def_reg.defs << d
+      def_reg.lookup[lookup_id] = d
+
+      if what == :instance
+        @type_to_instances.push_value(type_id, d)
+      end
       nil
     end
-    
+
     ##
     #
-    def get_instance_definition(type_id, id, fail_if_not_found: true, errobj: nil)
-      defs = @instance_def_lookup[type_id]
-      d = defs&.find {|dd| dd.id == id}
-      if !d && fail_if_not_found
-        JABA.error("'#{id}' instance not defined", errobj: errobj)
-      end
-      d
+    def open(what, id, &block)
+      validate_id(id, what)
+      JABA.error("'#{what.inspect_unquoted}' requires a block") if !block_given?
+
+      src_loc = caller_locations(2, 1)[0]
+      log "  Opening '#{what}:#{id}' at #{src_loc.describe}"
+
+      d = make_definition(id, block, src_loc)
+      
+      def_reg = @open_definitions_registry[what]
+      def_reg.defs << d
+      def_reg.lookup.push_value(id, d)
+
+      nil
     end
 
     ##
     #
     def get_instance_ids(type_id)
-      defs = @instance_def_lookup[type_id]
+      defs = @type_to_instances[type_id]
       if !defs
         JABA.error("No '#{type_id}' type defined")
       end
       defs.map(&:id)
-    end
-
-    ##
-    #
-    def define_defaults(id, &block)
-      validate_id(id, :defaults)
-      src_loc = caller_locations(2, 1)[0]
-      log "  Defining '#{id}' defaults at #{src_loc.describe}"
-      existing = @default_defs.find {|d| d.id == id}
-      if existing
-        JABA.error("'defaults|#{id.inspect_unquoted}' multiply defined. First definition at #{existing.src_loc.describe}.")
-      end
-      @default_defs << make_definition(id, block, src_loc)
-      nil
-    end
-
-    ##
-    #
-    def get_defaults_definition(id)
-      @default_defs.find {|d| d.id == id}
     end
 
     ##
@@ -750,62 +700,12 @@ module JABA
 
     ##
     #
-    def define_translator(id, &block)
-      validate_id(id, :translator)
-      src_loc = caller_locations(2, 1)[0]
-      log "  Defining '#{id}' translator at #{src_loc.describe}"
-      existing = get_translator_definition(id, fail_if_not_found: false)
-      if existing
-        JABA.error("'translator|#{id.inspect_unquoted}' multiply defined. First definition at #{existing.src_loc.describe}.")
-      end
-      @translator_defs << make_definition(id, block, src_loc)
-      nil
-    end
-
-    ##
-    #
-    def get_translator_definition(id, fail_if_not_found: true)
-      td = @translator_defs.find {|d| d.id == id}
-      if !td && fail_if_not_found
-        JABA.error("'#{id.inspect_unquoted}' translator not found")
-      end
-      td
-    end
-
-    ##
-    #
     def get_translator(id, fail_if_not_found: true)
       t = @translators[id]
       if !t && fail_if_not_found
         JABA.error("'#{id.inspect_unquoted}' translator not found")
       end
       t
-    end
-
-    ##
-    #
-    def open(what, id, type=nil, &block)
-      validate_id(id, what)
-      JABA.error("'#{what.inspect_unquoted}' requires a block") if !block_given?
-      src_loc = caller_locations(2, 1)[0]
-
-      case what
-      when :type
-        log "  Opening '#{id}' type at #{src_loc.describe}"
-        @open_type_defs_lookup.push_value(id, make_definition(id, block, src_loc))
-      when :instance
-        log "  Opening '#{id}' instance [type=#{type}] at #{src_loc.describe}"
-        JABA.error("type is required") if type.nil?
-        d = make_definition(id, block, src_loc)
-        @open_instance_defs_lookup.push_value(id, d)
-      when :translator
-        log "  Opening '#{id}' translator at #{src_loc.describe}"
-        @open_translator_def_lookup.push_value(id, make_definition(id, block, src_loc))
-      when :shared
-        log "  Opening '#{id}' shared definition at #{src_loc.describe}"
-        @open_shared_defs << make_definition(id, block, src_loc)
-      end
-      nil
     end
 
     ##
