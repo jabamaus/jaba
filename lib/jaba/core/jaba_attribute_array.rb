@@ -85,7 +85,7 @@ module JABA
         # Give plugin a chance to custom handle if its a reference. This is used by cpp plugin to custom handle dependencies
         # on 'export only' cpp definitions.
         #
-        if type_id == :node_ref && @node.node_manager.plugin.custom_handle_array_reference(self, val)
+        if type_id == :ref && @node.node_manager.plugin.custom_handle_array_reference(self, val)
           next
         end
 

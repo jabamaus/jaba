@@ -378,7 +378,7 @@ module JABA
     ##
     #
     def initialize
-      super(:node_ref, 'Node reference attribute type')
+      super(:ref, 'Node reference attribute type')
     end
 
     def get_reference_manual_rows(attr_def)

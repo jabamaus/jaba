@@ -5,10 +5,10 @@ module JABA
   class TestNodeRefAttribute < JabaTest
     
     it 'requires referent type to be specified' do
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagP)}: :node_ref/:compound attribute types must specify jaba_type, eg 'add_attr type: :node_ref, jaba_type: :platform'." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagP)}: :ref/:compound attribute types must specify jaba_type, eg 'add_attr type: :ref, jaba_type: :platform'." do
         jaba(barebones: true) do
           type :a do
-            attr :b, type: :node_ref # tagP
+            attr :b, type: :ref # tagP
           end
         end
       end
@@ -20,7 +20,7 @@ module JABA
     it 'resolves references to different types immediately' do
       jaba(barebones: true) do
         type :type_a do
-          attr :type_b, type: :node_ref, jaba_type: :type_b
+          attr :type_b, type: :ref, jaba_type: :type_b
         end
         type :type_b do
           attr :c do
@@ -46,7 +46,7 @@ module JABA
       assert_jaba_warn("Stripping duplicate ':b' from 'a.ref' array attribute. See previous at test_node_ref_attribute.rb:#{line}", __FILE__, 'tagM') do
         jaba(barebones: true) do
           type :type_a do
-            attr_array :ref, type: :node_ref, jaba_type: :type_b
+            attr_array :ref, type: :ref, jaba_type: :type_b
           end
           type :type_b
           type_a :a do
@@ -64,7 +64,7 @@ module JABA
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagW)}: Node with handle \'undefined\' not found." do
         jaba(barebones: true) do
           type :type_a do
-            attr :ref, type: :node_ref, jaba_type: :type_b
+            attr :ref, type: :ref, jaba_type: :type_b
           end
           type :type_b
           type_a :a do
@@ -77,8 +77,8 @@ module JABA
     it 'resolves references to same type later' do
       jaba(barebones: true) do
         type :type_a do
-          attr :ref, type: :node_ref, jaba_type: :type_a
-          attr_array :ref_array, type: :node_ref, jaba_type: :type_a
+          attr :ref, type: :ref, jaba_type: :type_a
+          attr_array :ref_array, type: :ref, jaba_type: :type_a
         end
         type_a :a1 do
           ref :a3
@@ -106,7 +106,7 @@ module JABA
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagQ)}: Node with handle \'undefined\' not found." do
         jaba(barebones: true) do
           type :a do
-            attr :b, type: :node_ref, jaba_type: :a
+            attr :b, type: :ref, jaba_type: :a
           end
           a :t do
             b :undefined # tagQ
@@ -118,7 +118,7 @@ module JABA
     it 'works with a default' do
       jaba do
         type :type_a do
-          attr :host, type: :node_ref, jaba_type: :host do
+          attr :host, type: :ref, jaba_type: :host do
             default :vs2019
           end
         end
@@ -145,7 +145,7 @@ module JABA
             height 2
           end
           type :has_square do
-            attr :square, type: :node_ref, jaba_type: :square
+            attr :square, type: :ref, jaba_type: :square
           end
           has_square :t do
             square :a
@@ -171,7 +171,7 @@ module JABA
             length 1
           end
           type :references_line do
-            attr :line, type: :node_ref, jaba_type: :line
+            attr :line, type: :ref, jaba_type: :line
           end
           references_line :t do
             line :a
@@ -191,7 +191,7 @@ module JABA
             length 1
           end
           type :has_line do
-            attr :line, type: :node_ref, jaba_type: :line
+            attr :line, type: :ref, jaba_type: :line
           end
           has_line :t do
             line :a
@@ -205,7 +205,7 @@ module JABA
       assert_jaba_warn 'Object reference attribute does not need to be flagged with :read_only as they always are', __FILE__, 'tagX' do
         jaba do
           type :test do
-            attr :platform, type: :node_ref, jaba_type: :platform do
+            attr :platform, type: :ref, jaba_type: :platform do
               flags :read_only # tagX
             end
           end
@@ -227,8 +227,8 @@ module JABA
             end
           end
           type :test do
-            attr :r1, type: :node_ref, jaba_type: :ref1
-            attr :r2, type: :node_ref, jaba_type: :ref2
+            attr :r1, type: :ref, jaba_type: :ref1
+            attr :r2, type: :ref, jaba_type: :ref2
           end
           test :t
         end

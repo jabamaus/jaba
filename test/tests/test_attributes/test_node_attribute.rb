@@ -19,7 +19,7 @@ module JABA
           attr :node_single, type: :node, jaba_type: :compound
           attr_array :node_array, type: :node, jaba_type: :compound
           attr_hash :node_hash, key_type: :symbol, type: :node, jaba_type: :compound
-          attr :platform, type: :node_ref, jaba_type: :platform
+          attr :platform, type: :ref, jaba_type: :platform
           attr :sibling_single
           attr_array :sibling_array do
             flags :allow_dupes

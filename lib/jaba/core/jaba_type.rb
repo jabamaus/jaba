@@ -52,12 +52,12 @@ module JABA
       if key_type && variant != :hash
         JABA.error("Only attr_hash supports key_type argument")
       end
-      if jaba_type && type != :node_ref && type != :node
-        JABA.error("Only :node and :node_ref attribute types supports jaba_type argument")
+      if jaba_type && type != :ref && type != :node
+        JABA.error("Only :compound and :ref attribute types supports jaba_type argument")
       end
 
-      if (type == :node_ref || type == :node) && !jaba_type
-        JABA.error(":node_ref/:compound attribute types must specify jaba_type, eg 'add_attr type: :node_ref, jaba_type: :platform'")
+      if (type == :ref || type == :node) && !jaba_type
+        JABA.error(":ref/:compound attribute types must specify jaba_type, eg 'add_attr type: :ref, jaba_type: :platform'")
       end
       
       validate_id(id)

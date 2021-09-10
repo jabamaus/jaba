@@ -78,7 +78,7 @@ type :cpp do
   end
 
   # TODO: mark as a control flow attr for docs
-  attr :host, type: :node_ref, jaba_type: :host do
+  attr :host, type: :ref, jaba_type: :host do
     title 'Target host'
     note 'Returns target host as an object. Common host methods are automatically imported so can be accessed directly. Should only be needed rarely.'
     note 'Takes its value from globals.target_host and is read only.'
@@ -117,7 +117,7 @@ type :cpp_project do
   end
 
   # TODO: mark as control flow for docs
-  attr :platform, type: :node_ref, jaba_type: :platform do
+  attr :platform, type: :ref, jaba_type: :platform do
     title 'Target platform as an object'
     note 'Query current target platform'
     example %Q{
@@ -136,7 +136,7 @@ type :cpp_project do
     example 'configs [:Debug, :Release]'
   end
   
-  attr_array :deps, type: :node_ref, jaba_type: :cpp_project do
+  attr_array :deps, type: :ref, jaba_type: :cpp_project do
     title 'Project dependencies'
     note 'List of ids of other cpp definitions. A dependency can be flagged with :soft, in which case only its exports will be imported - it will not be linked to. ' \
       'This can be used for \'header only\' dependencies'
@@ -267,7 +267,7 @@ type :cpp_project do
     default false
   end
 
-  attr :category, type: :node_ref, jaba_type: :category do
+  attr :category, type: :ref, jaba_type: :category do
     title 'Workspace categorisation'
   end
 
@@ -278,7 +278,7 @@ type :cpp_config do
   title 'Per configuration C++ attributes'
 
   # TODO: flag as a control flow attr in docs
-  attr :arch, type: :node_ref, jaba_type: :arch do
+  attr :arch, type: :ref, jaba_type: :arch do
     title 'Target architecture as an object'
     note 'Query current architecture being processed. Use to define control flow to set config-specific atttributes'
   end
