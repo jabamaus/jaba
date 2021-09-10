@@ -76,6 +76,16 @@ module JABA
     def validate_value(attr_def, value)
     end
 
+    ##
+    #
+    def raise_type_error(value, expected)
+      value_class = value.class
+      if value_class == TrueClass || value_class == FalseClass
+        value_class = 'boolean'
+      end
+      JABA.error("'#{value.inspect_unquoted}' is a #{value_class.to_s.downcase} but expected #{expected}")
+    end
+
   end
 
   ##
@@ -89,7 +99,7 @@ module JABA
 
     def validate_value(attr_def, value)
       if !value.string?
-        JABA.error("'#{value}' must be a string but was a '#{value.class}'")
+        raise_type_error(value, 'a string')
       end
     end
 
@@ -110,7 +120,7 @@ module JABA
 
     def validate_value(attr_def, value)
       if !value.symbol?
-        JABA.error("'#{value}' must be a symbol but was a '#{value.class}'")
+        raise_type_error(value, 'a symbol')
       end
     end
     
@@ -127,7 +137,7 @@ module JABA
 
     def validate_value(attr_def, value)
       if !value.symbol? && !value.string?
-        JABA.error("'#{value}' must be a symbol or a string but was a '#{value.class}'")
+        raise_type_error(value, 'a symbol or a string')
       end
     end
     
@@ -170,7 +180,7 @@ module JABA
 
     def validate_value(attr_def, value)
       if !value.integer?
-        JABA.error(":int attributes only accept integer values but got '#{value.inspect_unquoted}'")
+        raise_type_error(value, 'an integer')
       end
     end
 
@@ -204,7 +214,7 @@ module JABA
 
     def validate_value(attr_def, value)
       if !value.boolean?
-        JABA.error(":bool attributes only accept [true|false] but got '#{value.inspect_unquoted}'")
+        raise_type_error(value, "'true' or 'false'")
       end
     end
 

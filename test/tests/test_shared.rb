@@ -5,21 +5,6 @@ module JABA
   class TestShared < JabaTest
 
     it 'allows inclusion of shared definitions in any object' do
-      # check that all types support include directive
-      #
-      [:text, :workspace, :category, :type].each do |type|
-        assert_jaba_error "Error at #{src_loc(__FILE__, :tagD)}: Included.", trace: [__FILE__, :tagG] do
-          jaba do
-            shared :a do
-              fail 'Included' # tagD
-            end
-            __send__(type, :t) do
-              include :a # tagG
-            end
-          end
-        end
-      end
-      
       jaba(barebones: true) do
         shared :attr_setup do
           flags :no_sort
@@ -38,6 +23,21 @@ module JABA
           a.must_equal [3, 2, 1]
         end
       end
+
+      # check that all types support include directive
+      #
+      [:workspace, :category, :type].each do |type|
+        assert_jaba_error "Error at #{src_loc(__FILE__, :tagD)}: Included.", trace: [__FILE__, :tagG], hint: "When processing '#{type}'" do
+          jaba do
+            shared :a do
+              fail 'Included' # tagD
+            end
+            __send__(type, :t) do
+              include :a # tagG
+            end
+          end
+        end
+      end
     end
 
     it 'fails if no block supplied' do
@@ -49,7 +49,7 @@ module JABA
     end
 
     it 'fails if shared definition does not exist' do
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagT)}: Shared definition ':b' not found." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagT)}: shared definition ':b' not defined." do
         jaba(barebones: true) do
           shared :a do
           end
@@ -72,6 +72,7 @@ module JABA
         type :test do
           attr :c
         end
+        category :a
         1.upto(10) do |n|
           test "t#{n}" do
             include :a, 'd'
@@ -88,14 +89,14 @@ module JABA
         jaba do
           shared :d do |a1, a2, a3|
           end
-          text :t do
+          category :t do
             include :d # tagW
           end
         end
       end
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagU)}: Shared definition ':e' expects 0 arguments but 1 were passed." do
         jaba do
-          shared :e do
+          category :e do
           end
           text :t do
             include :e, 1 # tagU
@@ -106,7 +107,7 @@ module JABA
         jaba do
           shared :f do |a1, a2|
           end
-          text :t do
+          category :t do
             include :f, 1, 2, 3 # tagB
           end
         end

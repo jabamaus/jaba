@@ -1,3 +1,4 @@
+- Add text_plugin.rb to examples in docs
 - Get rid of # frozen_string_literal: true
 - Get rid of using JABACoreExt statements
 - Move make_node_paths_absolute into core

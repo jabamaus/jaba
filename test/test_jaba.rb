@@ -143,8 +143,8 @@ module JABA
 
     ##
     #
-    def assert_jaba_error(msg, trace: [], ignore_rest: false)
-      e = assert_raises JabaError do
+    def assert_jaba_error(msg, trace: [], ignore_rest: false, hint: nil)
+      e = assert_raises JabaError, hint.to_s do
         yield
       end
       
