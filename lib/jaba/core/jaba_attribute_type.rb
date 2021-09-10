@@ -1,7 +1,5 @@
 module JABA
 
-  using JABACoreExt
-
   ##
   #
   class JabaAttributeType

@@ -1,7 +1,5 @@
 module JABA
 
-  using JABACoreExt
-  
   class GlobalsPlugin < DefaultPlugin
 
     def process_definition(definition)

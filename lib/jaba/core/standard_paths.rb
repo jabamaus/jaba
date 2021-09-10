@@ -1,7 +1,5 @@
 module JABA
 
-  using JABACoreExt
-
   ##
   #
   def self.jaba_docs_url

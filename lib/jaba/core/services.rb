@@ -30,8 +30,6 @@ require_relative 'node_manager'
 #
 module JABA
 
-  using JABACoreExt
-
   @@running_tests = false
 
   ##

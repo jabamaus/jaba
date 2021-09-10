@@ -1,7 +1,5 @@
 module JABA
 
-  using JABACoreExt
-
   class TextPlugin < Plugin
 
     def process_definition(definition)

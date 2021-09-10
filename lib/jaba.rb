@@ -14,8 +14,6 @@ require_relative 'jaba/jdl/jdl_type'
 
 module JABA
 
-  using JABACoreExt
-
   ##
   # Jaba entry point. Returns a json-like hash object containing a summary of what has been generated.
   #

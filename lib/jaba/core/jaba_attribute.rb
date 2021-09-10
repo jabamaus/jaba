@@ -1,6 +1,4 @@
 module JABA
-
-  using JABACoreExt
   
   ##
   #

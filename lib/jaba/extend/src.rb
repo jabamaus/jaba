@@ -1,6 +1,4 @@
 module JABA
-
-  using JABACoreExt
   
   # Include in projects that require src files. Requires @node, @root and @projdir to be set
   #
