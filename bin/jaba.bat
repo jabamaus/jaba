@@ -1,2 +1,2 @@
 @echo off
-jabaruby -w %~dp0jaba.rb %*
+jabaruby --enable=frozen-string-literal -w %~dp0jaba.rb %*

@@ -1,7 +1,3 @@
-# frozen_string_literal: true
-
-##
-#
 module JABA
 
   using JABACoreExt
@@ -146,7 +142,7 @@ module JABA
     )
       depth = 0
       handle = nil
-
+ 
       if parent
         JABA.error('name is required for child nodes') if !name
         handle = "#{parent.handle}|#{name}"
