@@ -1,7 +1,5 @@
 module JABA
 
-  using JABACoreExt
-
   class TestCoreExtArray < JabaTest
 
     it 'supports vs_join' do

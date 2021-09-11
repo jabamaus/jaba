@@ -129,7 +129,7 @@ type :masm_rule do
 end
 
 open_type :cpp_config do
-  attr :masm, type :compound, jaba_type: :masm_rule do
+  attr :masm, type: :compound, jaba_type: :masm_rule do
     title 'masm custom build tool'
   end
 end

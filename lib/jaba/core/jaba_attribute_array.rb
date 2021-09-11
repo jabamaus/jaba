@@ -42,7 +42,7 @@ module JABA
         end
       end
       values = @elems.map {|e| e.value(jdl_call_loc)}
-      if !@attr_def.node_by_reference? # read only, enforce by freezing, unless value is a node
+      if !@attr_def.reference? # read only, enforce by freezing, unless value is a node
         values.freeze
       end
       values
@@ -59,8 +59,8 @@ module JABA
       values = if block_given?
         value_from_block(__jdl_call_loc, id: "#{@attr_def.defn_id}[#{@elems.size}]", &block)
       else
-        if @attr_def.node_by_value?
-          attr_error("Node attributes require a block")
+        if @attr_def.compound?
+          attr_error("Compound attributes require a block")
         end
         args.shift
       end
@@ -91,7 +91,7 @@ module JABA
 
         elem = make_elem(val, *args, add: false, **keyval_args)
         existing = nil
-        if !@attr_def.has_flag?(:allow_dupes) && !@attr_def.node_by_value?
+        if !@attr_def.has_flag?(:allow_dupes) && !@attr_def.compound?
           existing = @elems.find{|e| e.raw_value == elem.raw_value}
         end
 

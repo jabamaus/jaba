@@ -1,8 +1,6 @@
 require_relative 'common'
 require 'rexml'
 
-using JABACoreExt
-
 class VxcprojSimplifier
 
   def run(dir:)

@@ -46,7 +46,7 @@ module JABA
         end
       end
       values = @hash.transform_values {|e| e.value(jdl_call_loc)}
-      if !@attr_def.node_by_reference? # read only, enforce by freezing, unless value is a node
+      if !@attr_def.reference? # read only, enforce by freezing, unless value is a node
         values.freeze
       end
       values

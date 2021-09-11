@@ -2,8 +2,6 @@
 
 module JABA
 
-  using JABACoreExt
-
   class TestRootPaths < JabaTest
 
     def each_src_root_build_root

@@ -2,8 +2,6 @@
 
 module JABA
 
-  using JABACoreExt
-  
   class TestCpp < JabaTest
 
     CPP_VS_JDL_FILE = "#{__dir__}/../../modules/cpp/VisualStudio/cpp_vs.jaba".cleanpath

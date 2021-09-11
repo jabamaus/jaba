@@ -2,8 +2,6 @@
 
 module JABA
 
-  using JABACoreExt
-
   class TestWorkspace < JabaTest
 
     it 'matches on id or glob matches' do

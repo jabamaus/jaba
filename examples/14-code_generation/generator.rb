@@ -1,8 +1,6 @@
 require 'fileutils'
 require_relative '../../lib/jaba/core/core_ext'
 
-using JABACoreExt
-
 src_file = ARGV[0].cleanpath
 cpp_file = ARGV[1].cleanpath
 header_file = cpp_file.sub('.cpp', '.h') 

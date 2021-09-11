@@ -2,8 +2,6 @@
 
 module JABA
 
-  using JABACoreExt
-  
   class TestExportSystem < JabaTest
 
     it 'only allows :export on array and hash properties' do

@@ -2,8 +2,6 @@
 
 module JABA
 
-  using JABACoreExt
-
   class TestSrc < JabaTest
 
     # TODO: test case sensitivity

@@ -1,7 +1,5 @@
 require_relative 'common'
 
-using JABACoreExt
-
 class JabaSrcCompiler
 
   def initialize

@@ -1,7 +1,5 @@
 module JABA
 
-  using JABACoreExt
-
   class TestCoreExtString < JabaTest
     
     it 'supports split_path' do

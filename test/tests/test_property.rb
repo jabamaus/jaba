@@ -2,8 +2,6 @@
 
 module JABA
 
-  using JABACoreExt
-
   class PropertyContainer
     include PropertyMethods
 

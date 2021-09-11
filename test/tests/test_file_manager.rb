@@ -2,8 +2,6 @@
 
 module JABA
 
-  using JABACoreExt
-
   class TestFileManager < JabaTest
 
     it 'StringWriter can write line with newline' do

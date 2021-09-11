@@ -108,8 +108,8 @@ module JABA
     ##
     #
     def value_from_block(__jdl_call_loc, id:, block_args: nil, &block)
-      if @attr_def.node_by_value?
-        if @value # If node has already been made but the node attr is being set again, re-evaluate existing value against block
+      if @attr_def.compound?
+        if @value # If node has already been made but the compound attr is being set again, re-evaluate existing value against block
           @value.eval_jdl(&block)
           return @value
         else
@@ -182,8 +182,8 @@ module JABA
       new_value = if block_given?
         value_from_block(__jdl_call_loc, id: "#{@attr_def.defn_id}", &block)
       else
-        if @attr_def.node_by_value? && !@outer_attr
-          attr_error("Node attributes require a block")
+        if @attr_def.compound? && !@outer_attr
+          attr_error("Compound attributes require a block")
         end
         args.shift
       end
@@ -247,7 +247,7 @@ module JABA
 
       @value = new_value
 
-      if @attr_def.node_by_reference?
+      if @attr_def.reference?
         if __resolve_ref
           # Only resolve reference immediately if referencing a different type to this node's type. This is because not all nodes
           # of the same type will have been created by this point whereas nodes of a different type will all have been created

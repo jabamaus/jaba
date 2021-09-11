@@ -197,13 +197,13 @@ module JABA
 
     ##
     #
-    def node_by_reference?
+    def reference?
       @type_id == :ref
     end
 
     ##
     #
-    def node_by_value?
+    def compound?
       @type_id == :compound
     end
 

@@ -12,8 +12,6 @@ end
 
 module JABA
 
-  using JABACoreExt
-
   ##
   #
   def self.run_tests 

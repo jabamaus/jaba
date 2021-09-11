@@ -3,8 +3,6 @@
 require_relative 'common'
 require_relative '../examples/gen_all'
 
-using JABACoreExt
-
 class LaunchJsonGenerator
 
   ##

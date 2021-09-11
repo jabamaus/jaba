@@ -101,7 +101,7 @@ module JABA
       # Register referenced attr defs
       #
       @attribute_defs.each do |attr_def|
-        if attr_def.node_by_reference?
+        if attr_def.reference?
           rt_id = attr_def.ref_jaba_type
           if rt_id != defn_id
             jt = attr_def.services.get_jaba_type(rt_id)

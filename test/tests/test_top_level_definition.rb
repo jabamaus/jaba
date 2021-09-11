@@ -2,8 +2,6 @@
 
 module JABA
 
-  using JABACoreExt
-
   class TestTopLevelDefinition < JabaTest
 
     it 'rejects invalid ids' do

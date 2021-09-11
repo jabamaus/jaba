@@ -222,7 +222,7 @@ open_shared :vs_host_common do
 end
 
 open_type :cpp_config do
-  attr :ispc, type :compound, jaba_type: :ispc_rule do
+  attr :ispc, type: :compound, jaba_type: :ispc_rule do
     title 'ispc custom build tool'
   end
 end

@@ -1,6 +1,5 @@
 - Add text_plugin.rb to examples in docs
 - Get rid of # frozen_string_literal: true
-- Get rid of using JABACoreExt statements
 - Move make_node_paths_absolute into core
 - Moving text into plugin has raised question about host. Need to set requied cpp_project_classname to ''. Not clean.
   Also, the text plugin file is not executed. Need a way of loading it.
@@ -13,7 +12,7 @@
 - consider making all paths relative to jaba file when in defaults and shared definitions
 - optimise copying of value options once they are more locked down.
 - move JabaAttributeType base class into extend folder
-- rename type :compound to :compound?
+- rename type: :compound to :compound?
 - Have a look at RubyVM to try and precompile ruby
 - Should :definition_root basedir_spec be able to take its value from the setting attr? Eg if globals attr specifies a definition root base spec it be relative to the user definition.
 - Could be moving towards concept of a type requiring configuration

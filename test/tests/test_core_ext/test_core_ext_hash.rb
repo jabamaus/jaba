@@ -1,7 +1,5 @@
 module JABA
 
-  using JABACoreExt
-
   class TestCoreExtHash < JabaTest
 
     it 'supports push_value' do
