@@ -16,9 +16,9 @@ module JABA
     it 'works with all attribute variants' do
       jaba do
         type :test do
-          attr :node_single, type: :node, jaba_type: :compound
-          attr_array :node_array, type: :node, jaba_type: :compound
-          attr_hash :node_hash, key_type: :symbol, type: :node, jaba_type: :compound
+          attr :node_single, type :compound, jaba_type: :compound
+          attr_array :node_array, type :compound, jaba_type: :compound
+          attr_hash :node_hash, key_type: :symbol, type :compound, jaba_type: :compound
           attr :platform, type: :ref, jaba_type: :platform
           attr :sibling_single
           attr_array :sibling_array do
@@ -37,10 +37,10 @@ module JABA
           end
           attr_array :b
           attr_hash :c, key_type: :symbol
-          attr :d, type: :node, jaba_type: :nested1
+          attr :d, type :compound, jaba_type: :nested1
         end
         type :nested1 do
-          attr :e, type: :node, jaba_type: :nested2
+          attr :e, type :compound, jaba_type: :nested2
         end
         type :nested2 do
           attr :f

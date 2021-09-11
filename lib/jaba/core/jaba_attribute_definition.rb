@@ -204,7 +204,7 @@ module JABA
     ##
     #
     def node_by_value?
-      @type_id == :node
+      @type_id == :compound
     end
 
     ##

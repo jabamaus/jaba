@@ -52,11 +52,11 @@ module JABA
       if key_type && variant != :hash
         JABA.error("Only attr_hash supports key_type argument")
       end
-      if jaba_type && type != :ref && type != :node
+      if jaba_type && type != :ref && type != :compound
         JABA.error("Only :compound and :ref attribute types supports jaba_type argument")
       end
 
-      if (type == :ref || type == :node) && !jaba_type
+      if (type == :ref || type == :compound) && !jaba_type
         JABA.error(":ref/:compound attribute types must specify jaba_type, eg 'add_attr type: :ref, jaba_type: :platform'")
       end
       
@@ -72,7 +72,7 @@ module JABA
       if jaba_type
         if jaba_type != defn_id
           set_property(:dependencies, jaba_type)
-        elsif type == :node
+        elsif type == :compound
           JABA.error(":compound attribute cannot set to jaba_type to owning type")
         end
       end

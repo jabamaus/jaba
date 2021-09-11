@@ -395,10 +395,10 @@ module JABA
 
   ##
   #
-  class JabaAttributeTypeNode < JabaAttributeType
+  class JabaAttributeTypeCompound < JabaAttributeType
     
     def initialize
-      super(:node, 'Node attribute type')
+      super(:compound, 'Compound attribute type')
     end
 
     def get_reference_manual_rows(attr_def)

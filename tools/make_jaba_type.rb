@@ -108,7 +108,7 @@ class JabaTypeBuilder
     w << "end"
     w << ""
     w << "open_type :cpp_config do"
-    w << "  attr :#{@name}, type: :node, jaba_type: :#{@type_name} do"
+    w << "  attr :#{@name}, type :compound, jaba_type: :#{@type_name} do"
     w << "    title '#{@name} custom build tool'"
     w << "  end"
     w << "end"
