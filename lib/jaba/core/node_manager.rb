@@ -84,7 +84,8 @@ module JABA
 
       @definitions.each do |d|
         push_definition(d) do
-          @root_nodes.concat(Array(@plugin.process_definition(d)))
+          root_nodes = Array(@plugin.process_definition(d))
+          @root_nodes.concat(root_nodes)
         end
       end
       

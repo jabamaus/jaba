@@ -36,15 +36,15 @@ module JABA
       
       set_parent(parent)
 
-      if @flags & NodeFlags::LAZY == 0
+      if !has_flag?(NodeFlags::LAZY)
         @jaba_type.attribute_defs.each do |attr_def|
           create_attr(attr_def)
         end
       end
 
-      # Define generate hook on root nodes only
+      # Define generate hook on tracked root nodes only
       #
-      if !parent
+      if !parent && !has_flag?(NodeFlags::NO_TRACK)
         define_block_property(:generate)
       end
     end
@@ -72,6 +72,12 @@ module JABA
     #
     def <=>(other)
       @handle.casecmp(other.handle)
+    end
+
+    ##
+    #
+    def has_flag?(f)
+      @flags & f != 0
     end
 
     ##
@@ -189,7 +195,7 @@ module JABA
       if is_get
         return a.value(__jdl_call_loc)
       else
-        if @flags & NodeFlags::LAZY != 0
+        if has_flag?(NodeFlags::LAZY)
           a = get_attr(id, fail_if_not_found: false)
           if !a
             ad = @jaba_type.get_attribute_def(id)
@@ -200,7 +206,7 @@ module JABA
           end
         else
           ad = a.attr_def
-          if @flags & NodeFlags::IS_COMPOUND_ATTR != 0
+          if has_flag?(NodeFlags::IS_COMPOUND_ATTR)
             # TODO: only access to immediate parent
           else
             if ad.jaba_type.defn_id != @jaba_type.defn_id
