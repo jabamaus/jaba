@@ -35,7 +35,8 @@ module JABA
 
     ##
     #
-    def process_definition(definition)
+    def process_definition
+      definition = services.current_definition
       # If its an export only definition, ignore it as it should not get turned into a generatable project,
       # rather it is just there to export attributes. This definition will be processed later at dependency
       # resolution time.

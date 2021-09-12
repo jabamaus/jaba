@@ -175,7 +175,7 @@ module JABA
       @projects = []
     end
 
-    def process_definition(definition)
+    def process_definition
       root_node = services.make_node
 
       root_node.attrs.platforms.each do |p|

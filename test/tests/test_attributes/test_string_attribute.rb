@@ -30,7 +30,6 @@ module JABA
             attrs.a.must_equal('t')
           end
         end
-        category :c
       end
     end
 

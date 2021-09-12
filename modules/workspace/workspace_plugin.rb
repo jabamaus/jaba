@@ -37,7 +37,7 @@ module JABA
 
     ##
     #
-    def process_definition(definition)
+    def process_definition
       services.make_node
     end
 

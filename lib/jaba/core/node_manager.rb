@@ -2,7 +2,7 @@ module JABA
 
   class GlobalsPlugin < DefaultPlugin
 
-    def process_definition(definition)
+    def process_definition
       globals_node = services.make_node(flags: NodeFlags::NO_POST_CREATE)
       
       main_services = services.instance_variable_get(:@services)
@@ -37,6 +37,7 @@ module JABA
     attr_reader :plugin
     attr_reader :nodes
     attr_reader :root_nodes
+    attr_reader :definition # current definition being processed
 
     ##
     #
@@ -84,7 +85,7 @@ module JABA
 
       @definitions.each do |d|
         push_definition(d) do
-          root_nodes = Array(@plugin.process_definition(d))
+          root_nodes = Array(@plugin.process_definition)
           @root_nodes.concat(root_nodes)
         end
       end

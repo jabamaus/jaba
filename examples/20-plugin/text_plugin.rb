@@ -2,7 +2,7 @@ module JABA
 
   class TextPlugin < Plugin
 
-    def process_definition(definition)
+    def process_definition
       n = services.make_node
       services.make_node_paths_absolute(n) # TODO: remove
       n

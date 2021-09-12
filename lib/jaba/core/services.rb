@@ -244,11 +244,11 @@ module JABA
       #  end
       #end
 
-      #iterate_defs(:instance) do |d|
-      #  if !get_definition(:type, d.id, fail_if_not_found: false)
-      #    JABA.error("Cannot instance undefined type '#{d.id.inspect_unquoted}'", errobj: d)
-      #  end
-      #end
+      iterate_defs(:instance) do |d|
+        if !get_definition(:type, d.jaba_type_id, fail_if_not_found: false)
+          JABA.error("Cannot instance undefined type '#{d.jaba_type_id.inspect_unquoted}'", errobj: d)
+        end
+      end
 
       #@open_instance_defs.each do |id|
       #  if !get_instance_definition(id)
@@ -278,7 +278,7 @@ module JABA
           end
         end
 
-        nm = @node_manager_lookup[id]
+        nm = get_node_manager(id, fail_if_not_found: false)
         if !nm
           nm = make_plugin(id, DefaultPlugin)
         end
@@ -424,7 +424,7 @@ module JABA
     ##
     #
     def create_core_objects
-      constants = JABA.constants(false) # Don't iterate directly as constants get created inside loop
+      constants = JABA.constants(false).sort # Don't iterate directly as constants get created inside loop
       constants.each do |c|
         case c
         when /^JabaAttributeType./
@@ -441,6 +441,9 @@ module JABA
           #
           id = Regexp.last_match(1).downcase.to_sym
           klass = JABA.const_get(c)
+          if !klass.ancestors.include?(Plugin)
+            JABA.error("#{klass} must subclass Plugin")
+          end
           make_plugin(id, klass)
         end
       end
@@ -451,6 +454,7 @@ module JABA
     ##
     #
     def make_plugin(id, klass)
+      log "Making plugin [id=#{id}, class=#{klass}]"
       ps = PluginServices.new
       ps.instance_variable_set(:@services, self)
 
@@ -524,22 +528,24 @@ module JABA
       :src_loc,
       :open_defs,
       :open_defs_lookup_id,
-      :flags
+      :flags,
+      :jaba_type_id # Used by instances
     )
     
     ##
     #
-    def make_definition(id, block, src_loc, flags: [], open_defs_lookup_id: nil)
+    def make_definition(id, block, src_loc)
       d = Definition.new
       d.id = id
       d.block = block
       d.src_loc = src_loc
       d.open_defs = nil
-      d.open_defs_lookup_id = open_defs_lookup_id
-      d.flags = flags
+      d.open_defs_lookup_id = nil
+      d.flags = []
       d.define_singleton_method(:has_flag?) do |f|
         flags.include?(f)
       end
+      d.jaba_type_id = nil
       d
     end
 
@@ -636,20 +642,23 @@ module JABA
         JABA.error("'#{lookup_id}' multiply defined. First definition at #{existing.src_loc.describe}.")
       end
 
-      d = make_definition(id, block, src_loc, flags: args, open_defs_lookup_id: lookup_id)
+      d = make_definition(id, block, src_loc)
+      d.flags.concat(args)
+      d.open_defs_lookup_id = lookup_id
       
       def_reg = @definition_registry[what]
       def_reg.defs << d
       def_reg.lookup[lookup_id] = d
 
       if what == :instance
+        d.jaba_type_id = type_id
         @type_to_instances.push_value(type_id, d)
       end
       nil
     end
 
     ##
-    #
+    # TODO: Use *args and validate it
     def open(what, id, &block)
       validate_id(id, what)
       JABA.error("'#{what.inspect_unquoted}' requires a block") if !block_given?
@@ -739,9 +748,9 @@ module JABA
 
     ##
     #
-    def get_node_manager(jaba_type_id)
-      nm = @node_manager_lookup[jaba_type_id]
-      if !nm
+    def get_node_manager(jaba_type_id, fail_if_not_found: true)
+      nm = @node_manager_lookup[jaba_type_id.downcase]
+      if !nm && fail_if_not_found
         JABA.error("'#{jaba_type_id}' node manager not found")
       end 
       nm
@@ -842,23 +851,29 @@ module JABA
     ##
     #
     def include_jaba_path(path, base:)
-      if base == :grab_bag
-        if path.absolute_path?
-          JABA.error("'#{path}' must not be absolute if basing it on jaba grab_bag directory")
-        end
-        path = "#{JABA.grab_bag_dir}/#{path}"
-      elsif !path.absolute_path?
-        src_loc = caller_locations(2, 1)[0]
-        path = "#{src_loc.absolute_path.parent_path}/#{path}"
+      if block_given?
+        # If block given, execute arbitrary code. Plugins can be defined inline in this way.
+        yield
       end
-      if path.extname == '.rb'
-        log "  Loading #{path} plugin"
-        load_plugin(path)
-      else
-        if path.wildcard?
-          @jdl_includes.concat(Dir.glob(path))
+      if path
+        if base == :grab_bag
+          if path.absolute_path?
+            JABA.error("'#{path}' must not be absolute if basing it on jaba grab_bag directory")
+          end
+          path = "#{JABA.grab_bag_dir}/#{path}"
+        elsif !path.absolute_path?
+          src_loc = caller_locations(2, 1)[0]
+          path = "#{src_loc.absolute_path.parent_path}/#{path}"
+        end
+        if path.extname == '.rb'
+          log "  Loading #{path} plugin"
+          load_plugin(path)
         else
-          @jdl_includes << path
+          if path.wildcard?
+            @jdl_includes.concat(Dir.glob(path))
+          else
+            @jdl_includes << path
+          end
         end
       end
     end

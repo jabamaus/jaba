@@ -1,3 +1,9 @@
+- option in tests to log to stdout
+- Consider whether JABA module is really adding much
+- If targeting cpp, only create cpp and dependent types. Ignore other types and instances of those types.
+- Try and reduce creation of unneeded hosts and platforms that happens every time. Lazy initialisation?
+- Allow inline code blocks to include. Useful in testing.
+- Allow sublclasses of Plugins. Useful in testing.
 - Add text_plugin.rb to examples in docs
 - Get rid of # frozen_string_literal: true
 - Move make_node_paths_absolute into core

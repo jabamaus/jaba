@@ -6,6 +6,12 @@ module JABA
 
     ##
     #
+    def current_definition
+      @node_manager.definition
+    end
+
+    ##
+    #
     def push_definition(...)
       @node_manager.push_definition(...)
     end
@@ -114,7 +120,7 @@ module JABA
 
     attr_reader :services
 
-    ##s
+    ##
     # Local constructor initialisation only.
     # 
     def init
@@ -129,7 +135,7 @@ module JABA
 
     ##
     #
-    def process_definition(definition)
+    def process_definition
     end
 
     ##
@@ -160,7 +166,7 @@ module JABA
   #
   class DefaultPlugin < Plugin
 
-    def process_definition(definition)
+    def process_definition
       services.make_node
     end
 
