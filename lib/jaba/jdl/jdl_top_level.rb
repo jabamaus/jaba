@@ -8,14 +8,14 @@ module JABA
     # Include another .jaba file or directory containing .jaba files.
     #
     def include(path=nil, &block)
-      @services.include_jaba_path(path, base: :jaba_file, &block)
+      @load_manager.process_include(path, base: :jaba_file, &block)
     end
 
     ##
     # Include a jaba file or files from jaba's grab bag.
     #
     def grab(path)
-      @services.include_jaba_path(path, base: :grab_bag)
+      @load_manager.process_include(path, base: :grab_bag)
     end
 
     ##
@@ -103,8 +103,9 @@ module JABA
 
     ##
     #
-    def initialize(services)
+    def initialize(services, load_manager)
       @services = services
+      @load_manager = load_manager
     end
 
     ##

@@ -10,6 +10,7 @@ require_relative 'core_ext'
 require_relative 'utils'
 require_relative 'file_manager'
 require_relative 'input_manager'
+require_relative 'load_manager'
 require_relative 'standard_paths'
 require_relative 'jaba_object'
 require_relative 'jaba_attribute_type'
@@ -63,9 +64,6 @@ module JABA
     attr_reader :jaba_attr_types
     attr_reader :jaba_temp_dir
 
-    @@module_ruby_files_loaded = false
-    @@module_jaba_files = []
-
     ##
     #
     def initialize
@@ -81,10 +79,6 @@ module JABA
       
       @log_msgs = JABA.running_tests? ? nil : [] # Disable logging when running tests
       @warnings = []
-      
-      @jdl_files = []
-      @jdl_includes = []
-      @jdl_file_lookup = {}
       
       @definition_registry = {}
       @open_definitions_registry = {}
@@ -109,9 +103,11 @@ module JABA
       
       @in_attr_default_block = false
 
-      @top_level_api = JDL_TopLevel.new(self)
       @file_manager = FileManager.new(self)
       @input_manager = InputManager.new(self)
+      @load_manager = LoadManager.new(self, @file_manager)
+
+      @top_level_api = JDL_TopLevel.new(self, @load_manager)
 
       register_toplevel_item :type, :instance, :shared, :defaults, :translator
     end
@@ -214,9 +210,9 @@ module JABA
         exit!
       end
       
-      load_module_ruby_files
+      @load_manager.load_modules
       init_root_paths
-      load_jaba_files
+      @load_manager.load_jaba_files(input)
       create_core_objects
 
       @input_manager.process_cmd_line
@@ -376,7 +372,7 @@ module JABA
     ##
     #
     def src_root_valid?
-      input.src_root && load_path_valid?(input.src_root)
+      input.src_root && @load_manager.load_path_valid?(input.src_root)
     end
 
     ##
@@ -766,7 +762,7 @@ module JABA
     #
     def dump_jaba_state
       root = {}
-      root[:jdl_files] = @jdl_files
+      root[:jdl_files] = @load_manager.jdl_files
 
       @node_managers.each do |nm|
         nm.root_nodes.each do |rn|
@@ -849,36 +845,6 @@ module JABA
     end
 
     ##
-    #
-    def include_jaba_path(path, base:)
-      if block_given?
-        # If block given, execute arbitrary code. Plugins can be defined inline in this way.
-        yield
-      end
-      if path
-        if base == :grab_bag
-          if path.absolute_path?
-            JABA.error("'#{path}' must not be absolute if basing it on jaba grab_bag directory")
-          end
-          path = "#{JABA.grab_bag_dir}/#{path}"
-        elsif !path.absolute_path?
-          src_loc = caller_locations(2, 1)[0]
-          path = "#{src_loc.absolute_path.parent_path}/#{path}"
-        end
-        if path.extname == '.rb'
-          log "  Loading #{path} plugin"
-          load_plugin(path)
-        else
-          if path.wildcard?
-            @jdl_includes.concat(Dir.glob(path))
-          else
-            @jdl_includes << path
-          end
-        end
-      end
-    end
-
-    ##
     # This will cause a series of calls to eg define_attr_type, define_type, define_instance (see further
     # down in this file). These calls will come from user definitions via the api files.
     #
@@ -898,125 +864,6 @@ module JABA
       JABA.error(e.message, callstack: e.backtrace, include_api: true)
     rescue ScriptError => e # Catches syntax errors. In this case there is no backtrace.
       JABA.error(e.message, syntax: true)
-    end
-
-    ##
-    #
-    def load_module_ruby_files
-      # Only loaded once in a given process even if jaba invoked multiple times. Helps with effiency of tests.
-      #
-      return if @@module_ruby_files_loaded
-      @@module_ruby_files_loaded = true
-      plugin_files = []
-
-      Dir.glob("#{JABA.modules_dir}/**/*").each do |f|
-        case f.extname
-        when '.rb'
-          plugin_files << f
-        when '.jaba'
-          @@module_jaba_files << f
-        end
-      end
-      plugin_files.each do |f|
-        load_plugin(f)
-      end
-    end
-
-    ##
-    #
-    def load_plugin(f)
-      begin
-        require f
-      rescue ScriptError => e
-        JABA.error("Failed to load #{f}: #{e.message}")
-      end
-    end
-
-    ##
-    #
-    def load_jaba_files
-      if input.barebones? # optimisation for unit testing
-        process_jaba_file("#{JABA.modules_dir}/core/globals.jaba")
-        process_jaba_file("#{JABA.modules_dir}/core/hosts.jaba")
-      else
-        @@module_jaba_files.each do |f|
-          process_jaba_file(f)
-        end
-      end
-
-      if input.src_root
-        process_load_path(input.src_root, fail_if_empty: true)
-      end
-
-      # Definitions can also be provided in a block form
-      #
-      Array(input.definitions).each do |block|
-        block_file = block.source_location[0].cleanpath
-        @jdl_files << block_file
-        execute_jdl(&block)
-      end
-
-      # Process include directives, accounting for included files including other files.
-      #
-      while !@jdl_includes.empty?
-        last = @jdl_includes.pop
-        process_load_path(last)
-      end
-    end
-
-    ##
-    #
-    def load_path_valid?(path)
-      !@file_manager.glob_files("#{path}/*.jaba").empty?
-    end
-
-    ##
-    #
-    def process_load_path(p, fail_if_empty: false)
-      if !p.absolute_path?
-        JABA.error("'#{p}' must be an absolute path")
-      end
-
-      if !File.exist?(p)
-        JABA.error("'#{p}' does not exist", want_backtrace: false)
-      end
-
-      if @file_manager.directory?(p)
-        files = @file_manager.glob_files("#{p}/*.jaba")
-        if files.empty?
-          msg = "No .jaba files found in '#{p}'"
-          if fail_if_empty
-            JABA.error(msg, want_backtrace: false)
-          else
-            jaba_warn(msg)
-          end
-        else
-          files.each do |f|
-            process_jaba_file(f)
-          end
-        end
-      else
-        process_jaba_file(p)
-      end
-    end
-
-    ##
-    #
-    def process_jaba_file(f)
-      if !f.absolute_path?
-        JABA.error("'#{f}' must be an absolute path")
-      end
-      f = f.cleanpath
-
-      if @jdl_file_lookup.has_key?(f)
-        # Already included. Ignore.
-        return
-      end
-      
-      @jdl_file_lookup[f] = nil
-      @jdl_files << f
-
-      execute_jdl(file: f)
     end
 
     ##
@@ -1083,7 +930,11 @@ module JABA
         callstack.slice!(jaba_run_idx..-1)
       end
 
-      candidates = include_api ? @jdl_files + $LOADED_FEATURES.select{|f| f =~ /jaba\/lib\/jaba\/jdl/} : @jdl_files
+      candidates = if include_api
+        @load_manager.jdl_files + $LOADED_FEATURES.select{|f| f =~ /jaba\/lib\/jaba\/jdl/}
+      else
+        @load_manager.jdl_files
+      end
 
       # Extract any lines in the callstack that contain references to definition source files.
       #
