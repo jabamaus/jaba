@@ -934,13 +934,13 @@ module JABA
       # getting confused when definitions are supplied in block form where normal source code and jdl source code
       # exist in the same file.
       #
-      jaba_run_idx = callstack.index{|l| l =~ /jaba\/lib\/jaba\.rb.*in `run'/}
+      jaba_run_idx = callstack.index{|l| l =~ /jaba\/src\/jaba\.rb.*in `run'/}
       if jaba_run_idx
         callstack.slice!(jaba_run_idx..-1)
       end
 
       candidates = if include_api
-        @load_manager.jdl_files + $LOADED_FEATURES.select{|f| f =~ /jaba\/lib\/jdl/}
+        @load_manager.jdl_files + $LOADED_FEATURES.select{|f| f =~ /jaba\/src\/jdl/}
       else
         @load_manager.jdl_files
       end

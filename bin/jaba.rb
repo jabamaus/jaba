@@ -1,4 +1,4 @@
-require_relative '../lib/jaba'
+require_relative '../src/jaba'
 
 output = JABA.run
 

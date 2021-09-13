@@ -120,9 +120,9 @@ Init_ext(void)
 	char ruby_stdlib_path[1024];
 	strcpy(ruby_stdlib_path, libpath);
 #ifdef _DEBUG
-	strcat(ruby_stdlib_path, "../../../../../../lib/ruby_stdlib");
+	strcat(ruby_stdlib_path, "../../../../../../src/ruby_stdlib");
 #else
-	strcat(ruby_stdlib_path, "../lib/ruby_stdlib");
+	strcat(ruby_stdlib_path, "../src/ruby_stdlib");
 #endif
 
 	ruby_incpush(ruby_stdlib_path);

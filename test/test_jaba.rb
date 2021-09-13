@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../lib/jaba'
+require_relative '../src/jaba'
 $LOAD_PATH.unshift "#{__dir__}/minitest/lib"
 require 'minitest'
 require 'minitest/spec'

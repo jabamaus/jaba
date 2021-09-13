@@ -66,7 +66,7 @@ b.add('bin/jaba.rb')
 b.add('bin/jabaruby.exe')
 b.add('examples/**/*', exclude: 'examples/**/buildsystem/**/*')
 b.add('grab_bag/**/*')
-b.add('lib/**/*')
+b.add('src/**/*')
 b.add('modules/**/*')
 b.add('LICENSE')
 b.add('README.md') # TODO: turn README into html
