@@ -9,7 +9,7 @@ module JABA
   ##
   #
   def self.install_dir
-    @@jaba_install_dir ||= "#{__dir__}/../../..".cleanpath
+    @@jaba_install_dir ||= "#{__dir__}/../..".cleanpath
   end
 
   ##

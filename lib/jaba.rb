@@ -3,14 +3,14 @@ if __FILE__ == $PROGRAM_NAME
   exit 1
 end
 
-require_relative 'jaba/version'
-require_relative 'jaba/core/services'
-require_relative 'jaba/jdl/jdl_common'
-require_relative 'jaba/jdl/jdl_attribute_definition'
-require_relative 'jaba/jdl/jdl_node'
-require_relative 'jaba/jdl/jdl_top_level'
-require_relative 'jaba/jdl/jdl_translator'
-require_relative 'jaba/jdl/jdl_type'
+require_relative 'version'
+require_relative 'core/services'
+require_relative 'jdl/jdl_common'
+require_relative 'jdl/jdl_attribute_definition'
+require_relative 'jdl/jdl_node'
+require_relative 'jdl/jdl_top_level'
+require_relative 'jdl/jdl_translator'
+require_relative 'jdl/jdl_type'
 
 module JABA
 

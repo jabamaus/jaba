@@ -940,7 +940,7 @@ module JABA
       end
 
       candidates = if include_api
-        @load_manager.jdl_files + $LOADED_FEATURES.select{|f| f =~ /jaba\/lib\/jaba\/jdl/}
+        @load_manager.jdl_files + $LOADED_FEATURES.select{|f| f =~ /jaba\/lib\/jdl/}
       else
         @load_manager.jdl_files
       end
