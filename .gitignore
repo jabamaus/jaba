@@ -1,4 +1,4 @@
-/test/tests/temp
+temp
 *.profile
 *.exe
 *.exe.recipe
@@ -13,6 +13,4 @@
 .vscode*
 *buildsystem/
 .jaba/
-tools/release_temp
-tools/doc_temp
 examples/14-code_generation/generated

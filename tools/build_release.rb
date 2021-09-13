@@ -5,7 +5,7 @@ class ReleaseBuilder
   include CommonUtils
 
   def initialize
-    @release_temp = "#{__dir__}/release_temp"
+    @release_temp = "#{__dir__}/temp/release"
     @src_root = "#{@release_temp}/clean"
     @dest_root = "#{@release_temp}/jaba"
     @files = []
@@ -31,6 +31,9 @@ class ReleaseBuilder
       excluded.each do |e|
         puts "excluding #{e}"
         files.delete(e)
+      end
+      if files.empty?
+        raise "#{spec} did not match any files"
       end
       @files.concat(files)
     end
@@ -65,9 +68,7 @@ b.add('bin/jaba.bat')
 b.add('bin/jaba.rb')
 b.add('bin/jabaruby.exe')
 b.add('examples/**/*', exclude: 'examples/**/buildsystem/**/*')
-b.add('grab_bag/**/*')
 b.add('src/**/*')
-b.add('modules/**/*')
 b.add('LICENSE')
 b.add('README.md') # TODO: turn README into html
 b.build

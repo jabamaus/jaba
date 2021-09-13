@@ -20,7 +20,7 @@ class DocBuilder
       git_cmd("clone --branch docs --single-branch #{JABA_REPO_URL} #{DOCS_REPO_DIR}")
     end
 
-    doc_temp = "#{__dir__}/doc_temp"
+    doc_temp = "#{__dir__}/temp/doc"
 
     if !File.exist?(doc_temp)
       FileUtils.mkdir(doc_temp)
