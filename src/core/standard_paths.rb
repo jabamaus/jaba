@@ -15,13 +15,13 @@ module JABA
   ##
   #
   def self.modules_dir
-    "#{install_dir}/modules"
+    "#{install_dir}/src/modules"
   end
 
   ##
   #
   def self.grab_bag_dir
-    "#{install_dir}/grab_bag"
+    "#{install_dir}/src/grab_bag"
   end
 
   ##
