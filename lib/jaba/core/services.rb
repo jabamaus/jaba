@@ -41,6 +41,12 @@ module JABA
 
   ##
   #
+  def self.ruby_debug_ide?
+    @@ruby_debug_ide ||= $LOAD_PATH.any?{|p| p.include?('ruby-debug-ide')}
+  end
+
+  ##
+  #
   def self.error(msg, errobj: nil, callstack: nil, include_api: false, syntax: false, want_backtrace: true)
     e = JabaError.new(msg)
     e.instance_variable_set(:@callstack, Array(errobj&.src_loc || callstack || caller))
@@ -159,6 +165,9 @@ module JABA
     #
     def run
       log "Starting Jaba at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}", section: true
+      if JABA.ruby_debug_ide?
+        log "Being debugged using ruby_debug_ide"
+      end
       
       duration = JABA.milli_timer do
         @input_manager.process

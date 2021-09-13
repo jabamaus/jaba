@@ -1,3 +1,4 @@
+- Validate paths for missing / eg '../..debase-ruby_core_source/
 - option in tests to log to stdout
 - Consider whether JABA module is really adding much
 - If targeting cpp, only create cpp and dependent types. Ignore other types and instances of those types.

@@ -99,6 +99,16 @@ module JABA
       @services.open(:shared, ...)
     end
 
+    if ::JABA.ruby_debug_ide?
+      def to_s
+        'BasicObject'
+      end
+  
+      def nil?
+        ::Kernel.raise to_s
+      end
+    end
+
   private
 
     ##
@@ -106,13 +116,6 @@ module JABA
     def initialize(services, load_manager)
       @services = services
       @load_manager = load_manager
-    end
-
-    ##
-    # For debugging
-    #
-    def to_s
-      @services.to_s
     end
 
   end
