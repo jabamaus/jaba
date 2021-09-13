@@ -4,6 +4,8 @@ module JABA
   #
   class JDL_TopLevel < BasicObject
     
+    include JDL_Common
+
     ##
     # Include another .jaba file or directory containing .jaba files.
     #
@@ -35,12 +37,6 @@ module JABA
     #
     def glob(pattern, &block)
       @services.glob(pattern, &block)
-    end
-
-    ##
-    #
-    def puts(msg)
-      ::Kernel.puts(msg)
     end
 
     ##
@@ -97,16 +93,6 @@ module JABA
     #
     def open_shared(...)
       @services.open(:shared, ...)
-    end
-
-    if ::JABA.ruby_debug_ide?
-      def to_s
-        'BasicObject'
-      end
-  
-      def nil?
-        ::Kernel.raise to_s
-      end
     end
 
   private

@@ -1,7 +1,7 @@
 module  JABA
 
   ##
-  # API that is common to all JDL elements.
+  # API that is common to all JDL elements, including JDL_TopLevel
   #
   module JDL_Common
 
@@ -29,6 +29,31 @@ module  JABA
       ::Kernel.puts(msg)
     end
 
+    # Hack to fix issues when debugging. When ruby_debug_ide evals certain objects instance variables and they contain
+    # references to the JDL Objects it calls methods on it that don't exist (because BasicObject is a blank slate with barely any methods).
+    # These method calls then go through to method_missing and are interpreted as instances of jaba types, meaning program
+    # state is being changed as a consequence of being debugged. To prevent this, implement nil? and make it raise an error. nil?
+    # is the first method ruby_debug_ide calls. The exception prevents further calls and 'BasicObject' is displayed in the debugger.
+    #
+    if ::JABA.ruby_debug_ide?
+      def to_s
+        'BasicObject'
+      end
+      
+      def nil?
+        ::Kernel.raise to_s
+      end
+    end
+
+  end
+
+  ##
+  # API that is common to all JDL elements except JDL_TopLevel
+  #
+  module JDL_Object_Common
+
+    include JDL_Common
+    
     ##
     #
     def id
@@ -54,21 +79,6 @@ module  JABA
     #
     def all_instance_ids(jaba_type_id)
       @obj.services.get_instance_ids(jaba_type_id)
-    end
-
-    # Hack to fix issues when debugging. When ruby_debug_ide evals certain objects instance variables and they contain
-    # references to the JDL Objects it calls methods on it that don't exist (because BasicObject is a blank slate with barely any methods).
-    # These method calls then go through to method_missing and are interpreted as instances of jaba types, meaning program
-    # state is being changed as a consequence of being debugged. To prevent this, implement nil? and make it raise an error. nil?
-    # is the first method ruby_debug_ide calls. The exception prevents further calls and 'BasicObject' is displayed in the debugger.
-    if ::JABA.ruby_debug_ide?
-      def to_s
-        'BasicObject'
-      end
-      
-      def nil?
-        ::Kernel.raise to_s
-      end
     end
 
   end

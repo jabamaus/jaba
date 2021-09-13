@@ -4,7 +4,7 @@ module JABA
   #
   class JDL_Node < BasicObject
 
-    include JDL_Common
+    include JDL_Object_Common
 
     ##
     # Access the attributes of the globals node.

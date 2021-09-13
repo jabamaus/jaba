@@ -4,7 +4,7 @@ module JABA
   #
   class JDL_AttributeDefinition < BasicObject
 
-    include JDL_Common
+    include JDL_Object_Common
 
     ##
     # Set title of attribute. Required. Will appear in generated reference manual.

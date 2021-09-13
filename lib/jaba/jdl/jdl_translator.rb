@@ -4,7 +4,7 @@ module JABA
   #
   class JDL_Translator < BasicObject
 
-    include JDL_Common
+    include JDL_Object_Common
 
     ##
     #

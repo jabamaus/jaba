@@ -4,7 +4,7 @@ module JABA
   #
   class JDL_Type < BasicObject
 
-    include JDL_Common
+    include JDL_Object_Common
 
     ##
     # Set title for the type. Required. Will appear in generated reference manual.
