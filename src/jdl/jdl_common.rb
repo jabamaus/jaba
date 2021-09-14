@@ -43,6 +43,10 @@ module  JABA
       def nil?
         ::Kernel.raise to_s
       end
+
+      def local_variables
+        []
+      end
     end
 
   end
