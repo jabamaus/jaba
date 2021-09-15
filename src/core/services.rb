@@ -626,7 +626,7 @@ module JABA
     end
 
     ##
-    # TODO: validate which items require a block
+    #
     def define(what, id, *args, **keyval_args, &block)
       src_loc = caller_locations(2, 1)[0]
 

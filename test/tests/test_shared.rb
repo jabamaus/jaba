@@ -40,14 +40,6 @@ module JABA
       end
     end
 
-    it 'fails if no block supplied' do
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagP)}: 'shared' definition ':a' requires a block." do
-        jaba(barebones: true) do
-          shared :a # tagP
-        end
-      end
-    end
-
     it 'fails if shared definition does not exist' do
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagT)}: shared definition ':b' not defined." do
         jaba(barebones: true) do
@@ -72,7 +64,6 @@ module JABA
         type :test do
           attr :c
         end
-        category :a
         1.upto(10) do |n|
           test "t#{n}" do
             include :a, 'd'
@@ -86,28 +77,31 @@ module JABA
     
     it 'catches argument mismatches' do
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagW)}: Shared definition ':d' expects 3 arguments but 0 were passed." do
-        jaba do
+        jaba(barebones: true) do
           shared :d do |a1, a2, a3|
           end
-          category :t do
+          type :t
+          t :a do
             include :d # tagW
           end
         end
       end
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagU)}: Shared definition ':e' expects 0 arguments but 1 were passed." do
-        jaba do
-          category :e do
+        jaba(barebones: true) do
+          shared :e do
           end
-          text :t do
+          type :t
+          t :a do
             include :e, 1 # tagU
           end
         end
       end
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagB)}: Shared definition ':f' expects 2 arguments but 3 were passed." do
-        jaba do
+        jaba(barebones: true) do
           shared :f do |a1, a2|
           end
-          category :t do
+          type :t
+          t :a do
             include :f, 1, 2, 3 # tagB
           end
         end
