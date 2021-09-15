@@ -116,7 +116,7 @@ module JABA
 
       # It validates default elements respect attribute type
       #
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagL)}: ':a' hash attribute default invalid: 'not a symbol' must be a symbol but was a 'String'." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagL)}: ':a' hash attribute default invalid: 'not a symbol' is a string - expected a symbol." do
         jaba(barebones: true) do
           type :test do
             attr_hash :a, key_type: :symbol, type: :symbol do
@@ -129,7 +129,7 @@ module JABA
       # TODO: validate key format
       # It validates default elements respect attribute type when block form used
       #
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagW)}: 't.a' hash attribute invalid: 'not a symbol' must be a symbol but was a 'String'." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagW)}: 't.a' hash attribute invalid: 'not a symbol' is a string - expected a symbol." do
         jaba(barebones: true) do
           type :test do
             attr_hash :a, key_type: :symbol, type: :symbol do # tagW

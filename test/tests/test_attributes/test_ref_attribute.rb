@@ -2,7 +2,7 @@
 
 module JABA
 
-  class TestNodeRefAttribute < JabaTest
+  class TestRefAttribute < JabaTest
     
     it 'requires referent type to be specified' do
       assert_jaba_error "Error at #{src_loc(__FILE__, :tagP)}: :ref/:compound attribute types must specify jaba_type, eg 'add_attr type: :ref, jaba_type: :platform'." do
@@ -43,7 +43,7 @@ module JABA
     
     it 'strips duplicates' do
       line = find_line_number(__FILE__, 'tagL')
-      assert_jaba_warn("Stripping duplicate ':b' from 'a.ref' array attribute. See previous at test_node_ref_attribute.rb:#{line}", __FILE__, 'tagM') do
+      assert_jaba_warn("Stripping duplicate ':b' from 'a.ref' array attribute. See previous at test_ref_attribute.rb:#{line}", __FILE__, 'tagM') do
         jaba(barebones: true) do
           type :type_a do
             attr_array :ref, type: :ref, jaba_type: :type_b
@@ -202,7 +202,7 @@ module JABA
     end
 
     it 'warns on unnecessary use of :read_only flag' do
-      assert_jaba_warn 'Object reference attribute does not need to be flagged with :read_only as they always are', __FILE__, 'tagX' do
+      assert_jaba_warn 'Attributes of type :ref do not need to be flagged with :read_only as they always are.', __FILE__, 'tagX' do
         jaba do
           type :test do
             attr :platform, type: :ref, jaba_type: :platform do

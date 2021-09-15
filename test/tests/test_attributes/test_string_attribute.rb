@@ -5,7 +5,7 @@ module JABA
   class TestStringAttribute < JabaTest
 
     it 'validates default' do
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagP)}: ':a' attribute default invalid: ':not_a_string' is a symbol but expected a string." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagP)}: ':a' attribute default invalid: ':not_a_string' is a symbol - expected a string." do
         jaba(barebones: true) do
           type :test do
             attr :a, type: :string do

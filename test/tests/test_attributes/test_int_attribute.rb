@@ -5,7 +5,7 @@ module JABA
   class TestIntAttribute < JabaTest
 
     it 'validates default' do
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagP)}: ':a' attribute default invalid: 'not an int' is a string but expected an integer." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagP)}: ':a' attribute default invalid: 'not an int' is a string - expected an integer." do
         jaba(barebones: true) do
           type :test do
             attr :a, type: :int do
@@ -17,7 +17,7 @@ module JABA
     end
 
     it 'validates value' do
-      assert_jaba_error "Error at #{src_loc(__FILE__, :tagW)}: 't.a' attribute invalid: 'true' is a boolean but expected an integer." do
+      assert_jaba_error "Error at #{src_loc(__FILE__, :tagW)}: 't.a' attribute invalid: 'true' is a boolean - expected an integer." do
         jaba(barebones: true) do
           type :test do
             attr :a, type: :int

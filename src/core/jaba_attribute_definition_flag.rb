@@ -84,7 +84,7 @@ module JABA
     #
     def compatible?(attr_def)
       if attr_def.type_id == :ref
-        services.jaba_warn('attributes of type :ref do not need to be flagged with :read_only as they always are')
+        services.jaba_warn('Attributes of type :ref do not need to be flagged with :read_only as they always are')
       end
     end
 

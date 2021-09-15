@@ -125,10 +125,10 @@ module JABA
       if !f.absolute_path?
         JABA.error("'#{f}' must be an absolute path")
       end
-      f = f.cleanpath
+      f = f.cleanpath # TODO: needed?
 
       if @jdl_file_lookup.has_key?(f)
-        # Already included. Ignore.
+        # Already loaded. Ignore.
         return
       end
       
