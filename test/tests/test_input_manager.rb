@@ -71,7 +71,9 @@ module JABA
         end
       end
       # everything after -- is ignored
-      op = jaba(barebones: true, argv: ['--value-opt', 'value', '--', 'ignore', 'after', '--'])
+      op = jaba(barebones: true, argv: ['--value-opt', 'value', '--', 'ignore', 'after', '--']) do
+        type :test_im
+      end
       op[:services].input_manager.passthru_args.must_equal ['ignore', 'after', '--']
     end
 

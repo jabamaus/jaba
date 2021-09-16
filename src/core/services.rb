@@ -224,9 +224,6 @@ module JABA
       @load_manager.load_jaba_files(input)
       create_core_objects
 
-      @input_manager.process_cmd_line
-      @input_manager.finalise
-
       # Associate open definitions with definition they are opening
       # TODO: validation
       @definition_registry.each do |what, def_reg|
@@ -283,16 +280,22 @@ module JABA
           end
         end
 
-        nm = get_node_manager(id, fail_if_not_found: false)
-        if !nm
-          nm = make_plugin(id, DefaultPlugin)
+        plugin_classname = "#{id.to_s.capitalize_first}Plugin"
+        klass = if JABA.const_defined?(plugin_classname)
+          JABA.const_get(plugin_classname)
+        else
+          klass = DefaultPlugin
         end
+        nm = make_plugin(id, klass)
         @node_managers << nm
         nm.set_jaba_type(jt)
       end
 
       @jaba_types.each(&:post_create)
       @jaba_types.sort_topological!(:dependencies)
+
+      @input_manager.process_cmd_line
+      @input_manager.finalise
 
       @jaba_types.each do |jt|
         jt.eval_attr_defs
@@ -429,27 +432,13 @@ module JABA
     ##
     #
     def create_core_objects
-      constants = JABA.constants(false).sort # Don't iterate directly as constants get created inside loop
+      constants = JABA.constants(false).sort # Don't iterate directly as constants could get created inside loop
       constants.each do |c|
         case c
         when /^JabaAttributeType./
           make_attr_type(JABA.const_get(c))
         when /^JabaAttrDefFlag./
           make_attr_flag(JABA.const_get(c))
-        when :DefaultPlugin
-          # skip
-        when /^(.+)Plugin$/
-          # Create non-default plugins up front (eg CppPlugin, WorkspacePlugin). There will only be one instance
-          # of each of these. DefaultPlugins will be created later as there will be one created for each jaba type that
-          # has not defined its own plugin. Creating plugins up front allows plugins to register early with the
-          # system.
-          #
-          id = Regexp.last_match(1).downcase.to_sym
-          klass = JABA.const_get(c)
-          if !klass.ancestors.include?(Plugin)
-            JABA.error("#{klass} must subclass Plugin")
-          end
-          make_plugin(id, klass)
         end
       end
       @jaba_attr_types.sort_by!(&:id)
@@ -460,6 +449,11 @@ module JABA
     #
     def make_plugin(id, klass)
       log "Making plugin [id=#{id}, class=#{klass}]"
+
+      if !klass.ancestors.include?(Plugin)
+        JABA.error("#{klass} must subclass Plugin")
+      end
+
       ps = PluginServices.new
       ps.instance_variable_set(:@services, self)
 
@@ -754,7 +748,7 @@ module JABA
     ##
     #
     def get_node_manager(jaba_type_id, fail_if_not_found: true)
-      nm = @node_manager_lookup[jaba_type_id.downcase]
+      nm = @node_manager_lookup[jaba_type_id]
       if !nm && fail_if_not_found
         JABA.error("'#{jaba_type_id}' node manager not found")
       end 

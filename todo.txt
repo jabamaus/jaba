@@ -1,3 +1,5 @@
+- Add invocations.txt to each example which cam execute in multiple ways
+- Rename build_jaba_output to build_output
 - Ability to 'grab' a text plugin that auto-adds ability to generate a text file to cpp projects.
 - Validate paths for missing / eg '../..debase-ruby_core_source/
 - option in tests to log to stdout
