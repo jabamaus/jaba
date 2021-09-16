@@ -1,0 +1,61 @@
+type :text do
+  
+  title 'Basic text file that is written to HDD'
+
+  attr :filename, type: :file do
+    title 'Path of the filename to be generated'
+    basedir_spec :definition_root
+    default do
+      "#{id}.txt"
+    end
+  end
+  
+  attr :content, type: :to_s do
+    title 'Content as a single multiline string'
+    note 'Directly set content of file as a string.'
+  end
+  
+  attr_array :line, type: :to_s do
+    title 'Adds a line of content to file'
+    flags :allow_dupes, :no_sort
+  end
+  
+  attr :eol, type: :choice do
+    title 'End of line style'
+    items [:lf, :crlf, :native]
+    default :native
+  end
+
+  plugin do
+    def process_definition
+      n = services.make_node
+      services.make_node_paths_absolute(n) # TODO: remove
+      n
+    end
+
+    def generate
+      services.nodes.each do |n|
+        attrs = n.attrs
+        file = services.new_file(attrs.filename, eol: attrs.eol, capacity: 1024)
+        w = file.writer
+        c = attrs.content
+        w.write_raw(c) if c
+        lines = attrs.line
+        if !lines.empty?
+          w << "#{lines.join("\n")}"
+        end
+        file.write
+      end
+    end
+    
+    def build_jaba_output(root)
+      services.nodes.each do |n|
+        root[:filename] = n.attrs.filename
+      end
+    end
+  end
+end
+
+host :text do
+  cpp_project_classname '' # TODO: remove
+end

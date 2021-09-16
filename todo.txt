@@ -1,3 +1,4 @@
+- A consequence of moving plugin inline in jaba file is it will be included in backtraces
 - Add invocations.txt to each example which cam execute in multiple ways
 - Rename build_jaba_output to build_output
 - Ability to 'grab' a text plugin that auto-adds ability to generate a text file to cpp projects.

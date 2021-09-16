@@ -280,11 +280,18 @@ module JABA
           end
         end
 
-        plugin_classname = "#{id.to_s.capitalize_first}Plugin"
-        klass = if JABA.const_defined?(plugin_classname)
-          JABA.const_get(plugin_classname)
+        klass = nil
+        plugin_block = jt.plugin
+        if plugin_block
+          klass = Class.new(Plugin)
+          klass.class_eval(&plugin_block)
         else
-          klass = DefaultPlugin
+          plugin_classname = "#{id.to_s.capitalize_first}Plugin"
+          klass = if JABA.const_defined?(plugin_classname)
+            JABA.const_get(plugin_classname)
+          else
+            DefaultPlugin
+          end
         end
         nm = make_plugin(id, klass)
         @node_managers << nm

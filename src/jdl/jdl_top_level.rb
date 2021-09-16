@@ -9,8 +9,8 @@ module JABA
     ##
     # Include another .jaba file or directory containing .jaba files.
     #
-    def include(path=nil, &block)
-      @load_manager.process_include(path, base: :jaba_file, &block)
+    def include(path=nil)
+      @load_manager.process_include(path, base: :jaba_file)
     end
 
     ##
@@ -102,6 +102,13 @@ module JABA
     def initialize(services, load_manager)
       @services = services
       @load_manager = load_manager
+    end
+
+    ##
+    # Assist ruby with constant lookup. Needed when type plugins are declared inline in jaba files and the implementation uses standard ruby classes.
+    #
+    def self.const_missing(name)
+      ::Object.const_get(name)
     end
 
   end

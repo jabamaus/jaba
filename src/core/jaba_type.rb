@@ -9,6 +9,7 @@ module JABA
     attr_reader :singleton
     attr_reader :dependencies
     attr_reader :attribute_defs
+    attr_reader :plugin
 
     ##
     #
@@ -23,6 +24,7 @@ module JABA
       define_array_property :notes
       define_property :singleton
       define_array_property :dependencies # TODO: validate explicitly specified deps
+      define_block_property :plugin
 
       set_property(:notes, "Manages attribute definitions for '#{@defn_id}' type")
 

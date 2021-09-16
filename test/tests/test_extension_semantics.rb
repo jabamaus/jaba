@@ -115,13 +115,50 @@ module JABA
         end
       end
     end
-    
+  
+    it 'supports defining an inline type plugin' do
+      assert_output 'init|process_definition|generate|build_jaba_output' do
+        jaba(barebones: true) do
+          type :includeBlockTest do
+            attr :a
+            plugin do
+              def init
+                print 'init|'
+              end
+              def process_definition
+                print 'process_definition|'
+                services.make_node
+              end
+              def generate
+                print 'generate|'
+                services.root_nodes[0].attrs.a.must_equal 1
+              end
+              def build_jaba_output(root)
+                print 'build_jaba_output'
+              end
+            end
+          end
+          includeBlockTest :tbt do
+            a 1
+          end
+        end
+      end
+    end
+  
     # TODO: beef this up with more features
     it 'can build a tree of nodes' do
       assert_output 'init|process_definition|only called once|generate' do
         jaba do
-          include do
-            class ::JABA::Test_projectPlugin < Plugin
+          type :test_project do
+            attr :root do
+              default '.'
+            end
+            attr_array :platforms do
+              flags :no_sort, :required
+            end
+            attr_array :project, type: :block
+            attr_array :config, type: :block
+            plugin do
               def init
                 print 'init|'
                 @projects = []
@@ -165,16 +202,6 @@ module JABA
                 end
               end
             end
-          end
-          type :test_project do
-            attr :root do
-              default '.'
-            end
-            attr_array :platforms do
-              flags :no_sort, :required
-            end
-            attr_array :project, type: :block
-            attr_array :config, type: :block
           end
           type :project do
             attr :platform, type: :ref, jaba_type: :platform

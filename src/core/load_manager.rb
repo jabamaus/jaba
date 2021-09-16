@@ -141,29 +141,26 @@ module JABA
     ##
     #
     def process_include(path, base:)
-      if block_given?
-        # If block given, execute arbitrary code. Plugins can be defined inline in this way.
-        yield
+      if !path
+        JABA.error("include requires a path")
       end
-      if path
-        if base == :grab_bag
-          if path.absolute_path?
-            JABA.error("'#{path}' must not be absolute if basing it on jaba grab_bag directory")
-          end
-          path = "#{JABA.grab_bag_dir}/#{path}"
-        elsif !path.absolute_path?
-          src_loc = caller_locations(2, 1)[0]
-          path = "#{src_loc.absolute_path.parent_path}/#{path}"
+      if base == :grab_bag
+        if path.absolute_path?
+          JABA.error("'#{path}' must not be absolute if basing it on jaba grab_bag directory")
         end
-        if path.extname == '.rb'
-          @services.log "  Loading #{path} plugin"
-          load_plugin(path)
+        path = "#{JABA.grab_bag_dir}/#{path}"
+      elsif !path.absolute_path?
+        src_loc = caller_locations(2, 1)[0]
+        path = "#{src_loc.absolute_path.parent_path}/#{path}"
+      end
+      if path.extname == '.rb'
+        @services.log "  Loading #{path} plugin"
+        load_plugin(path)
+      else
+        if path.wildcard?
+          @jdl_includes.concat(Dir.glob(path))
         else
-          if path.wildcard?
-            @jdl_includes.concat(Dir.glob(path))
-          else
-            @jdl_includes << path
-          end
+          @jdl_includes << path
         end
       end
     end

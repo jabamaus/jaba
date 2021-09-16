@@ -164,38 +164,7 @@ module JABA
     it 'supports include statement' do
       # TODO
       # TODO: test include by glob
-      
-      # Arbitrary code can be executed in a block, which allows plugins to be defined inline
-      assert_output 'init|process_definition|generate|build_jaba_output' do
-        jaba(barebones: true) do
-          include do
-            class ::JABA::IncludeBlockTestPlugin < Plugin
-              def init
-                print 'init|'
-              end
-              def process_definition
-                print 'process_definition|'
-                services.make_node
-              end
-              def generate
-                print 'generate|'
-                services.root_nodes[0].attrs.a.must_equal 1
-              end
-              def build_jaba_output(root)
-                print 'build_jaba_output'
-              end
-            end
-          end
-          type :includeBlockTest do
-            attr :a
-          end
-          includeBlockTest :tbt do
-            a 1
-          end
-        end
-      end
     end
     
   end
-
 end
