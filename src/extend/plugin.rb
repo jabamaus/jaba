@@ -24,12 +24,6 @@ module JABA
 
     ##
     #
-    def make_node_paths_absolute(...)
-      @node_manager.make_node_paths_absolute(...)
-    end
-
-    ##
-    #
     def nodes
       @node_manager.nodes
     end
@@ -170,11 +164,6 @@ module JABA
       services.make_node
     end
 
-    def make_host_objects
-      services.root_nodes.each do |n|
-        services.make_node_paths_absolute(n)
-      end
-    end
   end
 
 end

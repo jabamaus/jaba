@@ -54,7 +54,7 @@ module JABA
       candidate_projects = cpp_plugin.projects
       
       services.root_nodes.each do |wsn|
-        root = services.make_node_paths_absolute(wsn)
+        root = wsn.attrs.root
 
         projects = []
         projects_attr = wsn.get_attr(:projects)

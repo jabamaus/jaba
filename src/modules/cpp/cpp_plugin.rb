@@ -120,10 +120,6 @@ module JABA
       @all_project_nodes.sort_topological! do |n, &b|
         n.attrs.deps.each(&b)
       end
-
-      @all_project_nodes.each do |pn|
-        services.make_node_paths_absolute(pn)
-      end
       
       @all_project_nodes.reverse_each do |node|
         node.visit_attr(:deps) do |attr, value|
@@ -175,8 +171,7 @@ module JABA
               blocks: project_blocks
             ) 
             export_only_node.set_parent(export_only_root)
-
-            services.make_node_paths_absolute(export_only_node)
+            export_only_node.make_paths_absolute
 
             # Now merge the node's attributes into project node attrs
             #
@@ -191,8 +186,7 @@ module JABA
                 blocks: config_blocks
               )
               export_only_cfg_node.set_parent(export_only_node)
-
-              services.make_node_paths_absolute(export_only_cfg_node)
+              export_only_cfg_node.make_paths_absolute
 
               # Now merge the node's attributes into its config node attrs
               #

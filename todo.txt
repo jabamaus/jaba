@@ -9,7 +9,6 @@
 - Allow sublclasses of Plugins. Useful in testing.
 - Add text_plugin.rb to examples in docs
 - Get rid of # frozen_string_literal: true in tests?
-- Move make_node_paths_absolute into core
 - Moving text into plugin has raised question about host. Need to set requied cpp_project_classname to ''. Not clean.
 - Should | be allowed in ids? Probably not.
 - Check error reporting in the case that there is an argument error inside Services#define. Needs to present internal callstack.

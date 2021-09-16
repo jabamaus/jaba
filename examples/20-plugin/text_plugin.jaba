@@ -28,9 +28,7 @@ type :text do
 
   plugin do
     def process_definition
-      n = services.make_node
-      services.make_node_paths_absolute(n) # TODO: remove
-      n
+      services.make_node
     end
 
     def generate

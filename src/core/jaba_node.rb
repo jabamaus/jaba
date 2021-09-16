@@ -143,8 +143,54 @@ module JABA
         # Note that it is still possible for attributes to not be marked as 'set' by this point, ie if the user never
         # set it and it didn't have a default. But by this point the set flag has served it purpose.
       end
+      make_paths_absolute
     end
     
+    ##
+    #
+    def make_paths_absolute
+      # Determine definition root and turn root and ensure its an absolute path
+      #
+      root_attr = search_attr(:root, fail_if_not_found: false)
+      definition_root = if root_attr
+        root_attr.map_value! do |r|
+          r.absolute_path? ? r : "#{source_dir}/#{r}".cleanpath
+        end
+      else
+        source_dir
+      end
+
+      # Make all file path attributes (those of type :file, :dir and :src_spec) into absolute paths based on basedir_spec
+      #
+      visit_node(visit_self: true) do |n|
+        n.visit_attr(type: [:file, :dir, :src_spec], skip_attr: :root) do |a|
+          basedir_spec = a.attr_def.basedir_spec
+          base_dir = case basedir_spec
+          when :build_root
+            services.input.build_root
+          when :buildsystem_root
+            "#{services.globals.buildsystem_root}"
+          when :artefact_root
+            "#{services.globals.artefact_root}"
+          when :definition_root
+            definition_root
+          when :jaba_file
+            n.source_dir
+          when :cwd
+            services.invoking_dir
+          else
+            JABA.error "Unexpected basedir_spec value '#{basedir_spec}'"
+          end
+
+          a.map_value! do |p|
+            if p
+              JABA.spec_to_absolute_path(p, base_dir, n)
+            end
+          end
+        end
+      end
+    end
+
     ##
     #
     def get_attr(id, fail_if_not_found: true)
