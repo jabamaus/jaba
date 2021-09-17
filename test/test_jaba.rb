@@ -108,7 +108,7 @@ class JabaTest < Minitest::Spec
   #
   def make_file(*fns, content: "test\n")
     fns.each do |fn|
-      fn = "#{temp_dir}/#{fn}"
+      fn = "#{temp_dir}/#{fn}" if !fn.absolute_path?
       make_dir(fn.parent_path)
       IO.write(fn, content)
     end

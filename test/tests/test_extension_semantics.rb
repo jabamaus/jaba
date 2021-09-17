@@ -235,4 +235,54 @@ class TestExtensionSemantics < JabaTest
       end
     end
   end
+
+  it 'can add plugin functionality through on_included' do
+    fn = "#{temp_dir}/print_line_plugin.jaba"
+    make_file(fn, content: %Q{
+type :print_line_plugin do
+  attr :line, type: :string
+  attr :style, type: :choice do
+    items [:upper, :lower]
+    default :lower
+  end
+  plugin do
+    def process_definition
+      services.make_node
+    end
+    def generate
+      services.nodes.each do |n|
+        str = n.attrs.line
+        case n.attrs.style
+        when :upper
+          str = str.upcase
+        when :lower
+          str = str.downcase
+        end
+        print str
+      end
+    end
+  end
+end
+
+on_included do |type|
+  open_type type do
+    attr :print_line, type: :compound, jaba_type: :print_line_plugin
+  end
+end
+    })
+    assert_output 'SUCCESS' do
+      jaba(barebones: true) do
+        include fn, :test
+        type :test do
+        end
+        test :t do
+          print_line do
+            line 'success'
+            style :upper
+          end
+        end
+      end
+    end
+  end
+
 end

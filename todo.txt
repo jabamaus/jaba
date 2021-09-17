@@ -1,3 +1,5 @@
+- Move block arg number checking into eval_jdl?
+- Get rid of DefaultPlugin. Just make Plugin make node by default
 - A consequence of moving plugin inline in jaba file is it will be included in backtraces
 - Add invocations.txt to each example which cam execute in multiple ways
 - Ability to 'grab' a text plugin that auto-adds ability to generate a text file to cpp projects.

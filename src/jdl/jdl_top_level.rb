@@ -9,15 +9,21 @@ module JABA
     ##
     # Include another .jaba file or directory containing .jaba files.
     #
-    def include(path=nil)
-      @load_manager.process_include(path, base: :jaba_file)
+    def include(...)
+      @load_manager.process_include(:jaba_file, ...)
+    end
+
+    ##
+    #
+    def on_included(&block)
+      @load_manager.on_included(::Kernel.caller_locations(1, 1)[0], &block)
     end
 
     ##
     # Include a jaba file or files from jaba's grab bag.
     #
-    def grab(path)
-      @load_manager.process_include(path, base: :grab_bag)
+    def grab(...)
+      @load_manager.process_include(:grab_bag, ...)
     end
 
     ##
