@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TestBoolAttribute < JabaTest
 
   it 'defaults to false' do

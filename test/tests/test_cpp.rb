@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TestCpp < JabaTest
 
   CPP_VS_JDL_FILE = "#{__dir__}/../../src/modules/cpp/VisualStudio/cpp_vs.jaba".cleanpath

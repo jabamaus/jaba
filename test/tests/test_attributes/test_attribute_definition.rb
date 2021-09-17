@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TestAttributeDefinition < JabaTest
 
   it 'accepts a string or a symbol as id' do

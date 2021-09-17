@@ -1,9 +1,6 @@
-# frozen_string_literal: true
-
 class PropertyContainer
   include JABA::PropertyMethods
 
- 
   def initialize(on_prop_set: false)
     super()
     @on_prop_set = on_prop_set

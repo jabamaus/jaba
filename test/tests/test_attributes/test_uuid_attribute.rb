@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TestUUIDAttribute < JabaTest
 
   it 'generates a UUID from a string' do

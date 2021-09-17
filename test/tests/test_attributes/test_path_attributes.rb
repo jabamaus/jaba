@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TestPathAttributes < JabaTest
 
   it 'warns if dir not clean' do

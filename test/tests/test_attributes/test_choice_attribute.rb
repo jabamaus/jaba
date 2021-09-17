@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TestChoiceAttribute < JabaTest
 
   it 'requires items to be set' do

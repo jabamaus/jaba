@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TestWorkspace < JabaTest
 
   it 'matches on id or glob matches' do

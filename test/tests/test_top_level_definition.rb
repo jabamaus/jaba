@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TestTopLevelDefinition < JabaTest
 
   it 'rejects invalid ids' do

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TestShared < JabaTest
 
   it 'allows inclusion of shared definitions in any object' do

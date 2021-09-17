@@ -1,5 +1,3 @@
-# frozen_string_literal: false # Specifically want this false for a test
-
 class TestAttributeSingle < JabaTest
 
   it 'only accepts single values' do

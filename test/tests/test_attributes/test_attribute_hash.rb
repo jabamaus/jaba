@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TestAttributeHash < JabaTest
 
   # TODO: validate key type is of specfied key_type

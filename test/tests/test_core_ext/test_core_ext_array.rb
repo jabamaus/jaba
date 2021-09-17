@@ -1,3 +1,5 @@
+# frozen_string_literal: false
+
 class TestCoreExtArray < JabaTest
 
   it 'supports vs_join' do

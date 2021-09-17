@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TestErrorReporting < JabaTest
   
   it 'works when a definition contains an error when definitions in a block' do

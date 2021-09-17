@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TestExtensionSemantics < JabaTest
 
   it 'supports creating new node types' do

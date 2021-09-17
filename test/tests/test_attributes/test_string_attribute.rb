@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TestStringAttribute < JabaTest
 
   it 'validates default' do

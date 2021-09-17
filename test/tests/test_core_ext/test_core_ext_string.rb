@@ -1,3 +1,5 @@
+# frozen_string_literal: false
+
 class TestCoreExtString < JabaTest
   
   it 'supports split_path' do

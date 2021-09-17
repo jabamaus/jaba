@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TestRefAttribute < JabaTest
   
   it 'requires referent type to be specified' do

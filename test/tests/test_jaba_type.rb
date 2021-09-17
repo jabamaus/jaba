@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TestJabaType < JabaTest
 
   it 'can be flagged as a singleton' do

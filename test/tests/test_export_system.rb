@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TestExportSystem < JabaTest
 
   it 'only allows :export on array and hash properties' do

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class StateA
   def on_init(val)
     print "a:on_init(#{val})|"
