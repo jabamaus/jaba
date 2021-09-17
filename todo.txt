@@ -1,6 +1,5 @@
 - A consequence of moving plugin inline in jaba file is it will be included in backtraces
 - Add invocations.txt to each example which cam execute in multiple ways
-- Rename build_jaba_output to build_output
 - Ability to 'grab' a text plugin that auto-adds ability to generate a text file to cpp projects.
 - Validate paths for missing / eg '../..debase-ruby_core_source/
 - option in tests to log to stdout
@@ -33,7 +32,7 @@
 - Standardise 'expected/available' error msg, eg Available: [a|b|c|]
 - Regression tests for generated files!
 - consider putting .jaba inside buildsystem
-- Make build_jaba_output use an API so it can check that paths are absolute
+- Make build_output use an API so it can check that paths are absolute
 - Not sure about build_root now. Is there one root too many? buildsystem_root and artefact can be set relative to jaba file in definitions or if runnning with jaba -B, that could set the buildsystem_root. 
 - wrap -D target_host vs2019 into a command line switch
 - sort out input system

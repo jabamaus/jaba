@@ -117,7 +117,7 @@ module JABA
     end
   
     it 'supports defining an inline type plugin' do
-      assert_output 'init|process_definition|generate|build_jaba_output' do
+      assert_output 'init|process_definition|generate|build_output' do
         jaba(barebones: true) do
           type :includeBlockTest do
             attr :a
@@ -133,8 +133,8 @@ module JABA
                 print 'generate|'
                 services.root_nodes[0].attrs.a.must_equal 1
               end
-              def build_jaba_output(root)
-                print 'build_jaba_output'
+              def build_output(root)
+                print 'build_output'
               end
             end
           end

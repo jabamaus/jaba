@@ -174,7 +174,7 @@ module JABA
         
         profile(input.profile) do
           do_run
-          build_jaba_output
+          build_output
         end
       end
 
@@ -805,7 +805,7 @@ module JABA
 
     ##
     #
-    def build_jaba_output
+    def build_output
       log 'Building output...'
       
       out_file = "#{@jaba_temp_dir}/jaba.output.#{globals.target_host}.json"
@@ -822,7 +822,7 @@ module JABA
         plugin = nm.plugin
         next if plugin.is_a?(DefaultPlugin)
         root = {}
-        plugin.build_jaba_output(root)
+        plugin.build_output(root)
         if !root.empty?
           @output[nm.type_id] = root
         end

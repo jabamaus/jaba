@@ -46,7 +46,7 @@ type :text do
       end
     end
     
-    def build_jaba_output(root)
+    def build_output(root)
       services.nodes.each do |n|
         root[:filename] = n.attrs.filename
       end

@@ -312,11 +312,11 @@ module JABA
     
     ##
     # 
-    def build_jaba_output(root)
+    def build_output(root)
       @projects.each do |p|
         p_root = {}
         root[p.handle] = p_root
-        p.build_jaba_output(p_root)
+        p.build_output(p_root)
       end
     end
 

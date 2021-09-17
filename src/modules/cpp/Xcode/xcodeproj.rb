@@ -46,7 +46,7 @@ module JABA
 
     ##
     #
-    def build_jaba_output(p_root)
+    def build_output(p_root)
       p_root[:projdir] = @projdir
       p_root[:projname] = @projname
       p_root[:host] = @host.defn_id

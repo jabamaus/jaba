@@ -144,7 +144,7 @@ module JABA
 
     ##
     #
-    def build_jaba_output(root)
+    def build_output(root)
     end
 
     ##
