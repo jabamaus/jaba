@@ -1,6 +1,2 @@
-module JABA
-
-  class TestCoreExtObject < JabaTest
-  end
-
+class TestCoreExtObject < JabaTest
 end
