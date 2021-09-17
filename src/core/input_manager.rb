@@ -93,7 +93,7 @@ module JABA
       @cmds = []
       @cmd = nil
 
-      argv  = JABA.running_tests? ? [] : ARGV
+      argv  = services.test_mode? ? [] : ARGV
       @input.instance_variable_set(:@argv, argv)
 
       # General non-cmd-specific options

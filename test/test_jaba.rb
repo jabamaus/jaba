@@ -19,7 +19,6 @@ module JABA
     if File.exist?(JabaTest.temp_root)
       FileUtils.remove_dir(JabaTest.temp_root)
     end
-    @@running_tests = true
     args_index = ARGV.index('--')
     argv = args_index.nil? ? [] : ARGV[args_index+1..-1]
     ::Minitest.run(argv + ["--no-plugins"])
@@ -44,7 +43,7 @@ module JABA
       build_root = build_root || td
       argv = Array(argv)
 
-      op = JABA.run(want_exceptions: want_exceptions) do |c|
+      op = JABA.run(want_exceptions: want_exceptions, test_mode: true) do |c|
         c.src_root = src_root # Most unit tests don't have a src_root as everything is defined inline in code
         c.build_root = build_root
         c.argv = argv

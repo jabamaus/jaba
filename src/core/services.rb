@@ -31,14 +31,6 @@ require_relative 'node_manager'
 #
 module JABA
 
-  @@running_tests = false
-
-  ##
-  #
-  def self.running_tests?
-    @@running_tests
-  end
-
   ##
   #
   def self.ruby_debug_ide?
@@ -70,10 +62,16 @@ module JABA
     attr_reader :jaba_attr_types
     attr_reader :jaba_temp_dir
 
+    def test_mode?
+      @test_mode
+    end
+    
     ##
     #
-    def initialize
+    def initialize(test_mode: false)
+      @test_mode = test_mode
       @invoking_dir = Dir.getwd.freeze
+      @jaba_temp_dir = nil
 
       @input = Input.new
       @input.instance_variable_set(:@build_root, nil)
@@ -83,7 +81,7 @@ module JABA
       @input.instance_variable_set(:@dump_output, true)
       @output = {}
       
-      @log_msgs = JABA.running_tests? ? nil : [] # Disable logging when running tests
+      @log_msgs = test_mode? ? nil : [] # Disable logging when running tests
       @warnings = []
       
       @definition_registry = {}
@@ -138,7 +136,7 @@ module JABA
           else
             jdl_bt = get_jdl_backtrace(cs, include_api: include_api)
             if jdl_bt.empty?
-              @output[:error] = want_backtrace ? e.full_message(highlight: !JABA.running_tests?) : e.message
+              @output[:error] = want_backtrace ? e.full_message(highlight: false) : e.message
               raise
             end
             jdl_bt
@@ -153,7 +151,7 @@ module JABA
           e.set_backtrace(bt)
           raise e
         else
-          @output[:error] = e.full_message(highlight: !JABA.running_tests?)
+          @output[:error] = e.full_message(highlight: false)
           raise
         end
       ensure
@@ -370,7 +368,7 @@ module JABA
       end
 
       input.src_root = if input.src_root.nil?
-        @invoking_dir if !JABA.running_tests?
+        @invoking_dir if !test_mode?
       else
         input.src_root.to_absolute(base: @invoking_dir, clean: true)
       end
@@ -894,7 +892,8 @@ module JABA
     #
     def term_log
       return if !@log_msgs
-      log_fn = "#{@jaba_temp_dir}/jaba.log"
+      log_dir = @jaba_temp_dir ? @jaba_temp_dir : @invoking_dir
+      log_fn = "#{log_dir}/jaba.log"
       if File.exist?(log_fn)
         File.delete(log_fn)
       else

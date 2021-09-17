@@ -268,7 +268,7 @@ module JABA
     ##
     #
     def file_exist_cache
-      if JABA.running_tests?
+      if @services.test_mode?
         @@file_exist_cache ||= {}
       else
         @file_exist_cache ||= {}
@@ -278,7 +278,7 @@ module JABA
     ##
     #
     def is_directory_cache
-      if JABA.running_tests?
+      if @services.test_mode?
         @@is_directory_cache ||= {}
       else
         @is_directory_cache ||= {}
@@ -288,7 +288,7 @@ module JABA
     ##
     #
     def glob_cache
-      if JABA.running_tests?
+      if @services.test_mode?
         @@glob_cache ||= {}
       else
         @glob_cache ||= {}
@@ -298,7 +298,7 @@ module JABA
     ##
     #
     def file_read_cache
-      if JABA.running_tests?
+      if @services.test_mode?
         @@file_read_cache ||= {}
       else
         @file_read_cache ||= {}
