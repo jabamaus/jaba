@@ -17,6 +17,7 @@ module JABA
       @jdl_files = []
       @jdl_includes = []
       @jdl_file_lookup = {}
+      @on_included = {}
     end
 
     ##
@@ -68,8 +69,21 @@ module JABA
       # Process include directives, accounting for included files including other files.
       #
       while !@jdl_includes.empty?
-        last = @jdl_includes.pop
-        process_load_path(last)
+        inc = @jdl_includes.pop
+        process_load_path(inc.path)
+        on_included = @on_included[inc.path]
+        if on_included
+          on_included.each do |b|
+            n_expected = b.arity
+            n_actual = inc.args ? Array(inc.args).size : 0
+            
+            if n_actual != n_expected
+              JABA.error("#{inc.path}#on_included expects #{n_expected} arguments but #{n_actual} were passed")
+            end
+      
+            @services.execute_jdl(*inc.args, &b)
+          end
+        end
       end
     end
 
@@ -138,12 +152,15 @@ module JABA
       @services.execute_jdl(file: f)
     end
 
+    IncludeInfo = Struct.new(:path, :args)
+
     ##
     #
-    def process_include(path, base:)
-      if !path
+    def process_include(base, *args)
+      if args.empty?
         JABA.error("include requires a path")
       end
+      path = args.shift
       if base == :grab_bag
         if path.absolute_path?
           JABA.error("'#{path}' must not be absolute if basing it on jaba grab_bag directory")
@@ -158,12 +175,19 @@ module JABA
         load_plugin(path)
       else
         if path.wildcard?
-          @jdl_includes.concat(Dir.glob(path))
+          @jdl_includes.concat(Dir.glob(path).map{|d| IncludeInfo.new(d, args)})
         else
-          @jdl_includes << path
+          @jdl_includes << IncludeInfo.new(path, args)
         end
       end
     end
+
+    ##
+    #
+    def on_included(src_loc, &block)
+      @on_included.push_value(src_loc.absolute_path, block)
+    end
+
 
   end
 
