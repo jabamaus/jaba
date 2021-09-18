@@ -1,3 +1,6 @@
+- Doxygen and manifest files are good plugin examples
+- Put version number into every type and force it to be set in instance.
+- Consider storing whole callstack and then introducing JabaObject#error method.
 - A consequence of moving plugin inline in jaba file is it will be included in backtraces
 - Add invocations.txt to each example which cam execute in multiple ways
 - Ability to 'grab' a text plugin that auto-adds ability to generate a text file to cpp projects.
@@ -16,7 +19,6 @@
 - consider making all paths relative to jaba file when in defaults and shared definitions
 - optimise copying of value options once they are more locked down.
 - move JabaAttributeType base class into extend folder
-- rename type: :compound to :compound?
 - Have a look at RubyVM to try and precompile ruby
 - Should :definition_root basedir_spec be able to take its value from the setting attr? Eg if globals attr specifies a definition root base spec it be relative to the user definition.
 - Could be moving towards concept of a type requiring configuration
