@@ -130,6 +130,7 @@ module JABA
     ##
     #
     def process_definition
+      services.make_node
     end
 
     ##
@@ -153,17 +154,6 @@ module JABA
       false
     end
     
-  end
-
-  ##
-  # The default plugin for a JabaType if none exists. Does no generation.
-  #
-  class DefaultPlugin < Plugin
-
-    def process_definition
-      services.make_node
-    end
-
   end
 
 end

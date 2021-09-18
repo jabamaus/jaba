@@ -1,6 +1,6 @@
 module JABA
 
-  class GlobalsPlugin < DefaultPlugin
+  class GlobalsPlugin < Plugin
 
     def process_definition
       globals_node = services.make_node(flags: NodeFlags::NO_POST_CREATE)

@@ -288,7 +288,7 @@ module JABA
           klass = if JABA.const_defined?(plugin_classname)
             JABA.const_get(plugin_classname)
           else
-            DefaultPlugin
+            Plugin
           end
         end
         nm = make_plugin(id, klass)
@@ -818,7 +818,6 @@ module JABA
 
       @node_managers.each do |nm|
         plugin = nm.plugin
-        next if plugin.is_a?(DefaultPlugin)
         root = {}
         plugin.build_output(root)
         if !root.empty?
