@@ -129,6 +129,13 @@ module JABA
     end
 
     ##
+    # Access the attributes of the globals node.
+    #
+    def globals
+      @attr_def.services.globals_node.api
+    end
+
+    ##
     #
     def method_missing(id, val = nil, &block)
       @attr_def.handle_property(id, val, __jdl_call_loc: ::Kernel.caller_locations(1, 1)[0], &block)

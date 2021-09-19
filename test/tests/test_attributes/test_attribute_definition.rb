@@ -312,4 +312,25 @@ class TestAttributeDefinition < JabaTest
     end
   end
 
+  it 'can access globals when setting up attrs' do
+    jaba(barebones: true) do
+      open_type :globals do
+        attr_array :some_extensions do
+          default ['.a', '.b', '.c']
+        end
+      end
+      type :test do
+        attr :ext, type: :choice do
+          items globals.some_extensions
+          default '.a'
+        end
+      end
+      test :t do
+        ext.must_equal('.a')
+        ext '.b'
+        ext.must_equal('.b')
+      end
+    end
+  end
+
 end

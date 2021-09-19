@@ -7,7 +7,7 @@ type :ispc_rule do
   attr :msbuild_dir, type: :dir do
     title 'Location of msbuild customisation files'
     basedir_spec :definition_root
-    flags :required # TODO: if target_host.visual_studio?
+    flags :required
     on_set do |dir|
       vc_extension_settings '.ispc', "#{dir}/ispc.props"
       vc_extension_targets '.ispc', "#{dir}/ispc.targets"
