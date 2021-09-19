@@ -143,10 +143,10 @@ module JABA
         # Note that it is still possible for attributes to not be marked as 'set' by this point, ie if the user never
         # set it and it didn't have a default. But by this point the set flag has served it purpose.
       end
-      make_paths_absolute
     end
     
     ##
+    # Make paths in this node and all child nodes recurively, absolute.
     #
     def make_paths_absolute
       # Determine definition root and turn root and ensure its an absolute path

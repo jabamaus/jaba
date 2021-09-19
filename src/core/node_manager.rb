@@ -105,6 +105,12 @@ module JABA
         end
       end
 
+      @root_nodes.each do |rn|
+        rn.make_paths_absolute
+      end
+
+      @root_nodes.sort!{|x, y| x.handle.casecmp(y.handle)}
+
       @plugin.post_process_definitions
       
       @nodes.each do |n|
@@ -116,8 +122,6 @@ module JABA
         #
         n.make_read_only
       end
-
-      @root_nodes.sort!{|x, y| x.handle.casecmp(y.handle)}
     end
 
     ##
