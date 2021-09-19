@@ -53,9 +53,10 @@ module JABA
     ##
     # Part of internal initialisation.
     #
-    def set_jaba_type(jt)
+    def init(jt)
       @jaba_type = jt
       @type_id = jt.defn_id
+      @defaults_definition = services.get_definition(:defaults, @type_id, fail_if_not_found: false)
     end
 
     ##
@@ -75,8 +76,6 @@ module JABA
     #
     def process
       services.log "Processing #{describe}", section: true
-
-      @defaults_definition = services.get_definition(:defaults, @type_id, fail_if_not_found: false)
 
       # Give plugin a chance to do some initialisation before nodes are created. Dependent plugins that have already
       # been processed can be accessed here.
@@ -106,7 +105,7 @@ module JABA
         end
       end
 
-      @plugin.make_host_objects
+      @plugin.post_process_definitions
       
       @nodes.each do |n|
         n.each_attr do |a|

@@ -135,7 +135,7 @@ module JABA
 
     ##
     #
-    def make_host_objects
+    def post_process_definitions
     end
 
     ##

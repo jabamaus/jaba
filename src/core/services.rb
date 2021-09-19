@@ -293,7 +293,7 @@ module JABA
         end
         nm = make_plugin(id, klass)
         @node_managers << nm
-        nm.set_jaba_type(jt)
+        nm.init(jt)
       end
 
       @jaba_types.each(&:post_create)

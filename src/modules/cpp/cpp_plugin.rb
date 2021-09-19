@@ -113,7 +113,7 @@ class CppPlugin < JABA::Plugin
 
   ##
   #
-  def make_host_objects
+  def post_process_definitions
     @all_project_nodes.sort!{|x, y| x.handle.casecmp(y.handle)}
     @all_project_nodes.sort_topological! do |n, &b|
       n.attrs.deps.each(&b)

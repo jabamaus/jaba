@@ -113,7 +113,7 @@ class TestExtensionSemantics < JabaTest
   end
 
   it 'supports defining an inline type plugin' do
-    assert_output 'init|process_definition|generate|build_output' do
+    assert_output 'init|pre_process_definitions|process_definition|post_process_definitions|generate|build_output' do
       jaba(barebones: true) do
         type :includeBlockTest do
           attr :a
@@ -121,9 +121,15 @@ class TestExtensionSemantics < JabaTest
             def init
               print 'init|'
             end
+            def pre_process_definitions
+              print 'pre_process_definitions|'
+            end
             def process_definition
               print 'process_definition|'
               services.make_node
+            end
+            def post_process_definitions
+              print 'post_process_definitions|'
             end
             def generate
               print 'generate|'

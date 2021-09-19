@@ -41,7 +41,7 @@ class WorkspacePlugin < JABA::Plugin
 
   ##
   #
-  def make_host_objects
+  def post_process_definitions
     # TODO: pass this in
     cpp_plugin = services.get_plugin(:cpp)
     target_host_id = services.globals.target_host

@@ -1,3 +1,6 @@
+- Consider the idea of defining a 'build_module' which has 'sections'
+- I wonder whether the role of build_output could be done by a plugin using process_definition
+- Rename post_process_definitions
 - Doxygen and manifest files are good plugin examples
 - Put version number into every type and force it to be set in instance.
 - Consider storing whole callstack and then introducing JabaObject#error method.
