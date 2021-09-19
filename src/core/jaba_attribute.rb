@@ -191,11 +191,7 @@ module JABA
       if new_value.is_a?(Enumerable)
         attr_error("#{describe} must be a single value not a '#{new_value.class}'")
       end
-=begin
-      if __demacroise && new_value.string?
-        new_value = demacroise(new_value)
-      end
-=end
+
       attr_type = @attr_def.jaba_attr_type
       new_value = attr_type.map_value(new_value)
 
@@ -271,32 +267,6 @@ module JABA
       end
 
       nil
-    end
-
-    ##
-    #
-    def demacroise(str)
-      dupped = false
-      matches = str.scan(/(\$\((.+?)(\.(.+?))?\))/)
-      matches.each do |match|
-        full_var = match[0]
-        attr_id = match[1]
-        method = match[3]
-        attr = @node.search_attr(attr_id.to_sym) # TODO: error checking
-        attr_val = attr.value
-        # TODO: demacroise recursively
-        if !method.nil?
-          attr_val = attr_val.send(method)
-        end
-        # Important to use block form of gsub to disable backreferencing
-        #
-        if !dupped
-          str = str.dup
-          dupped = true
-        end
-        str.gsub!(full_var){ attr_val }
-      end
-      str
     end
 
     ##
