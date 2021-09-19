@@ -157,7 +157,7 @@ class TestAttributeSingle < JabaTest
   end
 
   it 'fails if default block sets attribute' do
-    assert_jaba_error "Error at #{src_loc(__FILE__, :tagA)}: 't.a' attribute is read only." do
+    assert_jaba_error "Error at #{src_loc(__FILE__, :tagA)}: 't.a' attribute is read only in this context." do
       jaba(barebones: true) do
         type :test do
           attr :a

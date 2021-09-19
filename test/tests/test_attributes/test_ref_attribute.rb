@@ -178,7 +178,7 @@ class TestRefAttribute < JabaTest
   end
   
   it 'treats references read only when called through object' do
-    assert_jaba_error "Error at #{src_loc(__FILE__, :tagD)}: 'a.length' attribute is read only." do
+    assert_jaba_error "Error at #{src_loc(__FILE__, :tagD)}: 'a.length' attribute is read only in this context." do
       jaba(barebones: true) do
         type :line do
           attr :length

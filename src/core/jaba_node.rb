@@ -265,7 +265,7 @@ module JABA
         end
 
         if (__read_only || @read_only) && !@allow_set_read_only_attrs
-          JABA.error("#{a.describe} is read only")
+          JABA.error("#{a.describe} is read only in this context")
         end
         
         a.set(*args, __jdl_call_loc: __jdl_call_loc, **keyval_args, &block)

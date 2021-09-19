@@ -311,6 +311,7 @@ module JABA
           node_manager.register_instance_definition(inst_def)
         end
 
+        node_manager.pre_process
         node_manager.process
       end
 
@@ -326,6 +327,8 @@ module JABA
       # Write final files
       #
       @node_managers.each do |nm|
+        nm.post_process
+        
         # Call generate blocks defined per-node instance, in the context of the node itself, not its api
         #
         nm.root_nodes.each do |n|

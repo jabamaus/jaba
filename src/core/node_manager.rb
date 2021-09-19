@@ -73,14 +73,17 @@ module JABA
     end
 
     ##
+    # Give plugin a chance to do some initialisation before nodes are created. Dependent plugins that have already
+    # been processed can be accessed here.
+    #
+    def pre_process
+      @plugin.pre_process_definitions
+    end
+
+    ##
     #
     def process
       services.log "Processing #{describe}", section: true
-
-      # Give plugin a chance to do some initialisation before nodes are created. Dependent plugins that have already
-      # been processed can be accessed here.
-      #
-      @plugin.pre_process_definitions
 
       @definitions.each do |d|
         push_definition(d) do
@@ -88,6 +91,8 @@ module JABA
           @root_nodes.concat(root_nodes)
         end
       end
+      
+      @root_nodes.sort!{|x, y| x.handle.casecmp(y.handle)}
       
       if @jaba_type.singleton
         if @root_nodes.size == 0
@@ -97,19 +102,19 @@ module JABA
         end
       end
 
-      return if @root_nodes.empty?
-
       @reference_attrs_to_resolve.each do |a|
         a.map_value! do |ref|
           resolve_reference(a, ref)
         end
       end
-
+    end
+    
+    ##
+    #
+    def post_process
       @root_nodes.each do |rn|
         rn.make_paths_absolute
       end
-
-      @root_nodes.sort!{|x, y| x.handle.casecmp(y.handle)}
 
       @plugin.post_process_definitions
       

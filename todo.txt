@@ -1,3 +1,6 @@
+- Disallow types being used as a compound attr from being flagged as singleton
+- Rather than attr :a, type: :compound, jaba_type: :type_with_plugin it could be
+  attr :a, embed: type_with_plugin
 - Consider the idea of defining a 'build_module' which has 'sections'
 - I wonder whether the role of build_output could be done by a plugin using process_definition
 - Rename post_process_definitions

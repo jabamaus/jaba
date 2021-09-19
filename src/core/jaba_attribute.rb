@@ -251,7 +251,7 @@ module JABA
           #
           @value = @node.node_manager.resolve_reference(self, new_value, ignore_if_same_type: true)
         end
-      else
+      elsif !@attr_def.compound? # Don't freeze whole nodes
         @value.freeze # Prevents value from being changed directly after it has been returned by 'value' method
       end
 

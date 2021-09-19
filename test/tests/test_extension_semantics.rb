@@ -113,9 +113,9 @@ class TestExtensionSemantics < JabaTest
   end
 
   it 'supports defining an inline type plugin' do
-    assert_output 'init|pre_process_definitions|process_definition|post_process_definitions|generate|build_output' do
+    assert_output 'init|pre_process_definitions|process_definition|a=1|post_process_definitions|generate|build_output' do
       jaba(barebones: true) do
-        type :includeBlockTest do
+        type :type_with_plugin do
           attr :a
           plugin do
             def init
@@ -126,7 +126,9 @@ class TestExtensionSemantics < JabaTest
             end
             def process_definition
               print 'process_definition|'
-              services.make_node
+              n = services.make_node
+              print "a=#{n.attrs.a}|"
+              n
             end
             def post_process_definitions
               print 'post_process_definitions|'
@@ -140,8 +142,16 @@ class TestExtensionSemantics < JabaTest
             end
           end
         end
-        includeBlockTest :tbt do
+        type_with_plugin :a do
           a 1
+        end
+        type :test do
+          attr :b, type: :compound, jaba_type: :type_with_plugin
+        end
+        test :t do
+          b do
+            a 2
+          end
         end
       end
     end
@@ -198,7 +208,7 @@ class TestExtensionSemantics < JabaTest
               begin
                 proj1.attrs.src 'invalid'
               rescue => e
-                e.message.must_equal("'t.src' attribute is read only")
+                e.message.must_equal("'t.src' attribute is read only in this context")
               else
                 raise 'never get here'
               end
