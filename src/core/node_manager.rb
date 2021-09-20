@@ -51,25 +51,26 @@ module JABA
     end
 
     ##
+    #
+    def describe
+      "'#{type_id}' node manager"
+    end
+
+    ##
     # Part of internal initialisation.
     #
-    def init(jt)
-      @jaba_type = jt
-      @type_id = jt.defn_id
+    def init(jaba_type, plugin)
+      @jaba_type = jaba_type
+      @type_id = jaba_type.defn_id
+      @plugin = plugin
       @defaults_definition = services.get_definition(:defaults, @type_id, fail_if_not_found: false)
     end
 
     ##
     # Part of internal initialisation.
     #
-    def register_instance_definition(d)
-      @definitions << d
-    end
-
-    ##
-    #
-    def describe
-      "'#{type_id}' node manager"
+    def add_definitions(defs)
+      @definitions.concat(defs)
     end
 
     ##

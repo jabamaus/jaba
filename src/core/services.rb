@@ -291,9 +291,12 @@ module JABA
             Plugin
           end
         end
-        nm = make_plugin(id, klass)
+        nm = NodeManager.new(self)
         @node_managers << nm
-        nm.init(jt)
+        @node_manager_lookup[id] = nm
+
+        plugin = make_plugin(klass, nm)
+        nm.init(jt, plugin)
       end
 
       @jaba_types.each(&:post_create)
@@ -307,8 +310,8 @@ module JABA
         node_manager = get_node_manager(jt.defn_id)
 
         inst_defs = @type_to_instances[jt.defn_id]
-        inst_defs&.each do |inst_def|
-          node_manager.register_instance_definition(inst_def)
+        if inst_defs
+          node_manager.add_definitions(inst_defs)
         end
 
         node_manager.pre_process
@@ -455,8 +458,8 @@ module JABA
 
     ##
     #
-    def make_plugin(id, klass)
-      log "Making plugin [id=#{id}, class=#{klass}]"
+    def make_plugin(klass, node_manager)
+      log "Making #{klass} plugin"
 
       if !klass.ancestors.include?(Plugin)
         JABA.error("#{klass} must subclass Plugin")
@@ -464,18 +467,12 @@ module JABA
 
       ps = PluginServices.new
       ps.instance_variable_set(:@services, self)
-
-      nm = NodeManager.new(self)
-      ps.instance_variable_set(:@node_manager, nm)
-
-      @node_manager_lookup[id] = nm
+      ps.instance_variable_set(:@node_manager, node_manager)
 
       plugin = klass.new
       plugin.instance_variable_set(:@services, ps)
-      nm.instance_variable_set(:@plugin, plugin)
-
       plugin.init
-      nm
+      plugin
     end
 
     ##
