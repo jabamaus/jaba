@@ -3,7 +3,7 @@ class TestCpp < JabaTest
   CPP_VS_JDL_FILE = "#{__dir__}/../../src/modules/cpp/VisualStudio/cpp_vs.jaba".cleanpath
 
   it 'detects invalid platform specs' do
-    assert_jaba_error "Error at #{src_loc(__FILE__, :tagN)}: Invalid platform spec ':windows_x87'. Available: [:ios_arm64, :windows_x86, :windows_x86_64, :windows_arm64]" do
+    assert_jaba_error "Error at #{src_loc(__FILE__, :tagN)}: Invalid platform spec ':windows_x87'. Available: [:ios_arm64, :windows_arm64, :windows_x86, :windows_x86_64]" do
       jaba(dry_run: true, cpp_app: true) do
         cpp :app do
           platforms [:windows_x87] # tagN

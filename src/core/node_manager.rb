@@ -92,8 +92,6 @@ module JABA
         end
       end
       
-      @root_nodes.sort!{|x, y| x.handle.casecmp(y.handle)}
-      
       if @jaba_type.singleton
         if @root_nodes.size == 0
           JABA.error("singleton type '#{type_id}' must be instantiated", errobj: @jaba_type)
@@ -112,6 +110,7 @@ module JABA
     ##
     #
     def post_process
+      @root_nodes.sort!{|x, y| x.handle.casecmp(y.handle)}
       @root_nodes.each do |rn|
         rn.make_paths_absolute
       end

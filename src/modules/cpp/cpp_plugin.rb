@@ -29,6 +29,7 @@ class CppPlugin < JABA::Plugin
         @valid_platforms << "#{platform}_#{arch}".to_sym
       end
     end
+    @valid_platforms.sort!
   end
 
   ##
