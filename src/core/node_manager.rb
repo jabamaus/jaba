@@ -92,14 +92,6 @@ module JABA
         end
       end
       
-      if @jaba_type.singleton
-        if @root_nodes.size == 0
-          JABA.error("singleton type '#{type_id}' must be instantiated", errobj: @jaba_type)
-        elsif @root_nodes.size > 1
-          JABA.error("singleton type '#{type_id}' must only be instantiated once", errobj: @root_nodes.last)
-        end
-      end
-
       @reference_attrs_to_resolve.each do |a|
         a.map_value! do |ref|
           resolve_reference(a, ref)
@@ -110,6 +102,14 @@ module JABA
     ##
     #
     def post_process
+      if @jaba_type.singleton
+        if @root_nodes.size == 0
+          JABA.error("singleton type '#{type_id}' must be instantiated", errobj: @jaba_type)
+        elsif @root_nodes.size > 1
+          JABA.error("singleton type '#{type_id}' must only be instantiated once", errobj: @root_nodes.last)
+        end
+      end
+
       @root_nodes.sort!{|x, y| x.handle.casecmp(y.handle)}
       @root_nodes.each do |rn|
         rn.make_paths_absolute
