@@ -89,13 +89,12 @@ module JABA
       @definitions.each do |d|
         push_definition(d) do
           root_nodes = Array(@plugin.process_definition)
-          @root_nodes.concat(root_nodes)
-        end
-      end
-      
-      @reference_attrs_to_resolve.each do |a|
-        a.map_value! do |ref|
-          resolve_reference(a, ref)
+          root_nodes.each do |rn|
+            if rn.parent
+              JABA.error("#{rn.describe} root node must not have a parent")
+            end
+            @root_nodes << rn
+          end
         end
       end
     end
@@ -108,6 +107,12 @@ module JABA
           JABA.error("singleton type '#{type_id}' must be instantiated", errobj: @jaba_type)
         elsif @root_nodes.size > 1
           JABA.error("singleton type '#{type_id}' must only be instantiated once", errobj: @root_nodes.last)
+        end
+      end
+
+      @reference_attrs_to_resolve.each do |a|
+        a.map_value! do |ref|
+          resolve_reference(a, ref)
         end
       end
 
