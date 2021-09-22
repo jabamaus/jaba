@@ -113,7 +113,7 @@ class TestExtensionSemantics < JabaTest
   end
 
   it 'supports defining an inline type plugin' do
-    assert_output 'init|pre_process_definitions|process_definition|a=1|post_process_definitions|generate|build_output' do
+    assert_output 'init|pre_process_definitions|process_definition|a=1|process_definition|a=2|post_process_definitions|generate|build_output' do
       jaba(barebones: true) do
         type :type_with_plugin do
           attr :a

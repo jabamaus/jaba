@@ -89,14 +89,11 @@ module JABA
       @definitions.each do |d|
         push_definition(d) do
           root_nodes = Array(@plugin.process_definition)
-          root_nodes.each do |rn|
-            if rn.parent
-              JABA.error("#{rn.describe} root node must not have a parent")
-            end
-            @root_nodes << rn
-          end
+          @root_nodes.concat(root_nodes)
         end
       end
+      @definitions.clear
+      root_nodes
     end
     
     ##
@@ -144,6 +141,15 @@ module JABA
 
     ##
     #
+    def set_node_creation_args(name:, parent:, block_args:, flags: 0)
+      @custom_name = name
+      @custom_parent = parent
+      @custom_block_args = block_args
+      @custom_flags = flags
+    end
+
+    ##
+    #
     def make_node(
       type_id: nil,
       name: nil,
@@ -156,6 +162,22 @@ module JABA
       depth = 0
       handle = nil
  
+      if @custom_parent
+        parent = @custom_parent
+      end
+
+      if @custom_name
+        name = @custom_name
+      end
+
+      if @custom_block_args
+        block_args = @custom_block_args
+      end
+
+      if @custom_flags
+        flags |= @custom_flags
+      end
+
       if parent
         JABA.error('name is required for child nodes') if !name
         handle = "#{parent.handle}|#{name}"
@@ -220,6 +242,11 @@ module JABA
       if flags & NodeFlags::NO_POST_CREATE == 0 # used by globals node when being set from the command line
         jn.post_create
       end
+
+      @custom_name = nil
+      @custom_parent = nil
+      @custom_block_args = nil
+      @custom_flags = nil
 
       jn
     end
