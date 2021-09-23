@@ -42,7 +42,7 @@ module JABA
     ##
     #
     def glob(pattern, &block)
-      @services.glob(pattern, &block)
+      @file_manager.jdl_glob(pattern, &block)
     end
 
     ##
@@ -105,9 +105,10 @@ module JABA
 
     ##
     #
-    def initialize(services, load_manager)
+    def initialize(services, load_manager, file_manager)
       @services = services
       @load_manager = load_manager
+      @file_manager = file_manager
     end
 
     ##

@@ -62,6 +62,8 @@ module JABA
     attr_reader :jaba_attr_types
     attr_reader :jaba_temp_dir
 
+    ##
+    #
     def test_mode?
       @test_mode
     end
@@ -90,7 +92,6 @@ module JABA
       @node_lookup = {}
       @node_manager_lookup = {}
 
-      @node_managers = []
       @jaba_attr_types = []
       @jaba_attr_type_lookup = {}
       @jaba_attr_flags = []
@@ -110,7 +111,7 @@ module JABA
       @input_manager = InputManager.new(self)
       @load_manager = LoadManager.new(self, @file_manager)
 
-      @top_level_api = JDL_TopLevel.new(self, @load_manager)
+      @top_level_api = JDL_TopLevel.new(self, @load_manager, @file_manager)
 
       register_toplevel_item :type, :instance, :shared, :defaults, :translator
     end
@@ -288,19 +289,21 @@ module JABA
       @jaba_types.each(&:post_create)
       @jaba_types.sort_topological!(:dependencies)
 
+      # Make node manager array based on jaba types so node managers are dependency sorted too
+      #
+      @node_managers = @jaba_types.map{|jt| get_node_manager(jt.defn_id)}
+
       @input_manager.process_cmd_line
       @input_manager.finalise
 
-      @jaba_types.each do |jt|
-        jt.eval_attr_defs
-        nm = get_node_manager(jt.defn_id)
+      @node_managers.each do |nm|
+        nm.jaba_type.eval_attr_defs
         nm.process
       end
 
-      jaba_types_copy = @jaba_types.dup
-      while !jaba_types_copy.empty?
-        jt = jaba_types_copy.shift
-        nm = get_node_manager(jt.defn_id)
+      nms_copy = @node_managers.dup
+      while !nms_copy.empty?
+        nm = nms_copy.shift
         nm.process
         nm.post_process
       end
@@ -441,37 +444,6 @@ module JABA
 
     ##
     #
-    def get_or_make_node_manager(id)
-      nm = get_node_manager(id, fail_if_not_found: false)
-      if !nm
-        nm = NodeManager.new(self)
-        @node_managers << nm
-        @node_manager_lookup[id] = nm
-      end
-      nm
-    end
-
-    ##
-    #
-    def make_plugin(klass, node_manager)
-      log "Making #{klass} plugin"
-
-      if !klass.ancestors.include?(Plugin)
-        JABA.error("#{klass} must subclass Plugin")
-      end
-
-      ps = PluginServices.new
-      ps.instance_variable_set(:@services, self)
-      ps.instance_variable_set(:@node_manager, node_manager)
-
-      plugin = klass.new
-      plugin.instance_variable_set(:@services, ps)
-      plugin.init
-      plugin
-    end
-
-    ##
-    #
     def make_attr_type(klass)
       at = klass.new
       if @jaba_attr_type_lookup.has_key?(at.id)
@@ -482,108 +454,6 @@ module JABA
       @jaba_attr_types << at
       @jaba_attr_type_lookup[at.id] = at
       at
-    end
-
-    ##
-    #
-    def make_attr_flag(klass)
-      af = klass.new
-      if @jaba_attr_flag_lookup.has_key?(af.id)
-        JABA.error("Attribute flag multiply defined [id=#{af.id}, class=#{klass}]")
-      end
-      af.instance_variable_set(:@services, self)
-      af.post_create
-      @jaba_attr_flags << af
-      @jaba_attr_flag_lookup[af.id] = af
-      af
-    end
-
-    DefRegistry = Struct.new(:defs, :lookup)
-
-    ##
-    #
-    def register_toplevel_item(*items)
-      items.each do |what|
-        @definition_registry[what] = DefRegistry.new([], {})
-        @open_definitions_registry[what] = DefRegistry.new([], {})
-      end
-    end
-
-    ##
-    #
-    def get_defs(what)
-      @definition_registry[what].defs
-    end
-    
-    ##
-    #
-    def iterate_defs(what, &block)
-      get_defs(what).each(&block)
-    end
-    
-    Definition = Struct.new(
-      :id,
-      :block,
-      :src_loc,
-      :open_defs,
-      :open_defs_lookup_id,
-      :flags,
-      :jaba_type_id # Used by instances
-    )
-    
-    ##
-    #
-    def make_definition(id, block, src_loc)
-      d = Definition.new
-      d.id = id
-      d.block = block
-      d.src_loc = src_loc
-      d.open_defs = nil
-      d.open_defs_lookup_id = nil
-      d.flags = []
-      d.define_singleton_method(:has_flag?) do |f|
-        flags.include?(f)
-      end
-      d.jaba_type_id = nil
-      d
-    end
-
-    ##
-    #
-    def make_jaba_type(id, dfn)
-      if @jaba_type_lookup.key?(id)
-        JABA.error("'#{id}' jaba type multiply defined")
-      end
-
-      jt = JabaType.new(self, dfn.id, dfn.src_loc, dfn.block, dfn.open_defs)
-
-      @jaba_types  << jt
-      @jaba_type_lookup[id] = jt
-      jt
-    end
-
-    ##
-    #
-    def get_jaba_type(id, fail_if_not_found: true, errobj: nil)
-      jt = @jaba_type_lookup[id]
-      if !jt && fail_if_not_found
-        JABA.error("'#{id}' type not defined", errobj: errobj)
-      end
-      jt
-    end
-
-    ##
-    #
-    def validate_id(id, what)
-      if !(id.symbol? || id.string?) || id !~ /^[a-zA-Z0-9_\-.|]+$/
-        msg = if id.nil?
-          "'#{what}' requires an id"
-        else
-          "'#{id}' is an invalid id"
-        end
-        msg << ". Must be an alphanumeric string or symbol (-_. permitted), eg :my_id, 'my-id', 'my.id'"
-        JABA.error(msg)
-      end
     end
 
     ##
@@ -601,22 +471,26 @@ module JABA
 
     ##
     #
+    def make_attr_flag(klass)
+      af = klass.new
+      if @jaba_attr_flag_lookup.has_key?(af.id)
+        JABA.error("Attribute flag multiply defined [id=#{af.id}, class=#{klass}]")
+      end
+      af.instance_variable_set(:@services, self)
+      af.post_create
+      @jaba_attr_flags << af
+      @jaba_attr_flag_lookup[af.id] = af
+      af
+    end
+
+    ##
+    #
     def get_attribute_flag(id)
       f = @jaba_attr_flag_lookup[id]
       if !f
         JABA.error("'#{id.inspect_unquoted}' is an invalid flag. Valid flags: [#{@jaba_attr_flags.map{|at| at.id.inspect}.join(', ')}]")
       end
       f
-    end
-
-    ##
-    #
-    def get_definition(what, id, fail_if_not_found: true)
-      d =  @definition_registry[what].lookup[id]
-      if !d && fail_if_not_found
-        JABA.error("#{what} definition '#{id.inspect_unquoted}' not defined")
-      end
-      d
     end
 
     ##
@@ -677,9 +551,157 @@ module JABA
 
     ##
     #
+    def validate_id(id, what)
+      if !(id.symbol? || id.string?) || id !~ /^[a-zA-Z0-9_\-.|]+$/
+        msg = if id.nil?
+          "'#{what}' requires an id"
+        else
+          "'#{id}' is an invalid id"
+        end
+        msg << ". Must be an alphanumeric string or symbol (-_. permitted), eg :my_id, 'my-id', 'my.id'"
+        JABA.error(msg)
+      end
+    end
+
+    ##
+    #
+    DefRegistry = Struct.new(:defs, :lookup)
+
+    ##
+    #
+    def register_toplevel_item(*items)
+      items.each do |what|
+        @definition_registry[what] = DefRegistry.new([], {})
+        @open_definitions_registry[what] = DefRegistry.new([], {})
+      end
+    end
+
+    ##
+    #
+    def get_definition(what, id, fail_if_not_found: true)
+      d =  @definition_registry[what].lookup[id]
+      if !d && fail_if_not_found
+        JABA.error("#{what} definition '#{id.inspect_unquoted}' not defined")
+      end
+      d
+    end
+
+    ##
+    #
+    def get_defs(what)
+      @definition_registry[what].defs
+    end
+    
+    ##
+    #
+    def iterate_defs(what, &block)
+      get_defs(what).each(&block)
+    end
+    
+    ##
+    #
+    Definition = Struct.new(
+      :id,
+      :block,
+      :src_loc,
+      :open_defs,
+      :open_defs_lookup_id,
+      :flags,
+      :jaba_type_id # Used by instances
+    )
+    
+    ##
+    #
+    def make_definition(id, block, src_loc)
+      d = Definition.new
+      d.id = id
+      d.block = block
+      d.src_loc = src_loc
+      d.open_defs = nil
+      d.open_defs_lookup_id = nil
+      d.flags = []
+      d.define_singleton_method(:has_flag?) do |f|
+        flags.include?(f)
+      end
+      d.jaba_type_id = nil
+      d
+    end
+
+    ##
+    #
+    def make_jaba_type(id, dfn)
+      if @jaba_type_lookup.key?(id)
+        JABA.error("'#{id}' jaba type multiply defined")
+      end
+
+      jt = JabaType.new(self, dfn.id, dfn.src_loc, dfn.block, dfn.open_defs)
+
+      @jaba_types  << jt
+      @jaba_type_lookup[id] = jt
+      jt
+    end
+
+    ##
+    #
+    def get_jaba_type(id, fail_if_not_found: true, errobj: nil)
+      jt = @jaba_type_lookup[id]
+      if !jt && fail_if_not_found
+        JABA.error("'#{id}' type not defined", errobj: errobj)
+      end
+      jt
+    end
+
+    ##
+    #
+    def get_or_make_node_manager(id)
+      nm = get_node_manager(id, fail_if_not_found: false)
+      if !nm
+        nm = NodeManager.new(self)
+        @node_manager_lookup[id] = nm
+      end
+      nm
+    end
+
+    ##
+    #
+    def get_node_manager(jaba_type_id, fail_if_not_found: true)
+      nm = @node_manager_lookup[jaba_type_id]
+      if !nm && fail_if_not_found
+        JABA.error("'#{jaba_type_id}' node manager not found")
+      end 
+      nm
+    end
+
+    ##
+    #
     def get_instance_ids(type_id)
       nm = get_node_manager(type_id)
       nm.definitions.map(&:id)
+    end
+
+    ##
+    #
+    def make_plugin(klass, node_manager)
+      log "Making #{klass} plugin"
+
+      if !klass.ancestors.include?(Plugin)
+        JABA.error("#{klass} must subclass Plugin")
+      end
+
+      ps = PluginServices.new
+      ps.instance_variable_set(:@services, self)
+      ps.instance_variable_set(:@node_manager, node_manager)
+
+      plugin = klass.new
+      plugin.instance_variable_set(:@services, ps)
+      plugin.init
+      plugin
+    end
+
+    ##
+    #
+    def get_plugin(jaba_type_id)
+      get_node_manager(jaba_type_id).plugin
     end
 
     ##
@@ -728,35 +750,6 @@ module JABA
         JABA.error("Node with handle '#{handle}' not found", errobj: errobj)
       end
       n
-    end
-
-    ##
-    # Called from JDL API.
-    #
-    def glob(spec, &block)
-      jaba_file_dir = caller_locations(2, 1)[0].absolute_path.parent_path
-      if !spec.absolute_path?
-        spec = "#{jaba_file_dir}/#{spec}"
-      end
-      files = @file_manager.glob_files(spec)
-      files = files.map{|f| f.relative_path_from(jaba_file_dir)}
-      files.each(&block)
-    end
-
-    ##
-    #
-    def get_node_manager(jaba_type_id, fail_if_not_found: true)
-      nm = @node_manager_lookup[jaba_type_id]
-      if !nm && fail_if_not_found
-        JABA.error("'#{jaba_type_id}' node manager not found")
-      end 
-      nm
-    end
-
-    ##
-    #
-    def get_plugin(jaba_type_id)
-      get_node_manager(jaba_type_id).plugin
     end
 
     ##

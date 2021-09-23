@@ -16,7 +16,6 @@ module JABA
     def initialize(services, defn_id, src_loc, block, open_defs)
       super(services, defn_id, src_loc, JDL_Type.new(self))
 
-      @open_defs = open_defs
       @attribute_defs = [] # The type's actual attribute defs
       @attribute_def_lookup = {}
       @attribute_def_imported_lookup = {}
@@ -35,9 +34,9 @@ module JABA
         eval_jdl(&block)
       end
 
-      if @open_defs
-        @services.log "Opening #{defn_id} type"
-        @open_defs.each do |d|
+      if open_defs
+        services.log "Opening #{defn_id} type"
+        open_defs.each do |d|
           eval_jdl(&d.block)
         end
       end

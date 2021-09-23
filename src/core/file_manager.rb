@@ -237,6 +237,19 @@ module JABA
     end
 
     ##
+    # Called from JDL API.
+    #
+    def jdl_glob(spec, &block)
+      jaba_file_dir = caller_locations(2, 1)[0].absolute_path.parent_path
+      if !spec.absolute_path?
+        spec = "#{jaba_file_dir}/#{spec}"
+      end
+      files = glob_files(spec)
+      files = files.map{|f| f.relative_path_from(jaba_file_dir)}
+      files.each(&block)
+    end
+
+    ##
     #
     def exist?(fn)
       if !fn.absolute_path?
