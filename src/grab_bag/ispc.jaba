@@ -7,7 +7,7 @@ type :ispc_rule do
   attr :msbuild_dir, type: :dir do
     title 'Location of msbuild customisation files'
     basedir_spec :definition_root
-    flags :required
+    flags :required # TODO: if target_host.visual_studio?
     on_set do |dir|
       vc_extension_settings '.ispc', "#{dir}/ispc.props"
       vc_extension_targets '.ispc', "#{dir}/ispc.targets"
@@ -40,7 +40,7 @@ type :ispc_rule do
   attr :Architecture, type: :choice do
     title 'Target Architecture'
     note 'Select target architecture.'
-    items ["x86", "x64", "arm", "aarch64", "wasm32"]
+    items ['x86', 'x64', 'arm', 'aarch64', 'wasm32']
     on_set do |val|
       vcprop 'ISPC|Architecture', val
     end
@@ -57,7 +57,7 @@ type :ispc_rule do
   attr :CPU, type: :choice do
     title 'Target CPU'
     note 'Select CPU targeting.'
-    items ["ps4", "xb1", "atom", "core2", "corei7", "corei7-avx", "core-avx-i", "core-avx2", "broadwell", "skx", "knl", "slm", "icl", "arm-cortex-a15", "arm-cortex-a9", "arm-cortex-a35", "arm-cortex-a53", "arm-cortex-a57"]
+    items ['ps4', 'xb1', 'atom', 'core2', 'corei7', 'corei7-avx', 'core-avx-i', 'core-avx2', 'broadwell', 'skx', 'knl', 'slm', 'icl', 'arm-cortex-a15', 'arm-cortex-a9', 'arm-cortex-a35', 'arm-cortex-a53', 'arm-cortex-a57']
     on_set do |val|
       vcprop 'ISPC|CPU', val
     end
@@ -130,7 +130,7 @@ type :ispc_rule do
   attr :MathLibrary, type: :choice do
     title 'Math Library'
     note 'Select Math Library.'
-    items ["default", "fast", "svml", "system"]
+    items ['default', 'fast', 'svml', 'system']
     on_set do |val|
       vcprop 'ISPC|MathLibrary', val
     end
@@ -147,7 +147,7 @@ type :ispc_rule do
   attr :OS, type: :choice do
     title 'Target Operating System'
     note 'Select target operating system.'
-    items ["windows", "ps4", "linux", "custom_linux", "freebsd", "macos", "android", "web"]
+    items ['windows', 'ps4', 'linux', 'custom_linux', 'freebsd', 'macos', 'android', 'web']
     on_set do |val|
       vcprop 'ISPC|OS', val
     end
@@ -163,7 +163,7 @@ type :ispc_rule do
 
   attr :Opt, type: :choice do
     title 'Optimization Level'
-    items ["disabled", "size", "speed", "maximum"]
+    items ['disabled', 'size', 'speed', 'maximum']
     on_set do |val|
       vcprop 'ISPC|Opt', val
     end
@@ -188,7 +188,7 @@ type :ispc_rule do
   attr :TargetISA, type: :choice do
     title 'Target ISA'
     note 'Select Target ISA.'
-    items ["unspecified", "host", "sse2-i32x4", "sse2-i32x8", "sse4-i32x4", "sse4-i32x8", "sse4-i16x8", "sse4-i8x16", "avx1-i32x4", "avx1-i32x8", "avx1-i32x16", "avx1-i64x4", "avx2-i8x32", "avx2-i16x16", "avx2-i32x4", "avx2-i32x8", "avx2-i32x16", "avx2-i64x4", "avx512skx-i8x64", "avx512skx-i16x32", "avx512knl-i32x16", "avx512skx-i32x16", "avx512skx-i32x8", "neon-i8x16", "neon-i16x8", "neon-i32x4", "neon-i32x8", "wasm-i32x4"]
+    items ['unspecified', 'host', 'sse2-i32x4', 'sse2-i32x8', 'sse4-i32x4', 'sse4-i32x8', 'sse4-i16x8', 'sse4-i8x16', 'avx1-i32x4', 'avx1-i32x8', 'avx1-i32x16', 'avx1-i64x4', 'avx2-i8x32', 'avx2-i16x16', 'avx2-i32x4', 'avx2-i32x8', 'avx2-i32x16', 'avx2-i64x4', 'avx512skx-i8x64', 'avx512skx-i16x32', 'avx512knl-i32x16', 'avx512skx-i32x16', 'avx512skx-i32x8', 'neon-i8x16', 'neon-i16x8', 'neon-i32x4', 'neon-i32x8', 'wasm-i32x4']
     on_set do |val|
       vcprop 'ISPC|TargetISA', val
     end
@@ -197,7 +197,7 @@ type :ispc_rule do
   attr :WarningLevel, type: :choice do
     title 'Warning Level'
     note 'Sets the warning level.'
-    items ["0", "1", "2"]
+    items ['0', '1', '2']
     on_set do |val|
       vcprop 'ISPC|WarningLevel', val
     end

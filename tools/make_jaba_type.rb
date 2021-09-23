@@ -87,7 +87,7 @@ class JabaTypeBuilder
       w << "    title '#{a.title}'"
       w << "    note '#{a.notes}'" if a.notes
       if a.type == :choice
-        w << "    items #{a.choices.inspect}"
+        w << "    items [#{a.choices.map{|c| "'#{c}'"}.join(', ')}]"
       end
       w << "    on_set do |val|"
       w << "      vcprop '#{@item_type}|#{a.id}', val"
