@@ -1,3 +1,9 @@
+- Split JabaAttributeDefinition into variants
+- Make cpp_project and cpp_platform into contained types
+- Turn cpp#platforms into a choice property.
+- Change to make all modules manually included. eg 'include 'cpp''. Get rid of 'grab'.
+- Combine :symbol, :string and :symbol_or_string? Allow strings and symbols to be completely interchangeable?
+- Stop globals from having dependenciesm, reference attrs and compound attrs.
 - compound attr should not need a title. Could use the title of the jaba type.
 - Add test demonstrating plugins creating dependent objects as they are being processed, eg cpp plugin creates workspaces
 - Should be able to map property value in pre_property_set
@@ -7,7 +13,6 @@
   attr :a, embed: type_with_plugin
 - Consider the idea of defining a 'build_module' which has 'sections'
 - I wonder whether the role of build_output could be done by a plugin using process_definition
-- Rename post_process_definitions
 - Doxygen and manifest files are good plugin examples
 - Put version number into every type and force it to be set in instance.
 - Consider storing whole callstack and then introducing JabaObject#error method.
@@ -17,8 +22,7 @@
 - Ability to 'grab' a text plugin that auto-adds ability to generate a text file to cpp projects.
 - Validate paths for missing / eg '../..debase-ruby_core_source/
 - option in tests to log to stdout
-- If targeting cpp, only create cpp and dependent types. Ignore other types and instances of those types.
-- Allow sublclasses of Plugins. Useful in testing.
+- Allow subclasses of Plugins. Useful in testing.
 - Add text_plugin.rb to examples in docs
 - Moving text into plugin has raised question about host. Need to set requied cpp_project_classname to ''. Not clean.
 - Should | be allowed in ids? Probably not.
@@ -33,13 +37,10 @@
 - Have a look at RubyVM to try and precompile ruby
 - Should :definition_root basedir_spec be able to take its value from the setting attr? Eg if globals attr specifies a definition root base spec it be relative to the user definition.
 - Could be moving towards concept of a type requiring configuration
-- Think about idea of lazy initialisation of types. Eg could move grab_bag into modules so they are always loaded but flag the type as lazy. When its is 'grabbed' it is initialised. 
 - Support vcfprop at project level too
 - Review whether '.' is allowed in :basename type. Maybe Introduce and allow_ext option.
 - Introduce :extension type. Use for src_ext
-- Add allowed platform specs to cpp#platforms reference doc somehow
 - rename windows_x86 to win_86?
-- Combine :symbol, :string and :symbol_or_string? Allow strings and symbols to be completely interchangeable?
 - Standardise 'expected/available' error msg, eg Available: [a|b|c|]
 - Regression tests for generated files!
 - consider putting .jaba inside buildsystem
@@ -49,15 +50,12 @@
 - sort out input system
 - enforce that paths stay within their base dir spec
 - Implement element deletion for hash attribute
-- Split JabaAttributeDefinition into variants
 - auto document plugin API
-- Add a flag to jaba type to say its not top level instantiatable
 - Add a file copy feature (install?). Could use custom build rule.
 - Stats in docs, eg number of files in jaba release, size of zip.
 - Finish off input manager cmd work
 - Disallow nested src_roots 
 - should string attr be allowed to be set to nil? Probably not.
-- Stop globals from having dependencies.
 - Add a 'referenced by' doc item for types.
 - make jaba clean clean the generated src, the .vs folder, the 'build' folder and optionally the 'buildsystem' folder.
 - Disallow ruby keywords as attr names, eg 'in' fails
@@ -80,7 +78,6 @@
 - Make defaults work per-file. Introduce global_defaults. Or a scope option to defaults.
 * Automatically pull in dependencies into workspace
 - attr def properties should have help string/notes...
-- Disallow globals from referencing itself
 - Allow default values to take options?
 - RUBY LICENSE REQUIREMENTS
 - consider having a globals per-type (eg cpp globals)
@@ -89,7 +86,6 @@
 - Should jaba target one 'language' (type) per run? Eg C++, C#
 - Employ did you mean style error reporting
   Error at basic_dll.jaba:8: 'defines' attribute not defined. Did you mean 'define'?
-- validate platforms and architecture specs
 - tag attrs as control flow attrs somehow for benefit of docs
 - add slnproperty which can address sln sections. Particularly useful when used with ExtensibilityGlobals
 - disband VSProj in favour of VSUtilities module
