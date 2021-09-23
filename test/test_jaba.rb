@@ -28,6 +28,7 @@ class JabaTest < Minitest::Spec
   ##
   #
   def jaba(barebones: false,
+           test_mode: true,
            want_exceptions: true,
            src_root: nil,
            build_root: nil,
@@ -40,7 +41,7 @@ class JabaTest < Minitest::Spec
     build_root = build_root || td
     argv = Array(argv)
 
-    op = JABA.run(want_exceptions: want_exceptions, test_mode: true) do |c|
+    op = JABA.run(want_exceptions: want_exceptions, test_mode: test_mode) do |c|
       c.src_root = src_root # Most unit tests don't have a src_root as everything is defined inline in code
       c.build_root = build_root
       c.argv = argv

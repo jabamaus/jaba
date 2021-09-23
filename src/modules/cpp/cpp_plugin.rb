@@ -41,7 +41,7 @@ class CppPlugin < JABA::Plugin
     # resolution time.
     #
     if definition.has_flag?(:export_only)
-      return nil
+      return :skip
     end
 
     @project_ids << definition.id
@@ -115,6 +115,8 @@ class CppPlugin < JABA::Plugin
   ##
   #
   def post_process_definitions
+    return if @all_project_nodes.empty?
+    
     @all_project_nodes.sort!{|x, y| x.handle.casecmp(y.handle)}
     @all_project_nodes.sort_topological! do |n, &b|
       n.attrs.deps.each(&b)

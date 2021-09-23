@@ -87,7 +87,6 @@ module JABA
       @definition_registry = {}
       @open_definitions_registry = {}
 
-      @type_to_instances = {}
       @node_lookup = {}
       @node_manager_lookup = {}
 
@@ -264,20 +263,10 @@ module JABA
       type_defs.delete(globals_type_def)
       type_defs.prepend(globals_type_def)
 
-      # Create JabaTypes, without calling attribute definition blocks
-      #
       type_defs.each do |d|
         id = d.id
         log "Creating '#{id}' type at #{d.src_loc.describe}"
         jt = make_jaba_type(id, d)
-
-        if d.open_defs
-          log "Opening #{id} type"
-          d.open_defs.each do |od|
-            jt.eval_jdl(&od.block)
-          end
-        end
-
         klass = nil
         plugin_block = jt.plugin
         if plugin_block
@@ -291,10 +280,7 @@ module JABA
             Plugin
           end
         end
-        nm = NodeManager.new(self)
-        @node_managers << nm
-        @node_manager_lookup[id] = nm
-
+        nm = get_or_make_node_manager(id)
         plugin = make_plugin(klass, nm)
         nm.init(jt, plugin)
       end
@@ -307,15 +293,16 @@ module JABA
 
       @jaba_types.each do |jt|
         jt.eval_attr_defs
-        node_manager = get_node_manager(jt.defn_id)
+        nm = get_node_manager(jt.defn_id)
+        nm.process
+      end
 
-        inst_defs = @type_to_instances[jt.defn_id]
-        if inst_defs
-          node_manager.add_definitions(inst_defs)
-        end
-
-        node_manager.pre_process
-        node_manager.process
+      jaba_types_copy = @jaba_types.dup
+      while !jaba_types_copy.empty?
+        jt = jaba_types_copy.shift
+        nm = get_node_manager(jt.defn_id)
+        nm.process
+        nm.post_process
       end
 
       # Output definition input data as a json file, before generation. This is raw data as generated from the definitions.
@@ -327,11 +314,7 @@ module JABA
 
       log 'Performing file generation...'
 
-      # Write final files
-      #
       @node_managers.each do |nm|
-        nm.post_process
-        
         # Call generate blocks defined per-node instance, in the context of the node itself, not its api
         #
         nm.root_nodes.each do |n|
@@ -458,6 +441,18 @@ module JABA
 
     ##
     #
+    def get_or_make_node_manager(id)
+      nm = get_node_manager(id, fail_if_not_found: false)
+      if !nm
+        nm = NodeManager.new(self)
+        @node_managers << nm
+        @node_manager_lookup[id] = nm
+      end
+      nm
+    end
+
+    ##
+    #
     def make_plugin(klass, node_manager)
       log "Making #{klass} plugin"
 
@@ -560,7 +555,7 @@ module JABA
         JABA.error("'#{id}' jaba type multiply defined")
       end
 
-      jt = JabaType.new(self, dfn.id, dfn.src_loc, dfn.block)
+      jt = JabaType.new(self, dfn.id, dfn.src_loc, dfn.block, dfn.open_defs)
 
       @jaba_types  << jt
       @jaba_type_lookup[id] = jt
@@ -656,7 +651,8 @@ module JABA
 
       if what == :instance
         d.jaba_type_id = type_id
-        @type_to_instances.push_value(type_id, d)
+        nm = get_or_make_node_manager(type_id)
+        nm.add_definition(d)
       end
       nil
     end
@@ -682,11 +678,8 @@ module JABA
     ##
     #
     def get_instance_ids(type_id)
-      defs = @type_to_instances[type_id]
-      if !defs
-        JABA.error("No '#{type_id}' type defined")
-      end
-      defs.map(&:id)
+      nm = get_node_manager(type_id)
+      nm.definitions.map(&:id)
     end
 
     ##

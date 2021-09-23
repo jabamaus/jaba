@@ -38,16 +38,20 @@ module JABA
     attr_reader :nodes
     attr_reader :root_nodes
     attr_reader :definition # current definition being processed
+    attr_reader :definitions # All registered definitions
 
     ##
     #
     def initialize(services)
       @services = services
       @definitions = []
+      @to_process = []
       @plugin = nil
       @root_nodes = []
       @nodes = [] # all nodes
       @reference_attrs_to_resolve = []
+      @pre_processed = false
+      @post_processed = false
     end
 
     ##
@@ -69,16 +73,9 @@ module JABA
     ##
     # Part of internal initialisation.
     #
-    def add_definitions(defs)
-      @definitions.concat(defs)
-    end
-
-    ##
-    # Give plugin a chance to do some initialisation before nodes are created. Dependent plugins that have already
-    # been processed can be accessed here.
-    #
-    def pre_process
-      @plugin.pre_process_definitions
+    def add_definition(d)
+      @definitions << d
+      @to_process << d
     end
 
     ##
@@ -86,19 +83,40 @@ module JABA
     def process
       services.log "Processing #{describe}", section: true
 
-      @definitions.each do |d|
+      if !@pre_processed
+        @pre_processed = true
+        @plugin.pre_process_definitions
+      end
+
+      if @post_processed
+        JABA.error("Internal error: #{describe} is being processed after post_process has been called")
+      end
+
+      nodes = []
+      @to_process.each do |d|
         push_definition(d) do
-          root_nodes = Array(@plugin.process_definition)
-          @root_nodes.concat(root_nodes)
+          node = @plugin.process_definition
+          if node.nil?
+            JABA.error("#{type_id} plugin's process_definition() method must return a single node but returned nil")
+          end
+          if node.array?
+            JABA.error("#{type_id} plugin's process_definition() method must return a single node but returned an array")
+          end
+          if node != :skip
+            nodes << node
+            @root_nodes << node
+          end
         end
       end
-      @definitions.clear
-      root_nodes
+      @to_process.clear
+      nodes
     end
     
     ##
     #
     def post_process
+      @post_processed = true
+      
       if @jaba_type.singleton
         if @root_nodes.size == 0
           JABA.error("singleton type '#{type_id}' must be instantiated", errobj: @jaba_type)
@@ -125,9 +143,7 @@ module JABA
           a.process_flags
         end
         
-        # Make all nodes read only from this point, to help catch mistakes
-        #
-        n.make_read_only
+        n.make_read_only # Make all nodes read only from this point, to help catch mistakes
       end
     end
 
@@ -187,13 +203,13 @@ module JABA
         handle << "|#{name}" if name
       end
 
-      services.log "#{'  ' * depth}Instancing node [type=#{type_id}, handle=#{handle}]" # TODO: fix logging of type
-
       jt = if type_id
         services.get_jaba_type(type_id)
       else
         @jaba_type
       end
+
+      services.log "#{'  ' * depth}Instancing node [type=#{jt.describe}, handle=#{handle}]"
 
       jn = JabaNode.new(self, @definition.id, @definition.src_loc, jt, handle, parent, depth, flags)
 

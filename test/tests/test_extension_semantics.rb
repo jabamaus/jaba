@@ -113,7 +113,7 @@ class TestExtensionSemantics < JabaTest
   end
 
   it 'supports defining an inline type plugin' do
-    assert_output 'init|pre_process_definitions|process_definition|a=1|process_definition|a=2|post_process_definitions|generate|build_output' do
+    assert_output 'init|pre|process_twp_top_level|a=1|process_t|a=2|post|generate|build_output' do
       jaba(barebones: true) do
         type :type_with_plugin do
           attr :a
@@ -122,16 +122,16 @@ class TestExtensionSemantics < JabaTest
               print 'init|'
             end
             def pre_process_definitions
-              print 'pre_process_definitions|'
+              print 'pre|'
             end
             def process_definition
-              print 'process_definition|'
+              print "process_#{services.current_definition.id}|"
               n = services.make_node
               print "a=#{n.attrs.a}|"
               n
             end
             def post_process_definitions
-              print 'post_process_definitions|'
+              print 'post|'
             end
             def generate
               print 'generate|'
@@ -142,14 +142,14 @@ class TestExtensionSemantics < JabaTest
             end
           end
         end
-        type_with_plugin :a do
+        type_with_plugin :twp_top_level do
           a 1
         end
         type :test do
-          attr :b, type: :compound, jaba_type: :type_with_plugin
+          attr :twp_contained, type: :compound, jaba_type: :type_with_plugin
         end
         test :t do
-          b do
+          twp_contained do
             a 2
           end
         end

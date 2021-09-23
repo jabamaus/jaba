@@ -115,11 +115,15 @@ module JABA
         else
           nm = services.get_node_manager(@attr_def.ref_jaba_type)
           dfn = services.make_definition(@node.defn_id, block, __jdl_call_loc)
-          nm.push_definition(dfn) do
-            nm.add_definitions([dfn])
-            nm.set_node_creation_args(name: id, parent: @node, block_args: block_args, flags: NodeFlags::IS_COMPOUND_ATTR)
-            return nm.process.first
+          nm.add_definition(dfn)
+          nm.set_node_creation_args(name: id, parent: @node, block_args: block_args, flags: NodeFlags::IS_COMPOUND_ATTR)
+          nodes = nm.process
+          if nodes.empty?
+            JABA.error("#{nm.describe} did not return any nodes")
+          elsif nodes.size > 1
+            JABA.error("#{nm.describe} returned more than one node")
           end
+          return nodes[0]
         end
       elsif @attr_def.block_attr?
         block # If its a block attr the value is the block itself

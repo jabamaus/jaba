@@ -13,12 +13,15 @@ module JABA
 
     ##
     #
-    def initialize(services, defn_id, src_loc, block)
+    def initialize(services, defn_id, src_loc, block, open_defs)
       super(services, defn_id, src_loc, JDL_Type.new(self))
 
+      @open_defs = open_defs
       @attribute_defs = [] # The type's actual attribute defs
       @attribute_def_lookup = {}
       @attribute_def_imported_lookup = {}
+      @contained_types = []
+      @attrs_evaluated = false
 
       define_property :title
       define_array_property :notes
@@ -30,6 +33,13 @@ module JABA
 
       if block
         eval_jdl(&block)
+      end
+
+      if @open_defs
+        @services.log "Opening #{defn_id} type"
+        @open_defs.each do |d|
+          eval_jdl(&d.block)
+        end
       end
 
       validate
@@ -72,10 +82,14 @@ module JABA
       # to ensure correct node instance creation order.
       #
       if jaba_type
-        if jaba_type != defn_id
+        case type
+        when :ref
           set_property(:dependencies, jaba_type)
-        elsif type == :compound
-          JABA.error(":compound attribute cannot set to jaba_type to owning type")
+        when :compound
+          if jaba_type == defn_id
+            JABA.error("Cannot contain own type")
+          end
+          @contained_types << jaba_type
         end
       end
 
@@ -91,6 +105,11 @@ module JABA
     ##
     #
     def post_create
+      @contained_types.uniq!
+      @contained_types.map!{|d| services.get_jaba_type(d)}
+      @contained_types.each do |ct|
+        @dependencies.concat(ct.dependencies)
+      end
       @dependencies.uniq!
       @dependencies.map!{|d| services.get_jaba_type(d)}
     end
@@ -98,8 +117,10 @@ module JABA
     ##
     #
     def eval_attr_defs
+      return if @attrs_evaluated
+      @attrs_evaluated = true
       @attribute_defs.each(&:eval_definition)
-      
+
       # Register referenced attr defs
       #
       @attribute_defs.each do |attr_def|
@@ -117,6 +138,10 @@ module JABA
       end
 
       @attribute_defs.sort_by!{|ad| ad.defn_id}
+
+      @contained_types.each do |ct|
+        ct.eval_attr_defs
+      end
     end
 
     ##

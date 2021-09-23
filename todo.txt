@@ -1,3 +1,7 @@
+- compound attr should not need a title. Could use the title of the jaba type.
+- Add test demonstrating plugins creating dependent objects as they are being processed, eg cpp plugin creates workspaces
+- Should be able to map property value in pre_property_set
+- I don't like pre/post property set much. Make it specific to each attr not called for every attr.
 - Disallow types being used as a compound attr from being flagged as singleton
 - Rather than attr :a, type: :compound, jaba_type: :type_with_plugin it could be
   attr :a, embed: type_with_plugin
