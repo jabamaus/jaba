@@ -2,5 +2,5 @@ text :example do
   content %Q{Add a block of raw text using ruby's %Q string literal notation.
 Makes it easy to write formatted text including newlines
 }
-  line 'Add a line explictly'
+  line 'Add a line explicitly'
 end
