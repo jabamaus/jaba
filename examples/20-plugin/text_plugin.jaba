@@ -27,10 +27,6 @@ type :text do
   end
 
   plugin do
-    def process_definition
-      services.make_node
-    end
-
     def generate
       services.nodes.each do |n|
         attrs = n.attrs
