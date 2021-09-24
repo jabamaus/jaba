@@ -681,6 +681,13 @@ module JABA
 
     ##
     #
+    def jdl_get_nodes_of_type(type_id)
+      nm = get_node_manager(type_id)
+      nm.root_nodes.map{|n| n.attrs_read_only}
+    end
+
+    ##
+    #
     def make_plugin(klass, node_manager)
       log "Making #{klass} plugin"
 

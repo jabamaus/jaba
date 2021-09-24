@@ -136,6 +136,13 @@ module JABA
     end
 
     ##
+    # Access node attributes of dependencies which have already been created before this type was initialised.
+    #
+    def instances(type)
+      @attr_def.services.jdl_get_nodes_of_type(type)
+    end
+
+    ##
     #
     def method_missing(id, val = nil, &block)
       @attr_def.handle_property(id, val, __jdl_call_loc: ::Kernel.caller_locations(1, 1)[0], &block)

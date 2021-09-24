@@ -13,7 +13,6 @@ class CppPlugin < JABA::Plugin
     @project_ids = []
     @node_to_project = {}
     @export_only_dependencies_to_resolve = {}
-    @valid_platforms = []
   end
 
   ##
@@ -22,14 +21,6 @@ class CppPlugin < JABA::Plugin
     target_host_id = services.globals.target_host
     @target_host = services.node_from_handle(target_host_id.to_s) # TODO: move to services
     @supported_platforms = @target_host.attrs.cpp_supported_platforms
-
-    platform_plugin = services.get_plugin(:platform)
-    platform_plugin.services.root_nodes.each do |platform|
-      platform.attrs.valid_archs.each do |arch|
-        @valid_platforms << "#{platform}_#{arch}".to_sym
-      end
-    end
-    @valid_platforms.sort!
   end
 
   ##
@@ -50,13 +41,8 @@ class CppPlugin < JABA::Plugin
     project_blocks = root_node.attrs.project
     config_blocks = root_node.attrs.config
 
-    # Validate platform specification
-    #
     target_platform_to_archs = {}
     root_node.attrs.platforms.each do |pspec|
-      if !@valid_platforms.include?(pspec)
-        JABA.error("Invalid platform spec '#{pspec.inspect_unquoted}'. Available: #{@valid_platforms}", errobj: root_node.get_attr(:platforms))
-      end
       if pspec !~ /^(.*?)_(.*)/
         JABA.error("Cannot extract platform and architecture from '#{pspec}'")
       end
