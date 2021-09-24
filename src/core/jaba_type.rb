@@ -74,7 +74,15 @@ module JABA
       validate_id(id)
       id = id.to_sym
       
-      ad = JabaAttributeDefinition.new(self, id, caller_locations(2, 1)[0], block, type, key_type, variant, jaba_type)
+      ad = case variant
+      when :single
+        JabaAttributeSingleDefinition.new(self, id, caller_locations(2, 1)[0], block, type, jaba_type)
+      when :array
+        JabaAttributeArrayDefinition.new(self, id, caller_locations(2, 1)[0], block, type, jaba_type)
+      when :hash
+        JabaAttributeHashDefinition.new(self, id, caller_locations(2, 1)[0], block, type, jaba_type, key_type)
+      end
+        
       register_attr_def(ad, :local)
 
       # If referenced jaba type specified and its not this type, add a dependency on the type. Used to dependency sort types

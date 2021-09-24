@@ -169,12 +169,11 @@ class TestAttributeDefinition < JabaTest
     end
   end
 
-  it 'fails if non-block default value trys to reference another attribute' do
+  it 'fails if non-block default value tries to reference another attribute' do
     assert_jaba_error "Error at #{src_loc(__FILE__, :tagZ)}: 'b.a' undefined. Are you setting default in terms of another attribute? If so block form must be used." do
       jaba(barebones: true) do
         type :test do
           attr :a
-            #default :b
           attr :b do
             default "#{a.upcase}" # tagZ
           end
@@ -196,10 +195,24 @@ class TestAttributeDefinition < JabaTest
               fail "Val must not be 2" if val == 2 # tags
             end
           end
+          attr_array :b do
+            validate do |val|
+              fail "Val must not be 2" if val == 2 # tagt
+            end
+          end
+          attr_hash :c, key_type: :int do
+            validate do |val|
+              fail "Val must not be 2" if val == 2 # tagu
+            end
+          end
         end
         test :t do
           a 1
           a 2 # tagS
+          b [1]
+          b [2] # tagT
+          c 1, 1
+          c 1, 2 # tagU
         end
       end
     end

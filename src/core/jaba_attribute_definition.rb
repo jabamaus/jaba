@@ -7,12 +7,11 @@ module JABA
   ##
   # Manages shared data that is common to Attributes instanced from this definition.
   #
-  class JabaAttributeDefinition < JabaObject
+  class JabaAttributeDefinitionBase < JabaObject
 
     attr_reader :type_id # eg :bool, :string, :file etc
     attr_reader :variant # :single, :array, :hash
     attr_reader :jaba_attr_type # JabaAttributeType object
-    attr_reader :jaba_attr_key_type # JabaAttributeType object. Used by hash attribute.
     attr_reader :jaba_type
     attr_reader :ref_jaba_type # Defined and used by node_ref/compound attribute types but give access here for efficiency
 
@@ -27,13 +26,12 @@ module JABA
     
     ##
     #
-    def initialize(jaba_type, defn_id, src_loc, block, type_id, key_type_id, variant, ref_jaba_type)
+    def initialize(variant, jaba_type, defn_id, src_loc, block, type_id, ref_jaba_type)
       super(jaba_type.services, defn_id, src_loc, JDL_AttributeDefinition.new(self))
       
       @jaba_type = jaba_type
       @block = block
       @type_id = type_id
-      @key_type_id = key_type_id # Only used with hash attributes
       @variant = variant
       @ref_jaba_type = ref_jaba_type # Used by compound attrs and reference attrs
       @value_options = []
@@ -53,26 +51,6 @@ module JABA
       define_block_property(:on_set)
       
       @jaba_attr_type = services.get_attribute_type(@type_id)
-      @jaba_attr_key_type = nil
-      
-      # Custom hash attribute setup
-      #
-      if hash?
-        define_block_property(:validate_key)
-
-        if @key_type_id
-          @jaba_attr_key_type = services.get_attribute_type(@key_type_id)
-        else
-          JABA.error("#{describe} must specify :key_type [#{services.jaba_attr_types.map{|t| t.id.inspect}.join(', ')}]")
-        end
-
-        # Attributes that are stored as values in a hash have their corresponding key stored in their options. This is
-        # used when cloning attributes. Store as __key to indicate it is internal and to stop it clashing with any user
-        # defined option.
-        #
-        add_value_option(:__key, false, [])
-      end
-      
       @jaba_attr_type.init_attr_def(self)
     end
 
@@ -313,6 +291,63 @@ module JABA
       rescue => e
         JABA.error("#{what} invalid: #{e.message}", callstack: e.instance_variable_get(:@callstack))
       end
+    end
+
+  end
+
+  ##
+  #
+  class JabaAttributeSingleDefinition < JabaAttributeDefinitionBase
+
+    ##
+    #
+    def initialize(jaba_type, defn_id, src_loc, block, type_id, ref_jaba_type)
+      super(:single, jaba_type, defn_id, src_loc, block, type_id, ref_jaba_type)
+    
+    end
+
+  end
+
+  ##
+  #
+  class JabaAttributeArrayDefinition < JabaAttributeDefinitionBase
+  
+    ##
+    #
+    def initialize(jaba_type, defn_id, src_loc, block, type_id, ref_jaba_type)
+      super(:array, jaba_type, defn_id, src_loc, block, type_id, ref_jaba_type)
+    end
+
+  end
+
+  ##
+  #
+  class JabaAttributeHashDefinition < JabaAttributeDefinitionBase
+
+    attr_reader :jaba_attr_key_type # JabaAttributeType object. Used by hash attribute.
+  
+    ##
+    #
+    def initialize(jaba_type, defn_id, src_loc, block, type_id, ref_jaba_type, key_type_id)
+      super(:hash, jaba_type, defn_id, src_loc, block, type_id, ref_jaba_type)
+
+      @key_type_id = key_type_id # Only used with hash attributes
+
+      @jaba_attr_key_type = nil
+      
+      define_block_property(:validate_key)
+
+      if @key_type_id
+        @jaba_attr_key_type = services.get_attribute_type(@key_type_id)
+      else
+        JABA.error("#{describe} must specify :key_type [#{services.jaba_attr_types.map{|t| t.id.inspect}.join(', ')}]")
+      end
+
+      # Attributes that are stored as values in a hash have their corresponding key stored in their options. This is
+      # used when cloning attributes. Store as __key to indicate it is internal and to stop it clashing with any user
+      # defined option.
+      #
+      add_value_option(:__key, false, [])
     end
 
   end

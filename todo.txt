@@ -1,4 +1,3 @@
-- Split JabaAttributeDefinition into variants
 - Make cpp_project and cpp_platform into contained types
 - Change to make all modules manually included. eg 'include 'cpp''. Get rid of 'grab'.
 - Combine :symbol, :string and :symbol_or_string? Allow strings and symbols to be completely interchangeable?
