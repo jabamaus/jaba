@@ -301,9 +301,7 @@ module JABA
         nm.process
       end
 
-      nms_copy = @node_managers.dup
-      while !nms_copy.empty?
-        nm = nms_copy.shift
+      @node_managers.each do |nm|
         nm.process
         nm.post_process
       end
