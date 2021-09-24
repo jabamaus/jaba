@@ -49,7 +49,3 @@ type :text do
     end
   end
 end
-
-host :text do
-  cpp_project_classname '' # TODO: remove
-end
