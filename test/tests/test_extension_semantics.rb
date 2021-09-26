@@ -124,9 +124,9 @@ class TestExtensionSemantics < JabaTest
             def pre_process_definitions
               print 'pre|'
             end
-            def process_definition
+            def process_definition(definition)
               print "process_#{services.current_definition.id}|"
-              n = services.make_node
+              n = services.make_node(definition)
               print "a=#{n.attrs.a}|"
               n
             end
@@ -139,6 +139,27 @@ class TestExtensionSemantics < JabaTest
             end
             def build_output(root)
               print 'build_output'
+            end
+          end
+          plugin do
+            def init
+              print 'init2|'
+            end
+            def pre_process_definitions
+              print 'pre2|'
+            end
+            def process_definition(definition)
+              print "process2_#{definition.id}|"
+              services.make_node(definition)
+            end
+            def post_process_definitions
+              print 'post2|'
+            end
+            def generate
+              print 'generate2|'
+            end
+            def build_output(root)
+              print 'build_output2'
             end
           end
         end
@@ -175,18 +196,18 @@ class TestExtensionSemantics < JabaTest
               print 'init|'
               @projects = []
             end
-            def process_definition
+            def process_definition(definition)
               print 'process_definition|'
-              root_node = services.make_node
+              root_node = services.make_node(definition)
         
               root_node.attrs.platforms.each do |p|
-                project = services.make_node(type_id: :project, name: p, parent: root_node, blocks: root_node.attrs.project) do 
+                project = services.make_node(definition, type_id: :project, name: p, parent: root_node, blocks: root_node.attrs.project) do 
                   platform p
                 end
                 @projects << project
                 
                 project.attrs.configs.each do |c|
-                  services.make_node(type_id: :config, name: c, parent: project, blocks: root_node.attrs.config) do
+                  services.make_node(definition, type_id: :config, name: c, parent: project, blocks: root_node.attrs.config) do
                     config c
                   end
                 end
@@ -262,8 +283,8 @@ type :print_line_plugin do
     default :lower
   end
   plugin do
-    def process_definition
-      services.make_node
+    def process_definition(definition)
+      services.make_node(definition)
     end
     def generate
       services.nodes.each do |n|

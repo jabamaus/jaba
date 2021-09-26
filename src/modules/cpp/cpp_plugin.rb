@@ -25,8 +25,7 @@ class CppPlugin < JABA::Plugin
 
   ##
   #
-  def process_definition
-    definition = services.current_definition
+  def process_definition(definition)
     # If its an export only definition, ignore it as it should not get turned into a generatable project,
     # rather it is just there to export attributes. This definition will be processed later at dependency
     # resolution time.
@@ -37,7 +36,7 @@ class CppPlugin < JABA::Plugin
 
     @project_ids << definition.id
 
-    root_node = services.make_node
+    root_node = services.make_node(definition)
     project_blocks = root_node.attrs.project
     config_blocks = root_node.attrs.config
 
@@ -54,7 +53,7 @@ class CppPlugin < JABA::Plugin
     end
 
     target_platform_to_archs.each do |tp, target_archs|
-      pn = services.make_node(type_id: :cpp_project, name: tp, parent: root_node, blocks: project_blocks) do
+      pn = services.make_node(definition, type_id: :cpp_project, name: tp, parent: root_node, blocks: project_blocks) do
         platform tp
       end
 
@@ -63,7 +62,7 @@ class CppPlugin < JABA::Plugin
 
       pn.attrs.configs.each do |cfg|
         target_archs.each do |ta|
-          services.make_node(type_id: :cpp_config, name: "#{ta}|#{cfg}", parent: pn, blocks: config_blocks) do
+          services.make_node(definition, type_id: :cpp_config, name: "#{ta}|#{cfg}", parent: pn, blocks: config_blocks) do
             config cfg
             arch ta
           end
@@ -141,44 +140,45 @@ class CppPlugin < JABA::Plugin
         # Create a temporary untracked node from the definition, parented to the project node which will mean that it will be able to
         # read its attributes (eg platform, config, host etc).
         # 
-        services.push_definition(export_only_def) do
-          export_only_root = services.make_node(
-            name: 'export_only_root',
-            flags: JABA::NodeFlags::NO_POST_CREATE | JABA::NodeFlags::NO_DEFAULTS | JABA::NodeFlags::NO_TRACK,
-          )
+        export_only_root = services.make_node(
+          export_only_def,
+          name: 'export_only_root',
+          flags: JABA::NodeFlags::NO_POST_CREATE | JABA::NodeFlags::NO_DEFAULTS | JABA::NodeFlags::NO_TRACK,
+        )
 
-          project_blocks = export_only_root.attrs.project
-          config_blocks = export_only_root.attrs.config
+        project_blocks = export_only_root.attrs.project
+        config_blocks = export_only_root.attrs.config
 
-          export_only_node = services.make_node(
-            type_id: :cpp_project,
-            name: 'project_export_only', 
-            parent: project_node,
+        export_only_node = services.make_node(
+          export_only_def,
+          type_id: :cpp_project,
+          name: 'project_export_only', 
+          parent: project_node,
+          flags: JABA::NodeFlags::NO_POST_CREATE | JABA::NodeFlags::NO_DEFAULTS | JABA::NodeFlags::NO_TRACK | JABA::NodeFlags::LAZY,
+          blocks: project_blocks
+        ) 
+        export_only_node.set_parent(export_only_root)
+        export_only_node.make_paths_absolute
+
+        # Now merge the node's attributes into project node attrs
+        #
+        process_export_only_node_exports(project_node, export_only_node)
+
+        project_node.children.each do |cfg_node|
+          export_only_cfg_node = services.make_node(
+            export_only_def,
+            type_id: :cpp_config,
+            name: 'config_export_only',
+            parent: cfg_node,
             flags: JABA::NodeFlags::NO_POST_CREATE | JABA::NodeFlags::NO_DEFAULTS | JABA::NodeFlags::NO_TRACK | JABA::NodeFlags::LAZY,
-            blocks: project_blocks
-          ) 
-          export_only_node.set_parent(export_only_root)
-          export_only_node.make_paths_absolute
+            blocks: config_blocks
+          )
+          export_only_cfg_node.set_parent(export_only_node)
+          export_only_cfg_node.make_paths_absolute
 
-          # Now merge the node's attributes into project node attrs
+          # Now merge the node's attributes into its config node attrs
           #
-          process_export_only_node_exports(project_node, export_only_node)
-
-          project_node.children.each do |cfg_node|
-            export_only_cfg_node = services.make_node(
-              type_id: :cpp_config,
-              name: 'config_export_only',
-              parent: cfg_node,
-              flags: JABA::NodeFlags::NO_POST_CREATE | JABA::NodeFlags::NO_DEFAULTS | JABA::NodeFlags::NO_TRACK | JABA::NodeFlags::LAZY,
-              blocks: config_blocks
-            )
-            export_only_cfg_node.set_parent(export_only_node)
-            export_only_cfg_node.make_paths_absolute
-
-            # Now merge the node's attributes into its config node attrs
-            #
-            process_export_only_node_exports(cfg_node, export_only_cfg_node)
-          end
+          process_export_only_node_exports(cfg_node, export_only_cfg_node)
         end
       end
     end

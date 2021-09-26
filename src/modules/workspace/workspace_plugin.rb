@@ -35,8 +35,8 @@ class WorkspacePlugin < JABA::Plugin
 
   ##
   #
-  def process_definition
-    services.make_node
+  def process_definition(definition)
+    services.make_node(definition)
   end
 
   ##

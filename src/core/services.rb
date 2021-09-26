@@ -672,9 +672,8 @@ module JABA
 
     ##
     #
-    def get_instance_ids(type_id)
-      nm = get_node_manager(type_id)
-      nm.definitions.map(&:id)
+    def jdl_top_level_instance_ids(type_id)
+      get_node_manager(type_id).top_level_ids
     end
 
     ##

@@ -2,8 +2,8 @@ module JABA
 
   class GlobalsPlugin < Plugin
 
-    def process_definition
-      globals_node = services.make_node(flags: NodeFlags::NO_POST_CREATE)
+    def process_definition(definition)
+      globals_node = services.make_node(definition, flags: NodeFlags::NO_POST_CREATE)
       
       main_services = services.instance_variable_get(:@services)
       main_services.instance_variable_set(:@globals_node, globals_node)
@@ -37,14 +37,12 @@ module JABA
     attr_reader :plugin
     attr_reader :nodes
     attr_reader :root_nodes
-    attr_reader :definition # current definition being processed
-    attr_reader :definitions # All registered definitions
+    attr_reader :top_level_ids
 
     ##
     #
     def initialize(services)
       @services = services
-      @definitions = []
       @to_process = []
       @plugin = nil
       @root_nodes = []
@@ -52,6 +50,8 @@ module JABA
       @reference_attrs_to_resolve = []
       @pre_processed = false
       @post_processed = false
+      @top_level_ids = []
+      @compound_attr_creation_params = nil
     end
 
     ##
@@ -61,7 +61,6 @@ module JABA
     end
 
     ##
-    # Part of internal initialisation.
     #
     def init(jaba_type, plugin)
       @jaba_type = jaba_type
@@ -71,11 +70,34 @@ module JABA
     end
 
     ##
-    # Part of internal initialisation.
     #
-    def add_definition(d)
-      @definitions << d
-      @to_process << d
+    CompoundAttrCreationParams = Struct.new(
+      :name,
+      :parent,
+      :block_args,
+      :flags,
+      :root_node
+    )
+
+    ##
+    #
+    def add_definition(dfn)
+      @to_process << dfn
+      @top_level_ids << dfn.id
+    end
+
+    ##
+    #
+    def add_compound_attr_definition(dfn, name: nil, parent: nil, block_args: nil, flags: 0)
+      cp = CompoundAttrCreationParams.new
+      cp.name = name
+      cp.parent = parent
+      cp.block_args = block_args
+      cp.flags = flags
+      cp.root_node = nil
+      @compound_attr_creation_params = cp
+      @to_process << dfn
+      cp
     end
 
     ##
@@ -92,24 +114,20 @@ module JABA
         JABA.error("Internal error: #{describe} is being processed after post_process has been called")
       end
 
-      nodes = []
-      @to_process.each do |d|
-        push_definition(d) do
-          node = @plugin.process_definition
-          if node.nil?
-            JABA.error("#{type_id} plugin's process_definition() method must return a single node but returned nil")
-          end
-          if node.array?
-            JABA.error("#{type_id} plugin's process_definition() method must return a single node but returned an array")
-          end
-          if node != :skip
-            nodes << node
-            @root_nodes << node
-          end
+      @to_process.each do |definition|
+        root_node = @plugin.process_definition(definition)
+
+        if root_node.nil?
+          JABA.error("#{type_id} plugin's process_definition() method must return a single node but returned nil")
+        end
+        if root_node.array?
+          JABA.error("#{type_id} plugin's process_definition() method must return a single node but returned an array")
+        end
+        if root_node != :skip
+          @root_nodes << root_node
         end
       end
       @to_process.clear
-      nodes
     end
     
     ##
@@ -149,24 +167,8 @@ module JABA
 
     ##
     #
-    def push_definition(d)
-      @definition = d
-      yield
-      @definition = nil
-    end
-
-    ##
-    #
-    def set_node_creation_args(name:, parent:, block_args:, flags: 0)
-      @custom_name = name
-      @custom_parent = parent
-      @custom_block_args = block_args
-      @custom_flags = flags
-    end
-
-    ##
-    #
     def make_node(
+      definition,
       type_id: nil,
       name: nil,
       parent: nil,
@@ -178,20 +180,12 @@ module JABA
       depth = 0
       handle = nil
  
-      if @custom_parent
-        parent = @custom_parent
-      end
-
-      if @custom_name
-        name = @custom_name
-      end
-
-      if @custom_block_args
-        block_args = @custom_block_args
-      end
-
-      if @custom_flags
-        flags |= @custom_flags
+      if @compound_attr_creation_params
+        JABA.error("parent should not be set") if parent
+        parent = @compound_attr_creation_params.parent
+        name = @compound_attr_creation_params.name
+        block_args = @compound_attr_creation_params.block_args
+        flags |= @compound_attr_creation_params.flags
       end
 
       if parent
@@ -199,7 +193,7 @@ module JABA
         handle = "#{parent.handle}|#{name}"
         depth = parent.depth + 1
       else
-        handle = "#{@definition.id}"
+        handle = "#{definition.id}"
         handle << "|#{name}" if name
       end
 
@@ -211,7 +205,12 @@ module JABA
 
       services.log "#{'  ' * depth}Instancing node [type=#{jt.describe}, handle=#{handle}]"
 
-      jn = JabaNode.new(self, @definition.id, @definition.src_loc, jt, handle, parent, depth, flags)
+      jn = JabaNode.new(self, definition.id, definition.src_loc, jt, handle, parent, depth, flags)
+      
+      if @compound_attr_creation_params
+        @compound_attr_creation_params.root_node = jn
+        @compound_attr_creation_params = nil
+      end
 
       if flags & NodeFlags::NO_TRACK == 0
         @services.register_node(jn)
@@ -242,11 +241,11 @@ module JABA
             end
           end
  
-          if @definition.block
-            jn.eval_jdl(*block_args, &@definition.block)
+          if definition.block
+            jn.eval_jdl(*block_args, &definition.block)
           end
 
-          @definition.open_defs&.each do |d|
+          definition.open_defs&.each do |d|
             jn.eval_jdl(&d.block)
           end
         end

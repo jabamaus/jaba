@@ -82,7 +82,7 @@ module  JABA
     # The type must be defined before this is called, which can be achieved by adding a dependency.
     #
     def all_instance_ids(jaba_type_id)
-      @obj.services.get_instance_ids(jaba_type_id)
+      @obj.services.jdl_top_level_instance_ids(jaba_type_id)
     end
 
   end

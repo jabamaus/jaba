@@ -6,18 +6,6 @@ module JABA
 
     ##
     #
-    def current_definition
-      @node_manager.definition
-    end
-
-    ##
-    #
-    def push_definition(...)
-      @node_manager.push_definition(...)
-    end
-
-    ##
-    #
     def make_node(...)
       @node_manager.make_node(...)
     end
@@ -129,8 +117,8 @@ module JABA
 
     ##
     #
-    def process_definition
-      services.make_node
+    def process_definition(creation_params)
+      services.make_node(creation_params)
     end
 
     ##
