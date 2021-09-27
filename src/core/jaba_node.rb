@@ -45,7 +45,7 @@ module JABA
       # Define generate hook on tracked root nodes only
       #
       if (!parent && !has_flag?(NodeFlags::NO_TRACK)) || has_flag?(NodeFlags::IS_COMPOUND_ATTR)
-        define_block_property(:generate)
+        define_single_property(:generate, type: :block)
       end
     end
 

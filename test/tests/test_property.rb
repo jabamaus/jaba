@@ -154,9 +154,9 @@ class TestProperty < JabaTest
     pc.c.must_equal({a: :b, c: :d})
   end
 
-  it 'supports block properties' do
+  it 'supports block types' do
     pc = PropertyContainer.new
-    pc.define_block_property(:a)
+    pc.define_single_property(:a, type: :block)
     pc.set_property(:a) do
       print 'in block'
     end
@@ -178,14 +178,38 @@ class TestProperty < JabaTest
       pc.set_property(:a, 1) do
       end
     end
+
+    pc.define_array_property(:b, type: :block)
+    pc.set_property(:b) do
+      print 'in block[0]|'
+    end
+    pc.set_property(:b) do
+      print 'in block[1]'
+    end
+    assert_output 'in block[0]|in block[1]' do
+      pc.b.each(&:call)
+    end
+
+    pc.define_hash_property(:c, type: :block)
+    pc.set_property(:c, :k0) do
+      'in block[0]|'
+    end
+    pc.set_property(:c, :k1) do
+      'in block[1]'
+    end
+    assert_output 'k0=>in block[0]|k1=>in block[1]' do
+      pc.c.each do |key, block|
+        print "#{key}=>#{block.call}"
+      end
+    end
   end
 
-  it 'fails if set undefined property' do
+  it 'fails if property undefined' do
     pc = PropertyContainer.new
-    assert_jaba_error "Failed to set undefined 'a' property", trace: nil do
+    assert_jaba_error "'a' property undefined", trace: nil do
       pc.set_property(:a)
     end
-    assert_jaba_error "Failed to get undefined 'a' property", trace: nil do
+    assert_jaba_error "'a' property undefined", trace: nil do
       pc.get_property(:a)
     end
   end
@@ -244,7 +268,7 @@ post d->block
       pc.set_property(:c) do
         {c: :d}
       end
-      pc.define_block_property(:d) # doesn't call pre/post set for block properties
+      pc.define_single_property(:d, type: :block) # doesn't call pre/post set for block properties
       pc.set_property(:d) do
       end
     end

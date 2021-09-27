@@ -47,8 +47,8 @@ module JABA
       define_array_property(:flags)
       define_array_property(:flag_options)
       
-      define_block_property(:validate)
-      define_block_property(:on_set)
+      define_single_property(:validate, type: :block)
+      define_single_property(:on_set, type: :block)
       
       @jaba_attr_type = services.get_attribute_type(@type_id)
       @jaba_attr_type.init_attr_def(self)
@@ -335,7 +335,7 @@ module JABA
 
       @jaba_attr_key_type = nil
       
-      define_block_property(:validate_key)
+      define_single_property(:validate_key, type: :block)
 
       if @key_type_id
         @jaba_attr_key_type = services.get_attribute_type(@key_type_id)

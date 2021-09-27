@@ -63,7 +63,7 @@ module JABA
   #
   module PropertyMethods
 
-    PropertyInfo = Struct.new(:variant, :var, :store_block, :last_call_location)
+    PropertyInfo = Struct.new(:variant, :type, :var, :store_block, :last_call_location)
 
     ##
     #
@@ -74,57 +74,46 @@ module JABA
 
     ##
     #
-    def define_property(p_id, variant: :single, store_block: false)
+    def define_property(p_id, variant:, type: nil, store_block: false)
       case variant
       when :single
-        define_single_property(p_id, store_block: store_block)
+        define_single_property(p_id, type: type, store_block: store_block)
       when :array
-        define_array_property(p_id, store_block: store_block)
+        define_array_property(p_id, type: type, store_block: store_block)
       when :hash
-        define_hash_property(p_id, store_block: store_block)
-      when :block
-        define_block_property(p_id)
+        define_hash_property(p_id, type: type, store_block: store_block)
       end
     end
 
     ##
     #
-    def define_single_property(p_id, store_block: false)
-      do_define_property(p_id, :single, store_block, nil)
+    def define_single_property(p_id, type: nil, store_block: false)
+      do_define_property(p_id, :single, type, store_block, nil)
     end
 
     ##
     #
-    def define_array_property(p_id, store_block: false)
-      do_define_property(p_id, :array, store_block, [])
+    def define_array_property(p_id, type: nil, store_block: false)
+      do_define_property(p_id, :array, type, store_block, [])
     end
 
     ##
     #
-    def define_hash_property(p_id, store_block: false)
-      do_define_property(p_id, :hash, store_block, {})
-    end
-
-    ##
-    #
-    def define_block_property(p_id)
-      do_define_property(p_id, :block, true, nil)
+    def define_hash_property(p_id, type: nil, store_block: false)
+      do_define_property(p_id, :hash, type, store_block, {})
     end
 
     ##
     #
     def set_property(p_id, val = nil, __jdl_call_loc: nil, &block)
-      info = @properties[p_id]
-      if !info
-        JABA.error("Failed to set undefined '#{p_id}' property")
-      end
+      info = get_property_info(p_id)
 
       if __jdl_call_loc
         info.last_call_location = __jdl_call_loc
       end
 
       if block_given?
-        if !val.nil?
+        if !val.nil? && info.variant != :hash
           JABA.error('Must provide a value or a block but not both')
         end
         if info.store_block
@@ -133,10 +122,27 @@ module JABA
           end
           return
         end
-        val = block.call
+
+        val = if info.type == :block
+          if info.variant == :hash
+            {val => block}
+          else
+            block
+          end
+        else
+          yield
+        end
       end
       
-      if info.variant == :array
+      case info.variant
+      when :single
+        if val.array? || val.hash?
+          JABA.error("'#{p_id}' expects a single value but got '#{val}'")
+        end
+        do_set(p_id, val) do
+          instance_variable_set(info.var, val)
+        end
+      when :array
         if val.hash?
           JABA.error("'#{p_id}' expects an array but got '#{val}'")
         end
@@ -151,20 +157,13 @@ module JABA
             current_val << val
           end
         end
-      elsif info.variant == :hash
+      when :hash
         if !val.hash?
           JABA.error("'#{p_id}' expects a hash but got '#{val}'")
         end
         current_val = instance_variable_get(info.var)
         do_set(p_id, val) do
           current_val.merge!(val)
-        end
-      else
-        if val.array? || val.hash?
-          JABA.error("'#{p_id}' expects a single value but got '#{val}'")
-        end
-        do_set(p_id, val) do
-          instance_variable_set(info.var, val)
         end
       end
     end
@@ -231,19 +230,19 @@ module JABA
     def get_property_info(p_id, fail_if_not_found: true)
       info = @properties[p_id]
       if !info && fail_if_not_found
-        JABA.error("Failed to get undefined '#{p_id}' property")
+        JABA.error("'#{p_id}' property undefined")
       end
       info
     end
 
     ##
     #
-    def do_define_property(p_id, variant, store_block, initial)
+    def do_define_property(p_id, variant, type, store_block, initial)
       if @properties.key?(p_id)
         JABA.error("'#{p_id}' property multiply defined")
       end
       var = "@#{p_id}"
-      @properties[p_id] = PropertyInfo.new(variant, var, store_block, nil)
+      @properties[p_id] = PropertyInfo.new(variant, type, var, store_block, nil)
 
       instance_variable_set(var, initial)
 

@@ -387,8 +387,8 @@ module JABA
     end
 
     def init_attr_def(attr_def)
-      attr_def.define_block_property(:make_handle)
-      attr_def.define_block_property(:unresolved_msg)
+      attr_def.define_single_property(:make_handle, type: :block)
+      attr_def.define_single_property(:unresolved_msg, type: :block)
     end
 
   end
