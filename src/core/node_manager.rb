@@ -258,11 +258,6 @@ module JABA
         jn.post_create
       end
 
-      @custom_name = nil
-      @custom_parent = nil
-      @custom_block_args = nil
-      @custom_flags = nil
-
       jn
     end
 

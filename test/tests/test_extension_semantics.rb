@@ -125,7 +125,7 @@ class TestExtensionSemantics < JabaTest
               print 'pre|'
             end
             def process_definition(definition)
-              print "process_#{services.current_definition.id}|"
+              print "process_#{definition.id}|"
               n = services.make_node(definition)
               print "a=#{n.attrs.a}|"
               n
