@@ -77,7 +77,7 @@ module JABA
     def define_property(p_id, variant: :single, store_block: false)
       case variant
       when :single
-        do_define_property(p_id, :single, store_block, nil)
+        define_single_property(p_id, store_block: store_block)
       when :array
         define_array_property(p_id, store_block: store_block)
       when :hash
@@ -85,6 +85,12 @@ module JABA
       when :block
         define_block_property(p_id)
       end
+    end
+
+    ##
+    #
+    def define_single_property(p_id, store_block: false)
+      do_define_property(p_id, :single, store_block, nil)
     end
 
     ##

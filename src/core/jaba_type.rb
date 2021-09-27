@@ -22,9 +22,9 @@ module JABA
       @contained_types = []
       @attrs_evaluated = false
 
-      define_property :title
+      define_single_property :title
       define_array_property :notes
-      define_property :singleton
+      define_single_property :singleton
       define_array_property :dependencies # TODO: validate explicitly specified deps
       define_block_property :plugin
 

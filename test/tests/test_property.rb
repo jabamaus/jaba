@@ -38,7 +38,7 @@ class TestProperty < JabaTest
 
   it 'supports single value properties' do
     pc = PropertyContainer.new
-    pc.define_property(:a)
+    pc.define_single_property(:a)
 
     assert_jaba_error "'a' expects a single value but got '[1]'", trace: nil do
       pc.set_property(:a, [1])
@@ -56,7 +56,7 @@ class TestProperty < JabaTest
 
     # It can store a block as value
     #
-    pc.define_property(:b, store_block: true)
+    pc.define_single_property(:b, store_block: true)
     pc.set_property(:b) do
       print 'can store block if flagged'
     end
@@ -66,7 +66,7 @@ class TestProperty < JabaTest
 
     # It can take its value from block
     #
-    pc.define_property(:c)
+    pc.define_single_property(:c)
     pc.set_property(:c) do
       1
     end
@@ -193,8 +193,8 @@ class TestProperty < JabaTest
   it 'fails if property multiply defined' do
     assert_jaba_error "'a' property multiply defined", trace: nil do
       pc = PropertyContainer.new
-      pc.define_property(:a)
-      pc.define_property(:a)
+      pc.define_single_property(:a)
+      pc.define_single_property(:a)
     end
     assert_jaba_error "'a' property multiply defined", trace: nil do
       pc = PropertyContainer.new
@@ -203,7 +203,7 @@ class TestProperty < JabaTest
     end
     assert_jaba_error "'a' property multiply defined", trace: nil do
       pc = PropertyContainer.new
-      pc.define_property(:a)
+      pc.define_single_property(:a)
       pc.define_array_property(:a)
     end
   end
@@ -227,7 +227,7 @@ pre d->block
 post d->block
 } do
       pc = PropertyContainer.new(on_prop_set: true)
-      pc.define_property(:a)
+      pc.define_single_property(:a)
       pc.set_property(:a, 1)
       pc.set_property(:a) do
         2

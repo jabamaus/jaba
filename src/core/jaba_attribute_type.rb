@@ -278,7 +278,7 @@ module JABA
     ]
     
     def init_attr_def(attr_def)
-      attr_def.define_property(:basedir_spec)
+      attr_def.define_single_property(:basedir_spec)
     end
 
     def post_init_attr_def(attr_def)

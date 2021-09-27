@@ -40,7 +40,7 @@ module JABA
       @default_block = nil
       @in_eval_block = false
 
-      define_property(:title)
+      define_single_property(:title)
       define_array_property(:notes)
       define_array_property(:examples)
       define_property(:default, variant: variant, store_block: true)
