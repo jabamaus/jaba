@@ -9,6 +9,7 @@ module JABA
     def initialize(attr_def, node)
       super(attr_def, node, self)
       @elems = []
+      @filter = attr_def.filter
       if attr_def.default_set? && !@default_block
         set(attr_def.default, call_on_set: false)
       end
@@ -82,13 +83,7 @@ module JABA
       values.each do |val|
         val = apply_pre_post_fix(prefix, postfix, val)
 
-        # Give plugin a chance to custom handle if its a reference. This is used by cpp plugin to custom handle dependencies
-        # on 'export only' cpp definitions.
-        # TODO: find a nicer way of doing this
-        #
-        if type_id == :ref && @node.node_manager.current_plugin.custom_handle_array_reference(self, val)
-          next
-        end
+        next if @filter&.call(self, val)
 
         elem = make_elem(val, *args, add: false, **keyval_args)
         existing = nil

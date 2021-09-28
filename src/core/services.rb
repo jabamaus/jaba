@@ -779,6 +779,17 @@ module JABA
 
     ##
     #
+    def register_array_filter(type_id, attr_id, &block)
+      jt = get_jaba_type(type_id)
+      attr_def = jt.get_attribute_def(attr_id)
+      if !attr_def.array?
+        JABA.error("Can only register an array filter on array attributes")
+      end
+      attr_def.set_filter(&block)
+    end
+
+    ##
+    #
     def dump_jaba_state
       root = {}
       root[:jdl_files] = @load_manager.jdl_files

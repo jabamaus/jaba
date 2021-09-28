@@ -1,5 +1,4 @@
 - Allow plugins to have default id
-- Is there a better way than custom_handle_array_reference?
 - Make cpp_project and cpp_platform into contained types
 - Change to make all modules manually included. eg 'include 'cpp''. Get rid of 'grab'.
 - Combine :symbol, :string and :symbol_or_string? Allow strings and symbols to be completely interchangeable?

@@ -312,10 +312,19 @@ module JABA
   #
   class JabaAttributeArrayDefinition < JabaAttributeDefinitionBase
   
+    attr_reader :filter
+
     ##
     #
     def initialize(jaba_type, defn_id, src_loc, block, type_id, ref_jaba_type)
       super(:array, jaba_type, defn_id, src_loc, block, type_id, ref_jaba_type)
+      @filter = nil
+    end
+
+    ##
+    #
+    def set_filter(&block)
+      @filter = block
     end
 
   end

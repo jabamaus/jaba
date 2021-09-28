@@ -23,6 +23,19 @@ open_type :cpp do
       target_host_id = services.globals.target_host
       @target_host = services.node_from_handle(target_host_id.to_s) # TODO: move to services
       @supported_platforms = @target_host.attrs.cpp_supported_platforms
+
+      services.register_array_filter(:cpp_project, :deps) do |attr, dep|
+        dep_def = services.get_instance_definition("cpp|#{dep}", fail_if_not_found: false)
+        if !dep_def
+          JABA.error("'#{ref_node_id.inspect}' dependency not found", errobj: attr)
+        end
+        if dep_def.has_flag?(:export_only)
+          @export_only_dependencies_to_resolve.push_value(attr, dep_def)
+          true
+        else
+          false
+        end
+      end
     end
 
     ##
@@ -81,22 +94,6 @@ open_type :cpp do
         end
       end
       root_node
-    end
-
-    ##
-    #
-    def custom_handle_array_reference(attr, ref_node_id)
-      if attr.attr_def.defn_id == :deps
-        dep_def = services.get_instance_definition("cpp|#{ref_node_id}", fail_if_not_found: false)
-        if !dep_def
-          JABA.error("'#{ref_node_id.inspect}' dependency not found", errobj: attr)
-        end
-        if dep_def.has_flag?(:export_only)
-          @export_only_dependencies_to_resolve.push_value(attr, dep_def)
-          return true
-        end
-      end
-      false
     end
 
     ##

@@ -94,6 +94,12 @@ module JABA
       @services.input_manager.register_option(...)
     end
     
+    ##
+    #
+    def register_array_filter(...)
+      @services.register_array_filter(...)
+    end
+    
   end
 
   ##
@@ -135,12 +141,6 @@ module JABA
     ##
     #
     def build_output(root)
-    end
-
-    ##
-    #
-    def custom_handle_array_reference(attr, ref_node_id)
-      false
     end
     
   end
