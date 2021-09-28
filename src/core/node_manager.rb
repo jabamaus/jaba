@@ -20,7 +20,6 @@ module JABA
     attr_reader :nodes
     attr_reader :root_nodes
     attr_reader :top_level_ids
-    attr_reader :current_plugin
 
     ##
     #
@@ -34,7 +33,6 @@ module JABA
       @post_processed = false
       @top_level_ids = []
       @compound_attr_creation_params = nil
-      @current_plugin = nil
     end
 
     ##
@@ -99,7 +97,6 @@ module JABA
 
       @to_process.each do |definition|
         @plugins.each do |plugin|
-          @current_plugin = plugin
           root_node = plugin.process_definition(definition)
           if root_node
             if root_node.array?
@@ -111,7 +108,6 @@ module JABA
           end
         end
       end
-      @current_plugin = nil
       @to_process.clear
     end
     
@@ -139,11 +135,7 @@ module JABA
         rn.make_paths_absolute
       end
 
-      @plugins.each do |p|
-        @current_plugin = p
-        p.post_process_definitions
-      end
-      @current_plugin = nil
+      @plugins.each(&:post_process_definitions)
       
       @nodes.each do |n|
         n.each_attr do |a|
