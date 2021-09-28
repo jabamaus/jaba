@@ -124,8 +124,8 @@ module JABA
 
     ##
     #
-    def process_definition(creation_params)
-      services.make_node(creation_params)
+    def process_definition(definition)
+      services.make_node(definition)
     end
 
     ##
