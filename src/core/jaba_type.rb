@@ -26,7 +26,7 @@ module JABA
       define_array_property :notes
       define_single_property :singleton
       define_array_property :dependencies # TODO: validate explicitly specified deps
-      define_single_property :plugin, type: :block
+      define_hash_property :plugin, type: :block
 
       set_property(:notes, "Manages attribute definitions for '#{@defn_id}' type")
 

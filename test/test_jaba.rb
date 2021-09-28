@@ -159,6 +159,7 @@ class JabaTest < Minitest::Spec
       #
       bt = e.backtrace
       bt.shift
+      bt.delete_if{|l| l =~ /cpp_plugin\.jaba|workspace_plugin\.jaba/}
       bt.must_equal(backtrace, 'backtrace did not match')
     end
     e

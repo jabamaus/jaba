@@ -1,22 +1,5 @@
 module JABA
 
-  class GlobalsPlugin < Plugin
-
-    def process_definition(definition)
-      globals_node = services.make_node(definition, flags: NodeFlags::NO_POST_CREATE)
-      
-      main_services = services.instance_variable_get(:@services)
-      main_services.instance_variable_set(:@globals_node, globals_node)
-      main_services.instance_variable_set(:@globals, globals_node.attrs)
-
-      main_services.set_global_attrs_from_cmdline
-
-      globals_node.post_create
-      globals_node
-    end
-
-  end
-
   ##
   #
   module NodeFlags
@@ -34,17 +17,16 @@ module JABA
     attr_reader :services
     attr_reader :type_id # eg :cpp, :text
     attr_reader :jaba_type
-    attr_reader :plugin
     attr_reader :nodes
     attr_reader :root_nodes
     attr_reader :top_level_ids
+    attr_reader :current_plugin
 
     ##
     #
     def initialize(services)
       @services = services
       @to_process = []
-      @plugin = nil
       @root_nodes = []
       @nodes = [] # all nodes
       @reference_attrs_to_resolve = []
@@ -52,6 +34,7 @@ module JABA
       @post_processed = false
       @top_level_ids = []
       @compound_attr_creation_params = nil
+      @current_plugin = nil
     end
 
     ##
@@ -62,10 +45,10 @@ module JABA
 
     ##
     #
-    def init(jaba_type, plugin)
+    def init(jaba_type, plugins)
       @jaba_type = jaba_type
       @type_id = jaba_type.defn_id
-      @plugin = plugin
+      @plugins = plugins
       @defaults_definition = services.get_definition(:defaults, @type_id, fail_if_not_found: false)
     end
 
@@ -107,7 +90,7 @@ module JABA
 
       if !@pre_processed
         @pre_processed = true
-        @plugin.pre_process_definitions
+        @plugins.each(&:pre_process_definitions)
       end
 
       if @post_processed
@@ -115,18 +98,20 @@ module JABA
       end
 
       @to_process.each do |definition|
-        root_node = @plugin.process_definition(definition)
-
-        if root_node.nil?
-          JABA.error("#{type_id} plugin's process_definition() method must return a single node but returned nil")
-        end
-        if root_node.array?
-          JABA.error("#{type_id} plugin's process_definition() method must return a single node but returned an array")
-        end
-        if root_node != :skip
-          @root_nodes << root_node
+        @plugins.each do |plugin|
+          @current_plugin = plugin
+          root_node = plugin.process_definition(definition)
+          if root_node
+            if root_node.array?
+              JABA.error("#{type_id} plugin's process_definition() method must return a single node but returned an array")
+            end
+            if !root_node.has_flag?(NodeFlags::NO_TRACK)
+              @root_nodes << root_node
+            end
+          end
         end
       end
+      @current_plugin = nil
       @to_process.clear
     end
     
@@ -154,7 +139,11 @@ module JABA
         rn.make_paths_absolute
       end
 
-      @plugin.post_process_definitions
+      @plugins.each do |p|
+        @current_plugin = p
+        p.post_process_definitions
+      end
+      @current_plugin = nil
       
       @nodes.each do |n|
         n.each_attr do |a|
@@ -162,6 +151,29 @@ module JABA
         end
         
         n.make_read_only # Make all nodes read only from this point, to help catch mistakes
+      end
+    end
+
+    ##
+    #
+    def generate
+      # Call generate blocks defined per-node instance, in the context of the node itself, not its api
+      #
+      @root_nodes.each do |n|
+        n.call_block_property(:generate, use_api: false)
+      end
+      @plugins.each(&:generate)
+    end
+
+    ##
+    #
+    def build_output(output)
+      @plugins.each do |plugin|
+        root = {}
+        plugin.build_output(root)
+        if !root.empty?
+          output[plugin.id] = root
+        end
       end
     end
 

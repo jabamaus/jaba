@@ -57,8 +57,8 @@ module JABA
     ##
     # EXTENSION API
     #
-    def plugin(&block)
-      @jaba_type.set_property(:plugin, __jdl_call_loc: ::Kernel.caller_locations(1, 1)[0], &block)
+    def plugin(id, &block)
+      @jaba_type.set_property(:plugin, id, __jdl_call_loc: ::Kernel.caller_locations(1, 1)[0], &block)
     end
 
   private

@@ -26,7 +26,7 @@ type :text do
     default :native
   end
 
-  plugin do
+  plugin :text do
     def generate
       services.nodes.each do |n|
         attrs = n.attrs

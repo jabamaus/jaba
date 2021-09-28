@@ -101,6 +101,7 @@ module JABA
   class Plugin
 
     attr_reader :services
+    attr_reader :id
 
     ##
     # Local constructor initialisation only.

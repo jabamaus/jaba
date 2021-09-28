@@ -363,7 +363,7 @@ class TestAttributeHash < JabaTest
 
   it 'supports setting a validator' do
     # only hash attr has validate_key property
-    assert_jaba_error "Error at #{src_loc(__FILE__, :tagD)}: Failed to set undefined 'validate_key' property." do
+    assert_jaba_error "Error at #{src_loc(__FILE__, :tagD)}: 'validate_key' property undefined." do
       jaba(barebones: true) do
         type :test do
           attr_array :a do

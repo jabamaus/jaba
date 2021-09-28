@@ -11,6 +11,7 @@ require_relative 'utils'
 require_relative 'file_manager'
 require_relative 'input_manager'
 require_relative 'load_manager'
+require_relative 'node_manager'
 require_relative 'standard_paths'
 require_relative 'jaba_object'
 require_relative 'jaba_attribute_type'
@@ -25,7 +26,6 @@ require_relative 'jaba_type'
 require_relative '../extend/plugin'
 require_relative '../extend/src'
 require_relative '../extend/vsproj'
-require_relative 'node_manager'
 
 ##
 #
@@ -91,6 +91,7 @@ module JABA
 
       @node_lookup = {}
       @node_manager_lookup = {}
+      @plugin_lookup = {}
 
       @jaba_attr_types = []
       @jaba_attr_type_lookup = {}
@@ -222,6 +223,24 @@ module JABA
       @load_manager.load_jaba_files(input)
       create_core_objects
 
+      execute_jdl do
+        open_type :globals do
+          plugin :globals do
+            def process_definition(definition)
+              globals_node = services.make_node(definition, flags: NodeFlags::NO_POST_CREATE)
+              
+              main_services = services.instance_variable_get(:@services)
+              main_services.instance_variable_set(:@globals_node, globals_node)
+              main_services.instance_variable_set(:@globals, globals_node.attrs)
+        
+              main_services.set_global_attrs_from_cmdline
+        
+              globals_node.post_create
+              globals_node
+            end
+          end
+        end
+      end
       # Associate open definitions with definition they are opening
       # TODO: validation
       @definition_registry.each do |what, def_reg|
@@ -268,22 +287,19 @@ module JABA
         id = d.id
         log "Creating '#{id}' type at #{d.src_loc.describe}"
         jt = make_jaba_type(id, d)
-        klass = nil
-        plugin_block = jt.plugin
-        if plugin_block
-          klass = Class.new(Plugin)
-          klass.class_eval(&plugin_block)
-        else
-          plugin_classname = "#{id.to_s.capitalize_first}Plugin"
-          klass = if JABA.const_defined?(plugin_classname)
-            JABA.const_get(plugin_classname)
-          else
-            Plugin
-          end
-        end
         nm = get_or_make_node_manager(id)
-        plugin = make_plugin(klass, nm)
-        nm.init(jt, plugin)
+
+        plugins = []
+        if !jt.plugin.empty?
+          jt.plugin.each do |plugin_id, pb|
+            klass = Class.new(Plugin)
+            klass.class_eval(&pb)
+            plugins << make_plugin(klass, plugin_id, nm)
+          end
+        else
+          plugins << make_plugin(Plugin, id, nm)
+        end
+        nm.init(jt, plugins)
       end
 
       @jaba_types.each(&:post_create)
@@ -315,14 +331,7 @@ module JABA
 
       log 'Performing file generation...'
 
-      @node_managers.each do |nm|
-        # Call generate blocks defined per-node instance, in the context of the node itself, not its api
-        #
-        nm.root_nodes.each do |n|
-          n.call_block_property(:generate, use_api: false)
-        end
-        nm.plugin.generate
-      end
+      @node_managers.each(&:generate)
     end
     
     ##
@@ -685,11 +694,15 @@ module JABA
 
     ##
     #
-    def make_plugin(klass, node_manager)
-      log "Making #{klass} plugin"
+    def make_plugin(klass, id, node_manager)
+      log "Making #{id} plugin"
 
       if !klass.ancestors.include?(Plugin)
         JABA.error("#{klass} must subclass Plugin")
+      end
+
+      if get_plugin(id, fail_if_not_found: false)
+        JABA.error("Duplicate plugin id '#{id}'")
       end
 
       ps = PluginServices.new
@@ -698,14 +711,22 @@ module JABA
 
       plugin = klass.new
       plugin.instance_variable_set(:@services, ps)
+      plugin.instance_variable_set(:@id, id)
       plugin.init
+
+      @plugin_lookup[id] = plugin
+
       plugin
     end
 
     ##
     #
-    def get_plugin(jaba_type_id)
-      get_node_manager(jaba_type_id).plugin
+    def get_plugin(plugin_id, fail_if_not_found: true)
+      plugin = @plugin_lookup[plugin_id]
+      if !plugin && fail_if_not_found
+        JABA.error("'#{plugin_id}' does not exist")
+      end
+      plugin
     end
 
     ##
@@ -807,12 +828,7 @@ module JABA
       @output[:generated] = @generated
 
       @node_managers.each do |nm|
-        plugin = nm.plugin
-        root = {}
-        plugin.build_output(root)
-        if !root.empty?
-          @output[nm.type_id] = root
-        end
+        nm.build_output(output)
       end
 
       if input.dump_output?

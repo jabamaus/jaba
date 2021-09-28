@@ -113,11 +113,11 @@ class TestExtensionSemantics < JabaTest
   end
 
   it 'supports defining an inline type plugin' do
-    assert_output 'init|pre|process_twp_top_level|a=1|process_t|a=2|post|generate|build_output' do
+    assert_output 'init|init2|pre|pre2|process_twp_top_level|a=1|process2_twp_top_level|process_t|a=2|process2_t|post|post2|generate|generate2|build_output|build_output2' do
       jaba(barebones: true) do
         type :type_with_plugin do
           attr :a
-          plugin do
+          plugin :type_with_plugin do
             def init
               print 'init|'
             end
@@ -138,10 +138,10 @@ class TestExtensionSemantics < JabaTest
               services.root_nodes[0].attrs.a.must_equal 1
             end
             def build_output(root)
-              print 'build_output'
+              print 'build_output|'
             end
           end
-          plugin do
+          plugin :type_with_plugin2 do
             def init
               print 'init2|'
             end
@@ -150,7 +150,6 @@ class TestExtensionSemantics < JabaTest
             end
             def process_definition(definition)
               print "process2_#{definition.id}|"
-              services.make_node(definition)
             end
             def post_process_definitions
               print 'post2|'
@@ -191,7 +190,7 @@ class TestExtensionSemantics < JabaTest
           end
           attr_array :project, type: :block
           attr_array :config, type: :block
-          plugin do
+          plugin :test_project do
             def init
               print 'init|'
               @projects = []
@@ -282,7 +281,7 @@ type :print_line_plugin do
     items [:upper, :lower]
     default :lower
   end
-  plugin do
+  plugin :print_line_plugin do
     def process_definition(definition)
       services.make_node(definition)
     end
