@@ -65,12 +65,6 @@ module JABA
 
     ##
     #
-    def test_mode?
-      @test_mode
-    end
-    
-    ##
-    #
     def initialize(test_mode: false)
       @test_mode = test_mode
       @invoking_dir = Dir.getwd.freeze
@@ -82,6 +76,8 @@ module JABA
       @input.instance_variable_set(:@definitions, [])
       @input.instance_variable_set(:@global_attrs, {})
       @input.instance_variable_set(:@dump_output, true)
+      @input.instance_variable_set(:@dry_run, false)
+      @input.instance_variable_set(:@barebones, false)
       @output = {}
       
       @log_msgs = test_mode? ? nil : [] # Disable logging when running tests
@@ -172,14 +168,14 @@ module JABA
       duration = JABA.milli_timer do
         @input_manager.process
         
-        profile(input.profile) do
+        profile(@input_manager.cmd_option_specified?(:null, '--profile')) do
           do_run
           build_output
         end
       end
 
       summary = "Generated #{@generated.size} files, #{@added.size} added, #{@modified.size} modified, #{@unchanged.size} unchanged in #{duration}"
-      summary << " [dry run]" if input.dry_run?
+      summary << " [dry run]" if dry_run?
       summary << "\n"
 
       @added.each do |f|
@@ -218,7 +214,10 @@ module JABA
         system("#{cmd} #{url}")
         exit!
       end
-      
+
+      @dry_run = @input.dry_run? || input_manager.cmd_option_specified?(:null, '--dry-run')
+      @barebones = @input.barebones? || input_manager.cmd_option_specified?(:null, '--barebones')
+
       @load_manager.load_modules
       init_root_paths
       @load_manager.load_jaba_files
@@ -340,7 +339,7 @@ module JABA
     def init_root_paths
       @build_root = input_manager.cmd_option_value(:gen, '--build-root')
       if @build_root.nil?
-        @build_root = input.build_root
+        @build_root = @input.build_root
       end
       if @build_root.nil?
         @build_root = @invoking_dir
@@ -360,7 +359,7 @@ module JABA
         @src_root = input_manager.cmd_option_value(:gen, '--src-root')
       end
       if @src_root.nil?
-        @src_root = input.src_root
+        @src_root = @input.src_root
       end
 
       # Jaba may have been invoked from an out-of-source build tree so read src_root from jaba temp dir
@@ -381,7 +380,7 @@ module JABA
       end
 
       if @src_root
-        @src_root = @src_root.src_root.to_absolute(base: @invoking_dir, clean: true)
+        @src_root = @src_root.to_absolute(base: @invoking_dir, clean: true)
         if !File.exist?(@src_root)
           JABA.error("source root '#{@src_root}' does not exist", want_backtrace: false)
         end
@@ -403,7 +402,8 @@ module JABA
     ##
     #
     def set_global_attrs_from_cmdline
-      input.global_attrs.each do |name, values|
+      # TODO: merge with input.global_attrs
+      input_manager.cmd_option_value(:gen, '--define').each do |name, values|
         values = Array(values).map{|e| e.to_s}
 
         attr = @globals_node.get_attr(name.to_sym, fail_if_not_found: false)
@@ -738,6 +738,24 @@ module JABA
       plugin
     end
 
+    ##
+    #
+    def test_mode?
+      @test_mode
+    end
+
+    ##
+    #
+    def dry_run?
+      @dry_run
+    end
+
+    ##
+    #
+    def barebones?
+      @barebones
+    end
+    
     ##
     #
     def in_attr_default_block?
