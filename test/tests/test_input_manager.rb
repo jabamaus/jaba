@@ -1,51 +1,32 @@
-class Test_imPlugin < JABA::Plugin
-
-  def init
-    # General options, available to all commands
-    #
-    services.register_option('--value-opt', short: '-v', help: 'value opt', var: :value_opt, type: :value)
-    services.register_option('--array-opt', short: '-a', help: 'array opt', var: :array_opt, type: :array)
-
-    services.register_cmd(:cmd1, help: 'cmd1 help') do |c|
-      c.add_option('--cmd1-opt', help: 'cmd1 opt', var: :value_opt, type: :value)
-    end
-
-    services.register_cmd(:cmd2, help: 'cmd2 help') do |c|
-      c.add_option('--cmd2-opt', help: 'cmd2 opt', var: :value_opt, type: :value)
-    end
-  end
-
-  def generate
-    i = services.input
-    op = "#{services.input_manager.cmd.id}"
-    if i.value_opt
-      op << ' '
-      op << "--value-opt=#{i.value_opt}"
-    end
-    if !i.array_opt.empty?
-      op << ' '
-      op << "--array-opt=#{i.array_opt}"
-    end
-    print op
-  end
-end
-
 class TestInputManager < JabaTest
 
+  # TODO: test specifying 2 commands in a row is a failure
+  # TODO: test unrecognised cmd
+  # TODO: test cmd is a symbol id
   it 'supports commands' do
     assert_output 'gen' do # default cmd
       jaba(barebones: true, argv: []) do
-        type :test_im
+        type :test do
+          plugin :test do
+            def generate
+              print services.cmd
+            end
+          end
+        end
       end
     end
     assert_output 'cmd1' do
       jaba(barebones: true, argv: ['cmd1']) do
-        type :test_im
-      end
-    end
-    assert_output 'cmd2' do
-      jaba(barebones: true, argv: ['cmd2']) do
-        type :test_im
+        type :test do
+          plugin :test do
+            def init
+              services.register_cmd(:cmd1, help: 'cmd1 help')
+            end
+            def generate
+              print services.cmd
+            end
+          end
+        end
       end
     end
   end
@@ -56,27 +37,31 @@ class TestInputManager < JabaTest
 
   it 'handles unknown options' do
     assert_jaba_error "'gen' command does not support --unknown option", trace: nil do
-      jaba(barebones: true, argv: ['--unknown'])
+      jaba(barebones: true, argv: ['--unknown']) # long form
     end
     assert_jaba_error "'gen' command does not support -Z option", trace: nil do
-      jaba(barebones: true, argv: ['-Z'])
-    end
-    assert_jaba_error "'cmd1' command does not support --cmd2-opt option", trace: nil do
-      jaba(barebones: true, argv: ['cmd1', '--cmd2-opt']) do
-        type :test_im
-      end
+      jaba(barebones: true, argv: ['-Z']) # short form
     end
     # everything after -- is ignored
-    op = jaba(barebones: true, argv: ['--value-opt', 'value', '--', 'ignore', 'after', '--']) do
-      type :test_im
-    end
+    op = jaba(barebones: true, argv: ['gen', '--', 'ignore', 'after', '--'])
     op[:services].input_manager.passthru_args.must_equal ['ignore', 'after', '--']
   end
 
   it 'supports value options' do
-    assert_output 'gen --value-opt=value' do
+    assert_output 'tested' do
       jaba(barebones: true, argv: ['--value-opt', 'value']) do
-        type :test_im
+        type :test do
+          plugin :test do
+            def init
+              services.register_option('--value-opt', help: 'value opt', type: :value)
+            end
+            def generate
+              services.cmd_option_specified?(:gen, '--value-opt').must_equal(true)
+              services.cmd_option_value(:gen, '--value-opt').must_equal('value')
+              print 'tested'
+            end
+          end
+        end
       end
     end
     

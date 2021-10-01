@@ -53,7 +53,8 @@ module JABA
   class Services
 
     attr_reader :invoking_dir
-    attr_reader :input
+    attr_reader :build_root
+    attr_reader :src_root
     attr_reader :output
     attr_reader :input_manager
     attr_reader :file_manager
@@ -109,7 +110,7 @@ module JABA
       @in_attr_default_block = false
 
       @file_manager = FileManager.new(self)
-      @input_manager = InputManager.new(self)
+      @input_manager = InputManager.new(self, test_mode? ? [] : ARGV)
       @load_manager = LoadManager.new(self, @file_manager)
 
       @top_level_api = JDL_TopLevel.new(self, @load_manager, @file_manager)
@@ -220,7 +221,7 @@ module JABA
       
       @load_manager.load_modules
       init_root_paths
-      @load_manager.load_jaba_files(input)
+      @load_manager.load_jaba_files
       create_core_objects
 
       execute_jdl do
@@ -337,15 +338,16 @@ module JABA
     ##
     #
     def init_root_paths
-      # Initialise build_root from command line, if not present defaults to cwd. 
-      #
-      input.build_root = if input.build_root.nil?
-        @invoking_dir
-      else
-        input.build_root.to_absolute(base: @invoking_dir, clean: true)
+      @build_root = input_manager.cmd_option_value(:gen, '--build-root')
+      if @build_root.nil?
+        @build_root = input.build_root
       end
+      if @build_root.nil?
+        @build_root = @invoking_dir
+      end
+      @build_root = @build_root.to_absolute(base: @invoking_dir, clean: true)
 
-      @jaba_temp_dir = "#{input.build_root}/.jaba"
+      @jaba_temp_dir = "#{@build_root}/.jaba"
 
       # Ensure build_root and temp dir exists
       #
@@ -353,42 +355,49 @@ module JABA
         FileUtils.makedirs(@jaba_temp_dir)
       end
 
+      @src_root = nil
+      if @src_root.nil?
+        @src_root = input_manager.cmd_option_value(:gen, '--src-root')
+      end
+      if @src_root.nil?
+        @src_root = input.src_root
+      end
+
       # Jaba may have been invoked from an out-of-source build tree so read src_root from jaba temp dir
-      # 
+      #
       cached_src_root = nil
       src_root_cache = "#{@jaba_temp_dir}/src_root.cache"
       if File.exist?(src_root_cache)
         str = @file_manager.read(src_root_cache)
         cached_src_root = str[/src_root=(.*)/, 1]
-        if cached_src_root && input.src_root && input.src_root != cached_src_root
+        if cached_src_root && @src_root && @src_root != cached_src_root
           JABA.error("Source root already set to '#{cached_src_root}' - cannot change", want_backtrace: false)
         end
-        input.src_root = cached_src_root
+        @src_root = cached_src_root
       end
 
-      input.src_root = if input.src_root.nil?
-        @invoking_dir if !test_mode?
-      else
-        input.src_root.to_absolute(base: @invoking_dir, clean: true)
+      if @src_root.nil?
+        @src_root = @invoking_dir if !test_mode?
       end
 
-      if input.src_root
-        if !File.exist?(input.src_root)
-          JABA.error("source root '#{input.src_root}' does not exist", want_backtrace: false)
+      if @src_root
+        @src_root = @src_root.src_root.to_absolute(base: @invoking_dir, clean: true)
+        if !File.exist?(@src_root)
+          JABA.error("source root '#{@src_root}' does not exist", want_backtrace: false)
         end
 
-        IO.write(src_root_cache, "src_root=#{input.src_root}")
+        IO.write(src_root_cache, "src_root=#{@src_root}")
       end
   
-      log "src_root=#{input.src_root}"
-      log "build_root=#{input.build_root}"
+      log "src_root=#{@src_root}"
+      log "build_root=#{@build_root}"
       log "temp_dir=#{@jaba_temp_dir}"
     end
 
     ##
     #
     def src_root_valid?
-      input.src_root && @load_manager.load_path_valid?(input.src_root)
+      @src_root && @load_manager.load_path_valid?(@src_root)
     end
 
     ##
@@ -834,8 +843,8 @@ module JABA
 
       @output[:jaba_version] = VERSION
       @output[:format_version] = 1
-      @output[:src_root] = input.src_root
-      @output[:build_root] = input.build_root
+      @output[:src_root] = @src_root
+      @output[:build_root] = @build_root
       @output[:generated] = @generated
 
       @node_managers.each do |nm|

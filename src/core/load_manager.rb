@@ -44,7 +44,7 @@ module JABA
 
     ##
     #
-    def load_jaba_files(input)
+    def load_jaba_files
       if input.barebones? # optimisation for unit testing
         process_jaba_file("#{JABA.modules_dir}/core/globals.jaba")
         process_jaba_file("#{JABA.modules_dir}/core/hosts.jaba")
@@ -54,8 +54,8 @@ module JABA
         end
       end
 
-      if input.src_root
-        process_load_path(input.src_root, fail_if_empty: true)
+      if @services.src_root
+        process_load_path(@services.src_root, fail_if_empty: true)
       end
 
       # Definitions can also be provided in a block form

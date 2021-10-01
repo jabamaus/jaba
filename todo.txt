@@ -1,6 +1,6 @@
 - Allow plugins to have default id
 - Make cpp_project and cpp_platform into contained types
-- Change to make all modules manually included. eg 'include 'cpp''. Get rid of 'grab'.
+- Change to make all modules manually included. eg 'include 'cpp''. Get rid of 'grab'. Get rid of barebones.
 - Combine :symbol, :string and :symbol_or_string? Allow strings and symbols to be completely interchangeable?
 - Stop globals from having dependencies, reference attrs and compound attrs.
 - compound attr should not need a title. Could use the title of the jaba type.

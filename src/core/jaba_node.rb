@@ -167,7 +167,7 @@ module JABA
           basedir_spec = a.attr_def.basedir_spec
           base_dir = case basedir_spec
           when :build_root
-            services.input.build_root
+            services.build_root
           when :buildsystem_root
             "#{services.globals.buildsystem_root}"
           when :artefact_root
