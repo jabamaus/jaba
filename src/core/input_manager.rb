@@ -7,9 +7,10 @@ module JABA
     attr_reader :id
     attr_reader :help
     attr_reader :dev_only
-    #attr_reader :options
+    attr_reader :options
 
-    def initialize(id, help, dev_only, &block)
+    def initialize(input, id, help, dev_only, &block)
+      @input = input
       @id = id
       @help = help
       @dev_only = dev_only
@@ -19,7 +20,7 @@ module JABA
 
     ##
     #
-    def add_option(long, short: nil, help:, type: nil, dev_only: false)
+    def add_option(long, short: nil, help:, type: nil, var: nil, dev_only: false)
       if long !~ /^--[a-zA-Z0-9\-]+$/
         JABA.error("Invalid long option format '#{long}' specified. Must be of form --my-long-option")
       end
@@ -32,55 +33,45 @@ module JABA
       o.short = short
       o.help = help
       o.type = type
+      o.inst_var = var ? "@#{var}" : nil
       o.dev_only = dev_only
       o.describe = short ? "#{short} [#{long}]" : long
-      o.specified = false
-
-      o.value = case type
-      when :flag
-        false
-      when :value
-        nil
-      when :array
-        []
-      when :hash
-        {}
-      else
-        JABA.error("Invalid type '#{type}'. Must be :flag, :value, :array or :hash.")
-      end
 
       @options << o
+
+      if var
+        if !@input.respond_to?(var)
+          @input.define_singleton_method(var) do
+            instance_variable_get(o.inst_var)
+          end
+        end
+        val = case type
+        when :flag
+          false
+        when :value
+          @input.instance_variable_get(o.inst_var)
+        when :array
+          []
+        else
+          JABA.error("Invalid type '#{type}'. Must be :flag, :value or :array.")
+        end
+        @input.instance_variable_set(o.inst_var, val)
+      end
       o
     end
 
     ##
     #
-    def get_option(arg, fail_if_not_found: true)
-      o = @options.find do |o|
+    def get_option(arg)
+      @options.find do |o|
         arg == o.long || arg == o.short
       end
-      if !o && fail_if_not_found
-        JABA.error("'#{arg}' option not defined")
-      end
-      o
     end
 
     ##
     #
     def option_defined?(arg)
-      get_option(arg, fail_if_not_found: false) != nil
-    end
-
-    ##
-    #
-    def option_specified?(arg)
-      get_option(arg).specified
-    end
-
-    ##
-    #
-    def option_value(arg)
-      get_option(arg).value
+      get_option(arg) != nil
     end
 
   end
@@ -89,6 +80,7 @@ module JABA
   #
   class InputManager
 
+    attr_reader :input
     attr_reader :cmd
     attr_reader :passthru_args
 
@@ -96,26 +88,28 @@ module JABA
     #
     def initialize(services, argv)
       @services = services
-      @argv = argv
+      @input = services.input
       @passthru_args = []
       @cmds = []
       @cmd = nil
 
+      @input.instance_variable_set(:@argv, argv)
+
       # General non-cmd-specific options
       #
       @null_cmd = register_cmd(:null, help: '') do |c|
-        c.add_option('--help', help: 'Show help', type: :flag)
-        c.add_option('--dry-run', help: 'Perform a dry run', type: :flag)
-        c.add_option('--profile', help: 'Profiles with ruby-prof gem', type: :flag, dev_only: true)
-        c.add_option('--barebones', help: 'Loads minimal modules', type: :flag, dev_only: true)
-        c.add_option('--verbose', help: 'Prints extra information', type: :flag)
+        c.add_option('--help', help: 'Show help', type: :flag, var: :show_help)
+        c.add_option('--dry-run', help: 'Perform a dry run', type: :flag, var: :dry_run)
+        c.add_option('--profile', help: 'Profiles with ruby-prof gem', type: :flag, var: :profile, dev_only: true)
+        c.add_option('--barebones', help: 'Loads minimal modules', type: :flag, var: :barebones, dev_only: true)
+        c.add_option('--verbose', help: 'Prints extra information', type: :flag, var: :verbose)
       end
 
       @cmd = register_cmd(:gen, help: 'Regenerate buildsystem') do |c|
-        c.add_option('--src-root', short: '-S', help: 'Set src root', type: :value)
-        c.add_option('--build-root', short: '-B', help: 'Set build root', type: :value)
-        c.add_option('--define', short: '-D', help: 'Set global attribute value', type: :hash)
-        c.add_option('--dump-state', help: 'Dump state to json for debugging', type: :flag)
+        c.add_option('--src-root', short: '-S', help: 'Set src root', type: :value, var: :src_root)
+        c.add_option('--build-root', short: '-B', help: 'Set build root', type: :value, var: :build_root)
+        c.add_option('--define', short: '-D', help: 'Set global attribute value')
+        c.add_option('--dump-state', help: 'Dump state to json for debugging', type: :flag, var: :dump_state)
       end
       
       register_cmd(:build, help: 'Execute build')
@@ -130,15 +124,9 @@ module JABA
       if id !~ /^[a-zA-Z0-9\-]+$/
         JABA.error("Invalid cmd id '#{id}' specified. Can only contain [a-zA-Z0-9-]")
       end
-      c = Cmd.new(id, help, dev_only, &block)
+      c = Cmd.new(@input, id, help, dev_only, &block)
       @cmds << c
       c
-    end
-
-    ##
-    #
-    def register_cmd_option(cmd_id, ...)
-      get_cmd(cmd_id).add_option(...)
     end
 
     ##
@@ -160,8 +148,14 @@ module JABA
     
     ##
     #
+    def register_cmd_option(...)
+      @null_cmd.add_option(...)
+    end
+
+    ##
+    #
     def get_option(id)
-      @null_cmd.get_option(id, fail_if_not_found: false) || @cmd&.get_option(id, fail_if_not_found: false)
+      @null_cmd.get_option(id) || @cmd&.get_option(id)
     end
 
     ##
@@ -173,13 +167,12 @@ module JABA
     ##
     #
     def cmd_option_specified?(cmd_id, option_id)
-      get_cmd(cmd_id).option_specified?(option_id)
+
     end
 
     ##
     #
     def cmd_option_value(cmd_id, option_id)
-      get_cmd(cmd_id).option_value(option_id)
     end
 
     ##
@@ -260,13 +253,13 @@ module JABA
     ##
     #
     def process
-      @argv = @argv.dup # Leave original argv untouched
+      @input.argv = @input.argv.dup # Leave original argv untouched
 
       # Strip pasthru args from argv and store.
       #
-      i = @argv.find_index{|a| a == '--'}
+      i = @input.argv.find_index{|a| a == '--'}
       if !i.nil?
-        @passthru_args.concat(@argv.slice!(i, @argv.size - 1))
+        @passthru_args.concat(@input.argv.slice!(i, @input.argv.size - 1))
         @passthru_args.shift
       end
 
@@ -278,7 +271,7 @@ module JABA
       @fsm.add_state(ArrayState)
       @fsm.add_state(GlobalAttrState)
 
-      @fsm.argv = @argv
+      @fsm.argv = input.argv
       @fsm.input_manager = self
       @fsm.input = @input
       @fsm.unknown_argv = []
@@ -297,21 +290,21 @@ module JABA
     # This is called twice as plugins can register additional commands and options after the first pass.
     #
     def process_cmd_line
-      return if @argv.empty?
+      return if input.argv.empty?
       
       @fsm.run
-      @argv.replace(@fsm.unknown_argv)
+      input.argv.replace(@fsm.unknown_argv)
       @fsm.unknown_argv.clear
     end
 
     ##
     #
     def finalise
-      if !@argv.empty?
-        if @argv.size == 1
-          usage_error("'#{@cmd.id}' command does not support #{@argv[0]} option")
+      if !input.argv.empty?
+        if input.argv.size == 1
+          usage_error("'#{@cmd.id}' command does not support #{input.argv[0]} option")
         else
-          usage_error("'#{@cmd.id}' command does not support #{@argv.join(', ')} options")
+          usage_error("'#{@cmd.id}' command does not support #{input.argv.join(', ')} options")
         end
       end
       if input.show_help
@@ -342,11 +335,11 @@ module JABA
         if opt
           case opt.long
           when '--define'
-            goto GlobalAttrState, opt
+            goto GlobalAttrState
           else
             case opt.type
             when :flag
-              opt.value = true
+              fsm.input.instance_variable_set(opt.inst_var, true)
             when :value
               goto ValueState, opt
             when :array
@@ -376,17 +369,19 @@ module JABA
     class ValueState
       def on_enter(opt)
         @opt = opt
+        @val = nil
       end
       def on_exit
-        if @opt.value.nil?
+        if @val.nil?
           fsm.input_manager.usage_error("#{@opt.describe} expects a value")
         end
+        fsm.input.instance_variable_set(@opt.inst_var, @val)
       end
       def on_process_arg(arg)
         if fsm.input_manager.option_defined?(arg)
           fsm.argv.unshift(arg)
         else
-          @opt.value = arg
+          @val = arg
         end
         goto WantOptionState
       end
@@ -395,25 +390,27 @@ module JABA
     class ArrayState
       def on_enter(opt)
         @opt = opt
+        @elems = []
       end
       def on_exit
-        if @opt.value.empty?
+        if @elems.empty?
           fsm.input_manager.usage_error("#{@opt.describe} expects 1 or more values")
         end
+        ary = fsm.input.instance_variable_get(@opt.inst_var)
+        ary.concat(@elems)
       end
       def on_process_arg(arg)
         if fsm.input_manager.option_defined?(arg)
           fsm.argv.unshift(arg)
           goto WantOptionState
         else
-          @opt.value << arg
+          @elems << arg
         end
       end
     end
 
     class GlobalAttrState
-      def on_enter(opt)
-        @opt = opt
+      def on_enter
         @values = []
       end
       def on_exit
@@ -425,7 +422,7 @@ module JABA
         if @values.empty?
           fsm.input_manager.usage_error("'#{@attr_name}' expects a value")
         end
-        @opt.value[@attr_name] = @values
+        fsm.input.global_attrs.push_value(@attr_name, @values)
       end
       def on_process_arg(arg)
         if fsm.input_manager.option_defined?(arg)

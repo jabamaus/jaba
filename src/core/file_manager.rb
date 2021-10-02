@@ -165,7 +165,7 @@ module JABA
       end
       @generated_lookup[fn] = nil
 
-      if services.dry_run?
+      if services.input.dry_run?
         services.log "Not writing #{fn} [dry run]"
       else
         if status

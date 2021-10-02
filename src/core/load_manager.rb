@@ -45,7 +45,7 @@ module JABA
     ##
     #
     def load_jaba_files
-      if @services.barebones? # optimisation for unit testing
+      if input.barebones? # optimisation for unit testing
         process_jaba_file("#{JABA.modules_dir}/core/globals.jaba")
         process_jaba_file("#{JABA.modules_dir}/core/hosts.jaba")
       else
@@ -60,7 +60,7 @@ module JABA
 
       # Definitions can also be provided in a block form
       #
-      Array(@services.definition_blocks).each do |block|
+      Array(input.definitions).each do |block|
         block_file = block.source_location[0].cleanpath
         @jdl_files << block_file
         @services.execute_jdl(&block)
