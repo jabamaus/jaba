@@ -27,8 +27,8 @@ class TestRootPaths < JabaTest
 
   def check_src_and_build_root(op, sr, br)
     services = op[:services]
-    services.src_root.must_equal(sr)
-    services.build_root.must_equal(br)
+    services.input.src_root.must_equal(sr)
+    services.input.build_root.must_equal(br)
     
     File.exist?("#{br}/.jaba").must_equal(true)
     File.exist?("#{br}/.jaba/jaba.output.vs2019.json").must_equal(true)

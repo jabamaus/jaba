@@ -90,27 +90,8 @@ module JABA
 
     ##
     #
-    def register_cmd_option(...)
-      @services.input_manager.register_cmd_option(...)
-    end
-
-    ##
-    # Returns current command, as specified on the command line, eg 'gen', 'build', 'clean'
-    #
-    def cmd
-      @services.input_manager.cmd.id
-    end
-
-    ##
-    #
-    def cmd_option_specified?(...)
-      @services.input_manager.cmd_option_specified?(...)
-    end
-
-    ##
-    #
-    def cmd_option_value(...)
-      @services.input_manager.cmd_option_value(...)
+    def register_option(...)
+      @services.input_manager.register_option(...)
     end
     
     ##

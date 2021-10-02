@@ -131,6 +131,12 @@ module JABA
 
     ##
     #
+    def register_option(...)
+      @null_cmd.add_option(...)
+    end
+
+    ##
+    #
     def cmd_specified?(id)
       get_cmd(id, fail_if_not_found: true) # Validate cmd exists
       @cmd&.id == id
@@ -145,12 +151,6 @@ module JABA
       end
       c
     end
-    
-    ##
-    #
-    def register_cmd_option(...)
-      @null_cmd.add_option(...)
-    end
 
     ##
     #
@@ -161,18 +161,7 @@ module JABA
     ##
     #
     def option_defined?(id)
-      get_option(id) != nil
-    end
-
-    ##
-    #
-    def cmd_option_specified?(cmd_id, option_id)
-
-    end
-
-    ##
-    #
-    def cmd_option_value(cmd_id, option_id)
+      @null_cmd.option_defined?(id) || @cmd&.option_defined?(id)
     end
 
     ##
@@ -191,7 +180,7 @@ module JABA
       w << "Built on ruby #{RUBY_VERSION}p#{RUBY_PATCHLEVEL} #{RUBY_RELEASE_DATE} [#{RUBY_PLATFORM}] #{RUBY_COPYRIGHT.sub('ruby', '')}"
       w << ""
       if @services.src_root_valid?
-        w << "Current src_root: #{@services.src_root}"
+        w << "Current src_root: #{@input.src_root}"
         w << ""
       end
       w << "Usage:"
