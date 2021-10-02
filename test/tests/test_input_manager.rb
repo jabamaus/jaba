@@ -1,3 +1,4 @@
+=begin
 class Test_imPlugin < JABA::Plugin
 
   def init
@@ -29,9 +30,9 @@ class Test_imPlugin < JABA::Plugin
     print op
   end
 end
-
+=end
 class TestInputManager < JabaTest
-
+=begin
   it 'supports commands' do
     assert_output 'gen' do # default cmd
       jaba(barebones: true, argv: []) do
@@ -114,7 +115,7 @@ class TestInputManager < JabaTest
       end
     end.message.must_equal("-a [--array-opt] expects 1 or more values")
   end
-
+=end
   # TODO: check failure cases, eg when no value/s provided
   it 'can populate globals from command line' do
     jaba(barebones: true, argv: ['-D', 'bool', 'true']) do
