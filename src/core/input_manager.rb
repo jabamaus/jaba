@@ -86,13 +86,14 @@ module JABA
 
     ##
     #
-    def initialize(services, argv)
+    def initialize(services)
       @services = services
       @input = services.input
       @passthru_args = []
       @cmds = []
       @cmd = nil
 
+      argv  = services.test_mode? ? [] : ARGV
       @input.instance_variable_set(:@argv, argv)
 
       # General non-cmd-specific options

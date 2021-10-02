@@ -2,7 +2,6 @@ require_relative '../src/jaba'
 $LOAD_PATH.unshift "#{__dir__}/minitest/lib"
 require 'minitest'
 require 'minitest/spec'
-require 'minitest/mock'
 
 # Disallow describe statements. They don't play well with automatic per-test temp dirs and they hide problems with internal describe methods
 module Kernel
