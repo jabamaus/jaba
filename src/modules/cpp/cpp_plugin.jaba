@@ -27,7 +27,7 @@ open_type :cpp do
       services.register_array_filter(:cpp_project, :deps) do |attr, dep|
         dep_def = services.get_instance_definition("cpp|#{dep}", fail_if_not_found: false)
         if !dep_def
-          JABA.error("'#{ref_node_id.inspect}' dependency not found", errobj: attr)
+          JABA.error("'#{dep.inspect}' dependency not found", errobj: attr)
         end
         if dep_def.has_flag?(:export_only)
           @export_only_dependencies_to_resolve.push_value(attr, dep_def)
