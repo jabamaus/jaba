@@ -64,9 +64,7 @@ module JABA
 
     ##
     #
-    def test_mode?
-      @test_mode
-    end
+    def test_mode? = @test_mode
     
     ##
     #
@@ -731,9 +729,7 @@ module JABA
 
     ##
     #
-    def in_attr_default_block?
-      @in_attr_default_block
-    end
+    def in_attr_default_block? = @in_attr_default_block
 
     ##
     #
