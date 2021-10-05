@@ -4,6 +4,8 @@ module JABA
   #
   class JabaNode < JabaObject
 
+    include NodeAPI
+    
     attr_reader :node_manager
     attr_reader :jaba_type
     attr_reader :handle

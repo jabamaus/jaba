@@ -1,3 +1,6 @@
+- Sort out jdl_glob
+- sort out caller_locations
+- Sort out policy on arguments in api classes
 - Allow plugins to have default id
 - Make cpp_project and cpp_platform into contained types
 - Change to make all modules manually included. eg 'include 'cpp''. Get rid of 'grab'.

@@ -5,12 +5,6 @@ end
 
 require_relative 'version'
 require_relative 'core/services'
-require_relative 'jdl/jdl_common'
-require_relative 'jdl/jdl_attribute_definition'
-require_relative 'jdl/jdl_node'
-require_relative 'jdl/jdl_top_level'
-require_relative 'jdl/jdl_translator'
-require_relative 'jdl/jdl_type'
 
 module JABA
 

@@ -9,6 +9,8 @@ module JABA
   #
   class JabaAttributeDefinitionBase < JabaObject
 
+    include AttributeDefinitionAPI
+
     attr_reader :type_id # eg :bool, :string, :file etc
     attr_reader :variant # :single, :array, :hash
     attr_reader :jaba_attr_type # JabaAttributeType object

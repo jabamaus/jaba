@@ -4,6 +4,8 @@ module JABA
   #
   class Translator < JabaObject
 
+    include TranslatorAPI
+    
     ##
     #
     def initialize(services, defn_id, src_loc, block, open_defs)

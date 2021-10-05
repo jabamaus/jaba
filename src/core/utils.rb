@@ -19,6 +19,39 @@ module JABA
   end
 
   ##
+  #
+  def self.error(msg, errobj: nil, callstack: nil, syntax: false, want_backtrace: true)
+    e = JabaError.new(msg)
+    e.instance_variable_set(:@callstack, Array(errobj&.src_loc || callstack || caller))
+    e.instance_variable_set(:@syntax, syntax)
+    e.instance_variable_set(:@want_backtrace, want_backtrace)
+    raise e
+  end
+
+  ##
+  #
+  def self.make_api_class(api_module)
+    api_class = Class.new(JDL_Base)
+    api_module.public_instance_methods.each do |m|
+      if m !~ /^(jdl_(.*))$/
+        raise "All API module methods must start with jdl_" # Don't use JABA.error as JABAError class not yet defined
+      end
+      delegate = Regexp.last_match(1)
+      api_method = Regexp.last_match(2)
+      api_class.define_method(api_method) do |*args, **keyval_args, &block|
+        @obj.send(delegate, *args, **keyval_args, &block)
+      end
+    end
+    api_class
+  end
+
+  ##
+  #
+  def self.ruby_debug_ide?
+    @@ruby_debug_ide ||= $LOAD_PATH.any?{|p| p.include?('ruby-debug-ide')}
+  end
+
+  ##
   # Convert a file path specified in user definitions to an absolute path.
   # If a path starts with ./ it is taken as being relative to the directory the jaba file is in, else it is
   # made absolute based on the supplied base dir (unless absolute already).

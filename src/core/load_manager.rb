@@ -167,7 +167,7 @@ module JABA
         end
         path = "#{JABA.grab_bag_dir}/#{path}"
       elsif !path.absolute_path?
-        src_loc = caller_locations(2, 1)[0]
+        src_loc = caller_locations(3, 1)[0]
         path = "#{src_loc.absolute_path.parent_path}/#{path}"
       end
       if path.extname == '.rb'

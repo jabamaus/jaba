@@ -8,6 +8,7 @@ require 'tsort'
 
 require_relative 'core_ext'
 require_relative 'utils'
+require_relative 'jdl'
 require_relative 'file_manager'
 require_relative 'input_manager'
 require_relative 'load_manager'
@@ -33,24 +34,9 @@ module JABA
 
   ##
   #
-  def self.ruby_debug_ide?
-    @@ruby_debug_ide ||= $LOAD_PATH.any?{|p| p.include?('ruby-debug-ide')}
-  end
-
-  ##
-  #
-  def self.error(msg, errobj: nil, callstack: nil, include_api: false, syntax: false, want_backtrace: true)
-    e = JabaError.new(msg)
-    e.instance_variable_set(:@callstack, Array(errobj&.src_loc || callstack || caller))
-    e.instance_variable_set(:@include_api, include_api)
-    e.instance_variable_set(:@syntax, syntax)
-    e.instance_variable_set(:@want_backtrace, want_backtrace)
-    raise e
-  end
-
-  ##
-  #
   class Services
+
+    include TopLevelAPI
 
     attr_reader :invoking_dir
     attr_reader :input
@@ -110,7 +96,7 @@ module JABA
       @input_manager = InputManager.new(self)
       @load_manager = LoadManager.new(self, @file_manager)
 
-      @top_level_api = JDL_TopLevel.new(self, @load_manager, @file_manager)
+      @top_level_api = JDL_TopLevel.new(self)
 
       register_toplevel_item :type, :instance, :shared, :defaults, :translator
     end
@@ -126,14 +112,13 @@ module JABA
         case e
         when JabaError
           cs = e.instance_variable_get(:@callstack)
-          include_api = e.instance_variable_get(:@include_api)
-          err_type = e.instance_variable_get(:@syntax) ? :syntax : :error
+           err_type = e.instance_variable_get(:@syntax) ? :syntax : :error
           want_backtrace = e.instance_variable_get(:@want_backtrace)
           
           bt = if err_type == :syntax
             [] # Syntax errors (ruby ScriptErrors) don't have backtraces
           else
-            jdl_bt = get_jdl_backtrace(cs, include_api: include_api)
+            jdl_bt = get_jdl_backtrace(cs)
             if jdl_bt.empty?
               @output[:error] = want_backtrace ? e.full_message(highlight: false) : e.message
               raise
@@ -141,7 +126,7 @@ module JABA
             jdl_bt
           end
 
-          info = jdl_error_info(e.message, bt, err_type: err_type)
+          info = make_error_info(e.message, bt, err_type: err_type)
           @output[:error] = want_backtrace ? info.full_message : info.message
 
           e = JabaError.new(info.message)
@@ -501,7 +486,7 @@ module JABA
     ##
     #
     def define(what, id, *args, **keyval_args, &block)
-      src_loc = caller_locations(2, 1)[0]
+      src_loc = caller_locations(3, 1)[0]
 
       lookup_id = id
       if what == :instance
@@ -542,7 +527,7 @@ module JABA
       validate_id(id, what)
       JABA.error("'#{what.inspect_unquoted}' requires a block") if !block_given?
 
-      src_loc = caller_locations(2, 1)[0]
+      src_loc = caller_locations(3, 1)[0]
       log "  Opening '#{what}:#{id}' at #{src_loc.describe}"
 
       d = make_definition(id, block, src_loc)
@@ -679,13 +664,7 @@ module JABA
 
     ##
     #
-    def jdl_top_level_instance_ids(type_id)
-      get_node_manager(type_id).top_level_ids
-    end
-
-    ##
-    #
-    def jdl_get_nodes_of_type(type_id)
+    def get_nodes_of_type(type_id)
       nm = get_node_manager(type_id)
       nm.root_nodes.map{|n| n.attrs_read_only}
     end
@@ -881,7 +860,7 @@ module JABA
     rescue JabaError
       raise # Prevent fallthrough to next case
     rescue StandardError => e # Catches errors like invalid constants
-      JABA.error(e.message, callstack: e.backtrace, include_api: true)
+      JABA.error(e.message, callstack: e.backtrace)
     rescue ScriptError => e # Catches syntax errors. In this case there is no backtrace.
       JABA.error(e.message, syntax: true)
     end
@@ -922,7 +901,7 @@ module JABA
       if jdl_bt.empty?
         msg = "Warning: #{msg}"
       else
-        msg = jdl_error_info(msg, jdl_bt, err_type: :warning).message
+        msg = make_error_info(msg, jdl_bt, err_type: :warning).message
       end
       log(msg, :WARN)
       @warnings << msg
@@ -931,7 +910,7 @@ module JABA
 
     ##
     #
-    def get_jdl_backtrace(callstack, include_api: false)
+    def get_jdl_backtrace(callstack)
       # Clean up callstack which could be in 'caller' or 'caller_locations' form.
       #
       callstack = callstack.map do |l|
@@ -951,11 +930,7 @@ module JABA
         callstack.slice!(jaba_run_idx..-1)
       end
 
-      candidates = if include_api
-        @load_manager.jdl_files + $LOADED_FEATURES.select{|f| f =~ /jaba\/src\/jdl/}
-      else
-        @load_manager.jdl_files
-      end
+      candidates = @load_manager.jdl_files
 
       # Extract any lines in the callstack that contain references to definition source files.
       #
@@ -974,7 +949,7 @@ module JABA
 
     ##
     #
-    def jdl_error_info(msg, backtrace, err_type: :error)
+    def make_error_info(msg, backtrace, err_type: :error)
       if err_type == :syntax
         # With ruby ScriptErrors there is no useful callstack. The error location is in the msg itself.
         #

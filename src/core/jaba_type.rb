@@ -4,6 +4,8 @@ module JABA
   #
   class JabaType < JabaObject
 
+    include TypeAPI
+    
     attr_reader :title
     attr_reader :notes
     attr_reader :singleton
@@ -76,11 +78,11 @@ module JABA
       
       ad = case variant
       when :single
-        JabaAttributeSingleDefinition.new(self, id, caller_locations(2, 1)[0], block, type, jaba_type)
+        JabaAttributeSingleDefinition.new(self, id, caller_locations(3, 1)[0], block, type, jaba_type)
       when :array
-        JabaAttributeArrayDefinition.new(self, id, caller_locations(2, 1)[0], block, type, jaba_type)
+        JabaAttributeArrayDefinition.new(self, id, caller_locations(3, 1)[0], block, type, jaba_type)
       when :hash
-        JabaAttributeHashDefinition.new(self, id, caller_locations(2, 1)[0], block, type, jaba_type, key_type)
+        JabaAttributeHashDefinition.new(self, id, caller_locations(3, 1)[0], block, type, jaba_type, key_type)
       end
         
       register_attr_def(ad, :local)
