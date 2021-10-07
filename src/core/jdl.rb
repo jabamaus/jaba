@@ -83,7 +83,7 @@ module JABA
     ##
     #
     def jdl_on_included(...)
-      @load_manager.on_included(::Kernel.caller_locations(2, 1)[0], ...)
+      @load_manager.on_included(...)
     end
 
     ##
@@ -184,8 +184,8 @@ module JABA
 
     ##
     #
-    def jdl_include(shared_defn_id, *args)
-      include_shared(shared_defn_id, args)
+    def jdl_include(...)
+      include_shared(...)
     end
 
     ##
@@ -214,21 +214,21 @@ module JABA
     # Set title for the type. Required. Will appear in generated reference manual.
     #
     def jdl_title(val)
-      set_property(:title, val)
+      set_property_from_jdl(:title, val)
     end
 
     ##
     # Flag type as singleton.
     #
     def jdl_singleton(val)
-      set_property(:singleton, val, __jdl_call_loc: ::Kernel.caller_locations(2, 1)[0])
+      set_property_from_jdl(:singleton, val)
     end
 
     ##
     # Add a help note for this type. Multiple can be added. Will appear in generated reference manual.
     #
     def jdl_note(val)
-      set_property(:notes, val, __jdl_call_loc: ::Kernel.caller_locations(2, 1)[0])
+      set_property_from_jdl(:notes, val)
     end
 
     ##
@@ -255,14 +255,14 @@ module JABA
     ##
     #
     def jdl_dependencies(*deps)
-      set_property(:dependencies, deps, __jdl_call_loc: ::Kernel.caller_locations(2, 1)[0])
+      set_property_from_jdl(:dependencies, deps)
     end
 
     ##
     # EXTENSION API
     #
     def jdl_plugin(id, &block)
-      set_property(:plugin, id, __jdl_call_loc: ::Kernel.caller_locations(2, 1)[0], &block)
+      set_property_from_jdl(:plugin, id, &block)
     end
 
   end
@@ -278,35 +278,35 @@ module JABA
     # Set title of attribute. Required. Will appear in generated reference manual.
     #
     def jdl_title(val = nil)
-      set_property(:title, val, __jdl_call_loc: ::Kernel.caller_locations(2, 1)[0])
+      set_property_from_jdl(:title, val)
     end
 
     ##
     # Add a help note for the attribute. Multiple can be added. Will appear in generated reference manual.
     #
     def jdl_note(val)
-      set_property(:notes, val, __jdl_call_loc: ::Kernel.caller_locations(2, 1)[0])
+      set_property_from_jdl(:notes)
     end
     
     ##
     # Add usage example. Will appear in generated reference manual.
     #
     def jdl_example(val)
-      set_property(:examples, val, __jdl_call_loc: ::Kernel.caller_locations(2, 1)[0])
+      set_property_from_jdl(:examples, val)
     end
 
     ##
     # Set any number of flags to control the behaviour of the attribute.
     #
     def jdl_flags(*flags)
-      set_property(:flags, flags, __jdl_call_loc: ::Kernel.caller_locations(2, 1)[0])
+      set_property_from_jdl(:flags, flags)
     end
     
     ##
     # Set attribute default value. Can be specified as a value or a block.
     #
     def jdl_default(val = nil, &block)
-      set_property(:default, val, __jdl_call_loc: ::Kernel.caller_locations(2, 1)[0], &block)
+      set_property_from_jdl(:default, val, &block)
     end
 
     ##
@@ -316,7 +316,7 @@ module JABA
     ##
     #
     def jdl_flag_options(*options)
-      set_property(:flag_options, options, __jdl_call_loc: ::Kernel.caller_locations(2, 1)[0])
+      set_property_from_jdl(:flag_options, options)
     end
 
     ##
@@ -340,20 +340,20 @@ module JABA
     # Called for single value attributes and each element of array attributes.
     #
     def jdl_validate(&block)
-      set_property(:validate, __jdl_call_loc: ::Kernel.caller_locations(2, 1)[0], &block)
+      set_property_from_jdl(:validate, &block)
     end
     
     ##
     # Use to validate the key of a hash attribute. Cannot be used with single value of array attributes.
     #
     def jdl_validate_key(&block)
-      set_property(:validate_key, __jdl_call_loc: ::Kernel.caller_locations(2, 1)[0], &block)
+      set_property_from_jdl(:validate_key, &block)
     end
 
     ##
     #
     def jdl_on_set(&block)
-      set_property(:on_set, __jdl_call_loc: ::Kernel.caller_locations(2, 1)[0], &block)
+      set_property_from_jdl(:on_set, &block)
     end
     
     ##
@@ -397,7 +397,7 @@ module JABA
     ##
     #
     def jdl_method_missing(id, val = nil, &block)
-      handle_property(id, val, __jdl_call_loc: ::Kernel.caller_locations(2, 1)[0], &block)
+      handle_property_from_jdl(id, val, &block)
     end
 
   end
@@ -426,13 +426,13 @@ module JABA
     ##
     #
     def jdl_generate(&block)
-      set_property(:generate, __jdl_call_loc: ::Kernel.caller_locations(2, 1)[0], &block)
+      set_property_from_jdl(:generate, &block)
     end
 
     ##
     #
-    def jdl_method_missing(attr_id, *args, **keyval_args, &block)
-      handle_attr(attr_id, *args, __jdl_call_loc: ::Kernel.caller_locations(2, 1)[0], **keyval_args, &block)
+    def jdl_method_missing(...)
+      handle_attr_from_jdl(...)
     end
 
   end
@@ -446,8 +446,8 @@ module JABA
 
     ##
     #
-    def jdl_method_missing(attr_id, *args, **keyval_args, &block)
-      handle_attr(attr_id, *args, __jdl_call_loc: ::Kernel.caller_locations(2, 1)[0], **keyval_args, &block)
+    def jdl_method_missing(...)
+      handle_attr_from_jdl(...)
     end
 
   end

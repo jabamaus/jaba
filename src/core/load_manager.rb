@@ -167,8 +167,7 @@ module JABA
         end
         path = "#{JABA.grab_bag_dir}/#{path}"
       elsif !path.absolute_path?
-        src_loc = caller_locations(3, 1)[0]
-        path = "#{src_loc.absolute_path.parent_path}/#{path}"
+        path = "#{$last_call_location.absolute_path.parent_path}/#{path}"
       end
       if path.extname == '.rb'
         @services.log "  Loading #{path} plugin"
@@ -184,8 +183,8 @@ module JABA
 
     ##
     #
-    def on_included(src_loc, &block)
-      @on_included.push_value(src_loc.absolute_path, block)
+    def on_included(&block)
+      @on_included.push_value($last_call_location.absolute_path, block)
     end
 
 

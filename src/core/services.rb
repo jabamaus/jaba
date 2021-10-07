@@ -486,8 +486,6 @@ module JABA
     ##
     #
     def define(what, id, *args, **keyval_args, &block)
-      src_loc = caller_locations(3, 1)[0]
-
       lookup_id = id
       if what == :instance
         type_id = id
@@ -498,14 +496,14 @@ module JABA
 
       validate_id(id, what)
 
-      log "  Defining '#{what}:#{lookup_id}' at #{src_loc.describe}"
+      log "  Defining '#{what}:#{lookup_id}' at #{$last_call_location.describe}"
       
       existing = get_definition(what, lookup_id, fail_if_not_found: false)
       if existing
         JABA.error("'#{lookup_id}' multiply defined. First definition at #{existing.src_loc.describe}.")
       end
 
-      d = make_definition(id, block, src_loc)
+      d = make_definition(id, block, $last_call_location)
       d.flags.concat(args)
       d.open_defs_lookup_id = lookup_id
       
@@ -527,10 +525,9 @@ module JABA
       validate_id(id, what)
       JABA.error("'#{what.inspect_unquoted}' requires a block") if !block_given?
 
-      src_loc = caller_locations(3, 1)[0]
-      log "  Opening '#{what}:#{id}' at #{src_loc.describe}"
+      log "  Opening '#{what}:#{id}' at #{$last_call_location.describe}"
 
-      d = make_definition(id, block, src_loc)
+      d = make_definition(id, block, $last_call_location)
       
       def_reg = @open_definitions_registry[what]
       def_reg.defs << d

@@ -39,6 +39,7 @@ module JABA
       delegate = Regexp.last_match(1)
       api_method = Regexp.last_match(2)
       api_class.define_method(api_method) do |*args, **keyval_args, &block|
+        $last_call_location = ::Kernel.caller_locations(1, 1)[0]
         @obj.send(delegate, *args, **keyval_args, &block)
       end
     end
@@ -138,6 +139,12 @@ module JABA
 
     ##
     #
+    def set_property_from_jdl(p_id, val = nil, &block)
+      set_property(p_id, val, __jdl_call_loc: $last_call_location, &block)
+    end
+
+    ##
+    #
     def set_property(p_id, val = nil, __jdl_call_loc: nil, &block)
       info = get_property_info(p_id)
 
@@ -229,11 +236,11 @@ module JABA
 
     ##
     #
-    def handle_property(p_id, val, __jdl_call_loc: nil, &block)
+    def handle_property_from_jdl(p_id, val, &block)
       if val.nil? && !block_given?
         get_property(p_id)
       else
-        set_property(p_id, val, __jdl_call_loc: __jdl_call_loc, &block)
+        set_property_from_jdl(p_id, val, &block)
       end
     end
     

@@ -28,8 +28,8 @@ module JABA
     
     ##
     #
-    def initialize(variant, jaba_type, defn_id, src_loc, block, type_id, ref_jaba_type)
-      super(jaba_type.services, defn_id, src_loc, JDL_AttributeDefinition.new(self))
+    def initialize(variant, jaba_type, defn_id, block, type_id, ref_jaba_type)
+      super(jaba_type.services, defn_id, $last_call_location, JDL_AttributeDefinition.new(self))
       
       @jaba_type = jaba_type
       @block = block
@@ -206,7 +206,7 @@ module JABA
     #   "#{my_path_attribute}/#{my_name_ttribute}"
     # end
     #
-    def handle_property(p_id, val, __jdl_call_loc: nil, &block)
+    def handle_property_from_jdl(p_id, val, &block)
       if val.nil? && !block_given? && @in_eval_block && !property_defined?(p_id)
         JABA.error("'#{defn_id}.#{p_id}' undefined. Are you setting default in terms of another attribute? If so block form must be used")
       else
@@ -303,8 +303,8 @@ module JABA
 
     ##
     #
-    def initialize(jaba_type, defn_id, src_loc, block, type_id, ref_jaba_type)
-      super(:single, jaba_type, defn_id, src_loc, block, type_id, ref_jaba_type)
+    def initialize(jaba_type, defn_id, block, type_id, ref_jaba_type)
+      super(:single, jaba_type, defn_id, block, type_id, ref_jaba_type)
     
     end
 
@@ -318,8 +318,8 @@ module JABA
 
     ##
     #
-    def initialize(jaba_type, defn_id, src_loc, block, type_id, ref_jaba_type)
-      super(:array, jaba_type, defn_id, src_loc, block, type_id, ref_jaba_type)
+    def initialize(jaba_type, defn_id, block, type_id, ref_jaba_type)
+      super(:array, jaba_type, defn_id, block, type_id, ref_jaba_type)
       @filter = nil
     end
 
@@ -339,8 +339,8 @@ module JABA
   
     ##
     #
-    def initialize(jaba_type, defn_id, src_loc, block, type_id, ref_jaba_type, key_type_id)
-      super(:hash, jaba_type, defn_id, src_loc, block, type_id, ref_jaba_type)
+    def initialize(jaba_type, defn_id, block, type_id, ref_jaba_type, key_type_id)
+      super(:hash, jaba_type, defn_id, block, type_id, ref_jaba_type)
 
       @key_type_id = key_type_id # Only used with hash attributes
 

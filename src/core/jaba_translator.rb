@@ -27,8 +27,8 @@ module JABA
 
     ##
     #
-    def handle_attr(...)
-      @node.handle_attr(...)
+    def handle_attr_from_jdl(...)
+      @node.handle_attr_from_jdl(...)
     end
 
   end

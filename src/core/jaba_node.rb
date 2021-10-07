@@ -227,6 +227,12 @@ module JABA
     end
 
     ##
+    #
+    def handle_attr_from_jdl(id, *args, **keyval_args, &block)
+      handle_attr(id, *args, __jdl_call_loc: $last_call_location, **keyval_args, &block)
+    end
+    
+    ##
     # If an attribute set operation is being performed, args contains the 'value' and then a list optional symbols
     # which act as options. eg my_attr 'val', :export, :exclude would make args equal to ['val', :opt1, :opt2]. If
     # however the value being passed in is an array it could be eg [['val1', 'val2'], :opt1, :opt2].
@@ -403,15 +409,11 @@ module JABA
     
     ##
     #
-    def to_s
-      @node.to_s
-    end
+    def to_s = @node.to_s
     
     ##
     #
-    def id
-      @node.defn_id
-    end
+    def id = @node.defn_id
     
     # Store jdl call location (only done in read only version of this accessor) so it can be passed on to enable value calls to be chained. This happens
     # if a node-by-value attribute is nested, eg root_attr.sub_attr1.sub_attr2.

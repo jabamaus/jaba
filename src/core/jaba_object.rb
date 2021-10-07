@@ -65,7 +65,7 @@ module JABA
     
     ##
     #
-    def include_shared(id, args)
+    def include_shared(id, *args)
       services.log "  Including shared definition [id=#{id}]"
 
       sd = services.get_definition(:shared, id)

@@ -240,7 +240,7 @@ module JABA
     # Called from JDL API.
     #
     def jdl_glob(spec, &block)
-      jaba_file_dir = caller_locations(3, 1)[0].absolute_path.parent_path
+      jaba_file_dir = $last_call_location.absolute_path.parent_path
       if !spec.absolute_path?
         spec = "#{jaba_file_dir}/#{spec}"
       end
