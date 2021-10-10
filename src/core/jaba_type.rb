@@ -4,7 +4,7 @@ module JABA
   #
   class JabaType < JabaObject
 
-    include TypeAPI
+    include TypeDefinitionAPI
     
     attr_reader :title
     attr_reader :notes

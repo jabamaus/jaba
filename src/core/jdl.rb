@@ -205,7 +205,7 @@ module JABA
 
   ##
   #
-  module TypeAPI
+  module TypeDefinitionAPI
 
     include CommonAPI
     include ObjectAPI
@@ -453,7 +453,7 @@ module JABA
   end
 
   const_set('JDL_TopLevel', make_api_class(TopLevelAPI))
-  const_set('JDL_Type', make_api_class(TypeAPI))
+  const_set('JDL_Type', make_api_class(TypeDefinitionAPI))
   const_set('JDL_AttributeDefinition', make_api_class(AttributeDefinitionAPI))
   const_set('JDL_Node', make_api_class(NodeAPI))
   const_set('JDL_Translator', make_api_class(TranslatorAPI))
