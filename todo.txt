@@ -12,18 +12,15 @@
 - Disallow types being used as a compound attr from being flagged as singleton
 - Rather than attr :a, type: :compound, jaba_type: :type_with_plugin it could be
   attr :a, embed: type_with_plugin
-- Consider the idea of defining a 'build_module' which has 'sections'
 - I wonder whether the role of build_output could be done by a plugin using process_definition
 - Doxygen and manifest files are good plugin examples
 - Put version number into every type and force it to be set in instance.
 - Consider storing whole callstack and then introducing JabaObject#error method.
 - Move block arg number checking into eval_jdl?
-- A consequence of moving plugin inline in jaba file is it will be included in backtraces
 - Add invocations.txt to each example which cam execute in multiple ways
 - Ability to 'grab' a text plugin that auto-adds ability to generate a text file to cpp projects.
 - Validate paths for missing / eg '../..debase-ruby_core_source/
 - option in tests to log to stdout
-- Allow subclasses of Plugins. Useful in testing.
 - Add text_plugin.rb to examples in docs
 - Moving text into plugin has raised question about host. Need to set requied cpp_project_classname to ''. Not clean.
 - Should | be allowed in ids? Probably not.
@@ -84,7 +81,6 @@
 - consider having a globals per-type (eg cpp globals)
 - validate when --src-root can be specified. Should be required if no .jaba files in cwd and disallowed if there are.
 - Check attribute validators when parsing cmd line.
-- Should jaba target one 'language' (type) per run? Eg C++, C#
 - Employ did you mean style error reporting
   Error at basic_dll.jaba:8: 'defines' attribute not defined. Did you mean 'define'?
 - tag attrs as control flow attrs somehow for benefit of docs
