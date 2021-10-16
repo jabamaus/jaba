@@ -29,7 +29,7 @@
 </tr>
 <tr>
 <td><em>depends on</em></td>
-<td><a href="jaba_type_arch.html">arch</a>, <a href="jaba_type_rule.html">rule</a></td>
+<td><a href="jaba_type_arch.html">arch</a></td>
 </tr>
 </tbody>
 </table>
@@ -72,7 +72,6 @@
 <h4 id="arch">arch</h4>
 <blockquote>
 <p><em>Target architecture as an object</em></p>
-<p>Query current architecture being processed. Use to define control flow to set config-specific atttributes.</p>
 <table>
 <thead>
 <tr>
@@ -223,7 +222,6 @@
 <h4 id="config">config</h4>
 <blockquote>
 <p><em>Current target config as an id</em></p>
-<p>Returns current config being processed. Use to define control flow to set config-specific atttributes.</p>
 <table>
 <thead>
 <tr>
@@ -445,7 +443,6 @@
 <h4 id="importlib">importlib</h4>
 <blockquote>
 <p><em>Name of import lib for use will dlls</em></p>
-<p>Defaults to <a href="#projname">$(projname)</a><a href="#targetsuffix">$(targetsuffix)</a>.lib.</p>
 <table>
 <thead>
 <tr>
@@ -589,7 +586,6 @@
 <h4 id="nowarn">nowarn</h4>
 <blockquote>
 <p><em>Warnings to disable</em></p>
-<p>Placed directly into projects as is, with no validation.</p>
 <table>
 <thead>
 <tr>
@@ -809,7 +805,6 @@
 <h4 id="shell">shell</h4>
 <blockquote>
 <p><em>Shell commands to execute during build</em></p>
-<p>Maps to build events in Visual Studio.</p>
 <table>
 <thead>
 <tr>
@@ -880,7 +875,6 @@
 <h4 id="targetext">targetext</h4>
 <blockquote>
 <p><em>Extension to apply to $(targetname)</em></p>
-<p>Defaults to standard extension for <a href="#type">$(type)</a> of project for target <a href="#platform">$(platform)</a>.</p>
 <table>
 <thead>
 <tr>
@@ -916,7 +910,6 @@
 <h4 id="targetname">targetname</h4>
 <blockquote>
 <p><em>Base name of output file without extension</em></p>
-<p>Defaults to <a href="#targetprefix">$(targetprefix)</a><a href="#projname">$(projname)</a><a href="#targetsuffix">$(targetsuffix)</a>.</p>
 <table>
 <thead>
 <tr>
@@ -952,7 +945,6 @@
 <h4 id="targetprefix">targetprefix</h4>
 <blockquote>
 <p><em>Prefix to apply to $(targetname)</em></p>
-<p>Has no effect if <a href="#targetname">$(targetname)</a> specified.</p>
 <table>
 <thead>
 <tr>
@@ -988,7 +980,6 @@
 <h4 id="targetsuffix">targetsuffix</h4>
 <blockquote>
 <p><em>Suffix to apply to $(targetname)</em></p>
-<p>Has no effect if <a href="#targetname">$(targetname)</a> specified.</p>
 <table>
 <thead>
 <tr>
@@ -1024,7 +1015,6 @@
 <h4 id="toolset">toolset</h4>
 <blockquote>
 <p><em>Toolset version to use</em></p>
-<p>Defaults to host's default toolset.</p>
 <table>
 <thead>
 <tr>

@@ -11,9 +11,13 @@
 <p><sub><sup>This page applies to v0.1-alpha<br></sup></sub>
 <a href="../index.html">home</a><br />
 <a href="index.html">0.1-alpha home</a></p>
-<pre style="color:#272822;background-color:#fafafa"><span style="color:#00a8c8">include</span> <span style="color:#d88200">&#39;text_plugin.rb&#39;</span>
-
-<span style="color:#111">type</span> <span style="color:#d88200">:text</span> <span style="color:#00a8c8">do</span>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">text</span> <span style="color:#d88200">:example</span> <span style="color:#00a8c8">do</span>
+  <span style="color:#111">content</span> <span style="color:#d88200">%Q{</span><span style="color:#d88200">Add a block of raw text using ruby&#39;s %Q string literal notation.
+</span><span style="color:#d88200">Makes it easy to write formatted text including newlines
+</span><span style="color:#d88200"></span><span style="color:#d88200">}</span>
+  <span style="color:#111">line</span> <span style="color:#d88200">&#39;Add a line explicitly&#39;</span>
+<span style="color:#00a8c8">end</span>
+</pre><pre style="color:#272822;background-color:#fafafa"><span style="color:#111">type</span> <span style="color:#d88200">:text</span> <span style="color:#00a8c8">do</span>
   
   <span style="color:#111">title</span> <span style="color:#d88200">&#39;Basic text file that is written to HDD&#39;</span>
 
@@ -40,18 +44,29 @@
     <span style="color:#111">items</span> <span style="color:#f92672">[</span><span style="color:#d88200">:lf</span><span style="color:#111">,</span> <span style="color:#d88200">:crlf</span><span style="color:#111">,</span> <span style="color:#d88200">:native</span><span style="color:#f92672">]</span>
     <span style="color:#111">default</span> <span style="color:#d88200">:native</span>
   <span style="color:#00a8c8">end</span>
-  
-<span style="color:#00a8c8">end</span>
 
-<span style="color:#111">text</span> <span style="color:#d88200">:example</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">content</span> <span style="color:#d88200">%Q{</span><span style="color:#d88200">Add a block of raw text using ruby&#39;s %Q string literal notation.
-</span><span style="color:#d88200">Makes it easy to write formatted text including newlines
-</span><span style="color:#d88200"></span><span style="color:#d88200">}</span>
-  <span style="color:#111">line</span> <span style="color:#d88200">&#39;Add a line explictly&#39;</span>
-<span style="color:#00a8c8">end</span>
-
-<span style="color:#111">host</span> <span style="color:#d88200">:text</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">cpp_project_classname</span> <span style="color:#d88200">&#39;&#39;</span> <span style="color:#75715e"># TODO: remove</span>
+  <span style="color:#111">plugin</span> <span style="color:#d88200">:text</span> <span style="color:#00a8c8">do</span>
+    <span style="color:#00a8c8">def</span> <span style="color:#75af00"></span><span style="color:#f92672"></span><span style="color:#75af00">generate</span>
+      <span style="color:#111">services</span><span style="color:#f92672">.</span><span style="color:#111">nodes</span><span style="color:#f92672">.</span><span style="color:#111">each</span> <span style="color:#00a8c8">do</span> <span style="color:#f92672">|</span><span style="color:#111">n</span><span style="color:#f92672">|</span>
+        <span style="color:#111">attrs</span> <span style="color:#f92672">=</span> <span style="color:#111">n</span><span style="color:#f92672">.</span><span style="color:#111">attrs</span>
+        <span style="color:#111">file</span> <span style="color:#f92672">=</span> <span style="color:#111">services</span><span style="color:#f92672">.</span><span style="color:#111">new_file</span><span style="color:#111">(</span><span style="color:#111">attrs</span><span style="color:#f92672">.</span><span style="color:#111">filename</span><span style="color:#111">,</span> <span style="color:#d88200">eol</span><span style="color:#111">:</span> <span style="color:#111">attrs</span><span style="color:#f92672">.</span><span style="color:#111">eol</span><span style="color:#111">,</span> <span style="color:#d88200">capacity</span><span style="color:#111">:</span> <span style="color:#ae81ff">1024</span><span style="color:#f92672"></span><span style="color:#111">)</span>
+        <span style="color:#111">w</span> <span style="color:#f92672">=</span> <span style="color:#111">file</span><span style="color:#f92672">.</span><span style="color:#111">writer</span>
+        <span style="color:#111">c</span> <span style="color:#f92672">=</span> <span style="color:#111">attrs</span><span style="color:#f92672">.</span><span style="color:#111">content</span>
+        <span style="color:#111">w</span><span style="color:#f92672">.</span><span style="color:#111">write_raw</span><span style="color:#111">(</span><span style="color:#111">c</span><span style="color:#111">)</span> <span style="color:#00a8c8">if</span> <span style="color:#111">c</span>
+        <span style="color:#111">lines</span> <span style="color:#f92672">=</span> <span style="color:#111">attrs</span><span style="color:#f92672">.</span><span style="color:#111">line</span>
+        <span style="color:#00a8c8">if</span> <span style="color:#f92672">!</span><span style="color:#111">lines</span><span style="color:#f92672">.</span><span style="color:#111">empty?</span>
+          <span style="color:#111">w</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#d88200">&#34;</span><span style="color:#d88200">#{</span><span style="color:#111">lines</span><span style="color:#f92672">.</span><span style="color:#111">join</span><span style="color:#111">(</span><span style="color:#d88200">&#34;</span><span style="color:#8045ff">\n</span><span style="color:#d88200">&#34;</span><span style="color:#111">)</span><span style="color:#d88200">}</span><span style="color:#d88200">&#34;</span>
+        <span style="color:#00a8c8">end</span>
+        <span style="color:#111">file</span><span style="color:#f92672">.</span><span style="color:#111">write</span>
+      <span style="color:#00a8c8">end</span>
+    <span style="color:#00a8c8">end</span>
+    
+    <span style="color:#00a8c8">def</span> <span style="color:#75af00"></span><span style="color:#f92672"></span><span style="color:#75af00">build_output</span><span style="color:#111">(</span><span style="color:#111">root</span><span style="color:#111">)</span>
+      <span style="color:#111">services</span><span style="color:#f92672">.</span><span style="color:#111">nodes</span><span style="color:#f92672">.</span><span style="color:#111">each</span> <span style="color:#00a8c8">do</span> <span style="color:#f92672">|</span><span style="color:#111">n</span><span style="color:#f92672">|</span>
+        <span style="color:#111">root</span><span style="color:#f92672">[</span><span style="color:#d88200">:filename</span><span style="color:#f92672">]</span> <span style="color:#f92672">=</span> <span style="color:#111">n</span><span style="color:#f92672">.</span><span style="color:#111">attrs</span><span style="color:#f92672">.</span><span style="color:#111">filename</span>
+      <span style="color:#00a8c8">end</span>
+    <span style="color:#00a8c8">end</span>
+  <span style="color:#00a8c8">end</span>
 <span style="color:#00a8c8">end</span>
 </pre><p><sub><sup>Generated by <a href="https://github.com/ishani/MaMD">MaMD</a> which uses <a href="https://github.com/yuin/goldmark">Goldmark</a>, <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a></sup></sub></p>
 
