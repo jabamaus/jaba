@@ -6,6 +6,7 @@ module JABA
     
     attr_reader :projname
     attr_reader :vcxproj_file
+    attr_reader :has_resources
     
     ##
     #
@@ -15,6 +16,7 @@ module JABA
       @vcxproj_file = "#{@projdir}/#{@projname}.vcxproj"
       @vcxproj_filters_file = "#{@vcxproj_file}.filters"
       @file_type_hash = services.globals.vcfiletype
+      @has_resources = false
       @masm_required = false
       @per_file_props = {}
       @extension_settings = []
@@ -25,6 +27,8 @@ module JABA
     #
     def post_create
       process_src(:src, :src_ext, :src_exclude)
+
+      @has_resources = @src.any?{|sf| sf.extname == '.rc'}
 
       # Call translator for this platform to initialse project level Visual Studio-specific attributes
       # (vcglobals), based on cross platform definition.

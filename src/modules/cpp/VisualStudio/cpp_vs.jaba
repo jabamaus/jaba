@@ -86,6 +86,13 @@ open_type :cpp_project do
 end
 
 open_type :cpp_config do
+  attr_array :res_inc, type: :src_spec do
+    title 'Resource compiler include paths'
+    basedir_spec :definition_root
+    flags :no_sort, :exportable
+    example "res_inc ['mylibrary/include']"
+  end
+
   attr_hash :vcprop, key_type: :string, type: :to_s do
     title 'Address per-configuration sections of a vcxproj directly'
     value_option :condition

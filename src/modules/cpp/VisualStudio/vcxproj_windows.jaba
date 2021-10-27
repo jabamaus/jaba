@@ -158,5 +158,15 @@ translator :vcxproj_config_windows do |vcxproj, cfg_type|
   vcprop "#{cfg_type == :lib ? :Lib : :Link}|TargetMachine" do
     :MachineX64 if x86_64?
   end
-
+  
+  # Resources
+  #
+  if vcxproj.has_resources
+    vcprop "ResourceCompile|AdditionalIncludeDirectories" do
+      res_inc.map do |i|
+        i.relative_path_from(vcxproj.projdir, backslashes: true)
+      end.vs_join_paths
+    end
+  end
+  
 end
