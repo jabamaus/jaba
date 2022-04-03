@@ -71,9 +71,11 @@ private
   def add_config(name:, program:, cwd: nil, args: nil)
     c = {}
     c['name'] = "Debug #{name}"
-    c['type'] = 'Ruby'
+    c['type'] = 'rdbg'
     c['request'] = 'launch'
-    c['program'] = program
+    c['debugPort'] = '1234'
+    c['localfs'] = true
+    c['script'] = program
     c['cwd'] = cwd if cwd
     c['args'] = Array(args)
     @configs << c
