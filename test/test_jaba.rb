@@ -16,9 +16,7 @@ def run_tests
   if File.exist?(JabaTest.temp_root)
     FileUtils.remove_dir(JabaTest.temp_root)
   end
-  args_index = ARGV.index('--')
-  argv = args_index.nil? ? [] : ARGV[args_index+1..-1]
-  Minitest.run(argv + ["--no-plugins"])
+  Minitest.run(ARGV + ["--no-plugins"])
 end
 
 class JabaTest < Minitest::Spec
