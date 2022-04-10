@@ -397,7 +397,7 @@ module JABA
 
   ##
   #
-  class AttributeAccessor < BasicObject
+  class AttributeAccessor < DebuggableBasicObject
 
     ##
     #

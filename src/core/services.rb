@@ -102,6 +102,13 @@ module JABA
     end
 
     ##
+    # The output of inspecting Services is massive and chokes debugger
+    #
+    def inspect
+      'Services'
+    end
+
+    ##
     #
     def execute
       begin

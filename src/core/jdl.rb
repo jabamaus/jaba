@@ -2,33 +2,13 @@ module JABA
 
   ##
   #
-  class JDL_Base < BasicObject
+  class JDL_Base < DebuggableBasicObject
 
     ##
     # Assist ruby with constant lookup. Needed when type plugins are declared inline in jaba files and the implementation uses standard ruby classes.
     #
     def self.const_missing(name)
       ::Object.const_get(name)
-    end
-
-    # Hack to fix issues when debugging. When ruby_debug_ide evals certain objects instance variables and they contain
-    # references to the JDL Objects it calls methods on it that don't exist (because BasicObject is a blank slate with barely any methods).
-    # These method calls then go through to method_missing and are interpreted as instances of jaba types, meaning program
-    # state is being changed as a consequence of being debugged. To prevent this, implement nil? and make it raise an error. nil?
-    # is the first method ruby_debug_ide calls. The exception prevents further calls and 'BasicObject' is displayed in the debugger.
-    #
-    if ::JABA.ruby_debug_ide?
-      def to_s
-        'BasicObject'
-      end
-      
-      def nil?
-        ::Kernel.raise to_s
-      end
-
-      def local_variables
-        []
-      end
     end
 
   private
