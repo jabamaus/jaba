@@ -74,6 +74,7 @@ private
     c['type'] = 'rdbg'
     c['request'] = 'launch'
     c['debugPort'] = '1234'
+    c['waitLaunchTime'] = 10000
     c['localfs'] = true
     c['script'] = program
     c['cwd'] = cwd if cwd
@@ -84,8 +85,4 @@ private
 end
 
 lg = LaunchJsonGenerator.new
-
-# TEMP
-lg.add_src_root('C:/projects/GitHub/OUROVEON/build', name: 'OUROVEON',  args: ['-D', 'target_host', 'vs2019'])
-
 lg.generate
