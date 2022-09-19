@@ -121,7 +121,7 @@ module JABA
           if fail_if_empty
             JABA.error(msg, want_backtrace: false)
           else
-            jaba_warn(msg)
+            @services.jaba_warn(msg)
           end
         else
           files.each do |f|
