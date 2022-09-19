@@ -10,20 +10,6 @@ module JABA
   #
   class DebuggableBasicObject < BasicObject
 
-    if ::JABA.ruby_debug_ide?
-      def to_s
-        'BasicObject'
-      end
-      
-      def nil?
-        ::Kernel.raise to_s
-      end
-
-      def local_variables
-        []
-      end
-    end
-
     def instance_variables
       []
     end

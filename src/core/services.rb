@@ -154,9 +154,6 @@ module JABA
     #
     def run
       log "Starting Jaba at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}", section: true
-      if JABA.ruby_debug_ide?
-        log "Being debugged using ruby_debug_ide"
-      end
       
       duration = JABA.milli_timer do
         @input_manager.process
