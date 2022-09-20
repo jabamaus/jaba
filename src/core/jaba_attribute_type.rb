@@ -1,7 +1,5 @@
 module JABA
 
-  ##
-  #
   class JabaAttributeType
     
     attr_reader :services
@@ -10,8 +8,6 @@ module JABA
     attr_reader :notes
     attr_reader :default
 
-    ##
-    #
     def initialize(id, title, default: nil)
       @id = id
       @title = title
@@ -19,14 +15,8 @@ module JABA
       @notes = nil
     end
 
-    ##
-    #
-    def describe
-      "#{@id} attribute type"
-    end
+    def describe = "#{@id} attribute type"
 
-    ##
-    #
     def post_create
       JABA.error("id must be specified") if id.nil?
       JABA.error("#{describe} must have a title") if title.nil?
@@ -36,42 +26,14 @@ module JABA
       @notes.freeze
     end
 
-    ##
-    #
-    def from_cmdline(str, attr_def)
-      str
-    end
-    
-    ##
-    #
-    def map_value(value)
-      value
-    end
+    def from_cmdline(str, attr_def) = str
+    def map_value(value) = value
+    def get_reference_manual_rows(attr_def) = nil
 
-    ##
-    #
-    def get_reference_manual_rows(attr_def)
-      nil
-    end
+    def init_attr_def(attr_def) ; end
+    def post_init_attr_def(attr_def) ; end
+    def validate_value(attr_def, value) ; end
 
-    ##
-    # If an attribute type requires additional properties (eg choice attribute requires items), override this.
-    #
-    def init_attr_def(attr_def)
-    end
-
-    ##
-    #
-    def post_init_attr_def(attr_def)
-    end
-
-    ##
-    #
-    def validate_value(attr_def, value)
-    end
-
-    ##
-    #
     def raise_type_error(value, expected)
       value_class = value.class
       if value_class == TrueClass || value_class == FalseClass
@@ -82,8 +44,6 @@ module JABA
 
   end
 
-  ##
-  #
   class JabaAttributeTypeString < JabaAttributeType
     
     def initialize
@@ -99,8 +59,6 @@ module JABA
 
   end
 
-  ##
-  #
   class JabaAttributeTypeSymbol < JabaAttributeType
     
     def initialize
@@ -108,9 +66,7 @@ module JABA
       @notes = 'Only explicit symbols will be accepted. Strings are not valid.'
     end
 
-    def from_cmdline(str, attr_def)
-      str.to_sym
-    end
+    def from_cmdline(str, attr_def) = str.to_sym
 
     def validate_value(attr_def, value)
       if !value.symbol?
@@ -120,8 +76,6 @@ module JABA
     
   end
 
-  ##
-  #
   class JabaAttributeTypeSymbolOrString < JabaAttributeType
     
     def initialize
@@ -137,8 +91,6 @@ module JABA
     
   end
 
-  ##
-  #
   class JabaAttributeTypeToS < JabaAttributeType
     
     def initialize
@@ -155,8 +107,6 @@ module JABA
     
   end
 
-  ##
-  #
   class JabaAttributeTypeInt < JabaAttributeType
   
     def initialize
@@ -180,8 +130,6 @@ module JABA
 
   end
 
-  ##
-  #
   class JabaAttributeTypeBool < JabaAttributeType
     
     def initialize
@@ -214,8 +162,6 @@ module JABA
 
   end
 
-  ##
-  #
   class JabaAttributeTypeChoice < JabaAttributeType
     
     def initialize
@@ -261,11 +207,8 @@ module JABA
 
   end
 
-  ##
-  #
   class PathAttrBase < JabaAttributeType
 
-    ##
     # Used when converting a path specified in jaba definitions into an absolute path.
     #
     VALID_BASE_SPECS = [
@@ -289,8 +232,6 @@ module JABA
 
   end
 
-  ##
-  #
   class JabaAttributeTypeFile < PathAttrBase
     
     def initialize
@@ -306,8 +247,6 @@ module JABA
 
   end
 
-  ##
-  #
   class JabaAttributeTypeDir < PathAttrBase
     
     def initialize
@@ -323,8 +262,6 @@ module JABA
 
   end
 
-  ##
-  #
   class JabaAttributeTypeSrcSpec < PathAttrBase
     
     def initialize
@@ -340,8 +277,6 @@ module JABA
 
   end
 
-  ##
-  #
   class JabaAttributeTypeBasename < JabaAttributeType
   
     def initialize
@@ -357,8 +292,6 @@ module JABA
 
   end
 
-  ##
-  #
   class JabaAttributeTypeUUID < JabaAttributeType
     
     def initialize
@@ -371,12 +304,8 @@ module JABA
 
   end
 
-  ##
-  #
   class JabaAttributeTypeNodeRef < JabaAttributeType
     
-    ##
-    #
     def initialize
       super(:ref, 'Node reference attribute type')
     end
@@ -393,8 +322,6 @@ module JABA
 
   end
 
-  ##
-  #
   class JabaAttributeTypeCompound < JabaAttributeType
     
     def initialize

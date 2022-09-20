@@ -1,63 +1,38 @@
 module JABA
 
-  ##
-  #
   class StringWriter
     
-    ##
-    #
     def initialize(...)
       @str = String.new(...)
     end
 
-    ##
-    #
-    def str
-      @str
-    end
+    def str = @str
+    def to_s = @str
 
-    ##
-    #
-    def to_s
-      @str
-    end
-
-    ##
-    #
     def <<(str)
       @str.concat(str, "\n")
     end
     
-    ##
-    #
     def write_raw(str)
       @str.concat(str.to_s)
     end
   
-    ##
-    #
     def newline
       @str.concat("\n")
     end
     
-    ##
-    #
     def chomp!
       @str.chomp!
     end
 
   end
 
-  ##
-  #
   class JabaFile
 
     attr_reader :filename
     attr_reader :writer
     attr_reader :encoding
 
-    ##
-    #
     def initialize(file_manager, filename, encoding, eol, capacity, track)
       @file_manager = file_manager
       @filename = filename
@@ -67,26 +42,18 @@ module JABA
       @writer = work_area(capacity: capacity)
     end
 
-    ##
-    #
     def work_area(capacity: nil)
       StringWriter.new(encoding: @encoding, capacity: capacity)
     end
 
-    ##
-    #
     def str
       @writer.str
     end
 
-    ##
-    #
     def track?
       @track
     end
     
-    ##
-    #
     def write(**options)
       if (@eol == :windows) || ((@eol == :native) && OS.windows?)
         @writer.str.gsub!("\n", "\r\n")
@@ -96,8 +63,6 @@ module JABA
 
   end
 
-  ##
-  #
   class FileManager
     
     attr_reader :services
@@ -108,8 +73,6 @@ module JABA
 
     ValidEols = [:unix, :windows, :native].freeze
 
-    ##
-    #
     def initialize(services)
       @services = services
       @generated = []
@@ -120,8 +83,6 @@ module JABA
       @untracked = []
     end
 
-    ##
-    #
     def new_file(filename, eol: :unix, encoding: nil, capacity: nil, track: true)
       if !filename.absolute_path?
         JABA.error("'#{filename}' must be an absolute path")
@@ -132,8 +93,6 @@ module JABA
       JabaFile.new(self, filename.cleanpath, encoding, eol, capacity, track)
     end
 
-    ##
-    #
     def write(file)
       fn = file.filename
 
@@ -186,14 +145,10 @@ module JABA
       status
     end
 
-    ##
-    #
     def include_untracked
       @generated.concat(@untracked)
     end
 
-    ##
-    #
     def read(filename, encoding: nil, fail_if_not_found: false, freeze: true)
       if !filename.absolute_path?
         JABA.error("'#{filename}' must be an absolute path")
@@ -218,7 +173,6 @@ module JABA
       str
     end
 
-    ##
     # Only returns files, not directories.
     #
     def glob_files(spec, flags: 0)
@@ -236,7 +190,6 @@ module JABA
       files
     end
 
-    ##
     # Called from JDL API.
     #
     def jdl_glob(spec, &block)
@@ -249,8 +202,6 @@ module JABA
       files.each(&block)
     end
 
-    ##
-    #
     def exist?(fn)
       if !fn.absolute_path?
         JABA.error("'#{fn}' must be an absolute path")
@@ -263,8 +214,6 @@ module JABA
       exist
     end
 
-    ##
-    #
     def directory?(fn)
       is_dir = is_directory_cache[fn]
       if is_dir.nil?
@@ -278,8 +227,6 @@ module JABA
     # between tests. In production mode do caching per-jaba invocation (of which normally there would be only one),
     # but this allows flexibility to do more than one run with potentially anything changing between runs.
     
-    ##
-    #
     def file_exist_cache
       if @services.test_mode?
         @@file_exist_cache ||= {}
@@ -288,8 +235,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def is_directory_cache
       if @services.test_mode?
         @@is_directory_cache ||= {}
@@ -298,8 +243,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def glob_cache
       if @services.test_mode?
         @@glob_cache ||= {}
@@ -308,8 +251,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def file_read_cache
       if @services.test_mode?
         @@file_read_cache ||= {}
