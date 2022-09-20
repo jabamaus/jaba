@@ -34,16 +34,15 @@ module JABA
     #
     attr_accessor :build_root
     
+    # Definitions in block form
     #
     attr_block :definitions
     
-    # Pass command line in manually. Used in testing.
-    #
-    attr_accessor :argv
-
     # Execute as normal but don't write any files.
     #
     attr_bool :dry_run
+
+    attr_bool :profile
     
     # Used during testing. Only loads the bare minimum definitions. Jaba will not be able to generate any projects in this mode. 
     #
@@ -52,6 +51,8 @@ module JABA
     attr_bool :dump_output
     
     attr_bool :dump_state
+
+    attr_bool :verbose
 
     # Initialise global attrs from a hash of name to value(s)
     #
@@ -75,9 +76,9 @@ module JABA
     
   end
 
-end
-
 if __FILE__ == $PROGRAM_NAME
+
+require 'jrf/cmdline'
 
 class Jaba
   
@@ -85,10 +86,60 @@ class Jaba
   end
 
   def run
-    output = JABA.run
+    clm = CmdlineManager.new(self, 'jaba')
+
+    # General non-cmd-specific options
+    clm.register_cmd(:null, help: '') do |c|
+      c.add_flag('--help', help: 'Show help', var: :show_help)
+      c.add_flag('--dry-run', help: 'Perform a dry run', var: :dry_run)
+      c.add_flag('--profile', help: 'Profiles with ruby-prof gem', var: :profile, dev_only: true)
+      c.add_flag('--verbose', help: 'Prints extra information', var: :verbose)
+    end
+
+    clm.register_cmd(:gen, help: 'Regenerate buildsystem', default: true) do |c|
+      c.add_value('--src-root -S', help: 'Set src root', var: :src_root)
+      c.add_value('--build-root -B', help: 'Set build root', var: :build_root)
+      c.add_key_values('--define -D', help: 'Set global attribute value', var: :globals)
+      c.add_flag('--dump-state', help: 'Dump state to json for debugging', var: :dump_state)
+    end
+    
+    clm.register_cmd(:build, help: 'Execute build')
+    clm.register_cmd(:clean, help: 'Clean build')
+    clm.register_cmd(:help, help: 'Open jaba web help')
+
+    clm.process
+    clm.finalise
+
+    if @show_help
+      clm.show_help
+    end
+    
+    if clm.cmd_specified?(:help)
+      url = "#{JABA.jaba_docs_url}/v#{VERSION}"
+      cmd = if OS.windows?
+        'start'
+      elsif OS.mac?
+        'open'
+      else
+        error("Unsupported platform")
+        return 1
+      end
+      system("#{cmd} #{url}")
+      return 0
+    end
+
+    output = JABA.run do |j|
+      j.src_root = @src_root
+      j.build_root = @build_root
+      j.global_attrs = @globals
+      j.dry_run = @dry_run
+      j.dump_state = @dump_state
+      j.profile = @profile
+      j.verbose = @verbose
+    end
 
     if output[:error]
-      $stderr.puts output[:error]
+      error(output[:error])
       return 1
     end
 
@@ -97,8 +148,19 @@ class Jaba
     return 0
   end
 
+  def help_string
+    "Jaba build system generator v#{VERSION}"
+  end
+
+  def error(msg)
+    $stderr.puts msg
+  end
+
+
 end
 
 exit(Jaba.new.run)
+
+end
 
 end

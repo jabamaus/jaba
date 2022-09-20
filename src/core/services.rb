@@ -10,7 +10,6 @@ require_relative 'core_ext'
 require_relative 'utils'
 require_relative 'jdl'
 require_relative 'file_manager'
-require_relative 'input_manager'
 require_relative 'load_manager'
 require_relative 'node_manager'
 require_relative 'standard_paths'
@@ -41,7 +40,6 @@ module JABA
     attr_reader :invoking_dir
     attr_reader :input
     attr_reader :output
-    attr_reader :input_manager
     attr_reader :file_manager
     attr_reader :globals
     attr_reader :globals_node
@@ -93,7 +91,6 @@ module JABA
       @in_attr_default_block = false
 
       @file_manager = FileManager.new(self)
-      @input_manager = InputManager.new(self)
       @load_manager = LoadManager.new(self, @file_manager)
 
       @top_level_api = JDL_TopLevel.new(self)
@@ -156,9 +153,7 @@ module JABA
       log "Starting Jaba at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}", section: true
       
       duration = JABA.milli_timer do
-        @input_manager.process
-        
-        profile(input.profile) do
+        profile(input.profile?) do
           do_run
           build_output
         end
@@ -174,7 +169,7 @@ module JABA
       @modified.each do |f|
         summary << "  #{f} [M]\n"
       end
-      if input.verbose
+      if input.verbose?
         @unchanged.each do |f|
           summary << "  #{f} [UNCHANGED]\n"
         end
@@ -192,19 +187,6 @@ module JABA
     ##
     #
     def do_run
-      if input_manager.cmd_specified?(:help)
-        url = "#{JABA.jaba_docs_url}/v#{VERSION}"
-        cmd = if OS.windows?
-          'start'
-        elsif OS.mac?
-          'open'
-        else
-          JABA.error("Unsupported platform")
-        end
-        system("#{cmd} #{url}")
-        exit!
-      end
-      
       @load_manager.load_modules
       init_root_paths
       @load_manager.load_jaba_files(input)
@@ -296,9 +278,6 @@ module JABA
       #
       @node_managers = @jaba_types.map{|jt| get_node_manager(jt.defn_id)}
 
-      @input_manager.process_cmd_line
-      @input_manager.finalise
-
       @node_managers.each do |nm|
         nm.jaba_type.eval_attr_defs
         nm.process
@@ -312,7 +291,7 @@ module JABA
       # Output definition input data as a json file, before generation. This is raw data as generated from the definitions.
       # Can be used for debugging and testing.
       #
-      if input.dump_state
+      if input.dump_state?
         dump_jaba_state
       end
 
@@ -374,19 +353,13 @@ module JABA
 
     ##
     #
-    def src_root_valid?
-      input.src_root && @load_manager.load_path_valid?(input.src_root)
-    end
-
-    ##
-    #
     def set_global_attrs_from_cmdline
       input.global_attrs.each do |name, values|
         values = Array(values).map{|e| e.to_s}
 
         attr = @globals_node.get_attr(name.to_sym, fail_if_not_found: false)
         if attr.nil?
-          @input_manager.usage_error("'#{name}' attribute not defined in :globals type")
+          JABA.error("'#{name}' attribute not defined in :globals type", want_backtrace: false)
         end
 
         attr_def = attr.attr_def
@@ -394,7 +367,7 @@ module JABA
         case attr_def.variant
         when :single
           if values.size > 1
-            @input_manager.usage_error("'#{name}' attribute only expects one value but #{values.inspect} provided")
+            JABA.error("'#{name}' attribute only expects one value but #{values.inspect} provided", want_backtrace: false)
           end
           value = type.from_cmdline(values[0], attr_def)
           if attr.type_id == :file || attr.type_id == :dir
@@ -403,12 +376,12 @@ module JABA
           attr.set(value)
         when :array
           if values.empty?
-            @input_manager.usage_error("'#{name}' array attribute requires one or more values")
+            JABA.error("'#{name}' array attribute requires one or more values", want_backtrace: false)
           end
           attr.set(values.map{|v| type.from_cmdline(v, attr_def)})
         when :hash
           if values.empty? || values.size % 2 != 0
-            @input_manager.usage_error("'#{name}' hash attribute requires one or more pairs of values")
+            JABA.error("'#{name}' hash attribute requires one or more pairs of values", want_backtrace: false)
           end
           key_type = attr.attr_def.jaba_attr_key_type
           values.each_slice(2) do |kv|

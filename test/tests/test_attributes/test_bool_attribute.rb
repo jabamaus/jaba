@@ -82,12 +82,13 @@ class TestBoolAttribute < JabaTest
     end
   end
 
-  it 'can be set from the cmd line' do
-    jaba(barebones: true, argv: [
-      '-D', 'a1', 'true',
-      '-D', 'a2', 'false',
-      '-D', 'a3', '1',
-      '-D', 'a4', '0']) do
+  it 'can be set from global_attrs' do
+    jaba(barebones: true, global_attrs: {
+      'a1': 'true',
+      'a2': false,
+      'a3': '1',
+      'a4': 0
+      }) do
       open_type :globals do
         attr :a1, type: :bool do
           default false
@@ -111,7 +112,7 @@ class TestBoolAttribute < JabaTest
       end
     end
 
-    op = jaba(barebones: true, argv: ['-D', 'a', '10'], want_exceptions: false) do
+    op = jaba(barebones: true, global_attrs: {'a': '10'}, want_exceptions: false) do
       open_type :globals do
         attr :a, type: :bool
       end

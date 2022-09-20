@@ -83,12 +83,13 @@ class TestIntAttribute < JabaTest
     end
   end
 
-  it 'can be set from the cmd line' do
-    jaba(barebones: true, argv: [
-      '-D', 'a1', '1',
-      '-D', 'a2', '3433409',
-      '-D', 'a3', '-1',
-      '-D', 'a4', '0']) do
+  it 'can be set from global attrs' do
+    jaba(barebones: true, global_attrs: {
+      'a1': '1',
+      'a2': '3433409',
+      'a3': '-1',
+      'a4': '0'
+      }) do
       open_type :globals do
         attr :a1, type: :int
         attr :a2, type: :int 
@@ -104,7 +105,7 @@ class TestIntAttribute < JabaTest
       end
     end
 
-    op = jaba(barebones: true, argv: ['-D', 'a', 'foo'], want_exceptions: false) do
+    op = jaba(barebones: true, global_attrs: {'a': 'foo'}, want_exceptions: false) do
       open_type :globals do
         attr :a, type: :int
       end

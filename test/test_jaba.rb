@@ -30,25 +30,25 @@ class JabaTest < Minitest::Spec
            want_exceptions: true,
            src_root: nil,
            build_root: nil,
-           argv: nil,
            dry_run: false,
            dump_output: false,
            cpp_app: false,
-           cpp_defaults: false, &block)
+           cpp_defaults: false,
+           global_attrs: {},
+           &block)
     td = temp_dir(create: false)
     build_root = build_root || td
-    argv = Array(argv)
 
     op = JABA.run(want_exceptions: want_exceptions, test_mode: test_mode) do |c|
       c.src_root = src_root # Most unit tests don't have a src_root as everything is defined inline in code
       c.build_root = build_root
-      c.argv = argv
       c.definitions(&block) if block_given?
       c.barebones = barebones
       c.dump_output = dump_output
       c.dry_run = dry_run
       
-      if !argv.include?('target_host')
+      c.global_attrs = global_attrs
+      if !c.global_attrs.has_key?('target_host')
         c.global_attrs[:target_host] = :vs2019
       end
 

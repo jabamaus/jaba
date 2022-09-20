@@ -44,7 +44,7 @@ class DocBuilder
     
     op = JABA.run(want_exceptions: true) do |c|
       c.src_root = c.build_root = doc_temp
-      c.argv = ['-D', 'target_host', 'vs2019']
+      c.global_attrs['target_host'] = 'vs2019'
     end
     @services = op[:services]
 

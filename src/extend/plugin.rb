@@ -84,18 +84,6 @@ module JABA
 
     ##
     #
-    def register_cmd(...)
-      @services.input_manager.register_cmd(...)
-    end
-
-    ##
-    #
-    def register_option(...)
-      @services.input_manager.register_option(...)
-    end
-    
-    ##
-    #
     def register_array_filter(...)
       @services.register_array_filter(...)
     end

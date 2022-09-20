@@ -72,11 +72,12 @@ class TestChoiceAttribute < JabaTest
     end
   end
 
-  it 'can be set from the cmd line' do
-    jaba(barebones: true, argv: [
-      '-D', 'a1', 'b',
-      '-D', 'a2', '',
-      '-D', 'a3', '1']) do
+  it 'can be set from global attrs' do
+    jaba(barebones: true, global_attrs: {
+      'a1': 'b',
+      'a2': '',
+      'a3': '1'
+      }) do
       open_type :globals do
         attr :a1, type: :choice do
           items [:a, :b, :c]
@@ -99,7 +100,7 @@ class TestChoiceAttribute < JabaTest
       end
     end
 
-    op = jaba(barebones: true, argv: ['-D', 'a', 'd'], want_exceptions: false) do
+    op = jaba(barebones: true, global_attrs: {'a': 'd'}, want_exceptions: false) do
       open_type :globals do
         attr :a, type: :choice do
           items [:a, :b, :c]
