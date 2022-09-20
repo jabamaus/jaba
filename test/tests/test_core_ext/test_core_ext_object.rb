@@ -1,2 +1,0 @@
-class TestCoreExtObject < JabaTest
-end

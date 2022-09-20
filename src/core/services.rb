@@ -290,7 +290,7 @@ module JABA
       end
 
       @jaba_types.each(&:post_create)
-      @jaba_types.sort_topological!(:dependencies)
+      @jaba_types.jaba_sort_topological!(:dependencies)
 
       # Make node manager array based on jaba types so node managers are dependency sorted too
       #
