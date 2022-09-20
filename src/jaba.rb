@@ -1,8 +1,3 @@
-if __FILE__ == $PROGRAM_NAME
-  $stderr.puts "Library file cannot be executed"
-  exit 1
-end
-
 $LOAD_PATH.unshift "#{__dir__}/../../jrf"
 require_relative 'version'
 require_relative 'core/services'
@@ -79,5 +74,31 @@ module JABA
     attr_reader :line
     
   end
+
+end
+
+if __FILE__ == $PROGRAM_NAME
+
+class Jaba
+  
+  def initialize
+  end
+
+  def run
+    output = JABA.run
+
+    if output[:error]
+      $stderr.puts output[:error]
+      return 1
+    end
+
+    puts output[:summary]
+    puts output[:warnings]
+    return 0
+  end
+
+end
+
+exit(Jaba.new.run)
 
 end
