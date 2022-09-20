@@ -366,7 +366,7 @@ module JABA
     end
 
     def map_value(value)
-      JABA.generate_guid(namespace: 'JabaAttributeTypeUUID', name: value)
+      Kernel.generate_uuid(namespace: 'JabaAttributeTypeUUID', name: value, braces: true)
     end
 
   end

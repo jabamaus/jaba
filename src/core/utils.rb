@@ -1,49 +1,16 @@
 module JABA
   
-  ##
-  #
-  def self.ruby_debug_ide?
-    @@ruby_debug_ide ||= $LOAD_PATH.any?{|p| p.include?('ruby-debug-ide')}
-  end
-
-  ##
-  #
   class DebuggableBasicObject < BasicObject
-
-    def instance_variables
-      []
-    end
-
-    def class
-      DebuggableBasicObject
-    end
-
-    def inspect
-      'DebuggableBasicObject'
-    end
-
+    def instance_variables = []
+    def class = DebuggableBasicObject
+    def inspect = 'DebuggableBasicObject'
   end
 
-  ##
-  #
   module OS
-    
-    ##
-    #
-    def self.windows?
-      true
-    end
-    
-    ##
-    #
-    def self.mac?
-      false
-    end
-    
+    def self.windows? = true
+    def self.mac? = false
   end
 
-  ##
-  #
   def self.error(msg, errobj: nil, callstack: nil, syntax: false, want_backtrace: true)
     e = JabaError.new(msg)
     e.instance_variable_set(:@callstack, Array(errobj&.src_loc || callstack || caller))
@@ -52,8 +19,6 @@ module JABA
     raise e
   end
 
-  ##
-  #
   def self.make_api_class(api_module)
     api_class = Class.new(JDL_Base)
     api_module.public_instance_methods.each do |m|
@@ -70,7 +35,6 @@ module JABA
     api_class
   end
 
-  ##
   # Convert a file path specified in user definitions to an absolute path.
   # If a path starts with ./ it is taken as being relative to the directory the jaba file is in, else it is
   # made absolute based on the supplied base dir (unless absolute already).
@@ -86,23 +50,6 @@ module JABA
     abs_path.cleanpath
   end
 
-  ##
-  #
-  def self.generate_guid(namespace:, name:, braces: true)
-    sha1 = ::Digest::SHA1.new
-    sha1 << namespace << name
-    a = sha1.digest.unpack("NnnnnN")
-    a[2] = (a[2] & 0x0FFF) | (5 << 12)
-    a[3] = (a[3] & 0x3FFF) | 0x8000
-    uuid = "%08x-%04x-%04x-%04x-%04x%08x" % a
-    uuid.upcase!
-    uuid = "{#{uuid}}" if braces
-    uuid.freeze
-    uuid
-  end
-
-  ##
-  #
   def self.milli_timer
     start_time = Time.now
     yield
@@ -111,21 +58,15 @@ module JABA
     "#{millis}ms"
   end
 
-  ##
-  #
   module PropertyMethods
 
     PropertyInfo = Struct.new(:variant, :type, :var, :store_block, :last_call_location)
 
-    ##
-    #
     def initialize(...)
       super
       @properties = {}
     end
 
-    ##
-    #
     def define_property(p_id, variant:, type: nil, store_block: false)
       case variant
       when :single
@@ -137,32 +78,22 @@ module JABA
       end
     end
 
-    ##
-    #
     def define_single_property(p_id, type: nil, store_block: false)
       do_define_property(p_id, :single, type, store_block, nil)
     end
 
-    ##
-    #
     def define_array_property(p_id, type: nil, store_block: false)
       do_define_property(p_id, :array, type, store_block, [])
     end
 
-    ##
-    #
     def define_hash_property(p_id, type: nil, store_block: false)
       do_define_property(p_id, :hash, type, store_block, {})
     end
 
-    ##
-    #
     def set_property_from_jdl(p_id, val = nil, &block)
       set_property(p_id, val, __jdl_call_loc: $last_call_location, &block)
     end
 
-    ##
-    #
     def set_property(p_id, val = nil, __jdl_call_loc: nil, &block)
       info = get_property_info(p_id)
 
@@ -226,34 +157,24 @@ module JABA
       end
     end
     
-    ##
     # Override in subclass to validate value. If property is an array will be called for each element.
     # Return :ignore to cancel property set
     #
-    def pre_property_set(id, incoming_val)
-    end
+    def pre_property_set(id, incoming_val) ; end
 
-    ##
     # Override in subclass to validate value. If property is an array will be called for each element.
     #
-    def post_property_set(id, incoming_val)
-    end
+    def post_property_set(id, incoming_val) ; end
 
-    ##
-    #
     def get_property(p_id)
       info = get_property_info(p_id)
       instance_variable_get(info.var)
     end
 
-    ##
-    #
     def property_defined?(p_id)
       get_property_info(p_id, fail_if_not_found: false) != nil
     end
 
-    ##
-    #
     def handle_property_from_jdl(p_id, val, &block)
       if val.nil? && !block_given?
         get_property(p_id)
@@ -262,29 +183,21 @@ module JABA
       end
     end
     
-    ##
-    #
     def property_last_call_loc(p_id)
       info = get_property_info(p_id)
       info.last_call_location
     end
 
-    ##
-    #
     def property_validation_error(p_id, msg)
       JABA.error(msg, callstack: property_last_call_loc(p_id) || src_loc)
     end
 
-    ##
-    #
     def property_validation_warning(p_id, msg)
       services.jaba_warn(msg, callstack: property_last_call_loc(p_id) || src_loc)
     end
 
   private
 
-    ##
-    #
     def get_property_info(p_id, fail_if_not_found: true)
       info = @properties[p_id]
       if !info && fail_if_not_found
@@ -293,8 +206,6 @@ module JABA
       info
     end
 
-    ##
-    #
     def do_define_property(p_id, variant, type, store_block, initial)
       if @properties.key?(p_id)
         JABA.error("'#{p_id}' property multiply defined")
@@ -314,8 +225,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def do_set(p_id, val)
       if pre_property_set(p_id, val) != :ignore
         yield

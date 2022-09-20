@@ -384,7 +384,7 @@ module JABA
           # According to Visual Studio docs UniqueIdentifier allows automation interfaces to find the filter.
           # Seed the GUID from project file basename rather than absolute path as that could change
           #
-          w << "      <UniqueIdentifier>#{JABA.generate_guid(namespace: @vcxproj_file.basename, name: f)}</UniqueIdentifier>"
+          w << "      <UniqueIdentifier>#{Kernel.generate_uuid(namespace: @vcxproj_file.basename, name: f, braces: true)}</UniqueIdentifier>"
           w << "    </Filter>"
         end
       end
