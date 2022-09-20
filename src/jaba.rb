@@ -3,6 +3,7 @@ if __FILE__ == $PROGRAM_NAME
   exit 1
 end
 
+$LOAD_PATH.unshift "#{__dir__}/../../jrf"
 require_relative 'version'
 require_relative 'core/services'
 

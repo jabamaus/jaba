@@ -1,3 +1,5 @@
+require 'jrf/fsm'
+
 module JABA
 
   ##
