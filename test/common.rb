@@ -1,30 +1,7 @@
 require_relative '../src/jaba'
-$LOAD_PATH.unshift "#{__dir__}/minitest/lib"
-require 'minitest'
-require 'minitest/spec'
 
-# Disallow describe statements. They don't play well with automatic per-test temp dirs and they hide problems with internal describe methods
-module Kernel
-  remove_method :describe
-end
-
-
-##
-#
-def run_tests 
-  Dir.glob("#{__dir__}/tests/**/*.rb").each {|f| require f}
-  if File.exist?(JabaTest.temp_root)
-    FileUtils.remove_dir(JabaTest.temp_root)
-  end
-  Minitest.run(ARGV + ["--no-plugins"])
-end
-
-class JabaTest < Minitest::Spec
+class JTestCaseAPI
   
-  @@file_cache = {}
-
-  ##
-  #
   def jaba(barebones: false,
            test_mode: true,
            want_exceptions: true,
@@ -76,71 +53,11 @@ class JabaTest < Minitest::Spec
     op
   end
 
-  ##
-  #
-  def self.temp_root
-    "#{__dir__}/tests/temp"
-  end
-  
-  ##
-  #
-  def temp_dir(create: true)
-    dir = "#{JabaTest.temp_root}/#{self.class.name_no_namespace}/#{name.delete(':')}"
-    if create && !File.exist?(dir)
-      FileUtils.makedirs(dir)
-    end
-    dir
-  end
-  
-  ##
-  #
-  def make_dir(*dirs)
-    dirs.each do |dir|
-      d = dir.absolute_path? ? dir : "#{temp_dir}/#{dir}"
-      if !File.exist?(d)
-        FileUtils.makedirs(d)
-      end
-    end
-  end
-
-  ##
-  #
-  def make_file(*fns, content: "test\n")
-    fns.each do |fn|
-      fn = "#{temp_dir}/#{fn}" if !fn.absolute_path?
-      make_dir(fn.parent_path)
-      IO.write(fn, content)
-    end
-  end
-  
-  ##
-  #
-  def src_loc(file, tag)
-    "#{file.basename}:#{find_line_number(file, tag)}"
-  end
-
-  ##
-  # Helper for testing error reporting.
-  #
-  def find_line_number(file, spec)
-    return spec if spec.is_a?(Numeric)
-    str = @@file_cache[file]
-    if str.nil?
-      str = IO.read(file)
-      @@file_cache[file] = str
-    end
-    ln = str.each_line.find_index {|l| l =~ / #{Regexp.escape(spec)}/}
-    raise "\"#{spec}\" not found in #{file}" if ln.nil?
-    ln + 1
-  end
-
-  ##
-  #
-  def assert_jaba_error(msg, trace: [], ignore_rest: false, hint: nil)
-    e = assert_raises JABA::JabaError, hint.to_s do
+  def assert_jaba_error(msg, trace: [], ignore_rest: false, hint: nil, &block)
+    e = assert_raises(JABA::JabaError, msg: hint) do
       yield
     end
-    
+
     if ignore_rest
       e.message.slice(0, msg.length).must_equal(msg)
     else
@@ -150,7 +67,7 @@ class JabaTest < Minitest::Spec
     if trace
       backtrace = []
       trace.each_slice(2) do |elem|
-        backtrace << "#{elem[0]}:#{find_line_number(elem[0], elem[1])}"
+        backtrace << "#{elem[0]}:#{src_line(elem[1], file: elem[0])}"
       end
 
       # First backtrace item contains the same file and line number as the main message line so disregard
@@ -158,13 +75,11 @@ class JabaTest < Minitest::Spec
       bt = e.backtrace
       bt.shift
       bt.delete_if{|l| l =~ /cpp_plugin\.jaba|workspace_plugin\.jaba/}
-      bt.must_equal(backtrace, 'backtrace did not match')
+      bt.must_equal(backtrace, msg: 'backtrace did not match')
     end
     e
   end
 
-  ##
-  #
   def assert_jaba_warn(msg, expected_file = nil, tag = nil)
     out, = capture_io do
       yield
@@ -173,7 +88,7 @@ class JabaTest < Minitest::Spec
     out.must_match(msg)
     
     if expected_file
-      expected_line = find_line_number(expected_file, tag)
+      expected_line = src_line(tag, file: expected_file)
 
       if out !~ /Warning at (.+?):(\d+)/
         raise "couldn't extract file and line number from #{out}"
@@ -188,5 +103,3 @@ class JabaTest < Minitest::Spec
   end
 
 end
-
-run_tests
