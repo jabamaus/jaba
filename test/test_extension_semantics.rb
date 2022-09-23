@@ -272,38 +272,37 @@ end
 
 jtest 'can add plugin functionality through on_included' do
   fn = "#{temp_dir}/print_line_plugin.jaba"
-  make_file(fn, content: %Q{
-type :print_line_plugin do
-attr :line, type: :string
-attr :style, type: :choice do
-  items [:upper, :lower]
-  default :lower
-end
-plugin :print_line_plugin do
-  def process_definition(definition)
-    services.make_node(definition)
+  make_file(fn, content: %Q{type :print_line_plugin do
+  attr :line, type: :string
+  attr :style, type: :choice do
+    items [:upper, :lower]
+    default :lower
   end
-  def generate
-    services.nodes.each do |n|
-      str = n.attrs.line
-      case n.attrs.style
-      when :upper
-        str = str.upcase
-      when :lower
-        str = str.downcase
+  plugin :print_line_plugin do
+    def process_definition(definition)
+      services.make_node(definition)
+    end
+    def generate
+      services.nodes.each do |n|
+        str = n.attrs.line
+        case n.attrs.style
+        when :upper
+          str = str.upcase
+        when :lower
+          str = str.downcase
+        end
+        print str
       end
-      print str
     end
   end
 end
-end
 
 on_included do |type|
-open_type type do
-  attr :print_line, type: :compound, jaba_type: :print_line_plugin
+  open_type type do
+    attr :print_line, type: :compound, jaba_type: :print_line_plugin
+  end
 end
-end
-  })
+})
   assert_output 'SUCCESS' do
     jaba(barebones: true) do
       include fn, :test
