@@ -1,5 +1,5 @@
-CPP_JDL_FILE = "#{__dir__}/../../src/modules/cpp/cpp.jaba".cleanpath
-CPP_VS_JDL_FILE = "#{__dir__}/../../src/modules/cpp/VisualStudio/cpp_vs.jaba".cleanpath
+CPP_JDL_FILE = "#{__dir__}/../src/modules/cpp/cpp.jaba".cleanpath
+CPP_VS_JDL_FILE = "#{__dir__}/../src/modules/cpp/VisualStudio/cpp_vs.jaba".cleanpath
 
 jtest 'detects invalid platform specs' do
   assert_jaba_error "Error at #{src_loc('49E594B2')}: 'app.platforms' array attribute invalid: Must be one of " \
