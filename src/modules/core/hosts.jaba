@@ -1,4 +1,4 @@
-SUPPORTED_VS_VERSIONS = [2010, 2012, 2013, 2015, 2017, 2019].freeze
+SUPPORTED_VS_VERSIONS = [2010, 2012, 2013, 2015, 2017, 2019, 2022].freeze
 
 type :host do
 
@@ -109,6 +109,15 @@ host :vs2019 do
   version '16.0'
   version_year 2019
   toolset 'v142'
+end
+
+host :vs2022 do
+  include :vs_host_common
+  vs2022? true
+  major_version 17
+  version '17.0'
+  version_year 2022
+  toolset 'v143'
 end
 
 host :xcode do
