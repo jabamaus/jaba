@@ -1,1 +1,1 @@
-win32\configure.bat --with-ext="digest,digest/sha1,json,json/parser,json/generator" --with-static-linked-ext --disable-install-doc  --prefix=C:\GitHub\projects\JabaRuby --with-baseruby=C:\Ruby30-x64\bin\ruby.exe
+win32\configure.bat --with-ext="digest,digest/sha1,json,json/parser,json/generator" --with-static-linked-ext --disable-install-doc  --prefix=C:\GitHub\projects\JabaRuby --with-baseruby=C:\Ruby31-x64\bin\ruby.exe
