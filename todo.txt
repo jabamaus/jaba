@@ -158,3 +158,5 @@ ouroveon todo
 - optimisation settings
 - Is ToolsVersion='16.0' needed?
 - support for debugger working directory via .user file
+
+- directive to only register shared modules when a file included
