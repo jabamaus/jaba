@@ -74,7 +74,7 @@ module JABA
         cfg.visit_attr(:rule) do |attr, rule_node|
           attrs = rule_node.attrs
           output = attrs.output
-          implicit_input = attrs.implicit_input.relative_path_from(@projdir, backslashes: true)
+          implicit_input = attrs.implicit_input&.relative_path_from(@projdir, backslashes: true)
           cmd = attrs.cmd
           msg = attrs.msg
 
@@ -85,14 +85,23 @@ module JABA
             input = sf.projdir_rel
             d_output = demacroise(output, input, implicit_input, nil)
             d_output = d_output.relative_path_from(@projdir, backslashes: true)
-            d_cmd = demacroise(cmd, "$(ProjectDir)#{input}", "$(ProjectDir)#{implicit_input}", "$(ProjectDir)#{d_output}").to_escaped_xml
+            d_cmd = demacroise(
+              cmd,
+              "$(ProjectDir)#{input}",
+              implicit_input ? "$(ProjectDir)#{implicit_input}" : nil,
+              "$(ProjectDir)#{d_output}"
+            ).to_escaped_xml
             # Characters like < > | & are escaped to prevent unwanted behaviour when the msg is echoed
             d_msg = demacroise(msg, input, implicit_input, d_output).to_escaped_DOS.to_escaped_xml
 
             @per_file_props.push_value(sf, [:FileType, cfg_name, platform_name, :Document])
             @per_file_props.push_value(sf, [:Command, cfg_name, platform_name, d_cmd])
             @per_file_props.push_value(sf, [:Outputs, cfg_name, platform_name, d_output])
-            @per_file_props.push_value(sf, [:AdditionalInputs, cfg_name, platform_name, implicit_input])
+            additional_inputs = [:AdditionalInputs, cfg_name, platform_name]
+            if implicit_input
+              additional_inputs << implicit_input
+              @per_file_props.push_value(sf, additional_inputs)
+            end
             @per_file_props.push_value(sf, [:Message, cfg_name, platform_name, d_msg])
           end
         end
@@ -112,6 +121,7 @@ module JABA
         when /^input/
           input
         when /^implicit_input/
+          JABA.error("No  implicit_input supplied") if implicit_input.nil?
           implicit_input
         when /^output/
           output
