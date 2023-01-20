@@ -1,5 +1,5 @@
 require 'fileutils'
-require_relative '../../lib/jaba/core/core_ext'
+require_relative '../../../jrf/jrf/core_ext'
 
 src_file = ARGV[0].cleanpath
 cpp_file = ARGV[1].cleanpath
