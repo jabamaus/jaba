@@ -34,7 +34,7 @@
 </tbody>
 </table>
 </blockquote>
-<p>17 attributes:</p>
+<p>18 attributes:</p>
 <ul>
 <li><a href="#cpp_project_classname">cpp_project_classname</a></li>
 <li><a href="#cpp_src_ext">cpp_src_ext</a></li>
@@ -51,6 +51,7 @@
 <li><a href="#vs2015?">vs2015?</a></li>
 <li><a href="#vs2017?">vs2017?</a></li>
 <li><a href="#vs2019?">vs2019?</a></li>
+<li><a href="#vs2022?">vs2022?</a></li>
 <li><a href="#workspace_classname">workspace_classname</a></li>
 <li><a href="#xcode?">xcode?</a></li>
 </ul>
@@ -609,6 +610,46 @@
   <span style="color:#f92672">...</span>
 <span style="color:#00a8c8">end</span>
 <span style="color:#111">vcprop</span> <span style="color:#d88200">:VS2019Specific</span><span style="color:#111">,</span> <span style="color:#d88200">&#39;value&#39;</span> <span style="color:#00a8c8">if</span> <span style="color:#111">vs2019?</span>
+</pre></blockquote>
+<p><a id="vs2022?"></a></p>
+<h4 id="vs2022">vs2022?</h4>
+<blockquote>
+<p><em>Returns true if current target host is vs2022</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>:bool</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>false</td>
+</tr>
+<tr>
+<td><em>flags</em></td>
+<td>:expose</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>defined in</em></td>
+<td>$(jaba_install)/src/modules/core/hosts.jaba</td>
+</tr>
+</tbody>
+</table>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#00a8c8">if</span> <span style="color:#111">vs2022?</span>
+  <span style="color:#f92672">...</span>
+<span style="color:#00a8c8">end</span>
+<span style="color:#111">vcprop</span> <span style="color:#d88200">:VS2022Specific</span><span style="color:#111">,</span> <span style="color:#d88200">&#39;value&#39;</span> <span style="color:#00a8c8">if</span> <span style="color:#111">vs2022?</span>
 </pre></blockquote>
 <p><a id="workspace_classname"></a></p>
 <h4 id="workspace-classname">workspace_classname</h4>
