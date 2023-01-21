@@ -146,7 +146,7 @@ class DocBuilder
       w << "> "
       w << "> | Property | Value  |"
       w << "> |-|-|"
-      md_row(w, 'defined in', "$(jaba_install)/#{jt.src_loc.describe(style: :rel_jaba_install, line: false)}")
+      md_row(w, 'defined in', "$(jaba_install)/#{jt.src_loc.describe(style: :absolute, relative_to: JABA.install_dir, line: false)}")
       md_row(w, 'depends on', jt.dependencies.map{|d| "[#{d}](#{d.reference_manual_page})"}.join(", "))
       w << "> "
       w << ""
@@ -181,7 +181,7 @@ class DocBuilder
         md_row(w, :default, ad.default.proc? ? nil : !ad.default.nil? ? ad.default.inspect : nil)
         md_row(w, :flags, ad.flags.map(&:inspect).join(', '))
         md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
-        md_row(w, 'defined in', "$(jaba_install)/#{ad.src_loc.describe(style: :rel_jaba_install, line: false)}")
+        md_row(w, 'defined in', "$(jaba_install)/#{ad.src_loc.describe(style: :absolute, relative_to: JABA.install_dir, line: false)}")
         w << ">"
         if !ad.examples.empty?
           w << "> *Examples*"
