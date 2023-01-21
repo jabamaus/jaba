@@ -1,34 +1,18 @@
 module JABA
 
   class StringWriter
-    
     def initialize(...)
       @str = String.new(...)
     end
-
     def str = @str
     def to_s = @str
-
-    def <<(str)
-      @str.concat(str, "\n")
-    end
-    
-    def write_raw(str)
-      @str.concat(str.to_s)
-    end
-  
-    def newline
-      @str.concat("\n")
-    end
-    
-    def chomp!
-      @str.chomp!
-    end
-
+    def <<(str) = @str.concat(str, "\n")
+    def write_raw(str) = @str.concat(str.to_s)
+    def newline = @str.concat("\n")
+    def chomp! = @str.chomp!
   end
 
   class JabaFile
-
     attr_reader :filename
     attr_reader :writer
     attr_reader :encoding
@@ -46,13 +30,8 @@ module JABA
       StringWriter.new(encoding: @encoding, capacity: capacity)
     end
 
-    def str
-      @writer.str
-    end
-
-    def track?
-      @track
-    end
+    def str = @writer.str
+    def track? = @track
     
     def write(**options)
       if (@eol == :windows) || ((@eol == :native) && OS.windows?)
@@ -60,11 +39,9 @@ module JABA
       end
       @file_manager.write(self, **options)
     end
-
   end
 
   class FileManager
-    
     attr_reader :services
     attr_reader :added
     attr_reader :modified
@@ -145,9 +122,7 @@ module JABA
       status
     end
 
-    def include_untracked
-      @generated.concat(@untracked)
-    end
+    def include_untracked = @generated.concat(@untracked)
 
     def read(filename, encoding: nil, fail_if_not_found: false, freeze: true)
       if !filename.absolute_path?
@@ -258,7 +233,5 @@ module JABA
         @file_read_cache ||= {}
       end
     end
-
   end
-
 end

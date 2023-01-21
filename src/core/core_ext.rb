@@ -1,7 +1,6 @@
 require 'jrf/core_ext'
 
 class Class
-  
   # Allow setting and getting a block as a member variable.
   #
   def attr_block(attr)
@@ -14,43 +13,19 @@ class Class
     class_eval("def #{attr}? ; @#{attr} ; end", __FILE__, __LINE__)
     class_eval("def #{attr}=(val) ; @#{attr} = val ; end", __FILE__, __LINE__)
   end
-
 end
 
 class Object
-
-  def boolean?
-    (is_a?(TrueClass) || is_a?(FalseClass))
-  end
-
-  def integer?
-    is_a?(Integer)
-  end
-  
-  def string?
-    is_a?(String)
-  end
-  
-  def symbol?
-    is_a?(Symbol)
-  end
-
-  def proc?
-    is_a?(Proc)
-  end
-
-  def array?
-    is_a?(Array)
-  end
-
-  def hash?
-    is_a?(Hash)
-  end
-  
+  def boolean? = (is_a?(TrueClass) || is_a?(FalseClass))
+  def integer? = is_a?(Integer)
+  def string? = is_a?(String)
+  def symbol? = is_a?(Symbol)
+  def proc? = is_a?(Proc)
+  def array? = is_a?(Array)
+  def hash? = is_a?(Hash)
 end
 
 class String
-
   def validate_path
     JABA.error('block expected') if !block_given?
     if include?('\\')
@@ -60,22 +35,13 @@ class String
 
   # Returns true if string contains '*' wildcard character.
   #
-  def wildcard?
-    self =~ /\*/ ? true : false
-  end
-
-  def to_backslashes
-    dup.to_backslashes!
-  end
-  
+  def wildcard? = self =~ /\*/ ? true : false
+  def to_backslashes = dup.to_backslashes!
   def to_backslashes!
     tr!('/', '\\')
     self
   end
-
-  def contains_slashes?
-    self =~ /(\\)|(\/)/ ? true : false
-  end
+  def contains_slashes? = self =~ /(\\)|(\/)/ ? true : false
   
   # Quote if string contains a space or a macro.
   #
@@ -87,9 +53,7 @@ class String
   # Turn eg "C:/projects/GitHub/jaba/lib/jaba/jdl_api/jdl_common.rb:11:in `fail'"
   # into "C:/projects/GitHub/jaba/lib/jaba/jdl_api/jdl_common.rb:11"
   #
-  def clean_backtrace
-    sub(/:in .*/, '')
-  end
+  def clean_backtrace = sub(/:in .*/, '')
 
   def to_escaped_xml
     gsub(/["'&<>\n]/) do |match|
@@ -118,11 +82,9 @@ class String
       end
     end
   end
-
 end
 
 class Array
-
   def jaba_sort_topological!(...)
     sort_topological!(...)
   rescue TSort::Cyclic => e
@@ -154,5 +116,4 @@ class Array
   def vs_join_paths(...)
     map(&:vs_quote!).vs_join(...)&.to_backslashes!
   end
-
 end

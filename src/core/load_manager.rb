@@ -1,16 +1,10 @@
 module JABA
-
-  ##
-  #
   class LoadManager
-    
     @@module_files_loaded = false
     @@module_jaba_files = []
 
     attr_reader :jdl_files
 
-    ##
-    #
     def initialize(services, file_manager)
       @services = services
       @file_manager = file_manager
@@ -20,8 +14,6 @@ module JABA
       @on_included = {}
     end
 
-    ##
-    #
     def load_modules
       # Only loaded once in a given process even if jaba invoked multiple times. Helps with effiency of tests.
       #
@@ -42,8 +34,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def load_jaba_files(input)
       if input.barebones? # optimisation for unit testing
         process_jaba_file("#{JABA.modules_dir}/core/globals.jaba")
@@ -87,8 +77,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def load_plugin(f)
       begin
         require f
@@ -97,14 +85,10 @@ module JABA
       end
     end
 
-    ##
-    #
     def load_path_valid?(path)
       !@file_manager.glob_files("#{path}/*.jaba").empty?
     end
 
-    ##
-    #
     def process_load_path(p, fail_if_empty: false)
       if !p.absolute_path?
         JABA.error("'#{p}' must be an absolute path")
@@ -133,8 +117,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def process_jaba_file(f)
       if !f.absolute_path?
         JABA.error("'#{f}' must be an absolute path")
@@ -154,8 +136,6 @@ module JABA
 
     IncludeInfo = Struct.new(:path, :args)
 
-    ##
-    #
     def process_include(base, *args)
       if args.empty?
         JABA.error("include requires a path")
@@ -181,13 +161,8 @@ module JABA
       end
     end
 
-    ##
-    #
     def on_included(&block)
       @on_included.push_value($last_call_location.absolute_path, block)
     end
-
-
   end
-
 end

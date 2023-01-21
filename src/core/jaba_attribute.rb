@@ -1,15 +1,11 @@
 module JABA
   
-  ##
-  #
   class JabaAttributeBase
 
     attr_reader :services
     attr_reader :node
     attr_reader :attr_def
     
-    ##
-    #
     def initialize(attr_def, node, outer_attr)
       @services = node.services
       @attr_def = attr_def
@@ -20,70 +16,24 @@ module JABA
       @default_block = @attr_def.default_block
     end
 
-    ##
-    #
-    def type_id
-      @attr_def.type_id
-    end
+    def type_id = @attr_def.type_id
+    def defn_id = @attr_def.defn_id
+    def single? = @attr_def.single?
+    def array? = @attr_def.array?
+    def hash? = @attr_def.hash?
+    def describe = @outer_attr.do_describe # Used in error messages.
+    def set? = @set
+    def required? = @attr_def.has_flag?(:required)
     
-    ##
-    #
-    def defn_id
-      @attr_def.defn_id
-    end
-    
-    ##
-    #
-    def single?
-      @attr_def.single?
-    end
-
-    ##
-    #
-    def array?
-      @attr_def.array?
-    end
-
-    ##
-    #
-    def hash?
-      @attr_def.hash?
-    end
-
-    ##
-    # Used in error messages.
-    #
-    def describe
-      @outer_attr.do_describe
-    end
-
-    ##
-    #
-    def set?
-      @set
-    end
-    
-    ##
-    #
-    def required?
-      @attr_def.has_flag?(:required)
-    end
-    
-    ##
     # Allows attributes to be treated the same as JabaObject for error reporting.
     #
-    def src_loc
-      @last_call_location
-    end
+    def src_loc = @last_call_location
 
-    ##
-    #
     def jaba_warn(msg)
       obj = @last_call_location ? self : @attr_def
       services.jaba_warn(msg, errobj: obj)
     end
 
-    ##
     # TODO: review
     def attr_error(msg, callstack: nil)
       jdl_bt = services.get_jdl_backtrace(callstack || caller)
@@ -95,8 +45,6 @@ module JABA
       end
     end
     
-    ##
-    #
     def call_validators
       begin
         yield
@@ -105,8 +53,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def value_from_block(__jdl_call_loc, id:, block_args: nil, &block)
       if @attr_def.compound?
         if @value # If node has already been made but the compound attr is being set again, re-evaluate existing value against block
@@ -125,18 +71,13 @@ module JABA
         return @node.eval_jdl(&block)
       end
     end
-    
   end
 
-  ##
-  #
   class JabaAttributeElement < JabaAttributeBase
 
     attr_reader :value_options
     attr_reader :flag_options
 
-    ##
-    #
     def initialize(attr_def, node, parent)
       super
       @value = nil
@@ -145,14 +86,10 @@ module JABA
       @in_on_set = false
     end
     
-    ##
     # For ease of debugging.
     #
-    def to_s
-      "#{@attr_def} value=#{@value}"
-    end
+    def to_s = "#{@attr_def} value=#{@value}"
 
-    ##
     # Returns the value of the attribute. If value is a reference to a JabaNode and the call to value() came from user
     # definitions then return the node's attributes rather than the node itself.
     #
@@ -165,8 +102,6 @@ module JABA
       end
     end
     
-    ##
-    #
     def set(*args, __jdl_call_loc: nil, validate: true, __resolve_ref: true, call_on_set: true, **keyval_args, &block)
       @last_call_location = __jdl_call_loc if __jdl_call_loc
 
@@ -269,8 +204,6 @@ module JABA
       nil
     end
 
-    ##
-    #
     def <=>(other)
       if @value.respond_to?(:casecmp)
         @value.to_s.casecmp(other.value.to_s) # to_s is required because symbols need to be compared to strings
@@ -279,14 +212,10 @@ module JABA
       end
     end
     
-    ##
-    #
     def has_flag_option?(o)
       @flag_options&.include?(o)
     end
 
-    ##
-    #
     def get_option_value(key, fail_if_not_found: true)
       @attr_def.get_value_option(key)
       if !@value_options.key?(key)
@@ -299,8 +228,6 @@ module JABA
       @value_options[key]
     end
 
-    ##
-    #
     def map_value_option!
       attr_def.each_value_option do |vod|
         if @value_options.key?(vod.id)
@@ -314,8 +241,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def visit_attr(&block)
       if block.arity == 2
         yield self, value
@@ -324,34 +249,18 @@ module JABA
       end
     end
     
-    ##
     # This can only be called after the value has had its final value set as it gives raw access to value.
     #
-    def raw_value
-      @value
-    end
+    def raw_value = @value
 
-    ##
     # This can only be called after the value has had its final value set as it gives raw access to value.
     #
-    def map_value!
-      @value = yield(@value)
-    end
-    
-    ##
-    #
-    def process_flags
-      # Nothing yet
-    end
-
+    def map_value! = @value = yield(@value)
+    def process_flags ; end # Nothing yet
   end
 
-  ##
-  #
   class JabaAttributeSingle < JabaAttributeElement
 
-    ##
-    #
     def initialize(attr_def, node)
       super(attr_def, node, self)
       
@@ -360,13 +269,10 @@ module JABA
       end
     end
 
-    ##
-    #
     def do_describe
       "'#{@node.defn_id}.#{@attr_def.defn_id}' attribute"
     end
 
-    ##
     # If attribute's default value was specified as a block it is executed here, after the node has been created, since
     # default blocks can be implemented in terms of other attributes. If the user has already supplied a value then the
     # default block will not be executed.
@@ -377,7 +283,6 @@ module JABA
       set(val)
     end
 
-    ##
     # Returns the value of the attribute. If value is a reference to a JabaNode and the call to value() came from user
     # definitions then return the node's attributes rather than the node itself.
     #
@@ -402,7 +307,6 @@ module JABA
       end
     end
 
-    ##
     # TODO: re-examine
     def clear
       if attr_def.default_set? && !@default_block
@@ -411,7 +315,5 @@ module JABA
         @value = nil
       end
     end
-
   end
-
 end

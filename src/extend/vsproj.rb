@@ -1,9 +1,6 @@
 module JABA
 
-  ##
-  #
   class VSProj
-  
     include SrcFileSupport
     
     attr_reader :services
@@ -14,8 +11,6 @@ module JABA
     attr_reader :guid
     attr_reader :root
 
-    ##
-    #
     def initialize(plugin, node)
       @plugin = plugin
       @services = plugin.services
@@ -28,39 +23,20 @@ module JABA
       @root = @attrs.root
     end
 
-    ##
-    #
-    def handle
-      @node.handle
-    end
+    def handle = @node.handle
 
-    ##
     # Required by SrcFileSupport
     #
-    def want_backslashes?
-      true
-    end
+    def want_backslashes? = true
 
-    ##
-    #
     def tools_version
       @host.attrs.version_year < 2013 ? '4.0' : @host.attrs.version
     end
     
-    ##
-    #
     def write_xml_version(w)
       w << "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>"
     end
-    
-    ##
-    #
-    def xmlns
-      'http://schemas.microsoft.com/developer/msbuild/2003'
-    end
-    
-    ##
-    #
+    def xmlns = 'http://schemas.microsoft.com/developer/msbuild/2003'
     def xml_group(w, tag, label: nil, label_at_end: true, condition: nil, close: false, depth: 1)
       if !close
         w.write_raw "#{'  ' * depth}<#{tag}"
@@ -80,32 +56,11 @@ module JABA
       end
     end
 
-    ##
-    #
-    def item_group(w, **options, &block)
-      xml_group(w, 'ItemGroup', **options, &block)
-    end
+    def item_group(w, **options, &block) = xml_group(w, 'ItemGroup', **options, &block)
+    def property_group(w, **options, &block) = xml_group(w, 'PropertyGroup', **options, &block)
+    def import_group(w, **options, &block) = xml_group(w, 'ImportGroup', **options, &block)
+    def item_definition_group(w, **options, &block) =  xml_group(w, 'ItemDefinitionGroup', **options, &block)
     
-    ##
-    #
-    def property_group(w, **options, &block)
-      xml_group(w, 'PropertyGroup', **options, &block)
-    end
-    
-    ##
-    #
-    def import_group(w, **options, &block)
-      xml_group(w, 'ImportGroup', **options, &block)
-    end
-    
-    ##
-    #
-    def item_definition_group(w, **options, &block)
-      xml_group(w, 'ItemDefinitionGroup', **options, &block)
-    end
-    
-    ##
-    #
     def write_keyvalue_attr(w, attr, group: nil, depth: 2)
       attr.visit_attr do |elem, val|
         if group
@@ -118,8 +73,6 @@ module JABA
       end
     end
     
-    ##
-    #
     def write_keyvalue(w, key, val, condition: nil, depth: 2)
       return if val.nil?
       w << if condition
@@ -129,12 +82,8 @@ module JABA
             end
     end
 
-    ##
-    #
     def cfg_condition(cfg_name, platform)
       "'$(Configuration)|$(Platform)'=='#{cfg_name}|#{platform}'"
     end
-    
   end
-  
 end

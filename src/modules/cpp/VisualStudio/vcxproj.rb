@@ -1,15 +1,10 @@
 module JABA
 
-  ##
-  #
   class Vcxproj < VSProj
-    
     attr_reader :projname
     attr_reader :vcxproj_file
     attr_reader :has_resources
     
-    ##
-    #
     def initialize(plugin, node)
       super
       @projname = @attrs.projname
@@ -23,8 +18,6 @@ module JABA
       @extension_targets = []
     end
 
-    ##
-    #
     def post_create
       process_src(:src, :src_ext, :src_exclude)
 
@@ -108,8 +101,6 @@ module JABA
       end
     end
     
-    ##
-    #
     def demacroise(str, input, implicit_input, output)
       str = str.dup
       matches = str.scan(/(\$\((.+?)(\.(.+?))?\))/)
@@ -139,7 +130,6 @@ module JABA
       str
     end
 
-    ##
     # Overridden from Project. Yields eg :ClCompile given '.cpp'.
     #
     def file_type_from_extension(ext)
@@ -148,21 +138,15 @@ module JABA
       :None
     end
 
-    ##
-    #
     def each_config(&block)
       @node.visit_node(type_id: :cpp_config, &block)
     end
 
-    ##
-    #
     def generate
       write_vcxproj
       write_vcxproj_filters
     end
     
-    ##
-    #
     def build_output(p_root)
       p_root[:projdir] = @projdir
       p_root[:projname] = @projname
@@ -190,7 +174,6 @@ module JABA
       end
     end
 
-    ##
     # See https://docs.microsoft.com/en-us/cpp/build/reference/vcxproj-file-structure?view=vs-2019
     #
     def write_vcxproj
@@ -369,7 +352,6 @@ module JABA
       file.write
     end
     
-    ##
     # See https://docs.microsoft.com/en-us/cpp/build/reference/vcxproj-filters-files?view=vs-2019
     #
     def write_vcxproj_filters
@@ -414,7 +396,5 @@ module JABA
       w.chomp!
       file.write
     end
-  
-  end
-  
+  end  
 end

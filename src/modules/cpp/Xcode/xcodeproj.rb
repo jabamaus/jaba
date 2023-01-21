@@ -1,16 +1,11 @@
 module JABA
 
-  ##
-  #
   class Xcodeproj
-  
     include SrcFileSupport
     
     attr_reader :services
     attr_reader :attrs
 
-    ##
-    #
     def initialize(plugin, node)
       @plugin = plugin
       @node = node
@@ -21,31 +16,14 @@ module JABA
       @root = @attrs.root
     end
 
-    ##
-    #
-    def handle
-      @node.handle
-    end
-
-    ##
-    #
-    def post_create
-      process_src(:src, :src_ext, :src_exclude)
-    end
-
-    ##
-    #
-    def generate
-    end
+    def handle = @node.handle
+    def post_create = process_src(:src, :src_ext, :src_exclude)
+    def generate ; end
     
-    ##
-    #
     def each_config(&block)
       @node.visit_node(type_id: :config, &block)
     end
 
-    ##
-    #
     def build_output(p_root)
       p_root[:projdir] = @projdir
       p_root[:projname] = @projname
@@ -65,7 +43,5 @@ module JABA
         cfg[:rtti] = attrs.rtti
       end
     end
-
   end
-
 end

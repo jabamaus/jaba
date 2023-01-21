@@ -25,7 +25,6 @@ module JABA
   # Input to pass to Jaba.
   #
   class Input
-    
     # Input root. Defaults to current working directory.
     #
     attr_accessor :src_root
@@ -57,7 +56,6 @@ module JABA
     # Initialise global attrs from a hash of name to value(s)
     #
     attr_accessor :global_attrs
-    
   end
 
   # Jaba Definition Language error.
@@ -65,7 +63,6 @@ module JABA
   # file.
   #
   class JabaError < StandardError
-    
     # The definition file the error occurred in.
     #
     attr_reader :file
@@ -73,18 +70,13 @@ module JABA
     # The line in the definition file that the error occurred at.
     #
     attr_reader :line
-    
   end
-
 if __FILE__ == $PROGRAM_NAME
 
 require 'jrf/cmdline'
 
 class Jaba
   
-  def initialize
-  end
-
   def run
     clm = CmdlineManager.new(self, 'jaba')
 
@@ -148,19 +140,11 @@ class Jaba
     return 0
   end
 
-  def help_string
-    "Jaba build system generator v#{VERSION}"
-  end
-
-  def error(msg)
-    $stderr.puts msg
-  end
-
-
+  def help_string = "Jaba build system generator v#{VERSION}"
+  def error(msg) = $stderr.puts msg
 end
 
 exit(Jaba.new.run)
 
 end
-
 end

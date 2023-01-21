@@ -1,11 +1,8 @@
 module JABA
 
   class Sln
-
     attr_reader :services
 
-    ##
-    #
     def initialize(plugin, node, projects, configs)
       @plugin = plugin
       @services = @plugin.services
@@ -17,14 +14,8 @@ module JABA
       @sln_file = "#{@workspacedir}/#{@attrs.name}.sln"
     end
 
-    ##
-    #
-    def handle
-      @node.handle
-    end
+    def handle = @node.handle
 
-    ##
-    #
     def generate
       services.log "Generating #{@sln_file}", section: true
 
@@ -71,7 +62,5 @@ module JABA
       w << 'EndGlobal'
       file.write
     end
-    
   end
-
 end

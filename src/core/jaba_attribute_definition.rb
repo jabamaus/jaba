@@ -4,7 +4,6 @@ module JABA
   #
   MAX_TITLE_CHARS = 100
 
-  ##
   # Manages shared data that is common to Attributes instanced from this definition.
   #
   class JabaAttributeDefinitionBase < JabaObject
@@ -26,11 +25,8 @@ module JABA
     attr_reader :flag_options
     attr_reader :on_set
     
-    ##
-    #
     def initialize(variant, jaba_type, defn_id, block, type_id, ref_jaba_type)
       super(jaba_type.services, defn_id, $last_call_location, JDL_AttributeDefinition.new(self))
-      
       @jaba_type = jaba_type
       @block = block
       @type_id = type_id
@@ -56,8 +52,6 @@ module JABA
       @jaba_attr_type.init_attr_def(self)
     end
 
-    ##
-    #
     def eval_definition
       if @block
         @in_eval_block = true
@@ -93,13 +87,8 @@ module JABA
       @jaba_attr_flags.freeze
     end
     
-    ##
-    #
-    def to_s
-      "#{@defn_id} type=#{@type_id}"
-    end
+    def to_s = "#{@defn_id} type=#{@type_id}"
 
-    ##
     # Used in error messages.
     #
     def describe
@@ -112,8 +101,6 @@ module JABA
       :items
     )
 
-    ##
-    #
     def add_value_option(id, required, items)
       if !id.symbol?
         JABA.error("In #{describe} value_option id must be specified as a symbol, eg :option")
@@ -126,8 +113,6 @@ module JABA
       @value_options << vo
     end
 
-    ##
-    #
     def get_value_option(id)
       if @value_options.empty?
         JABA.error("Invalid value option '#{id.inspect_unquoted}' - no options defined in #{describe}")
@@ -139,61 +124,19 @@ module JABA
       vo
     end
 
-    ##
-    #
     def each_value_option(&block)
       @value_options.each(&block)
     end
     
-    ##
-    #
-    def has_flag?(flag)
-      @flags.include?(flag)
-    end
+    def has_flag?(flag) = @flags.include?(flag)
+    def default_set? = @default_set
+    def single? = @variant == :single
+    def array? = @variant == :array
+    def hash? = @variant == :hash
+    def reference? = @type_id == :ref
+    def compound? = @type_id == :compound
+    def block_attr? = @type_id == :block
     
-    ##
-    #
-    def default_set?
-      @default_set
-    end
-
-    ##
-    #
-    def single?
-      @variant == :single
-    end
-
-    ##
-    #
-    def array?
-      @variant == :array
-    end
-
-    ##
-    #
-    def hash?
-      @variant == :hash
-    end
-
-    ##
-    #
-    def reference?
-      @type_id == :ref
-    end
-
-    ##
-    #
-    def compound?
-      @type_id == :compound
-    end
-
-    ##
-    #
-    def block_attr?
-      @type_id == :block
-    end
-    
-    ##
     # Special case handling to try and catch the attribute definition writer from trying to read an attribute when setting a default
     # value directly (ie without using a block), eg
     #
@@ -214,8 +157,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def pre_property_set(id, incoming)
       case id
       when :flags
@@ -242,8 +183,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def post_property_set(id, incoming)
       case id
       when :default
@@ -269,8 +208,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def validate
       call_validators(describe) do
 
@@ -285,8 +222,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def call_validators(what)
       begin
         yield
@@ -297,53 +232,28 @@ module JABA
 
   end
 
-  ##
-  #
   class JabaAttributeSingleDefinition < JabaAttributeDefinitionBase
-
-    ##
-    #
     def initialize(jaba_type, defn_id, block, type_id, ref_jaba_type)
       super(:single, jaba_type, defn_id, block, type_id, ref_jaba_type)
-    
     end
-
   end
 
-  ##
-  #
   class JabaAttributeArrayDefinition < JabaAttributeDefinitionBase
-  
     attr_reader :filter
-
-    ##
-    #
     def initialize(jaba_type, defn_id, block, type_id, ref_jaba_type)
       super(:array, jaba_type, defn_id, block, type_id, ref_jaba_type)
       @filter = nil
     end
-
-    ##
-    #
     def set_filter(&block)
       @filter = block
     end
-
   end
 
-  ##
-  #
   class JabaAttributeHashDefinition < JabaAttributeDefinitionBase
-
     attr_reader :jaba_attr_key_type # JabaAttributeType object. Used by hash attribute.
-  
-    ##
-    #
     def initialize(jaba_type, defn_id, block, type_id, ref_jaba_type, key_type_id)
       super(:hash, jaba_type, defn_id, block, type_id, ref_jaba_type)
-
       @key_type_id = key_type_id # Only used with hash attributes
-
       @jaba_attr_key_type = nil
       
       define_single_property(:validate_key, type: :block)
@@ -360,7 +270,5 @@ module JABA
       #
       add_value_option(:__key, false, [])
     end
-
   end
-
 end

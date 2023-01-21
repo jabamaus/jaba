@@ -1,7 +1,5 @@
 module JABA
 
-  ##
-  #
   module NodeFlags
     NO_TRACK = 1
     NO_DEFAULTS = 2
@@ -10,10 +8,7 @@ module JABA
     IS_COMPOUND_ATTR = 16
   end
 
-  ##
-  #
   class NodeManager
-    
     attr_reader :services
     attr_reader :type_id # eg :cpp, :text
     attr_reader :jaba_type
@@ -21,8 +16,6 @@ module JABA
     attr_reader :root_nodes
     attr_reader :top_level_ids
 
-    ##
-    #
     def initialize(services)
       @services = services
       @to_process = []
@@ -35,14 +28,8 @@ module JABA
       @compound_attr_creation_params = nil
     end
 
-    ##
-    #
-    def describe
-      "'#{type_id}' node manager"
-    end
+    def describe = "'#{type_id}' node manager"
 
-    ##
-    #
     def init(jaba_type, plugins)
       @jaba_type = jaba_type
       @type_id = jaba_type.defn_id
@@ -50,8 +37,6 @@ module JABA
       @defaults_definition = services.get_definition(:defaults, @type_id, fail_if_not_found: false)
     end
 
-    ##
-    #
     CompoundAttrCreationParams = Struct.new(
       :name,
       :parent,
@@ -60,15 +45,11 @@ module JABA
       :root_node
     )
 
-    ##
-    #
     def add_definition(dfn)
       @to_process << dfn
       @top_level_ids << dfn.id
     end
 
-    ##
-    #
     def add_compound_attr_definition(dfn, name: nil, parent: nil, block_args: nil, flags: 0)
       cp = CompoundAttrCreationParams.new
       cp.name = name
@@ -81,8 +62,6 @@ module JABA
       cp
     end
 
-    ##
-    #
     def process
       services.log "Processing #{describe}", section: true
 
@@ -111,8 +90,6 @@ module JABA
       @to_process.clear
     end
     
-    ##
-    #
     def post_process
       @post_processed = true
       
@@ -146,8 +123,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def generate
       # Call generate blocks defined per-node instance, in the context of the node itself, not its api
       #
@@ -157,8 +132,6 @@ module JABA
       @plugins.each(&:generate)
     end
 
-    ##
-    #
     def build_output(output)
       @plugins.each do |plugin|
         root = {}
@@ -169,8 +142,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def make_node(
       definition,
       type_id: nil,
@@ -265,7 +236,6 @@ module JABA
       jn
     end
 
-    ##
     # Given a reference attribute and the definition id it is pointing at, returns the node instance.
     #
     def resolve_reference(attr, ref_node_id, ignore_if_same_type: false)
@@ -306,7 +276,5 @@ module JABA
       end
       ref_node
     end
-
   end
-
 end

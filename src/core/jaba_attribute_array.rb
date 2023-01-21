@@ -1,11 +1,7 @@
 module JABA
 
-  ##
-  #
   class JabaAttributeArray < JabaAttributeBase
     
-    ##
-    #
     def initialize(attr_def, node)
       super(attr_def, node, self)
       @elems = []
@@ -15,22 +11,16 @@ module JABA
       end
     end
     
-    ##
     # For ease of debugging.
     #
-    def to_s
-      "#{@attr_def} [#{@elems.size} elems]"
-    end
+    def to_s = "#{@attr_def} [#{@elems.size} elems]"
 
-    ##
     # Used in error messages.
     #
     def do_describe
       "'#{@node.defn_id}.#{@attr_def.defn_id}' array attribute"
     end
 
-    ##
-    #
     def value(jdl_call_loc = nil)
       @last_call_location = jdl_call_loc if jdl_call_loc
       if !@set
@@ -49,8 +39,6 @@ module JABA
       values
     end
     
-    ##
-    #
     def set(*args, __jdl_call_loc: nil, prefix: nil, postfix: nil, delete: nil, **keyval_args, &block)
       @last_call_location = __jdl_call_loc if __jdl_call_loc
       
@@ -99,6 +87,7 @@ module JABA
         end
       end
       
+      # TODO: this should be moved to after dependencies are processed
       if delete
         to_delete = Array(delete).map{|r| apply_pre_post_fix(prefix, postfix, r)}
         n_elems = @elems.size
@@ -126,8 +115,6 @@ module JABA
       nil
     end
     
-    ##
-    #
     def make_elem(val, *args, add: true, **keyval_args)
       e = JabaAttributeElement.new(@attr_def, @node, self)
       e.set(val, *args, __jdl_call_loc: @last_call_location, **keyval_args)
@@ -137,7 +124,6 @@ module JABA
       e
     end
 
-    ##
     # If the attribute was never set by the user and it has a default specified in block form ensure that the default value
     # is applied. Call set with no args to achieve this.
     #
@@ -147,7 +133,6 @@ module JABA
       end
     end
 
-    ##
     # Clone other attribute and append to this array. Other attribute has already been validated and had any reference resolved.
     # just clone raw value and options. Flags will be processed after, eg stripping duplicates.
     #
@@ -158,8 +143,6 @@ module JABA
       make_elem(val, *f_options, validate: false, __resolve_ref: false, **value_options)
     end
 
-    ##
-    #
     def apply_pre_post_fix(pre, post, val)
       if pre || post
         if !val.string?
@@ -171,29 +154,22 @@ module JABA
       end
     end
     
-    ##
-    #
     def clear
       @elems.clear
     end
     
-    ##
     # Returns attribute element at the given index.
     #
     def at(index)
       @elems[index]
     end
     
-    ##
-    #
     def visit_attr(&block)
       @elems.delete_if do |attr|
         attr.visit_attr(&block) == :delete ? true : false
       end
     end
 
-    ##
-    #
     def process_flags
       if !@attr_def.has_flag?(:no_sort)
         begin
@@ -203,7 +179,5 @@ module JABA
         end
       end
     end
-    
   end
-
 end

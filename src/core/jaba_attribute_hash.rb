@@ -1,11 +1,7 @@
 module JABA
 
-  ##
-  #
   class JabaAttributeHash < JabaAttributeBase
-    
-    ##
-    #
+
     def initialize(attr_def, node)
       super(attr_def, node, self)
       @hash = {}
@@ -17,21 +13,14 @@ module JABA
       end
     end
     
-    ##
     # For ease of debugging.
     #
-    def to_s
-      "#{@attr_def} {#{@hash.size} elems}"
-    end
+    def to_s = "#{@attr_def} {#{@hash.size} elems}"
 
-    ##
     # Used in error messages.
     #
-    def do_describe
-      "'#{@node.defn_id}.#{@attr_def.defn_id}' hash attribute"
-    end
+    def do_describe = "'#{@node.defn_id}.#{@attr_def.defn_id}' hash attribute"
 
-    ##
     # Returns a read only hash of key->attribute values. Expensive because it must map attributes to their values.
     #
     def value(jdl_call_loc = nil)
@@ -52,15 +41,10 @@ module JABA
       values
     end
     
-    ##
-    #
     def set(*args, no_keyval: false, __jdl_call_loc: nil, **keyval_args, &block)
       @last_call_location = __jdl_call_loc if __jdl_call_loc
       
-      key = nil
-      val = nil
-
-      # 
+      key = val = nil
       if !no_keyval
         if args.empty?
           attr_error("#{describe} requires a key/value eg \"#{defn_id} :my_key, 'my value'\"")
@@ -103,7 +87,6 @@ module JABA
       nil
     end
     
-    ##
     # If the attribute was never set by the user and it has a default specified in block form ensure that the default value
     # is applied. Call set with no args to achieve this.
     #
@@ -113,7 +96,6 @@ module JABA
       end
     end
 
-    ##
     # Clone other attribute and add into this hash. Other attribute has already been validated and had any reference resolved.
     # just clone raw value and options. Flags will be processed after, eg stripping duplicates.
     #
@@ -125,14 +107,8 @@ module JABA
       insert_key(key, val, *f_options, validate: false, **v_options)
     end
     
-    ##
-    #
-    def clear
-      @hash.clear
-    end
+    def clear = @hash.clear
     
-    ##
-    #
     def fetch(key, fail_if_not_found: true)
       if !@hash.key?(key)
         if fail_if_not_found
@@ -144,24 +120,16 @@ module JABA
       @hash[key]
     end
     
-    ##
-    #
     def visit_attr(&block)
       @hash.delete_if do |key, attr|
         attr.visit_attr(&block) == :delete ? true : false
       end
     end
      
-    ##
-    #
-    def process_flags
-      # nothing yet
-    end
+    def process_flags ; end # nothing yet
 
   private
 
-    ##
-    #
     def insert_key(key, val, *args, validate: true, call_on_set: true, **keyval_args)
       attr = JabaAttributeElement.new(@attr_def, @node, self)
 
@@ -192,7 +160,5 @@ module JABA
       end
       @hash[key] = attr
     end
-
   end
-
 end

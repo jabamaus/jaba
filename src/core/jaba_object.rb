@@ -1,16 +1,12 @@
 module JABA
 
-  ##
-  #
   class JabaObject
-    
     include PropertyMethods
     
     attr_reader :services
     attr_reader :api
     attr_reader :defn_id # As specified by user in definition files.
 
-    ##
     # Returns source location as a Thread::Backtrace::Location.
     # Use this to pass to the callstack argument in JABA.error/jaba_warn. Do not embed in JABA.error/warning messages themselves
     # as it will appear as eg "C:/projects/GitHub/jaba/modules/cpp/cpp.jaba:49:in `block (2 levels) in execute_jdl'" - the "in `block`"
@@ -18,8 +14,6 @@ module JABA
     #
     attr_reader :src_loc
 
-    ##
-    #
     def initialize(services, defn_id, src_loc, api_object)
       super()
       @services = services
@@ -28,34 +22,17 @@ module JABA
       @api = api_object
     end
 
-    ##
-    #
-    def to_s
-      @defn_id.to_s
-    end
+    def to_s = @defn_id.to_s
+    def source_dir = @src_loc.path.parent_path
 
-    ##
-    #
-    def source_dir
-      @src_loc.path.parent_path
-    end
+    def jaba_warn(...) = services.jaba_warn(...)
 
-    ##
-    #
-    def jaba_warn(...)
-      services.jaba_warn(...)
-    end
-
-    ##
-    #
     def eval_jdl(*args, use_api: true, receiver: nil, **keyval_args, &block)
       obj = receiver ? receiver : self
       obj = use_api ? obj.api : obj
       obj.instance_exec(*args, **keyval_args, &block)
     end
 
-    ##
-    #
     def call_block_property(p_id, *args, **keyval_args)
       b = get_property(p_id)
       if b
@@ -63,8 +40,6 @@ module JABA
       end
     end
     
-    ##
-    #
     def include_shared(id, *args)
       services.log "  Including shared definition [id=#{id}]"
 
@@ -82,7 +57,5 @@ module JABA
         eval_jdl(*args, &d.block)
       end
     end
-    
   end
-  
 end

@@ -1,9 +1,6 @@
 module JABA
   
-  ##
-  #
   class JabaNode < JabaObject
-
     include NodeAPI
     
     attr_reader :node_manager
@@ -15,11 +12,8 @@ module JABA
     attr_reader :children
     attr_reader :depth
     
-    ##
-    #
     def initialize(node_manager, defn_id, src_loc, jaba_type, handle, parent, depth, flags)
       super(node_manager.services, defn_id, src_loc, JDL_Node.new(self))
-
       @node_manager = node_manager
       @jaba_type = jaba_type
       @handle = handle
@@ -51,46 +45,16 @@ module JABA
       end
     end
 
-    ##
-    #
-    def to_s
-      @handle
-    end
-    
-    ##
-    #
-    def inspect
-      @defn_id.inspect
-    end
-
-    ##
-    # Used in error messages.
-    #
-    def describe
-      "'#{@handle}' node"
-    end
-
-    ##
-    #
-    def <=>(other)
-      @handle.casecmp(other.handle)
-    end
-
-    ##
-    #
-    def has_flag?(f)
-      @flags & f != 0
-    end
-
-    ##
-    #
+    def to_s = @handle
+    def inspect = @defn_id.inspect
+    def describe = "'#{@handle}' node" # Used in error messages
+    def <=>(other) = @handle.casecmp(other.handle)
+    def has_flag?(f) = @flags & f != 0
     def add_node_reference(node)
       # TODO: handle duplicates
       @referenced_nodes << node
     end
    
-    ##
-    #
     def visit_node(visit_self: false, type_id: nil, &block)
       jaba_type_id = @jaba_type.defn_id
       if (visit_self && (!type_id || type_id == jaba_type_id))
@@ -101,14 +65,12 @@ module JABA
       end
     end
 
-    ##
     # Prefer over visit_attr when only basic unfiltered iteration is required, over top level attributes only.
     #
     def each_attr(&block)
       @attributes.each(&block)
     end
 
-    ##
     # Multi-purpose visit method. Works in multiple modes. 
     #
     def visit_attr(attr_id = nil, top_level: false, type: nil, skip_variant: nil, skip_attr: nil, &block)
@@ -132,8 +94,6 @@ module JABA
       end
     end
 
-    ##
-    # 
     def post_create
       @attributes.each do |a|
         if !a.set? && a.required?
@@ -147,7 +107,6 @@ module JABA
       end
     end
     
-    ##
     # Make paths in this node and all child nodes recurively, absolute.
     #
     def make_paths_absolute
@@ -193,8 +152,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def get_attr(id, fail_if_not_found: true)
       a = @attribute_lookup[id]
       if !a && fail_if_not_found
@@ -203,7 +160,6 @@ module JABA
       a
     end
 
-    ##
     # TODO: review. This is not recursive with regards references. Should it be?
     def search_attr(id, fail_if_not_found: true)
       a = get_attr(id, fail_if_not_found: false)
@@ -226,13 +182,10 @@ module JABA
       a
     end
 
-    ##
-    #
     def handle_attr_from_jdl(id, *args, **keyval_args, &block)
       handle_attr(id, *args, __jdl_call_loc: $last_call_location, **keyval_args, &block)
     end
     
-    ##
     # If an attribute set operation is being performed, args contains the 'value' and then a list optional symbols
     # which act as options. eg my_attr 'val', :export, :exclude would make args equal to ['val', :opt1, :opt2]. If
     # however the value being passed in is an array it could be eg [['val1', 'val2'], :opt1, :opt2].
@@ -281,7 +234,6 @@ module JABA
       end
     end
 
-    ##
     # TODO: review. This is not recursive with regards references. Should it be?
     def visit_callable_attrs(rdonly: false, &block)
       @attributes.each do |a|
@@ -303,8 +255,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def attr_not_found_error(id)
       rdonly_attributes = []
       rw_attributes = []
@@ -323,8 +273,6 @@ module JABA
       )
     end
 
-    ##
-    #
     def wipe_attrs(ids)
       ids.flatten.each do |id|
         if !id.symbol?
@@ -334,13 +282,8 @@ module JABA
       end
     end
  
-    ##
-    #
-    def allow_set_read_only_attrs?
-      @allow_set_read_only_attrs
-    end
+    def allow_set_read_only_attrs? = @allow_set_read_only_attrs
 
-    ##
     # Temporarily allow setting read only attrs. Used in NodeManager#process_definition methods when initialising read only attributes
     #
     def allow_set_read_only_attrs
@@ -349,8 +292,6 @@ module JABA
       @allow_set_read_only_attrs = false
     end
     
-    ##
-    #
     def make_read_only
       old_attrs = @attrs
       @attrs = @attrs_read_only
@@ -363,8 +304,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def set_parent(parent)
       if @parent
         @parent.children.delete(self)
@@ -377,8 +316,6 @@ module JABA
 
   private
 
-    ##
-    #
     def create_attr(attr_def)
       a = case attr_def.variant
       when :single
@@ -395,24 +332,13 @@ module JABA
 
   end
 
-  ##
-  #
   class AttributeAccessor < DebuggableBasicObject
-
-    ##
-    #
     def initialize(node, read_only: false)
       @node = node
       @read_only = read_only
       @jdl_call_loc = nil
     end
-    
-    ##
-    #
     def to_s = @node.to_s
-    
-    ##
-    #
     def id = @node.defn_id
     
     # Store jdl call location (only done in read only version of this accessor) so it can be passed on to enable value calls to be chained. This happens
@@ -422,13 +348,8 @@ module JABA
       @jdl_call_loc = jdl_call_loc
       self
     end
-
-    ##
-    #
     def method_missing(attr_id, *args, **keyval_args, &block)
       @node.handle_attr(attr_id, *args, __jdl_call_loc: @jdl_call_loc, __read_only: @read_only, **keyval_args, &block)
     end
-   
   end
-
 end

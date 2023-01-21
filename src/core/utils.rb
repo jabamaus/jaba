@@ -1,5 +1,4 @@
 module JABA
-  
   class DebuggableBasicObject < BasicObject
     def instance_variables = []
     def class = DebuggableBasicObject
@@ -59,7 +58,6 @@ module JABA
   end
 
   module PropertyMethods
-
     PropertyInfo = Struct.new(:variant, :type, :var, :store_block, :last_call_location)
 
     def initialize(...)
@@ -232,5 +230,4 @@ module JABA
       end
     end
   end
-  
 end

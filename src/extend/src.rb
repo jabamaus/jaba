@@ -3,7 +3,6 @@ module JABA
   # Include in projects that require src files. Requires @node, @root and @projdir to be set
   #
   module SrcFileSupport
-
     SrcFileInfo = Struct.new(
       :absolute_path,
       :projdir_rel,
@@ -12,21 +11,14 @@ module JABA
       :extname
     )
 
-    ##
     # Override in subclass if project format uses backslashes (eg Visual Studio)
     #
-    def want_backslashes?
-      false
-    end
+    def want_backslashes? = false
 
-    ##
     # Override in subclass if necessary. Yields eg :ClCompile given '.cpp' when targeting Visual Studio C++.
     #
-    def file_type_from_extension(ext)
-      nil
-    end
+    def file_type_from_extension(ext) = nil
 
-    ##
     # Builds sorted array of absolute src paths and stores in @<src_attr_id> instance variable.
     #
     def process_src(src_attr_id, src_ext_attr_id, src_exclude_attr_id)
@@ -53,11 +45,9 @@ module JABA
         end
       end
       
-
       file_manager = services.file_manager
       src = instance_variable_set("@#{src_attr_id}", [])
       src_lookup = {}
-
       spec_files = []
 
       src_attr.visit_attr do |elem, abs_path|
@@ -146,8 +136,6 @@ module JABA
       src.sort!{|x, y| x.absolute_path.casecmp(y.absolute_path)}
     end
 
-    ##
-    #
     def get_matching_src_objs(spec, src_list, fail_if_not_found: true, errobj: nil)
       abs_spec = JABA.spec_to_absolute_path(spec, @root, @node)
       if abs_spec.wildcard?
@@ -160,7 +148,5 @@ module JABA
         [s] # Note that Array(s) did something unexpected - added all the struct elements to the array where the actual struct is wanted
       end
     end
-
   end
-
 end

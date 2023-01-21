@@ -1,7 +1,5 @@
 module JABA
 
-  ##
-  #
   class JabaType < JabaObject
 
     include TypeDefinitionAPI
@@ -13,8 +11,6 @@ module JABA
     attr_reader :attribute_defs
     attr_reader :plugin
 
-    ##
-    #
     def initialize(services, defn_id, src_loc, block, open_defs)
       super(services, defn_id, src_loc, JDL_Type.new(self))
 
@@ -50,15 +46,8 @@ module JABA
       @singleton.freeze
     end
 
-    ##
-    # Used in error messages.
-    #
-    def describe
-      "'#{@defn_id}' type"
-    end
+    def describe = "'#{@defn_id}' type" # Used in error messages
 
-    ##
-    #
     def define_attr(id, variant, type: nil, key_type: nil, jaba_type: nil, &block)
       services.log "  Defining '#{id}' attribute [variant=#{variant}, type=#{type}]"
       
@@ -105,14 +94,8 @@ module JABA
       ad
     end
 
-    ##
-    #
-    def get_attribute_def(id)
-      @attribute_def_lookup[id]
-    end
+    def get_attribute_def(id) = @attribute_def_lookup[id]
 
-    ##
-    #
     def post_create
       @contained_types.uniq!
       @contained_types.map!{|d| services.get_jaba_type(d)}
@@ -123,8 +106,6 @@ module JABA
       @dependencies.map!{|d| services.get_jaba_type(d)}
     end
 
-    ##
-    #
     def eval_attr_defs
       return if @attrs_evaluated
       @attrs_evaluated = true
@@ -153,16 +134,10 @@ module JABA
       end
     end
 
-    ##
-    #
-    def reference_manual_page(ext: '.html')
-      "jaba_type_#{defn_id}#{ext}"
-    end
+    def reference_manual_page(ext: '.html') = "jaba_type_#{defn_id}#{ext}"
 
   private
 
-    ##
-    #
     def register_attr_def(ad, type)
       id = ad.defn_id
       case type
@@ -186,8 +161,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def validate_id(id)
       if !(id.symbol? || id.string?) || id !~ /^[a-zA-Z0-9_\?]+$/
         JABA.error("'#{id}' is an invalid id. Must be an alphanumeric string or symbol " \
@@ -195,8 +168,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def validate
       # Insist on the attribute having a title, unless running unit tests or in barebones mode. Barebones mode
       # is useful for testing little jaba snippets where adding titles would be cumbersome.
@@ -208,7 +179,5 @@ module JABA
     rescue => e
       JABA.error("#{describe} invalid: #{e.message}", errobj: self)
     end
-
   end
-
 end

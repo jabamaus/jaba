@@ -27,14 +27,8 @@ require_relative '../extend/plugin'
 require_relative '../extend/src'
 require_relative '../extend/vsproj'
 
-##
-#
 module JABA
-
-  ##
-  #
   class Services
-
     include TopLevelAPI
 
     attr_reader :invoking_dir
@@ -46,12 +40,8 @@ module JABA
     attr_reader :jaba_attr_types
     attr_reader :jaba_temp_dir
 
-    ##
-    #
     def test_mode? = @test_mode
     
-    ##
-    #
     def initialize(test_mode: false)
       @test_mode = test_mode
       @invoking_dir = Dir.getwd.freeze
@@ -98,15 +88,10 @@ module JABA
       register_toplevel_item :type, :instance, :shared, :defaults, :translator
     end
 
-    ##
     # The output of inspecting Services is massive and chokes debugger
     #
-    def inspect
-      'Services'
-    end
+    def inspect = 'Services'
 
-    ##
-    #
     def execute
       begin
         yield
@@ -147,8 +132,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def run
       log "Starting Jaba at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}", section: true
       
@@ -184,8 +167,6 @@ module JABA
       @output
     end
 
-    ##
-    #
     def do_run
       @load_manager.load_modules
       init_root_paths
@@ -300,8 +281,6 @@ module JABA
       @node_managers.each(&:generate)
     end
     
-    ##
-    #
     def init_root_paths
       # Initialise build_root from command line, if not present defaults to cwd. 
       #
@@ -351,8 +330,6 @@ module JABA
       log "temp_dir=#{@jaba_temp_dir}"
     end
 
-    ##
-    #
     def set_global_attrs_from_cmdline
       input.global_attrs.each do |name, values|
         values = Array(values).map{|e| e.to_s}
@@ -393,8 +370,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def create_core_objects
       constants = JABA.constants(false).sort # Don't iterate directly as constants could get created inside loop
       constants.each do |c|
@@ -409,8 +384,6 @@ module JABA
       @jaba_attr_flags.sort_by!(&:id)
     end
 
-    ##
-    #
     def make_attr_type(klass)
       at = klass.new
       if @jaba_attr_type_lookup.has_key?(at.id)
@@ -423,8 +396,6 @@ module JABA
       at
     end
 
-    ##
-    #
     def get_attribute_type(id)
       if id.nil?
         return @null_attr_type
@@ -436,8 +407,6 @@ module JABA
       t
     end
 
-    ##
-    #
     def make_attr_flag(klass)
       af = klass.new
       if @jaba_attr_flag_lookup.has_key?(af.id)
@@ -450,8 +419,6 @@ module JABA
       af
     end
 
-    ##
-    #
     def get_attribute_flag(id)
       f = @jaba_attr_flag_lookup[id]
       if !f
@@ -460,8 +427,6 @@ module JABA
       f
     end
 
-    ##
-    #
     def define(what, id, *args, **keyval_args, &block)
       lookup_id = id
       if what == :instance
@@ -496,8 +461,6 @@ module JABA
       nil
     end
 
-    ##
-    # TODO: Use *args and validate it
     def open(what, id, &block)
       validate_id(id, what)
       JABA.error("'#{what.inspect_unquoted}' requires a block") if !block_given?
@@ -513,8 +476,6 @@ module JABA
       nil
     end
 
-    ##
-    #
     def validate_id(id, what)
       if !(id.symbol? || id.string?) || id !~ /^[a-zA-Z0-9_\-.|]+$/
         msg = if id.nil?
@@ -527,12 +488,8 @@ module JABA
       end
     end
 
-    ##
-    #
     DefRegistry = Struct.new(:defs, :lookup)
 
-    ##
-    #
     def register_toplevel_item(*items)
       items.each do |what|
         @definition_registry[what] = DefRegistry.new([], {})
@@ -540,8 +497,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def get_definition(what, id, fail_if_not_found: true)
       d =  @definition_registry[what].lookup[id]
       if !d && fail_if_not_found
@@ -550,20 +505,9 @@ module JABA
       d
     end
 
-    ##
-    #
-    def get_defs(what)
-      @definition_registry[what].defs
-    end
+    def get_defs(what) = @definition_registry[what].defs
+    def iterate_defs(what, &block) = get_defs(what).each(&block)
     
-    ##
-    #
-    def iterate_defs(what, &block)
-      get_defs(what).each(&block)
-    end
-    
-    ##
-    #
     Definition = Struct.new(
       :id,
       :block,
@@ -574,8 +518,6 @@ module JABA
       :jaba_type_id # Used by instances
     )
     
-    ##
-    #
     def make_definition(id, block, src_loc)
       d = Definition.new
       d.id = id
@@ -591,8 +533,6 @@ module JABA
       d
     end
 
-    ##
-    #
     def make_jaba_type(id, dfn)
       if @jaba_type_lookup.key?(id)
         JABA.error("'#{id}' jaba type multiply defined")
@@ -605,8 +545,6 @@ module JABA
       jt
     end
 
-    ##
-    #
     def get_jaba_type(id, fail_if_not_found: true, errobj: nil)
       jt = @jaba_type_lookup[id]
       if !jt && fail_if_not_found
@@ -615,8 +553,6 @@ module JABA
       jt
     end
 
-    ##
-    #
     def get_or_make_node_manager(id)
       nm = get_node_manager(id, fail_if_not_found: false)
       if !nm
@@ -626,8 +562,6 @@ module JABA
       nm
     end
 
-    ##
-    #
     def get_node_manager(jaba_type_id, fail_if_not_found: true)
       nm = @node_manager_lookup[jaba_type_id]
       if !nm && fail_if_not_found
@@ -636,15 +570,11 @@ module JABA
       nm
     end
 
-    ##
-    #
     def get_nodes_of_type(type_id)
       nm = get_node_manager(type_id)
       nm.root_nodes.map{|n| n.attrs_read_only}
     end
 
-    ##
-    #
     def make_plugin(klass, id, node_manager)
       log "Making #{id} plugin"
 
@@ -670,8 +600,6 @@ module JABA
       plugin
     end
 
-    ##
-    #
     def get_plugin(plugin_id, fail_if_not_found: true)
       plugin = @plugin_lookup[plugin_id]
       if !plugin && fail_if_not_found
@@ -680,12 +608,7 @@ module JABA
       plugin
     end
 
-    ##
-    #
     def in_attr_default_block? = @in_attr_default_block
-
-    ##
-    #
     def execute_attr_default_block(node, default_block)
       @in_attr_default_block = true
       result = nil
@@ -696,8 +619,6 @@ module JABA
       result
     end
 
-    ##
-    #
     def get_translator(id, fail_if_not_found: true)
       t = @translators[id]
       if !t && fail_if_not_found
@@ -706,8 +627,6 @@ module JABA
       t
     end
 
-    ##
-    #
     def register_node(node)
       handle = node.handle
       if @node_lookup.key?(handle)
@@ -716,8 +635,6 @@ module JABA
       @node_lookup[handle] = node
     end
 
-    ##
-    #
     def node_from_handle(handle, fail_if_not_found: true, errobj: nil)
       n = @node_lookup[handle]
       if !n && fail_if_not_found
@@ -726,8 +643,6 @@ module JABA
       n
     end
 
-    ##
-    #
     def register_array_filter(type_id, attr_id, &block)
       jt = get_jaba_type(type_id)
       attr_def = jt.get_attribute_def(attr_id)
@@ -737,8 +652,6 @@ module JABA
       attr_def.set_filter(&block)
     end
 
-    ##
-    #
     def dump_jaba_state
       root = {}
       root[:jdl_files] = @load_manager.jdl_files
@@ -757,8 +670,6 @@ module JABA
       file.write
     end
 
-    ##
-    #
     def write_node_json(nm, root, node, obj)
       node.visit_attr(top_level: true) do |attr, val|
         obj[attr.defn_id] = val
@@ -772,8 +683,6 @@ module JABA
       end
     end
 
-    ##
-    #
     def build_output
       log 'Building output...'
       
@@ -817,7 +726,6 @@ module JABA
       @output[:unchanged] = @unchanged
     end
 
-    ##
     # This will cause a series of calls to eg define_attr_type, define_type, define_instance (see further
     # down in this file). These calls will come from user definitions via the api files.
     #
@@ -839,8 +747,6 @@ module JABA
       JABA.error(e.message, syntax: true)
     end
 
-    ##
-    #
     def log(msg, severity = :INFO, section: false)
       return if !@log_msgs
       if section
@@ -853,8 +759,6 @@ module JABA
       @log_msgs << "#{severity} #{msg}"
     end
 
-    ##
-    #
     def term_log
       return if !@log_msgs
       log_dir = @jaba_temp_dir ? @jaba_temp_dir : @invoking_dir
@@ -867,8 +771,6 @@ module JABA
       IO.write(log_fn, @log_msgs.join("\n"))
     end
 
-    ##
-    #
     def jaba_warn(msg, errobj: nil, callstack: nil)
       callstack = Array(errobj&.src_loc || callstack || caller)
       jdl_bt = get_jdl_backtrace(callstack)
@@ -882,8 +784,6 @@ module JABA
       nil
     end
 
-    ##
-    #
     def get_jdl_backtrace(callstack)
       # Clean up callstack which could be in 'caller' or 'caller_locations' form.
       #
@@ -921,8 +821,6 @@ module JABA
       jdl_bt
     end
 
-    ##
-    #
     def make_error_info(msg, backtrace, err_type: :error)
       if err_type == :syntax
         # With ruby ScriptErrors there is no useful callstack. The error location is in the msg itself.
@@ -985,8 +883,6 @@ module JABA
       e
     end
 
-    ##
-    #
     def profile(enabled)
       if !enabled
         yield
@@ -1012,7 +908,5 @@ module JABA
       end
       IO.write(file, str)
     end
-
   end
-
 end
