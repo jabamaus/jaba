@@ -86,6 +86,7 @@ class Jaba
       c.add_flag('--dry-run', help: 'Perform a dry run', var: :dry_run)
       c.add_flag('--profile', help: 'Profiles with ruby-prof gem', var: :profile, dev_only: true)
       c.add_flag('--verbose', help: 'Prints extra information', var: :verbose)
+      c.add_flag('--debug -d', help: 'Start debugger', var: :debug, dev_only: true)
     end
 
     clm.register_cmd(:gen, help: 'Regenerate buildsystem', default: true) do |c|
@@ -102,6 +103,10 @@ class Jaba
     clm.process
     clm.finalise
 
+    if @debug
+      debug!
+    end
+    
     if @show_help
       clm.show_help
     end
