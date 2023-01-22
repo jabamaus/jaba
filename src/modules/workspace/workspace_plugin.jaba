@@ -1,17 +1,10 @@
-##
-#
 open_type :workspace do
-
   plugin :workspace do
 
-    ##
-    #
     def init
       @workspaces = []
     end
 
-    ##
-    # 
     def get_matching_projects(candidate_projects, projects, root, specs, errobj:)
       specs.each do |spec|
         if spec.string? && spec.wildcard?
@@ -35,14 +28,10 @@ open_type :workspace do
       end
     end
 
-    ##
-    #
     def process_definition(definition)
       services.make_node(definition)
     end
 
-    ##
-    #
     def post_process_definitions
       # TODO: pass this in
       cpp_plugin = services.get_plugin(:cpp)
@@ -79,24 +68,18 @@ open_type :workspace do
       end
     end
 
-    ##
-    #
     def make_workspace(classname, node, *args, **keyval_args)
       klass = JABA.const_get(classname)
       ws = klass.new(self, node, *args, **keyval_args)
       @workspaces << ws
     end
 
-    ##
-    #
     def generate
       @workspaces.each do |w|
         w.generate
       end
     end
     
-    ##
-    # 
     def build_output(root)
       @workspaces.each do |w|
         w_root = {}

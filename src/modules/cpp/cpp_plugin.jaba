@@ -1,13 +1,8 @@
-##
-#
 open_type :cpp do
-
   plugin :cpp do
     
     attr_reader :projects
 
-    ##
-    #
     def init
       @all_project_nodes = []
       @host_to_project_nodes = {}
@@ -17,8 +12,6 @@ open_type :cpp do
       @export_only_dependencies_to_resolve = {}
     end
 
-    ##
-    #
     def pre_process_definitions
       target_host_id = services.globals.target_host
       @target_host = services.node_from_handle(target_host_id.to_s) # TODO: move to services
@@ -38,8 +31,6 @@ open_type :cpp do
       end
     end
 
-    ##
-    #
     def process_definition(definition)
       # If its an export only definition, ignore it as it should not get turned into a generatable project,
       # rather it is just there to export attributes. This definition will be processed later at dependency
@@ -96,8 +87,6 @@ open_type :cpp do
       root_node
     end
 
-    ##
-    #
     def post_process_definitions
       return if @all_project_nodes.empty?
       
@@ -200,8 +189,6 @@ open_type :cpp do
       end
     end
 
-    ##
-    #
     def make_project(classname, node, *args, **keyval_args)
       klass = JABA.const_get(classname)
       project = klass.new(self, node, *args, **keyval_args)
@@ -210,8 +197,6 @@ open_type :cpp do
       project.post_create
     end
 
-    ##
-    #
     def project_from_node(node, fail_if_not_found: true)
       p = @node_to_project[node]
       if !p && fail_if_not_found
@@ -220,8 +205,6 @@ open_type :cpp do
       p
     end
 
-    ##
-    #
     def process_node_exports(target_node, dep_node, is_config: false, soft_dependency: false)
       dep_attrs = dep_node.attrs
 
@@ -267,8 +250,6 @@ open_type :cpp do
       end
     end
 
-    ##
-    #
     def process_export_only_node_exports(target_node, dep_node)
       dep_node.visit_attr(top_level: true) do |dep_attr|
         attr = nil
@@ -288,16 +269,12 @@ open_type :cpp do
       end
     end
 
-    ##
-    #
     def generate
       @projects.each do |p|
         p.generate
       end
     end
     
-    ##
-    # 
     def build_output(root)
       @projects.each do |p|
         p_root = {}
