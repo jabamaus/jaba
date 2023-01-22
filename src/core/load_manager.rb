@@ -147,7 +147,7 @@ module JABA
         end
         path = "#{JABA.grab_bag_dir}/#{path}"
       elsif !path.absolute_path?
-        path = "#{$last_call_location.path.parent_path}/#{path}"
+        path = "#{$last_call_location.absolute_path.parent_path}/#{path}"
       end
       if path.extname == '.rb'
         @services.log "  Loading #{path} plugin"
