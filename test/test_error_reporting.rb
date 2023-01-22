@@ -17,7 +17,7 @@ jtest 'works when a definition contains an error when definitions in separate fi
   end
 end
 
-jtest 'works when a there is a standard error when definitions in a block' do
+jtest 'works when there is a standard error when definitions in a block' do
   assert_jaba_error "Error at #{src_loc('138FA33C')}: uninitialized constant TestErrorReporting::CODE." do
     jaba(barebones: true) do
       shared :a do
