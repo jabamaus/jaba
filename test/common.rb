@@ -25,7 +25,7 @@ class JTestCaseAPI
       c.dry_run = dry_run
       
       c.global_attrs = global_attrs
-      if !c.global_attrs.has_key?('target_host')
+      if (!c.global_attrs.has_key?('target_host') && !c.global_attrs.has_key?(:target_host))
         c.global_attrs[:target_host] = :vs2019
       end
 

@@ -149,7 +149,7 @@ end
 jtest 'supports platform-specific default src extensions' do
   make_file('a.cpp', 'b.natvis', 'c.xcconfig', 'e.def', 'f.rc')
   td = temp_dir
-  op = jaba(dry_run: true, global_attrs: {'target_host': 'vs2019'}) do
+  op = jaba(dry_run: true, global_attrs: {target_host: 'vs2019'}) do
     cpp :app do
       root td
       platforms [:windows_x86, :windows_x86_64, :ios_arm64]
@@ -170,7 +170,7 @@ jtest 'supports platform-specific default src extensions' do
     "#{temp_dir}/f.rc"
   ]
 
-  op = jaba(dry_run: true, global_attrs: {'target_host': 'xcode'}) do
+  op = jaba(dry_run: true, global_attrs: {target_host: 'xcode'}) do
     cpp :app do
       root td
       platforms [:windows_x86, :windows_x86_64, :ios_arm64]
