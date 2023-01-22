@@ -91,7 +91,7 @@ end
 jtest 'checks for accessing uninitialised attributes' do
   # test with array attr default using an unset attr
   #
-  assert_jaba_error "Error at #{src_loc('C5ADC065')}: Cannot read uninitialised 't.b' attribute - it might need a default value.", trace: [__FILE__, '5F23FC3F'] do
+  assert_jaba_error "Error at #{src_loc('C5ADC065')}: Cannot read uninitialised 't.b' attribute - it might need a default value.", trace: [__FILE__, '9BCB5240'] do
     jaba(barebones: true) do
       type :test do
         attr :a
@@ -104,7 +104,7 @@ jtest 'checks for accessing uninitialised attributes' do
       end
       test :t do
         a 1
-        c # 5F23FC3F
+        c # 9BCB5240
       end
     end
   end
