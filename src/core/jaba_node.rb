@@ -332,7 +332,8 @@ module JABA
 
   end
 
-  class AttributeAccessor < DebuggableBasicObject
+  class AttributeAccessor < BasicObject
+    include ::RdbgBasicObjectMixin
     def initialize(node, read_only: false)
       @node = node
       @read_only = read_only

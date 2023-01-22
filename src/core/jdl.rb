@@ -1,6 +1,7 @@
 module JABA
 
-  class JDL_Base < DebuggableBasicObject
+  class JDL_Base < BasicObject
+    include ::RdbgBasicObjectMixin
     def self.const_missing(name) = ::Object.const_get(name)
   private
     def initialize(obj) = @obj = obj

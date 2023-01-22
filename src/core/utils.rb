@@ -1,9 +1,4 @@
 module JABA
-  class DebuggableBasicObject < BasicObject
-    def instance_variables = []
-    def class = DebuggableBasicObject
-    def inspect = 'DebuggableBasicObject'
-  end
 
   module OS
     def self.windows? = true
