@@ -60,7 +60,7 @@ jtest 'can write a file with unix eol' do
 end
 
 jtest 'detects invalid eol spec' do
-  e = assert_raises do
+  e = assert_raises JABA::JabaError do
     fn = "#{temp_dir}/f"
     fm = JABA::Services.new.file_manager
     fm.new_file(fn, eol: :undefined)
@@ -79,7 +79,7 @@ jtest 'detects duplicates' do
   f = fm.new_file(fn)
   w = f.writer
   w << 'b'
-  assert_raises do
+  assert_raises JABA::JabaError do
     f.write
   end.message.must_match(/Duplicate filename '.*' detected/)
 end

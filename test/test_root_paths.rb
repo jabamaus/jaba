@@ -16,7 +16,7 @@ def each_src_root_build_root
 
   yield sr, sr # test build_root and src_root being the same
   src_roots.each do |s|
-    File.exist?(s).must_equal(true, "#{s} does not exist")
+    File.exist?(s).must_equal(true, msg: "#{s} does not exist")
     build_roots.each do |b|
       yield s, "#{b}_#{s.basename}"
     end
