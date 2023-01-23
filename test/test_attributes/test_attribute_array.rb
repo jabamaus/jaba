@@ -279,7 +279,7 @@ jtest 'only strings support prefix and postfix' do
   end
 end
 
-jtest 'supports deleting elements' do
+jtest 'supports immediately deleting elements' do
   jaba(barebones: true) do
     type :test do
       attr_array :a
@@ -333,7 +333,7 @@ jtest 'supports deleting elements' do
 end
 
 jtest 'fails if deleting with regex on non-strings' do
-  assert_jaba_error "Error at #{src_loc('2CC0D619')}: Deletion using a regex can only operate on strings or symbols." do
+  assert_jaba_error "Error at #{src_loc('2CC0D619')}: delete with a regex can only operate on strings or symbols." do
     jaba(barebones: true) do
       type :test do
         attr_array :a
@@ -346,7 +346,7 @@ jtest 'fails if deleting with regex on non-strings' do
 end
 
 jtest 'warns if nothing deleted' do
-  assert_jaba_warn "'[7, 8]' did not match any elements - nothing removed", __FILE__, 'D5F5139A' do
+  assert_jaba_warn "'[7, 8]' did not delete any elements", __FILE__, 'D5F5139A' do
     jaba(barebones: true) do
       type :test do
         attr_array :a
@@ -356,6 +356,9 @@ jtest 'warns if nothing deleted' do
       end
     end
   end
+end
+
+jtest 'supports excluding elements' do
 end
 
 jtest 'supports wiping arrays' do

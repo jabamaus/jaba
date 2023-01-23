@@ -6,6 +6,7 @@ module JABA
       super(attr_def, node, self)
       @elems = []
       @filter = attr_def.filter
+      @excludes = []
       if attr_def.default_set? && !@default_block
         set(attr_def.default, call_on_set: false)
       end
@@ -39,7 +40,12 @@ module JABA
       values
     end
     
-    def set(*args, __jdl_call_loc: nil, prefix: nil, postfix: nil, delete: nil, **keyval_args, &block)
+    # Options:
+    #  - delete: Immediately delete specified elems from array
+    #  - exclude: Cache exclusion and apply later. Allows order independent deletion and deletion
+    #             of elements added later by dependencies
+    #
+    def set(*args, __jdl_call_loc: nil, prefix: nil, postfix: nil, delete: nil, exclude: nil, **keyval_args, &block)
       @last_call_location = __jdl_call_loc if __jdl_call_loc
       
       # It is possible for values to be nil, which happens if no args are passed. This can happen if the user
@@ -86,29 +92,12 @@ module JABA
           @elems << elem
         end
       end
-      
-      # TODO: this should be moved to after dependencies are processed
+
       if delete
-        to_delete = Array(delete).map{|r| apply_pre_post_fix(prefix, postfix, r)}
-        n_elems = @elems.size
-        @elems.delete_if do |e|
-          to_delete.any? do |d|
-            val = e.value
-            if d.proc?
-              d.call(val)
-            elsif d.is_a?(Regexp)
-              if !val.string? && !val.symbol?
-                attr_error("Deletion using a regex can only operate on strings or symbols")
-              end
-              val.match(d)
-            else
-              d == val
-            end
-          end
-        end
-        if @elems.size == n_elems
-          services.jaba_warn("'#{delete}' did not match any elements - nothing removed")
-        end
+        process_removes(Array(delete).map{|r| apply_pre_post_fix(prefix, postfix, r)}, mode: :delete)
+      end
+      if exclude
+        @excludes.concat(Array(exclude).map{|r| apply_pre_post_fix(prefix, postfix, r)})
       end
 
       @set = true
@@ -170,7 +159,32 @@ module JABA
       end
     end
 
+    def process_removes(to_remove, mode:)
+      if !to_remove.empty?
+        n_elems = @elems.size
+        @elems.delete_if do |e|
+          to_remove.any? do |d|
+            val = e.value
+            if d.proc?
+              d.call(val)
+            elsif d.is_a?(Regexp)
+              if !val.string? && !val.symbol?
+                attr_error("#{mode} with a regex can only operate on strings or symbols")
+              end
+              val.match(d)
+            else
+              d == val
+            end
+          end
+        end
+        if @elems.size == n_elems
+          jaba_warn("'#{to_remove}' did not #{mode} any elements")
+        end
+      end
+    end
+    
     def process_flags
+      process_removes(@excludes, mode: :exclude)
       if !@attr_def.has_flag?(:no_sort)
         begin
           @elems.stable_sort!

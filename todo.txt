@@ -145,8 +145,6 @@ A: Because Jaba cares a lot about a clean build, and about deterministic minimum
 Q: Why is Jaba library code style not very 'ruby'?
 A: The code is written in a style that is the easiest to step through in an IDE debugger, which is an essential tool in the development process
 
-- maybe make jaba repo private again and set up local web server for docs
-
 ouroveon todo
 - workspace categories
 - Allow debug?
