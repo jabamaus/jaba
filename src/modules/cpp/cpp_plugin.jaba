@@ -181,10 +181,12 @@ open_type :cpp do
         end
       end
 
-      project_ids = @project_ids
-      services.execute_jdl do
-        workspace :all do
-          projects project_ids
+      if !@project_ids.empty?
+        project_ids = @project_ids
+        services.execute_jdl do
+          workspace :all do
+            projects project_ids
+          end
         end
       end
     end
