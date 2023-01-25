@@ -112,15 +112,18 @@ module JABA
         rn.make_paths_absolute
       end
 
-      @plugins.each(&:post_process_definitions)
+      @plugins.each(&:finalise_definitions)
       
       @nodes.each do |n|
         n.each_attr do |a|
           a.process_flags
         end
-        
-        n.make_read_only # Make all nodes read only from this point, to help catch mistakes
       end
+
+      @plugins.each(&:post_process_definitions)
+      
+      # Make all nodes read only from this point, to help catch mistakes
+      @nodes.each(&:make_read_only)
     end
 
     def generate

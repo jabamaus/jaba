@@ -30,6 +30,7 @@ module JABA
     #
     def pre_process_definitions ; end
     def process_definition(definition) = services.make_node(definition)
+    def finalise_definitions ; end
     def post_process_definitions ; end
     def generate ; end
     def build_output(root) ; end

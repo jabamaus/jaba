@@ -87,7 +87,7 @@ open_type :cpp do
       root_node
     end
 
-    def post_process_definitions
+    def finalise_definitions
       return if @all_project_nodes.empty?
       
       @all_project_nodes.sort!{|x, y| x.handle.casecmp(y.handle)}
@@ -170,7 +170,9 @@ open_type :cpp do
           end
         end
       end
+    end
 
+    def post_process_definitions
       @host_to_project_nodes.each do |host, project_nodes|
         if host.defn_id == :ninja
         else
