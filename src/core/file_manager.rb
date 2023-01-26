@@ -166,7 +166,7 @@ module JABA
     end
 
     # Called from JDL API.
-    #
+    # TODO: should be relative to root if one set
     def jdl_glob(spec, &block)
       jaba_file_dir = $last_call_location.absolute_path.parent_path
       if !spec.absolute_path?
