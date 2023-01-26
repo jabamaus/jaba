@@ -140,7 +140,11 @@ module JABA
       abs_spec = JABA.spec_to_absolute_path(spec, @root, @node)
       if abs_spec.wildcard?
         # Use File::FNM_PATHNAME so eg dir/**/*.c matches dir/a.c
-        src_list.select{|s| File.fnmatch?(abs_spec, s.absolute_path, File::FNM_PATHNAME)}
+        files = src_list.select{|s| File.fnmatch?(abs_spec, s.absolute_path, File::FNM_PATHNAME)}
+        if files.empty? && fail_if_not_found
+          JABA.error("'#{spec}' did not match any files")
+        end
+        files
       else
         s = src_list.find{|s| s.absolute_path == abs_spec}
         if !s && fail_if_not_found
