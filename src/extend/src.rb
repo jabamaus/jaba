@@ -108,7 +108,7 @@ module JABA
           bs = want_backslashes? # Does this project require backslashes (eg Visual Studio)
           
           vpath = if vpath_option
-            vpath_option
+            bs ? vpath_option.to_backslashes : vpath
           else
             # If no specified vpath then preserve the structure of the src files/folders. 
             # It is important that vpath does not start with ..
