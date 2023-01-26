@@ -101,7 +101,7 @@ module JABA
           next if src_lookup.key?(f)
           src_lookup[f] = true
 
-          if src_exclude.any?{|e| File.fnmatch?(e, f)}
+          if src_exclude.any?{|e| File.fnmatch?(e, f, File::FNM_PATHNAME)}
             next
           end
 
@@ -139,7 +139,8 @@ module JABA
     def get_matching_src_objs(spec, src_list, fail_if_not_found: true, errobj: nil)
       abs_spec = JABA.spec_to_absolute_path(spec, @root, @node)
       if abs_spec.wildcard?
-        src_list.select{|s| File.fnmatch?(abs_spec, s.absolute_path)}
+        # Use File::FNM_PATHNAME so eg dir/**/*.c matches dir/a.c
+        src_list.select{|s| File.fnmatch?(abs_spec, s.absolute_path, File::FNM_PATHNAME)}
       else
         s = src_list.find{|s| s.absolute_path == abs_spec}
         if !s && fail_if_not_found

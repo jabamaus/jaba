@@ -10,7 +10,7 @@ open_type :workspace do
         if spec.string? && spec.wildcard?
           abs_spec = "#{root}/#{spec}"
           matches = candidate_projects.select do |p|
-            File.fnmatch?(abs_spec, p.root)
+            File.fnmatch?(abs_spec, p.root, File::FNM_PATHNAME)
             end
           if matches.empty?
             services.jaba_warn("No projects matching spec '#{spec.inspect_unquoted}' found", errobj: errobj)

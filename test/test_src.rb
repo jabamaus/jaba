@@ -224,6 +224,19 @@ jtest 'supports glob matches' do
     "#{temp_dir}/a.cpp",
     "#{temp_dir}/b.cpp"
   ]
+  proj = jaba(cpp_app: true, dry_run: true) do
+    cpp :app do
+      project do
+        src ['**/*'] # should match everything
+      end
+    end
+  end
+  proj[:src].must_equal [
+    "#{temp_dir}/a.cpp",
+    "#{temp_dir}/b.cpp",
+    "#{temp_dir}/c/d.cpp",
+    "#{temp_dir}/d/e/f/g.cpp"
+  ]
 end
 
 jtest 'strips duplicate src' do
@@ -289,3 +302,5 @@ jtest 'fails if no src matched' do
     end
   end
 end
+
+# TODO: test vcfprop with recursive glob matches
