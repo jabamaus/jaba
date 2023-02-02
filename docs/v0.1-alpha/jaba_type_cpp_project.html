@@ -134,7 +134,7 @@
 <h4 id="deps">deps</h4>
 <blockquote>
 <p><em>Project dependencies</em></p>
-<p>List of ids of other cpp definitions. A dependency can be flagged with :soft, in which case only its exports will be imported - it will not be linked to. This can be used for 'header only' dependencies.</p>
+<p>List of ids of other cpp definitions. When a dependency is specified all the dependency's exports will be imported, the library will be linked to and a project level dependency created (unless :soft specified). To prevent linking specify :nolink - useful if only headers are required..</p>
 <table>
 <thead>
 <tr>
@@ -161,7 +161,7 @@
 </tr>
 <tr>
 <td><em>options</em></td>
-<td>:soft</td>
+<td>:soft, :nolink</td>
 </tr>
 <tr>
 <td><em>defined in</em></td>
