@@ -134,6 +134,7 @@
 <h4 id="deps">deps</h4>
 <blockquote>
 <p><em>Project dependencies</em></p>
+<p>List of ids of other cpp definitions. A dependency can be flagged with :soft, in which case only its exports will be imported - it will not be linked to. This can be used for 'header only' dependencies.</p>
 <table>
 <thead>
 <tr>
@@ -192,6 +193,7 @@
 <h4 id="guid">guid</h4>
 <blockquote>
 <p><em>Globally unique id (GUID)</em></p>
+<p>Seeded by <a href="#projname">$(projname)</a>. Required by Visual Studio project files.</p>
 <table>
 <thead>
 <tr>
@@ -227,6 +229,7 @@
 <h4 id="platform">platform</h4>
 <blockquote>
 <p><em>Target platform as an object</em></p>
+<p>Query current target platform.</p>
 <table>
 <thead>
 <tr>
@@ -313,6 +316,7 @@
 <h4 id="projname">projname</h4>
 <blockquote>
 <p><em>Base name of project files</em></p>
+<p>Defaults to <a href="#id">$(id)</a><a href="#projsuffix">$(projsuffix)</a>.</p>
 <table>
 <thead>
 <tr>
@@ -348,6 +352,7 @@
 <h4 id="projsuffix">projsuffix</h4>
 <blockquote>
 <p><em>Optional suffix to be applied to $(projname)</em></p>
+<p>Has no effect if <a href="#projname">$(projname)</a> is set explicitly.</p>
 <table>
 <thead>
 <tr>
@@ -491,6 +496,7 @@
 <h4 id="src-ext">src_ext</h4>
 <blockquote>
 <p><em>File extensions used when matching src files</em></p>
+<p>Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes..</p>
 <table>
 <thead>
 <tr>

@@ -47,6 +47,7 @@
 <h4 id="config">config</h4>
 <blockquote>
 <p><em>Container for config attributes</em></p>
+<p>Can be specified multiple times.</p>
 <table>
 <thead>
 <tr>
@@ -95,6 +96,7 @@
 <h4 id="generate">generate</h4>
 <blockquote>
 <p><em>Generation hook</em></p>
+<p>Called at generation time.</p>
 <table>
 <thead>
 <tr>
@@ -130,6 +132,7 @@
 <h4 id="host">host</h4>
 <blockquote>
 <p><em>Target host</em></p>
+<p>Returns target host as an object. Common host methods are automatically imported so can be accessed directly. Should only be needed rarely.. Takes its value from globals.target_host and is read only..</p>
 <table>
 <thead>
 <tr>
@@ -219,6 +222,7 @@
 <h4 id="project">project</h4>
 <blockquote>
 <p><em>Container for project attributes</em></p>
+<p>Can be specified multiple times.</p>
 <table>
 <thead>
 <tr>
@@ -262,6 +266,7 @@
 <h4 id="root">root</h4>
 <blockquote>
 <p><em>Root directory relative to which all other paths are specified</em></p>
+<p>Root of the project specified as an offset from the .jaba file that contains the project definition. All paths are specified relative to this. Project files will be generated here unless <a href="#projdir">$(projdir)</a> is set. Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible in order to not damage portability.</p>
 <table>
 <thead>
 <tr>
