@@ -90,7 +90,6 @@
 - Have a command line switch to make all error messages contain absolute paths
 - support for 'overriding' attribute defs when opening types, including calling super
 - Make :nocheckexists do something
-- Think more about project 'skus'.
 - test :required flag compatibility
 - Revisit set_to_default and wipe. Have way of clearing to default and clearing fully, but don't count that as set=true
 - In defaults block are paths relative to the defaults file or the file of the definition being instanced?
@@ -131,30 +130,19 @@ if there are multiple attrs, with a warning.
 - Add 'underlying type' to attribute types? eg file.dir/src_spec are strings. Use this for extra validation and also to sort using casecmp
 - resolve issues around sorting with mixed type elements
 - Add wildcard validation to dir property
-
-* Jaba does not try to be a complete cross platform 'API' to underlying build systems. It recognises where there is obvious commonality,
-eg include paths, defines, libs, etc, but where things diverge across systems you can simply drop down and address that system directly,
-because defining conditional data is very easy.
-* Jaba aims to be lightweight. An executable and a bundle of ruby source files. Without sacrificing power and fleixibilty.
-* Jaba aims to excel at validation and error reporting.
-
-FAQ
-Q: Why is Jaba so aggressive with sorting and stripping duplicates?
-A: Because Jaba cares a lot about a clean build, and about deterministic minimum noise generation.
-
-Q: Why is Jaba library code style not very 'ruby'?
-A: The code is written in a style that is the easiest to step through in an IDE debugger, which is an essential tool in the development process
-
-ouroveon todo
 - workspace categories
 - Allow debug?
-- Support **.h as alternative to **/*.h
+- Support **.h as alternative to **/*.h?
 - Make shell build events use macros
-- review whether static libs should have hard dependencies
-- get rid of jaba.bat and Introduce jaba.exe
 - add grab bag to reference docs
-- optimisation settings
 - Is ToolsVersion='16.0' needed?
 - support for debugger working directory via .user file
-
 - directive to only register shared modules when a file included
+- Make passing args to shared definitions require keyword args
+
+
+JABA RETHINK
+- app and lib are built in top level type.
+- root is a buit in concept
+- single level (eg no config no project blocks)
+- no direct reading. Use macros.

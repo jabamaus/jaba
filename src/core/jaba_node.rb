@@ -115,7 +115,7 @@ module JABA
       root_attr = search_attr(:root, fail_if_not_found: false)
       definition_root = if root_attr
         root_attr.map_value! do |r|
-          r.absolute_path? ? r : "#{source_dir}/#{r}".cleanpath
+          r.absolute_path? ? r : "#{root_attr.node.source_dir}/#{r}".cleanpath
         end
       else
         source_dir
