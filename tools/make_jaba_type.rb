@@ -3,8 +3,6 @@ require 'rexml'
 
 class JabaTypeBuilder
 
-  ##
-  #
   def to_jaba_type(xml_file)
     if !File.exist?(xml_file)
       raise "#{xml_file} does not exist"
@@ -123,8 +121,6 @@ class JabaTypeBuilder
     end
   end
 
-  ##
-  #
   def add_attr(elem, type, array: false)
     attrs = elem.attributes
 

@@ -66,8 +66,6 @@ class DocBuilder
     end
   end
 
-  ##
-  #
   def generate_handwritten
     Dir.glob("#{DOCS_HANDWRITTEN_DIR}/*.md").each do |md|
       c = IO.read(md)
@@ -85,8 +83,6 @@ class DocBuilder
     end
   end
 
-  ##
-  #
   def generate_versioned_index
     write_markdown_page('index.md', 'Jaba docs', versioned: true, versioned_home: false) do |w|
       w << ""
@@ -99,8 +95,6 @@ class DocBuilder
     end
   end
 
-  ##
-  #
   def generate_reference_doc
     write_markdown_page('jaba_reference.md', 'Jaba language reference', versioned: true) do |w|
       w << ""
@@ -134,8 +128,6 @@ class DocBuilder
     end
   end
 
-  ##
-  #
   def generate_jaba_type_reference(jt)
     write_markdown_page(jt.reference_manual_page(ext: '.md'), "#{jt.defn_id}", versioned: true) do |w|
       w << "[#{JABA::VERSION} reference home](jaba_reference.html)  "
@@ -213,8 +205,6 @@ class DocBuilder
     end
   end
 
-  ##
-  #
   def generate_faqs
     # TODO: check for duplicate ids
     write_markdown_page('jaba_faqs.md', 'Jaba FAQs', versioned: false) do |w|
@@ -251,8 +241,6 @@ class DocBuilder
     end
   end
 
-  ##
-  #
   def write_markdown_page(md, title, versioned:, want_home: true, versioned_home: true)
     fn = versioned ? "#{DOCS_MARKDOWN_VERSIONED_DIR}/#{md}" : "#{DOCS_MARKDOWN_DIR}/#{md}"
     puts "Writing #{fn}"
@@ -281,20 +269,14 @@ class DocBuilder
     file.write
   end
 
-  ##
-  #
   def html_link(href, text)
     "<a href=\"#{href}\">#{text}</a>"
   end
 
-  ##
-  #
   def md_small(w, text)
     w << "<sub><sup>#{text}</sup></sub>"
   end
 
-  ##
-  #
   def md_code(w, prefix: nil)
     w << "#{prefix}```ruby"
     yield
@@ -302,13 +284,10 @@ class DocBuilder
     w << ""
   end
   
-  ##
-  #
   def md_row(w, p, v)
     w << "> | _#{p}_ | #{v} |"
   end
 
-  ##
   # Used when generating code example blocks in reference manual.
   #
   def split_and_trim_leading_whitespace(paragraph)
@@ -330,7 +309,6 @@ class DocBuilder
 end
 
 class String
-
   # Convert all variables specified as $(cpp#varname) (which themselves reference attribute names) into markdown links
   # eg [$(cpp#varname)](#jaba_type_cpp.html#varname).
   #
@@ -347,13 +325,9 @@ class String
       mdl
     end
   end
-
 end
 
 class Array
-
-  ##
-  #
   def make_sentence
     s = String.new
     each do |l|
@@ -362,7 +336,6 @@ class Array
     end
     s
   end
-
 end
 
 if __FILE__ == $PROGRAM_NAME
