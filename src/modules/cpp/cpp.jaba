@@ -161,7 +161,7 @@ type :cpp_project do
         type :app
         ...
         deps [:MyLib]
-        deps [:MyLib2], :soft # Only its exports will be imported, will not be linked to
+        deps [:MyLib2], :soft # No hard project dependency so not required in workspace
       end
       
       cpp :MyLib do
