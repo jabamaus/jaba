@@ -101,7 +101,7 @@ module JABA
       
     # Add a help note for the attribute. Multiple can be added. Will appear in generated reference manual.
     #
-    def jdl_note(val) = set_property_from_jdl(:notes)
+    def jdl_note(val) = set_property_from_jdl(:notes, val)
     
     # Add usage example. Will appear in generated reference manual.
     #
