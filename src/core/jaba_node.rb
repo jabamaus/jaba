@@ -107,11 +107,10 @@ module JABA
       end
     end
     
-    # Make paths in this node and all child nodes recurively, absolute.
-    #
-    def make_paths_absolute
-      # Determine definition root and turn root and ensure its an absolute path
-      #
+    # Gets the root dir for the definition. Will not necessarily be the directory the definition file
+    # is in - for shared definitions it will be the directory of the root definition.
+    # TODO: maybe pre-calculate this
+    def get_active_root_dir
       root_attr = search_attr(:root, fail_if_not_found: false)
       definition_root = if root_attr
         root_attr.map_value! do |r|
@@ -120,6 +119,14 @@ module JABA
       else
         source_dir
       end
+    end
+
+    # Make paths in this node and all child nodes recurively, absolute.
+    #
+    def make_paths_absolute
+      # Determine definition root and turn root and ensure its an absolute path
+      #
+      definition_root = get_active_root_dir
 
       # Make all file path attributes (those of type :file, :dir and :src_spec) into absolute paths based on basedir_spec
       #
@@ -150,6 +157,10 @@ module JABA
           end
         end
       end
+    end
+
+    def jdl_glob(spec, &block)
+      services.file_manager.jdl_glob(spec, root: get_active_root_dir, &block)
     end
 
     def get_attr(id, fail_if_not_found: true)

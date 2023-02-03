@@ -166,14 +166,14 @@ module JABA
     end
 
     # Called from JDL API.
-    # TODO: should be relative to root if one set
-    def jdl_glob(spec, &block)
-      jaba_file_dir = $last_call_location.absolute_path.parent_path
+    #
+    def jdl_glob(spec, root: nil, &block)
+      root = $last_call_location.absolute_path.parent_path if root.nil?
       if !spec.absolute_path?
-        spec = "#{jaba_file_dir}/#{spec}"
+        spec = "#{root}/#{spec}"
       end
       files = glob_files(spec)
-      files = files.map{|f| f.relative_path_from(jaba_file_dir)}
+      files = files.map{|f| f.relative_path_from(root)}
       if block_given?
         files.each(&block)
       else

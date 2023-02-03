@@ -179,7 +179,7 @@ module JABA
     #
     def jdl_globals = services.globals_node.api
 
-    def jdl_glob(spec) = services.file_manager.jdl_glob(spec)
+    def jdl_glob(spec) = jdl_glob(spec)
     
       # Clears any previously set values. Sets single attribute values to nil and clears array attributes.
     #
