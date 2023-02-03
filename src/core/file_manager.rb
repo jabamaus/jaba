@@ -174,7 +174,11 @@ module JABA
       end
       files = glob_files(spec)
       files = files.map{|f| f.relative_path_from(jaba_file_dir)}
-      files.each(&block)
+      if block_given?
+        files.each(&block)
+      else
+        files
+      end
     end
 
     def exist?(fn)
