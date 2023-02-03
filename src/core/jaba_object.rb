@@ -40,21 +40,14 @@ module JABA
       end
     end
     
-    def include_shared(id, *args)
+    def include_shared(id, **keyval_args)
       services.log "  Including shared definition [id=#{id}]"
 
       sd = services.get_definition(:shared, id)
-      
-      n_expected = sd.block.arity
-      n_actual = args ? Array(args).size : 0
-      
-      if n_actual != n_expected
-        JABA.error("Shared definition '#{id.inspect_unquoted}' expects #{n_expected} arguments but #{n_actual} were passed")
-      end
-      
-      eval_jdl(*args, &sd.block)
+
+      eval_jdl(**keyval_args, &sd.block)
       sd.open_defs&.each do |d|
-        eval_jdl(*args, &d.block)
+        eval_jdl(**keyval_args, &d.block)
       end
     end
   end

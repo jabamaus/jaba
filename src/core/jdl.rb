@@ -41,6 +41,7 @@ module JABA
 
   module ObjectAPI
     def jdl_id = defn_id
+    # Include a shared definition. Any arguments passed are expected to be in keyword form.
     def jdl_include(...) = include_shared(...)
 
     # The directory this definition is in.

@@ -138,7 +138,6 @@ if there are multiple attrs, with a warning.
 - Is ToolsVersion='16.0' needed?
 - support for debugger working directory via .user file
 - directive to only register shared modules when a file included
-- Make passing args to shared definitions require keyword args
 
 
 JABA RETHINK

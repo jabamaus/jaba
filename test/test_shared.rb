@@ -47,57 +47,17 @@ jtest 'fails if shared definition does not exist' do
   end
 end
 
-jtest 'supports passing args to shared definitions' do
+jtest 'supports passing keyword args to shared definitions' do
   jaba(barebones: true) do
-    shared :a do |arg|
-      c "#{arg}"
-    end
-    shared :b do |n1, s1, s2, s3, n2|
-      c "#{s3}#{s1}#{n2}#{s2}#{n1}"
+    shared :a do |arg1:, arg2: nil, arg3: 'f'|
+      c "#{arg1}#{arg2}#{arg3}"
     end
     type :test do
       attr :c
     end
-    1.upto(10) do |n|
-      test "t#{n}" do
-        include :a, 'd'
-        c.must_equal('d')
-        include :b, n, 'a', 'b', 'c', 4
-        c.must_equal("ca4b#{n}")
-      end
-    end
-  end
-end
-
-jtest 'catches argument mismatches' do
-  assert_jaba_error "Error at #{src_loc('948EFABB')}: Shared definition ':d' expects 3 arguments but 0 were passed." do
-    jaba(barebones: true) do
-      shared :d do |a1, a2, a3|
-      end
-      type :t
-      t :a do
-        include :d # 948EFABB
-      end
-    end
-  end
-  assert_jaba_error "Error at #{src_loc('DCABE68F')}: Shared definition ':e' expects 0 arguments but 1 were passed." do
-    jaba(barebones: true) do
-      shared :e do
-      end
-      type :t
-      t :a do
-        include :e, 1 # DCABE68F
-      end
-    end
-  end
-  assert_jaba_error "Error at #{src_loc('35DEF7A9')}: Shared definition ':f' expects 2 arguments but 3 were passed." do
-    jaba(barebones: true) do
-      shared :f do |a1, a2|
-      end
-      type :t
-      t :a do
-        include :f, 1, 2, 3 # 35DEF7A9
-      end
+    test :t do
+      include :a, arg1: 'd', arg3: 'e'
+      c.must_equal('de')
     end
   end
 end
