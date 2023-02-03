@@ -147,8 +147,8 @@ type :cpp_project do
     title 'Project dependencies'
     note 'List of ids of other cpp definitions. When a dependency is specified all the dependency\'s exports ' \
          'will be imported, the library will be linked to and a project level dependency created (unless :soft specified). ' \
-         'To prevent linking specify :nolink - useful if only headers are required. A hard dependency is the default.'
-      'This can be used for \'header only\' dependencies'
+         'To prevent linking specify :nolink - useful if only headers are required. A hard dependency is the default.' \
+         'This can be used for \'header only\' dependencies'
     flag_options :hard, :soft, :nolink
     make_handle do |id|
       "#{id}|#{platform}"

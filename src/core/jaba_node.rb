@@ -112,7 +112,7 @@ module JABA
     # TODO: maybe pre-calculate this
     def get_active_root_dir
       root_attr = search_attr(:root, fail_if_not_found: false)
-      definition_root = if root_attr
+      if root_attr
         root_attr.map_value! do |r|
           r.absolute_path? ? r : "#{root_attr.node.source_dir}/#{r}".cleanpath
         end
