@@ -44,7 +44,7 @@ translator :vcxproj_config_windows do |vcxproj, cfg_type|
   #
   if cfg_type != :lib
     vcprop 'PG2|LinkIncremental' do
-      debug # true for debug else false
+      false
     end
   end
 
@@ -73,6 +73,10 @@ translator :vcxproj_config_windows do |vcxproj, cfg_type|
 
   vcprop 'ClCompile|AdditionalOptions' do
     cflags.vs_join(separator: ' ', inherit: '%(AdditionalOptions)')
+  end
+
+  vcprop 'ClCompile|DebugInformationFormat' do
+    'ProgramDatabase'
   end
 
   vcprop 'ClCompile|DisableSpecificWarnings' do

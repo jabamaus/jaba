@@ -28,8 +28,6 @@ cpp :jabaruby do
   config do
     inc ['.', 'include', '.ext/include/x64-mswin64_140', 'enc/unicode/13.0.0']
     
-    # TODO: should this be the default?
-    vcprop 'Link|LinkIncremental', false
     # TODO: make jaba do something like this automatically when duplicate found
     vcfprop 'win32/file.c|ObjectFileName', '$(IntDir)win32_file.obj'
   
