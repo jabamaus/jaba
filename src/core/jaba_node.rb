@@ -159,8 +159,8 @@ module JABA
       end
     end
 
-    def jdl_glob(spec, &block)
-      services.file_manager.jdl_glob(spec, root: get_active_root_dir, &block)
+    def jdl_glob(spec, relative: false, &block)
+      services.file_manager.jdl_glob(spec, root: get_active_root_dir, relative: relative, &block)
     end
 
     def get_attr(id, fail_if_not_found: true)

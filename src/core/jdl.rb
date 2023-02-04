@@ -36,7 +36,7 @@ module JABA
     def jdl_open_translator(...) = open(:translator, ...)
     def jdl_open_shared(...) = open(:shared, ...)
     def jdl_all_instance_ids(...) = get_node_manager(...).top_level_ids
-    def jdl_glob(spec) = @file_manager.jdl_glob(spec)
+    def jdl_glob(spec, relative: false) = @file_manager.jdl_glob(spec, relative: relative)
   end
 
   module ObjectAPI
@@ -179,7 +179,7 @@ module JABA
     #
     def jdl_globals = services.globals_node.api
 
-    def jdl_glob(spec) = jdl_glob(spec)
+    def jdl_glob(spec, relative: false) = jdl_glob(spec, relative: relative)
     
       # Clears any previously set values. Sets single attribute values to nil and clears array attributes.
     #
