@@ -345,7 +345,7 @@ type :cpp_config do
       "obj/#{arch}/#{config}/#{projname}"
     end
     flags :no_check_exist
-    notes 'Defaults to obj/$(arch)/$(config)/$(projname)'
+    note 'Defaults to obj/$(arch)/$(config)/$(projname)'
   end
 
   attr_array :libs, type: :file do
@@ -378,7 +378,7 @@ type :cpp_config do
 
   attr :debug, type: :bool do
     title 'Flags config as a debug config'
-    notes'Defaults to true if config id contains \'debug\''
+    note 'Defaults to true if config id contains \'debug\''
     default do
       config =~ /debug/i ? true : false
     end
@@ -516,7 +516,7 @@ open_type :host do
 
   attr_array :cpp_src_ext, type: :string do
     title 'Default src file extensions for C++ projects'
-    notes 'Any host-specific extensions specified are in addition to the Core C/C+ file types specified in $(cpp#src_ext)'
+    note 'Any host-specific extensions specified are in addition to the Core C/C+ file types specified in $(cpp#src_ext)'
     flags :no_sort
     default []
   end
@@ -526,7 +526,7 @@ end
 open_type :platform do
   attr_array :cpp_src_ext, type: :string do
     title 'Default src file extensions for C++ projects'
-    notes 'Any platform-specific extensions specified are in addition to the Core C/C+ file types specified in $(cpp#src_ext)'
+    note 'Any platform-specific extensions specified are in addition to the Core C/C+ file types specified in $(cpp#src_ext)'
     flags :no_sort
     default []
   end
@@ -537,7 +537,7 @@ open_type :globals do
     title 'Default lib type'
     items [:lib, :dll]
     default :lib
-    notes 'If a library can build either as a static library or a shared object the definition writer can choose to set its type ' \
+    note 'If a library can build either as a static library or a shared object the definition writer can choose to set its type ' \
           'to globals.cpp_defaut_lib_type so that the end user can choose.'
     example %Q{
       cpp :MyLib do
