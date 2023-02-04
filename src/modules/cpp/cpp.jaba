@@ -209,7 +209,7 @@ type :cpp_project do
     flags :required # Must be specified by user
     flags :no_sort # Final source will be sorted so no need to sort this
     flags :exportable
-    flag_options :force # Specify when explicitly specidied src does not exist on disk but still want to add to project
+    flag_options :force # Specify when explicitly specified src does not exist on disk but still want to add to project
     value_option :vpath # For organising files in a generated project
     # TODO: examples for excludes
     example %Q{
@@ -361,6 +361,11 @@ type :cpp_config do
 
   attr_array :cflags, type: :string do
     title 'Raw compiler command line switches'
+    flags :exportable
+  end
+
+  attr_array :lflags, type: :string do
+    title 'Raw linker command line switches'
     flags :exportable
   end
 

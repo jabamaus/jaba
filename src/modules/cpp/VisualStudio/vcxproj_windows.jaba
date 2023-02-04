@@ -132,6 +132,10 @@ translator :vcxproj_config_windows do |vcxproj, cfg_type|
     all_libs.vs_join_paths(inherit: '%(AdditionalDependencies)')
   end
 
+  vcprop "#{cfg_type == :lib ? :Lib : :Link}|AdditionalOptions" do
+    lflags.vs_join(separator: ' ', inherit: '%(AdditionalOptions)')
+  end
+
   if cfg_type != :lib
     vcprop 'Link|SubSystem' do
       case cfg_type
