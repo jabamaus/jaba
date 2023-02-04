@@ -21,6 +21,9 @@ type :rule do
   attr :cmd, type: :string do
     title 'Command line to execute'
     flags :required
+    flag_options :absolute
+    note 'Use :absolute to make usage of $(input) or $(output) in the command line use absolute paths. ' \
+         'Otherwise they will be relative to the generated project.'
   end
 
   attr :msg, type: :string do

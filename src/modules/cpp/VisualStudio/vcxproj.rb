@@ -68,7 +68,9 @@ module JABA
           attrs = rule_node.attrs
           output = attrs.output
           implicit_input = attrs.implicit_input&.relative_path_from(@projdir, backslashes: true)
-          cmd = attrs.cmd
+          cmd_attr = rule_node.get_attr(:cmd)
+          cmd = cmd_attr.value
+          cmd_abs = cmd_attr.has_flag_option?(:absolute)
           msg = attrs.msg
 
           get_matching_src_objs(attrs.input, @src, errobj: attr).each do |sf|
@@ -77,13 +79,28 @@ module JABA
             # TODO: check output a valid src file
             input = sf.projdir_rel
             d_output = demacroise(output, input, implicit_input, nil)
+            
+            d_cmd = nil
+            if cmd_abs
+              d_cmd = demacroise(
+                cmd,
+                sf.absolute_path,
+                implicit_input ? "$(ProjectDir)#{implicit_input}" : nil,
+                d_output
+              )
+            end
+
             d_output = d_output.relative_path_from(@projdir, backslashes: true)
-            d_cmd = demacroise(
-              cmd,
-              "$(ProjectDir)#{input}",
-              implicit_input ? "$(ProjectDir)#{implicit_input}" : nil,
-              "$(ProjectDir)#{d_output}"
-            ).to_escaped_xml
+
+            if !cmd_abs
+              d_cmd = demacroise(
+                cmd,
+                "$(ProjectDir)#{input}",
+                implicit_input ? "$(ProjectDir)#{implicit_input}" : nil,
+                "$(ProjectDir)#{d_output}"
+              )
+            end
+            d_cmd = d_cmd.to_escaped_xml
             # Characters like < > | & are escaped to prevent unwanted behaviour when the msg is echoed
             d_msg = demacroise(msg, input, implicit_input, d_output).to_escaped_DOS.to_escaped_xml
 

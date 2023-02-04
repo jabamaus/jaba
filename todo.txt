@@ -42,9 +42,7 @@
 - Regression tests for generated files!
 - consider putting .jaba inside buildsystem
 - Make build_output use an API so it can check that paths are absolute
-- Not sure about build_root now. Is there one root too many? buildsystem_root and artefact can be set relative to jaba file in definitions or if runnning with jaba -B, that could set the buildsystem_root. 
 - wrap -D target_host vs2019 into a command line switch
-- sort out input system
 - enforce that paths stay within their base dir spec
 - Implement element deletion for hash attribute
 - auto document plugin API
@@ -136,7 +134,8 @@ if there are multiple attrs, with a warning.
 - add grab bag to reference docs
 - Is ToolsVersion='16.0' needed?
 - support for debugger working directory via .user file
-- directive to only register shared modules when a file included
+- directive to only register shared modules when a file included?
+- Combine build_root and src_root into just src_root. buildsystem always goes in src root.
 
 
 JABA RETHINK
