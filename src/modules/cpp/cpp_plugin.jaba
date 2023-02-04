@@ -238,17 +238,13 @@ open_type :cpp do
         # visit all attribute elements in array/hash
         #
         dep_attr.visit_attr do |elem|
-          export_only = elem.has_flag_option?(:export_only)
-          if elem.has_flag_option?(:export) || export_only
-
+          if elem.has_flag_option?(:export) || elem.has_flag_option?(:export_only)
             # Get the corresponding attr in this project node. This will always be a hash or an array.
             #
             attr = target_node.get_attr(elem.defn_id) if !attr
-            attr.insert_clone(elem)
-
-            # Exported items are deleted from the exporting module if :export_only specified
-            #
-            :delete if export_only
+            clone = attr.insert_clone(elem)
+            # Don't clone :export/:export_only flags
+            clone.flag_options.delete_if{|fo| fo == :export || fo == :export_only}
           end
         end
       end

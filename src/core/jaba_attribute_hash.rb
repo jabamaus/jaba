@@ -159,6 +159,7 @@ module JABA
         end
       end
       @hash[key] = attr
+      attr
     end
   end
 end

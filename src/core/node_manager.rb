@@ -116,6 +116,9 @@ module JABA
       
       @nodes.each do |n|
         n.each_attr do |a|
+          a.visit_attr do |elem|
+            :delete if elem.has_flag_option?(:export_only)
+          end
           a.process_flags
         end
       end

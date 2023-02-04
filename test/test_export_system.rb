@@ -44,6 +44,18 @@ jtest 'supports exporting array attributes to dependents' do
         define ['F', 'A']
       end
     end
+    cpp :app2 do
+      root "#{td}/app"
+      project do
+        type :console
+        deps [:lib]
+        vcglobal :BoolAttr, true
+        src ['main.cpp']
+      end
+      config do
+        define ['F', 'A']
+      end
+    end
     cpp :lib do
       root "#{td}/lib"
       project do
@@ -72,6 +84,15 @@ jtest 'supports exporting array attributes to dependents' do
   app[:configs][:x86][:Release][:define].must_equal ['A', 'B', 'C', 'F', 'R']
   app[:configs][:x86][:Debug][:inc].must_equal ["#{temp_dir}/lib/include"]
   app[:configs][:x86][:Release][:inc].must_equal ["#{temp_dir}/lib/include"]
+
+  app2 = op[:cpp]['app2|windows']
+  app2[:vcglobal][:BoolAttr].must_equal(true)
+  app2[:vcglobal][:StringAttr2].must_equal('s2')
+  app2[:vcglobal][:StringAttr3].must_equal('s3')
+  app2[:configs][:x86][:Debug][:define].must_equal ['A', 'B', 'C', 'F']
+  app2[:configs][:x86][:Release][:define].must_equal ['A', 'B', 'C', 'F', 'R']
+  app2[:configs][:x86][:Debug][:inc].must_equal ["#{temp_dir}/lib/include"]
+  app2[:configs][:x86][:Release][:inc].must_equal ["#{temp_dir}/lib/include"]
 
   lib = op[:cpp]['lib|windows']
   lib[:vcglobal][:StringAttr].must_equal('s')
