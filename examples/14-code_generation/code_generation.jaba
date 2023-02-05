@@ -12,7 +12,7 @@ cpp :CodegenExample do
       input '*.xyz'
       output 'generated/$(input.basename_no_ext).cpp'
       implicit_input 'generator.rb'
-      cmd 'jabaruby $(implicit_input) $(input) $(output)'
+      cmd 'ruby $(implicit_input) $(input) $(output)'
       msg '$(input.basename) -> $(output.basename)'
     end
   end

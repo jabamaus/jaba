@@ -66,7 +66,6 @@ b = ReleaseBuilder.new
 b.init
 b.add('bin/jaba.bat')
 b.add('bin/jaba.rb')
-b.add('bin/jabaruby.exe')
 b.add('examples/**/*', exclude: 'examples/**/buildsystem/**/*')
 b.add('src/**/*')
 b.add('LICENSE')

@@ -1,2 +1,2 @@
 @echo off
-jabaruby %~dp0..\tools\gen_launch_json.rb
+ruby %~dp0..\tools\gen_launch_json.rb
