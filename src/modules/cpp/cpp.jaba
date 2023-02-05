@@ -324,7 +324,7 @@ type :cpp_config do
     title 'Output directory for executables'
     basedir_spec :artefact_root
     default do
-      "bin/#{arch}/#{config}"
+      "#{arch}/bin/#{config}"
     end
     flags :no_check_exist
   end
@@ -333,7 +333,7 @@ type :cpp_config do
     title 'Output directory for libs'
     basedir_spec :artefact_root
     default do
-      "lib/#{arch}/#{config}"
+      "#{arch}/lib/#{config}"
     end
     flags :no_check_exist
   end
@@ -342,10 +342,10 @@ type :cpp_config do
     title 'Output directory for object files'
     basedir_spec :artefact_root
     default do
-      "obj/#{arch}/#{config}/#{projname}"
+      "#{arch}/obj/#{config}/#{projname}"
     end
     flags :no_check_exist
-    note 'Defaults to obj/$(arch)/$(config)/$(projname)'
+    note 'Defaults to $(arch)/obj/$(config)/$(projname)'
   end
 
   attr_array :libs, type: :file do
