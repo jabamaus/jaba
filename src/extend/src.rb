@@ -116,15 +116,12 @@ module JABA
             f.parent_path.relative_path_from(@root, backslashes: bs, nil_if_dot: true, no_dot_dot: true)
           end
 
-          extname = f.extname
-
           sf = SrcFileInfo.new
           sf.absolute_path = f
           sf.projdir_rel = f.relative_path_from(@projdir, backslashes: bs)
           sf.vpath = vpath
-          sf.file_type = file_type_from_extension(extname)
-          sf.extname = extname
-
+          sf.extname = f.extname
+          sf.file_type = file_type_from_extension(sf.extname)
           src << sf
         end
       end
