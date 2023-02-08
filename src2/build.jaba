@@ -1,0 +1,13 @@
+puts 'Executing user defs'
+
+shared :myshared do
+end
+
+app :myapp do
+  root 'myroot'
+  include :myshared
+end
+
+lib :mylib do
+  root 'mylibroot'
+end
