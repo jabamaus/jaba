@@ -4,7 +4,7 @@ module JABA
     def initialize
       @title = nil
     end
-    def services = @services
+    def context = @context
     def title(t) = @title = t
   end
   
@@ -63,19 +63,6 @@ module JDL
     end
   end
 
-  def self.api_class_from_path(path, create: false)
-    if path.nil?
-      return TopLevelAPI
-    end
-    name = "#{path.split('|').map{|p| p.capitalize_first}.join}API"
-    if create
-      klass = Class.new(JDLBaseAPI)
-      JDL.const_set(name, klass)
-    else
-      JDL.const_get(name)
-    end
-  end
-
   def self.method(*paths, &block)
     paths.each do |path|
       parent_path, method_name = path.split_jdl_path
@@ -88,6 +75,19 @@ module JDL
       end
     end
   end
+
+  def self.api_class_from_path(path, create: false)
+    if path.nil?
+      return TopLevelAPI
+    end
+    name = "#{path.split('|').map{|p| p.capitalize_first}.join}API"
+    if create
+      klass = Class.new(JDLBaseAPI)
+      JDL.const_set(name, klass)
+    else
+      JDL.const_get(name)
+    end
+  end
 end
 
 JDL.method 'puts' do
@@ -97,9 +97,6 @@ end
 
 JDL.attr 'shared', type: :block do
   title 'Define a shared definition'
-  #set do |id, &block|
-  #  services.register_shared(id, &block)
-  #end
 end
 
 JDL.node 'app' do
