@@ -4,7 +4,6 @@ module JABA
     def initialize
       @title = nil
     end
-    def context = @context
     def title(t) = @title = t
   end
   
@@ -55,7 +54,6 @@ module JDL
       parent_path, attr_name = path.split_jdl_path
       klass = api_class_from_path(parent_path)
       attr_def = AttributeDefinition.new
-      attr_def.instance_variable_set(:@services, self)
       attr_def.instance_eval(&block) if block_given?
       klass.define_method(attr_name) do |*args, **kwargs|
         attr_def
@@ -68,7 +66,6 @@ module JDL
       parent_path, method_name = path.split_jdl_path
       klass = api_class_from_path(parent_path)
       meth_def = MethodDefinition.new
-      meth_def.instance_variable_set(:@services, self)
       meth_def.instance_eval(&block) if block_given?
       klass.define_method(method_name) do |*args, **kwargs|
         meth_def.instance_variable_get(:@on_called).call(*args, **kwargs)
