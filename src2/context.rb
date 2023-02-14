@@ -12,6 +12,7 @@ class Context
     @src_root = @build_root = @temp_dir = nil
     @output = {}
     @warnings = []
+    @log_msgs = test_mode? ? nil : [] # Disable logging when running tests
     @file_manager = FileManager.new(self)
     @load_manager = LoadManager.new(self, @file_manager)
   end
