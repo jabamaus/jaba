@@ -1,18 +1,10 @@
 require_relative '../jaba'
 
-JABA::JDL.node 'test' do
-end
-
-JABA::JDL.attr 'test|bool_attr', type: :bool do
-end
+JABA::JDL.node 'test'
+JABA::JDL.attr 'test|bool_attr', type: :bool
 
 class JTestCaseAPI
-  
-  def jaba(test_mode: true,
-           want_exceptions: true,
-           src_root: nil,
-           build_root: nil,
-           &block)
+  def jaba(test_mode: true, want_exceptions: true, src_root: nil, build_root: nil, &block)
     td = temp_dir(create: false)
     build_root = build_root || td
 

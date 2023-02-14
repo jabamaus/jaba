@@ -1,4 +1,4 @@
-require 'FileUtils'
+require 'fileutils'
 require_relative '../../jrf/jrf/core_ext'
 require_relative 'core_ext'
 require_relative 'version'

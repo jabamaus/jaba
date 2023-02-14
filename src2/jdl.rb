@@ -56,7 +56,7 @@ module JDL
       klass = api_class_from_path(parent_path)
       attr_def = AttributeDefinition.new
       attr_def.instance_variable_set(:@services, self)
-      attr_def.instance_eval(&block)
+      attr_def.instance_eval(&block) if block_given?
       klass.define_method(attr_name) do |*args, **kwargs|
         attr_def
       end
@@ -82,7 +82,7 @@ module JDL
       klass = api_class_from_path(parent_path)
       meth_def = MethodDefinition.new
       meth_def.instance_variable_set(:@services, self)
-      meth_def.instance_eval(&block)
+      meth_def.instance_eval(&block) if block_given?
       klass.define_method(method_name) do |*args, **kwargs|
         meth_def.instance_variable_get(:@on_called).call(*args, **kwargs)
       end

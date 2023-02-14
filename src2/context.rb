@@ -46,14 +46,14 @@ class Context
       end
     end
 
-    @file_manager.include_untracked # Include all generated files for the purpose of reporting back to the user
+    file_manager.include_untracked # Include all generated files for the purpose of reporting back to the user
 
     # Make files that will be reported back to the user relative to build_root
     #
-    generated = @file_manager.generated.map{|f| f.relative_path_from(build_root)}
-    added = @file_manager.added.map{|f| f.relative_path_from(build_root)}.sort_no_case!
-    modified = @file_manager.modified.map{|f| f.relative_path_from(build_root)}.sort_no_case!
-    unchanged = @file_manager.unchanged.map{|f| f.relative_path_from(build_root)}.sort_no_case!
+    generated = file_manager.generated.map{|f| f.relative_path_from(build_root)}
+    added = file_manager.added.map{|f| f.relative_path_from(build_root)}.sort_no_case!
+    modified  = file_manager.modified.map{|f| f.relative_path_from(build_root)}.sort_no_case!
+    unchanged = file_manager.unchanged.map{|f| f.relative_path_from(build_root)}.sort_no_case!
 
     summary = "Generated #{generated.size} files, #{added.size} added, #{modified.size} modified, #{unchanged.size} unchanged in #{duration}"
     summary << "\n"
@@ -84,10 +84,10 @@ class Context
     JDL.constants.sort.each do |c|
       if c.end_with?('API')
         klass = JDL.const_get(c)
-        puts klass
+        #puts klass
         klass.instance_methods.sort.each do |m|
-          next if m == :instance_eval || m.start_with?('__')
-          puts "  #{m}"
+          next if m == :instance_eval || m == :instance_exec || m.start_with?('__')
+          #puts "  #{m}"
         end
         klass.singleton.__internal_set_context(self)
       end
