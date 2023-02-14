@@ -1,5 +1,3 @@
-puts 'Executing user defs'
-
 shared :myshared do
 end
 
