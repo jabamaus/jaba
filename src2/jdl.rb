@@ -31,7 +31,7 @@ end
 JDL.method 'app|include', 'lib|include' do
   title 'Include a shared definition'
   on_called do |id|
-    @context.include_shared(id)
+    JABA.context.include_shared(id)
   end
 end
 

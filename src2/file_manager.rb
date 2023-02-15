@@ -13,10 +13,6 @@ module JABA
   end
 
   class JabaFile
-    attr_reader :filename
-    attr_reader :writer
-    attr_reader :encoding
-
     def initialize(file_manager, filename, encoding, eol, capacity, track)
       @file_manager = file_manager
       @filename = filename
@@ -30,6 +26,9 @@ module JABA
       StringWriter.new(encoding: @encoding, capacity: capacity)
     end
 
+    def filename = @filename
+    def writer = @writer
+    def encoding = @encoding
     def str = @writer.str
     def track? = @track
     
@@ -42,23 +41,25 @@ module JABA
   end
 
   class FileManager
-    attr_reader :context
-    attr_reader :added
-    attr_reader :modified
-    attr_reader :unchanged
-    attr_reader :generated
-
-    ValidEols = [:unix, :windows, :native].freeze
-
-    def initialize(context)
-      @context = context
+    def initialize
       @generated = []
       @generated_lookup = {}
       @added = []
       @modified = []
       @unchanged = []
       @untracked = []
+      @file_exist_cache = {}
+      @glob_cache = {}
+      @file_read_cache = {}
+      @is_directory_cache = {}
     end
+
+    def added = @added
+    def modified = @modified
+    def unchanged = @unchanged
+    def generated = @generated
+
+    ValidEols = [:unix, :windows, :native].freeze
 
     def new_file(filename, eol: :unix, encoding: nil, capacity: nil, track: true)
       if !filename.absolute_path?
@@ -74,7 +75,7 @@ module JABA
       fn = file.filename
 
       if file.str.empty?
-        context.jaba_warn("'#{fn}' is empty")
+        JABA.warn("'#{fn}' is empty")
       end
 
       if @generated_lookup.key?(fn)
@@ -102,9 +103,9 @@ module JABA
       @generated_lookup[fn] = nil
 
       if status
-        context.log "Writing #{fn} [#{status}]"
+        JABA.log "Writing #{fn} [#{status}]"
       else
-        context.log "Writing #{fn}"
+        JABA.log "Writing #{fn}"
       end
 
       dir = fn.parent_path
@@ -126,7 +127,7 @@ module JABA
       end
 
       fn = filename.cleanpath
-      str = file_read_cache[fn]
+      str = @file_read_cache[fn]
       if str.nil?
         if !exist?(fn)
           if fail_if_not_found
@@ -138,7 +139,7 @@ module JABA
           str = IO.binread(fn)
           str.force_encoding(encoding) if encoding
           str.freeze if freeze # Don't want cache entries being inadvertently modified
-          file_read_cache[fn] = str
+          @file_read_cache[fn] = str
         end
       end
       str
@@ -151,12 +152,12 @@ module JABA
         JABA.error("'#{spec}' must be an absolute path")
       end
       key = "#{spec}#{flags}"
-      files = glob_cache[key]
+      files = @glob_cache[key]
       if files.nil?
         files = Dir.glob(spec, flags)
         files.reject!{|f| directory?(f)}
         files.freeze # Don't want cache entries being inadvertently modified
-        glob_cache[key] = files
+        @glob_cache[key] = files
       end
       files
     end
@@ -181,57 +182,21 @@ module JABA
       if !fn.absolute_path?
         JABA.error("'#{fn}' must be an absolute path")
       end
-      exist = file_exist_cache[fn]
+      exist = @file_exist_cache[fn]
       if exist.nil?
         exist = File.exist?(fn)
-        file_exist_cache[fn] = exist
+        @file_exist_cache[fn] = exist
       end
       exist
     end
 
     def directory?(fn)
-      is_dir = is_directory_cache[fn]
+      is_dir = @is_directory_cache[fn]
       if is_dir.nil?
         is_dir = File.directory?(fn)
-        is_directory_cache[fn] = is_dir
+        @is_directory_cache[fn] = is_dir
       end
       is_dir
-    end
-
-    # If running tests use the same file cache across all runs to speed them up as nothing odd happens to files
-    # between tests. In production mode do caching per-jaba invocation (of which normally there would be only one),
-    # but this allows flexibility to do more than one run with potentially anything changing between runs.
-    
-    def file_exist_cache
-      if @context.test_mode?
-        @@file_exist_cache ||= {}
-      else
-        @file_exist_cache ||= {}
-      end
-    end
-
-    def is_directory_cache
-      if @context.test_mode?
-        @@is_directory_cache ||= {}
-      else
-        @is_directory_cache ||= {}
-      end
-    end
-
-    def glob_cache
-      if @context.test_mode?
-        @@glob_cache ||= {}
-      else
-        @glob_cache ||= {}
-      end
-    end
-
-    def file_read_cache
-      if @context.test_mode?
-        @@file_read_cache ||= {}
-      else
-        @file_read_cache ||= {}
-      end
     end
   end
 end

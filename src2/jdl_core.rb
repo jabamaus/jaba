@@ -102,7 +102,6 @@ module JDL
     undef_method(:equal?)
     undef_method(:__id__)
     def self.singleton ; @instance ||= self.new ; end
-    def __internal_set_context(c) = @context = c
     def __internal_set_node(n) = @node = n
   end
 
@@ -118,7 +117,7 @@ module JDL
       parent_klass = api_class_from_path(parent_path)
       parent_klass.define_method(item) do |*args, **kwargs, &node_block|
         $last_call_location = ::Kernel.caller_locations(1, 1)[0]
-        @context.create_node(node_api_klass, *args, **kwargs, &node_block)
+        JABA.context.create_node(node_api_klass, *args, **kwargs, &node_block)
       end
     end
   end

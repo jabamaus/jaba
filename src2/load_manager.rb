@@ -49,7 +49,7 @@ module JABA
           if fail_if_empty
             JABA.error(msg, want_backtrace: false)
           else
-            @context.jaba_warn(msg)
+            JABA.warn(msg)
           end
         else
           files.each do |f|
