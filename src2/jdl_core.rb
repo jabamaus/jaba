@@ -51,17 +51,22 @@ module JABA
       @flags = nil
       @default = nil
     end
+    # SETTABLE FROM JDL DEFS
+    def flags(*flags) = @flags = flags
+    def default(val=nil, &block) = @default = block_given? ? block : val
+    
+    # Accessors used by core system
     def variant = @variant
     def describe
       "'#{@name.inspect_unquoted}' #{@variant == :single ? "" : "#{@variant} "}attribute"
     end
-    def flags(*flags) = @flags = flags
-    def default(val=nil, &block)
-      @default = block_given? ? block : val
-    end
+    def has_flag?(flag) = @flags&.include?(flag)
+    def get_default = @default
     def __validate
       super
-
+      if @default.nil? && !@attr_type.default.nil? && !has_flag?(:required)
+        @default = @attr_type.default
+      end 
     end
   end
 
@@ -71,7 +76,7 @@ module JABA
     end
     def __validate
       super
-      
+
     end
   end
   
