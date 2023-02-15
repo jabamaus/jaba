@@ -2,9 +2,11 @@ require 'fileutils'
 require_relative '../../jrf/jrf/core_ext'
 require_relative 'core_ext'
 require_relative 'version'
-require_relative 'jdl'
+require_relative 'jdl_core'
 require_relative 'file_manager'
 require_relative 'load_manager'
+require_relative 'node'
+require_relative 'attribute'
 require_relative 'context'
 
 module JABA
@@ -20,37 +22,20 @@ module JABA
     attr_accessor :global_attrs # Initialise global attrs from a hash of name to value(s)
   end
 
-  # Jaba Definition Language error.
-  # Raised when there is an error in a definition. These errors should be fixable by the user by modifying the definition
-  # file.
-  #
-  class JabaError < StandardError
-    # The definition file the error occurred in.
-    #
-    attr_reader :file
-    
-    # The line in the definition file that the error occurred at.
-    #
-    attr_reader :line
-  end
+  class JabaError < StandardError ; end
 
-  # Jaba entry point. Returns a json-like hash object containing a summary of what has been generated.
+  # Jaba entry point. Returns output hash object. 
   #
   def self.run(want_exceptions: false, test_mode: false)
-    c = Context.new(test_mode: test_mode)
-    begin
-      c.execute do
-        yield c.input if block_given?
-        c.run
-      end
-    rescue
-      if want_exceptions
-        raise
-      end
-    end
+    c = Context.new(want_exceptions, test_mode)
+    yield c.input
+    c.execute
   ensure
-    return c.output
+    return c&.output
   end
+end
+
+require_relative 'jdl'
 
 if __FILE__ == $PROGRAM_NAME
 
@@ -105,6 +90,11 @@ class Jaba
       j.verbose = @verbose
     end
 
+    if output.nil? || output.empty?
+      error('INTERNAL ERROR: Jaba failed to return any output')
+      return 1
+    end
+
     if output[:error]
       error(output[:error])
       return 1
@@ -121,5 +111,4 @@ end
 
 exit(Jaba.new.run)
 
-end
 end

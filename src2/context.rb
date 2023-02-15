@@ -1,7 +1,16 @@
 module JABA
 
+def self.error(msg, errobj: nil, callstack: nil, syntax: false, want_backtrace: true)
+  e = JabaError.new(msg)
+  e.instance_variable_set(:@callstack, Array(errobj&.src_loc || callstack || caller))
+  e.instance_variable_set(:@syntax, syntax)
+  e.instance_variable_set(:@want_backtrace, want_backtrace)
+  raise e
+end
+
 class Context
-  def initialize(test_mode: false)
+  def initialize(want_exceptions, test_mode)
+    @want_exceptions = want_exceptions
     @test_mode = test_mode
     @invoking_dir = Dir.getwd.freeze
     @input = Input.new
@@ -13,8 +22,6 @@ class Context
     @output = {}
     @warnings = []
     @log_msgs = test_mode? ? nil : [] # Disable logging when running tests
-    @file_manager = FileManager.new(self)
-    @load_manager = LoadManager.new(self, @file_manager)
   end
 
   def input = @input
@@ -28,10 +35,12 @@ class Context
 
   def execute
     begin
-      yield
+      run
     rescue => e
+      e = e.cause if e.cause
+      output[:error] = e.full_message
       log e.full_message(highlight: false), :ERROR
-      puts e.full_message
+      raise if @want_exceptions
     ensure
       term_log
     end
@@ -81,14 +90,14 @@ class Context
   end
 
   def do_run
+    @file_manager = FileManager.new(self)
+    @load_manager = LoadManager.new(self, @file_manager)
+    @top_level_node = Node.new(JDL::TopLevelAPI, 'top_level')
+    JDL::TopLevelAPI.singleton.__internal_set_node(@top_level_node)
+
     JDL.constants.sort.each do |c|
       if c.end_with?('API')
         klass = JDL.const_get(c)
-        #puts klass
-        klass.instance_methods.sort.each do |m|
-          next if m == :instance_eval || m == :instance_exec || m.start_with?('__')
-          #puts "  #{m}"
-        end
         klass.singleton.__internal_set_context(self)
       end
     end
@@ -169,13 +178,22 @@ class Context
     IO.write(log_fn, @log_msgs.join("\n"))
   end
 
-  def create_node(api_klass, id, &block)
+  def validate_id(id, what)
+    if !(id.symbol? || id.string?) || id !~ /^[a-zA-Z0-9_\-.|]+$/
+      msg = if id.nil?
+        "'#{what}' requires an id"
+      else
+        "'#{id}' is an invalid id"
+      end
+      msg << ". Must be an alphanumeric string or symbol (-_. permitted), eg :my_id, 'my-id', 'my.id'"
+      JABA.error(msg)
+    end
   end
 
-  def register_shared(id, &block)
-  end
-
-  def include_shared(id)
+  def create_node(api_klass, *args, **kwargs, &block)
+    id = args.shift
+    validate_id(id, :node)
+    node = Node.new(api_klass, id, &block)
   end
 
   # TODO: move to jrf
@@ -205,5 +223,4 @@ class Context
     IO.write(file, str)
   end
 
-end
-end
+end ; end
