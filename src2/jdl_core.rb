@@ -1,18 +1,33 @@
 module JABA
-
-  class Definition
-    def initialize(name)
-      @name = name
+  class Documentable
+    def initialize
       @title = nil
+      @notes = []
+      @examples = []
     end
-    def name = @name
     def title(t) = @title = t
-    def __validate ; end
+    def note(n) = @notes << n
+    def example(e) = @examples << e
+    def __validate
+      __check(:@title)
+    end
     def __check(var)
       JABA.error('var must be specified as a symbol') if !var.symbol?
       if instance_variable_get(var).nil?
-        JABA.error("'#{name}' requires '#{var.to_s.delete_prefix('@')}' to be specified")
+        JABA.error("'#{describe}' requires '#{var.to_s.delete_prefix('@')}' to be specified")
       end
+    end
+  end
+
+  class Definition < Documentable
+    def initialize(name)
+      super()
+      @name = name
+    end
+    def name = @name
+    def describe = "'#{name.inspect_unquoted}'"
+    def __validate
+      super
     end
   end
   
@@ -29,13 +44,21 @@ module JABA
   end
   
   class AttributeDefinition < Definition
-    def initialize(name, variant)
+    def initialize(name, variant, attr_type)
       super(name)
       @variant = variant
+      @attr_type = attr_type
       @flags = nil
+      @default = nil
     end
     def variant = @variant
+    def describe
+      "'#{@name.inspect_unquoted}' #{@variant == :single ? "" : "#{@variant} "}attribute"
+    end
     def flags(*flags) = @flags = flags
+    def default(val=nil, &block)
+      @default = block_given? ? block : val
+    end
     def __validate
       super
 
@@ -43,20 +66,24 @@ module JABA
   end
 
   class AttributeSingleDefinition < AttributeDefinition
-    def initialize(name)
-      super(name, :single)
+    def initialize(name, attr_type)
+      super(name, :single, attr_type)
+    end
+    def __validate
+      super
+      
     end
   end
   
   class AttributeArrayDefinition < AttributeDefinition
-    def initialize(name)
-      super(name, :array)
+    def initialize(name, attr_type)
+      super(name, :array, attr_type)
     end
   end
 
   class AttributeHashDefinition < AttributeDefinition
-    def initialize(name)
-      super(name, :hash)
+    def initialize(name, attr_type)
+      super(name, :hash, attr_type)
     end
   end
 end
@@ -99,7 +126,15 @@ module JDL
         $last_call_location = ::Kernel.caller_locations(1, 1)[0]
         @node.handle_attr(attr_name, *args, **kwargs, &attr_block)
       end
-      attr_def = JABA::AttributeSingleDefinition.new(attr_name)
+      # TODO: automatically make class name from typeid
+      attr_type_class = case type
+      when :bool
+        JABA::AttributeTypeBool
+      else
+        JABA::AttributeTypeNull
+      end
+      attr_type = attr_type_class.singleton
+      attr_def = JABA::AttributeSingleDefinition.new(attr_name, attr_type)
       attr_def.instance_eval(&block) if block_given?
       attr_def.__validate
       klass.attr_defs << attr_def

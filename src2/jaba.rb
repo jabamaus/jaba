@@ -6,6 +6,7 @@ require_relative 'jdl_core'
 require_relative 'file_manager'
 require_relative 'load_manager'
 require_relative 'node'
+require_relative 'attribute_type'
 require_relative 'attribute'
 require_relative 'context'
 

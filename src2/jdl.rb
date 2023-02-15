@@ -17,12 +17,15 @@ JDL.node 'lib' do
 end
 
 JDL.node 'app|config' do
+  title 'TODO'
 end
 
 JDL.node 'app|config|rule' do
+  title 'TODO'
 end
 
-JDL.attr 'app|config|rule|input', type: :src_spec do
+JDL.attr 'app|config|rule|input' do#, type: :src_spec do
+  title 'TODO'
 end
 
 JDL.method 'app|include', 'lib|include' do
@@ -32,7 +35,8 @@ JDL.method 'app|include', 'lib|include' do
   end
 end
 
-JDL.attr 'app|root', 'lib|root', type: :string do
+JDL.attr 'app|root', 'lib|root' do #, type: :string do
+  title 'TODO'
   flags []
 end
 

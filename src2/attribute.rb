@@ -5,6 +5,7 @@ module JABA
       @node = node
       @set = false
     end
+    def attr_def = @attr_def
     def set? = @set
   end
   
@@ -24,6 +25,9 @@ module JABA
   class AttributeSingle < AttributeElement
     def initialize(attr_def, node)
       super
+      #if attr_def.default_set? && !@default_block
+      #  set(attr_def.default, call_on_set: false)
+      #end
     end
   end
 end

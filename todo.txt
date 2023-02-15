@@ -123,23 +123,17 @@ if there are multiple attrs, with a warning.
 - Add check for re-entrancy when evaluating default blocks
 - consistent method names across tests and consistent brackets on must_equal
 - Create a table of attr mappings from jaba->premake->cmake
-- Bring back boolean reader, eg if debug?
 - Add 'underlying type' to attribute types? eg file.dir/src_spec are strings. Use this for extra validation and also to sort using casecmp
 - resolve issues around sorting with mixed type elements
 - Add wildcard validation to dir property
 - workspace categories
-- Allow debug?
 - Support **.h as alternative to **/*.h?
 - Make shell build events use macros
 - add grab bag to reference docs
 - Is ToolsVersion='16.0' needed?
 - support for debugger working directory via .user file
-- directive to only register shared modules when a file included?
-- Combine build_root and src_root into just src_root. buildsystem always goes in src root.
+- Bring back boolean reader, eg if debug?
 
-
-JABA RETHINK
-- app and lib are built in top level type.
-- root is a buit in concept
-- single level (eg no config no project blocks)
-- no direct reading. Use macros.
+Rewrite todo:
+- Combine :symbol, :string and :symbol_or_string? Allow strings and symbols to be completely interchangeable?
+- Bring back boolean reader, eg if debug?
