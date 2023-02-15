@@ -8,6 +8,10 @@ end
 def self.set_context(c) = @@context = c
 def self.context = @@context
 
+@@running_tests = false
+def self.running_tests! = @@running_tests = true
+def self.running_tests? = @@running_tests
+
 def self.error(msg, errobj: nil, callstack: nil, syntax: false, want_backtrace: true)
   e = JabaError.new(msg)
   e.instance_variable_set(:@callstack, Array(errobj&.src_loc || callstack || caller))
@@ -25,10 +29,9 @@ def self.log(...)
 end
 
 class Context
-  def initialize(want_exceptions, test_mode)
+  def initialize(want_exceptions)
     JABA.set_context(self)
     @want_exceptions = want_exceptions
-    @test_mode = test_mode
     @invoking_dir = Dir.getwd.freeze
     @input = Input.new
     @input.instance_variable_set(:@build_root, nil)
@@ -38,14 +41,13 @@ class Context
     @src_root = @build_root = @temp_dir = nil
     @output = {}
     @warnings = []
-    @log_msgs = test_mode? ? nil : [] # Disable logging when running tests
+    @log_msgs = JABA.running_tests? ? nil : [] # Disable logging when running tests
     @file_manager = FileManager.new
     @load_manager = LoadManager.new(self, @file_manager)
   end
 
   def input = @input
   def output = @output
-  def test_mode? = @test_mode
   def invoking_dir = @invoking_dir
   def src_root = @src_root
   def build_root = @build_root
@@ -130,7 +132,7 @@ class Context
     FileUtils.makedirs(temp_dir) if !File.exist?(temp_dir)
 
     @src_root = if input.src_root.nil?
-      invoking_dir if !test_mode?
+      invoking_dir if !JABA.running_tests?
     else
       input.src_root.to_absolute(base: invoking_dir, clean: true)
     end

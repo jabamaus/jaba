@@ -24,7 +24,7 @@ end
 
 jtest 'can write a file with native eol' do
   fn = "#{temp_dir}/f"
-  fm = JABA::Context.new(true, true).file_manager
+  fm = JABA::Context.new(true).file_manager
   f = fm.new_file(fn, eol: :native)
   w = f.writer
   w << 'test'
@@ -39,7 +39,7 @@ end
 
 jtest 'can write a file with windows eol' do
   fn = "#{temp_dir}/f"
-  fm = JABA::Context.new(true, true).file_manager
+  fm = JABA::Context.new(true).file_manager
   f = fm.new_file(fn, eol: :windows)
   w = f.writer
   w << 'test'
@@ -50,7 +50,7 @@ end
 
 jtest 'can write a file with unix eol' do
   fn = "#{temp_dir}/f"
-  fm = JABA::Context.new(true, true).file_manager
+  fm = JABA::Context.new(true).file_manager
   f = fm.new_file(fn, eol: :unix)
   w = f.writer
   w << 'test'
@@ -62,7 +62,7 @@ end
 jtest 'detects invalid eol spec' do
   e = assert_raises JABA::JabaError do
     fn = "#{temp_dir}/f"
-    fm = JABA::Context.new(true, true).file_manager
+    fm = JABA::Context.new(true).file_manager
     fm.new_file(fn, eol: :undefined)
   end
   e.message.must_equal "':undefined' is an invalid eol style. Valid values: [:unix, :windows, :native]"
@@ -70,7 +70,7 @@ end
 
 jtest 'detects duplicates' do
   fn = "#{temp_dir}/f"
-  fm = JABA::Context.new(true, true).file_manager
+  fm = JABA::Context.new(true).file_manager
   f = fm.new_file(fn)
   w = f.writer
   w << 'a'
@@ -87,7 +87,7 @@ end
 jtest 'creates directories as necessary' do
   fn = "#{temp_dir}/a/b/c/d"
   File.exist?("#{temp_dir}/a").must_equal(false)
-  fm = JABA::Context.new(true, true).file_manager
+  fm = JABA::Context.new(true).file_manager
   f = fm.new_file(fn)
   w = f.writer
   w << 'a'
@@ -97,7 +97,7 @@ end
 
 jtest 'warns on writing empty file' do
   fn = "#{temp_dir}/f"
-  s = JABA::Context.new(true, true)
+  s = JABA::Context.new(true)
   fm = s.file_manager
   f = fm.new_file(fn)
   f.write
@@ -110,7 +110,7 @@ end
 
 jtest 'maintains a list of generated files' do
   fns = ['a', 'b', 'c', 'd'].map{|f| "#{temp_dir}/#{f}"}
-  s = JABA::Context.new(true, true)
+  s = JABA::Context.new(true)
   fm = s.file_manager
   fns.each do |fn|
     f = fm.new_file(fn)
@@ -122,7 +122,7 @@ end
 jtest 'detects when a file is newly created' do
   fn = "#{temp_dir}/f"
   File.exist?(fn).must_equal(false)
-  s = JABA::Context.new(true, true)
+  s = JABA::Context.new(true)
   fm = s.file_manager
   f = fm.new_file(fn)
   f.write
@@ -134,7 +134,7 @@ jtest 'detects when a file is modified' do
   fn = "#{temp_dir}/f"
   File.exist?(fn).must_equal(false)
   IO.binwrite(fn, "test\r\n")
-  s = JABA::Context.new(true, true)
+  s = JABA::Context.new(true)
   fm = s.file_manager
   f = fm.new_file(fn, eol: :windows)
   w = f.writer
@@ -148,7 +148,7 @@ jtest 'detects when a file is modified by just eol' do
   fn = "#{temp_dir}/f"
   File.exist?(fn).must_equal(false)
   IO.binwrite(fn, "test\r\n")
-  s = JABA::Context.new(true, true)
+  s = JABA::Context.new(true)
   fm = s.file_manager
   f = fm.new_file(fn, eol: :unix)
   w = f.writer

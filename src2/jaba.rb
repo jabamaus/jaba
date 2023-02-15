@@ -27,8 +27,8 @@ module JABA
 
   # Jaba entry point. Returns output hash object. 
   #
-  def self.run(want_exceptions: false, test_mode: false)
-    c = Context.new(want_exceptions, test_mode)
+  def self.run(want_exceptions: false)
+    c = Context.new(want_exceptions)
     yield c.input
     c.execute
     return c.output
