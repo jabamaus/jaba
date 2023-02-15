@@ -1,9 +1,7 @@
 module JABA
 
   class StringWriter
-    def initialize(...)
-      @str = String.new(...)
-    end
+    def initialize(...) = @str = String.new(...)
     def str = @str
     def to_s = @str
     def <<(str) = @str.concat(str, "\n")
@@ -22,21 +20,18 @@ module JABA
       @writer = work_area(capacity: capacity)
     end
 
-    def work_area(capacity: nil)
-      StringWriter.new(encoding: @encoding, capacity: capacity)
-    end
-
+    def work_area(capacity: nil) = StringWriter.new(encoding: @encoding, capacity: capacity)
     def filename = @filename
     def writer = @writer
     def encoding = @encoding
     def str = @writer.str
     def track? = @track
     
-    def write(**options)
+    def write(...)
       if (@eol == :windows) || ((@eol == :native) && OS.windows?)
         @writer.str.gsub!("\n", "\r\n")
       end
-      @file_manager.write(self, **options)
+      @file_manager.write(self, ...)
     end
   end
 
