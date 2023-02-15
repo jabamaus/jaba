@@ -30,8 +30,7 @@ module JABA
     c = Context.new(want_exceptions, test_mode)
     yield c.input
     c.execute
-  ensure
-    return c&.output
+    return c.output
   end
 end
 

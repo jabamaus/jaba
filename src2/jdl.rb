@@ -28,7 +28,7 @@ end
 JDL.method 'app|include', 'lib|include' do
   title 'Include a shared definition'
   on_called do |id|
-    services.include_shared(id)
+    @context.include_shared(id)
   end
 end
 

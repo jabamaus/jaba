@@ -29,14 +29,34 @@ module JABA
   end
   
   class AttributeDefinition < Definition
-    def initialize(name)
-      super
+    def initialize(name, variant)
+      super(name)
+      @variant = variant
       @flags = nil
     end
+    def variant = @variant
     def flags(*flags) = @flags = flags
     def __validate
       super
 
+    end
+  end
+
+  class AttributeSingleDefinition < AttributeDefinition
+    def initialize(name)
+      super(name, :single)
+    end
+  end
+  
+  class AttributeArrayDefinition < AttributeDefinition
+    def initialize(name)
+      super(name, :array)
+    end
+  end
+
+  class AttributeHashDefinition < AttributeDefinition
+    def initialize(name)
+      super(name, :hash)
     end
   end
 end
@@ -65,6 +85,7 @@ module JDL
       parent_path, item = path.split_jdl_path
       parent_klass = api_class_from_path(parent_path)
       parent_klass.define_method(item) do |*args, **kwargs, &node_block|
+        $last_call_location = ::Kernel.caller_locations(1, 1)[0]
         @context.create_node(node_api_klass, *args, **kwargs, &node_block)
       end
     end
@@ -75,9 +96,10 @@ module JDL
       parent_path, attr_name = path.split_jdl_path
       klass = api_class_from_path(parent_path)
       klass.define_method(attr_name) do |*args, **kwargs, &attr_block|
-        @node.get_attr(attr_name).set(*args, **kwargs, &attr_block)
+        $last_call_location = ::Kernel.caller_locations(1, 1)[0]
+        @node.handle_attr(attr_name, *args, **kwargs, &attr_block)
       end
-      attr_def = JABA::AttributeDefinition.new(attr_name)
+      attr_def = JABA::AttributeSingleDefinition.new(attr_name)
       attr_def.instance_eval(&block) if block_given?
       attr_def.__validate
       klass.attr_defs << attr_def
@@ -92,6 +114,7 @@ module JDL
       meth_def.instance_eval(&block) if block_given?
       meth_def.__validate
       klass.define_method(method_name) do |*args, **kwargs|
+        $last_call_location = ::Kernel.caller_locations(1, 1)[0]
         meth_def.instance_variable_get(:@on_called).call(*args, **kwargs)
       end
     end

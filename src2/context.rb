@@ -40,7 +40,7 @@ class Context
       e = e.cause if e.cause
       output[:error] = e.full_message
       log e.full_message(highlight: false), :ERROR
-      raise if @want_exceptions
+      raise e if @want_exceptions
     ensure
       term_log
     end
@@ -90,17 +90,20 @@ class Context
   end
 
   def do_run
+    JDL.constants.each do |c|
+      if c.end_with?('API') && !c.end_with?('BaseAPI')
+        klass = JDL.const_get(c)
+        klass.singleton.__internal_set_context(self)
+        klass.attr_defs.each do |d|
+          d.instance_variable_set(:@context, self)
+        end
+      end
+    end
+
     @file_manager = FileManager.new(self)
     @load_manager = LoadManager.new(self, @file_manager)
     @top_level_node = Node.new(JDL::TopLevelAPI, 'top_level')
     JDL::TopLevelAPI.singleton.__internal_set_node(@top_level_node)
-
-    JDL.constants.sort.each do |c|
-      if c.end_with?('API')
-        klass = JDL.const_get(c)
-        klass.singleton.__internal_set_context(self)
-      end
-    end
 
     init_root_paths
     @load_manager.load_jaba_files
@@ -194,6 +197,9 @@ class Context
     id = args.shift
     validate_id(id, :node)
     node = Node.new(api_klass, id, &block)
+  end
+
+  def include_shared(id)
   end
 
   # TODO: move to jrf
