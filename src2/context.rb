@@ -1,5 +1,10 @@
 module JABA
 
+module OS
+  def self.windows? = true
+  def self.mac? = false
+end
+
 def self.error(msg, errobj: nil, callstack: nil, syntax: false, want_backtrace: true)
   e = JabaError.new(msg)
   e.instance_variable_set(:@callstack, Array(errobj&.src_loc || callstack || caller))
@@ -22,6 +27,8 @@ class Context
     @output = {}
     @warnings = []
     @log_msgs = test_mode? ? nil : [] # Disable logging when running tests
+    @file_manager = FileManager.new(self)
+    @load_manager = LoadManager.new(self, @file_manager)
   end
 
   def input = @input
@@ -100,8 +107,6 @@ class Context
       end
     end
 
-    @file_manager = FileManager.new(self)
-    @load_manager = LoadManager.new(self, @file_manager)
     @top_level_node = Node.new(JDL::TopLevelAPI, 'top_level')
     JDL::TopLevelAPI.singleton.__internal_set_node(@top_level_node)
 
