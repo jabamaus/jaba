@@ -12,10 +12,9 @@ def self.context = @@context
 def self.running_tests! = @@running_tests = true
 def self.running_tests? = @@running_tests
 
-def self.error(msg, errobj: nil, callstack: nil, syntax: false, want_backtrace: true)
+def self.error(msg, errobj: nil, callstack: nil, want_backtrace: true)
   e = JabaError.new(msg)
   e.instance_variable_set(:@callstack, Array(errobj&.src_loc || callstack || caller))
-  e.instance_variable_set(:@syntax, syntax)
   e.instance_variable_set(:@want_backtrace, want_backtrace)
   raise e
 end
@@ -29,9 +28,10 @@ def self.log(...)
 end
 
 class Context
-  def initialize(want_exceptions)
+  def initialize(want_exceptions, &block)
     JABA.set_context(self)
     @want_exceptions = want_exceptions
+    @input_block = block
     @invoking_dir = Dir.getwd.freeze
     @input = Input.new
     @input.instance_variable_set(:@build_root, nil)
@@ -41,11 +41,12 @@ class Context
     @src_root = @build_root = @temp_dir = nil
     @output = {}
     @warnings = []
-    @log_msgs = JABA.running_tests? ? nil : [] # Disable logging when running tests
+    @log_msgs = []# JABA.running_tests? ? nil : [] # Disable logging when running tests
     @file_manager = FileManager.new
     @jdl_files = []
     @jdl_includes = []
     @jdl_file_lookup = {}
+    @executing_jdl = false
   end
 
   def input = @input
@@ -59,11 +60,49 @@ class Context
   def execute
     begin
       run
-    rescue => e
+    rescue Exception => e
       e = e.cause if e.cause
-      output[:error] = e.full_message
       log e.full_message(highlight: false), :ERROR
-      raise e if @want_exceptions
+      case e
+      when JabaError
+        cs = e.instance_variable_get(:@callstack)
+        want_backtrace = e.instance_variable_get(:@want_backtrace)
+        bt = @executing_jdl ? get_jdl_backtrace(cs) : cs
+        info = make_error_info(e.message, bt)
+        output[:error] = want_backtrace ? info.full_message : info.message
+
+        if @want_exceptions
+          e = JabaError.new(info.message)
+          e.instance_variable_set(:@file, info.file)
+          e.instance_variable_set(:@line, info.line)
+          e.set_backtrace(bt)
+          raise e
+        end
+      when ScriptError
+        # script errors do not have backtraces
+        info = make_error_info(e.message, [], err_type: :syntax)
+        @output[:error] = info.message
+
+        if @want_exceptions
+          e = JabaError.new(info.message)
+          e.instance_variable_set(:@file, info.file)
+          e.instance_variable_set(:@line, info.line)
+          e.set_backtrace([])
+          raise e
+        end
+      else
+        bt = @executing_jdl ? get_jdl_backtrace(e.backtrace) : e.backtrace
+        info = make_error_info(e.message, bt)
+        @output[:error] = @executing_jdl ? info.message : info.full_message
+
+        if @want_exceptions
+          e = JabaError.new(info.message)
+          e.instance_variable_set(:@file, info.file)
+          e.instance_variable_set(:@line, info.line)
+          e.set_backtrace(bt)
+          raise e
+        end
+      end
     ensure
       term_log
     end
@@ -71,6 +110,8 @@ class Context
 
   def run
     log "Starting Jaba at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}", section: true
+    
+    @input_block&.call(input)
     
     duration = Kernel.milli_timer do
       profile(input.profile?) do
@@ -207,8 +248,7 @@ class Context
     f = f.cleanpath
 
     if @jdl_file_lookup.has_key?(f)
-      # Already loaded. Ignore.
-      return
+      return # Already loaded. Ignore.
     end
     
     @jdl_file_lookup[f] = nil
@@ -234,6 +274,7 @@ class Context
   end
 
   def execute_jdl(*args, file: nil, str: nil, &block)
+    @executing_jdl = true
     if str
       JDL::TopLevelAPI.singleton.instance_eval(str, file)
     elsif file
@@ -243,12 +284,7 @@ class Context
     if block_given?
       JDL::TopLevelAPI.singleton.instance_exec(*args, &block)
     end
-  rescue JabaError
-    raise # Prevent fallthrough to next case
-  rescue StandardError => e # Catches errors like invalid constants
-    JABA.error(e.message, callstack: e.backtrace)
-  rescue ScriptError => e # Catches syntax errors. In this case there is no backtrace.
-    JABA.error(e.message, syntax: true)
+    @executing_jdl = false
   end
 
   def log(msg, severity = :INFO, section: false)
@@ -298,20 +334,9 @@ class Context
       end
     end
 
-    # Disregard everything after the main entry point, if it is present in callstack. Prevents error handling from
-    # getting confused when definitions are supplied in block form where normal source code and jdl source code
-    # exist in the same file.
-    #
-    jaba_run_idx = callstack.index{|l| l =~ /jaba\/src\/jaba\.rb.*in `run'/}
-    if jaba_run_idx
-      callstack.slice!(jaba_run_idx..-1)
-    end
-
-    candidates = @jdl_files
-
     # Extract any lines in the callstack that contain references to definition source files.
     #
-    jdl_bt = callstack.select {|c| candidates.any? {|sf| c.include?(sf)}}
+    jdl_bt = callstack.select {|c| @jdl_files.any? {|sf| c.include?(sf)}}
 
     # remove the unwanted ':in ...' suffix from user level definition errors
     #
@@ -320,9 +345,10 @@ class Context
     # Can contain unhelpful duplicates due to loops, make unique.
     #
     jdl_bt.uniq!
-
     jdl_bt
   end
+
+  ErrorInfo = Data.define(:message, :full_message, :file, :line)
 
   def make_error_info(msg, backtrace, err_type: :error)
     if err_type == :syntax
@@ -378,12 +404,7 @@ class Context
       end
     end
     
-    e = OpenStruct.new
-    e.message = m
-    e.full_message = fm
-    e.file = file
-    e.line = line
-    e
+    ErrorInfo.new(m, fm, file, line)
   end
 
   def validate_id(id, what)

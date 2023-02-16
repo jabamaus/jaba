@@ -22,13 +22,15 @@ module JABA
     attr_accessor :global_attrs # Initialise global attrs from a hash of name to value(s)
   end
 
-  class JabaError < StandardError ; end
+  class JabaError < StandardError
+    attr_reader :file
+    attr_reader :line
+  end
 
   # Jaba entry point. Returns output hash object. 
   #
-  def self.run(want_exceptions: false)
-    c = Context.new(want_exceptions)
-    yield c.input
+  def self.run(want_exceptions: false, &block)
+    c = Context.new(want_exceptions, &block)
     c.execute
     return c.output
   end
