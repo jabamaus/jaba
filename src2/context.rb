@@ -65,15 +65,8 @@ class Context
       log e.full_message(highlight: false), :ERROR
       bt = @executing_jdl ? get_jdl_backtrace(e.backtrace) : e.backtrace
       want_backtrace = !@executing_jdl
-      info = case e
-      when JabaError
-        want_backtrace = e.instance_variable_get(:@want_backtrace)
-        make_error_info(e.message, bt)
-      when ScriptError # script errors do not have backtraces
-        make_error_info(e.message, bt, err_type: :syntax)
-      else
-        make_error_info(e.message, bt)
-      end
+      want_backtrace = e.instance_variable_get(:@want_backtrace) if e.is_a?(JabaError)
+      info = make_error_info(e.message, bt, exception: e)
       output[:error] = want_backtrace ? info.full_message : info.message
       if @want_exceptions
         e = JabaError.new(info.message)
@@ -295,7 +288,7 @@ class Context
     if jdl_bt.empty?
       msg = "Warning: #{msg}"
     else
-      msg = make_error_info(msg, jdl_bt, err_type: :warning).message
+      msg = make_error_info(msg, jdl_bt).message
     end
     log(msg, :WARN)
     @warnings << msg
@@ -329,8 +322,13 @@ class Context
 
   ErrorInfo = Data.define(:message, :full_message, :file, :line)
 
-  def make_error_info(msg, backtrace, err_type: :error)
-    if err_type == :syntax
+  def make_error_info(msg, backtrace, exception: nil)
+    m = String.new
+    case exception
+    when nil
+      err_line = backtrace[0]
+      m << 'Warning'
+    when ScriptError
       # With ruby ScriptErrors there is no useful callstack. The error location is in the msg itself.
       #
       err_line = msg
@@ -338,32 +336,18 @@ class Context
       # Delete ruby's way of reporting syntax errors in favour of our own
       #
       msg = msg.sub(/^.* syntax error, /, '')
+      m << 'Syntax error'
     else
       err_line = backtrace[0]
+      m << 'Error'
     end
     
     # Extract file and line information from the error line.
     #
-    if err_line !~ /^(.+):(\d+)/
-      raise "Could not extract file and line number from '#{err_line}'"
-    end
-
+    err_line =~ /^(.+):(\d+)/
     file = Regexp.last_match(1)
     line = Regexp.last_match(2).to_i
 
-    m = String.new
-    
-    m << case err_type
-    when :error
-      'Error'
-    when :warning
-      'Warning'
-    when :syntax
-      'Syntax error'
-    else
-      raise "Invalid error type '#{err_type}'"
-    end
-    
     m << ' at'
     m << " #{file.basename}:#{line}"
     m << ": #{msg}"
