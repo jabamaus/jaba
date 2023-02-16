@@ -12,9 +12,9 @@ def self.context = @@context
 def self.running_tests! = @@running_tests = true
 def self.running_tests? = @@running_tests
 
-def self.error(msg, errobj: nil, callstack: nil, want_backtrace: true)
+def self.error(msg, errobj: nil, want_backtrace: true)
   e = JabaError.new(msg)
-  e.instance_variable_set(:@callstack, Array(errobj&.src_loc || callstack || caller))
+  e.set_backtrace(Array(errobj&.src_loc || caller))
   e.instance_variable_set(:@want_backtrace, want_backtrace)
   raise e
 end
@@ -65,9 +65,8 @@ class Context
       log e.full_message(highlight: false), :ERROR
       case e
       when JabaError
-        cs = e.instance_variable_get(:@callstack)
         want_backtrace = e.instance_variable_get(:@want_backtrace)
-        bt = @executing_jdl ? get_jdl_backtrace(cs) : cs
+        bt = @executing_jdl ? get_jdl_backtrace(e.backtrace) : e.backtrace
         info = make_error_info(e.message, bt)
         output[:error] = want_backtrace ? info.full_message : info.message
 
@@ -310,8 +309,8 @@ class Context
     IO.write(log_fn, @log_msgs.join("\n"))
   end
 
-  def warn(msg, errobj: nil, callstack: nil)
-    callstack = Array(errobj&.src_loc || callstack || caller)
+  def warn(msg, errobj: nil)
+    callstack = Array(errobj&.src_loc || caller)
     jdl_bt = get_jdl_backtrace(callstack)
     if jdl_bt.empty?
       msg = "Warning: #{msg}"
