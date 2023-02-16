@@ -63,44 +63,27 @@ class Context
     rescue Exception => e
       e = e.cause if e.cause
       log e.full_message(highlight: false), :ERROR
+      bt = @executing_jdl ? get_jdl_backtrace(e.backtrace) : e.backtrace
+      
       case e
       when JabaError
         want_backtrace = e.instance_variable_get(:@want_backtrace)
-        bt = @executing_jdl ? get_jdl_backtrace(e.backtrace) : e.backtrace
         info = make_error_info(e.message, bt)
         output[:error] = want_backtrace ? info.full_message : info.message
-
-        if @want_exceptions
-          e = JabaError.new(info.message)
-          e.instance_variable_set(:@file, info.file)
-          e.instance_variable_set(:@line, info.line)
-          e.set_backtrace(bt)
-          raise e
-        end
       when ScriptError
         # script errors do not have backtraces
-        info = make_error_info(e.message, [], err_type: :syntax)
+        info = make_error_info(e.message, bt, err_type: :syntax)
         @output[:error] = info.message
-
-        if @want_exceptions
-          e = JabaError.new(info.message)
-          e.instance_variable_set(:@file, info.file)
-          e.instance_variable_set(:@line, info.line)
-          e.set_backtrace([])
-          raise e
-        end
       else
-        bt = @executing_jdl ? get_jdl_backtrace(e.backtrace) : e.backtrace
         info = make_error_info(e.message, bt)
         @output[:error] = @executing_jdl ? info.message : info.full_message
-
-        if @want_exceptions
-          e = JabaError.new(info.message)
-          e.instance_variable_set(:@file, info.file)
-          e.instance_variable_set(:@line, info.line)
-          e.set_backtrace(bt)
-          raise e
-        end
+      end
+      if @want_exceptions
+        e = JabaError.new(info.message)
+        e.instance_variable_set(:@file, info.file)
+        e.instance_variable_set(:@line, info.line)
+        e.set_backtrace(bt)
+        raise e
       end
     ensure
       term_log
