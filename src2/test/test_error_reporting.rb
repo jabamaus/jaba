@@ -37,7 +37,7 @@ jtest 'catches constant errors in jaba file form' do
   end
 end
 
-jtest 'catches syntax error in jaba file form' do
+jtest 'catches syntax errors in jaba file form' do
   fullpath = "#{temp_dir}/test.jaba"
   IO.write(fullpath, "\n\n&*^^\n")
   assert_jaba_error 'Syntax error at test.jaba:3: unexpected &' do

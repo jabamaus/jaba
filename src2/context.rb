@@ -64,20 +64,17 @@ class Context
       e = e.cause if e.cause
       log e.full_message(highlight: false), :ERROR
       bt = @executing_jdl ? get_jdl_backtrace(e.backtrace) : e.backtrace
-      
-      case e
+      want_backtrace = !@executing_jdl
+      info = case e
       when JabaError
         want_backtrace = e.instance_variable_get(:@want_backtrace)
-        info = make_error_info(e.message, bt)
-        output[:error] = want_backtrace ? info.full_message : info.message
-      when ScriptError
-        # script errors do not have backtraces
-        info = make_error_info(e.message, bt, err_type: :syntax)
-        @output[:error] = info.message
+        make_error_info(e.message, bt)
+      when ScriptError # script errors do not have backtraces
+        make_error_info(e.message, bt, err_type: :syntax)
       else
-        info = make_error_info(e.message, bt)
-        @output[:error] = @executing_jdl ? info.message : info.full_message
+        make_error_info(e.message, bt)
       end
+      output[:error] = want_backtrace ? info.full_message : info.message
       if @want_exceptions
         e = JabaError.new(info.message)
         e.instance_variable_set(:@file, info.file)
