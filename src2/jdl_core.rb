@@ -9,7 +9,7 @@ module JABA
     def note(n) = @notes << n
     def example(e) = @examples << e
     def __validate
-      __check(:@title)
+      __check(:@title) if !JABA.running_tests?
     end
     def __check(var)
       JABA.error('var must be specified as a symbol') if !var.symbol?
@@ -53,10 +53,28 @@ module JABA
     end
     # SETTABLE FROM JDL DEFS
     def flags(*flags) = @flags = flags
-    def default(val=nil, &block) = @default = block_given? ? block : val
+    def default(val=nil, &block)
+      if block_given?
+        @default = block
+      else
+        @default = val
+        call_validators("#{describe} default", backtrace: caller) do
+          case @variant
+          when :single, :array
+            @attr_type.validate_value(self, val)
+          when :hash
+            val.each do |key, v|
+              @attr_key_type.validate_value(self, key)
+              @attr_type.validate_value(self, v)
+            end
+          end
+        end
+      end
+    end
     
     # Accessors used by core system
     def variant = @variant
+    def attr_type = @attr_type
     def describe
       "'#{@name.inspect_unquoted}' #{@variant == :single ? "" : "#{@variant} "}attribute"
     end
@@ -66,7 +84,14 @@ module JABA
       super
       if @default.nil? && !@attr_type.default.nil? && !has_flag?(:required)
         @default = @attr_type.default
-      end 
+      end
+    end
+    def call_validators(what, backtrace:)
+      begin
+        yield
+      rescue => e
+        JABA.error("#{what} invalid: #{e.message}", backtrace: backtrace)
+      end
     end
   end
 

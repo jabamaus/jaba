@@ -12,11 +12,12 @@ def self.context = @@context
 def self.running_tests! = @@running_tests = true
 def self.running_tests? = @@running_tests
 
-def self.error(msg, errobj: nil, want_backtrace: true)
+def self.error(msg, errobj: nil, want_backtrace: true, backtrace: nil)
   e = JabaError.new(msg)
-  e.set_backtrace(Array(errobj&.src_loc || caller))
+  bt = Array(errobj&.src_loc || backtrace || caller).map(&:to_s)
+  e.set_backtrace(bt)
   e.instance_variable_set(:@want_backtrace, want_backtrace)
-  raise e
+  raise e, cause: nil # Passing cause: nil allows a jaba error to wrap another jaba error without the first ones callstack getting printed too
 end
 
 def self.warn(...)
@@ -61,7 +62,6 @@ class Context
     begin
       run
     rescue Exception => e
-      e = e.cause if e.cause
       log e.full_message(highlight: false), :ERROR
       bt = @executing_jdl ? get_jdl_backtrace(e.backtrace) : e.backtrace
       want_backtrace = !@executing_jdl
@@ -245,6 +245,7 @@ class Context
     end
   end
 
+  def executing_jdl? = @executing_jdl
   def execute_jdl(*args, file: nil, str: nil, &block)
     @executing_jdl = true
     if str
@@ -285,10 +286,10 @@ class Context
   def warn(msg, errobj: nil)
     callstack = Array(errobj&.src_loc || caller)
     jdl_bt = get_jdl_backtrace(callstack)
-    if jdl_bt.empty?
-      msg = "Warning: #{msg}"
+    msg = if jdl_bt.empty?
+      "Warning: #{msg}"
     else
-      msg = make_error_info(msg, jdl_bt).message
+      make_error_info(msg, jdl_bt).message
     end
     log(msg, :WARN)
     @warnings << msg
