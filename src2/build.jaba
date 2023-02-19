@@ -3,7 +3,7 @@ end
 
 app :myapp do
   root 'myroot'
-  include :myshared
+  #include :myshared
 end
 
 lib :mylib do
