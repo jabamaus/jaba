@@ -60,7 +60,9 @@ class Context
 
   def execute
     begin
-      run
+      profile(input.profile?) do
+        run
+      end
     rescue Exception => e
       log e.full_message(highlight: false), :ERROR
       bt = @executing_jdl ? get_jdl_backtrace(e.backtrace) : e.backtrace
@@ -81,14 +83,8 @@ class Context
   end
 
   def run
-    log "Starting Jaba at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}", section: true
-    
-    @input_block&.call(input)
-    
     duration = Kernel.milli_timer do
-      profile(input.profile?) do
-        do_run
-      end
+      do_run
     end
 
     file_manager.include_untracked # Include all generated files for the purpose of reporting back to the user
@@ -126,10 +122,11 @@ class Context
   end
 
   def do_run
+    log "Starting Jaba at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}", section: true
+    @input_block&.call(input)
+    init_root_paths
     @top_level_node = Node.new(JDL::TopLevelAPI, 'top_level')
     JDL::TopLevelAPI.singleton.__internal_set_node(@top_level_node)
-
-    init_root_paths
     load_jaba_files
   end
 
@@ -273,7 +270,7 @@ class Context
   end
 
   def term_log
-    return if !@log_msgs
+    return if !@log_msgs || temp_dir.nil?
     log_fn = "#{temp_dir}/jaba.log"
     if File.exist?(log_fn)
       File.delete(log_fn)

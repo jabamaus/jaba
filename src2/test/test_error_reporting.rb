@@ -15,7 +15,7 @@ jtest 'catches jdl errors in jaba file form' do
   IO.write(fullpath, "\n\napp 'invalid id' do\nend\n")
   assert_jaba_error "Error at test.jaba:3: 'invalid id' is an invalid id. Must be an alphanumeric " \
                   "string or symbol (-_. permitted), eg :my_id, 'my-id', 'my.id'." do
-    jaba(src_root: temp_dir)
+    jaba(src_root: fullpath)
   end
 end
 
@@ -33,7 +33,7 @@ jtest 'catches constant errors in jaba file form' do
   fullpath = "#{temp_dir}/test.jaba"
   IO.write(fullpath, "BADCODE")
   assert_jaba_error 'Error at test.jaba:1: uninitialized constant JDL::TopLevelAPI::BADCODE.' do
-    jaba(src_root: temp_dir)
+    jaba(src_root: fullpath)
   end
 end
 
@@ -41,7 +41,7 @@ jtest 'catches syntax errors in jaba file form' do
   fullpath = "#{temp_dir}/test.jaba"
   IO.write(fullpath, "\n\n&*^^\n")
   assert_jaba_error 'Syntax error at test.jaba:3: unexpected &' do
-    jaba(src_root: temp_dir)
+    jaba(src_root: fullpath)
   end
 end
 =begin
@@ -72,7 +72,7 @@ jtest 'allows errors to be raised from definitions in jaba file form' do
   fullpath = "#{temp_dir}/test.jaba"
   IO.write(fullpath, "app :test do\n  fail \"Error msg\"\nend")
   assert_jaba_error "Error at test.jaba:2: Error msg.", ignore_trace: true do
-    jaba(src_root: temp_dir)
+    jaba(src_root: fullpath)
   end
 end
 
