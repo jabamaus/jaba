@@ -5,9 +5,9 @@ module JABA
       @notes = []
       @examples = []
     end
-    def title(t) = @title = t
-    def note(n) = @notes << n
-    def example(e) = @examples << e
+    def set_title(t) = @title = t
+    def set_note(n) = @notes << n
+    def set_example(e) = @examples << e
     def __validate
       __check(:@title) if !JABA.running_tests?
     end
@@ -36,7 +36,7 @@ module JABA
       super
       @on_called = nil
     end
-    def on_called(&block) = @on_called = block
+    def set_on_called(&block) = @on_called = block
     def __validate
       super
       __check(:@on_called)
@@ -51,14 +51,13 @@ module JABA
       @flags = nil
       @default = nil
     end
-    # SETTABLE FROM JDL DEFS
-    def flags(*flags) = @flags = flags
-    def default(val=nil, &block)
+    def set_flags(*flags) = @flags = flags
+    def set_default(val=nil, &block)
       if block_given?
         @default = block
       else
         @default = val
-        call_validators("#{describe} default", backtrace: caller) do
+        call_validators("#{describe} default") do
           case @variant
           when :single, :array
             @attr_type.validate_value(self, val)
@@ -72,7 +71,6 @@ module JABA
       end
     end
     
-    # Accessors used by core system
     def variant = @variant
     def attr_type = @attr_type
     def describe
@@ -86,11 +84,11 @@ module JABA
         @default = @attr_type.default
       end
     end
-    def call_validators(what, backtrace:)
+    def call_validators(what)
       begin
         yield
       rescue => e
-        JABA.error("#{what} invalid: #{e.message}", backtrace: backtrace)
+        JABA.error("#{what} invalid: #{e.message}", backtrace: APIBuilder.last_call_location)
       end
     end
   end
@@ -119,6 +117,9 @@ module JABA
 end
 
 module JDL
+  AttributeSingleDefinitionAPI = APIBuilder.define(:title, :note, :example, :flags, :default)
+  MethodDefinitionAPI = APIBuilder.define(:title, :note, :example, :on_called)
+
   # BaseAPI is the blankest possible slate
   class BaseAPI < BasicObject
     undef_method(:!)
@@ -164,7 +165,7 @@ module JDL
       end
       attr_type = attr_type_class.singleton
       attr_def = JABA::AttributeSingleDefinition.new(attr_name, attr_type)
-      attr_def.instance_eval(&block) if block_given?
+      AttributeSingleDefinitionAPI.execute(attr_def, &block) if block_given?
       attr_def.__validate
       klass.attr_defs << attr_def
     end
@@ -175,7 +176,7 @@ module JDL
       parent_path, method_name = path.split_jdl_path
       klass = api_class_from_path(parent_path)
       meth_def = JABA::MethodDefinition.new(method_name)
-      meth_def.instance_eval(&block) if block_given?
+      MethodDefinitionAPI.execute(meth_def, &block) if block_given?
       meth_def.__validate
       klass.define_method(method_name) do |*args, **kwargs|
         $last_call_location = ::Kernel.caller_locations(1, 1)[0]

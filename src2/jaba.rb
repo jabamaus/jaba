@@ -1,5 +1,6 @@
 require 'fileutils'
 require_relative '../../jrf/jrf/core_ext'
+require_relative '../../jrf/jrf/api_builder'
 require_relative 'core_ext'
 require_relative 'version'
 require_relative 'jdl_core'

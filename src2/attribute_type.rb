@@ -42,15 +42,15 @@ module JABA
   class AttributeTypeNull < AttributeType
     def initialize
       super(:null)
-      title 'Null attribute type'
+      set_title 'Null attribute type'
     end
   end
   
   class AttributeTypeBool < AttributeType
     def initialize
       super(:bool, default: false)
-      title 'Boolean attribute type'
-      note 'Accepts [true|false]. Defaults to false unless value must be supplied by user.'
+      set_title 'Boolean attribute type'
+      set_note 'Accepts [true|false]. Defaults to false unless value must be supplied by user.'
     end
     def from_cmdline(str, attr_def)
       case str
