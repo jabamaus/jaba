@@ -1,4 +1,5 @@
 module JDL
+  FlagDefinitionAPI = APIBuilder.define(:title, :note, :example, :compatible?, :init_attr_def)
   AttributeSingleDefinitionAPI = APIBuilder.define(:title, :note, :example, :flags, :default)
   MethodDefinitionAPI = APIBuilder.define(:title, :note, :example, :on_called)
 
@@ -18,6 +19,11 @@ module JDL
     def self.attr_defs = @attr_defs
   end
 
+  def self.flag(name, &block)
+    fd = JABA::FlagDefinition.new(name)
+    FlagDefinitionAPI.execute(fd, &block) if block_given?
+  end
+  
   def self.node(*paths, &block)
     paths.each do |path|
       node_api_klass = api_class_from_path(path, create: true)

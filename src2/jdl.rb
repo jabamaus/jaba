@@ -1,3 +1,13 @@
+JDL.flag :required do
+  title 'Force user to supply a value'
+  note 'Specifies that the definition writer must supply a value for this attribute'
+  compatible? do |attr_def|
+    if attr_def.default_set?
+      JABA.error("#{describe} can only be specified if no default specified")
+    end
+  end
+end
+
 JDL.method 'puts' do
   title 'Prints a line to stdout'
   on_called do |str| puts str end

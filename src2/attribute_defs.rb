@@ -10,6 +10,9 @@ module JABA
     def set_example(e) = @examples << e
     def __validate
       __check(:@title) if !JABA.running_tests?
+      @title.freeze
+      @notes.freeze
+      @examples.freeze
     end
     def __check(var)
       JABA.error('var must be specified as a symbol') if !var.symbol?
@@ -28,9 +31,24 @@ module JABA
     def describe = "'#{name.inspect_unquoted}'"
     def __validate
       super
+      @name.freeze
     end
   end
   
+  class FlagDefinition < Definition
+    def initialize(name)
+      super(name)
+      @on_compatible = nil
+      @on_init_attr_def = nil
+    end
+    def describe = "#{@id.inspect} attribute definition flag"
+    def set_compatible?(&block) = @on_compatible = block
+    def init_attr_def(&block) = @on_init_attr_def = block
+    def __validate
+      super
+    end
+  end
+
   class MethodDefinition < Definition
     def initialize(name)
       super
