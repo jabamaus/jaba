@@ -125,7 +125,9 @@ module JABA
       @input_block&.call(input)
       init_root_paths
       @top_level_node = Node.new(JDL::TopLevelAPI, "top_level", nil)
+      @output[:root] = @top_level_node
       JDL::TopLevelAPI.singleton.__internal_set_node(@top_level_node)
+      set_top_level_attrs_from_input
       load_jaba_files
     end
 
@@ -158,6 +160,46 @@ module JABA
       log "src_root=#{src_root}"
       log "build_root=#{build_root}"
       log "temp_dir=#{temp_dir}"
+    end
+
+    def set_top_level_attrs_from_input
+      input.global_attrs&.each do |name, values|
+        values = Array(values).map{|e| e.to_s}
+
+        attr = @top_level_node.get_attr(name.to_s, fail_if_not_found: false)
+        if attr.nil?
+          JABA.error("'#{name}' attribute not defined in :globals type", want_backtrace: false)
+        end
+
+        attr_def = attr.attr_def
+        type = attr_def.attr_type
+        case attr_def.variant
+        when :single
+          if values.size > 1
+            JABA.error("'#{name}' attribute only expects one value but #{values.inspect} provided", want_backtrace: false)
+          end
+          value = type.from_cmdline(values[0], attr_def)
+          if attr.type_id == :file || attr.type_id == :dir
+            value = value.to_absolute(base: invoking_dir, clean: true) # TODO: need to do this for array/hash elems too
+          end
+          attr.set(value)
+        when :array
+          if values.empty?
+            JABA.error("'#{name}' array attribute requires one or more values", want_backtrace: false)
+          end
+          attr.set(values.map{|v| type.from_cmdline(v, attr_def)})
+        when :hash
+          if values.empty? || values.size % 2 != 0
+            JABA.error("'#{name}' hash attribute requires one or more pairs of values", want_backtrace: false)
+          end
+          key_type = attr.attr_def.attr_key_type
+          values.each_slice(2) do |kv|
+            key = key_type.from_cmdline(kv[0], attr_def)
+            value = type.from_cmdline(kv[1], attr_def)
+            attr.set(key, value)
+          end
+        end
+      end
     end
 
     def load_jaba_files

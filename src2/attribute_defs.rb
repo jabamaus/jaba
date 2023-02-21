@@ -79,6 +79,7 @@ module JABA
       @default = nil
     end
 
+    def type_id = @attr_type.id
     def set_flags(*flags) = @flags = flags
 
     def set_default(val = nil, &block)

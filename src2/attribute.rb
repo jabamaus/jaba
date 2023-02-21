@@ -7,6 +7,7 @@ module JABA
       @set = false
     end
 
+    def type_id = @attr_def.type_id
     def attr_def = @attr_def
     def set? = @set
     def required? = @attr_def.has_flag?(:required)
