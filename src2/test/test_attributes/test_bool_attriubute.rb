@@ -48,22 +48,20 @@ jtest "only allows boolean values" do
   end
 end
 
-=begin
+JDL.node "test_bool_required"
+JDL.attr "test_bool_required|bool_attr", type: :bool do
+  flags :required
+end
 
-jtest 'works with required flag' do
-  assert_jaba_error "Error at #{src_loc('3C869B0D')}: 't.a' attribute requires a value. See #{src_loc('B959A565')}." do
-    jaba(barebones: true) do
-      type :test do
-        attr :a, type: :bool do # B959A565
-          flags :required
-        end
-      end
-      test :t do # 3C869B0D
+jtest "works with required flag" do
+  assert_jaba_error "Error at #{src_loc('3C869B0D')}: 't.bool_attr' attribute requires a value." do
+    jaba do
+      test_bool_required :t do # 3C869B0D
       end
     end
   end
 end
-
+=begin
 jtest 'can be set from global_attrs' do
   jaba(barebones: true, global_attrs: {
     'a1': 'true',

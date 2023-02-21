@@ -124,7 +124,7 @@ module JABA
       log "Starting Jaba at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}", section: true
       @input_block&.call(input)
       init_root_paths
-      @top_level_node = Node.new(JDL::TopLevelAPI, "top_level")
+      @top_level_node = Node.new(JDL::TopLevelAPI, "top_level", nil)
       JDL::TopLevelAPI.singleton.__internal_set_node(@top_level_node)
       load_jaba_files
     end
@@ -383,7 +383,8 @@ module JABA
     def create_node(api_klass, *args, **kwargs, &block)
       id = args.shift
       validate_id(id, :node)
-      node = Node.new(api_klass, id, &block)
+      node = Node.new(api_klass, id, $last_call_location, &block)
+      node.post_create
     end
 
     def include_shared(id)

@@ -1,7 +1,8 @@
 module JABA
   class Node
-    def initialize(api_klass, id, &block)
+    def initialize(api_klass, id, src_loc, &block)
       @id = id
+      @src_loc = src_loc
       @attributes = []
       @attribute_lookup = {}
       @parent = nil
@@ -22,7 +23,21 @@ module JABA
       api_klass.singleton.instance_eval(&block) if block_given?
     end
 
+    def post_create
+      @attributes.each do |a|
+        if !a.set? && a.required?
+          JABA.error("#{a.describe} requires a value", errobj: self)
+        end
+      
+        a.finalise
+
+        # Note that it is still possible for attributes to not be marked as 'set' by this point, ie if the user never
+        # set it and it didn't have a default. But by this point the set flag has served it purpose.
+      end
+    end
+
     def id = @id
+    def src_loc = @src_loc
 
     def get_attr(name, fail_if_not_found: true)
       a = @attribute_lookup[name]

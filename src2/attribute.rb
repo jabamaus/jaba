@@ -9,6 +9,7 @@ module JABA
 
     def attr_def = @attr_def
     def set? = @set
+    def required? = @attr_def.has_flag?(:required)
     def src_loc = @last_call_location
 
     def attr_error(msg)
@@ -63,6 +64,16 @@ module JABA
 
     def describe
       "'#{@node.id}.#{@attr_def.name}' attribute"
+    end
+
+    # If attribute's default value was specified as a block it is executed here, after the node has been created, since
+    # default blocks can be implemented in terms of other attributes. If the user has already supplied a value then the
+    # default block will not be executed.
+    #
+    def finalise
+      #return if !@default_block || @set
+      #val = Context.instance.execute_attr_default_block(@node, @default_block)
+      #set(val)
     end
   end
 end
