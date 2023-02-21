@@ -97,10 +97,6 @@ jtest "can be set from global_attrs" do
   root.get_attr("global_bool3").value.must_equal true
   root.get_attr("global_bool4").value.must_equal false
 
-  #op = jaba(barebones: true, global_attrs: {'a': '10'}, want_exceptions: false) do
-  #  open_type :globals do
-  #    attr :a, type: :bool
-  #  end
-  #end
-  #op[:error].must_equal "'10' invalid value for ':a' attribute - [true|false|0|1] expected"
+  op = jaba(global_attrs: {'global_bool1': '10'}, want_exceptions: false)
+  op[:error].must_equal "'10' invalid value for 'global_bool1' attribute - [true|false|0|1] expected"
 end
