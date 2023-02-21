@@ -10,7 +10,8 @@ module JDL
     undef_method(:==)
     undef_method(:equal?)
     undef_method(:__id__)
-    def self.singleton ; @instance ||= self.new ; end
+    def self.singleton; @instance ||= self.new; end
+
     def __internal_set_node(n) = @node = n
   end
 
@@ -23,7 +24,7 @@ module JDL
     fd = JABA::FlagDefinition.new(name)
     FlagDefinitionAPI.execute(fd, &block) if block_given?
   end
-  
+
   def self.node(*paths, &block)
     paths.each do |path|
       node_api_klass = api_class_from_path(path, create: true)
@@ -46,11 +47,11 @@ module JDL
       end
       # TODO: automatically make class name from typeid
       attr_type_class = case type
-      when :bool
-        JABA::AttributeTypeBool
-      else
-        JABA::AttributeTypeNull
-      end
+        when :bool
+          JABA::AttributeTypeBool
+        else
+          JABA::AttributeTypeNull
+        end
       attr_type = attr_type_class.singleton
       attr_def = JABA::AttributeSingleDefinition.new(attr_name, attr_type)
       AttributeSingleDefinitionAPI.execute(attr_def, &block) if block_given?
@@ -77,7 +78,7 @@ module JDL
     if path.nil?
       return TopLevelAPI
     end
-    name = "#{path.split('|').map{|p| p.capitalize_first}.join}API"
+    name = "#{path.split("|").map { |p| p.capitalize_first }.join}API"
     if create
       klass = Class.new(BaseAPI)
       klass.class_eval do
@@ -89,5 +90,4 @@ module JDL
       JDL.const_get(name)
     end
   end
-
 end

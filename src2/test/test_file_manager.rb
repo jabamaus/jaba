@@ -1,65 +1,65 @@
-jtest 'StringWriter can write line with newline' do
+jtest "StringWriter can write line with newline" do
   sw = JABA::StringWriter.new(capacity: 100)
-  sw << 'hello'
+  sw << "hello"
   sw.str.must_equal "hello\n"
-  sw << 'world'
+  sw << "world"
   sw.str.must_equal "hello\nworld\n"
 end
 
-jtest 'Stringwriter can write with no newline' do
+jtest "Stringwriter can write with no newline" do
   sw = JABA::StringWriter.new(capacity: 100)
-  sw.write_raw 'hello'
-  sw.str.must_equal 'hello'
-  sw.write_raw 'world'
-  sw.str.must_equal 'helloworld'
+  sw.write_raw "hello"
+  sw.str.must_equal "hello"
+  sw.write_raw "world"
+  sw.str.must_equal "helloworld"
 end
 
-jtest 'Stringwriter can write blank lines' do
+jtest "Stringwriter can write blank lines" do
   sw = JABA::StringWriter.new(capacity: 100)
-  sw << 'hello'
+  sw << "hello"
   sw.newline
-  sw << 'world'
+  sw << "world"
   sw.str.must_equal "hello\n\nworld\n"
 end
 
-jtest 'can write a file with native eol' do
+jtest "can write a file with native eol" do
   fn = "#{temp_dir}/f"
   fm = JABA::Context.new(true).file_manager
   f = fm.new_file(fn, eol: :native)
   w = f.writer
-  w << 'test'
+  w << "test"
   f.write
   File.exist?(fn).must_equal(true)
   if JABA::OS.windows?
     IO.binread(fn).must_equal("test\r\n")
   else
-    raise 'unsupported host OS'
+    raise "unsupported host OS"
   end
 end
 
-jtest 'can write a file with windows eol' do
+jtest "can write a file with windows eol" do
   fn = "#{temp_dir}/f"
   fm = JABA::Context.new(true).file_manager
   f = fm.new_file(fn, eol: :windows)
   w = f.writer
-  w << 'test'
+  w << "test"
   f.write
   File.exist?(fn).must_equal(true)
   IO.binread(fn).must_equal("test\r\n")
 end
 
-jtest 'can write a file with unix eol' do
+jtest "can write a file with unix eol" do
   fn = "#{temp_dir}/f"
   fm = JABA::Context.new(true).file_manager
   f = fm.new_file(fn, eol: :unix)
   w = f.writer
-  w << 'test'
+  w << "test"
   f.write
   File.exist?(fn).must_equal(true)
   IO.binread(fn).must_equal("test\n")
 end
 
-jtest 'detects invalid eol spec' do
+jtest "detects invalid eol spec" do
   e = assert_raises JABA::JabaError do
     fn = "#{temp_dir}/f"
     fm = JABA::Context.new(true).file_manager
@@ -68,34 +68,34 @@ jtest 'detects invalid eol spec' do
   e.message.must_equal "':undefined' is an invalid eol style. Valid values: [:unix, :windows, :native]"
 end
 
-jtest 'detects duplicates' do
+jtest "detects duplicates" do
   fn = "#{temp_dir}/f"
   fm = JABA::Context.new(true).file_manager
   f = fm.new_file(fn)
   w = f.writer
-  w << 'a'
+  w << "a"
   f.write
   File.exist?(fn).must_equal(true)
   f = fm.new_file(fn)
   w = f.writer
-  w << 'b'
+  w << "b"
   assert_raises JABA::JabaError do
     f.write
   end.message.must_match(/Duplicate filename '.*' detected/)
 end
 
-jtest 'creates directories as necessary' do
+jtest "creates directories as necessary" do
   fn = "#{temp_dir}/a/b/c/d"
   File.exist?("#{temp_dir}/a").must_equal(false)
   fm = JABA::Context.new(true).file_manager
   f = fm.new_file(fn)
   w = f.writer
-  w << 'a'
+  w << "a"
   f.write
   File.exist?(fn).must_equal(true)
 end
 
-jtest 'warns on writing empty file' do
+jtest "warns on writing empty file" do
   fn = "#{temp_dir}/f"
   s = JABA::Context.new(true)
   fm = s.file_manager
@@ -108,8 +108,8 @@ end
 
 # TODO: test encoding
 
-jtest 'maintains a list of generated files' do
-  fns = ['a', 'b', 'c', 'd'].map{|f| "#{temp_dir}/#{f}"}
+jtest "maintains a list of generated files" do
+  fns = ["a", "b", "c", "d"].map { |f| "#{temp_dir}/#{f}" }
   s = JABA::Context.new(true)
   fm = s.file_manager
   fns.each do |fn|
@@ -119,7 +119,7 @@ jtest 'maintains a list of generated files' do
   fm.generated.must_equal fns
 end
 
-jtest 'detects when a file is newly created' do
+jtest "detects when a file is newly created" do
   fn = "#{temp_dir}/f"
   File.exist?(fn).must_equal(false)
   s = JABA::Context.new(true)
@@ -130,7 +130,7 @@ jtest 'detects when a file is newly created' do
   fm.added.must_equal [fn]
 end
 
-jtest 'detects when a file is modified' do
+jtest "detects when a file is modified" do
   fn = "#{temp_dir}/f"
   File.exist?(fn).must_equal(false)
   IO.binwrite(fn, "test\r\n")
@@ -144,7 +144,7 @@ jtest 'detects when a file is modified' do
   fm.modified.must_equal [fn]
 end
 
-jtest 'detects when a file is modified by just eol' do
+jtest "detects when a file is modified by just eol" do
   fn = "#{temp_dir}/f"
   File.exist?(fn).must_equal(false)
   IO.binwrite(fn, "test\r\n")

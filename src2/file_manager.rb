@@ -1,5 +1,4 @@
 module JABA
-
   class StringWriter
     def initialize(...) = @str = String.new(...)
     def str = @str
@@ -26,7 +25,7 @@ module JABA
     def encoding = @encoding
     def str = @writer.str
     def track? = @track
-    
+
     def write(...)
       if (@eol == :windows) || ((@eol == :native) && OS.windows?)
         @writer.str.gsub!("\n", "\r\n")
@@ -80,15 +79,15 @@ module JABA
       existing = read(fn, encoding: file.encoding)
 
       status = if existing.nil?
-        @added << fn
-        :ADDED
-      elsif existing != file.str
-        @modified << fn
-        :MODIFIED
-      else
-        @unchanged << fn
-        :UNCHANGED
-      end
+          @added << fn
+          :ADDED
+        elsif existing != file.str
+          @modified << fn
+          :MODIFIED
+        else
+          @unchanged << fn
+          :UNCHANGED
+        end
 
       if file.track?
         @generated << fn
@@ -150,7 +149,7 @@ module JABA
       files = @glob_cache[key]
       if files.nil?
         files = Dir.glob(spec, flags)
-        files.reject!{|f| directory?(f)}
+        files.reject! { |f| directory?(f) }
         files.freeze # Don't want cache entries being inadvertently modified
         @glob_cache[key] = files
       end
@@ -165,7 +164,7 @@ module JABA
         spec = "#{root}/#{spec}"
       end
       files = glob_files(spec)
-      files = files.map{|f| f.relative_path_from(root)} if relative
+      files = files.map { |f| f.relative_path_from(root) } if relative
       if block_given?
         files.each(&block)
       else

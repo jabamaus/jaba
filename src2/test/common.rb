@@ -1,8 +1,8 @@
-require_relative '../jaba'
+require_relative "../jaba"
 
 JABA.running_tests!
 
-JDL.node 'test'
+JDL.node "test"
 
 class JTestCaseAPI
   def jaba(want_exceptions: true, src_root: nil, build_root: nil, &block)
@@ -41,7 +41,7 @@ class JTestCaseAPI
       #
       bt = e.backtrace
       bt.shift
-      bt.must_equal(backtrace, msg: 'backtrace did not match')
+      bt.must_equal(backtrace, msg: "backtrace did not match")
     end
     e
   end
@@ -50,16 +50,16 @@ class JTestCaseAPI
     out, = capture_io do
       yield
     end
-    
+
     out.must_match(msg)
-    
+
     if expected_file
       expected_line = src_line(tag, file: expected_file)
 
       if out !~ /Warning at (.+?):(\d+)/
         raise "couldn't extract file and line number from #{out}"
       end
-      
+
       actual_file = Regexp.last_match(1)
       actual_line = Regexp.last_match(2).to_i
 

@@ -5,19 +5,22 @@ module JABA
       @notes = []
       @examples = []
     end
+
     def set_title(t) = @title = t
     def set_note(n) = @notes << n
     def set_example(e) = @examples << e
+
     def __validate
       __check(:@title) if !JABA.running_tests?
       @title.freeze
       @notes.freeze
       @examples.freeze
     end
+
     def __check(var)
-      JABA.error('var must be specified as a symbol') if !var.symbol?
+      JABA.error("var must be specified as a symbol") if !var.symbol?
       if instance_variable_get(var).nil?
-        JABA.error("'#{describe}' requires '#{var.to_s.delete_prefix('@')}' to be specified")
+        JABA.error("'#{describe}' requires '#{var.to_s.delete_prefix("@")}' to be specified")
       end
     end
   end
@@ -27,23 +30,27 @@ module JABA
       super()
       @name = name
     end
+
     def name = @name
     def describe = "'#{name.inspect_unquoted}'"
+
     def __validate
       super
       @name.freeze
     end
   end
-  
+
   class FlagDefinition < Definition
     def initialize(name)
       super(name)
       @on_compatible = nil
       @on_init_attr_def = nil
     end
+
     def describe = "#{@id.inspect} attribute definition flag"
     def set_compatible?(&block) = @on_compatible = block
     def init_attr_def(&block) = @on_init_attr_def = block
+
     def __validate
       super
     end
@@ -54,13 +61,15 @@ module JABA
       super
       @on_called = nil
     end
+
     def set_on_called(&block) = @on_called = block
+
     def __validate
       super
       __check(:@on_called)
     end
   end
-  
+
   class AttributeDefinition < Definition
     def initialize(name, variant, attr_type)
       super(name)
@@ -69,8 +78,10 @@ module JABA
       @flags = nil
       @default = nil
     end
+
     def set_flags(*flags) = @flags = flags
-    def set_default(val=nil, &block)
+
+    def set_default(val = nil, &block)
       if block_given?
         @default = block
       else
@@ -88,20 +99,24 @@ module JABA
         end
       end
     end
-    
+
     def variant = @variant
     def attr_type = @attr_type
+
     def describe
       "'#{@name.inspect_unquoted}' #{@variant == :single ? "" : "#{@variant} "}attribute"
     end
+
     def has_flag?(flag) = @flags&.include?(flag)
     def get_default = @default
+
     def __validate
       super
       if @default.nil? && !@attr_type.default.nil? && !has_flag?(:required)
         @default = @attr_type.default
       end
     end
+
     def call_validators(what)
       begin
         yield
@@ -115,12 +130,12 @@ module JABA
     def initialize(name, attr_type)
       super(name, :single, attr_type)
     end
+
     def __validate
       super
-
     end
   end
-  
+
   class AttributeArrayDefinition < AttributeDefinition
     def initialize(name, attr_type)
       super(name, :array, attr_type)

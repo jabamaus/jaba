@@ -4,7 +4,7 @@ class Class
   def attr_block(attr)
     class_eval("def #{attr}(&block) ; block_given? ? @#{attr} << block : @#{attr} ; end", __FILE__, __LINE__)
   end
-  
+
   # Member variable must be initialised.
   #
   def attr_bool(attr)
@@ -28,14 +28,14 @@ class String
     if self !~ /\|/
       [nil, self]
     else
-      [sub(/\|(\w+)$/, ''), Regexp.last_match(1)]
+      [sub(/\|(\w+)$/, ""), Regexp.last_match(1)]
     end
   end
 
   def validate_path
-    JABA.error('block expected') if !block_given?
+    JABA.error("block expected") if !block_given?
     if include?('\\')
-      yield 'contains backslashes'
+      yield "contains backslashes"
     end
   end
 
@@ -43,12 +43,14 @@ class String
   #
   def wildcard? = self =~ /\*/ ? true : false
   def to_backslashes = dup.to_backslashes!
+
   def to_backslashes!
-    tr!('/', '\\')
+    tr!("/", '\\')
     self
   end
+
   def contains_slashes? = self =~ /(\\)|(\/)/ ? true : false
-  
+
   # Quote if string contains a space or a macro.
   #
   def vs_quote!
@@ -59,23 +61,23 @@ class String
   # Turn eg "C:/projects/GitHub/jaba/lib/jaba/jdl_api/jdl_common.rb:11:in `fail'"
   # into "C:/projects/GitHub/jaba/lib/jaba/jdl_api/jdl_common.rb:11"
   #
-  def clean_backtrace = sub(/:in .*/, '')
+  def clean_backtrace = sub(/:in .*/, "")
 
   def to_escaped_xml
     gsub(/["'&<>\n]/) do |match|
       case match
       when '"'
-        '&quot;'
+        "&quot;"
       when "'"
-        '&apos;'
-      when '&'
-        '&amp;'
-      when '<'
-        '&lt;'
-      when '>'
-        '&gt;'
+        "&apos;"
+      when "&"
+        "&amp;"
+      when "<"
+        "&lt;"
+      when ">"
+        "&gt;"
       when "\n"
-        '&#x0D;&#x0A;'
+        "&#x0D;&#x0A;"
       end
     end
   end
@@ -83,7 +85,7 @@ class String
   def to_escaped_DOS
     gsub(/[\^|<>&]/) do |match|
       case match
-      when '^', '|', '<', '>', '&'
+      when "^", "|", "<", ">", "&"
         "^#{match}"
       end
     end
@@ -99,16 +101,16 @@ class Array
 
   # Joins array for use in msbuild files optionally adding an 'inherit' string. Returns nil if string is empty, unless forced.
   #
-  def vs_join(separator: ';', inherit: nil, force: false)
+  def vs_join(separator: ";", inherit: nil, force: false)
     str = if empty?
-      force ? inherit : nil
-    else
-      j = join(separator)
-      if inherit
-        j << separator << inherit
+        force ? inherit : nil
+      else
+        j = join(separator)
+        if inherit
+          j << separator << inherit
+        end
+        j
       end
-      j
-    end
     if !str || (str.empty? && !force)
       return nil
     else
