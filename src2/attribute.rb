@@ -36,11 +36,13 @@ module JABA
     def initialize(attr_def, node)
       super
       @value = nil
+      @flag_options = nil
+      @value_options = nil
     end
 
     def value = @value
 
-    def set(*args, validate: true, &block)
+    def set(*args, validate: true, **kwargs, &block)
       @last_call_location = if JABA.context.executing_jdl?
           $last_call_location
         else
@@ -56,6 +58,9 @@ module JABA
         end
       attr_type = @attr_def.attr_type
       @flag_options = args
+      # Take a deep copy of value_options so they are private to this attribute
+      @value_options = kwargs.empty? ? {} : Marshal.load(Marshal.dump(kwargs))
+
       if validate
         @flag_options.each do |f|
           if !attr_def.has_flag_option?(f)
@@ -73,6 +78,20 @@ module JABA
       @value = new_value
       @value.freeze # Prevents value from being changed directly after it has been returned by 'value' method
       @set = true
+    end
+
+    def has_flag_option?(o) = @flag_options&.include?(o)
+
+    def get_option_value(key, fail_if_not_found: true)
+      attr_def.get_value_option(key)
+      if !@value_options.key?(key)
+        if fail_if_not_found
+          attr_error("Option key '#{key}' not found in #{describe}")
+        else
+          return nil
+        end
+      end
+      @value_options[key]
     end
   end
 

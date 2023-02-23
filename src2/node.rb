@@ -1,14 +1,14 @@
 module JABA
   class Node
-    def initialize(api_klass, id, src_loc, &block)
+    def initialize(api_klass, id, src_loc, parent, &block)
       @api_klass = api_klass
       @id = id
       @src_loc = src_loc
       @attributes = []
       @attribute_lookup = {}
-      @parent = nil
       @children = []
       @read_only = false
+      set_parent(parent)
       api_klass.attr_defs.each do |d|
         a = case d.variant
           when :single
@@ -44,6 +44,19 @@ module JABA
 
     def id = @id
     def src_loc = @src_loc
+    def parent = @parent
+
+    def set_parent(parent)
+      if @parent
+        @parent.children.delete(self)
+      end
+      @parent = parent
+      if @parent
+        @parent.children << self
+      end
+    end
+
+    def children = @children
 
     def get_attr(name, fail_if_not_found: true)
       a = @attribute_lookup[name]

@@ -134,3 +134,27 @@ jtest "validates flag options" do
     end
   end
 end
+
+JDL.attr "test_attr_single|with_flag_and_value_options" do
+  flag_options :fo1, :fo2, :fo3
+  value_option :kv1
+  value_option :kv2
+  value_option :kv3
+end
+
+jtest "overwrites flag and value options on successive calls" do
+  op = jaba do
+    test_attr_single :t do
+      with_flag_and_value_options 1, :fo1, kv1: 2
+      with_flag_and_value_options 2, :fo2, :fo3, kv2: 3, kv3: 4
+    end
+  end
+  node = op[:root].children[0]
+  a = node.get_attr("with_flag_and_value_options")
+  a.has_flag_option?(:fo1).must_equal(false)
+  a.has_flag_option?(:fo2).must_equal(true)
+  a.has_flag_option?(:fo3).must_equal(true)
+  a.get_option_value(:kv1, fail_if_not_found: false).must_be_nil
+  a.get_option_value(:kv2).must_equal(3)
+  a.get_option_value(:kv3).must_equal(4)
+end

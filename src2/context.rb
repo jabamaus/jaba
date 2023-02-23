@@ -125,7 +125,7 @@ module JABA
       log "Starting Jaba at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}", section: true
       @input_block&.call(input)
       init_root_paths
-      @top_level_node = Node.new(JDL::TopLevelAPI, "top_level", nil)
+      @top_level_node = Node.new(JDL::TopLevelAPI, "top_level", nil, nil)
       @output[:root] = @top_level_node
       JDL::TopLevelAPI.singleton.__internal_set_node(@top_level_node)
       set_top_level_attrs_from_input
@@ -427,7 +427,7 @@ module JABA
       id = args.shift
       validate_id(id, :node)
       begin
-        node = Node.new(api_klass, id, $last_call_location, &block)
+        node = Node.new(api_klass, id, $last_call_location, @top_level_node, &block)
         node.post_create
       rescue FrozenError => e
         JABA.error(e.message.sub("frozen", "read only").capitalize_first, backtrace: e.backtrace)

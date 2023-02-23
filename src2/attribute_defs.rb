@@ -77,6 +77,7 @@ module JABA
       @attr_type = attr_type
       @flags = []
       @flag_options = []
+      @value_options = []
       @default = nil
       @default_is_block = false
     end
@@ -88,8 +89,29 @@ module JABA
     def set_flag_options(*fo) = @flag_options.concat(fo)
     def has_flag_option?(fo) = @flag_options.include?(fo)
 
+    ValueOption = Data.define(:name, :required, :items)
+
+    def set_value_option(name, required: false, items: [])
+      if !name.symbol?
+        JABA.error("In #{describe} value_option id must be specified as a symbol, eg :option")
+      end
+      @value_options << ValueOption.new(name, required, items)
+    end
+
+    def get_value_option(name)
+      if @value_options.empty?
+        JABA.error("Invalid value option '#{name.inspect_unquoted}' - no options defined in #{describe}")
+      end
+      vo = @value_options.find { |v| v.name == name }
+      if !vo
+        JABA.error("Invalid value option '#{name.inspect_unquoted}'. Valid #{describe} options: #{@value_options.map { |v| v.name }}")
+      end
+      vo
+    end
+
     def get_default = @default
     def default_is_block? = @default_is_block
+
     def set_default(val = nil, &block)
       if block_given?
         @default = block
@@ -111,6 +133,9 @@ module JABA
       if @default.nil? && !@attr_type.default.nil? && !has_flag?(:required)
         @default = @attr_type.default
       end
+      @default.freeze if !@default.nil?
+      @flags.freeze
+      @flag_options.freeze
     end
 
     def validate_value(new_val)
