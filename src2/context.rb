@@ -442,7 +442,10 @@ module JABA
 
     def execute_attr_default_block(attr)
       @attr_default_read_stack.push(attr)
-      result = attr.node.eval_jdl(&attr.attr_def.get_default)
+      result = nil
+      attr.node.make_read_only do # default blocks should not attempt to set another attribute
+        result = attr.node.eval_jdl(&attr.attr_def.get_default)
+      end
       @attr_default_read_stack.pop
       result
     end

@@ -8,6 +8,7 @@ module JABA
       @attribute_lookup = {}
       @parent = nil
       @children = []
+      @read_only = false
       api_klass.attr_defs.each do |d|
         a = case d.variant
           when :single
@@ -72,6 +73,9 @@ module JABA
         return a.value
       else
         a = get_attr(name)
+        if @read_only
+          JABA.error("#{a.describe} is read only in this context")
+        end
         a.set(*args, **kwargs, &block)
         return nil
       end
@@ -105,6 +109,14 @@ module JABA
       JABA.error("'#{name}' attribute not found. The following attributes are available in this context:\n\n  " \
       "Read/write:\n    #{rw.map { |ad| ad.name }.join(", ")}\n\n  " \
       "Read only:\n    #{rdonly.map { |ad| ad.name }.join(", ")}\n\n")
+    end
+
+    def make_read_only
+      @read_only = true
+      if block_given?
+        yield
+        @read_only = false
+      end
     end
   end
 end

@@ -91,7 +91,6 @@ module JABA
       if !set?
         if attr_def.default_is_block?
           val = JABA.context.execute_attr_default_block(self)
-          #attr_def.attr_type.map_value(val)
         elsif JABA.context.in_attr_default_block?
           outer = JABA.context.outer_default_attr_read
           outer.attr_error("#{outer.describe} default read uninitialised #{describe} - #{describe} might need a default value")

@@ -95,11 +95,27 @@ jtest "works with block style default" do
 
   # test with another attr using unset attr
   #
-  assert_jaba_error "Error at #{src_loc('A0C828F8')}: 't.block_default2' attribute default read uninitialised 't.a' attribute - 't.a' attribute might need a default value." do
+  assert_jaba_error "Error at #{src_loc("A0C828F8")}: 't.block_default2' attribute default read uninitialised 't.a' attribute - 't.a' attribute might need a default value." do
     jaba do
       test_attr_single :t do
         b 1
         block_default2 # A0C828F8
+      end
+    end
+  end
+end
+
+JDL.attr "test_attr_single|default_tries_to_set" do
+  default do
+    a 1 # 218296F2
+  end
+end
+
+jtest "fails if default block sets attribute" do
+  assert_jaba_error "Error at #{src_loc("218296F2")}: 't.a' attribute is read only in this context.", ignore_trace: true do
+    jaba do
+      test_attr_single :t do
+        default_tries_to_set
       end
     end
   end
