@@ -75,14 +75,21 @@ module JABA
       super(name)
       @variant = variant
       @attr_type = attr_type
-      @flags = nil
+      @flags = []
+      @flag_options = []
       @default = nil
       @default_is_block = false
     end
 
     def type_id = @attr_type.id
-    def set_flags(*flags) = @flags = flags
+    def set_flags(*flags) = @flags.concat(flags)
+    def has_flag?(flag) = @flags.include?(flag)
+    def get_flag_options = @flag_options
+    def set_flag_options(*fo) = @flag_options.concat(fo)
+    def has_flag_option?(fo) = @flag_options.include?(fo)
 
+    def get_default = @default
+    def default_is_block? = @default_is_block
     def set_default(val = nil, &block)
       if block_given?
         @default = block
@@ -98,10 +105,6 @@ module JABA
     def describe
       "'#{@name.inspect_unquoted}' #{@variant == :single ? "" : "#{@variant} "}attribute"
     end
-
-    def has_flag?(flag) = @flags&.include?(flag)
-    def get_default = @default
-    def default_is_block? = @default_is_block
 
     def __validate
       super

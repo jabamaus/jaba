@@ -120,3 +120,17 @@ jtest "fails if default block sets attribute" do
     end
   end
 end
+
+JDL.attr "test_attr_single|with_flag_options" do
+  flag_options :a, :b, :c
+end
+
+jtest "validates flag options" do
+  assert_jaba_error "Error at #{src_loc("0BE71C6C")}: Invalid flag option ':d' passed to 't.with_flag_options' attribute. Valid flags are [:a, :b, :c]" do
+    jaba do
+      test_attr_single :t do
+        with_flag_options 1, :a, :b, :d # 0BE71C6C
+      end
+    end
+  end
+end

@@ -55,7 +55,13 @@ module JABA
           args.shift
         end
       attr_type = @attr_def.attr_type
+      @flag_options = args
       if validate
+        @flag_options.each do |f|
+          if !attr_def.has_flag_option?(f)
+            attr_error("Invalid flag option '#{f.inspect_unquoted}' passed to #{describe}. Valid flags are #{attr_def.get_flag_options}")
+          end
+        end
         if !new_value.nil?
           call_validators do
             attr_type.validate_value(@attr_def, new_value)
