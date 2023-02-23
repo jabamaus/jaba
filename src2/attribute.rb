@@ -60,6 +60,7 @@ module JABA
         end
       end
       @value = new_value
+      @value.freeze # Prevents value from being changed directly after it has been returned by 'value' method
       @set = true
     end
   end

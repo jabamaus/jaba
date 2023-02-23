@@ -425,8 +425,12 @@ module JABA
     def create_node(api_klass, *args, **kwargs, &block)
       id = args.shift
       validate_id(id, :node)
-      node = Node.new(api_klass, id, $last_call_location, &block)
-      node.post_create
+      begin
+        node = Node.new(api_klass, id, $last_call_location, &block)
+        node.post_create
+      rescue FrozenError => e
+        JABA.error(e.message.sub('frozen', 'read only').capitalize_first, backtrace: e.backtrace)
+      end
     end
 
     def include_shared(id)
