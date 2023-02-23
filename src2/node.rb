@@ -79,7 +79,7 @@ module JABA
 
     def visit_callable_attrs(rdonly: false, &block)
       @attributes.each do |a|
-        if rdonly || a.attr_def.has_flag?(:read_only)
+        if rdonly || a.read_only?
           yield a, :rdonly
         else
           yield a, :rw

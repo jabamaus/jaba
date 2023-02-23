@@ -2,6 +2,10 @@ JDL.node "test_attr_single"
 JDL.attr "test_attr_single|single"
 JDL.attr "test_attr_single|a"
 JDL.attr "test_attr_single|b"
+JDL.attr "test_attr_single|read_only" do
+  flags :read_only
+  default 1
+end
 
 jtest "only accepts single values" do
   e = assert_jaba_error "'default' expects a single value but got '[]'.", ignore_trace: true do
@@ -39,6 +43,17 @@ jtest 'rejects modifying returned values' do
         a +('b')
         val = a
         val.upcase! # 45925C07
+      end
+    end
+  end
+end
+
+jtest 'rejects modifying read only attributes' do
+  assert_jaba_error "Error at #{src_loc('D4AE68B1')}: 't.read_only' attribute is read only." do
+    jaba do
+      test_attr_single :t do
+        read_only.must_equal(1)
+        read_only 2 # D4AE68B1
       end
     end
   end

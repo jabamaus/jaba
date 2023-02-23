@@ -8,6 +8,11 @@ JDL.flag :required do
   end
 end
 
+JDL.flag :read_only do
+  title "Prevents user from writing to value"
+  note "Specifies that the attribute can only be read and not set from user definitions. The value will be initialised inside Jaba"
+end
+
 JDL.method "puts" do
   title "Prints a line to stdout"
   on_called do |str| puts str end

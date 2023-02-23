@@ -11,6 +11,7 @@ module JABA
     def attr_def = @attr_def
     def set? = @set
     def required? = @attr_def.has_flag?(:required)
+    def read_only? = attr_def.has_flag?(:read_only)
     def src_loc = @last_call_location
 
     def attr_error(msg)
@@ -44,6 +45,9 @@ module JABA
         else
           calling_location
         end
+      if read_only? && set? # allow read only to be set the first time so they an be initialised
+        attr_error("#{describe} is read only")
+      end
       new_value = if block_given?
           value_from_block(&block)
         else
