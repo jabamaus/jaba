@@ -47,6 +47,7 @@ module JABA
       @jdl_includes = []
       @jdl_file_lookup = {}
       @executing_jdl = false
+      @attr_default_read_stack = []
     end
 
     def input = @input
@@ -434,6 +435,16 @@ module JABA
     end
 
     def include_shared(id)
+    end
+
+    def in_attr_default_block? = !@attr_default_read_stack.empty?
+    def outer_default_attr_read = @attr_default_read_stack.first
+
+    def execute_attr_default_block(attr)
+      @attr_default_read_stack.push(attr)
+      result = attr.node.eval_jdl(&attr.attr_def.get_default)
+      @attr_default_read_stack.pop
+      result
     end
 
     # TODO: move to jrf

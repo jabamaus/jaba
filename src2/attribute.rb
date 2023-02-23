@@ -7,6 +7,7 @@ module JABA
       @set = false
     end
 
+    def node = @node
     def type_id = @attr_def.type_id
     def attr_def = @attr_def
     def set? = @set
@@ -79,6 +80,27 @@ module JABA
 
     def describe
       "'#{@node.id}.#{@attr_def.name}' attribute"
+    end
+
+    def value
+      @last_call_location = if JABA.context.executing_jdl?
+          $last_call_location
+        else
+          calling_location
+        end
+      if !set?
+        if attr_def.default_is_block?
+          val = JABA.context.execute_attr_default_block(self)
+          #attr_def.attr_type.map_value(val)
+        elsif JABA.context.in_attr_default_block?
+          outer = JABA.context.outer_default_attr_read
+          outer.attr_error("#{outer.describe} default read uninitialised #{describe} - #{describe} might need a default value")
+        else
+          nil
+        end
+      else
+        @value
+      end
     end
 
     # If attribute's default value was specified as a block it is executed here, after the node has been created, since
