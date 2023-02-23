@@ -5,20 +5,14 @@ module JDL
 
   # BaseAPI is the blankest possible slate
   class BaseAPI < BasicObject
-    undef_method(:!)
-    undef_method(:!=)
-    undef_method(:==)
-    undef_method(:equal?)
-    undef_method(:__id__)
-    def self.singleton; @instance ||= self.new; end
+    undef_method :!, :!=, :==, :equal?, :__id__
+    def self.singleton = @instance ||= self.new
+    def self.attr_defs = @attr_defs ||= []
 
     def __internal_set_node(n) = @node = n
   end
 
-  class TopLevelAPI < BaseAPI
-    @attr_defs = []
-    def self.attr_defs = @attr_defs
-  end
+  class TopLevelAPI < BaseAPI; end
 
   def self.flag(name, &block)
     fd = JABA::FlagDefinition.new(name)
@@ -80,12 +74,7 @@ module JDL
     end
     name = "#{path.split("|").map { |p| p.capitalize_first }.join}API"
     if create
-      klass = Class.new(BaseAPI)
-      klass.class_eval do
-        @attr_defs = []
-        def self.attr_defs = @attr_defs
-      end
-      JDL.const_set(name, klass)
+      JDL.const_set(name, Class.new(BaseAPI))
     else
       JDL.const_get(name)
     end

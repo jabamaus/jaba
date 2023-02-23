@@ -19,13 +19,8 @@ module JABA
     raise e, cause: nil # Passing cause: nil allows a jaba error to wrap another jaba error without the first ones callstack getting printed too
   end
 
-  def self.warn(...)
-    JABA.context.warn(...)
-  end
-
-  def self.log(...)
-    JABA.context.log(...)
-  end
+  def self.warn(...) = JABA.context.warn(...)
+  def self.log(...) = JABA.context.log(...)
 
   class Context
     def initialize(want_exceptions, &block)

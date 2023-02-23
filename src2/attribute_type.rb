@@ -6,12 +6,7 @@ module JABA
       @default = default
     end
 
-    def self.singleton
-      return @instance if @instance
-      @instance = self.new
-      @instance.__validate
-      @instance
-    end
+    def self.singleton = @instance ||= self.new.tap { |i| i.__validate }
 
     def id = @id
     def describe = "#{id} attribute type"
@@ -26,7 +21,6 @@ module JABA
 
     def from_cmdline(str, attr_def) = str
     def map_value(value) = value
-    def get_reference_manual_rows(attr_def) = nil
 
     def init_attr_def(attr_def); end
     def post_init_attr_def(attr_def); end
