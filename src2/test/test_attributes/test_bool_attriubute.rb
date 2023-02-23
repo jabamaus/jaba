@@ -54,7 +54,7 @@ JDL.attr "test_bool_required|bool_attr", type: :bool do
 end
 
 jtest "works with required flag" do
-  assert_jaba_error "Error at #{src_loc('3C869B0D')}: 't.bool_attr' attribute requires a value." do
+  assert_jaba_error "Error at #{src_loc("3C869B0D")}: 't.bool_attr' attribute requires a value." do
     jaba do
       test_bool_required :t do # 3C869B0D
       end
@@ -80,11 +80,11 @@ end
 
 jtest "can be set from global_attrs" do
   output = jaba(global_attrs: {
-    'global_bool1': 'true',
-    'global_bool2': false,
-    'global_bool3': '1',
-    'global_bool4': 0
-    }) do
+                  'global_bool1': "true",
+                  'global_bool2': false,
+                  'global_bool3': "1",
+                  'global_bool4': 0,
+                }) do
     global_bool1.must_equal true
     global_bool2.must_equal false
     global_bool3.must_equal true
@@ -97,6 +97,6 @@ jtest "can be set from global_attrs" do
   root.get_attr("global_bool3").value.must_equal true
   root.get_attr("global_bool4").value.must_equal false
 
-  op = jaba(global_attrs: {'global_bool1': '10'}, want_exceptions: false)
+  op = jaba(global_attrs: { 'global_bool1': "10" }, want_exceptions: false)
   op[:error].must_equal "'10' invalid value for 'global_bool1' attribute - [true|false|0|1] expected"
 end

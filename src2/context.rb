@@ -164,7 +164,7 @@ module JABA
 
     def set_top_level_attrs_from_input
       input.global_attrs&.each do |name, values|
-        values = Array(values).map{|e| e.to_s}
+        values = Array(values).map { |e| e.to_s }
 
         attr = @top_level_node.get_attr(name.to_s, fail_if_not_found: false)
         if attr.nil?
@@ -187,7 +187,7 @@ module JABA
           if values.empty?
             JABA.error("'#{name}' array attribute requires one or more values", want_backtrace: false)
           end
-          attr.set(values.map{|v| type.from_cmdline(v, attr_def)})
+          attr.set(values.map { |v| type.from_cmdline(v, attr_def) })
         when :hash
           if values.empty? || values.size % 2 != 0
             JABA.error("'#{name}' hash attribute requires one or more pairs of values", want_backtrace: false)

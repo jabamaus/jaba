@@ -28,7 +28,7 @@ module JABA
         if !a.set? && a.required?
           JABA.error("#{a.describe} requires a value", errobj: self)
         end
-      
+
         a.finalise
 
         # Note that it is still possible for attributes to not be marked as 'set' by this point, ie if the user never
