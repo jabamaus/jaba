@@ -77,6 +77,7 @@ module JABA
       @attr_type = attr_type
       @flags = nil
       @default = nil
+      @default_is_block = false
     end
 
     def type_id = @attr_type.id
@@ -85,19 +86,9 @@ module JABA
     def set_default(val = nil, &block)
       if block_given?
         @default = block
+        @default_is_block = true
       else
         @default = val
-        call_validators("#{describe} default") do
-          case @variant
-          when :single, :array
-            @attr_type.validate_value(self, val)
-          when :hash
-            val.each do |key, v|
-              @attr_key_type.validate_value(self, key)
-              @attr_type.validate_value(self, v)
-            end
-          end
-        end
       end
     end
 
@@ -110,12 +101,16 @@ module JABA
 
     def has_flag?(flag) = @flags&.include?(flag)
     def get_default = @default
+    def default_is_block? = @default_is_block
 
     def __validate
       super
       if @default.nil? && !@attr_type.default.nil? && !has_flag?(:required)
         @default = @attr_type.default
       end
+    end
+
+    def validate_value(new_val)
     end
 
     def call_validators(what)
@@ -130,6 +125,22 @@ module JABA
   class AttributeSingleDefinition < AttributeDefinition
     def initialize(name, attr_type)
       super(name, :single, attr_type)
+    end
+
+    def validate_value(val)
+      if val.is_a?(Enumerable)
+        JABA.error("#{describe} must be a single value not a '#{val.class}'")
+      end
+    end
+
+    def set_default(val = nil, &block)
+      super
+      if !default_is_block? && @default.is_a?(Enumerable)
+        JABA.error("'default' expects a single value but got '#{@default}'.", backtrace: APIBuilder.last_call_location)
+      end
+      call_validators("#{describe} default") do
+        attr_type.validate_value(self, val)
+      end
     end
 
     def __validate

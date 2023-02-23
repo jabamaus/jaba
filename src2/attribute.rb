@@ -46,6 +46,7 @@ module JABA
         if !new_value.nil?
           call_validators do
             attr_type.validate_value(@attr_def, new_value)
+            attr_def.validate_value(new_value)
             #@attr_def.call_block_property(:validate, new_value, @flag_options, **@value_options)
           end
         end
@@ -58,7 +59,7 @@ module JABA
   class AttributeSingle < AttributeElement
     def initialize(attr_def, node)
       super
-      if !attr_def.get_default.nil? && !attr_def.get_default.proc?
+      if !attr_def.default_is_block? && !attr_def.get_default.nil?
         set(attr_def.get_default)
       end
     end

@@ -22,7 +22,7 @@ class JTestCaseAPI
   end
 
   def assert_jaba_error(msg, trace: [], ignore_trace: false, ignore_rest: false, hint: nil, &block)
-    e = assert_raises(JABA::JabaError, msg: hint) do
+    e = assert_raises(JABA::JabaError, src_loc: calling_location, msg: hint) do
       yield
     end
 
