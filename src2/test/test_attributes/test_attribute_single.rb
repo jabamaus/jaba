@@ -1,5 +1,7 @@
 JDL.node "test_attr_single"
 JDL.attr "test_attr_single|single"
+JDL.attr "test_attr_single|a"
+JDL.attr "test_attr_single|b"
 
 jtest "only accepts single values" do
   e = assert_jaba_error "'default' expects a single value but got '[]'.", ignore_trace: true do
@@ -14,6 +16,18 @@ jtest "only accepts single values" do
       test_attr_single :t do
         single [1, 2] # 6D4B452C
       end
+    end
+  end
+end
+
+jtest "allows setting value with block" do
+  jaba do
+    test_attr_single :t do
+      b 1
+      a do
+        b + 1
+      end
+      a.must_equal 2
     end
   end
 end

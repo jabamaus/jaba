@@ -24,6 +24,10 @@ module JABA
         attr_error("#{describe} invalid: #{e.message}")
       end
     end
+
+    def value_from_block(&block)
+      @node.eval_jdl(&block)
+    end
   end
 
   class AttributeElement < AttributeBase
@@ -34,13 +38,17 @@ module JABA
 
     def value = @value
 
-    def set(*args, validate: true)
+    def set(*args, validate: true, &block)
       @last_call_location = if JABA.context.executing_jdl?
           $last_call_location
         else
           calling_location
         end
-      new_value = args.shift
+      new_value = if block_given?
+          value_from_block(&block)
+        else
+          args.shift
+        end
       attr_type = @attr_def.attr_type
       if validate
         if !new_value.nil?

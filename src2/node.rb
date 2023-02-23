@@ -1,6 +1,7 @@
 module JABA
   class Node
     def initialize(api_klass, id, src_loc, &block)
+      @api_klass = api_klass
       @id = id
       @src_loc = src_loc
       @attributes = []
@@ -19,8 +20,12 @@ module JABA
         @attributes << a
         @attribute_lookup[d.name] = a
       end
-      api_klass.singleton.__internal_set_node(self)
-      api_klass.singleton.instance_eval(&block) if block_given?
+      eval_jdl(&block) if block_given?
+    end
+
+    def eval_jdl(&block)
+      @api_klass.singleton.__internal_set_node(self)
+      @api_klass.singleton.instance_eval(&block)
     end
 
     def post_create
