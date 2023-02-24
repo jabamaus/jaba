@@ -97,6 +97,7 @@ module JABA
     def set_flag_options(*fo) = @flag_options.concat(fo)
     def has_flag_option?(fo) = @flag_options.include?(fo)
     def get_items = @items
+
     def set_items(items)
       definition_warn("'items' contains duplicates") if items.uniq!
       @items.concat(items)

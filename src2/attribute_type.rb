@@ -75,7 +75,7 @@ module JABA
     end
 
     def from_cmdline(str, attr_def)
-      items = attr_def.items
+      items = attr_def.get_items
       # Use find_index to allow for nil being a valid choice
       index = items.find_index { |i| i.to_s == str }
       if index.nil?
@@ -85,9 +85,9 @@ module JABA
     end
 
     def validate_value(attr_def, value)
-      items = attr_def.items
+      items = attr_def.get_items
       if !items.include?(value)
-        JABA.error("Must be one of #{items} but got '#{value.inspect_unquoted}'. See #{attr_def.property_last_call_loc(:items).describe}.")
+        JABA.error("Must be one of #{items} but got '#{value.inspect_unquoted}'")
       end
     end
   end
