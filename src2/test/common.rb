@@ -22,14 +22,15 @@ class JTestCaseAPI
   end
 
   def assert_jaba_error(msg, trace: [], ignore_trace: false, ignore_rest: false, hint: nil, &block)
-    e = assert_raises(JABA::JabaError, src_loc: calling_location, msg: hint) do
+    src_loc = calling_location
+    e = assert_raises(JABA::JabaError, src_loc: src_loc, msg: hint) do
       yield
     end
 
     if ignore_rest
-      e.message.slice(0, msg.length).must_equal(msg)
+      e.message.slice(0, msg.length).must_equal(msg, src_loc: src_loc)
     else
-      e.message.must_equal(msg)
+      e.message.must_equal(msg, src_loc: src_loc)
     end
 
     if trace && !ignore_trace
@@ -42,17 +43,18 @@ class JTestCaseAPI
       #
       bt = e.backtrace
       bt.shift
-      bt.must_equal(backtrace, msg: "backtrace did not match")
+      bt.must_equal(backtrace, msg: "backtrace did not match", src_loc: src_loc)
     end
     e
   end
 
   def assert_jaba_warn(msg, expected_file = nil, tag = nil)
+    src_loc = calling_location
     out, = capture_io do
       yield
     end
 
-    out.must_match(msg)
+    out.must_match(msg, src_loc: src_loc)
 
     if expected_file
       expected_line = src_line(tag, file: expected_file)
@@ -64,8 +66,8 @@ class JTestCaseAPI
       actual_file = Regexp.last_match(1)
       actual_line = Regexp.last_match(2).to_i
 
-      actual_file.must_equal(expected_file.basename)
-      actual_line.must_equal(expected_line)
+      actual_file.must_equal(expected_file.basename, src_loc: src_loc)
+      actual_line.must_equal(expected_line, src_loc: src_loc)
     end
   end
 end

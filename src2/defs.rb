@@ -11,7 +11,7 @@ module JABA
     def src_loc = @src_loc
     def name = @name
     def describe = "'#{name.inspect_unquoted}'"
-    
+
     def set_title(t) = @title = t
     def set_note(n) = @notes << n
     def set_example(e) = @examples << e
@@ -26,19 +26,26 @@ module JABA
     end
 
     def __check(var)
-      definition_error("var must be specified as a symbol") if !var.symbol?
+      definition_error_post_create("var must be specified as a symbol") if !var.symbol?
       if instance_variable_get(var).nil?
-        definition_error("#{describe} requires '#{var.to_s.delete_prefix("@")}' to be specified")
+        definition_error_post_create("#{describe} requires '#{var.to_s.delete_prefix("@")}' to be specified")
       end
     end
 
-    # Call from post_create when there is a problem with the definition
-    def definition_error(msg, err_loc: src_loc)
+    def definition_error(msg, err_loc: APIBuilder.last_call_location)
       JABA.error("Error at #{err_loc.path.basename}:#{err_loc.lineno}: #{describe} invalid: #{msg}")
     end
 
-    def definition_warn(msg, warn_loc: src_loc)
-      JABA.warn("Warning at #{warn_loc.path.basename}:#{warn_loc.lineno}: #{msg}")
+    def definition_error_post_create(msg)
+      definition_error(msg, err_loc: src_loc)
+    end
+
+    def definition_warn(msg, warn_loc: APIBuilder.last_call_location)
+      puts("Warning at #{warn_loc.path.basename}:#{warn_loc.lineno}: #{msg}")
+    end
+
+    def definition_warn_post_create(msg)
+      definition_warn(msg, warn_loc: src_loc)
     end
   end
 
@@ -90,7 +97,10 @@ module JABA
     def set_flag_options(*fo) = @flag_options.concat(fo)
     def has_flag_option?(fo) = @flag_options.include?(fo)
     def get_items = @items
-    def set_items(items) = @items.concat(items)
+    def set_items(items)
+      definition_warn("'items' contains duplicates") if items.uniq!
+      @items.concat(items)
+    end
 
     ValueOption = Data.define(:name, :required, :items)
 
@@ -133,12 +143,8 @@ module JABA
       @flags.freeze
       @flag_options.freeze
 
-      if attr_type.name == :choice
-        if @items.empty?
-          definition_error("'items' must be set")
-        elsif items.uniq!
-          definition_warn("'items' contains duplicates")
-        end
+      if attr_type.name == :choice && @items.empty?
+        definition_error_post_create("'items' must be set")
       end
     end
 
@@ -159,12 +165,12 @@ module JABA
     def set_default(val = nil, &block)
       super
       if !default_is_block? && @default.is_a?(Enumerable)
-        definition_error("'default' expects a single value but got '#{@default}'", err_loc: APIBuilder.last_call_location)
+        definition_error("'default' expects a single value but got '#{@default}'")
       end
       begin
         attr_type.validate_value(self, val)
       rescue => e
-        definition_error("'default' invalid: #{e.message}", err_loc: APIBuilder.last_call_location)
+        definition_error("'default' invalid: #{e.message}")
       end
     end
   end

@@ -12,7 +12,7 @@ module JABA
   def self.running_tests? = @@running_tests
 
   def self.error(msg, errobj: nil, want_backtrace: true, backtrace: nil)
-    msg = msg.ensure_end_with('.') if msg =~ /[a-zA-Z0-9']$/
+    msg = msg.ensure_end_with(".") if msg =~ /[a-zA-Z0-9']$/
     e = JabaError.new(msg)
     bt = Array(errobj&.src_loc || backtrace || caller).map(&:to_s)
     e.set_backtrace(bt)
