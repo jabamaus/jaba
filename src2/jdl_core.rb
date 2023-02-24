@@ -1,6 +1,6 @@
 module JDL
   FlagDefinitionAPI = APIBuilder.define(:title, :note, :example, :compatible?)
-  AttributeSingleDefinitionAPI = APIBuilder.define(:title, :note, :example, :flags, :flag_options, :items, :value_option, :default)
+  AttributeDefinitionAPI = APIBuilder.define(:title, :note, :example, :flags, :flag_options, :items, :value_option, :default)
   MethodDefinitionAPI = APIBuilder.define(:title, :note, :example, :on_called)
 
   # BaseAPI is the blankest possible slate
@@ -33,29 +33,11 @@ module JDL
   end
 
   def self.attr(*paths, type: nil, &block)
-    src_loc = calling_location
-    paths.each do |path|
-      parent_path, attr_name = path.split_jdl_path
-      klass = api_class_from_path(parent_path)
-      klass.define_method(attr_name) do |*args, **kwargs, &attr_block|
-        $last_call_location = ::Kernel.caller_locations(1, 1)[0]
-        @node.handle_attr(attr_name, *args, **kwargs, &attr_block)
-      end
-      # TODO: automatically make class name from typeid
-      attr_type_class = case type
-        when :bool
-          JABA::AttributeTypeBool
-        when :choice
-          JABA::AttributeTypeChoice
-        else
-          JABA::AttributeTypeNull
-        end
-      attr_type = attr_type_class.singleton
-      attr_def = JABA::AttributeSingleDefinition.new(src_loc, attr_name, attr_type)
-      AttributeSingleDefinitionAPI.execute(attr_def, &block) if block_given?
-      attr_def.post_create
-      klass.attr_defs << attr_def
-    end
+    process_attr(calling_location, paths, JABA::AttributeSingleDefinition, type, &block)
+  end
+
+  def self.attr_array(*paths, type: nil, &block)
+    process_attr(calling_location, paths, JABA::AttributeArrayDefinition, type, &block)
   end
 
   def self.method(*paths, &block)
@@ -82,6 +64,33 @@ module JDL
       JDL.const_set(name, Class.new(BaseAPI))
     else
       JDL.const_get(name)
+    end
+  end
+
+  private
+
+  def self.process_attr(src_loc, paths, def_klass, type, &block)
+    paths.each do |path|
+      parent_path, attr_name = path.split_jdl_path
+      klass = api_class_from_path(parent_path)
+      klass.define_method(attr_name) do |*args, **kwargs, &attr_block|
+        $last_call_location = ::Kernel.caller_locations(1, 1)[0]
+        @node.handle_attr(attr_name, *args, **kwargs, &attr_block)
+      end
+      # TODO: automatically make class name from typeid
+      attr_type_class = case type
+        when :bool
+          JABA::AttributeTypeBool
+        when :choice
+          JABA::AttributeTypeChoice
+        else
+          JABA::AttributeTypeNull
+        end
+      attr_type = attr_type_class.singleton
+      attr_def = def_klass.new(src_loc, attr_name, attr_type)
+      AttributeDefinitionAPI.execute(attr_def, &block) if block_given?
+      attr_def.post_create
+      klass.attr_defs << attr_def
     end
   end
 end
