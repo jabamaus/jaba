@@ -16,12 +16,11 @@ jtest "defaults to false" do
 end
 
 jtest "requires default to be true or false" do
-  e = assert_jaba_error "'invalid_default' attribute default invalid: '1' is a integer - expected [true|false]", ignore_trace: true do
+  assert_jaba_error "Error at #{src_loc("2521765F")}: 'invalid_default' attribute invalid: 'default' invalid: '1' is a integer - expected [true|false]", ignore_trace: true do
     JDL.attr "test_bool|invalid_default", type: :bool do
       default 1 # 2521765F
     end
   end
-  e.backtrace[0].must_match(src_loc("2521765F"))
   jaba do
     test_bool :t do
       bool_attr_default_true.must_equal(true)

@@ -12,6 +12,7 @@ module JABA
   def self.running_tests? = @@running_tests
 
   def self.error(msg, errobj: nil, want_backtrace: true, backtrace: nil)
+    msg = msg.ensure_end_with('.') if msg =~ /[a-zA-Z0-9']$/
     e = JabaError.new(msg)
     bt = Array(errobj&.src_loc || backtrace || caller).map(&:to_s)
     e.set_backtrace(bt)
@@ -387,9 +388,7 @@ module JABA
       m << " at"
       m << " #{file.basename}:#{line}"
       m << ": #{msg}"
-      if m =~ /[a-zA-Z0-9']$/
-        m.ensure_end_with!(".")
-      end
+      m.ensure_end_with!(".") if m =~ /[a-zA-Z0-9']$/
 
       # Format full message, which includes backtrace. First backtrace entry is the error line
       # which has already been reported in the main error line, so only show the backtrace if it

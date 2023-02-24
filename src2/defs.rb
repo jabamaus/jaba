@@ -33,12 +33,12 @@ module JABA
     end
 
     # Call from post_create when there is a problem with the definition
-    def definition_error(msg)
-      JABA.error("#{describe} invalid: #{msg}", errobj: self)
+    def definition_error(msg, err_loc: src_loc)
+      JABA.error("Error at #{err_loc.path.basename}:#{err_loc.lineno}: #{describe} invalid: #{msg}")
     end
 
-    def definition_warn(msg, errobj: self)
-      JABA.warn(msg)
+    def definition_warn(msg, warn_loc: src_loc)
+      JABA.warn("Warning at #{warn_loc.path.basename}:#{warn_loc.lineno}: #{msg}")
     end
   end
 
@@ -48,12 +48,8 @@ module JABA
       @on_compatible = nil
     end
 
-    def describe = "#{@id.inspect} attribute definition flag"
+    def describe = "'#{@id.inspect_unquoted}' attribute definition flag"
     def set_compatible?(&block) = @on_compatible = block
-
-    def post_create
-      super
-    end
   end
 
   class MethodDefinition < Definition
@@ -147,14 +143,6 @@ module JABA
     end
 
     def validate_value(new_val); end # Override
-
-    def call_validators(what)
-      begin
-        yield
-      rescue => e
-        JABA.error("#{what} invalid: #{e.message}", backtrace: APIBuilder.last_call_location)
-      end
-    end
   end
 
   class AttributeSingleDefinition < AttributeDefinition
@@ -171,15 +159,13 @@ module JABA
     def set_default(val = nil, &block)
       super
       if !default_is_block? && @default.is_a?(Enumerable)
-        JABA.error("'default' expects a single value but got '#{@default}'.", backtrace: APIBuilder.last_call_location)
+        definition_error("'default' expects a single value but got '#{@default}'", err_loc: APIBuilder.last_call_location)
       end
-      call_validators("#{describe} default") do
+      begin
         attr_type.validate_value(self, val)
+      rescue => e
+        definition_error("'default' invalid: #{e.message}", err_loc: APIBuilder.last_call_location)
       end
-    end
-
-    def post_create
-      super
     end
   end
 
