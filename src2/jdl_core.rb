@@ -1,6 +1,6 @@
 module JDL
-  FlagDefinitionAPI = APIBuilder.define(:title, :note, :example, :compatible?, :init_attr_def)
-  AttributeSingleDefinitionAPI = APIBuilder.define(:title, :note, :example, :flags, :flag_options, :value_option, :default)
+  FlagDefinitionAPI = APIBuilder.define(:title, :note, :example, :compatible?)
+  AttributeSingleDefinitionAPI = APIBuilder.define(:title, :note, :example, :flags, :flag_options, :items, :value_option, :default)
   MethodDefinitionAPI = APIBuilder.define(:title, :note, :example, :on_called)
 
   # BaseAPI is the blankest possible slate
@@ -15,11 +15,12 @@ module JDL
   class TopLevelAPI < BaseAPI; end
 
   def self.flag(name, &block)
-    fd = JABA::FlagDefinition.new(name)
+    fd = JABA::FlagDefinition.new(calling_location, name)
     FlagDefinitionAPI.execute(fd, &block) if block_given?
   end
 
   def self.node(*paths, &block)
+    src_loc = calling_location
     paths.each do |path|
       node_api_klass = api_class_from_path(path, create: true)
       parent_path, item = path.split_jdl_path
@@ -32,6 +33,7 @@ module JDL
   end
 
   def self.attr(*paths, type: nil, &block)
+    src_loc = calling_location
     paths.each do |path|
       parent_path, attr_name = path.split_jdl_path
       klass = api_class_from_path(parent_path)
@@ -43,24 +45,27 @@ module JDL
       attr_type_class = case type
         when :bool
           JABA::AttributeTypeBool
+        when :choice
+          JABA::AttributeTypeChoice
         else
           JABA::AttributeTypeNull
         end
       attr_type = attr_type_class.singleton
-      attr_def = JABA::AttributeSingleDefinition.new(attr_name, attr_type)
+      attr_def = JABA::AttributeSingleDefinition.new(src_loc, attr_name, attr_type)
       AttributeSingleDefinitionAPI.execute(attr_def, &block) if block_given?
-      attr_def.__validate
+      attr_def.post_create
       klass.attr_defs << attr_def
     end
   end
 
   def self.method(*paths, &block)
+    src_loc = calling_location
     paths.each do |path|
       parent_path, method_name = path.split_jdl_path
       klass = api_class_from_path(parent_path)
-      meth_def = JABA::MethodDefinition.new(method_name)
+      meth_def = JABA::MethodDefinition.new(src_loc, method_name)
       MethodDefinitionAPI.execute(meth_def, &block) if block_given?
-      meth_def.__validate
+      meth_def.post_create
       klass.define_method(method_name) do |*args, **kwargs|
         $last_call_location = ::Kernel.caller_locations(1, 1)[0]
         meth_def.instance_variable_get(:@on_called).call(*args, **kwargs)

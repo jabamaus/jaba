@@ -1,16 +1,24 @@
 module JABA
-  class Documentable
-    def initialize
+  class Definition
+    def initialize(src_loc, name)
+      @src_loc = src_loc
+      @name = name
       @title = nil
       @notes = []
       @examples = []
     end
 
+    def src_loc = @src_loc
+    def name = @name
+    def describe = "'#{name.inspect_unquoted}'"
+    
     def set_title(t) = @title = t
     def set_note(n) = @notes << n
     def set_example(e) = @examples << e
 
-    def __validate
+    def post_create
+      @src_loc.freeze
+      @name.freeze
       __check(:@title) if !JABA.running_tests?
       @title.freeze
       @notes.freeze
@@ -18,76 +26,75 @@ module JABA
     end
 
     def __check(var)
-      JABA.error("var must be specified as a symbol") if !var.symbol?
+      definition_error("var must be specified as a symbol") if !var.symbol?
       if instance_variable_get(var).nil?
-        JABA.error("'#{describe}' requires '#{var.to_s.delete_prefix("@")}' to be specified")
+        definition_error("#{describe} requires '#{var.to_s.delete_prefix("@")}' to be specified")
       end
     end
-  end
 
-  class Definition < Documentable
-    def initialize(name)
-      super()
-      @name = name
+    # Call from post_create when there is a problem with the definition
+    def definition_error(msg)
+      JABA.error("#{describe} invalid: #{msg}", errobj: self)
     end
 
-    def name = @name
-    def describe = "'#{name.inspect_unquoted}'"
-
-    def __validate
-      super
-      @name.freeze
+    def definition_warn(msg, errobj: self)
+      JABA.warn(msg)
     end
   end
 
   class FlagDefinition < Definition
-    def initialize(name)
-      super(name)
+    def initialize(src_loc, name)
+      super
       @on_compatible = nil
-      @on_init_attr_def = nil
     end
 
     def describe = "#{@id.inspect} attribute definition flag"
     def set_compatible?(&block) = @on_compatible = block
-    def init_attr_def(&block) = @on_init_attr_def = block
 
-    def __validate
+    def post_create
       super
     end
   end
 
   class MethodDefinition < Definition
-    def initialize(name)
+    def initialize(src_loc, name)
       super
       @on_called = nil
     end
 
     def set_on_called(&block) = @on_called = block
 
-    def __validate
+    def post_create
       super
       __check(:@on_called)
     end
   end
 
   class AttributeDefinition < Definition
-    def initialize(name, variant, attr_type)
-      super(name)
+    def initialize(src_loc, name, variant, attr_type)
+      super(src_loc, name)
       @variant = variant
       @attr_type = attr_type
       @flags = []
       @flag_options = []
       @value_options = []
+      @items = []
       @default = nil
       @default_is_block = false
     end
 
-    def type_id = @attr_type.id
+    def describe = "'#{@name.inspect_unquoted}' #{@variant == :single ? "" : "#{@variant} "}attribute"
+    def variant = @variant
+    def attr_type = @attr_type
+    def type_id = @attr_type.name
+
     def set_flags(*flags) = @flags.concat(flags)
     def has_flag?(flag) = @flags.include?(flag)
     def get_flag_options = @flag_options
     def set_flag_options(*fo) = @flag_options.concat(fo)
     def has_flag_option?(fo) = @flag_options.include?(fo)
+    def get_items = @items
+    def set_items(items) = @items.concat(items)
 
     ValueOption = Data.define(:name, :required, :items)
 
@@ -121,25 +128,25 @@ module JABA
       end
     end
 
-    def variant = @variant
-    def attr_type = @attr_type
-
-    def describe
-      "'#{@name.inspect_unquoted}' #{@variant == :single ? "" : "#{@variant} "}attribute"
-    end
-
-    def __validate
+    def post_create
       super
-      if @default.nil? && !@attr_type.default.nil? && !has_flag?(:required)
-        @default = @attr_type.default
+      if @default.nil? && !attr_type.default.nil? && !has_flag?(:required)
+        @default = attr_type.default
       end
       @default.freeze if !@default.nil?
       @flags.freeze
       @flag_options.freeze
+
+      if attr_type.name == :choice
+        if @items.empty?
+          definition_error("'items' must be set")
+        elsif items.uniq!
+          definition_warn("'items' contains duplicates")
+        end
+      end
     end
 
-    def validate_value(new_val)
-    end
+    def validate_value(new_val); end # Override
 
     def call_validators(what)
       begin
@@ -151,8 +158,8 @@ module JABA
   end
 
   class AttributeSingleDefinition < AttributeDefinition
-    def initialize(name, attr_type)
-      super(name, :single, attr_type)
+    def initialize(src_loc, name, attr_type)
+      super(src_loc, name, :single, attr_type)
     end
 
     def validate_value(val)
@@ -171,20 +178,20 @@ module JABA
       end
     end
 
-    def __validate
+    def post_create
       super
     end
   end
 
   class AttributeArrayDefinition < AttributeDefinition
-    def initialize(name, attr_type)
-      super(name, :array, attr_type)
+    def initialize(src_loc, name, attr_type)
+      super(src_loc, name, :array, attr_type)
     end
   end
 
   class AttributeHashDefinition < AttributeDefinition
-    def initialize(name, attr_type)
-      super(name, :hash, attr_type)
+    def initialize(src_loc, name, attr_type)
+      super(src_loc, name, :hash, attr_type)
     end
   end
 end

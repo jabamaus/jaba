@@ -158,3 +158,51 @@ jtest "overwrites flag and value options on successive calls" do
   a.get_option_value(:kv2).must_equal(3)
   a.get_option_value(:kv3).must_equal(4)
 end
+
+# TODO: port
+=begin
+# TODO: test on_set in conjunction with exporting
+jtest 'supports on_set hook' do
+  jaba(barebones: true) do
+    type :test do
+      attr :a do
+        # on_set executed in context of node so all attributes available
+        on_set do
+          b "#{a}_b"
+        end
+      end
+      attr :b do
+        # new value can be taken from block arg
+        on_set do |new_val|
+          c "#{new_val}_c"
+        end
+      end
+      attr :c
+    end
+    test :t do
+      a 1
+      b.must_equal("1_b")
+      c.must_equal("1_b_c")
+    end
+  end
+  assert_jaba_error "Error at #{src_loc('EF4427A6')}: Reentrancy detected in 't.a' attribute on_set.", trace: [__FILE__, '6631BC31', __FILE__, 'C16793AE'] do
+    jaba(barebones: true) do
+      type :test do
+        attr :a do
+          on_set do
+            b "#{a}_b" # 6631BC31
+          end
+        end
+        attr :b do
+          on_set do
+            a "#{b}_a" # EF4427A6
+          end
+        end
+      end
+      test :t do
+        a 1 # C16793AE
+      end
+    end
+  end
+end
+=end

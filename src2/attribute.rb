@@ -16,7 +16,7 @@ module JABA
     def src_loc = @last_call_location
 
     def attr_error(msg)
-      JABA.error(msg, backtrace: @last_call_location)
+      JABA.error(msg, errobj: self)
     end
 
     def call_validators

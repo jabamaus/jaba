@@ -1,30 +1,23 @@
 module JABA
-  class AttributeType < Documentable
-    def initialize(id, default: nil)
-      super()
-      @id = id
+  class AttributeType < Definition
+    def initialize(name, default: nil)
+      super(calling_location, name)
       @default = default
     end
 
-    def self.singleton = @instance ||= self.new.tap { |i| i.__validate }
+    def self.singleton = @instance ||= self.new.tap { |i| i.post_create }
 
-    def id = @id
-    def describe = "#{id} attribute type"
+    def describe = "'#{name.inspect_unquoted}' attribute type"
     def default = @default
 
-    def __validate
+    def from_cmdline(str, attr_def) = str    # override as necessary
+    def map_value(value) = value             # override as necessary
+    def validate_value(attr_def, value); end # override as necessary
+
+    def post_create
       super
-      __check(:@id)
-      @id.freeze
       @default.freeze
     end
-
-    def from_cmdline(str, attr_def) = str
-    def map_value(value) = value
-
-    def init_attr_def(attr_def); end
-    def post_init_attr_def(attr_def); end
-    def validate_value(attr_def, value); end
 
     def raise_type_error(value, expected)
       value_class = value.class
@@ -60,15 +53,41 @@ module JABA
       end
     end
 
-    def post_init_attr_def(attr_def)
-      if attr_def.array?
-        attr_def.flags [:no_sort, :allow_dupes]
-      end
-    end
+    # TODO: move to attribute def
+    #def post_init_attr_def(attr_def)
+    #  if attr_def.array?
+    #    attr_def.flags [:no_sort, :allow_dupes]
+    #  end
+    #end
 
     def validate_value(attr_def, value)
       if !value.boolean?
         raise_type_error(value, "[true|false]")
+      end
+    end
+  end
+
+  class AttributeTypeChoice < AttributeType
+    def initialize
+      super(:choice)
+      set_title "Choice attribute type"
+      set_note "Can take exactly one of a set of unique values"
+    end
+
+    def from_cmdline(str, attr_def)
+      items = attr_def.items
+      # Use find_index to allow for nil being a valid choice
+      index = items.find_index { |i| i.to_s == str }
+      if index.nil?
+        JABA.error("'#{str}' invalid value for #{attr_def.describe} - [#{items.map { |i| i.to_s }.join("|")}] expected", want_backtrace: false)
+      end
+      items[index]
+    end
+
+    def validate_value(attr_def, value)
+      items = attr_def.items
+      if !items.include?(value)
+        JABA.error("Must be one of #{items} but got '#{value.inspect_unquoted}'. See #{attr_def.property_last_call_loc(:items).describe}.")
       end
     end
   end
