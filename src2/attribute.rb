@@ -15,9 +15,7 @@ module JABA
     def read_only? = attr_def.has_flag?(:read_only)
     def src_loc = @last_call_location
 
-    def attr_error(msg)
-      JABA.error(msg, errobj: self)
-    end
+    def attr_error(msg) = JABA.error(msg, errobj: self)
 
     def call_validators
       begin
@@ -27,9 +25,7 @@ module JABA
       end
     end
 
-    def value_from_block(&block)
-      @node.eval_jdl(&block)
-    end
+    def value_from_block(&block) = @node.eval_jdl(&block)
   end
 
   class AttributeElement < AttributeBase
@@ -103,9 +99,7 @@ module JABA
       end
     end
 
-    def describe
-      "'#{@node.id}.#{@attr_def.name}' attribute"
-    end
+    def describe = "'#{@node.id}.#{@attr_def.name}' attribute"
 
     def value
       @last_call_location = if JABA.context.executing_jdl?
