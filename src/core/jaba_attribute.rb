@@ -291,7 +291,7 @@ module JABA
       if !@set
         if @default_block
           val = services.execute_attr_default_block(@node, @default_block)
-          @attr_def.attr_type.map_value(val)
+          @attr_def.jaba_attr_type.map_value(val)
         elsif services.in_attr_default_block?
           attr_error("Cannot read uninitialised #{describe} - it might need a default value")
         else
