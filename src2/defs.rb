@@ -84,6 +84,7 @@ module JABA
       @items = []
       @default = nil
       @default_is_block = false
+      @default_set = false
     end
 
     def describe = "'#{@name.inspect_unquoted}' #{@variant == :single ? "" : "#{@variant} "}attribute"
@@ -125,8 +126,10 @@ module JABA
 
     def get_default = @default
     def default_is_block? = @default_is_block
+    def default_set? = @default_set
 
     def set_default(val = nil, &block)
+      @default_set = true
       if block_given?
         @default = block
         @default_is_block = true
@@ -137,10 +140,7 @@ module JABA
 
     def post_create
       super
-      if @default.nil? && !attr_type.default.nil? && !has_flag?(:required)
-        @default = attr_type.default
-      end
-      @default.freeze if !@default.nil?
+      @default.freeze
       @flags.freeze
       @flag_options.freeze
 
@@ -157,6 +157,17 @@ module JABA
       super(src_loc, name, :single, attr_type)
     end
 
+    def post_create
+      # If default not specified by the user (single value attributes only), fall back to default for the attribute
+      # type, if there is one eg a string would be ''. Skip if the attribute is flagged as :required, in which case
+      # the user must supply the value in definitions.
+      #
+      if !default_set? && !attr_type.default.nil? && !has_flag?(:required)
+        @default = attr_type.default
+      end
+      super
+    end
+
     def validate_value(val)
       if val.is_a?(Enumerable)
         JABA.error("#{describe} must be a single value not a '#{val.class}'")
@@ -166,7 +177,7 @@ module JABA
     def set_default(val = nil, &block)
       super
       if !default_is_block? && @default.is_a?(Enumerable)
-        definition_error("'default' expects a single value but got '#{@default}'")
+        definition_error("'default' expects a single value but got '#{val}'")
       end
       begin
         attr_type.validate_value(self, val)
@@ -179,6 +190,18 @@ module JABA
   class AttributeArrayDefinition < AttributeDefinition
     def initialize(src_loc, name, attr_type)
       super(src_loc, name, :array, attr_type)
+    end
+
+    def set_default(val = nil, &block)
+      super
+      if !default_is_block? && !@default.array?
+        definition_error("'default' expects an array but got '#{val}'")
+      end
+      #begin
+        #attr_type.validate_value(self, val)
+      #rescue => e
+      #  definition_error("'default' invalid: #{e.message}")
+      #end
     end
   end
 

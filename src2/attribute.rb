@@ -36,9 +36,10 @@ module JABA
       @value_options = nil
     end
 
+    def to_s = "#{@attr_def} value=#{@value}"
     def value = @value
 
-    def set(*args, validate: true, **kwargs, &block)
+    def set(*args, __validate: true, __call_on_set: true, **kwargs, &block)
       @last_call_location = if JABA.context.executing_jdl?
           $last_call_location
         else
@@ -57,7 +58,7 @@ module JABA
       # Take a deep copy of value_options so they are private to this attribute
       @value_options = kwargs.empty? ? {} : Marshal.load(Marshal.dump(kwargs))
 
-      if validate
+      if __validate
         @flag_options.each do |f|
           if !attr_def.has_flag_option?(f)
             attr_error("Invalid flag option '#{f.inspect_unquoted}' passed to #{describe}. Valid flags are #{attr_def.get_flag_options}")
@@ -94,8 +95,8 @@ module JABA
   class AttributeSingle < AttributeElement
     def initialize(attr_def, node)
       super
-      if !attr_def.default_is_block? && !attr_def.get_default.nil?
-        set(attr_def.get_default)
+      if attr_def.default_set? && !attr_def.default_is_block?
+        set(attr_def.get_default, __call_on_set: false)
       end
     end
 
@@ -110,6 +111,7 @@ module JABA
       if !set?
         if attr_def.default_is_block?
           val = JABA.context.execute_attr_default_block(self)
+          @attr_def.attr_type.map_value(val)
         elsif JABA.context.in_attr_default_block?
           outer = JABA.context.outer_default_attr_read
           outer.attr_error("#{outer.describe} default read uninitialised #{describe} - #{describe} might need a default value")

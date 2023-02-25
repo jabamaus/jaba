@@ -3,27 +3,25 @@ JDL.node "test_attribute_array"
 jtest "supports a default" do
   # It validates default is an array or single value
   #
-  assert_jaba_error "Error at #{src_loc("C3E1CABD")}: 'default' expects an array but got '{:a=>:b}'." do
+  assert_jaba_error "Error at #{src_loc("C3E1CABD")}: 'invalid_default' array attribute invalid: 'default' expects an array but got '{:a=>:b}'.", ignore_trace: true do
     JDL.attr_array "test_attribute_array|invalid_default" do
       default({ a: :b }) # C3E1CABD
     end
   end
-=begin
+
   # It validates default is an array when block form is used
   #
-  assert_jaba_error "Error at #{src_loc('9F62104F')}: 't.a' array attribute default requires an array not a 'Integer'." do
-    jaba(barebones: true) do
-      type :test do
-        attr_array :a do # 9F62104F
-          default do
-            1
-          end
-        end
+  assert_jaba_error "Error at #{src_loc('9F62104F')}: 't.invalid_default_block' array attribute default requires an array not a 'Integer'." do
+    JDL.attr_array "test_attribute_array|invalid_default_block" do
+      default do
+        1 # 9F62104F
       end
-      test :t # need an instance of test in order for block style defaults to be called
+    end
+    jaba do
+      test_attribute_array :t # need an instance of test in order for block style defaults to be called
     end
   end
-  
+=begin
   # It validates default elements respect attribute type
   #
   assert_jaba_error "Error at #{src_loc('7F5657F4')}: ':a' array attribute default invalid: 'not a symbol' is a string - expected a symbol." do

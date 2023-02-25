@@ -41,7 +41,7 @@ jtest "rejects modifying returned values" do
   assert_jaba_error "Error at #{src_loc("45925C07")}: Can't modify read only String: \"b\"", ignore_trace: true do
     jaba do
       test_attr_single :t do
-        a +("b")
+        a "b"
         val = a
         val.upcase! # 45925C07
       end

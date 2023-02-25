@@ -9,6 +9,7 @@ require_relative "file_manager"
 require_relative "node"
 require_relative "attribute_type"
 require_relative "attribute"
+require_relative "attribute_array"
 require_relative "context"
 
 module JABA
