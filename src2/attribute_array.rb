@@ -62,9 +62,9 @@ module JABA
       # value to make use of other attributes.
       #
       if !set? && attr_def.default_is_block?
-        default_values = JABA.context.execute_attr_default_block(@node, attr_def.get_default)
+        default_values = JABA.context.execute_attr_default_block(self)
         if !default_values.array?
-          attr_error("#{describe} default requires an array not a '#{default_values.class}'")
+          JABA.error("#{describe} default requires an array not a '#{default_values.class}'", errobj: attr_def.get_default)
         end
         values.prepend(*default_values)
       end

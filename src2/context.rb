@@ -14,6 +14,10 @@ module JABA
   def self.error(msg, errobj: nil, want_backtrace: true, backtrace: nil)
     msg = msg.ensure_end_with(".") if msg =~ /[a-zA-Z0-9']$/
     e = JabaError.new(msg)
+    if errobj.proc?
+      backtrace = "#{errobj.source_location[0]}:#{errobj.source_location[1]}"
+      errobj = nil
+    end
     bt = Array(errobj&.src_loc || backtrace || caller).map(&:to_s)
     e.set_backtrace(bt)
     e.instance_variable_set(:@want_backtrace, want_backtrace)

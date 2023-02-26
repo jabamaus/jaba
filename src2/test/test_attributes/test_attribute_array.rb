@@ -13,8 +13,8 @@ jtest "supports a default" do
   #
   assert_jaba_error "Error at #{src_loc('9F62104F')}: 't.invalid_default_block' array attribute default requires an array not a 'Integer'." do
     JDL.attr_array "test_attribute_array|invalid_default_block" do
-      default do
-        1 # 9F62104F
+      default do # 9F62104F
+        1
       end
     end
     jaba do
