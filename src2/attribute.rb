@@ -95,7 +95,7 @@ module JABA
   class AttributeSingle < AttributeElement
     def initialize(attr_def, node)
       super
-      if !attr_def.default_set? && !attr_def.default_is_block?
+      if attr_def.default_set? && !attr_def.default_is_block?
         set(attr_def.get_default, __call_on_set: false)
       end
     end

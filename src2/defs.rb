@@ -163,7 +163,7 @@ module JABA
       # the user must supply the value in definitions.
       #
       if !default_set? && !attr_type.default.nil? && !has_flag?(:required)
-        @default = attr_type.default
+        set_default(attr_type.default)
       end
       super
     end
