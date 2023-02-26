@@ -54,7 +54,7 @@ end
 
 jtest "works with required flag" do
   assert_jaba_file_error "'t.bool_attr' attribute requires a value.", "3C869B0D" do
-%Q{
+    %Q{
 test_bool_required :t do # 3C869B0D
 end
 }

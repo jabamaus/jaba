@@ -11,11 +11,12 @@ jtest "catches jdl errors in block form" do
 end
 
 jtest "catches jdl errors in jaba file form" do
-  fullpath = "#{temp_dir}/test.jaba"
-  IO.write(fullpath, "\n\napp 'invalid id' do\nend\n")
-  assert_jaba_error "Error at test.jaba:3: 'invalid id' is an invalid id. Must be an alphanumeric " \
-                    "string or symbol (-_. permitted), eg :my_id, 'my-id', 'my.id'." do
-    jaba(src_root: fullpath)
+  assert_jaba_file_error "'invalid id' is an invalid id. Must be an alphanumeric " \
+                         "string or symbol (-_. permitted), eg :my_id, 'my-id', 'my.id'.", "32C24F15" do
+    %Q{
+app 'invalid id' do # 32C24F15
+end
+}
   end
 end
 
@@ -30,10 +31,8 @@ jtest "catches constant errors in block form" do
 end
 
 jtest "catches constant errors in jaba file form" do
-  fullpath = "#{temp_dir}/test.jaba"
-  IO.write(fullpath, "BADCODE")
-  assert_jaba_error "Error at test.jaba:1: uninitialized constant JDL::TopLevelAPI::BADCODE." do
-    jaba(src_root: fullpath)
+  assert_jaba_file_error "uninitialized constant JDL::TopLevelAPI::BADCODE.", 1 do
+    "BADCODE"
   end
 end
 
@@ -69,10 +68,12 @@ jtest "allows errors to be raised from definitions in block form" do
 end
 
 jtest "allows errors to be raised from definitions in jaba file form" do
-  fullpath = "#{temp_dir}/test.jaba"
-  IO.write(fullpath, "app :test do\n  fail \"Error msg\"\nend")
-  assert_jaba_error "Error at test.jaba:2: Error msg.", ignore_trace: true do
-    jaba(src_root: fullpath)
+  assert_jaba_file_error "Error msg.", "D3BBCE42" do
+    %Q{
+app :test do
+  fail "Error msg" # D3BBCE42
+end
+}
   end
 end
 

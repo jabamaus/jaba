@@ -30,7 +30,7 @@ end
 # TODO: need a way of registering into all APIs
 JDL.method "app|fail" do
   title "Raise an error"
-  on_called do |msg| JABA.error(msg) end
+  on_called do |msg| JABA.error(msg, want_backtrace: false) end
 end
 
 JDL.node "lib" do
