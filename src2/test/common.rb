@@ -48,6 +48,15 @@ class JTestCaseAPI
     e
   end
 
+  def assert_jaba_file_error(msg, tag, &block)
+    src_loc_ = calling_location
+    fn = "#{temp_dir}/test.jaba"
+    str = block.call
+    make_file(fn, content: str)
+    op = jaba(src_root: fn, want_exceptions: false)
+    op[:error].must_equal("Error at #{src_loc(tag, file: fn)}: #{msg}", src_loc: src_loc_)
+  end
+
   def assert_jaba_warn(msg, expected_file = nil, tag = nil)
     src_loc = calling_location
     out, = capture_io do

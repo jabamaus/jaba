@@ -30,12 +30,12 @@ jtest "requires default to be true or false" do
 end
 
 jtest "only allows boolean values" do
-  assert_jaba_error "Error at #{src_loc("0108AEFB")}: 'b.bool_attr_default_false' attribute invalid: '1' is a integer - expected [true|false]" do
-    jaba do
-      test_bool :b do
-        bool_attr_default_false 1 # 0108AEFB
-      end
-    end
+  assert_jaba_file_error "'b.bool_attr_default_false' attribute invalid: '1' is a integer - expected [true|false]", "0108AEFB" do
+    %Q{
+test_bool :b do
+  bool_attr_default_false 1 # 0108AEFB
+end
+}
   end
   jaba do
     test_bool :t do
@@ -53,11 +53,11 @@ JDL.attr "test_bool_required|bool_attr", type: :bool do
 end
 
 jtest "works with required flag" do
-  assert_jaba_error "Error at #{src_loc("3C869B0D")}: 't.bool_attr' attribute requires a value." do
-    jaba do
-      test_bool_required :t do # 3C869B0D
-      end
-    end
+  assert_jaba_file_error "'t.bool_attr' attribute requires a value.", "3C869B0D" do
+%Q{
+test_bool_required :t do # 3C869B0D
+end
+}
   end
 end
 
