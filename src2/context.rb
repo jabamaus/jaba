@@ -59,7 +59,7 @@ module JABA
         profile(input.profile?) do
           run
         end
-      rescue Exception => e
+      rescue StandardError, ScriptError, JabaError => e
         log e.full_message(highlight: false), :ERROR
         bt = @executing_jdl ? get_jdl_backtrace(e.backtrace) : e.backtrace
         want_backtrace = !@executing_jdl
