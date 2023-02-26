@@ -38,25 +38,25 @@ JDL.attr "test_attr_single|read_only" do
 end
 
 jtest "rejects modifying returned values" do
-  assert_jaba_error "Error at #{src_loc("45925C07")}: Can't modify read only String: \"b\"", ignore_trace: true do
-    jaba do
-      test_attr_single :t do
-        a "b"
-        val = a
-        val.upcase! # 45925C07
-      end
-    end
+  assert_jaba_file_error "Can't modify read only String: \"b\"", "45925C07" do
+    %Q{
+test_attr_single :t do
+  a "b"
+  val = a
+  val.upcase! # 45925C07
+end
+}
   end
 end
 
 jtest "rejects modifying read only attributes" do
-  assert_jaba_error "Error at #{src_loc("D4AE68B1")}: 't.read_only' attribute is read only." do
-    jaba do
-      test_attr_single :t do
-        read_only.must_equal(1)
-        read_only 2 # D4AE68B1
-      end
-    end
+  assert_jaba_file_error "'t.read_only' attribute is read only.", "D4AE68B1" do
+    %Q{
+test_attr_single :t do
+  read_only.must_equal(1)
+  read_only 2 # D4AE68B1
+end
+}
   end
 end
 

@@ -431,7 +431,7 @@ module JABA
         node = Node.new(api_klass, id, $last_call_location, @top_level_node, &block)
         node.post_create
       rescue FrozenError => e
-        JABA.error(e.message.sub("frozen", "read only").capitalize_first, backtrace: e.backtrace)
+        JABA.error(e.message.sub("frozen", "read only").capitalize_first, backtrace: e.backtrace, want_backtrace: false)
       end
     end
 

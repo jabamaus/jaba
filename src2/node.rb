@@ -87,7 +87,7 @@ module JABA
       else
         a = get_attr(name)
         if @read_only
-          JABA.error("#{a.describe} is read only in this context")
+          JABA.error("#{a.describe} is read only in this context", want_backtrace: false)
         end
         a.set(*args, **kwargs, &block)
         return nil
