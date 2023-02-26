@@ -11,7 +11,7 @@ jtest "supports a default" do
 
   # It validates default is an array when block form is used
   #
-  assert_jaba_error "Error at #{src_loc('9F62104F')}: 't.invalid_default_block' array attribute default requires an array not a 'Integer'." do
+  assert_jaba_error "Error at #{src_loc("9F62104F")}: 't.invalid_default_block' array attribute default requires an array not a 'Integer'." do
     JDL.attr_array "test_attribute_array|invalid_default_block" do
       default do # 9F62104F
         1

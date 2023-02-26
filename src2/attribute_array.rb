@@ -8,29 +8,29 @@ module JABA
         set(attr_def.default, __call_on_set: false)
       end
     end
-    
+
     def to_s = "#{attr_def} [#{@elems.size} elems]"
     def describe = "'#{node.id}.#{attr_def.name}' array attribute"
 
     def value
       @last_call_location = if JABA.context.executing_jdl?
-        $last_call_location
-      else
-        calling_location
-      end
+          $last_call_location
+        else
+          calling_location
+        end
       if !set?
         if attr_def.default_is_block?
           values = JABA.context.execute_attr_default_block(@node, @default_block)
           at = attr_def.attr_type
-          return values.map{|e| at.map_value(e)}
+          return values.map { |e| at.map_value(e) }
         elsif JABA.context.in_attr_default_block?
           attr_error("Cannot read uninitialised #{describe} - it might need a default value")
         end
       end
-      values = @elems.map {|e| e.value}
+      values = @elems.map { |e| e.value }
       values.freeze # make read only
     end
-    
+
     # Options:
     #  - delete: Immediately delete specified elems from array
     #  - exclude: Cache exclusion and apply later. Allows order independent deletion and deletion
@@ -38,22 +38,22 @@ module JABA
     #
     def set(*args, prefix: nil, postfix: nil, delete: nil, exclude: nil, **kwargs, &block)
       @last_call_location = if JABA.context.executing_jdl?
-        $last_call_location
-      else
-        calling_location
-      end
-      
+          $last_call_location
+        else
+          calling_location
+        end
+
       # It is possible for values to be nil, which happens if no args are passed. This can happen if the user
       # wants to remove something from the array
       #
       values = if block_given?
-        value_from_block(&block)
-      else
-        #if @attr_def.compound?
-        #  attr_error("Compound attributes require a block")
-        #end
-        args.shift
-      end
+          value_from_block(&block)
+        else
+          #if @attr_def.compound?
+          #  attr_error("Compound attributes require a block")
+          #end
+          args.shift
+        end
 
       values = Array(values)
 
@@ -74,29 +74,29 @@ module JABA
 
         elem = make_elem(val, *args, add: false, **kwargs)
         existing = nil
-        if !attr_def.has_flag?(:allow_dupes)# && !@attr_def.compound?
-          existing = @elems.find{|e| e.raw_value == elem.raw_value}
+        if !attr_def.has_flag?(:allow_dupes) # && !@attr_def.compound?
+          existing = @elems.find { |e| e.raw_value == elem.raw_value }
         end
 
         if existing
           JABA.warn("Stripping duplicate '#{val.inspect_unquoted}' from #{describe}. See previous at #{existing.src_loc.describe}. " \
-            "Flag with :allow_dupes to allow.")
+          "Flag with :allow_dupes to allow.")
         else
           @elems << elem
         end
       end
 
       if delete
-        process_removes(Array(delete).map{|r| apply_pre_post_fix(prefix, postfix, r)}, mode: :delete)
+        process_removes(Array(delete).map { |r| apply_pre_post_fix(prefix, postfix, r) }, mode: :delete)
       end
       if exclude
-        @excludes.concat(Array(exclude).map{|r| apply_pre_post_fix(prefix, postfix, r)})
+        @excludes.concat(Array(exclude).map { |r| apply_pre_post_fix(prefix, postfix, r) })
       end
 
       @set = true
       nil
     end
-    
+
     def make_elem(val, *args, add: true, **kwargs)
       e = JabaAttributeElement.new(@attr_def, @node, self)
       e.set(val, *args, **kwargs)
@@ -135,9 +135,9 @@ module JABA
         val
       end
     end
-    
+
     def at(index) = @elems[index]
-    
+
     def visit_attr(&block)
       @elems.delete_if do |attr|
         attr.visit_attr(&block) == :delete ? true : false
@@ -167,7 +167,7 @@ module JABA
         end
       end
     end
-    
+
     def process_flags
       process_removes(@excludes, mode: :exclude)
       if !attr_def.has_flag?(:no_sort)

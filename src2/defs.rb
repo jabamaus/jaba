@@ -198,7 +198,7 @@ module JABA
         definition_error("'default' expects an array but got '#{val}'")
       end
       #begin
-        #attr_type.validate_value(self, val)
+      #attr_type.validate_value(self, val)
       #rescue => e
       #  definition_error("'default' invalid: #{e.message}")
       #end
