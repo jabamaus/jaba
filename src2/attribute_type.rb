@@ -49,7 +49,7 @@ module JABA
       when "false", "0"
         false
       else
-        JABA.error("'#{str}' invalid value for #{attr_def.describe} - [true|false|0|1] expected", want_backtrace: false)
+        JABA.error("'#{str}' invalid value for #{attr_def.describe} - [true|false|0|1] expected", want_err_line: false, want_backtrace: false)
       end
     end
 
@@ -79,7 +79,7 @@ module JABA
       # Use find_index to allow for nil being a valid choice
       index = items.find_index { |i| i.to_s == str }
       if index.nil?
-        JABA.error("'#{str}' invalid value for #{attr_def.describe} - [#{items.map { |i| i.to_s }.join("|")}] expected", want_backtrace: false)
+        JABA.error("'#{str}' invalid value for #{attr_def.describe} - [#{items.map { |i| i.to_s }.join("|")}] expected", want_err_line: false, want_backtrace: false)
       end
       items[index]
     end

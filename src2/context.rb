@@ -11,7 +11,7 @@ module JABA
   def self.running_tests! = @@running_tests = true
   def self.running_tests? = @@running_tests
 
-  def self.error(msg, errobj: nil, want_backtrace: true, backtrace: nil)
+  def self.error(msg, errobj: nil, want_err_line: true, want_backtrace: true, backtrace: nil)
     msg = msg.ensure_end_with(".") if msg =~ /[a-zA-Z0-9']$/
     e = JabaError.new(msg)
     if errobj.proc?
@@ -21,6 +21,7 @@ module JABA
     bt = Array(errobj&.src_loc || backtrace || caller).map(&:to_s)
     e.set_backtrace(bt)
     e.instance_variable_set(:@want_backtrace, want_backtrace)
+    e.instance_variable_set(:@want_err_line, want_err_line)
     raise e, cause: nil # Passing cause: nil allows a jaba error to wrap another jaba error without the first ones callstack getting printed too
   end
 
@@ -68,7 +69,9 @@ module JABA
         bt = @executing_jdl ? get_jdl_backtrace(e.backtrace) : e.backtrace
         want_backtrace = !@executing_jdl
         want_backtrace = e.instance_variable_get(:@want_backtrace) if e.is_a?(JabaError)
-        info = make_error_info(e.message, bt, exception: e)
+        want_err_line = true
+        want_err_line = e.instance_variable_get(:@want_err_line) if e.is_a?(JabaError)
+        info = make_error_info(e.message, bt, exception: e, want_err_line: want_err_line)
         output[:error] = want_backtrace ? info.full_message : info.message
         if @want_exceptions
           e = JabaError.new(info.message)
@@ -363,7 +366,7 @@ module JABA
 
     ErrorInfo = Data.define(:message, :full_message, :file, :line)
 
-    def make_error_info(msg, backtrace, exception: nil)
+    def make_error_info(msg, backtrace, exception: nil, want_err_line: true)
       m = String.new
       case exception
       when nil
@@ -385,12 +388,12 @@ module JABA
 
       # Extract file and line information from the error line.
       #
-      err_line =~ /^(.+):(\d+)/
-      file = Regexp.last_match(1)
-      line = Regexp.last_match(2).to_i
-
-      m << " at"
-      m << " #{file.basename}:#{line}"
+      if want_err_line && err_line =~ /^(.+):(\d+)/
+        file = Regexp.last_match(1)
+        line = Regexp.last_match(2).to_i
+        m << " at"
+        m << " #{file.basename}:#{line}"
+      end
       m << ": #{msg}"
       m.ensure_end_with!(".") if m =~ /[a-zA-Z0-9']$/
 
