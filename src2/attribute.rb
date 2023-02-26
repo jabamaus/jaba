@@ -7,6 +7,7 @@ module JABA
       @set = false
     end
 
+    def to_s = "#{type_id} attribute"
     def node = @node
     def type_id = @attr_def.type_id
     def attr_def = @attr_def
@@ -36,7 +37,6 @@ module JABA
       @value_options = nil
     end
 
-    def to_s = "#{@attr_def} value=#{@value}"
     def value = @value
 
     def set(*args, __validate: true, __call_on_set: true, **kwargs, &block)
@@ -95,7 +95,7 @@ module JABA
   class AttributeSingle < AttributeElement
     def initialize(attr_def, node)
       super
-      if attr_def.default_set? && !attr_def.default_is_block?
+      if !attr_def.default_set? && !attr_def.default_is_block?
         set(attr_def.get_default, __call_on_set: false)
       end
     end
