@@ -170,7 +170,7 @@ module JABA
 
     def validate_value(val)
       if val.is_a?(Enumerable)
-        JABA.error("#{describe} must be a single value not a '#{val.class}'")
+        yield "#{describe} must be a single value not a '#{val.class}'"
       end
     end
 
@@ -180,10 +180,8 @@ module JABA
         if val.is_a?(Enumerable)
           definition_error("'default' expects a single value but got '#{val}'")
         end
-        begin
-          attr_type.validate_value(self, val)
-        rescue => e
-          definition_error("'default' invalid: #{e.message}")
+        attr_type.validate_value(self, val) do |msg|
+          definition_error("'default' invalid: #{msg}")
         end
       end
     end
@@ -200,12 +198,10 @@ module JABA
         if !val.array?
           definition_error("'default' expects an array but got '#{val}'")
         end
-        begin
-          val.each do |elem|
-            attr_type.validate_value(self, elem)
+        val.each do |elem|
+          attr_type.validate_value(self, elem) do |msg|
+            definition_error("'default' invalid: #{msg}")
           end
-        rescue => e
-          definition_error("'default' invalid: #{e.message}")
         end
       end
     end

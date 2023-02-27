@@ -15,17 +15,7 @@ module JABA
     def required? = @attr_def.has_flag?(:required)
     def read_only? = attr_def.has_flag?(:read_only)
     def src_loc = @last_call_location
-
     def attr_error(msg) = JABA.error(msg, errobj: self)
-
-    def call_validators
-      begin
-        yield
-      rescue => e
-        attr_error("#{describe} invalid: #{e.message}")
-      end
-    end
-
     def value_from_block(&block) = @node.eval_jdl(&block)
   end
 
@@ -66,11 +56,13 @@ module JABA
           end
         end
         if !new_value.nil?
-          call_validators do
-            attr_type.validate_value(@attr_def, new_value)
-            attr_def.validate_value(new_value)
-            #@attr_def.call_block_property(:validate, new_value, @flag_options, **@value_options)
+          attr_type.validate_value(@attr_def, new_value) do |msg|
+            attr_error("#{describe} invalid: #{msg}")
           end
+          attr_def.validate_value(new_value) do |msg|
+            attr_error("#{describe} invalid: #{msg}")
+          end
+          #@attr_def.call_block_property(:validate, new_value, @flag_options, **@value_options)
         end
       end
       @value = new_value

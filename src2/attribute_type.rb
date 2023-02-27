@@ -19,12 +19,12 @@ module JABA
       @default.freeze
     end
 
-    def raise_type_error(value, expected)
+    def type_error(value, expected)
       value_class = value.class
       if value_class == TrueClass || value_class == FalseClass
         value_class = "boolean"
       end
-      JABA.error("'#{value.inspect_unquoted}' is a #{value_class.to_s.downcase} - expected #{expected}")
+      yield "'#{value.inspect_unquoted}' is a #{value_class.to_s.downcase} - expected #{expected}"
     end
   end
 
@@ -60,9 +60,9 @@ module JABA
     #  end
     #end
 
-    def validate_value(attr_def, value)
+    def validate_value(attr_def, value, &block)
       if !value.boolean?
-        raise_type_error(value, "[true|false]")
+        type_error(value, "[true|false]", &block)
       end
     end
   end
@@ -87,7 +87,7 @@ module JABA
     def validate_value(attr_def, value)
       items = attr_def.get_items
       if !items.include?(value)
-        JABA.error("Must be one of #{items} but got '#{value.inspect_unquoted}'")
+        yield "Must be one of #{items} but got '#{value.inspect_unquoted}'"
       end
     end
   end

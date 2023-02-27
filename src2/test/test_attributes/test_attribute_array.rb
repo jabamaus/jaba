@@ -11,7 +11,7 @@ jtest "supports a default" do
 
   # It validates default is an array when block form is used
   #
-  assert_jaba_error "Error at #{src_loc("9F62104F")}: 't.invalid_default_block' array attribute default requires an array not a 'Integer'." do
+  assert_jaba_error "Error at #{src_loc("9F62104F")}: 't.invalid_default_block' array attribute 'default' invalid: requires an array not a 'Integer'." do
     JDL.attr_array "test_attribute_array|invalid_default_block" do
       default do # 9F62104F
         1
@@ -25,26 +25,26 @@ jtest "supports a default" do
   # It validates default elements respect attribute type
   #
   assert_jaba_error "Error at #{src_loc('7F5657F4')}: 'invalid_default_elem' array attribute invalid: 'default' invalid: 'not a bool' is a string - expected [true|false]" do
-    JDL.attr_array "test_attribute_array|invalid_default_elem", type: :bool do
+    JDL.node "test_attribute_array2"
+    JDL.attr_array "test_attribute_array2|invalid_default_elem", type: :bool do
       default ['not a bool'] # 7F5657F4
     end
   end
-=begin
+
   # It validates default elements respect attribute type when block form used
   #
-  assert_jaba_error "Error at #{src_loc('33EF0612')}: 't.a' array attribute invalid: 'not a symbol' is a string - expected a symbol." do
-    jaba(barebones: true) do
-      type :test do
-        attr_array :a, type: :symbol do # 33EF0612
-          default do
-            ['not a symbol']
-          end
-        end
+  assert_jaba_error "Error at #{src_loc('33EF0612')}: 't.invalid_default_elem_with_block' array attribute 'default' invalid: 'not a bool' is a string - expected [true|false]" do
+    JDL.node "test_attribute_array3"
+    JDL.attr_array "test_attribute_array3|invalid_default_elem_with_block", type: :bool do # 33EF0612
+      default do
+        ['not a bool']
       end
-      test :t # need an instance of test in order for block style defaults to be called
+    end
+    jaba do
+      test_attribute_array3 :t # need an instance of test in order for block style defaults to be called
     end
   end
-
+=begin
   # TODO: test flag/value options
   jaba(barebones: true) do
     type :test do
