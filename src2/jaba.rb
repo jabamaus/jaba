@@ -107,7 +107,7 @@ if __FILE__ == $PROGRAM_NAME
       return 0
     end
 
-    def help_string = "Jaba build system generator v#{VERSION}"
+    def help_string = "Jaba build system generator v#{JABA::VERSION}"
     def error(msg) = $stderr.puts msg
   end
 
