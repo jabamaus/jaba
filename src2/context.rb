@@ -86,7 +86,7 @@ module JABA
     end
 
     def run
-      duration = Kernel.milli_timer do
+      duration = milli_timer do
         do_run
       end
 

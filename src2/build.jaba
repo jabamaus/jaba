@@ -9,5 +9,3 @@ end
 lib :mylib do
   root 'mylibroot'
 end
-
-BADCODE

@@ -1,5 +1,13 @@
 require "fileutils"
 require_relative "../../jrf/jrf/core_ext"
+
+if ARGV.include?('--debug') || ARGV.include?('-d')
+  class BasicObject
+    include ::RdbgBasicObjectMixin
+  end
+  debug!
+end
+
 require_relative "../../jrf/jrf/api_builder"
 require_relative "core_ext"
 require_relative "version"
