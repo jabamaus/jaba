@@ -176,13 +176,15 @@ module JABA
 
     def set_default(val = nil, &block)
       super
-      if !default_is_block? && @default.is_a?(Enumerable)
-        definition_error("'default' expects a single value but got '#{val}'")
-      end
-      begin
-        attr_type.validate_value(self, val)
-      rescue => e
-        definition_error("'default' invalid: #{e.message}")
+      if !default_is_block?
+        if val.is_a?(Enumerable)
+          definition_error("'default' expects a single value but got '#{val}'")
+        end
+        begin
+          attr_type.validate_value(self, val)
+        rescue => e
+          definition_error("'default' invalid: #{e.message}")
+        end
       end
     end
   end
@@ -194,14 +196,18 @@ module JABA
 
     def set_default(val = nil, &block)
       super
-      if !default_is_block? && !@default.array?
-        definition_error("'default' expects an array but got '#{val}'")
+      if !default_is_block?
+        if !val.array?
+          definition_error("'default' expects an array but got '#{val}'")
+        end
+        begin
+          val.each do |elem|
+            attr_type.validate_value(self, elem)
+          end
+        rescue => e
+          definition_error("'default' invalid: #{e.message}")
+        end
       end
-      #begin
-      #attr_type.validate_value(self, val)
-      #rescue => e
-      #  definition_error("'default' invalid: #{e.message}")
-      #end
     end
   end
 

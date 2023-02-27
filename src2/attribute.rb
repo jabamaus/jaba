@@ -37,6 +37,7 @@ module JABA
       @value_options = nil
     end
 
+    def describe = "'#{@node.id}.#{@attr_def.name}' attribute element"
     def value = @value
 
     def set(*args, __validate: true, __call_on_set: true, **kwargs, &block)

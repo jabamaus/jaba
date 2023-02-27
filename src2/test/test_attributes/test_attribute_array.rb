@@ -21,19 +21,15 @@ jtest "supports a default" do
       test_attribute_array :t # need an instance of test in order for block style defaults to be called
     end
   end
-=begin
+
   # It validates default elements respect attribute type
   #
-  assert_jaba_error "Error at #{src_loc('7F5657F4')}: ':a' array attribute default invalid: 'not a symbol' is a string - expected a symbol." do
-    jaba(barebones: true) do
-      type :test do
-        attr_array :a, type: :symbol do
-          default ['not a symbol'] # 7F5657F4
-        end
-      end
+  assert_jaba_error "Error at #{src_loc('7F5657F4')}: 'invalid_default_elem' array attribute invalid: 'default' invalid: 'not a bool' is a string - expected [true|false]", ignore_trace: true do
+    JDL.attr_array "test_attribute_array|invalid_default_elem", type: :bool do
+      default ['not a bool'] # 7F5657F4
     end
   end
-
+=begin
   # It validates default elements respect attribute type when block form used
   #
   assert_jaba_error "Error at #{src_loc('33EF0612')}: 't.a' array attribute invalid: 'not a symbol' is a string - expected a symbol." do
