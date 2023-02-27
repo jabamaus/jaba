@@ -1,7 +1,7 @@
 JDL.node "test_choice_attribute"
 
 jtest "requires items to be set" do
-  assert_jaba_error "Error at #{src_loc("A2047AFC")}: 'a' attribute invalid: 'items' must be set.", ignore_trace: true do
+  assert_jaba_error "Error at #{src_loc("A2047AFC")}: 'a' attribute invalid: 'items' must be set." do
     JDL.attr "test_choice_attribute|a", type: :choice # A2047AFC
   end
 end
@@ -15,7 +15,7 @@ jtest "warns if items contains duplicates" do
 end
 
 jtest "requires default to be in items" do
-  assert_jaba_error "Error at #{src_loc("8D88FA0D")}: 'c' attribute invalid: 'default' invalid: Must be one of [1, 2, 3] but got '4'.", ignore_trace: true do
+  assert_jaba_error "Error at #{src_loc("8D88FA0D")}: 'c' attribute invalid: 'default' invalid: Must be one of [1, 2, 3] but got '4'." do
     JDL.attr "test_choice_attribute|c", type: :choice do
       items [1, 2, 3]
       default 4 # 8D88FA0D

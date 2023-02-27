@@ -21,7 +21,7 @@ class JTestCaseAPI
     op
   end
 
-  def assert_jaba_error(msg, trace: [], ignore_trace: false, ignore_rest: false, hint: nil, &block)
+  def assert_jaba_error(msg, trace: nil, ignore_rest: false, hint: nil, &block)
     src_loc = calling_location
     e = assert_raises(JABA::JabaError, src_loc: src_loc, msg: hint) do
       yield
@@ -33,7 +33,7 @@ class JTestCaseAPI
       e.message.must_equal(msg, src_loc: src_loc)
     end
 
-    if trace && !ignore_trace
+    if trace
       backtrace = []
       trace.each_slice(2) do |elem|
         backtrace << "#{elem[0]}:#{src_line(elem[1], file: elem[0])}"

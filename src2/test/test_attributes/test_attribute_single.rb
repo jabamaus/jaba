@@ -2,7 +2,7 @@ JDL.node "test_attr_single"
 JDL.attr "test_attr_single|single"
 
 jtest "only accepts single values" do
-  assert_jaba_error "Error at #{src_loc("787CC36C")}: 'single_invalid_default' attribute invalid: 'default' expects a single value but got '[]'.", ignore_trace: true do
+  assert_jaba_error "Error at #{src_loc("787CC36C")}: 'single_invalid_default' attribute invalid: 'default' expects a single value but got '[]'." do
     JDL.attr "test_attr_single|single_invalid_default" do
       default [] # 787CC36C
     end
@@ -111,7 +111,7 @@ JDL.attr "test_attr_single|default_tries_to_set" do
 end
 
 jtest "fails if default block sets attribute" do
-  assert_jaba_error "Error at #{src_loc("218296F2")}: 't.a' attribute is read only in this context.", ignore_trace: true do
+  assert_jaba_error "Error at #{src_loc("218296F2")}: 't.a' attribute is read only in this context." do
     jaba do
       test_attr_single :t do
         default_tries_to_set

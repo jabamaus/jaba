@@ -3,7 +3,7 @@ JDL.node "test_attribute_array"
 jtest "supports a default" do
   # It validates default is an array or single value
   #
-  assert_jaba_error "Error at #{src_loc("C3E1CABD")}: 'invalid_default' array attribute invalid: 'default' expects an array but got '{:a=>:b}'.", ignore_trace: true do
+  assert_jaba_error "Error at #{src_loc("C3E1CABD")}: 'invalid_default' array attribute invalid: 'default' expects an array but got '{:a=>:b}'." do
     JDL.attr_array "test_attribute_array|invalid_default" do
       default({ a: :b }) # C3E1CABD
     end
@@ -24,7 +24,7 @@ jtest "supports a default" do
 
   # It validates default elements respect attribute type
   #
-  assert_jaba_error "Error at #{src_loc('7F5657F4')}: 'invalid_default_elem' array attribute invalid: 'default' invalid: 'not a bool' is a string - expected [true|false]", ignore_trace: true do
+  assert_jaba_error "Error at #{src_loc('7F5657F4')}: 'invalid_default_elem' array attribute invalid: 'default' invalid: 'not a bool' is a string - expected [true|false]" do
     JDL.attr_array "test_attribute_array|invalid_default_elem", type: :bool do
       default ['not a bool'] # 7F5657F4
     end

@@ -3,7 +3,7 @@
 
 jtest "catches jdl errors in block form" do
   assert_jaba_error "Error at #{src_loc("49EBF5E4")}: 'invalid id' is an invalid id. Must be an " \
-                    "alphanumeric string or symbol (-_. permitted), eg :my_id, 'my-id', 'my.id'.", ignore_trace: true do
+                    "alphanumeric string or symbol (-_. permitted), eg :my_id, 'my-id', 'my.id'." do
     jaba do
       test "invalid id" # 49EBF5E4
     end
@@ -21,7 +21,7 @@ end
 end
 
 jtest "catches constant errors in block form" do
-  assert_jaba_error "Error at #{src_loc("138FA33C")}: uninitialized constant BADCODE.", ignore_trace: true do
+  assert_jaba_error "Error at #{src_loc("138FA33C")}: uninitialized constant BADCODE." do
     jaba do
       shared :a do
       end
@@ -58,7 +58,7 @@ jtest 'reports lines correctly when using shared modules' do
 end
 =end
 jtest "allows errors to be raised from definitions in block form" do
-  assert_jaba_error "Error at #{src_loc("7FAC4085")}: Error msg.", ignore_trace: true do
+  assert_jaba_error "Error at #{src_loc("7FAC4085")}: Error msg." do
     jaba do
       app :test do
         fail "Error msg" # 7FAC4085
