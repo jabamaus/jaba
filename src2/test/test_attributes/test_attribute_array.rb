@@ -238,3 +238,15 @@ jtest "supports prefix and postfix options" do
     end
   end
 end
+
+jtest "only strings support prefix and postfix" do
+  JDL.node "taa_D0741C68"
+  JDL.attr_array "taa_D0741C68|a"
+  assert_jaba_error "Error at #{src_loc("DBBF56B8")}: [prefix|postfix] can only be applied to string values." do
+    jaba do
+      taa_D0741C68 :t do
+        a [1, 2, 3], prefix: "a", postfix: "b" # DBBF56B8
+      end
+    end
+  end
+end

@@ -125,7 +125,7 @@ module JABA
     def apply_pre_post_fix(pre, post, val)
       if pre || post
         if !val.string?
-          attr_error("When setting #{describe} prefix/postfix option can only be used with string arrays")
+          attr_error("[prefix|postfix] can only be applied to string values")
         end
         "#{pre}#{val}#{post}"
       else
