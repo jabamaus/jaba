@@ -314,3 +314,15 @@ jtest "fails if deleting with regex on non-strings" do
     end
   end
 end
+
+jtest "warns if nothing deleted" do
+  JDL.node "taa_5CEE1A06"
+  JDL.attr_array "taa_5CEE1A06|a"
+  assert_jaba_warn "'[7, 8]' did not delete any elements", __FILE__, "D5F5139A" do
+    jaba do
+      taa_5CEE1A06 :t do
+        a [1, 2, 3, 4, 43], delete: [7, 8] # D5F5139A
+      end
+    end
+  end
+end
