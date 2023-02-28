@@ -225,3 +225,16 @@ jtest "validates element types are valid" do
     end
   end
 end
+
+jtest "supports prefix and postfix options" do
+  JDL.node "taa_E53E266F"
+  JDL.attr_array "taa_E53E266F|a" do
+    flags :no_sort, :allow_dupes
+  end
+  jaba do
+    taa_E53E266F :t do
+      a ["j", "a", "b", "a"], prefix: "1", postfix: "z"
+      a.must_equal ["1jz", "1az", "1bz", "1az"]
+    end
+  end
+end
