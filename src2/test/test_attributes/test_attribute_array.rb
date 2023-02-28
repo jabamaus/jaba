@@ -326,3 +326,58 @@ jtest "warns if nothing deleted" do
     end
   end
 end
+
+jtest "supports excluding elements" do
+  # TODO
+end
+
+jtest "gives a copy of value options to each element" do
+  JDL.node "taa_17019FCD"
+  opt1 = "opt1"
+  opt2 = "opt2"
+  JDL.attr_array "taa_17019FCD|a" do
+    value_option :opt1
+    value_option :opt2
+  end
+  op = jaba do
+    taa_17019FCD :t do
+      a [1, 2], opt1: opt1, opt2: opt2
+      a [3], opt1: opt1, opt2: opt2
+    end
+  end
+  t = op[:root].children[0]
+  a = t.get_attr("a")
+
+  attr = a.at(0)
+  attr.value.must_equal(1)
+  opt1val = attr.get_option_value(:opt1)
+  opt1val.wont_be_nil
+  opt1val.object_id.wont_equal(opt1.object_id)
+  opt1val.must_equal("opt1")
+  opt2val = attr.get_option_value(:opt2)
+  opt2val.wont_be_nil
+  opt2val.object_id.wont_equal(opt2.object_id)
+  opt2val.must_equal("opt2")
+
+  attr = a.at(1)
+  attr.value.must_equal(2)
+  opt1val = attr.get_option_value(:opt1)
+  opt1val.wont_be_nil
+  opt1val.object_id.wont_equal(opt1.object_id)
+  opt1val.must_equal("opt1")
+  opt2val = attr.get_option_value(:opt2)
+  opt2val.wont_be_nil
+  opt2val.object_id.wont_equal(opt2.object_id)
+  opt2val.must_equal("opt2")
+
+  attr = a.at(2)
+  attr.value.must_equal(3)
+  opt1val = attr.get_option_value(:opt1)
+  opt1val.wont_be_nil
+  opt1val.object_id.wont_equal(opt1.object_id)
+  opt1val.must_equal("opt1")
+  opt2val = attr.get_option_value(:opt2)
+  opt2val.wont_be_nil
+  opt2val.object_id.wont_equal(opt2.object_id)
+  opt2val.must_equal("opt2")
+end
