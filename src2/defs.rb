@@ -66,6 +66,7 @@ module JABA
     end
 
     def set_on_called(&block) = @on_called = block
+    def on_called = @on_called
 
     def post_create
       super

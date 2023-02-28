@@ -25,7 +25,7 @@ end
 
 JDL.method "puts" do
   title "Prints a line to stdout"
-  on_called do |str| puts str end
+  on_called do |str| Kernel.puts str end
 end
 
 JDL.method "shared" do

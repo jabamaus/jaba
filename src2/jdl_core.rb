@@ -50,7 +50,7 @@ module JDL
       meth_def.post_create
       klass.define_method(method_name) do |*args, **kwargs|
         $last_call_location = ::Kernel.caller_locations(1, 1)[0]
-        meth_def.instance_variable_get(:@on_called).call(*args, **kwargs)
+        meth_def.on_called&.call(*args, **kwargs)
       end
     end
   end
