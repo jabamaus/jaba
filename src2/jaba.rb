@@ -1,7 +1,7 @@
 require "fileutils"
 require_relative "../../jrf/jrf/core_ext"
 
-if ARGV.include?('--debug') || ARGV.include?('-d')
+if ARGV.include?("--debug") || ARGV.include?("-d")
   debug!
 end
 

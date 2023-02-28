@@ -28,7 +28,18 @@ module JABA
     end
 
     def describe = "'#{@node.id}.#{@attr_def.name}' attribute element"
-    def value = @value
+
+    def value
+      @last_call_location = if JABA.context.executing_jdl?
+          $last_call_location
+        else
+          calling_location
+        end
+      @value
+    end
+
+    # This can only be called after the value has had its final value set as it gives raw access to value.
+    def raw_value = @value
 
     def set(*args, __validate: true, __call_on_set: true, **kwargs, &block)
       @last_call_location = if JABA.context.executing_jdl?

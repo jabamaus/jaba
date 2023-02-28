@@ -20,7 +20,7 @@ module JABA
         end
       if !set?
         if attr_def.default_is_block?
-          values = JABA.context.execute_attr_default_block(@node, @default_block)
+          values = JABA.context.execute_attr_default_block(self)
           at = attr_def.attr_type
           return values.map { |e| at.map_value(e) }
         elsif JABA.context.in_attr_default_block?
