@@ -128,11 +128,19 @@ module JABA
       log "Starting Jaba at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}", section: true
       @input_block&.call(input)
       init_root_paths
+
       @top_level_node = Node.new(JDL::TopLevelAPI, "top_level", nil, nil)
       @output[:root] = @top_level_node
       JDL::TopLevelAPI.singleton.__internal_set_node(@top_level_node)
+
       set_top_level_attrs_from_input
       load_jaba_files
+
+      @top_level_node.visit do |n|
+        n.attributes.each do |a|
+          a.process_flags
+        end
+      end
     end
 
     def init_root_paths

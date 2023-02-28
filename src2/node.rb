@@ -58,6 +58,15 @@ module JABA
 
     def children = @children
 
+    def visit(&block)
+      yield self
+      @children.each do |c|
+        c.visit(&block)
+      end
+    end
+
+    def attributes = @attributes
+
     def get_attr(name, fail_if_not_found: true)
       a = @attribute_lookup[name]
       if !a && fail_if_not_found

@@ -182,3 +182,33 @@ jtest "handles duplicates" do
     end
   end
 end
+
+jtest "handles sorting" do
+  JDL.node "taa_7E3DDF5E"
+  JDL.attr_array "taa_7E3DDF5E|a"
+  JDL.attr_array "taa_7E3DDF5E|b"
+  JDL.attr_array "taa_7E3DDF5E|c"
+  JDL.attr_array "taa_7E3DDF5E|d"
+  JDL.attr_array "taa_7E3DDF5E|e", type: :bool
+  JDL.attr_array "taa_7E3DDF5E|f" do
+    flags :no_sort
+  end
+  op = jaba do
+    taa_7E3DDF5E :t do
+      a [5, 4, 2, 1, 3]
+      a.must_equal [5, 4, 2, 1, 3] # doesn't sort immediately
+      b ["e", "c", :a, "a", "A", :C] # sorts case-insensitively
+      c [10.34, 3, 800.1, 0.01, -1]
+      d [:e, :c, :a, :A, :C]
+      e [true, false, false, true] # never sorts a bool array
+      f [5, 4, 3, 2, 1]
+    end
+  end
+  t = op[:root].children[0]
+  t.get_attr("a").value.must_equal [1, 2, 3, 4, 5]
+  t.get_attr("b").value.must_equal [:a, "a", "A", "c", :C, "e"]
+  t.get_attr("c").value.must_equal [-1, 0.01, 3, 10.34, 800.1]
+  t.get_attr("d").value.must_equal [:a, :A, :c, :C, :e]
+  t.get_attr("e").value.must_equal [true, false, false, true]
+  t.get_attr("f").value.must_equal [5, 4, 3, 2, 1] # unsorted due to :no_sort
+end

@@ -17,6 +17,7 @@ module JABA
     def src_loc = @last_call_location
     def attr_error(msg) = JABA.error(msg, errobj: self)
     def value_from_block(&block) = @node.eval_jdl(&block)
+    def process_flags; end # override as necessary
 
     protected
 
@@ -95,6 +96,14 @@ module JABA
         end
       end
       @value_options[key]
+    end
+
+    def <=>(other)
+      if @value.respond_to?(:casecmp)
+        @value.to_s.casecmp(other.value.to_s) # to_s is required because symbols need to be compared to strings
+      else
+        @value <=> other.value
+      end
     end
   end
 
