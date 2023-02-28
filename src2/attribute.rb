@@ -17,6 +17,16 @@ module JABA
     def src_loc = @last_call_location
     def attr_error(msg) = JABA.error(msg, errobj: self)
     def value_from_block(&block) = @node.eval_jdl(&block)
+
+    protected
+
+    def record_last_call_location
+      @last_call_location = if JABA.context.executing_jdl?
+          $last_call_location
+        else
+          calling_location(1)
+        end
+    end
   end
 
   class AttributeElement < AttributeBase
@@ -30,11 +40,7 @@ module JABA
     def describe = "'#{@node.id}.#{@attr_def.name}' attribute element"
 
     def value
-      @last_call_location = if JABA.context.executing_jdl?
-          $last_call_location
-        else
-          calling_location
-        end
+      record_last_call_location
       @value
     end
 
@@ -42,11 +48,7 @@ module JABA
     def raw_value = @value
 
     def set(*args, __validate: true, __call_on_set: true, **kwargs, &block)
-      @last_call_location = if JABA.context.executing_jdl?
-          $last_call_location
-        else
-          calling_location
-        end
+      record_last_call_location
       if read_only? && set? # allow read only to be set the first time so they an be initialised
         attr_error("#{describe} is read only")
       end
@@ -107,11 +109,7 @@ module JABA
     def describe = "'#{@node.id}.#{@attr_def.name}' attribute"
 
     def value
-      @last_call_location = if JABA.context.executing_jdl?
-          $last_call_location
-        else
-          calling_location
-        end
+      record_last_call_location
       if !set?
         if attr_def.default_is_block?
           val = JABA.context.execute_attr_default_block(self)

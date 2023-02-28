@@ -13,11 +13,7 @@ module JABA
     def describe = "'#{node.id}.#{attr_def.name}' array attribute"
 
     def value
-      @last_call_location = if JABA.context.executing_jdl?
-          $last_call_location
-        else
-          calling_location
-        end
+      record_last_call_location
       if !set?
         if attr_def.default_is_block?
           values = JABA.context.execute_attr_default_block(self)
@@ -37,11 +33,7 @@ module JABA
     #             of elements added later by dependencies
     #
     def set(*args, prefix: nil, postfix: nil, delete: nil, exclude: nil, **kwargs, &block)
-      @last_call_location = if JABA.context.executing_jdl?
-          $last_call_location
-        else
-          calling_location
-        end
+      record_last_call_location
 
       # It is possible for values to be nil, which happens if no args are passed. This can happen if the user
       # wants to remove something from the array
