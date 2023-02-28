@@ -24,9 +24,9 @@ module JABA
       eval_jdl(&block) if block_given?
     end
 
-    def eval_jdl(&block)
+    def eval_jdl(...)
       @api_klass.singleton.__internal_set_node(self)
-      @api_klass.singleton.instance_eval(&block)
+      @api_klass.singleton.instance_exec(...)
     end
 
     def post_create
