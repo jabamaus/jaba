@@ -250,3 +250,55 @@ jtest "only strings support prefix and postfix" do
     end
   end
 end
+
+jtest "supports immediately deleting elements" do
+  JDL.node "taa_9CDE102F"
+  JDL.attr_array "taa_9CDE102F|a"
+  jaba do
+    taa_9CDE102F :t do
+      a [:a, :b], delete: [:a, :b]
+      a.must_equal []
+      a [:c, :d, :e]
+      a delete: :d
+      a delete: :e
+      a.must_equal [:c]
+      a delete: :c
+      a.must_equal []
+
+      a [1, 2, 3, 4]
+      a delete: [2, 3]
+      a.must_equal [1, 4]
+      a delete: 1
+      a delete: 4
+      a.must_equal []
+
+      # delete works with prefix and postfix options
+      #
+      a ["abc", "acc", "adc", "aec"]
+      a delete: ["c", "d"], prefix: "a", postfix: "c"
+      a.must_equal ["abc", "aec"]
+      a delete: ["abc", "aec"]
+      a.must_equal []
+
+      # delete works with regexes
+      #
+      a ["one", "two", "three", "four"]
+      a delete: [/o/, "three"]
+      a.must_equal []
+
+      a [:one, :two, :three, :four]
+      a delete: [/o/, :three]
+      a.must_equal []
+
+      # deletion can be conditional
+      #
+      a [:a, :b, :c, :d, :e]
+      a delete: ->(e) { (e == :d) || (e == :c) }
+      a.must_equal [:a, :b, :e]
+      a delete: ->(e) { true }
+      a.must_equal []
+      a [1, 2, 3, 4], delete: ->(e) { e > 2 }
+      a.must_equal [1, 2]
+    end
+  end
+end
