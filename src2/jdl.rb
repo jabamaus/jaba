@@ -13,6 +13,16 @@ JDL.flag :read_only do
   note "Specifies that the attribute can only be read and not set from user definitions. The value will be initialised inside Jaba"
 end
 
+JDL.flag :allow_dupes do
+  title "Array duplicates strategy"
+  note "Allows array attributes to contain duplicates. If not specified duplicates are stripped"
+  compatible? do |attr_def|
+    if !attr_def.array?
+      JABA.error("#{describe} is only allowed on array attributes")
+    end
+  end
+end
+
 JDL.method "puts" do
   title "Prints a line to stdout"
   on_called do |str| puts str end

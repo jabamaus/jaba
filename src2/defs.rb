@@ -144,7 +144,7 @@ module JABA
       @flags.freeze
       @flag_options.freeze
 
-      if attr_type.name == :choice && @items.empty?
+      if type_id == :choice && @items.empty?
         definition_error_post_create("'items' must be set")
       end
     end
@@ -204,6 +204,13 @@ module JABA
           end
         end
       end
+    end
+
+    def post_create
+      if type_id == :bool # Don't sort or strip dupes from arrays of bools
+        set_flags :no_sort, :allow_dupes
+      end
+      super
     end
   end
 

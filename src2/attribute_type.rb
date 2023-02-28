@@ -53,13 +53,6 @@ module JABA
       end
     end
 
-    # TODO: move to attribute def
-    #def post_init_attr_def(attr_def)
-    #  if attr_def.array?
-    #    attr_def.flags [:no_sort, :allow_dupes]
-    #  end
-    #end
-
     def validate_value(attr_def, value, &block)
       if !value.boolean?
         type_error(value, "[true|false]", &block)
