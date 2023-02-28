@@ -302,3 +302,15 @@ jtest "supports immediately deleting elements" do
     end
   end
 end
+
+jtest "fails if deleting with regex on non-strings" do
+  JDL.node "taa_A9526E37"
+  JDL.attr_array "taa_A9526E37|a"
+  assert_jaba_error "Error at #{src_loc("2CC0D619")}: delete with a regex can only operate on strings or symbols." do
+    jaba do
+      taa_A9526E37 :t do
+        a [1, 2, 3, 4, 43], delete: [/3/] # 2CC0D619
+      end
+    end
+  end
+end
