@@ -212,3 +212,16 @@ jtest "handles sorting" do
   t.get_attr("e").value.must_equal [true, false, false, true]
   t.get_attr("f").value.must_equal [5, 4, 3, 2, 1] # unsorted due to :no_sort
 end
+
+jtest "validates element types are valid" do
+  JDL.node "taa_57941538"
+  JDL.attr_array "taa_57941538|a", type: :bool
+  assert_jaba_error "Error at #{src_loc("F18B556A")}: 't.a' attribute element invalid: 'true' is a string - expected [true|false]" do
+    jaba do
+      taa_57941538 :t do
+        a [true, false, false, true]
+        a ["true"] # F18B556A
+      end
+    end
+  end
+end
