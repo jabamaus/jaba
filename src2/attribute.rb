@@ -76,7 +76,9 @@ module JABA
           attr_def.validate_value(new_value) do |msg|
             attr_error("#{describe} invalid: #{msg}")
           end
-          #@attr_def.call_block_property(:validate, new_value, @flag_options, **@value_options)
+          if attr_def.on_validate
+            node.eval_jdl(new_value, @flag_options, **@value_options, &attr_def.on_validate)
+          end
         end
       end
       @value = new_value

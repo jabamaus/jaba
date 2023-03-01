@@ -1,6 +1,6 @@
 module JDL
   FlagDefinitionAPI = APIBuilder.define(:title, :note, :example, :compatible?)
-  AttributeDefinitionAPI = APIBuilder.define(:title, :note, :example, :flags, :flag_options, :items, :value_option, :default)
+  AttributeDefinitionAPI = APIBuilder.define(:title, :note, :example, :flags, :flag_options, :items, :value_option, :validate, :default)
   MethodDefinitionAPI = APIBuilder.define(:title, :note, :example, :on_called)
 
   # BaseAPI is the blankest possible slate

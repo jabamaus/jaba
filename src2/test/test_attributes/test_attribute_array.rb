@@ -381,3 +381,24 @@ jtest "gives a copy of value options to each element" do
   opt2val.object_id.wont_equal(opt2.object_id)
   opt2val.must_equal("opt2")
 end
+
+=begin
+jtest 'supports setting a validator' do
+  JDL.node "taa_9F4BB819"
+  JDL.attr_array "taa_9F4BB819|a" do
+    validate do |val|
+      if val == 'invalid'
+        fail 'failed' # 78A6546B
+      end
+    end
+  end
+  assert_jaba_error "Error at #{src_loc('78A6546B')}: 't.a' array attribute invalid: failed.", trace: [__FILE__, 'C4C2D98C'] do
+    jaba do
+      taa_9F4BB819 :t do
+        a ['val']
+        a ['invalid'] # C4C2D98C
+      end
+    end
+  end
+end
+=end

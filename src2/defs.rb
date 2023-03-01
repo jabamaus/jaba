@@ -86,6 +86,7 @@ module JABA
       @default = nil
       @default_is_block = false
       @default_set = false
+      @on_validate = nil
     end
 
     def describe = "'#{@name.inspect_unquoted}' #{@variant == :single ? "" : "#{@variant} "}attribute"
@@ -105,6 +106,9 @@ module JABA
       @items.concat(items)
     end
 
+    def set_validate(&block) = @on_validate = block
+    def on_validate = @on_validate
+    
     ValueOption = Data.define(:name, :required, :items)
 
     def set_value_option(name, required: false, items: [])
