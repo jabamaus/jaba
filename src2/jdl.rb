@@ -23,24 +23,29 @@ JDL.flag :allow_dupes do
   end
 end
 
-JDL.method "puts" do
-  title "Prints a line to stdout"
-  on_called do |str| Kernel.puts str end
+JDL.method "print", scope: :global do
+  title "Prints a non-newline terminated string to stdout"
+  on_called do |str| Kernel.print(str) end
 end
 
-JDL.method "shared" do
+JDL.method "puts", scope: :global do
+  title "Prints a newline terminated string to stdout"
+  on_called do |str| Kernel.puts(str) end
+end
+
+JDL.method "fail", scope: :global do
+  title "Raise an error"
+  note "Stops execution"
+  on_called do |msg| JABA.error(msg, want_backtrace: false) end
+end
+
+JDL.method "shared", scope: :top_level do
   title "Define a shared definition"
   on_called do end
 end
 
 JDL.node "app" do
   title "Define an app"
-end
-
-# TODO: need a way of registering into all APIs
-JDL.method "app|fail" do
-  title "Raise an error"
-  on_called do |msg| JABA.error(msg, want_backtrace: false) end
 end
 
 JDL.node "lib" do
@@ -59,7 +64,7 @@ JDL.attr "app|config|rule|input" do #, type: :src_spec do
   title "TODO"
 end
 
-JDL.method "app|include", "lib|include" do
+JDL.method "include", scope: ["app", "lib"] do
   title "Include a shared definition"
   on_called do |id|
     JABA.context.include_shared(id)
@@ -71,7 +76,7 @@ JDL.attr "app|root", "lib|root" do #, type: :string do
   flags []
 end
 
-JDL.method "glob" do
+JDL.method "glob", scope: :top_level do
   title "glob files"
   on_called do
   end

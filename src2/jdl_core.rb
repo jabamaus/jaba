@@ -19,16 +19,14 @@ module JDL
     FlagDefinitionAPI.execute(fd, &block) if block_given?
   end
 
-  def self.node(*paths, &block)
+  def self.node(path, &block)
     src_loc = calling_location
-    paths.each do |path|
-      node_api_klass = api_class_from_path(path, create: true)
-      parent_path, item = path.split_jdl_path
-      parent_klass = api_class_from_path(parent_path)
-      parent_klass.define_method(item) do |*args, **kwargs, &node_block|
-        $last_call_location = ::Kernel.caller_locations(1, 1)[0]
-        JABA.context.create_node(node_api_klass, *args, **kwargs, &node_block)
-      end
+    node_api_klass = api_class_from_path(path, create: true)
+    parent_path, item = path.split_jdl_path
+    parent_klass = api_class_from_path(parent_path)
+    parent_klass.define_method(item) do |*args, **kwargs, &node_block|
+      $last_call_location = ::Kernel.caller_locations(1, 1)[0]
+      JABA.context.create_node(node_api_klass, *args, **kwargs, &node_block)
     end
   end
 
@@ -40,15 +38,22 @@ module JDL
     process_attr(calling_location, paths, JABA::AttributeArrayDefinition, type, &block)
   end
 
-  def self.method(*paths, &block)
+  def self.method(name, scope:, &block)
     src_loc = calling_location
-    paths.each do |path|
-      parent_path, method_name = path.split_jdl_path
+    Array(scope).each do |s|
+      parent_path = if s == :top_level
+        nil
+      elsif s == :global
+        :global
+      else
+        s
+      end
+
       klass = api_class_from_path(parent_path)
-      meth_def = JABA::MethodDefinition.new(src_loc, method_name)
+      meth_def = JABA::MethodDefinition.new(src_loc, name)
       MethodDefinitionAPI.execute(meth_def, &block) if block_given?
       meth_def.post_create
-      klass.define_method(method_name) do |*args, **kwargs|
+      klass.define_method(name) do |*args, **kwargs|
         $last_call_location = ::Kernel.caller_locations(1, 1)[0]
         meth_def.on_called&.call(*args, **kwargs)
       end
@@ -58,6 +63,8 @@ module JDL
   def self.api_class_from_path(path, create: false)
     if path.nil?
       return TopLevelAPI
+    elsif path == :global
+      return BaseAPI
     end
     name = "#{path.split("|").map { |p| p.capitalize_first }.join}API"
     if create
