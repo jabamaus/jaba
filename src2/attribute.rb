@@ -77,7 +77,11 @@ module JABA
             attr_error("#{describe} invalid: #{msg}")
           end
           if attr_def.on_validate
-            node.eval_jdl(new_value, @flag_options, **@value_options, &attr_def.on_validate)
+            begin
+              node.eval_jdl(new_value, @flag_options, **@value_options, &attr_def.on_validate)
+            rescue => e
+              attr_error("#{describe} invalid: #{e.message}")
+            end
           end
         end
       end
