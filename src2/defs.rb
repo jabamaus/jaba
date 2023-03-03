@@ -50,8 +50,11 @@ module JABA
   end
 
   class FlagDefinition < Definition
+    @@all = []
+    def self.all = @@all
     def initialize(src_loc, name)
       super
+      @@all << self
       @on_compatible = nil
     end
 

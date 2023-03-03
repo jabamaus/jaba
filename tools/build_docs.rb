@@ -5,7 +5,7 @@ class DocBuilder
 
   include CommonUtils
   
-  DOCS_REPO_DIR =               "#{JABA.install_dir}/../jaba_docs".cleanpath
+  DOCS_REPO_DIR =               "#{__dir__}/../../jaba_docs".cleanpath
   DOCS_HANDWRITTEN_DIR =        "#{DOCS_REPO_DIR}/handwritten"
   DOCS_MARKDOWN_DIR =           "#{DOCS_REPO_DIR}/markdown"
   DOCS_MARKDOWN_VERSIONED_DIR = "#{DOCS_REPO_DIR}/markdown/v#{JABA::VERSION}"
@@ -23,9 +23,8 @@ class DocBuilder
     doc_temp = "#{__dir__}/temp/doc"
 
     if !File.exist?(doc_temp)
-      FileUtils.mkdir(doc_temp)
+      FileUtils.makedirs(doc_temp)
     end
-    IO.write("#{doc_temp}/dummy.jaba", "")
 
     # Delete markdown and docs dirs completely as they will be regenerated
     #
@@ -42,16 +41,7 @@ class DocBuilder
 
     FileUtils.copy_file("#{DOCS_HANDWRITTEN_DIR}/mamd.css", "#{DOCS_HTML_DIR}/mamd.css")
     
-    op = JABA.run(want_exceptions: true) do |c|
-      c.src_root = c.build_root = doc_temp
-      c.global_attrs['target_host'] = 'vs2019'
-    end
-    @services = op[:services]
-
-    @file_manager = @services.file_manager
-    @jaba_types = @services.instance_variable_get(:@jaba_types)
-    @jaba_attr_types = @services.jaba_attr_types
-    @jaba_attr_flags = @services.instance_variable_get(:@jaba_attr_flags)
+    @file_manager = JABA::FileManager.new
 
     generate_handwritten
     generate_versioned_index
@@ -98,6 +88,7 @@ class DocBuilder
   def generate_reference_doc
     write_markdown_page('jaba_reference.md', 'Jaba language reference', versioned: true) do |w|
       w << ""
+=begin
       w << "- Types"
       @jaba_types.sort_by {|jt| jt.defn_id}.each do |jt|
         w << "  - [#{jt.defn_id}](#{jt.reference_manual_page})"
@@ -109,11 +100,11 @@ class DocBuilder
       @jaba_types.each do |jt|
         generate_jaba_type_reference(jt)
       end
-
+=end
       w << "- Attribute types"
-      @jaba_attr_types.each do |at|
-        w << "  - #{at.id}"
-      end
+      #@jaba_attr_types.each do |at|
+      #  w << "  - #{at.id}"
+      #end
 
       w << "- Attribute variants"
       w << "  - single"
@@ -121,8 +112,8 @@ class DocBuilder
       w << "  - hash"
 
       w << "- Attribute flags"
-      @jaba_attr_flags.each do |af|
-        w << "  - #{af.id}"
+      JABA::FlagDefinition.all.each do |fd|
+        w << "  - #{fd.name}"
       end
       w << ""
     end
