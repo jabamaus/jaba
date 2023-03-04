@@ -78,22 +78,20 @@ jtest "supports a default" do
   end
 end
 
-=begin
-jtest 'checks for accessing uninitialised attributes' do
+jtest "checks for accessing uninitialised attributes" do
+  JDL.node "taa_03B6773B"
+  JDL.attr "taa_03B6773B|a"
+  JDL.attr "taa_03B6773B|b"
+  JDL.attr_array "taa_03B6773B|c" do
+    default do
+      [a, b]
+    end
+  end
   # test with array attr default using an unset attr
   #
-  assert_jaba_error "Error at #{src_loc('C5ADC065')}: Cannot read uninitialised 't.b' attribute - it might need a default value.", trace: [__FILE__, '9BCB5240'] do
-    jaba(barebones: true) do
-      type :test do
-        attr :a
-        attr :b
-        attr_array :c do
-          default do
-            [a, b] # C5ADC065
-          end
-        end
-      end
-      test :t do
+  assert_jaba_error "Error at #{src_loc("9BCB5240")}: 't.c' array attribute default read uninitialised 't.b' attribute - 't.b' attribute might need a default value." do
+    jaba do
+      taa_03B6773B :t do
         a 1
         c # 9BCB5240
       end
@@ -102,23 +100,21 @@ jtest 'checks for accessing uninitialised attributes' do
 
   # test with another attr using unset array attr
   #
-  assert_jaba_error "Error at #{src_loc('5F23FC3F')}: Cannot read uninitialised 't.a' array attribute - it might need a default value.", trace: [__FILE__, '49323AB4'] do
-    jaba(barebones: true) do
-      type :test do
-        attr_array :a
-        attr :b do
-          default do
-            a[0] # 5F23FC3F
-          end
-        end
+  assert_jaba_error "Error at #{src_loc("49323AB4")}: 't.b' attribute default read uninitialised 't.a' array attribute - 't.a' array attribute might need a default value." do
+    JDL.node "taa_D7833DAF"
+    JDL.attr_array "taa_D7833DAF|a"
+    JDL.attr "taa_D7833DAF|b" do
+      default do
+        a[0]
       end
-      test :t do
+    end
+    jaba do
+      taa_D7833DAF :t do
         b # 49323AB4
       end
     end
   end
 end
-=end
 
 jtest "allows setting value with block" do
   JDL.node "taa_AEE0049A"

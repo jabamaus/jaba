@@ -20,7 +20,8 @@ module JABA
           at = attr_def.attr_type
           return values.map { |e| at.map_value(e) }
         elsif JABA.context.in_attr_default_block?
-          attr_error("Cannot read uninitialised #{describe} - it might need a default value")
+          outer = JABA.context.outer_default_attr_read
+          outer.attr_error("#{outer.describe} default read uninitialised #{describe} - #{describe} might need a default value")
         end
       end
       values = @elems.map { |e| e.value }
