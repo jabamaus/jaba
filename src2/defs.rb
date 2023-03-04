@@ -52,6 +52,7 @@ module JABA
   class FlagDefinition < Definition
     @@all = []
     def self.all = @@all
+
     def initialize(src_loc, name)
       super
       @@all << self
@@ -111,7 +112,7 @@ module JABA
 
     def set_validate(&block) = @on_validate = block
     def on_validate = @on_validate
-    
+
     ValueOption = Data.define(:name, :required, :items)
 
     def set_value_option(name, required: false, items: [])

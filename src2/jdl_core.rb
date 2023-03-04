@@ -42,12 +42,12 @@ module JDL
     src_loc = calling_location
     Array(scope).each do |s|
       parent_path = if s == :top_level
-        nil
-      elsif s == :global
-        :global
-      else
-        s
-      end
+          nil
+        elsif s == :global
+          :global
+        else
+          s
+        end
 
       klass = api_class_from_path(parent_path)
       meth_def = JABA::MethodDefinition.new(src_loc, name)

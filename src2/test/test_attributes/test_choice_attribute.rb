@@ -59,43 +59,26 @@ jtest 'rejects invalid choices' do
     end
   end
 end
-
-jtest 'can be set from global attrs' do
-  jaba(barebones: true, global_attrs: {
-    'a1': 'b',
-    'a2': '',
-    'a3': '1'
-    }) do
-    open_type :globals do
-      attr :a1, type: :choice do
-        items [:a, :b, :c]
-        default :a
-      end
-      attr :a2, type: :choice do
-        items [:a, :b, :c, nil]
-        default :a
-      end
-      attr :a3, type: :choice do
-        items [1, :a, 'b']
-        default 'b'
-      end
-    end
-    type :test
-    test :t do
-      globals.a1.must_equal :b
-      globals.a2.must_be_nil
-      globals.a3.must_equal 1
-    end
-  end
-
-  op = jaba(barebones: true, global_attrs: {'a': 'd'}, want_exceptions: false) do
-    open_type :globals do
-      attr :a, type: :choice do
-        items [:a, :b, :c]
-        default :a
-      end
-    end
-  end
-  op[:error].must_equal "'d' invalid value for ':a' attribute - [a|b|c] expected"
-end
 =end
+jtest "can be set from global attrs" do
+  JDL.attr "tca_CA9D4D22", type: :choice do
+    items [:a, :b, :c]
+    default :a
+  end
+  JDL.attr "tca_06FE9AE2", type: :choice do
+    items [:a, :b, :c, nil]
+    default :a
+  end
+  JDL.attr "tca_5A292247", type: :choice do
+    items [1, :a, "b"]
+    default "b"
+  end
+  jaba(global_attrs: { 'tca_CA9D4D22': "b", 'tca_06FE9AE2': "", 'tca_5A292247': "1" }) do
+    tca_CA9D4D22.must_equal :b
+    tca_06FE9AE2.must_be_nil
+    tca_5A292247.must_equal 1
+  end
+
+  op = jaba(global_attrs: { 'tca_CA9D4D22': "d" }, want_exceptions: false)
+  op[:error].must_equal "Error: 'd' invalid value for 'tca_CA9D4D22' attribute - [a|b|c] expected."
+end

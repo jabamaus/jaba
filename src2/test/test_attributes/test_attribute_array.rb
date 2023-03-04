@@ -382,20 +382,20 @@ jtest "gives a copy of value options to each element" do
   opt2val.must_equal("opt2")
 end
 
-jtest 'supports setting a validator' do
+jtest "supports setting a validator" do
   JDL.node "taa_9F4BB819"
   JDL.attr_array "taa_9F4BB819|a" do
     validate do |val|
-      if val == 'invalid'
-        fail 'failed'
+      if val == "invalid"
+        fail "failed"
       end
     end
   end
-  assert_jaba_error "Error at #{src_loc('78A6546B')}: 't.a' attribute element invalid: failed." do
+  assert_jaba_error "Error at #{src_loc("78A6546B")}: 't.a' attribute element invalid: failed." do
     jaba do
       taa_9F4BB819 :t do
-        a ['val']
-        a ['invalid'] # 78A6546B
+        a ["val"]
+        a ["invalid"] # 78A6546B
       end
     end
   end
