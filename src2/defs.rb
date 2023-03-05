@@ -226,6 +226,10 @@ module JABA
   class AttributeHashDefinition < AttributeDefinition
     def initialize(src_loc, name, attr_type)
       super(src_loc, name, :hash, attr_type)
+      @on_validate_key = nil
     end
+
+    def set_validate_key(&block) = @on_validate_key = block
+    def on_validate_key = @on_validate_key
   end
 end

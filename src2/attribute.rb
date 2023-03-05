@@ -28,6 +28,14 @@ module JABA
           calling_location(1)
         end
     end
+
+    def call_validators
+      begin
+        yield
+      rescue => e
+        attr_error("#{describe} invalid: #{e.message}")
+      end
+    end
   end
 
   class AttributeElement < AttributeBase
@@ -71,6 +79,7 @@ module JABA
           end
         end
         if !new_value.nil?
+          # TODO: change back to call_validators
           attr_type.validate_value(@attr_def, new_value) do |msg|
             attr_error("#{describe} invalid: #{msg}")
           end

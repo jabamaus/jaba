@@ -1,6 +1,6 @@
 module JDL
   FlagDefinitionAPI = APIBuilder.define(:title, :note, :example, :compatible?)
-  AttributeDefinitionAPI = APIBuilder.define(:title, :note, :example, :flags, :flag_options, :items, :value_option, :validate, :default)
+  AttributeDefinitionAPI = APIBuilder.define(:title, :note, :example, :flags, :flag_options, :items, :value_option, :validate, :validate_key, :default)
   MethodDefinitionAPI = APIBuilder.define(:title, :note, :example, :on_called)
 
   # BaseAPI is the blankest possible slate
@@ -36,6 +36,10 @@ module JDL
 
   def self.attr_array(*paths, type: nil, &block)
     process_attr(calling_location, paths, JABA::AttributeArrayDefinition, type, &block)
+  end
+
+  def self.attr_hash(*paths, type: nil, &block)
+    process_attr(calling_location, paths, JABA::AttributeHashDefinition, type, &block)
   end
 
   def self.method(name, scope:, &block)

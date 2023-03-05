@@ -1,4 +1,3 @@
-=begin
 # TODO: validate key type is of specfied key_type
 jtest 'supports a default' do
   jaba(barebones: true) do
@@ -434,4 +433,3 @@ jtest 'supports on_set hook' do
     end
   end
 end
-=end

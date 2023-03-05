@@ -1,7 +1,7 @@
 module JABA
   class AttributeHash < AttributeBase
     def initialize(attr_def, node)
-      super(attr_def, node, self)
+      super(attr_def, node)
       @hash = {}
       @in_on_set = false
       if attr_def.default_set? && !@default_block
@@ -13,49 +13,47 @@ module JABA
 
     # For ease of debugging.
     #
-    def to_s = "#{@attr_def} {#{@hash.size} elems}"
+    def to_s = "#{attr_def} {#{@hash.size} elems}"
 
     # Used in error messages.
     #
-    def do_describe = "'#{@node.defn_id}.#{@attr_def.defn_id}' hash attribute"
+    def describe = "'#{node.id}.#{attr_def.name}' hash attribute"
 
     # Returns a read only hash of key->attribute values. Expensive because it must map attributes to their values.
     #
-    def value(jdl_call_loc = nil)
-      @last_call_location = jdl_call_loc if jdl_call_loc
-      if !@set
-        if @default_block
-          default_hash = services.execute_attr_default_block(@node, @default_block)
-          at = @attr_def.jaba_attr_type
+    def value
+      record_last_call_location
+      if !set?
+        if attr_def.default_is_block?
+          default_hash = JABA.context.execute_attr_default_block(self)
+          at = attr_def.attr_type
           return default_hash.transform_values { |e| at.map_value(e) }
-        elsif services.in_attr_default_block?
-          attr_error("Cannot read uninitialised #{describe} - it might need a default value")
+        elsif JABA.context.in_attr_default_block?
+          outer = JABA.context.outer_default_attr_read
+          outer.attr_error("#{outer.describe} default read uninitialised #{describe} - #{describe} might need a default value")
         end
       end
-      values = @hash.transform_values { |e| e.value(jdl_call_loc) }
-      if !@attr_def.reference? # read only, enforce by freezing, unless value is a node
-        values.freeze
-      end
-      values
+      values = @hash.transform_values { |e| e.value }
+      values.freeze # make read only
     end
 
-    def set(*args, no_keyval: false, __jdl_call_loc: nil, **keyval_args, &block)
-      @last_call_location = __jdl_call_loc if __jdl_call_loc
+    def set(*args, __no_keyval: false, **kwargs, &block)
+      record_last_call_location
 
       key = val = nil
-      if !no_keyval
+      if !__no_keyval
         if args.empty?
-          attr_error("#{describe} requires a key/value eg \"#{defn_id} :my_key, 'my value'\"")
+          attr_error("#{describe} requires a key/value eg \"#{attr_def.name} :my_key, 'my value'\"")
         end
         key = args.shift
 
         # If block given, use it to evaluate value
         #
         val = if block_given?
-            value_from_block(__jdl_call_loc, id: "#{@attr_def.defn_id}|#{key}", block_args: key, &block)
+            value_from_block(&block)
           else
             if args.empty?
-              attr_error("#{describe} requires a key/value eg \"#{defn_id} :my_key, 'my value'\"")
+              attr_error("#{describe} requires a key/value eg \"#{attr_def.name} :my_key, 'my value'\"")
             end
             args.shift
           end
@@ -65,20 +63,20 @@ module JABA
       # and merge them into the hash. Defaults specified in blocks are handled lazily to allow the default
       # value to make use of other attributes.
       #
-      if !@set && @default_block
-        default_hash = services.execute_attr_default_block(@node, @default_block)
+      if !set? && attr_def.default_is_block?
+        default_hash = services.execute_attr_default_block(self)
         if !default_hash.hash?
           attr_error("#{describe} default requires a hash not a '#{default_hash.class}'")
         end
         default_hash.each do |k, v|
-          insert_key(k, v, *args, **keyval_args)
+          insert_key(k, v, *args, **kwargs)
         end
       end
 
       # Insert key after defaults to enable defaults to be overwritten if desired
       #
-      if !no_keyval
-        insert_key(key, val, *args, **keyval_args)
+      if !__no_keyval
+        insert_key(key, val, *args, **kwargs)
       end
 
       @set = true
@@ -89,8 +87,8 @@ module JABA
     # is applied. Call set with no args to achieve this.
     #
     def finalise
-      if !@set && @default_block
-        set(no_keyval: true)
+      if !set? && attr_def.default_is_block?
+        set(__no_keyval: true)
       end
     end
 
@@ -102,7 +100,7 @@ module JABA
       f_options = other.flag_options
       key = v_options[:__key]
       val = Marshal.load(Marshal.dump(other.raw_value))
-      insert_key(key, val, *f_options, validate: false, **v_options)
+      insert_key(key, val, *f_options, __validate: false, **v_options)
     end
 
     def clear = @hash.clear
@@ -128,24 +126,24 @@ module JABA
 
     private
 
-    def insert_key(key, val, *args, validate: true, call_on_set: true, **keyval_args)
-      attr = JabaAttributeElement.new(@attr_def, @node, self)
+    def insert_key(key, val, *args, __validate: true, __call_on_set: true, **kwargs)
+      attr = AttributeElement.new(@attr_def, @node)
 
-      if validate
+      if __validate && attr_def.on_validate_key
         call_validators do
-          @attr_def.call_block_property(:validate_key, key)
+          node.eval_jdl(key, &attr_def.on_validate_key)
         end
       end
 
-      attr.set(val, *args, validate: validate, __jdl_call_loc: @last_call_location, __key: key, call_on_set: false, **keyval_args)
+      attr.set(val, *args, __validate: __validate, __key: key, __call_on_set: false, **kwargs)
 
-      if call_on_set
-        if @in_on_set
-          JABA.error("Reentrancy detected in #{describe} on_set")
-        end
-        @in_on_set = true
-        @attr_def.call_block_property(:on_set, key, val, receiver: @node)
-        @in_on_set = false
+      if __call_on_set
+       # if @in_on_set
+       #   JABA.error("Reentrancy detected in #{describe} on_set")
+       # end
+       # @in_on_set = true
+       # @attr_def.call_block_property(:on_set, key, val, receiver: @node)
+       # @in_on_set = false
       end
 
       # Log overwrites. This behaviour could be beefed up and customised with options if necessary
@@ -153,7 +151,7 @@ module JABA
       existing = @hash[key]
       if existing
         if existing.value != val
-          services.log("Overwriting '#{key}' hash key [old=#{existing.value}, new=#{val}] in #{describe}")
+          JABA.log("Overwriting '#{key}' hash key [old=#{existing.value}, new=#{val}] in #{describe}")
         end
       end
       @hash[key] = attr

@@ -1,4 +1,5 @@
 # TODO: validate key type is of specfied key_type
+=begin
 jtest "supports a default" do
   jaba(barebones: true) do
     type :test do
@@ -175,16 +176,16 @@ jtest "checks for accessing uninitialised attributes" do
     end
   end
 end
+=end
 
 jtest "can be set" do
-  jaba(barebones: true) do
-    type :test do
-      attr_hash :a, key_type: :symbol
-      attr :b, type: :choice do
-        items [1, 2]
-      end
-    end
-    test :t do
+  JDL.node "tha_252A1CCB"
+  JDL.attr_hash "tha_252A1CCB|a"
+  JDL.attr "tha_252A1CCB|b", type: :choice do
+    items [1, 2]
+  end
+  jaba do
+    tha_252A1CCB :t do
       # Test basic set
       a :k, :v
       a[:k].must_equal(:v)
@@ -226,7 +227,7 @@ jtest "can be set" do
     end
   end
 end
-
+=begin
 jtest "is not possible to modify returned hash" do
   assert_jaba_error "Error at #{src_loc("F788FD64")}: Can't modify read only Hash: {:k=>:v}" do
     jaba(barebones: true) do
@@ -433,3 +434,4 @@ jtest "supports on_set hook" do
     end
   end
 end
+=end
