@@ -73,7 +73,7 @@ module JABA
           cmd_abs = cmd_attr.has_flag_option?(:absolute)
           msg = attrs.msg
 
-          get_matching_src_objs(attrs.input, @src, errobj: attr).each do |sf|
+          attrs.input.flat_map{|spec| get_matching_src_objs(spec, @src, errobj: attr)}.each do |sf|
             sf.file_type = :CustomBuild
 
             # TODO: check output a valid src file
