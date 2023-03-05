@@ -1,0 +1,36 @@
+include '../jrf/jrf.jaba'
+
+workspace :jaba_ws do
+  name 'jaba'
+  projects [:jaba]
+  projects [:mrubygems, :onigmo, :mrubyjrf] # TODO: deps not automatically pulled in
+  workspacedir './'
+end
+
+defaults :cpp do
+  platforms [:windows_x86_64]
+  project do
+    configs [:Debug, :Release]
+  end
+  config do
+    define '_CRT_SECURE_NO_WARNINGS'
+    character_set :mbcs
+  end
+end
+
+cpp :jaba do
+  project do
+    type :console
+    src ["src2/*", "../jrf/jrf/core_ext.rb"]
+    deps [:libmruby]
+    # TODO: should not need onigmo because it is specified in mrubygems
+    deps [:mrubygems, :onigmo, :mrubyjrf]
+  end
+  config do
+    vcprop 'Link|EntryPointSymbol', :mainCRTStartup
+    targetsuffix '_debug' if debug
+    bindir './bin'
+  end
+  # TODO: outroot should be in buildsystem dir
+  include :mrbc_rule, src: ["src2/*.rb", "../jrf/jrf/core_ext.rb"], outroot: 'src2/generated'
+end 
