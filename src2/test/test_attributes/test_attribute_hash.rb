@@ -227,22 +227,21 @@ jtest "can be set" do
     end
   end
 end
-=begin
+
 jtest "is not possible to modify returned hash" do
+  JDL.node "tah_78CC6AD0"
+  JDL.attr_hash "tah_78CC6AD0|a" do
+    default({ k: :v })
+  end
   assert_jaba_error "Error at #{src_loc("F788FD64")}: Can't modify read only Hash: {:k=>:v}" do
-    jaba(barebones: true) do
-      type :test do
-        attr_hash :a, key_type: :symbol do
-          default({ k: :v })
-        end
-      end
-      test :t do
+    jaba do
+      tah_78CC6AD0 :t do
         a[:k] = :v2 # F788FD64
       end
     end
   end
 end
-
+=begin
 jtest "disallows no_sort flag" do
   assert_jaba_error "Error at #{src_loc("366C343A")}: :no_sort attribute definition flag is only allowed on array attributes." do
     jaba(barebones: true) do

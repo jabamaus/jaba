@@ -4,8 +4,8 @@ module JABA
       super(attr_def, node)
       @hash = {}
       @in_on_set = false
-      if attr_def.default_set? && !@default_block
-        attr_def.default.each do |k, v|
+      if attr_def.default_set? && !attr_def.default_is_block?
+        attr_def.get_default.each do |k, v|
           insert_key(k, v, call_on_set: false)
         end
       end
