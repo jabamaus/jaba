@@ -1,4 +1,5 @@
 require "fileutils"
+require "digest/sha1"
 require_relative "../../jrf/jrf/core_ext"
 
 debug! if ARGV.include?("--debug") || ARGV.include?("-d")

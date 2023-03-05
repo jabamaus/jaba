@@ -90,6 +90,8 @@ module JDL
           JABA::AttributeTypeBool
         when :choice
           JABA::AttributeTypeChoice
+        when :uuid
+          JABA::AttributeTypeUUID
         else
           JABA::AttributeTypeNull
         end

@@ -59,6 +59,7 @@ module JABA
           args.shift
         end
       attr_type = @attr_def.attr_type
+      new_value = attr_type.map_value(new_value)
       @flag_options = args
       # Take a deep copy of value_options so they are private to this attribute
       @value_options = kwargs.empty? ? {} : Marshal.load(Marshal.dump(kwargs))
