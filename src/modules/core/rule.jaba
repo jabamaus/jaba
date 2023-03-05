@@ -7,7 +7,7 @@ type :rule do
     flags :required
   end
   
-  attr :input, type: :src_spec do
+  attr_array :input, type: :src_spec do
     title 'Input files'
     basedir_spec :definition_root
     flags :required
