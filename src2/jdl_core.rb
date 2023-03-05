@@ -20,7 +20,6 @@ module JDL
   end
 
   def self.node(path, &block)
-    src_loc = calling_location
     node_api_klass = api_class_from_path(path, create: true)
     parent_path, item = path.split_jdl_path
     parent_klass = api_class_from_path(parent_path)
@@ -84,6 +83,9 @@ module JDL
     paths.each do |path|
       parent_path, attr_name = path.split_jdl_path
       klass = api_class_from_path(parent_path)
+      if klass.method_defined?(attr_name)
+        JABA.error("#{path} attribute defined more than once")
+      end
       klass.define_method(attr_name) do |*args, **kwargs, &attr_block|
         $last_call_location = ::Kernel.caller_locations(1, 1)[0]
         @node.handle_attr(attr_name, *args, **kwargs, &attr_block)
