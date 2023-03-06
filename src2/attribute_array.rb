@@ -42,9 +42,6 @@ module JABA
       values = if block_given?
           value_from_block(&block)
         else
-          #if @attr_def.compound?
-          #  attr_error("Compound attributes require a block")
-          #end
           args.shift
         end
 
@@ -72,7 +69,7 @@ module JABA
 
         elem = make_elem(val, *args, add: false, **kwargs)
         existing = nil
-        if !attr_def.has_flag?(:allow_dupes) # && !@attr_def.compound?
+        if !attr_def.has_flag?(:allow_dupes)
           existing = @elems.find { |e| e.raw_value == elem.raw_value }
         end
 
