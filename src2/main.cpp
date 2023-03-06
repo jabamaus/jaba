@@ -11,7 +11,7 @@ extern "C" void mrb_mruby_stringio_gem_init(mrb_state*);
 int run(int argc, char* argv[])
 {
   MrbState& mrb = MrbState::instance();
-  mrb.open();
+  mrb.open(argc, argv);
   mrb_mruby_onig_regexp_gem_init(mrb.raw()); // TODO: make this nicer
   mrb_mruby_stringio_gem_init(mrb.raw());
   mrb.init(src2_jaba_symbol);
