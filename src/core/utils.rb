@@ -22,7 +22,7 @@ module JABA
       delegate = Regexp.last_match(1)
       api_method = Regexp.last_match(2)
       api_class.define_method(api_method) do |*args, **keyval_args, &block|
-        $last_call_location = ::Kernel.caller_locations(1, 1)[0]
+        $last_call_location = ::Kernel.calling_location
         @obj.send(delegate, *args, **keyval_args, &block)
       end
     end

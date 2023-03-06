@@ -24,7 +24,7 @@ module JDL
     parent_path, item = path.split_jdl_path
     parent_klass = api_class_from_path(parent_path)
     parent_klass.define_method(item) do |*args, **kwargs, &node_block|
-      $last_call_location = ::Kernel.caller_locations(1, 1)[0]
+      $last_call_location = ::Kernel.calling_location
       JABA.context.create_node(node_api_klass, *args, **kwargs, &node_block)
     end
   end
@@ -57,7 +57,7 @@ module JDL
       MethodDefinitionAPI.execute(meth_def, &block) if block_given?
       meth_def.post_create
       klass.define_method(name) do |*args, **kwargs|
-        $last_call_location = ::Kernel.caller_locations(1, 1)[0]
+        $last_call_location = ::Kernel.calling_location
         meth_def.on_called&.call(*args, **kwargs)
       end
     end
@@ -87,7 +87,7 @@ module JDL
         JABA.error("#{path} attribute defined more than once")
       end
       klass.define_method(attr_name) do |*args, **kwargs, &attr_block|
-        $last_call_location = ::Kernel.caller_locations(1, 1)[0]
+        $last_call_location = ::Kernel.calling_location
         @node.handle_attr(attr_name, *args, **kwargs, &attr_block)
       end
       # TODO: automatically make class name from typeid

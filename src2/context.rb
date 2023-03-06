@@ -287,7 +287,7 @@ module JABA
         JABA.error("include requires a path")
       end
       if !path.absolute_path?
-        path = "#{$last_call_location.absolute_path.parent_path}/#{path}"
+        path = "#{$last_call_location.src_loc_info[0].parent_path}/#{path}"
       end
       if path.wildcard?
         @jdl_includes.concat(@file_manager.glob_files(path).map { |d| IncludeInfo.new(d, args) })
@@ -349,16 +349,6 @@ module JABA
     end
 
     def get_jdl_backtrace(callstack)
-      # Clean up callstack which could be in 'caller' or 'caller_locations' form.
-      #
-      callstack = callstack.map do |l|
-        if l.is_a?(::Thread::Backtrace::Location)
-          "#{l.absolute_path}:#{l.lineno}"
-        else
-          l
-        end
-      end
-
       # Extract any lines in the callstack that contain references to definition source files.
       #
       jdl_bt = callstack.select { |c| @jdl_files.any? { |sf| c.include?(sf) } }

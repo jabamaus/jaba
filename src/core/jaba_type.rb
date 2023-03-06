@@ -144,7 +144,7 @@ module JABA
       when :local
         existing = @attribute_def_lookup[id]
         if existing
-          JABA.error("'#{id}' attribute multiply defined in '#{defn_id}'. See previous at #{existing.src_loc.describe}", errobj: ad)
+          JABA.error("'#{id}' attribute multiply defined in '#{defn_id}'. See previous at #{existing.src_loc.src_loc_describe}", errobj: ad)
         end
         
         @attribute_defs << ad
@@ -152,7 +152,7 @@ module JABA
       when :imported
         existing = @attribute_def_imported_lookup[id]
         if existing
-          JABA.error("'#{id}' attribute multiply imported into '#{defn_id}'. See previous at #{existing.src_loc.describe}", errobj: ad)
+          JABA.error("'#{id}' attribute multiply imported into '#{defn_id}'. See previous at #{existing.src_loc.src_loc_describe}", errobj: ad)
         end
 
         @attribute_def_imported_lookup[id] = ad

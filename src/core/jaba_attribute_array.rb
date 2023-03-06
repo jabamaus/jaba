@@ -86,7 +86,7 @@ module JABA
         end
 
         if existing
-          jaba_warn("Stripping duplicate '#{val.inspect_unquoted}' from #{describe}. See previous at #{existing.src_loc.describe}. " \
+          jaba_warn("Stripping duplicate '#{val.inspect_unquoted}' from #{describe}. See previous at #{existing.src_loc.src_loc_describe}. " \
             "Flag with :allow_dupes to allow.")
         else
           @elems << elem

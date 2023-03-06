@@ -235,7 +235,7 @@ module JABA
 
       type_defs.each do |d|
         id = d.id
-        log "Creating '#{id}' type at #{d.src_loc.describe}"
+        log "Creating '#{id}' type at #{d.src_loc.src_loc_describe}"
         jt = make_jaba_type(id, d)
         nm = get_or_make_node_manager(id)
 
@@ -438,11 +438,11 @@ module JABA
 
       validate_id(id, what)
 
-      log "  Defining '#{what}:#{lookup_id}' at #{$last_call_location.describe}"
+      log "  Defining '#{what}:#{lookup_id}' at #{$last_call_location.src_loc_describe}"
       
       existing = get_definition(what, lookup_id, fail_if_not_found: false)
       if existing
-        JABA.error("'#{lookup_id}' multiply defined. First definition at #{existing.src_loc.describe}.")
+        JABA.error("'#{lookup_id}' multiply defined. First definition at #{existing.src_loc.src_loc_describe}.")
       end
 
       d = make_definition(id, block, $last_call_location)
@@ -465,7 +465,7 @@ module JABA
       validate_id(id, what)
       JABA.error("'#{what.inspect_unquoted}' requires a block") if !block_given?
 
-      log "  Opening '#{what}:#{id}' at #{$last_call_location.describe}"
+      log "  Opening '#{what}:#{id}' at #{$last_call_location.src_loc_describe}"
 
       d = make_definition(id, block, $last_call_location)
       
@@ -785,16 +785,6 @@ module JABA
     end
 
     def get_jdl_backtrace(callstack)
-      # Clean up callstack which could be in 'caller' or 'caller_locations' form.
-      #
-      callstack = callstack.map do |l|
-        if l.is_a?(::Thread::Backtrace::Location)
-          "#{l.absolute_path}:#{l.lineno}"
-        else
-          l
-        end
-      end
-
       # Disregard everything after the main entry point, if it is present in callstack. Prevents error handling from
       # getting confused when definitions are supplied in block form where normal source code and jdl source code
       # exist in the same file.

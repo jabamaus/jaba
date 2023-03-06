@@ -168,7 +168,7 @@ module JABA
     # Called from JDL API.
     #
     def jdl_glob(spec, root: nil, relative: false, &block)
-      root = $last_call_location.absolute_path.parent_path if root.nil?
+      root = $last_call_location.src_loc_info[0].parent_path if root.nil?
       if !spec.absolute_path?
         spec = "#{root}/#{spec}"
       end

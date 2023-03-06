@@ -173,7 +173,7 @@ module JABA
     def validate_value(attr_def, value)
       items = attr_def.items
       if !items.include?(value)
-        JABA.error("Must be one of #{items} but got '#{value.inspect_unquoted}'. See #{attr_def.property_last_call_loc(:items).describe}.")
+        JABA.error("Must be one of #{items} but got '#{value.inspect_unquoted}'. See #{attr_def.property_last_call_loc(:items).src_loc_describe}.")
       end
     end
   end

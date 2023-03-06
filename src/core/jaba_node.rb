@@ -97,7 +97,7 @@ module JABA
     def post_create
       @attributes.each do |a|
         if !a.set? && a.required?
-          JABA.error("#{a.describe} requires a value. See #{a.attr_def.src_loc.describe}", errobj: self)
+          JABA.error("#{a.describe} requires a value. See #{a.attr_def.src_loc.src_loc_describe}", errobj: self)
         end
       
         a.finalise

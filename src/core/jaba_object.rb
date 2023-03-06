@@ -7,10 +7,10 @@ module JABA
     attr_reader :api
     attr_reader :defn_id # As specified by user in definition files.
 
-    # Returns source location as a Thread::Backtrace::Location.
+    # Returns source location as file:line
     # Use this to pass to the callstack argument in JABA.error/jaba_warn. Do not embed in JABA.error/warning messages themselves
     # as it will appear as eg "C:/projects/GitHub/jaba/modules/cpp/cpp.jaba:49:in `block (2 levels) in execute_jdl'" - the "in `block`"
-    # is not wanted in user level error messages. Instead use src_loc.describe.
+    # is not wanted in user level error messages. Instead use src_loc.src_loc_describe.
     #
     attr_reader :src_loc
 
@@ -23,7 +23,7 @@ module JABA
     end
 
     def to_s = @defn_id.to_s
-    def source_dir = @src_loc.path.parent_path
+    def source_dir = @src_loc.src_loc_info[0].parent_path
 
     def jaba_warn(...) = services.jaba_warn(...)
 

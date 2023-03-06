@@ -33,7 +33,7 @@ module JABA
     end
 
     def definition_error(msg, err_loc: APIBuilder.last_call_location)
-      JABA.error("Error at #{err_loc.path.basename}:#{err_loc.lineno}: #{describe} invalid: #{msg}")
+      JABA.error("Error at #{err_loc.src_loc_describe}: #{describe} invalid: #{msg}")
     end
 
     def definition_error_post_create(msg)
@@ -41,7 +41,7 @@ module JABA
     end
 
     def definition_warn(msg, warn_loc: APIBuilder.last_call_location)
-      puts("Warning at #{warn_loc.path.basename}:#{warn_loc.lineno}: #{msg}")
+      puts("Warning at #{warn_loc.src_loc_describe}: #{msg}")
     end
 
     def definition_warn_post_create(msg)
