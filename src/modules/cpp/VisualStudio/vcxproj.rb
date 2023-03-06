@@ -138,7 +138,7 @@ module JABA
           JABA.error("Invalid macro '#{full_var}' in #{str}") # TODO: err_obj
         end
         if !method.nil?
-          repl = repl.send(method)
+          repl = repl.instance_eval(method)
         end
         # Important to use block form of gsub to disable backreferencing
         #
