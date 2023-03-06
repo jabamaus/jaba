@@ -126,7 +126,7 @@ module JABA
     end
 
     def do_run
-      log "Starting Jaba at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}", section: true
+      log "Starting Jaba at #{Time.now}", section: true
       @input_block&.call(input)
       init_root_paths
 
