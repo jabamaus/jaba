@@ -22,10 +22,10 @@ cpp :jaba_jrf do
   root "../jrf/jrf"
   project do
     type :lib
-    src ["core_ext.rb"]
+    src ["core_ext.rb", "api_builder.rb", "fsm.rb", "cmdline.rb"]
     deps [:mrubyjrf]
   end
-  include :mrbc_rule, src: ["core_ext.rb"], outroot: "C:/james_projects/GitHub/jaba/buildsystem/generated/jrf"
+  include :mrbc_rule, src: ["core_ext.rb", "api_builder.rb", "fsm.rb", "cmdline.rb"], outroot: "C:/james_projects/GitHub/jaba/buildsystem/generated/jrf"
 end
 
 cpp :jaba do

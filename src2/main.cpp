@@ -7,6 +7,7 @@
 
 extern "C" void mrb_mruby_onig_regexp_gem_init(mrb_state*);
 extern "C" void mrb_mruby_stringio_gem_init(mrb_state*);
+extern "C" const uint8_t jrf_core_ext_symbol[];
 
 int run(int argc, char* argv[])
 {
@@ -14,7 +15,7 @@ int run(int argc, char* argv[])
   mrb.open(argc, argv);
   mrb_mruby_onig_regexp_gem_init(mrb.raw()); // TODO: make this nicer
   mrb_mruby_stringio_gem_init(mrb.raw());
-  mrb.init(src2_jaba_symbol);
+  mrb.init(src2_jaba_symbol, jrf_core_ext_symbol);
   mrb.term();
   return EXIT_SUCCESS;
 }
