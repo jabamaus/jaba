@@ -388,8 +388,7 @@ module JABA
       # Extract file and line information from the error line.
       #
       if want_err_line && err_line =~ /^(.+):(\d+)/
-        file = Regexp.last_match(1)
-        line = Regexp.last_match(2).to_i
+        file, line = $1, $2.to_i
         m << " at"
         m << " #{file.basename}:#{line}"
       end

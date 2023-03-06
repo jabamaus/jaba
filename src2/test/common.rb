@@ -72,8 +72,7 @@ class JTestCaseAPI
         raise "couldn't extract file and line number from #{out}"
       end
 
-      actual_file = Regexp.last_match(1)
-      actual_line = Regexp.last_match(2).to_i
+      actual_file, actual_line = $1, $2.to_i
 
       actual_file.must_equal(expected_file.basename, src_loc: src_loc)
       actual_line.must_equal(expected_line, src_loc: src_loc)

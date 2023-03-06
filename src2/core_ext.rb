@@ -28,7 +28,7 @@ class String
     if self !~ /\|/
       [nil, self]
     else
-      [sub(/\|(\w+)$/, ""), Regexp.last_match(1)]
+      [sub(/\|(\w+)$/, ""), $1]
     end
   end
 
