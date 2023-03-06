@@ -14,7 +14,7 @@ int run(int argc, char* argv[])
   mrb.open();
   mrb_mruby_onig_regexp_gem_init(mrb.raw()); // TODO: make this nicer
   mrb_mruby_stringio_gem_init(mrb.raw());
-  mrb.init(jaba_symbol);
+  mrb.init(src2_jaba_symbol);
   mrb.term();
   return EXIT_SUCCESS;
 }

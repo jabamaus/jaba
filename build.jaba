@@ -3,7 +3,7 @@ include '../jrf/jrf.jaba'
 workspace :jaba_ws do
   name 'jaba'
   projects [:jaba]
-  projects [:mrubygems, :onigmo, :mrubyjrf] # TODO: deps not automatically pulled in
+  projects [:mrubygems, :onigmo, :mrubyjrf, :jaba_jrf] # TODO: deps not automatically pulled in
   workspacedir './'
 end
 
@@ -18,11 +18,21 @@ defaults :cpp do
   end
 end
 
+cpp :jaba_jrf do
+  root "../jrf/jrf"
+  project do
+    type :lib
+    src ["core_ext.rb"]
+    deps [:mrubyjrf]
+  end
+  include :mrbc_rule, src: ["core_ext.rb"], outroot: "C:/james_projects/GitHub/jaba/buildsystem/generated/jrf"
+end
+
 cpp :jaba do
   project do
     type :console
-    src ["src2/*", "../jrf/jrf/core_ext.rb"]
-    deps [:libmruby]
+    src ["src2/*"]
+    deps [:libmruby, :jaba_jrf]
     # TODO: should not need onigmo because it is specified in mrubygems
     deps [:mrubygems, :onigmo, :mrubyjrf]
   end
@@ -32,5 +42,5 @@ cpp :jaba do
     bindir './bin'
   end
   # TODO: outroot should be in buildsystem dir
-  include :mrbc_rule, src: ["src2/*.rb", "../jrf/jrf/core_ext.rb"], outroot: 'src2/generated'
+  include :mrbc_rule, src: ["src2/*.rb"], outroot: "C:/james_projects/GitHub/jaba/buildsystem/generated/jaba"
 end 

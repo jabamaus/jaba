@@ -8,6 +8,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "onigmo", "buildsystem\vs202
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mrubyjrf", "buildsystem\vs2022\mrubyjrf.vcxproj", "{BC1E4E65-C399-51CF-9287-1EA67A9A074B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jaba_jrf", "buildsystem\vs2022\jaba_jrf.vcxproj", "{5BF9CD8E-9AEA-5E80-B818-7A2014701BC8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -30,6 +32,10 @@ Global
 		{BC1E4E65-C399-51CF-9287-1EA67A9A074B}.Debug|x64.Build.0 = Debug|x64
 		{BC1E4E65-C399-51CF-9287-1EA67A9A074B}.Release|x64.ActiveCfg = Release|x64
 		{BC1E4E65-C399-51CF-9287-1EA67A9A074B}.Release|x64.Build.0 = Release|x64
+		{5BF9CD8E-9AEA-5E80-B818-7A2014701BC8}.Debug|x64.ActiveCfg = Debug|x64
+		{5BF9CD8E-9AEA-5E80-B818-7A2014701BC8}.Debug|x64.Build.0 = Debug|x64
+		{5BF9CD8E-9AEA-5E80-B818-7A2014701BC8}.Release|x64.ActiveCfg = Release|x64
+		{5BF9CD8E-9AEA-5E80-B818-7A2014701BC8}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
