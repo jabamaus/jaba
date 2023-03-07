@@ -12,10 +12,10 @@ extern "C" const uint8_t jrf_core_ext_symbol[];
 int run(int argc, char* argv[])
 {
   MrbState& mrb = MrbState::instance();
-  mrb.open(argc, argv);
+  mrb.open();
   mrb_mruby_onig_regexp_gem_init(mrb.raw()); // TODO: make this nicer
   mrb_mruby_stringio_gem_init(mrb.raw());
-  mrb.init(src2_jaba_symbol, jrf_core_ext_symbol);
+  mrb.run(argc, argv, src2_jaba_symbol, jrf_core_ext_symbol);
   mrb.term();
   return EXIT_SUCCESS;
 }
@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
   }
   catch (std::exception& e)
   {
-    fprintf(stderr, "%s\n", e.what());
+    fprintf(stderr, "%s", e.what());
     return EXIT_FAILURE;
   }
 }
