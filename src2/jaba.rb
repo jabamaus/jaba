@@ -73,7 +73,11 @@ if __FILE__ == $PROGRAM_NAME
 
       clm.process
       clm.finalise
-      clm.show_help if @show_help
+      
+      if @show_help
+        clm.show_help
+        return 0
+      end
 
       if clm.cmd_specified?(:help)
         url = "#{JABA.jaba_docs_url}/v#{VERSION}"
