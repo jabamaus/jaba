@@ -25,7 +25,7 @@ cpp :jaba_jrf do
     src ["core_ext.rb", "api_builder.rb", "fsm.rb", "cmdline.rb"]
     deps [:mrubyjrf]
   end
-  include :mrbc_rule, src: ["core_ext.rb", "api_builder.rb", "fsm.rb", "cmdline.rb"], outroot: "C:/james_projects/GitHub/jaba/buildsystem/generated/jrf"
+  include :mrbc_rule, src: ["core_ext.rb", "api_builder.rb", "fsm.rb", "cmdline.rb"]
 end
 
 cpp :jaba do
@@ -41,6 +41,5 @@ cpp :jaba do
     targetsuffix '_debug' if debug
     bindir './bin'
   end
-  # TODO: outroot should be in buildsystem dir
-  include :mrbc_rule, src: ["src2/*.rb"], outroot: "C:/james_projects/GitHub/jaba/buildsystem/generated/jaba"
+  include :mrbc_rule, src: ["src2/*.rb"]
 end 
