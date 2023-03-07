@@ -14,7 +14,7 @@ jtest 'warns if src not specified cleanly' do
 end
 
 jtest 'can be specified explicitly even if extension is not in src_ext' do
-  make_file('a.cpp', 'b.z')
+  make_file('a.cpp', 'b.z', 'c.z')
   proj = jaba(cpp_app: true, dry_run: true) do
     cpp :app do
       project do
@@ -23,6 +23,16 @@ jtest 'can be specified explicitly even if extension is not in src_ext' do
     end
   end
   proj[:src].must_equal ["#{temp_dir}/a.cpp", "#{temp_dir}/b.z"]
+
+  # Glob match can work without extension being in src_ext as long as the extension is specified
+  proj = jaba(cpp_app: true, dry_run: true) do
+    cpp :app do
+      project do
+        src ['*.z']
+      end
+    end
+  end
+  proj[:src].must_equal ["#{temp_dir}/b.z", "#{temp_dir}/c.z"]
 end
 
 jtest 'fails if explicitly specified files do not exist unless forced' do
