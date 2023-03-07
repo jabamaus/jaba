@@ -12,7 +12,7 @@ module JABA
     def jdl_warn(msg) = jaba_warn(msg)
     def jdl_print(msg) = ::Kernel.print(msg)
     def jdl_puts(msg) = ::Kernel.puts(msg)
-    def jdl_buildsystem_root = "#{@services.input.build_root}/buildsystem"
+    def jdl_buildsystem_root_abs = "#{@services.input.build_root}/buildsystem"
   end
 
   module TopLevelAPI
