@@ -3,7 +3,7 @@ include '../jrf/jrf.jaba'
 workspace :jaba_ws do
   name 'jaba'
   projects [:jaba]
-  projects [:mrubygems, :onigmo, :mrubyjrf, :jaba_jrf] # TODO: deps not automatically pulled in
+  projects [:mrubygems, :onigmo, :mrubyjrf, :jaba_jrf, :jtest] # TODO: deps not automatically pulled in
   workspacedir './'
 end
 
