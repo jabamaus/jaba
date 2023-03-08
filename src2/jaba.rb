@@ -112,7 +112,7 @@ if __FILE__ == $PROGRAM_NAME
       end
 
       puts output[:summary]
-      puts output[:warnings]
+      puts output[:warnings] if !output[:warnings].empty?
       return 0
     end
 
