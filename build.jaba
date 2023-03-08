@@ -31,7 +31,7 @@ cpp :jaba do
   project do
     type :console
     src ["src2/main.cpp"]
-    deps [:libmruby, :jaba_jrf]
+    deps [:mruby, :jaba_jrf]
     # TODO: should not need onigmo because it is specified in mrubygems
     deps [:mrubygems, :onigmo, :mrubyjrf]
   end
