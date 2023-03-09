@@ -23,7 +23,7 @@ module JABA
     e.set_backtrace(bt)
     e.instance_variable_set(:@want_backtrace, want_backtrace)
     e.instance_variable_set(:@want_err_line, want_err_line)
-    raise e, cause: nil # Passing cause: nil allows a jaba error to wrap another jaba error without the first ones callstack getting printed too
+    raise e
   end
 
   def self.warn(...) = JABA.context&.warn(...)
