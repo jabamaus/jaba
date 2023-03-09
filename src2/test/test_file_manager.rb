@@ -1,5 +1,5 @@
 jtest "StringWriter can write line with newline" do
-  sw = JABA::StringWriter.new(capacity: 100)
+  sw = JABA::StringWriter.new
   sw << "hello"
   sw.str.must_equal "hello\n"
   sw << "world"
@@ -7,7 +7,7 @@ jtest "StringWriter can write line with newline" do
 end
 
 jtest "Stringwriter can write with no newline" do
-  sw = JABA::StringWriter.new(capacity: 100)
+  sw = JABA::StringWriter.new
   sw.write_raw "hello"
   sw.str.must_equal "hello"
   sw.write_raw "world"
@@ -15,7 +15,7 @@ jtest "Stringwriter can write with no newline" do
 end
 
 jtest "Stringwriter can write blank lines" do
-  sw = JABA::StringWriter.new(capacity: 100)
+  sw = JABA::StringWriter.new
   sw << "hello"
   sw.newline
   sw << "world"

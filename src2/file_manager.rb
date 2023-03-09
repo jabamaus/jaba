@@ -10,16 +10,16 @@ module JABA
   end
 
   class JabaFile
-    def initialize(file_manager, filename, encoding, eol, capacity, track)
+    def initialize(file_manager, filename, encoding, eol, track)
       @file_manager = file_manager
       @filename = filename
       @encoding = encoding
       @eol = eol
       @track = track
-      @writer = work_area(capacity: capacity)
+      @writer = work_area
     end
 
-    def work_area(capacity: nil) = StringWriter.new(encoding: @encoding, capacity: capacity)
+    def work_area = StringWriter.new(encoding: @encoding)
     def filename = @filename
     def writer = @writer
     def encoding = @encoding
@@ -55,14 +55,14 @@ module JABA
 
     ValidEols = [:unix, :windows, :native].freeze
 
-    def new_file(filename, eol: :unix, encoding: nil, capacity: nil, track: true)
+    def new_file(filename, eol: :unix, encoding: nil, track: true)
       if !filename.absolute_path?
         JABA.error("'#{filename}' must be an absolute path")
       end
       if !ValidEols.include?(eol)
         JABA.error("'#{eol.inspect}' is an invalid eol style. Valid values: #{ValidEols.inspect}")
       end
-      JabaFile.new(self, filename.cleanpath, encoding, eol, capacity, track)
+      JabaFile.new(self, filename.cleanpath, encoding, eol, track)
     end
 
     def write(file)
