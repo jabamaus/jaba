@@ -70,7 +70,10 @@ module JABA
       new_value = attr_type.map_value(new_value)
       @flag_options = args
       # Take a deep copy of value_options so they are private to this attribute
-      @value_options = kwargs.empty? ? {} : Marshal.load(Marshal.dump(kwargs))
+      @value_options = {}
+      kwargs.each do |k, v|
+        @value_options[k] = v.dup
+      end
 
       if __validate
         @flag_options.each do |f|
