@@ -1,6 +1,13 @@
 module JABA
   class StringWriter
-    def initialize(...) = @str = String.new(...)
+    def initialize(encoding: nil)
+      @str = if mruby?
+        JABA.error("Only UTF-8 encoding supported") if (encoding && encoding != 'UTF-8')
+        String.new # mruby is UTF-8 as standard via MRB_UTF8_STRING define
+      else
+        String.new(encoding: encoding)
+      end
+    end
     def str = @str
     def to_s = @str
     def <<(str) = @str.concat(str, "\n")
