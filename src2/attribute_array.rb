@@ -168,8 +168,8 @@ module JABA
       if !attr_def.has_flag?(:no_sort)
         begin
           @elems.stable_sort!
-        rescue StandardError
-          attr_error("Failed to sort #{describe}. Might be missing <=> operator")
+        rescue StandardError => e
+          attr_error("Failed to sort #{describe}: #{e}")
         end
       end
     end
