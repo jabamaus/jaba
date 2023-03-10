@@ -134,7 +134,10 @@ module JABA
 
       # Take a deep copy of value_options so they are private to this attribute
       #
-      @value_options = keyval_args.empty? ? {} : Marshal.load(Marshal.dump(keyval_args))
+      @value_options = {}
+      keyval_args.each do |k, v|
+        @value_options[k] = v.dup
+      end
 
       if validate
         @flag_options.each do |f|
