@@ -233,7 +233,7 @@ jtest "is not possible to modify returned hash" do
   JDL.attr_hash "tah_78CC6AD0|a" do
     default({ k: :v })
   end
-  assert_jaba_error "Error at #{src_loc("F788FD64")}: Can't modify read only Hash: {:k=>:v}" do
+  assert_jaba_error "Error at #{src_loc("F788FD64")}: Can't modify read only Hash." do
     jaba do
       tah_78CC6AD0 :t do
         a[:k] = :v2 # F788FD64

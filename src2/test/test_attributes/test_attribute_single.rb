@@ -38,7 +38,7 @@ JDL.attr "test_attr_single|read_only" do
 end
 
 jtest "rejects modifying returned values" do
-  assert_jaba_file_error "Can't modify read only String: \"b\"", "45925C07" do
+  assert_jaba_file_error "Can't modify read only String.", "45925C07" do
     %Q{
 test_attr_single :t do
   a "b"

@@ -144,7 +144,7 @@ jtest "is not possible to modify returned array" do
   JDL.attr_array "taa_F6D39F9F|a" do
     default [:a]
   end
-  assert_jaba_error "Error at #{src_loc("B50C68BE")}: Can't modify read only Array: [:a]" do
+  assert_jaba_error "Error at #{src_loc("B50C68BE")}: Can't modify read only Array." do
     jaba do
       taa_F6D39F9F :t do
         a << :b # B50C68BE
