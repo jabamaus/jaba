@@ -17,7 +17,7 @@ class JTestCaseAPI
     end
 
     warnings = op[:warnings]
-    puts warnings if warnings
+    puts warnings if warnings && !warnings.empty?
     op
   end
 
