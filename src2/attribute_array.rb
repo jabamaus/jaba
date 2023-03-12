@@ -167,7 +167,7 @@ module JABA
       process_removes(@excludes, mode: :exclude)
       if !attr_def.has_flag?(:no_sort)
         begin
-          @elems.sort! # don't have stable_sort! in mruby yet
+          @elems.stable_sort!
         rescue StandardError => e
           attr_error("Failed to sort #{describe}: #{e}")
         end
