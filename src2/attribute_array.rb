@@ -151,7 +151,7 @@ module JABA
               if !val.string? && !val.symbol?
                 attr_error("#{mode} with a regex can only operate on strings or symbols")
               end
-              val.match(d)
+              val =~ d ? true : false
             else
               d == val
             end
