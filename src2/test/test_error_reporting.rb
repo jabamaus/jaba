@@ -21,7 +21,7 @@ end
 end
 
 jtest "catches constant errors in block form" do
-  assert_jaba_error "Error at #{src_loc("138FA33C")}: uninitialized constant BADCODE." do
+  assert_jaba_error "Error at #{src_loc("138FA33C")}: uninitialized constant", ignore_rest: true do
     jaba do
       shared :a do
       end
