@@ -375,6 +375,10 @@ module JABA
         # With ruby ScriptErrors there is no useful callstack. The error location is in the msg itself.
         #
         err_line = msg
+        if mruby? # mruby syntax errors need cleaning
+          err_line.sub!('file ', '')
+          err_line.sub!(' line ', ':')
+        end
 
         # Delete ruby's way of reporting syntax errors in favour of our own
         #
