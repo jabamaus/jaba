@@ -1,4 +1,3 @@
-$LOAD_PATH.unshift "#{__dir__}/../../jrf"
 require_relative 'version'
 require_relative 'core/services'
 
@@ -73,7 +72,7 @@ module JABA
   end
 if __FILE__ == $PROGRAM_NAME
 
-require 'jrf/cmdline'
+require_relative '../../jrf/libs/jrfutils/cmdline'
 
 class Jaba
   

@@ -1,10 +1,10 @@
 require "fileutils"
 require "digest/sha1"
-require_relative "../../jrf/jrf/core_ext"
+require_relative "../../jrf/libs/jrfutils/core_ext"
 
 debug! if ARGV.include?("--debug") || ARGV.include?("-d")
 
-require_relative "../../jrf/jrf/api_builder"
+require_relative "../../jrf/libs/jrfutils/api_builder"
 require_relative "core_ext"
 require_relative "version"
 require_relative "defs"

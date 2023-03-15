@@ -1,4 +1,4 @@
-require 'jrf/core_ext'
+require_relative '../../../jrf/libs/jrfutils/core_ext'
 
 class Class
   # Allow setting and getting a block as a member variable.
