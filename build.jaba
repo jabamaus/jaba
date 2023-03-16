@@ -22,7 +22,7 @@ cpp :jrfjaba do
   root "../jrf/libs/jrfutils"
   project do
     type :lib
-    deps [:jrfmruby]
+    deps [:jrfmruby, :mruby]
   end
   include :mrbc_rule, src: ["core_ext.rb", "api_builder.rb", "fsm.rb", "cmdline.rb"]
 end

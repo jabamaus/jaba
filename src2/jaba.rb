@@ -47,7 +47,7 @@ end
 require_relative "jdl"
 
 if __FILE__ == $PROGRAM_NAME
-  require_relative "../../jrf/jrf/cmdline"
+  require_relative "../../jrf/libs/jrfutils/cmdline"
 
   class Jaba
     def run
