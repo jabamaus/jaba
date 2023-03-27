@@ -31,7 +31,7 @@
 - Regression tests for generated files!
 - enforce that paths stay within their base dir spec
 - Implement element deletion for hash attribute
-- Add a file copy feature (install?). Could use custom build rule.
+- Add 'install' to copy exes somewhere post build
 - Stats in docs, eg number of files in jaba release, size of zip.
 - Disallow nested src_roots 
 - should string attr be allowed to be set to nil? Probably not.
