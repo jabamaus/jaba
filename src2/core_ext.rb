@@ -58,11 +58,6 @@ class String
     self
   end
 
-  # Turn eg "C:/projects/GitHub/jaba/lib/jaba/jdl_api/jdl_common.rb:11:in `fail'"
-  # into "C:/projects/GitHub/jaba/lib/jaba/jdl_api/jdl_common.rb:11"
-  #
-  def clean_backtrace = sub(/:in .*/, "")
-
   def to_escaped_xml
     gsub(/["'&<>\n]/) do |match|
       case match
