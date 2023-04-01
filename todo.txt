@@ -100,6 +100,7 @@ New features:
  - emscripten support
  - pull dependencies into solution automatically
  - per file defaults
+ - delete stale projects in build system
 
 Rewrite todo:
 - Combine :symbol, :string and :symbol_or_string? Allow strings and symbols to be completely interchangeable?
