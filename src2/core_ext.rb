@@ -42,12 +42,6 @@ class String
   # Returns true if string contains '*' wildcard character.
   #
   def wildcard? = self =~ /\*/ ? true : false
-  def to_backslashes = dup.to_backslashes!
-
-  def to_backslashes!
-    tr!("/", '\\')
-    self
-  end
 
   def contains_slashes? = self =~ /(\\)|(\/)/ ? true : false
 
