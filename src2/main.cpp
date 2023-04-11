@@ -4,30 +4,21 @@
 #include <stdexcept>
 #include "jaba/ireps.h"
 #include "jrfjaba/ireps.h"
-#include "jrfmruby/mrb_state.h"
+#include "jrfcore/mrb_state.h"
 #include "mrubygems.h"
 
-int run(int argc, char* argv[])
+void run(MrbState& mrb)
 {
-  MrbState mrb;
   mrubygems_init(mrb);
   jrfjaba::register_ireps(mrb);
   jaba::register_ireps(mrb);
-  mrb.run(argc, argv, src2_jaba_symbol);
+  mrb.run(src2_jaba_symbol);
   mrubygems_term(mrb);
   mrb.term();
-  return EXIT_SUCCESS;
 }
 
 int main(int argc, char* argv[])
 {
-  try
-  {
-    return run(argc, argv);
-  }
-  catch (std::exception& e)
-  {
-    fprintf(stderr, "%s", e.what());
-    return EXIT_FAILURE;
-  }
+  MrbState mrb;
+  return mrb.execute(&run, argc, argv);
 }

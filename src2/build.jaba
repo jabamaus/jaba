@@ -1,11 +1,11 @@
 shared :myshared do
 end
 
-app :myapp do
-  root 'myroot'
+project :myapp, root: 'myroot' do
+  
   #include :myshared
 end
 
-lib :mylib do
-  root 'mylibroot'
+project :mylib, root: 'mylibroot' do
+  
 end

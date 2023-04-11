@@ -3,7 +3,7 @@ include '../jrf/jrf.jaba'
 workspace :jaba_ws do
   name 'jaba'
   projects [:jaba]
-  projects [:mrubygems, :onigmo, :jrfmruby, :jrfjaba, :jtest] # TODO: deps not automatically pulled in
+  projects [:mrubygems, :jrfcore, :jrfjaba] # TODO: deps not automatically pulled in
   workspacedir './'
 end
 
@@ -22,7 +22,7 @@ cpp :jrfjaba do
   root "../jrf/libs/jrfutils"
   project do
     type :lib
-    deps [:jrfmruby, :mruby]
+    deps [:jrfcore, :mruby]
   end
   include :mrbc_rule, src: ["core_ext.rb", "api_builder.rb", "fsm.rb", "cmdline.rb"]
 end
@@ -32,8 +32,7 @@ cpp :jaba do
     type :console
     src ["src2/main.cpp"]
     deps [:mruby, :jrfjaba]
-    # TODO: should not need onigmo because it is specified in mrubygems
-    deps [:mrubygems, :onigmo, :jrfmruby]
+    deps [:mrubygems, :jrfcore]
   end
   config do
     vcprop 'Link|EntryPointSymbol', :mainCRTStartup

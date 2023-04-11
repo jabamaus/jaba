@@ -4,13 +4,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jaba", "buildsystem\vs2022\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mrubygems", "buildsystem\vs2022\mrubygems.vcxproj", "{16DD6201-8490-5538-9AB9-68A9D0E955DF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "onigmo", "buildsystem\vs2022\onigmo.vcxproj", "{6824F1B3-1741-5C04-9FEB-7BBB7A76039D}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jrfmruby", "buildsystem\vs2022\jrfmruby.vcxproj", "{64118BDE-AA68-5B67-B16B-5DD6D3A2C1DD}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jrfcore", "buildsystem\vs2022\jrfcore.vcxproj", "{B90AF9B8-2557-50CD-BFC8-211368CBCDF4}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jrfjaba", "buildsystem\vs2022\jrfjaba.vcxproj", "{BCA96870-BFE9-5429-A3A2-BEC6F83C1185}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jtest", "buildsystem\vs2022\jtest.vcxproj", "{C706DAA9-BE1A-5961-80F5-EBB4F44484EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,22 +22,14 @@ Global
 		{16DD6201-8490-5538-9AB9-68A9D0E955DF}.Debug|x64.Build.0 = Debug|x64
 		{16DD6201-8490-5538-9AB9-68A9D0E955DF}.Release|x64.ActiveCfg = Release|x64
 		{16DD6201-8490-5538-9AB9-68A9D0E955DF}.Release|x64.Build.0 = Release|x64
-		{6824F1B3-1741-5C04-9FEB-7BBB7A76039D}.Debug|x64.ActiveCfg = Debug|x64
-		{6824F1B3-1741-5C04-9FEB-7BBB7A76039D}.Debug|x64.Build.0 = Debug|x64
-		{6824F1B3-1741-5C04-9FEB-7BBB7A76039D}.Release|x64.ActiveCfg = Release|x64
-		{6824F1B3-1741-5C04-9FEB-7BBB7A76039D}.Release|x64.Build.0 = Release|x64
-		{64118BDE-AA68-5B67-B16B-5DD6D3A2C1DD}.Debug|x64.ActiveCfg = Debug|x64
-		{64118BDE-AA68-5B67-B16B-5DD6D3A2C1DD}.Debug|x64.Build.0 = Debug|x64
-		{64118BDE-AA68-5B67-B16B-5DD6D3A2C1DD}.Release|x64.ActiveCfg = Release|x64
-		{64118BDE-AA68-5B67-B16B-5DD6D3A2C1DD}.Release|x64.Build.0 = Release|x64
+		{B90AF9B8-2557-50CD-BFC8-211368CBCDF4}.Debug|x64.ActiveCfg = Debug|x64
+		{B90AF9B8-2557-50CD-BFC8-211368CBCDF4}.Debug|x64.Build.0 = Debug|x64
+		{B90AF9B8-2557-50CD-BFC8-211368CBCDF4}.Release|x64.ActiveCfg = Release|x64
+		{B90AF9B8-2557-50CD-BFC8-211368CBCDF4}.Release|x64.Build.0 = Release|x64
 		{BCA96870-BFE9-5429-A3A2-BEC6F83C1185}.Debug|x64.ActiveCfg = Debug|x64
 		{BCA96870-BFE9-5429-A3A2-BEC6F83C1185}.Debug|x64.Build.0 = Debug|x64
 		{BCA96870-BFE9-5429-A3A2-BEC6F83C1185}.Release|x64.ActiveCfg = Release|x64
 		{BCA96870-BFE9-5429-A3A2-BEC6F83C1185}.Release|x64.Build.0 = Release|x64
-		{C706DAA9-BE1A-5961-80F5-EBB4F44484EE}.Debug|x64.ActiveCfg = Debug|x64
-		{C706DAA9-BE1A-5961-80F5-EBB4F44484EE}.Debug|x64.Build.0 = Debug|x64
-		{C706DAA9-BE1A-5961-80F5-EBB4F44484EE}.Release|x64.ActiveCfg = Release|x64
-		{C706DAA9-BE1A-5961-80F5-EBB4F44484EE}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
