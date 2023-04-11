@@ -44,36 +44,41 @@ JDL.method "shared", scope: :top_level do
   on_called do end
 end
 
-JDL.node "app" do
-  title "Define an app"
+# have made decision that the contents of project will be 'configs'
+# eg
+# configs [:debug, :release] - default configs defined at top level scope
+# target_platform :win32  - target_platform(s) defined at top level scope
+
+# project :myproj, root: "myroot", configs: [:mydebug, :myrelease] do
+#  type :lib # can have a different type per config
+#  src ['*'] # src now on a per-config basis
+#  inc ['.']
+#  ...
+# end
+JDL.node "project" do
+  title "Define a project"
 end
 
-JDL.node "lib" do
-  title "Define a lib"
+# TODO: flag this as being an option on project
+# eg project :myproj, root: "myroot"
+JDL.attr "project|root" do #, type: :string do
+  title "TODO"
+  flags []
 end
 
-JDL.node "app|config" do
+JDL.node "project|rule" do
   title "TODO"
 end
 
-JDL.node "app|config|rule" do
+JDL.attr "project|rule|input" do #, type: :src_spec do
   title "TODO"
 end
 
-JDL.attr "app|config|rule|input" do #, type: :src_spec do
-  title "TODO"
-end
-
-JDL.method "include", scope: ["app", "lib"] do
+JDL.method "include", scope: ["project"] do
   title "Include a shared definition"
   on_called do |id|
     JABA.context.include_shared(id)
   end
-end
-
-JDL.attr "app|root", "lib|root" do #, type: :string do
-  title "TODO"
-  flags []
 end
 
 JDL.method "glob", scope: :top_level do
