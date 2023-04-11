@@ -14,7 +14,7 @@ jtest "catches jdl errors in jaba file form" do
   assert_jaba_file_error "'invalid id' is an invalid id. Must be an alphanumeric " \
                          "string or symbol (-_. permitted), eg :my_id, 'my-id', 'my.id'.", "32C24F15" do
     %Q{
-app 'invalid id' do # 32C24F15
+project 'invalid id' do # 32C24F15
 end
 }
   end
@@ -60,7 +60,7 @@ end
 jtest "allows errors to be raised from definitions in block form" do
   assert_jaba_error "Error at #{src_loc("7FAC4085")}: Error msg." do
     jaba do
-      app :test do
+      project :test do
         fail "Error msg" # 7FAC4085
       end
     end
@@ -70,7 +70,7 @@ end
 jtest "allows errors to be raised from definitions in jaba file form" do
   assert_jaba_file_error "Error msg.", "D3BBCE42" do
     %Q{
-app :test do
+project :test do
   fail "Error msg" # D3BBCE42
 end
 }
