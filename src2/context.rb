@@ -48,6 +48,7 @@ module JABA
       @jdl_files = []
       @jdl_includes = []
       @jdl_file_lookup = {}
+      @node_defs = []
       @executing_jdl = false
       @attr_default_read_stack = []
     end
@@ -135,7 +136,17 @@ module JABA
       JDL::TopLevelAPI.singleton.__internal_set_node(@top_level_node)
 
       set_top_level_attrs_from_input
+      
+      @executing_jdl = true
       load_jaba_files
+
+      @top_level_node.post_create
+      @default_configs = @top_level_node[:configs]
+
+      @node_defs.each do |nd|
+        process_node_def(nd)
+      end
+      @executing_jdl = false
 
       @top_level_node.visit do |n|
         n.attributes.each do |a|
@@ -299,7 +310,6 @@ module JABA
     def executing_jdl? = @executing_jdl
 
     def execute_jdl(*args, file: nil, str: nil, &block)
-      @executing_jdl = true
       if str
         JDL::TopLevelAPI.singleton.instance_eval(str, file)
       elsif file
@@ -309,7 +319,42 @@ module JABA
       if block_given?
         JDL::TopLevelAPI.singleton.instance_exec(*args, &block)
       end
-      @executing_jdl = false
+    end
+
+    NodeDefData = Data.define(:api_klass, :id, :src_loc, :args, :kwargs, :block)
+
+    def register_node(api_klass, *args, **kwargs, &block)
+      id = args.shift
+      validate_id(id, :node)
+      @node_defs << NodeDefData.new(api_klass, id, $last_call_location, args, kwargs, block)
+    end
+
+    def process_node_def(nd)
+      if nd.api_klass == JDL::ProjectAPI
+        proj_node = create_node(nd, no_api_klass: true) # structural node only, do not execute jdl
+        @default_configs.each do |id|
+          create_node(nd, parent: proj_node) do |node|
+            node.get_attr(:config).set(id)
+          end
+        end
+      else
+        create_node(nd)
+      end
+    end
+
+    def create_node(nd, parent: @top_level_node, no_api_klass: false)
+      begin
+        api_klass = no_api_klass ? nil : nd.api_klass
+        node = Node.new(api_klass, nd.id, nd.src_loc, parent)
+        yield node if block_given?
+        node.eval_jdl(&nd.block) if api_klass && nd.block
+        node.post_create
+        return node
+      rescue FrozenError => e
+        msg = e.message.sub("frozen", "read only").capitalize_first
+        msg.sub!(/:.*?$/, ".") if !mruby? # mruby does not inspect the value
+        JABA.error(msg, backtrace: e.backtrace, want_backtrace: false)
+      end
     end
 
     def log(msg, severity = :INFO, section: false)
@@ -423,19 +468,6 @@ module JABA
           end
         msg << ". Must be an alphanumeric string or symbol (-_. permitted), eg :my_id, 'my-id', 'my.id'"
         JABA.error(msg)
-      end
-    end
-
-    def create_node(api_klass, *args, **kwargs, &block)
-      id = args.shift
-      validate_id(id, :node)
-      begin
-        node = Node.new(api_klass, id, $last_call_location, @top_level_node, &block)
-        node.post_create
-      rescue FrozenError => e
-        msg = e.message.sub("frozen", "read only").capitalize_first
-        msg.sub!(/:.*?$/, ".") if !mruby? # mruby does not inspect the value
-        JABA.error(msg, backtrace: e.backtrace, want_backtrace: false)
       end
     end
 

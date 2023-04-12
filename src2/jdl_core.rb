@@ -25,7 +25,7 @@ module JDL
     parent_klass = api_class_from_path(parent_path)
     parent_klass.define_method(item) do |*args, **kwargs, &node_block|
       $last_call_location = ::Kernel.calling_location
-      JABA.context.create_node(node_api_klass, *args, **kwargs, &node_block)
+      JABA.context.register_node(node_api_klass, *args, **kwargs, &node_block)
     end
   end
 

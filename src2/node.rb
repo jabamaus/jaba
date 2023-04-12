@@ -6,7 +6,7 @@ module JABA
   end
 
   class Node
-    def initialize(api_klass, id, src_loc, parent, &block)
+    def initialize(api_klass, id, src_loc, parent)
       @api_klass = api_klass
       @id = id
       @src_loc = src_loc
@@ -15,19 +15,20 @@ module JABA
       @children = []
       @read_only = false
       set_parent(parent)
-      api_klass.attr_defs.each do |d|
-        a = case d.variant
-          when :single
-            AttributeSingle.new(d, self)
-          when :array
-            AttributeArray.new(d, self)
-          when :hash
-            AttributeHash.new(d, self)
-          end
-        @attributes << a
-        @attribute_lookup[d.name] = a
+      if api_klass
+        api_klass.attr_defs.each do |d|
+          a = case d.variant
+            when :single
+              AttributeSingle.new(d, self)
+            when :array
+              AttributeArray.new(d, self)
+            when :hash
+              AttributeHash.new(d, self)
+            end
+          @attributes << a
+          @attribute_lookup[d.name] = a
+        end
       end
-      eval_jdl(&block) if block_given?
     end
 
     def eval_jdl(...)

@@ -44,6 +44,11 @@ JDL.method "shared", scope: :top_level do
   on_called do end
 end
 
+JDL.attr_array "configs" do
+  title "Default configs"
+  flags :required
+end
+
 # have made decision that the contents of project will be 'configs'
 # eg
 # configs [:debug, :release] - default configs defined at top level scope
@@ -59,6 +64,18 @@ JDL.node "project" do
   title "Define a project"
 end
 
+JDL.attr "project|config" do #, type: :symbol_or_string do
+  title "Current target config as an id"
+  note "Returns current config being processed. Use to define control flow to set config-specific atttributes"
+  flags :read_only
+  # TODO: examples, including regexes
+end
+
+JDL.attr_array "project|define" do #, type: :symbol_or_string do
+  title 'Preprocessor defines'
+  flags :exportable
+end
+
 # TODO: flag this as being an option on project
 # eg project :myproj, root: "myroot"
 JDL.attr "project|root" do #, type: :string do
@@ -72,6 +89,12 @@ end
 
 JDL.attr "project|rule|input" do #, type: :src_spec do
   title "TODO"
+end
+
+JDL.attr "project|type", type: :choice do
+  title "Project type"
+  items [:app, :console, :lib, :dll]
+  flags :required
 end
 
 JDL.method "include", scope: ["project"] do
