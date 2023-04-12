@@ -127,10 +127,9 @@ module JABA
           rdonly << a
         end
       end
-
       JABA.error("'#{name}' attribute not found. The following attributes are available in this context:\n\n  " \
-      "Read/write:\n    #{rw.map { |ad| ad.name }.join(", ")}\n\n  " \
-      "Read only:\n    #{rdonly.map { |ad| ad.name }.join(", ")}\n\n")
+      "Read/write:\n    #{rw.map { |a| a.name }.join(", ")}\n\n  " \
+      "Read only:\n    #{rdonly.map { |a| a.name }.join(", ")}\n\n")
     end
 
     def make_read_only

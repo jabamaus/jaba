@@ -10,6 +10,7 @@ module JABA
     def to_s = "#{type_id} attribute"
     def node = @node
     def type_id = @attr_def.type_id
+    def name = @attr_def.name
     def attr_def = @attr_def
     def set? = @set
     def required? = @attr_def.has_flag?(:required)
