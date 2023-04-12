@@ -1,11 +1,17 @@
 module JABA
+  # Attriute lookup hash converts keys to symbols so can lookup with strings or symbols
+  class AttributeLookupHash < Hash
+    def [](key) = super(key.to_sym)
+    def []=(key, value); super(key.to_sym, value); end
+  end
+
   class Node
     def initialize(api_klass, id, src_loc, parent, &block)
       @api_klass = api_klass
       @id = id
       @src_loc = src_loc
       @attributes = []
-      @attribute_lookup = {}
+      @attribute_lookup = AttributeLookupHash.new
       @children = []
       @read_only = false
       set_parent(parent)
@@ -74,6 +80,8 @@ module JABA
       end
       a
     end
+
+    def [](name) = get_attr(name).value
 
     def search_attr(name, fail_if_not_found: true)
       a = get_attr(name, fail_if_not_found: false)
