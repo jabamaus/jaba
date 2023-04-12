@@ -138,12 +138,12 @@ module JABA
       attr.set(val, *args, __validate: __validate, __key: key, __call_on_set: false, **kwargs)
 
       if __call_on_set
-       # if @in_on_set
-       #   JABA.error("Reentrancy detected in #{describe} on_set")
-       # end
-       # @in_on_set = true
-       # @attr_def.call_block_property(:on_set, key, val, receiver: @node)
-       # @in_on_set = false
+        # if @in_on_set
+        #   JABA.error("Reentrancy detected in #{describe} on_set")
+        # end
+        # @in_on_set = true
+        # @attr_def.call_block_property(:on_set, key, val, receiver: @node)
+        # @in_on_set = false
       end
 
       # Log overwrites. This behaviour could be beefed up and customised with options if necessary

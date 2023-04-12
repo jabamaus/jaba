@@ -376,8 +376,8 @@ module JABA
         #
         err_line = msg
         if mruby? # mruby syntax errors need cleaning
-          err_line.sub!('file ', '')
-          err_line.sub!(' line ', ':')
+          err_line.sub!("file ", "")
+          err_line.sub!(" line ", ":")
         end
 
         # Delete ruby's way of reporting syntax errors in favour of our own
@@ -434,7 +434,7 @@ module JABA
         node.post_create
       rescue FrozenError => e
         msg = e.message.sub("frozen", "read only").capitalize_first
-        msg.sub!(/:.*?$/, '.') if !mruby? # mruby does not inspect the value
+        msg.sub!(/:.*?$/, ".") if !mruby? # mruby does not inspect the value
         JABA.error(msg, backtrace: e.backtrace, want_backtrace: false)
       end
     end

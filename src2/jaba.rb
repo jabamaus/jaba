@@ -73,7 +73,7 @@ if __FILE__ == $PROGRAM_NAME
 
       clm.process
       clm.finalise
-      
+
       if @show_help
         clm.show_help
         return 0
