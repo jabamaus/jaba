@@ -19,8 +19,6 @@ class Object
   def string? = is_a?(String)
   def symbol? = is_a?(Symbol)
   def proc? = is_a?(Proc)
-  def array? = is_a?(Array)
-  def hash? = is_a?(Hash)
 end
 
 class String

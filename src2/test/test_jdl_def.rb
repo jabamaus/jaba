@@ -37,3 +37,12 @@ jtest "can register methods globally" do
     end
   end
 end
+
+jtest "fails if flag does not exist" do
+  JDL.node "node_C1FE3A1E"
+  assert_jaba_error "Error at #{src_loc("01E55971")}: 'a' attribute invalid: ':unknown' flag does not exist." do
+    JDL.attr "node_C1FE3A1E|a" do
+      flags :unknown # 01E55971
+    end
+  end
+end

@@ -1,11 +1,29 @@
-JDL.flag :required do
-  title "Force user to supply a value"
-  note "Specifies that the definition writer must supply a value for this attribute"
+JDL.flag :allow_dupes do
+  title "Array duplicates strategy"
+  note "Allows array attributes to contain duplicates. If not specified duplicates are stripped"
   compatible? do |attr_def|
-    if attr_def.default_set?
-      JABA.error("#{describe} can only be specified if no default specified")
+    if !attr_def.array?
+      definition_error("only allowed on array attributes")
     end
   end
+end
+
+JDL.flag :no_sort do
+  title "Do not sort array attributes"
+  note "Allows array attributes to remain in the order they are set in. If not specified arrays are sorted"
+  compatible? do |attr_def|
+    if !attr_def.array?
+      definition_error("only allowed on array attributes")
+    end
+  end
+end
+
+JDL.flag :per_project do
+  title "Flags attributes inside the Project namespace as being per-project rather than per-config"
+end
+
+JDL.flag :per_config do
+  title "Flags attributes inside the Project namespace as being per-config rather than per-target"
 end
 
 JDL.flag :read_only do
@@ -13,12 +31,12 @@ JDL.flag :read_only do
   note "Specifies that the attribute can only be read and not set from user definitions. The value will be initialised inside Jaba"
 end
 
-JDL.flag :allow_dupes do
-  title "Array duplicates strategy"
-  note "Allows array attributes to contain duplicates. If not specified duplicates are stripped"
+JDL.flag :required do
+  title "Force user to supply a value"
+  note "Specifies that the definition writer must supply a value for this attribute"
   compatible? do |attr_def|
-    if !attr_def.array?
-      JABA.error("#{describe} is only allowed on array attributes")
+    if attr_def.default_set?
+      definition_error("can only be specified if no default specified")
     end
   end
 end
@@ -67,24 +85,23 @@ end
 JDL.attr "project|config" do #, type: :symbol_or_string do
   title "Current target config as an id"
   note "Returns current config being processed. Use to define control flow to set config-specific atttributes"
-  flags :read_only
+  flags :per_config, :read_only
   # TODO: examples, including regexes
 end
 
 JDL.attr_array "project|define" do #, type: :symbol_or_string do
   title 'Preprocessor defines'
-  flags :exportable
+  #flags :exportable
 end
 
-# TODO: flag this as being an option on project
-# eg project :myproj, root: "myroot"
 JDL.attr "project|root" do #, type: :string do
   title "TODO"
-  flags []
+  flags :per_project
 end
 
 JDL.node "project|rule" do
   title "TODO"
+  flags :per_config
 end
 
 JDL.attr "project|rule|input" do #, type: :src_spec do
@@ -94,7 +111,7 @@ end
 JDL.attr "project|type", type: :choice do
   title "Project type"
   items [:app, :console, :lib, :dll]
-  flags :required
+  flags :per_config, :required
 end
 
 JDL.method "include", scope: ["project"] do

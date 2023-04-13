@@ -59,8 +59,14 @@ module JABA
       @on_compatible = nil
     end
 
-    def describe = "'#{@id.inspect_unquoted}' attribute definition flag"
+    def describe = "'#{name.inspect_unquoted}' attribute definition flag"
+
     def set_compatible?(&block) = @on_compatible = block
+    def check_compatibility(attr_def)
+      instance_exec(attr_def, &@on_compatible) if @on_compatible
+    end
+
+    def self.lookup(name) = all.find{|fd| fd.name == name}
   end
 
   class MethodDefinition < Definition
@@ -95,10 +101,20 @@ module JABA
 
     def describe = "'#{@name.inspect_unquoted}' #{@variant == :single ? "" : "#{@variant} "}attribute"
     def variant = @variant
+    def array? = @variant == :array
     def attr_type = @attr_type
     def type_id = @attr_type.name
 
-    def set_flags(*flags) = @flags.concat(flags)
+    def set_flags(*flags)
+      flags.flatten.each do |f|
+        fd = FlagDefinition.lookup(f)
+        if fd.nil?
+          definition_error("'#{f.inspect_unquoted}' flag does not exist")
+        end
+        fd.check_compatibility(self)
+        @flags << f
+      end
+    end
     def has_flag?(flag) = @flags.include?(flag)
     def get_flag_options = @flag_options
     def set_flag_options(*fo) = @flag_options.concat(fo)
@@ -204,7 +220,7 @@ module JABA
     def set_default(val = nil, &block)
       super
       if !default_is_block?
-        if !val.array?
+        if !val.is_a?(Array)
           definition_error("'default' expects an array but got '#{val}'")
         end
         val.each do |elem|

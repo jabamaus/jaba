@@ -241,31 +241,25 @@ jtest "is not possible to modify returned hash" do
     end
   end
 end
-=begin
+
 jtest "disallows no_sort flag" do
-  assert_jaba_error "Error at #{src_loc("366C343A")}: :no_sort attribute definition flag is only allowed on array attributes." do
-    jaba(barebones: true) do
-      type :test do
-        attr_hash :a, key_type: :symbol do
-          flags :no_sort # 366C343A
-        end
-      end
+  JDL.node "tah_6502C5DE"
+  assert_jaba_error "Error at #{src_loc("366C343A")}: ':no_sort' attribute definition flag invalid: only allowed on array attributes." do
+    JDL.attr_hash "tah_6502C5DE|a" do
+      flags :no_sort # 366C343A
     end
   end
 end
 
 jtest "disallows allow_dupes flag" do
-  assert_jaba_error "Error at #{src_loc("2E453551")}: :allow_dupes attribute definition flag is only allowed on array attributes." do
-    jaba(barebones: true) do
-      type :test do
-        attr_hash :a, key_type: :symbol do
-          flags :allow_dupes # 2E453551
-        end
-      end
+  JDL.node "tah_681D76BC"
+  assert_jaba_error "Error at #{src_loc("2E453551")}: ':allow_dupes' attribute definition flag invalid: only allowed on array attributes." do
+    JDL.attr_hash "tah_681D76BC|a" do
+      flags :allow_dupes # 2E453551
     end
   end
 end
-
+=begin
 jtest "can accept flag options" do
   jaba(barebones: true) do
     type :test do

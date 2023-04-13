@@ -53,7 +53,7 @@ module JABA
       #
       if !set? && attr_def.default_is_block?
         default_values = JABA.context.execute_attr_default_block(self)
-        if !default_values.array?
+        if !default_values.is_a?(Array)
           JABA.error("#{describe} 'default' invalid: requires an array not a '#{default_values.class}'", errobj: attr_def.get_default)
         end
         default_values.each do |d|
