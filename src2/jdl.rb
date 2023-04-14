@@ -41,6 +41,24 @@ JDL.flag :required do
   end
 end
 
+JDL.basedir_spec :definition_root do
+  title "path will be based on the directory of the jaba file the definition is in"
+  note "A caveat is that if an attribute flagged with :definition_root is set in a shared definition " \
+       "it will base itself of the root definition that included the shared definition"
+end
+
+JDL.basedir_spec :build_root do
+  title "path will be based on build_root"
+end
+
+JDL.basedir_spec :buildsystem_root do
+  title "path will be based on buildsystem (itself based on build_root)"
+end
+
+JDL.basedir_spec :artefact_root do
+  title "path will be based on build artefact root"
+end
+
 JDL.method "print", scope: :global do
   title "Prints a non-newline terminated string to stdout"
   on_called do |str| Kernel.print(str) end

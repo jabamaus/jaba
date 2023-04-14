@@ -46,3 +46,12 @@ jtest "fails if flag does not exist" do
     end
   end
 end
+
+jtest "fails if invalid basedir_spec specified" do
+  JDL.node "node_C23D13C5"
+  assert_jaba_error "Error at #{src_loc("EC9914E5")}: 'a' attribute invalid: ':unknown' basedir_spec must be one of [:definition_root, :build_root, :buildsystem_root, :artefact_root]" do
+    JDL.attr "node_C23D13C5|a", type: :dir do
+      basedir_spec :unknown # EC9914E5
+    end
+  end
+end

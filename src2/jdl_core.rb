@@ -1,6 +1,17 @@
 module JDL
   FlagDefinitionAPI = APIBuilder.define(:title, :note, :example, :compatible?)
-  AttributeDefinitionAPI = APIBuilder.define(:title, :note, :example, :flags, :flag_options, :items, :value_option, :validate, :validate_key, :default)
+  BasedirSpecDefinitionAPI = APIBuilder.define(:title, :note, :example)
+  AttributeDefinitionAPI = APIBuilder.define(
+    :title, :note, :example,
+    :flags,
+    :flag_options,
+    :value_option,
+    :default,
+    :validate,
+    :validate_key, # Used by hash attribute
+    :items, # Used by choice attribute
+    :basedir_spec, # Used by path attributes
+  )
   MethodDefinitionAPI = APIBuilder.define(:title, :note, :example, :on_called)
 
   # BaseAPI is the blankest possible slate
@@ -17,6 +28,11 @@ module JDL
   def self.flag(name, &block)
     fd = JABA::FlagDefinition.new(calling_location, name)
     FlagDefinitionAPI.execute(fd, &block) if block_given?
+  end
+
+  def self.basedir_spec(name, &block)
+    d = JABA::BasedirSpecDefinition.new(calling_location, name)
+    BasedirSpecDefinitionAPI.execute(d, &block) if block_given?
   end
 
   def self.node(path, &block)
@@ -90,7 +106,7 @@ module JDL
         $last_call_location = ::Kernel.calling_location
         @node.handle_attr(attr_name, *args, **kwargs, &attr_block)
       end
-      type = 'Null' if type.nil?
+      type = "Null" if type.nil?
       attr_type_class = JABA.const_get("AttributeType#{type.to_s.capitalize_first}")
       attr_type = attr_type_class.singleton
       attr_def = def_klass.new(src_loc, attr_name, attr_type)

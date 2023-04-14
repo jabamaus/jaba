@@ -60,13 +60,24 @@ module JABA
     end
 
     def describe = "'#{name.inspect_unquoted}' attribute definition flag"
-
+    def self.lookup(name) = all.find { |fd| fd.name == name }
     def set_compatible?(&block) = @on_compatible = block
 
     def check_compatibility(attr_def)
       instance_exec(attr_def, &@on_compatible) if @on_compatible
     end
+  end
 
+  class BasedirSpecDefinition < Definition
+    @@all = []
+    def self.all = @@all
+
+    def initialize(src_loc, name)
+      super
+      @@all << self
+    end
+
+    def describe = "'#{name.inspect_unquoted}' basedir_spec"
     def self.lookup(name) = all.find { |fd| fd.name == name }
   end
 
@@ -98,6 +109,7 @@ module JABA
       @default_is_block = false
       @default_set = false
       @on_validate = nil
+      @basedir_spec = nil
     end
 
     def describe = "'#{@name.inspect_unquoted}' #{@variant == :single ? "" : "#{@variant} "}attribute"
@@ -121,11 +133,24 @@ module JABA
     def get_flag_options = @flag_options
     def set_flag_options(*fo) = @flag_options.concat(fo)
     def has_flag_option?(fo) = @flag_options.include?(fo)
+
+    # Items is used by choice attribute
     def get_items = @items
 
     def set_items(items)
       definition_warn("'items' contains duplicates") if items.uniq!
       @items.concat(items)
+    end
+
+    # basedir_spec is used by path attributes
+    def get_basedir_spec = @basedir_spec
+
+    def set_basedir_spec(s)
+      sd = BasedirSpecDefinition.lookup(s)
+      if sd.nil?
+        definition_error("'#{s.inspect_unquoted}' basedir_spec must be one of #{BasedirSpecDefinition.all.map{|s_| s_.name}}")
+      end
+      @basedir_spec = s
     end
 
     def set_validate(&block) = @on_validate = block
