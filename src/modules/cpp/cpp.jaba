@@ -34,7 +34,7 @@ type :cpp do
           'Path can also be absolute but explicitly specified absolute paths should be avoided in definitions where possible ' \
           'in order to not damage portability'
     default '.'
-    basedir_spec :jaba_file
+    basedir_spec :definition_root
   end
 
   attr_array :platforms, type: :choice do

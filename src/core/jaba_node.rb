@@ -142,8 +142,6 @@ module JABA
             "#{services.globals.artefact_root}"
           when :definition_root
             definition_root
-          when :jaba_file
-            n.source_dir
           else
             JABA.error "Unexpected basedir_spec value '#{basedir_spec}'"
           end

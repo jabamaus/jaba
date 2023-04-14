@@ -8,7 +8,7 @@ type :workspace do
     title 'Root directory relative to which all other paths are specified'
     note 'Defaults to containing directory of definition source file'
     default '.'
-    basedir_spec :jaba_file
+    basedir_spec :definition_root
   end
 
   attr :workspacedir, type: :dir do

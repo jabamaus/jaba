@@ -186,7 +186,6 @@ module JABA
       :build_root,        # path will be based on build_root
       :buildsystem_root,  # path will be based on buildsystem (itself based on build_root)
       :artefact_root,     # path will be based on build artefact root
-      :jaba_file          # path will be based on the directory of the jaba definition file the path was set in
     ]
     def init_attr_def(attr_def)
       attr_def.define_single_property(:basedir_spec)
