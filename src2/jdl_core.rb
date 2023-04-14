@@ -90,17 +90,8 @@ module JDL
         $last_call_location = ::Kernel.calling_location
         @node.handle_attr(attr_name, *args, **kwargs, &attr_block)
       end
-      # TODO: automatically make class name from typeid
-      attr_type_class = case type
-        when :bool
-          JABA::AttributeTypeBool
-        when :choice
-          JABA::AttributeTypeChoice
-        when :uuid
-          JABA::AttributeTypeUUID
-        else
-          JABA::AttributeTypeNull
-        end
+      type = 'Null' if type.nil?
+      attr_type_class = JABA.const_get("AttributeType#{type.to_s.capitalize_first}")
       attr_type = attr_type_class.singleton
       attr_def = def_klass.new(src_loc, attr_name, attr_type)
       AttributeDefinitionAPI.execute(attr_def, &block) if block_given?

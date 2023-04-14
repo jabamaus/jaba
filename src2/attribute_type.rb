@@ -85,14 +85,14 @@ module JABA
     end
   end
 
-  class AttributeTypeUUID < AttributeType
+  class AttributeTypeUuid < AttributeType
     def initialize
       super(:uuid)
       set_title "UUID attribute type"
     end
 
     def map_value(value)
-      Kernel.generate_uuid(namespace: "AttributeTypeUUID", name: value, braces: true)
+      Kernel.generate_uuid(namespace: "AttributeTypeUuid", name: value, braces: true)
     end
   end
 end
