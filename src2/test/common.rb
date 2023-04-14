@@ -12,7 +12,7 @@ class JTestCaseAPI
     global_attrs: nil,
     configs: [:Debug, :Release],
     &block
-    )
+  )
     td = temp_dir(create: false)
     build_root = build_root || td
 

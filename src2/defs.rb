@@ -62,11 +62,12 @@ module JABA
     def describe = "'#{name.inspect_unquoted}' attribute definition flag"
 
     def set_compatible?(&block) = @on_compatible = block
+
     def check_compatibility(attr_def)
       instance_exec(attr_def, &@on_compatible) if @on_compatible
     end
 
-    def self.lookup(name) = all.find{|fd| fd.name == name}
+    def self.lookup(name) = all.find { |fd| fd.name == name }
   end
 
   class MethodDefinition < Definition
@@ -115,6 +116,7 @@ module JABA
         @flags << f
       end
     end
+
     def has_flag?(flag) = @flags.include?(flag)
     def get_flag_options = @flag_options
     def set_flag_options(*fo) = @flag_options.concat(fo)

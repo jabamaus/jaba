@@ -90,7 +90,7 @@ JDL.attr "project|config" do #, type: :symbol_or_string do
 end
 
 JDL.attr_array "project|define" do #, type: :symbol_or_string do
-  title 'Preprocessor defines'
+  title "Preprocessor defines"
   #flags :exportable
 end
 

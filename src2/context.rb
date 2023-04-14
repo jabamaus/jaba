@@ -136,7 +136,7 @@ module JABA
       JDL::TopLevelAPI.singleton.__internal_set_node(@top_level_node)
 
       set_top_level_attrs_from_input
-      
+
       @executing_jdl = true
       load_jaba_files
 

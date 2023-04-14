@@ -4,9 +4,9 @@ jtest "project" do
       type :console
       case config
       when :Debug
-        define 'DEBUG'
+        define "DEBUG"
       when :Release
-        define 'RELEASE'
+        define "RELEASE"
       end
     end
   end
@@ -16,7 +16,7 @@ jtest "project" do
   a.id.must_equal :myapp
   a.children.size.must_equal 2
   debug_conf = a.children[0]
-  debug_conf[:define].must_equal ['DEBUG']
+  debug_conf[:define].must_equal ["DEBUG"]
   release_conf = a.children[1]
-  release_conf[:define].must_equal ['RELEASE']
+  release_conf[:define].must_equal ["RELEASE"]
 end
