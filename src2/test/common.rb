@@ -2,7 +2,7 @@ require_relative "../jaba"
 
 JABA.running_tests!
 
-class JTestCaseAPI
+module JabaTestMethods
   def jaba(
     want_exceptions: true,
     src_root: nil,
@@ -87,3 +87,6 @@ class JTestCaseAPI
     end
   end
 end
+
+class JTestCaseAPI; include JabaTestMethods; end
+JTest.extend(JabaTestMethods)
