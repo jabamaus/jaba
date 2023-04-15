@@ -1,3 +1,5 @@
+# Flags
+
 JDL.flag :allow_dupes do
   title "Array duplicates strategy"
   note "Allows array attributes to contain duplicates. If not specified duplicates are stripped"
@@ -41,10 +43,14 @@ JDL.flag :required do
   end
 end
 
-JDL.basedir_spec :definition_root do
+# basedir_specs
+
+JDL.basedir_spec :jaba_file do
   title "path will be based on the directory of the jaba file the definition is in"
-  note "A caveat is that if an attribute flagged with :definition_root is set in a shared definition " \
-       "it will base itself of the root definition that included the shared definition"
+  note "If $(root) attribute is set that will take precedence and override this. The root attribute is itself" \
+       "specified relative to the jaba file."
+  note "Another caveat is that if an attribute flagged with :jaba_file is set in a shared definition " \
+       "it will base itself off the root definition that included the shared definition"
 end
 
 JDL.basedir_spec :build_root do
