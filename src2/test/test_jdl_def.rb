@@ -13,22 +13,14 @@ jtest "can register methods globally" do
   JDL.node "node_5CD704E0"
   JDL.node "node_5CD704E0|node_AD7707C3"
   JDL.method "meth_124B8839", scope: :global do
-    on_called do Kernel.print "meth_124B8839" end
+    on_called do Kernel.print "meth_124B8839|" end
   end
-  assert_output "meth_124B8839" do
+  assert_output "meth_124B8839|meth_124B8839|meth_124B8839|" do
     jaba do
       meth_124B8839
-    end
-  end
-  assert_output "meth_124B8839" do
-    jaba do
       node_5CD704E0 :n do
         meth_124B8839
       end
-    end
-  end
-  assert_output "meth_124B8839" do
-    jaba do
       node_5CD704E0 :n do
         node_AD7707C3 :n2 do
           meth_124B8839
