@@ -41,8 +41,9 @@ module JABA
       @input.instance_variable_set(:@definitions, [])
       @input.instance_variable_set(:@global_attrs, {})
       @src_root = @build_root = @temp_dir = nil
-      @output = {}
       @warnings = []
+      @warning_lookup = {}
+      @output = {warnings: @warnings, error: nil}
       @log_msgs = [] # JABA.running_tests? ? nil : [] # Disable logging when running tests
       @file_manager = FileManager.new
       @jdl_files = []
@@ -123,7 +124,6 @@ module JABA
       output[:modified] = modified
       output[:unchanged] = unchanged
       output[:summary] = summary
-      output[:warnings] = @warnings.uniq # Strip duplicate warnings
     end
 
     def do_run
@@ -388,8 +388,12 @@ module JABA
         else
           make_error_info(msg, jdl_bt).message
         end
-      log(msg, :WARN)
-      @warnings << msg
+      if !@warning_lookup.has_key?(msg)
+        log(msg, :WARN)
+        @warnings << msg
+      else
+        @warning_lookup[msg] = true
+      end
       nil
     end
 
