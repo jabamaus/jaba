@@ -137,7 +137,7 @@ module JABA
 
     def validate_value(attr_def, value)
       if value.contains_slashes?
-        JABA.error("'#{value}' must not contain slashes")
+        JABA.error("#{attr_def.describe} invalid - '#{value}' must not contain slashes", want_backtrace: false)
       end
     end
   end
