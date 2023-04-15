@@ -95,4 +95,50 @@ module JABA
       Kernel.generate_uuid(namespace: "AttributeTypeUuid", name: value, braces: true)
     end
   end
+
+  class AttributePathBase < AttributeType
+    def validate_value(attr_def, path)
+      path.validate_path do |msg|
+        JABA.warn("#{attr_def.describe} not specified cleanly: #{msg}")
+      end
+    end
+  end
+
+  class AttributeTypeFile < AttributePathBase
+    def initialize
+      super(:file)
+      set_title "File attribute type"
+      set_note "Validates that value is a string path representing a file"
+    end
+  end
+
+  class AttributeTypeDir < AttributePathBase
+    def initialize
+      super(:dir, default: ".")
+      set_title "Directory attribute type"
+      set_note "Validates that value is a string path representing a directory"
+    end
+  end
+
+  class AttributeTypeSrc_spec < AttributePathBase
+    def initialize
+      super(:src_spec)
+      set_title "Source file specification pattern"
+      set_note "Can be file glob match an explicit path or a directory"
+    end
+  end
+
+  class AttributeTypeBasename < AttributePathBase
+    def initialize
+      super(:basename)
+      set_title "basename attribute type"
+      set_note "Basename of a file. Slashes are rejected."
+    end
+
+    def validate_value(attr_def, value)
+      if value.contains_slashes?
+        JABA.error("'#{value}' must not contain slashes")
+      end
+    end
+  end
 end

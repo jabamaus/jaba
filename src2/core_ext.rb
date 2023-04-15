@@ -33,7 +33,7 @@ class String
   def validate_path
     JABA.error("block expected") if !block_given?
     if include?('\\')
-      yield "contains backslashes"
+      yield "'#{self}' contains backslashes"
     end
   end
 
