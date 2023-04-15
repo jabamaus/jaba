@@ -2,8 +2,6 @@ require_relative "../jaba"
 
 JABA.running_tests!
 
-JDL.node "test"
-
 class JTestCaseAPI
   def jaba(
     want_exceptions: true,
