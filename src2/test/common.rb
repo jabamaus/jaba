@@ -14,7 +14,7 @@ module JabaTestMethods
     td = temp_dir(create: false)
     build_root = build_root || td
 
-    op = JABA.run(want_exceptions: want_exceptions) do |c|
+    JABA.run(want_exceptions: want_exceptions) do |c|
       c.src_root = src_root # Most unit tests don't have a src_root as everything is defined inline in code
       c.build_root = build_root
       c.definitions do
@@ -23,10 +23,6 @@ module JabaTestMethods
       c.definitions(&block) if block_given?
       c.global_attrs = global_attrs
     end
-
-    warnings = op[:warnings]
-    puts warnings if warnings && !warnings.empty?
-    op
   end
 
   def assert_jaba_error(msg, trace: nil, ignore_rest: false, hint: nil, &block)
@@ -63,28 +59,6 @@ module JabaTestMethods
     make_file(fn, content: str)
     op = jaba(src_root: fn, want_exceptions: false)
     op[:error].must_equal("Error at #{src_loc(tag, file: fn)}: #{msg}", src_loc: src_loc_)
-  end
-
-  def assert_jaba_warn(msg, expected_file = nil, tag = nil)
-    src_loc = calling_location
-    out, = capture_io do
-      yield
-    end
-
-    out.must_match(msg, src_loc: src_loc)
-
-    if expected_file
-      expected_line = src_line(tag, file: expected_file)
-
-      if out !~ /Warning at (.+?):(\d+)/
-        raise "couldn't extract file and line number from #{out}"
-      end
-
-      actual_file, actual_line = $1, $2.to_i
-
-      actual_file.must_equal(expected_file.basename, src_loc: src_loc)
-      actual_line.must_equal(expected_line, src_loc: src_loc)
-    end
   end
 end
 

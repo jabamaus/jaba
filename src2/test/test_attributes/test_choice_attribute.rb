@@ -7,7 +7,7 @@ jtest "requires items to be set" do
 end
 
 jtest "warns if items contains duplicates" do
-  assert_jaba_warn "'items' contains duplicates", __FILE__, "234928DC" do
+  assert_output "Warning at #{src_loc("234928DC")}: 'items' contains duplicates\n" do
     JDL.attr "test_choice_attribute|b", type: :choice do
       items [:a, :a, :b, :b] # 234928DC
     end

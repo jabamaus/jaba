@@ -64,6 +64,8 @@ module JABA
         values.prepend(*default_values)
       end
 
+      dupes = []
+      first_dupe = nil
       values.each do |val|
         val = apply_pre_post_fix(prefix, postfix, val)
 
@@ -71,15 +73,19 @@ module JABA
         existing = nil
         if !attr_def.has_flag?(:allow_dupes)
           existing = @elems.find { |e| e.raw_value == elem.raw_value }
+          first_dupe ||= existing
         end
 
         if existing
-          JABA.warn("Stripping duplicate '#{val.inspect_unquoted}' from #{describe}. See previous at #{existing.src_loc.src_loc_describe}. " \
-          "Flag with :allow_dupes to allow.")
+          dupes << val
         else
           @elems << elem
         end
       end
+      if !dupes.empty?
+        JABA.warn("Stripping duplicates #{dupes} from #{describe}. See previous at #{first_dupe.src_loc.src_loc_describe}. " \
+        "Flag with :allow_dupes to allow.")
+    end
 
       if delete
         process_removes(Array(delete).map { |r| apply_pre_post_fix(prefix, postfix, r) }, mode: :delete)

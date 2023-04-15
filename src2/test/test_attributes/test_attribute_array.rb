@@ -161,22 +161,24 @@ jtest "handles duplicates" do
   end
   JDL.attr_array "taa_A738BF86|c", type: :bool
   JDL.attr_array "taa_A738BF86|d"
-  assert_jaba_warn("Stripping duplicate '5' from 't.a' array attribute. See previous at test_attribute_array.rb:#{src_line("199488E3")}", __FILE__, "DD827579") do
-    jaba do
-      taa_A738BF86 :t do
-        a [5] # 199488E3
-        a [5, 6, 6, 7, 7, 7, 8] # DD827579
-        a.must_equal [5, 6, 7, 8]
-        b [5, 5, 6, 6, 7, 7, 7] # duplicates allowed
-        b.must_equal [5, 5, 6, 6, 7, 7, 7]
-        c [true, false, false, true] # Never strips duplicates in bool arrays
-        c.must_equal [true, false, false, true]
-        d ["aa", "ab", "ac"]
-        d ["a", "b", "c"], prefix: "a" # Test duplicates caused by prefix still stripped
-        d.must_equal ["aa", "ab", "ac"]
-      end
+  op = jaba do
+    taa_A738BF86 :t do
+      a [5] # 199488E3
+      a [5, 6, 6, 7, 7, 7, 8] # DD827579
+      a.must_equal [5, 6, 7, 8]
+      b [5, 5, 6, 6, 7, 7, 7] # duplicates allowed
+      b.must_equal [5, 5, 6, 6, 7, 7, 7]
+      c [true, false, false, true] # Never strips duplicates in bool arrays
+      c.must_equal [true, false, false, true]
+      d ["aa", "ab", "ac"] # 3A77A0E4
+      d ["a", "b", "c"], prefix: "a" # A34DE72A Test duplicates caused by prefix still stripped
+      d.must_equal ["aa", "ab", "ac"]
     end
   end
+  w = op[:warnings]
+  w.size.must_equal 2
+  w[0].must_equal "Warning at #{src_loc("DD827579")}: Stripping duplicates [5, 6, 7, 7] from 't.a' array attribute. See previous at test_attribute_array.rb:#{src_line("199488E3")}. Flag with :allow_dupes to allow."
+  w[1].must_equal "Warning at #{src_loc("A34DE72A")}: Stripping duplicates [\"aa\", \"ab\", \"ac\"] from 't.d' array attribute. See previous at test_attribute_array.rb:#{src_line("3A77A0E4")}. Flag with :allow_dupes to allow."
 end
 
 jtest "handles sorting" do
@@ -314,13 +316,14 @@ end
 jtest "warns if nothing deleted" do
   JDL.node "taa_5CEE1A06"
   JDL.attr_array "taa_5CEE1A06|a"
-  assert_jaba_warn "'[7, 8]' did not delete any elements", __FILE__, "D5F5139A" do
-    jaba do
-      taa_5CEE1A06 :t do
-        a [1, 2, 3, 4, 43], delete: [7, 8] # D5F5139A
-      end
+  op = jaba do
+    taa_5CEE1A06 :t do
+      a [1, 2, 3, 4, 43], delete: [7, 8] # D5F5139A
     end
   end
+  w = op[:warnings]
+  w.size.must_equal 1
+  w[0].must_equal "Warning at #{src_loc("D5F5139A")}: '[7, 8]' did not delete any elements."
 end
 
 jtest "supports excluding elements" do
