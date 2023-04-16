@@ -1,8 +1,8 @@
 module JDL
-  FlagDefinitionAPI = APIBuilder.define(:title, :note, :example, :compatible?)
-  BasedirSpecDefinitionAPI = APIBuilder.define(:title, :note, :example)
+  CommonAPI = APIBuilder.define_module(:title, :note, :example)
+  FlagDefinitionAPI = APIBuilder.define(:compatible?).include(CommonAPI)
+  BasedirSpecDefinitionAPI = APIBuilder.define().include(CommonAPI)
   AttributeDefinitionAPI = APIBuilder.define(
-    :title, :note, :example,
     :flags,
     :flag_options,
     :value_option,
@@ -11,8 +11,8 @@ module JDL
     :validate_key, # Used by hash attribute
     :items, # Used by choice attribute
     :basedir_spec, # Used by path attributes
-  )
-  MethodDefinitionAPI = APIBuilder.define(:title, :note, :example, :on_called)
+  ).include(CommonAPI)
+  MethodDefinitionAPI = APIBuilder.define(:on_called).include(CommonAPI)
 
   # BaseAPI is the blankest possible slate
   class BaseAPI < BasicObject
