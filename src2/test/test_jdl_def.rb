@@ -1,3 +1,12 @@
+jtest "split_jdl_path" do
+  parent, elem = JDL.split_jdl_path("a|b|c")
+  parent.must_equal "a|b"
+  elem.must_equal "c"
+  JDL.split_jdl_path("a|b").must_equal ["a", "b"]
+  JDL.split_jdl_path("*|b").must_equal ["*", "b"]
+  JDL.split_jdl_path("a").must_equal [nil, "a"]
+end
+
 jtest "can register methods at top level" do
   JDL.method "meth_E5FBCDED" do
     on_called do Kernel.print "meth_E5FBCDED" end

@@ -1,13 +1,5 @@
 # frozen_string_literal: false
 
-jtest "split_jdl_path" do
-  parent, elem = "a|b|c".split_jdl_path
-  parent.must_equal "a|b"
-  elem.must_equal "c"
-  "a|b".split_jdl_path.must_equal ["a", "b"]
-  "a".split_jdl_path.must_equal [nil, "a"]
-end
-
 jtest "supports vs_quote!" do
   "p".vs_quote!.must_equal("p") # no space or macro, no quote
   '"p"'.vs_quote!.must_equal('"p"') # no space or macro, no quote

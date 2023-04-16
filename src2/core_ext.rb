@@ -22,14 +22,6 @@ class Object
 end
 
 class String
-  def split_jdl_path
-    if self !~ /\|/
-      [nil, self]
-    else
-      [sub(/\|(\w+)$/, ""), $1]
-    end
-  end
-
   def validate_path
     JABA.error("block expected") if !block_given?
     if include?('\\')

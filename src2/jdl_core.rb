@@ -37,7 +37,7 @@ module JDL
 
   def self.node(path, &block)
     node_api_klass = api_class_from_path(path, create: true)
-    parent_path, item = path.split_jdl_path
+    parent_path, item = split_jdl_path(path)
     parent_klass = api_class_from_path(parent_path)
     parent_klass.define_method(item) do |*args, **kwargs, &node_block|
       $last_call_location = ::Kernel.calling_location
@@ -59,7 +59,7 @@ module JDL
 
   def self.method(path, &block)
     src_loc = calling_location
-    parent_path, name = path.split_jdl_path
+    parent_path, name = split_jdl_path(path)
     klass = api_class_from_path(parent_path)
     meth_def = JABA::MethodDefinition.new(src_loc, name)
     MethodDefinitionAPI.execute(meth_def, &block) if block_given?
@@ -71,7 +71,15 @@ module JDL
   end
 
   private
-  
+
+  def self.split_jdl_path(path)
+    if path !~ /\|/
+      [nil, path]
+    else
+      [path.sub(/\|(\w+)$/, ""), $1]
+    end
+  end
+
   def self.api_class_from_path(path, create: false)
     if path.nil?
       return TopLevelAPI
@@ -88,7 +96,7 @@ module JDL
 
   def self.process_attr(src_loc, paths, def_klass, type, &block)
     paths.each do |path|
-      parent_path, attr_name = path.split_jdl_path
+      parent_path, attr_name = split_jdl_path(path)
       klass = api_class_from_path(parent_path)
       if klass.method_defined?(attr_name)
         JABA.error("#{path} attribute defined more than once")
