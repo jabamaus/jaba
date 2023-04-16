@@ -6,6 +6,7 @@ debug! if ARGV.include?("--debug") || ARGV.include?("-d")
 
 require_relative "../../jrf/libs/jrfutils/api_builder"
 require_relative "core_ext"
+require_relative "utils"
 require_relative "version"
 require_relative "defs"
 require_relative "jdl_core"
