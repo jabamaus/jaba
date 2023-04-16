@@ -19,7 +19,13 @@ module JDL
     undef_method :!, :!=, :==, :equal?, :__id__
     def self.singleton = @instance ||= self.new
     def self.attr_defs = @attr_defs ||= []
-
+    def self.each_attr_def(&block)
+      klass = self
+      while (klass != BasicObject)
+        klass.attr_defs.each(&block)
+        klass = klass.superclass
+      end
+    end
     def __internal_set_node(n) = @node = n
   end
 

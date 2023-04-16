@@ -39,6 +39,23 @@ jtest "can register methods globally" do
   end
 end
 
+jtest "can register attributes" do
+  JDL.node "node_06E8272A"
+  JDL.attr "node_06E8272A|a"
+  JDL.attr "*|b" # registers into all nodes
+  JDL.node "node_2026E63F"
+  jaba do
+    b 'b'
+    node_06E8272A :n1 do
+      a "a"
+      b "b"
+    end
+    node_2026E63F :n2 do
+      b "b"
+    end
+  end
+end
+
 jtest "fails if flag does not exist" do
   JDL.node "node_C1FE3A1E"
   assert_jaba_error "Error at #{src_loc("01E55971")}: 'a' attribute invalid: ':unknown' flag does not exist." do

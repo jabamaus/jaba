@@ -16,7 +16,7 @@ module JABA
       @read_only = false
       set_parent(parent)
       if api_klass
-        api_klass.attr_defs.each do |d|
+        api_klass.each_attr_def do |d|
           a = case d.variant
             when :single
               AttributeSingle.new(d, self)
