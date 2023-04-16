@@ -65,43 +65,46 @@ JDL.basedir_spec :artefact_root do
   title "path will be based on build artefact root"
 end
 
-JDL.method "print", scope: :global do
+# Global methods
+
+JDL.method "*|print" do
   title "Prints a non-newline terminated string to stdout"
   on_called do |str| Kernel.print(str) end
 end
 
-JDL.method "puts", scope: :global do
+JDL.method "*|puts" do
   title "Prints a newline terminated string to stdout"
   on_called do |str| Kernel.puts(str) end
 end
 
-JDL.method "fail", scope: :global do
+JDL.method "*|fail" do
   title "Raise an error"
   note "Stops execution"
   on_called do |msg| JABA.error(msg, want_backtrace: false) end
 end
 
-JDL.method "shared", scope: :top_level do
+# Top level methods
+
+JDL.method "glob" do
+  title "glob files"
+  on_called do
+  end
+end
+
+JDL.method "shared" do
   title "Define a shared definition"
   on_called do end
 end
+
+# Top level attributes
 
 JDL.attr_array "configs" do
   title "Default configs"
   flags :required
 end
 
-# have made decision that the contents of project will be 'configs'
-# eg
-# configs [:debug, :release] - default configs defined at top level scope
-# target_platform :win32  - target_platform(s) defined at top level scope
+# Project node
 
-# project :myproj, root: "myroot", configs: [:mydebug, :myrelease] do
-#  type :lib # can have a different type per config
-#  src ['*'] # src now on a per-config basis
-#  inc ['.']
-#  ...
-# end
 JDL.node "project" do
   title "Define a project"
 end
@@ -138,15 +141,9 @@ JDL.attr "project|type", type: :choice do
   flags :per_config, :required
 end
 
-JDL.method "include", scope: ["project"] do
+JDL.method "project/include" do
   title "Include a shared definition"
   on_called do |id|
     JABA.context.include_shared(id)
-  end
-end
-
-JDL.method "glob", scope: :top_level do
-  title "glob files"
-  on_called do
   end
 end

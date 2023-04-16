@@ -57,32 +57,25 @@ module JDL
     process_attr(calling_location, paths, JABA::AttributeHashDefinition, type, &block)
   end
 
-  def self.method(name, scope:, &block)
+  def self.method(path, &block)
     src_loc = calling_location
-    Array(scope).each do |s|
-      parent_path = if s == :top_level
-          nil
-        elsif s == :global
-          :global
-        else
-          s
-        end
-
-      klass = api_class_from_path(parent_path)
-      meth_def = JABA::MethodDefinition.new(src_loc, name)
-      MethodDefinitionAPI.execute(meth_def, &block) if block_given?
-      meth_def.post_create
-      klass.define_method(name) do |*args, **kwargs|
-        $last_call_location = ::Kernel.calling_location
-        meth_def.on_called&.call(*args, **kwargs)
-      end
+    parent_path, name = path.split_jdl_path
+    klass = api_class_from_path(parent_path)
+    meth_def = JABA::MethodDefinition.new(src_loc, name)
+    MethodDefinitionAPI.execute(meth_def, &block) if block_given?
+    meth_def.post_create
+    klass.define_method(name) do |*args, **kwargs|
+      $last_call_location = ::Kernel.calling_location
+      meth_def.on_called&.call(*args, **kwargs)
     end
   end
 
+  private
+  
   def self.api_class_from_path(path, create: false)
     if path.nil?
       return TopLevelAPI
-    elsif path == :global
+    elsif path == '*'
       return BaseAPI
     end
     name = "#{path.split("|").map { |p| p.capitalize_first }.join}API"
@@ -92,8 +85,6 @@ module JDL
       JDL.const_get(name)
     end
   end
-
-  private
 
   def self.process_attr(src_loc, paths, def_klass, type, &block)
     paths.each do |path|

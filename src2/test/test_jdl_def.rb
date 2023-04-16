@@ -1,5 +1,5 @@
 jtest "can register methods at top level" do
-  JDL.method "meth_E5FBCDED", scope: :top_level do
+  JDL.method "meth_E5FBCDED" do
     on_called do Kernel.print "meth_E5FBCDED" end
   end
   assert_output "meth_E5FBCDED" do
@@ -12,7 +12,7 @@ end
 jtest "can register methods globally" do
   JDL.node "node_5CD704E0"
   JDL.node "node_5CD704E0|node_AD7707C3"
-  JDL.method "meth_124B8839", scope: :global do
+  JDL.method "*|meth_124B8839" do
     on_called do Kernel.print "meth_124B8839|" end
   end
   assert_output "meth_124B8839|meth_124B8839|meth_124B8839|" do
