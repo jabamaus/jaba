@@ -81,6 +81,12 @@ module JABA
     def self.lookup(name) = all.find { |fd| fd.name == name }
   end
 
+  class NodeDefinition < Definition
+    def initialize(src_loc, name)
+      super
+    end
+  end
+
   class MethodDefinition < Definition
     def initialize(src_loc, name)
       super

@@ -139,7 +139,7 @@ end
 
 JDL.node "project|rule" do
   title "TODO"
-  flags :per_config
+  #flags :per_config
 end
 
 JDL.attr "project|rule|input" do #, type: :src_spec do

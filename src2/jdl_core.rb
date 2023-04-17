@@ -2,6 +2,7 @@ module JDL
   CommonAPI = APIBuilder.define_module(:title, :note, :example)
   FlagDefinitionAPI = APIBuilder.define(:compatible?).include(CommonAPI)
   BasedirSpecDefinitionAPI = APIBuilder.define().include(CommonAPI)
+  NodeDefinitionAPI = APIBuilder.define().include(CommonAPI)
   AttributeDefinitionAPI = APIBuilder.define(
     :flags,
     :flag_options,
@@ -46,6 +47,9 @@ module JDL
     node_api_klass = api_class_from_path(path, create: true)
     parent_path, item = split_jdl_path(path)
     parent_klass = api_class_from_path(parent_path)
+    node_def = JABA::NodeDefinition.new(calling_location, name)
+    NodeDefinitionAPI.execute(node_def, &block) if block_given?
+    node_def.post_create
     parent_klass.define_method(item) do |*args, **kwargs, &node_block|
       $last_call_location = ::Kernel.calling_location
       JABA.context.register_node(node_api_klass, *args, **kwargs, &node_block)
@@ -66,10 +70,9 @@ module JDL
 
   def self.method(path, &block)
     validate_path(path)
-    src_loc = calling_location
     parent_path, name = split_jdl_path(path)
     klass = api_class_from_path(parent_path)
-    meth_def = JABA::MethodDefinition.new(src_loc, name)
+    meth_def = JABA::MethodDefinition.new(calling_location, name)
     MethodDefinitionAPI.execute(meth_def, &block) if block_given?
     meth_def.post_create
     klass.define_method(name) do |*args, **kwargs|
