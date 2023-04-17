@@ -6,7 +6,9 @@ module JABA
       @title = nil
       @notes = []
       @examples = []
+      self.class.all << self
     end
+    def self.all = @all ||= []
 
     def src_loc = @src_loc
     def name = @name
@@ -50,12 +52,8 @@ module JABA
   end
 
   class FlagDefinition < Definition
-    @@all = []
-    def self.all = @@all
-
     def initialize(src_loc, name)
       super
-      @@all << self
       @on_compatible = nil
     end
 
@@ -69,12 +67,8 @@ module JABA
   end
 
   class BasedirSpecDefinition < Definition
-    @@all = []
-    def self.all = @@all
-
     def initialize(src_loc, name)
       super
-      @@all << self
     end
 
     def describe = "'#{name.inspect_unquoted}' basedir_spec"
