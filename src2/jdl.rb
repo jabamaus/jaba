@@ -20,6 +20,15 @@ JDL.flag :no_sort do
   end
 end
 
+JDL.flag :node_option do
+  title "Flags the attribute as being callable as an option passed into a definition"
+  example %Q{
+project :my_project, root: "my_root" do # 'root' attr is flagged with :node_option
+  ...
+end
+  }
+end
+
 JDL.flag :per_project do
   title "Flags attributes inside the Project namespace as being per-project rather than per-config"
 end
@@ -83,6 +92,13 @@ JDL.method "*|fail" do
   on_called do |msg| JABA.error(msg, want_backtrace: false) end
 end
 
+# Global attributes
+
+JDL.attr "*|root", type: :dir do
+  title "TODO"
+  flags :node_option
+end
+
 # Top level methods
 
 JDL.method "glob" do
@@ -119,11 +135,6 @@ end
 JDL.attr_array "project|define" do #, type: :symbol_or_string do
   title "Preprocessor defines"
   #flags :exportable
-end
-
-JDL.attr "project|root" do #, type: :string do
-  title "TODO"
-  flags :per_project
 end
 
 JDL.node "project|rule" do
