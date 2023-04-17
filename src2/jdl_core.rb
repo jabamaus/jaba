@@ -42,6 +42,7 @@ module JDL
   end
 
   def self.node(path, &block)
+    validate_path(path)
     node_api_klass = api_class_from_path(path, create: true)
     parent_path, item = split_jdl_path(path)
     parent_klass = api_class_from_path(parent_path)
@@ -64,6 +65,7 @@ module JDL
   end
 
   def self.method(path, &block)
+    validate_path(path)
     src_loc = calling_location
     parent_path, name = split_jdl_path(path)
     klass = api_class_from_path(parent_path)
@@ -77,6 +79,13 @@ module JDL
   end
 
   private
+
+  # Allows eg node_name|node2_name|attr or *|attr
+  def self.validate_path(path)
+    if path !~ /^(\*\|)?([a-zA-Z0-9]+_?\|?)+$/ || path !~ /[a-zA-Z0-9]$/
+      JABA.error("'#{path}' is in invalid format")
+    end
+  end
 
   def self.split_jdl_path(path)
     if path !~ /\|/
@@ -102,6 +111,7 @@ module JDL
 
   def self.process_attr(src_loc, paths, def_klass, type, &block)
     paths.each do |path|
+      validate_path(path)
       parent_path, attr_name = split_jdl_path(path)
       klass = api_class_from_path(parent_path)
       if klass.method_defined?(attr_name)

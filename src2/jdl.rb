@@ -141,7 +141,7 @@ JDL.attr "project|type", type: :choice do
   flags :per_config, :required
 end
 
-JDL.method "project/include" do
+JDL.method "project|include" do
   title "Include a shared definition"
   on_called do |id|
     JABA.context.include_shared(id)

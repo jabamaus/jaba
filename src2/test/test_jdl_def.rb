@@ -7,6 +7,25 @@ jtest "split_jdl_path" do
   JDL.split_jdl_path("a").must_equal [nil, "a"]
 end
 
+jtest "validates jdl paths" do
+  JDL.node "node_0CD5F0E3"
+  assert_jaba_error "'node_0CD5F0E3/a' is in invalid format." do
+    JDL.attr "node_0CD5F0E3/a" # slashes not allowed
+  end
+  assert_jaba_error "'node_0CD5F0E3|a__b' is in invalid format." do
+    JDL.attr "node_0CD5F0E3|a__b" # only 1 underscore allowed
+  end
+  assert_jaba_error "'node_0CD5F0E3|a b' is in invalid format." do
+    JDL.attr "node_0CD5F0E3|a b" # spaces not allowed
+  end
+  assert_jaba_error "'node_0CD5F0E3||a_b' is in invalid format." do
+    JDL.attr "node_0CD5F0E3||a_b" # double pipes not allowed
+  end
+  assert_jaba_error "'node_0CD5F0E3|a_b|' is in invalid format." do
+    JDL.attr "node_0CD5F0E3|a_b|" # cannot end in pipe
+  end
+end
+
 jtest "can register methods at top level" do
   JDL.method "meth_E5FBCDED" do
     on_called do Kernel.print "meth_E5FBCDED" end
