@@ -52,16 +52,16 @@ module JDL
     end
   end
 
-  def self.attr(*paths, type: nil, &block)
-    process_attr(calling_location, paths, JABA::AttributeSingleDefinition, type, &block)
+  def self.attr(path, type: nil, &block)
+    process_attr(calling_location, path, JABA::AttributeSingleDefinition, type, &block)
   end
 
-  def self.attr_array(*paths, type: nil, &block)
-    process_attr(calling_location, paths, JABA::AttributeArrayDefinition, type, &block)
+  def self.attr_array(path, type: nil, &block)
+    process_attr(calling_location, path, JABA::AttributeArrayDefinition, type, &block)
   end
 
-  def self.attr_hash(*paths, type: nil, &block)
-    process_attr(calling_location, paths, JABA::AttributeHashDefinition, type, &block)
+  def self.attr_hash(path, type: nil, &block)
+    process_attr(calling_location, path, JABA::AttributeHashDefinition, type, &block)
   end
 
   def self.method(path, &block)
@@ -109,25 +109,23 @@ module JDL
     end
   end
 
-  def self.process_attr(src_loc, paths, def_klass, type, &block)
-    paths.each do |path|
-      validate_path(path)
-      parent_path, attr_name = split_jdl_path(path)
-      klass = api_class_from_path(parent_path)
-      if klass.method_defined?(attr_name)
-        JABA.error("#{path} attribute defined more than once")
-      end
-      klass.define_method(attr_name) do |*args, **kwargs, &attr_block|
-        $last_call_location = ::Kernel.calling_location
-        @node.handle_attr(attr_name, *args, **kwargs, &attr_block)
-      end
-      type = "Null" if type.nil?
-      attr_type_class = JABA.const_get("AttributeType#{type.to_s.capitalize_first}")
-      attr_type = attr_type_class.singleton
-      attr_def = def_klass.new(src_loc, attr_name, attr_type)
-      AttributeDefinitionAPI.execute(attr_def, &block) if block_given?
-      attr_def.post_create
-      klass.attr_defs << attr_def
+  def self.process_attr(src_loc, path, def_klass, type, &block)
+    validate_path(path)
+    parent_path, attr_name = split_jdl_path(path)
+    klass = api_class_from_path(parent_path)
+    if klass.method_defined?(attr_name)
+      JABA.error("#{path} attribute defined more than once")
     end
+    klass.define_method(attr_name) do |*args, **kwargs, &attr_block|
+      $last_call_location = ::Kernel.calling_location
+      @node.handle_attr(attr_name, *args, **kwargs, &attr_block)
+    end
+    type = "Null" if type.nil?
+    attr_type_class = JABA.const_get("AttributeType#{type.to_s.capitalize_first}")
+    attr_type = attr_type_class.singleton
+    attr_def = def_klass.new(src_loc, attr_name, attr_type)
+    AttributeDefinitionAPI.execute(attr_def, &block) if block_given?
+    attr_def.post_create
+    klass.attr_defs << attr_def
   end
 end
