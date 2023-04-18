@@ -137,12 +137,12 @@ JDL.attr_array "project|define" do #, type: :symbol_or_string do
   #flags :exportable
 end
 
-JDL.node "project|rule" do
+JDL.attr "project|rule", type: :compound do
   title "TODO"
-  #flags :per_config
+  flags :per_config
 end
 
-JDL.attr "project|rule|input" do #, type: :src_spec do
+JDL.attr "project|rule|input", type: :src_spec do
   title "TODO"
 end
 

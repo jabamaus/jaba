@@ -141,4 +141,12 @@ module JABA
       end
     end
   end
+
+  class AttributeTypeCompound < AttributeType
+    def initialize
+      super(:compound)
+      set_title "Compound attribute type"
+    end
+  end
 end
+

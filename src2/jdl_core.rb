@@ -114,12 +114,15 @@ module JDL
 
   def self.process_attr(src_loc, path, def_klass, type, &block)
     validate_path(path)
+    if type == :compound
+      api_class_from_path(path, create: true)
+    end
     parent_path, attr_name = split_jdl_path(path)
-    klass = api_class_from_path(parent_path)
-    if klass.method_defined?(attr_name)
+    parent_klass = api_class_from_path(parent_path)
+    if parent_klass.method_defined?(attr_name)
       JABA.error("#{path} attribute defined more than once")
     end
-    klass.define_method(attr_name) do |*args, **kwargs, &attr_block|
+    parent_klass.define_method(attr_name) do |*args, **kwargs, &attr_block|
       $last_call_location = ::Kernel.calling_location
       @node.handle_attr(attr_name, *args, **kwargs, &attr_block)
     end
@@ -129,6 +132,6 @@ module JDL
     attr_def = def_klass.new(src_loc, attr_name, attr_type)
     AttributeDefinitionAPI.execute(attr_def, &block) if block_given?
     attr_def.post_create
-    klass.attr_defs << attr_def
+    parent_klass.attr_defs << attr_def
   end
 end
