@@ -85,7 +85,7 @@ module JABA
       if !dupes.empty?
         JABA.warn("Stripping duplicates #{dupes} from #{describe}. See previous at #{first_dupe.src_loc.src_loc_describe}. " \
         "Flag with :allow_dupes to allow.")
-    end
+      end
 
       if delete
         process_removes(Array(delete).map { |r| apply_pre_post_fix(prefix, postfix, r) }, mode: :delete)

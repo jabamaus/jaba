@@ -110,11 +110,13 @@ module JABA
       @default_set = false
       @on_validate = nil
       @basedir_spec = nil
+      @compound_api = nil # used by compound attribute
     end
 
     def describe = "'#{@name.inspect_unquoted}' #{@variant == :single ? "" : "#{@variant} "}attribute"
     def variant = @variant
     def array? = @variant == :array
+    def compound? = type_id == :compound
     def attr_type = @attr_type
     def type_id = @attr_type.name
 
@@ -189,6 +191,9 @@ module JABA
         @default = val
       end
     end
+
+    def set_compound_api(api) = @compound_api = api
+    def get_compound_api = @compound_api
 
     def post_create
       super

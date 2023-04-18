@@ -17,8 +17,18 @@ module JABA
     def read_only? = attr_def.has_flag?(:read_only)
     def src_loc = @last_call_location
     def attr_error(msg) = JABA.error(msg, errobj: self)
-    def value_from_block(&block) = @node.eval_jdl(&block)
     def process_flags; end # override as necessary
+
+    def value_from_block(&block)
+      if attr_def.compound?
+        compound = Node.new(attr_def.get_compound_api, nil, @last_call_location, @node)
+        compound.eval_jdl(&block)
+        compound.post_create
+        return compound
+      else
+        @node.eval_jdl(&block)
+      end
+    end
 
     protected
 
@@ -149,6 +159,8 @@ module JABA
         else
           nil
         end
+      elsif JABA.context.executing_jdl? && @value.is_a?(Node)
+        @value.api_obj
       else
         @value
       end

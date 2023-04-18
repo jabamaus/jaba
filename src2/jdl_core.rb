@@ -27,7 +27,10 @@ module JDL
         klass = klass.superclass
       end
     end
-    def __internal_set_node(n) = @node = n
+    def __internal_set_node(n)
+      @node = n
+      self
+    end
   end
 
   class TopLevelAPI < BaseAPI; end
@@ -114,9 +117,6 @@ module JDL
 
   def self.process_attr(src_loc, path, def_klass, type, &block)
     validate_path(path)
-    if type == :compound
-      api_class_from_path(path, create: true)
-    end
     parent_path, attr_name = split_jdl_path(path)
     parent_klass = api_class_from_path(parent_path)
     if parent_klass.method_defined?(attr_name)
@@ -130,6 +130,11 @@ module JDL
     attr_type_class = JABA.const_get("AttributeType#{type.to_s.capitalize_first}")
     attr_type = attr_type_class.singleton
     attr_def = def_klass.new(src_loc, attr_name, attr_type)
+    attr_type.init_attr_def(attr_def)
+    if type == :compound
+      attr_def.set_compound_api(api_class_from_path(path, create: true))
+    end
+
     AttributeDefinitionAPI.execute(attr_def, &block) if block_given?
     attr_def.post_create
     parent_klass.attr_defs << attr_def

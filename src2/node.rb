@@ -31,10 +31,8 @@ module JABA
       end
     end
 
-    def eval_jdl(...)
-      @api_klass.singleton.__internal_set_node(self)
-      @api_klass.singleton.instance_exec(...)
-    end
+    def api_obj = @api_klass.singleton.__internal_set_node(self)
+    def eval_jdl(...) = api_obj.instance_exec(...)
 
     def post_create
       @attributes.each do |a|

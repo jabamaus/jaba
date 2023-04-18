@@ -10,6 +10,7 @@ module JABA
     def describe = "'#{name.inspect_unquoted}' attribute type"
     def default = @default
 
+    def init_attr_def(attr_def); end         # override as necessary
     def from_cmdline(str, attr_def) = str    # override as necessary
     def map_value(value) = value             # override as necessary
     def validate_value(attr_def, value); end # override as necessary
@@ -146,6 +147,9 @@ module JABA
     def initialize
       super(:compound)
       set_title "Compound attribute type"
+    end
+    def init_attr_def(attr_def)
+      attr_def.set_flags(:no_sort) if attr_def.array?
     end
   end
 end
