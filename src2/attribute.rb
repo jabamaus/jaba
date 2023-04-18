@@ -21,16 +21,26 @@ module JABA
 
     def value_from_block(&block)
       if attr_def.compound?
-        compound = Node.new(attr_def.get_compound_api, nil, @last_call_location, @node)
-        compound.eval_jdl(&block)
-        compound.post_create
-        return compound
+        if @value # If node has already been made but the compound attr is being set again, re-evaluate existing value against block
+          @value.eval_jdl(&block)
+          return @value
+        else
+          return make_compound_attr(&block)
+        end
       else
         @node.eval_jdl(&block)
       end
     end
 
     protected
+
+    def make_compound_attr(&block)
+      compound = Node.new(attr_def.get_compound_api, nil, @last_call_location, @node)
+      compound.eval_jdl(&block) if block
+      compound.post_create
+      @set = true
+      compound
+    end
 
     def record_last_call_location
       @last_call_location = if JABA.context.executing_jdl?
@@ -150,7 +160,14 @@ module JABA
     def value
       record_last_call_location
       if !set?
-        if attr_def.default_is_block?
+        if attr_def.compound?
+          @value = make_compound_attr
+          if JABA.context.executing_jdl?
+            @value.api_obj
+          else
+            @value
+          end
+        elsif attr_def.default_is_block?
           val = JABA.context.execute_attr_default_block(self)
           @attr_def.attr_type.map_value(val)
         elsif JABA.context.in_attr_default_block?
@@ -159,7 +176,7 @@ module JABA
         else
           nil
         end
-      elsif JABA.context.executing_jdl? && @value.is_a?(Node)
+      elsif attr_def.compound? && JABA.context.executing_jdl?
         @value.api_obj
       else
         @value
