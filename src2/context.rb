@@ -305,7 +305,7 @@ module JABA
 
     def process_node_def(nd)
       if nd.api_klass == JDL::ProjectAPI
-        proj_node = create_node(nd, no_api_klass: true) # structural node only, do not execute jdl
+        proj_node = create_node(nd)
         @default_configs.each do |id|
           create_node(nd, parent: proj_node) do |node|
             node.get_attr(:config).set(id)
@@ -316,12 +316,11 @@ module JABA
       end
     end
 
-    def create_node(nd, parent: @top_level_node, no_api_klass: false)
+    def create_node(nd, parent: @top_level_node)
       begin
-        api_klass = no_api_klass ? nil : nd.api_klass
-        node = Node.new(api_klass, nd.id, nd.src_loc, parent)
+        node = Node.new(nd.api_klass, nd.id, nd.src_loc, parent)
         yield node if block_given?
-        node.eval_jdl(&nd.block) if api_klass && nd.block
+        node.eval_jdl(&nd.block) if nd.block
         node.post_create
         return node
       rescue FrozenError => e

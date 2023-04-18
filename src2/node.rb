@@ -7,6 +7,7 @@ module JABA
 
   class Node
     def initialize(api_klass, id, src_loc, parent)
+      JABA.error("api_klass must not be nil") if api_klass.nil?
       @api_klass = api_klass
       @id = id
       @src_loc = src_loc
@@ -14,20 +15,19 @@ module JABA
       @attribute_lookup = AttributeLookupHash.new
       @children = []
       @read_only = false
-      set_parent(parent)
-      if api_klass
-        api_klass.each_attr_def do |d|
-          a = case d.variant
-            when :single
-              AttributeSingle.new(d, self)
-            when :array
-              AttributeArray.new(d, self)
-            when :hash
-              AttributeHash.new(d, self)
-            end
-          @attributes << a
-          @attribute_lookup[d.name] = a
-        end
+      @parent = parent
+      @parent.children << self if @parent
+      api_klass.each_attr_def do |d|
+        a = case d.variant
+          when :single
+            AttributeSingle.new(d, self)
+          when :array
+            AttributeArray.new(d, self)
+          when :hash
+            AttributeHash.new(d, self)
+          end
+        @attributes << a
+        @attribute_lookup[d.name] = a
       end
     end
 
@@ -50,17 +50,6 @@ module JABA
     def id = @id
     def src_loc = @src_loc
     def parent = @parent
-
-    def set_parent(parent)
-      if @parent
-        @parent.children.delete(self)
-      end
-      @parent = parent
-      if @parent
-        @parent.children << self
-      end
-    end
-
     def children = @children
 
     def visit(&block)

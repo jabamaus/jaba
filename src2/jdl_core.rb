@@ -110,8 +110,10 @@ module JDL
     name = "#{path.split("|").map { |p| p.capitalize_first }.join}API"
     if create
       JDL.const_set(name, Class.new(BaseAPI))
-    else
+    elsif JDL.const_defined?(name)
       JDL.const_get(name)
+    else
+      JABA.error("#{name} constant not defined")
     end
   end
 
