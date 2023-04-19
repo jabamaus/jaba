@@ -56,6 +56,9 @@ module JDL
     validate_path(path)
     node_api_klass = api_class_from_path(path, create: true)
     node_api_klass.include(CommonAttrsAPI)
+    node_api_klass.class_eval do
+      def self.get_attr_defs = self.attr_defs + CommonAttrs.attr_defs
+    end
     parent_path, item = split_jdl_path(path)
     parent_klass = api_class_from_path(parent_path)
     node_def = JABA::NodeDefinition.new(calling_location, name)
