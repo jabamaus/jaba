@@ -58,16 +58,16 @@
 end
 
 jtest "works with compound as single attribute with nesting" do
-  JDL.node "node_38E8D01A"
-  JDL.attr "node_38E8D01A|compound", type: :compound
-  JDL.attr "node_38E8D01A|compound|a" do default 1 end
-  JDL.attr "node_38E8D01A|compound|nested1", type: :compound
-  JDL.attr "node_38E8D01A|compound|nested1|b" do default 2 end
-  JDL.attr "node_38E8D01A|compound|nested1|nested2", type: :compound
-  JDL.attr "node_38E8D01A|compound|nested1|nested2|c" do default 3 end
+  JDL.node "node_84CD7C59"
+  JDL.attr "node_84CD7C59|compound", type: :compound
+  JDL.attr "node_84CD7C59|compound|a" do default 1 end
+  JDL.attr "node_84CD7C59|compound|nested1", type: :compound
+  JDL.attr "node_84CD7C59|compound|nested1|b" do default 2 end
+  JDL.attr "node_84CD7C59|compound|nested1|nested2", type: :compound
+  JDL.attr "node_84CD7C59|compound|nested1|nested2|c" do default 3 end
 
   op = jaba do
-    node_38E8D01A :n do
+    node_84CD7C59 :n do
       compound.nested1.nested2.c.must_equal 3
       compound.nested1.b.must_equal 2
       compound.a.must_equal 1
