@@ -76,6 +76,11 @@ end
 
 # Global methods
 
+JDL.method "*|available" do
+  title "Array of attributes/methods available in current context"
+  on_called do |str, node:| node.available end
+end
+
 JDL.method "*|print" do
   title "Prints a non-newline terminated string to stdout"
   on_called do |str| Kernel.print(str) end

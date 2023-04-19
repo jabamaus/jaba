@@ -32,7 +32,7 @@ module JDL
       self
     end
     def method_missing(id, ...)
-      ::JABA.error("'#{id}' attribute or method not defined")
+      @node.attr_not_found_error(id)
     end
   end
 
@@ -99,7 +99,7 @@ module JDL
     meth_def.post_create
     klass.define_method(name) do |*args, **kwargs|
       $last_call_location = ::Kernel.calling_location
-      meth_def.on_called&.call(*args, **kwargs)
+      meth_def.on_called&.call(*args, **kwargs, node: @node)
     end
   end
 

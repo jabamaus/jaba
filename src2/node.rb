@@ -101,31 +101,27 @@ module JABA
 
     def visit_callable_attrs(rdonly: false, &block)
       @attributes.each do |a|
-        if rdonly || a.read_only?
-          yield a, :rdonly
+        if rdonly || @read_only || a.read_only?
+          yield a, :read
         else
           yield a, :rw
         end
       end
-      if @parent
-        @parent.visit_callable_attrs(rdonly: true, &block)
+      @parent&.visit_callable_attrs(rdonly: true, &block)
+    end
+
+    # TODO: include methods
+    def available
+      attrs = []
+      visit_callable_attrs do |a, type|
+        attrs << "#{a.name} (#{type})"
       end
+      attrs.sort!
+      attrs
     end
 
     def attr_not_found_error(name)
-      rdonly = []
-      rw = []
-      visit_callable_attrs do |a, type|
-        case type
-        when :rw
-          rw << a
-        when :rdonly
-          rdonly << a
-        end
-      end
-      JABA.error("'#{name}' attribute not found. The following attributes are available in this context:\n\n  " \
-      "Read/write:\n    #{rw.map { |a| a.name }.join(", ")}\n\n  " \
-      "Read only:\n    #{rdonly.map { |a| a.name }.join(", ")}\n\n")
+      JABA.error("'#{name}' attribute not found. Available in this context:\n#{available}")
     end
 
     def make_read_only
