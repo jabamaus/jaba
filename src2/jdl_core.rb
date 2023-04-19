@@ -79,6 +79,17 @@ module JDL
     process_attr(calling_location, path, JABA::AttributeHashDefinition, type, &block)
   end
 
+  # Used during testing to prevent polluting the TopLevelAPI namespace
+  def self.undefine_attr(path)
+    parent_path, attr_name = split_jdl_path(path)
+    parent_klass = api_class_from_path(parent_path)
+    if !parent_klass.method_defined?(attr_name)
+      JABA.error("Cannot undefine #{path} - not defined")
+    end
+    parent_klass.remove_method(attr_name)
+    parent_klass.attr_defs.delete_if{|ad| ad.name == attr_name}
+  end
+
   def self.method(path, &block)
     validate_path(path)
     parent_path, name = split_jdl_path(path)

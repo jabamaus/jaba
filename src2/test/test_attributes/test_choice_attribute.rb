@@ -81,4 +81,8 @@ jtest "can be set from global attrs" do
 
   op = jaba(global_attrs: { 'tca_CA9D4D22': "d" }, want_exceptions: false)
   op[:error].must_equal "Error: 'd' invalid value for 'tca_CA9D4D22' attribute - [a|b|c] expected."
+
+  JDL.undefine_attr("tca_CA9D4D22")
+  JDL.undefine_attr("tca_06FE9AE2")
+  JDL.undefine_attr("tca_5A292247")
 end

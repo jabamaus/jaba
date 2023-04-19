@@ -61,23 +61,11 @@ end
   end
 end
 
-JDL.attr "global_bool1", type: :bool do
-  default false
-end
-
-JDL.attr "global_bool2", type: :bool do
-  default true
-end
-
-JDL.attr "global_bool3", type: :bool do
-  default false
-end
-
-JDL.attr "global_bool4", type: :bool do
-  default true
-end
-
 jtest "can be set from global_attrs" do
+  JDL.attr "global_bool1", type: :bool do default false end
+  JDL.attr "global_bool2", type: :bool do default true end
+  JDL.attr "global_bool3", type: :bool do default false end
+  JDL.attr "global_bool4", type: :bool do default true end
   output = jaba(global_attrs: {
                   'global_bool1': "true",
                   'global_bool2': false,
@@ -98,4 +86,10 @@ jtest "can be set from global_attrs" do
 
   op = jaba(global_attrs: { 'global_bool1': "10" }, want_exceptions: false)
   op[:error].must_equal "Error: '10' invalid value for 'global_bool1' attribute - [true|false|0|1] expected."
+
+  # undefine to not pollute toplevel namespace
+  JDL.undefine_attr("global_bool1")
+  JDL.undefine_attr("global_bool2")
+  JDL.undefine_attr("global_bool3")
+  JDL.undefine_attr("global_bool4")
 end
