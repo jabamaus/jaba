@@ -63,7 +63,7 @@ jtest "can register attributes" do
   JDL.attr "node_06E8272A|a"
   JDL.attr "*|b" # registers into all nodes, except top level
   JDL.node "node_2026E63F"
-  assert_jaba_error "Error at #{src_loc("2D0B33FE")}: 'b' attribute or method not defined. Available in this context:\n" do
+  assert_jaba_error "Error at #{src_loc("2D0B33FE")}: 'b' attribute or method not defined. Available in this context:\ndefault_configs (rw)" do
     jaba do
       b 1 # 2D0B33FE
     end

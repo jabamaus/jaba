@@ -23,17 +23,13 @@ module JDL
     undef_method :!, :!=, :==, :equal?, :__id__
     def self.singleton = @instance ||= self.new
     def self.attr_defs = @attr_defs ||= []
-    def self.each_attr_def(&block)
-      CommonAttrsAPI.attr_defs.each(&block)
-      attr_defs.each(&block)
-    end
+    def self.each_attr_def(&block) = attr_defs.each(&block)
+
     def __internal_set_node(n)
       @node = n
       self
     end
-    def method_missing(id, ...)
-      @node.attr_not_found_error(id)
-    end
+    def method_missing(id, ...) = @node.attr_not_found_error(id)
   end
 
   module CommonAttrsAPI
@@ -56,8 +52,9 @@ module JDL
     validate_path(path)
     node_api_klass = api_class_from_path(path, create: true)
     node_api_klass.include(CommonAttrsAPI)
-    node_api_klass.class_eval do
-      def self.get_attr_defs = self.attr_defs + CommonAttrs.attr_defs
+    node_api_klass.define_singleton_method :each_attr_def do |&block|
+      attr_defs.each(&block)
+      CommonAttrsAPI.attr_defs.each(&block)
     end
     parent_path, item = split_jdl_path(path)
     parent_klass = api_class_from_path(parent_path)
