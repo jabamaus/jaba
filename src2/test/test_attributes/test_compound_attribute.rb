@@ -88,7 +88,30 @@ jtest "works with compound as single attribute with nesting" do
   n[:compound][:nested1][:b].must_equal 2
   n[:compound][:nested1][:nested2][:c].must_equal 5
 end
-
+=begin
+jtest "has read only access to parent attrs" do
+  JDL.node "node_41D631B9"
+  JDL.attr "node_41D631B9|a"
+  JDL.attr "node_41D631B9|compound", type: :compound
+  JDL.attr "node_41D631B9|compound|b"
+  jaba do
+    node_41D631B9 :n do
+      a 1
+      compound do
+        b a
+        b.must_equal 1
+        available
+      end
+      compound.b.must_equal 1
+      JTest.assert_jaba_error "" do
+        compound do
+          a 2
+        end
+      end
+    end
+  end
+end
+=end
 jtest "works with array" do
   JDL.node "node_B722D074"
   JDL.attr_array "node_B722D074|compound", type: :compound
