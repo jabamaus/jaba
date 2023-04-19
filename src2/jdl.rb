@@ -114,7 +114,7 @@ end
 
 # Top level attributes
 
-JDL.attr_array "configs" do
+JDL.attr_array "default_configs" do
   title "Default configs"
   flags :required
 end

@@ -115,7 +115,7 @@ module JABA
       load_jaba_files
 
       @top_level_node.post_create
-      @default_configs = @top_level_node[:configs]
+      @default_configs = @top_level_node[:default_configs]
 
       @node_defs.each do |nd|
         process_node_def(nd)

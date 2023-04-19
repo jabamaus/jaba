@@ -11,7 +11,7 @@ jtest "project" do
     end
   end
   r = op[:root]
-  r[:configs].must_equal [:Debug, :Release]
+  r[:default_configs].must_equal [:Debug, :Release]
   a = r.children[0]
   a.id.must_equal :myapp
   a.children.size.must_equal 2
