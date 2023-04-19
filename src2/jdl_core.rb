@@ -15,18 +15,17 @@ module JDL
     :basedir_spec, # Used by path attributes
   ).include(CommonAPI)
 
-  # BaseAPI is the blankest possible slate
+  # BaseAPI is the blankest possible slate. The purpose of BaseAPI and its dynamically
+  # created subclasses is to define what is allowed to be called at any given level when
+  # creating end user definitions.
+  #
   class BaseAPI < BasicObject
     undef_method :!, :!=, :==, :equal?, :__id__
     def self.singleton = @instance ||= self.new
     def self.attr_defs = @attr_defs ||= []
     def self.each_attr_def(&block)
-      klass = self
-      while (klass != BasicObject)
-        klass.attr_defs.each(&block)
-        klass = klass.superclass
-      end
       CommonAttrsAPI.attr_defs.each(&block)
+      attr_defs.each(&block)
     end
     def __internal_set_node(n)
       @node = n
@@ -110,7 +109,7 @@ module JDL
     end
   end
 
-  def self.api_class_from_path(path, create: false, method: false)
+  def self.api_class_from_path(path, superklass: BaseAPI, create: false, method: false)
     if path.nil?
       return TopLevelAPI
     elsif path == '*'
@@ -122,7 +121,7 @@ module JDL
     end
     name = "#{path.split("|").map { |p| p.capitalize_first }.join}API"
     if create
-      JDL.const_set(name, Class.new(BaseAPI))
+      JDL.const_set(name, Class.new(superklass))
     elsif JDL.const_defined?(name)
       JDL.const_get(name)
     else
@@ -147,7 +146,8 @@ module JDL
     attr_def = def_klass.new(src_loc, attr_name, attr_type)
     attr_type.init_attr_def(attr_def)
     if type == :compound
-      attr_def.set_compound_api(api_class_from_path(path, create: true))
+      # Compound attr interface inherits parent nodes interface so it has read only access to its attrs
+      attr_def.set_compound_api(api_class_from_path(path, superklass: parent_klass, create: true))
     end
 
     AttributeDefinitionAPI.execute(attr_def, &block) if block_given?
