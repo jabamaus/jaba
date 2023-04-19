@@ -61,16 +61,31 @@ end
 jtest "can register attributes" do
   JDL.node "node_06E8272A"
   JDL.attr "node_06E8272A|a"
-  JDL.attr "*|b" # registers into all nodes
+  JDL.attr "*|b" # registers into all nodes, except top level
   JDL.node "node_2026E63F"
+  assert_jaba_error "Error at #{src_loc("2D0B33FE")}: 'b' attribute or method not defined." do
+    jaba do
+      b 1 # 2D0B33FE
+    end
+  end
   jaba do
-    b 'b'
     node_06E8272A :n1 do
-      a "a"
-      b "b"
+      a 1
+      b 2
     end
     node_2026E63F :n2 do
-      b "b"
+      b 2
+    end
+  end
+end
+
+jtest "can register attributes as node options" do
+  JDL.node "node_0A89C5E5"
+  JDL.attr "node_0A89C5E5|a", type: :bool do
+    flags :node_option
+  end
+  jaba do
+    node_0A89C5E5 :n, a: true do
     end
   end
 end

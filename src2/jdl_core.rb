@@ -2,6 +2,7 @@ module JDL
   CommonAPI = APIBuilder.define_module(:title, :note, :example)
   FlagDefinitionAPI = APIBuilder.define(:compatible?).include(CommonAPI)
   BasedirSpecDefinitionAPI = APIBuilder.define().include(CommonAPI)
+  MethodDefinitionAPI = APIBuilder.define(:on_called).include(CommonAPI)
   NodeDefinitionAPI = APIBuilder.define().include(CommonAPI)
   AttributeDefinitionAPI = APIBuilder.define(
     :flags,
@@ -13,7 +14,6 @@ module JDL
     :items, # Used by choice attribute
     :basedir_spec, # Used by path attributes
   ).include(CommonAPI)
-  MethodDefinitionAPI = APIBuilder.define(:on_called).include(CommonAPI)
 
   # BaseAPI is the blankest possible slate
   class BaseAPI < BasicObject
@@ -26,11 +26,19 @@ module JDL
         klass.attr_defs.each(&block)
         klass = klass.superclass
       end
+      CommonAttrsAPI.attr_defs.each(&block)
     end
     def __internal_set_node(n)
       @node = n
       self
     end
+    def method_missing(id, ...)
+      ::JABA.error("'#{id}' attribute or method not defined")
+    end
+  end
+
+  module CommonAttrsAPI
+    def self.attr_defs = @attr_defs ||= []
   end
 
   class TopLevelAPI < BaseAPI; end
@@ -48,6 +56,7 @@ module JDL
   def self.node(path, &block)
     validate_path(path)
     node_api_klass = api_class_from_path(path, create: true)
+    node_api_klass.include(CommonAttrsAPI)
     parent_path, item = split_jdl_path(path)
     parent_klass = api_class_from_path(parent_path)
     node_def = JABA::NodeDefinition.new(calling_location, name)
@@ -74,7 +83,7 @@ module JDL
   def self.method(path, &block)
     validate_path(path)
     parent_path, name = split_jdl_path(path)
-    klass = api_class_from_path(parent_path)
+    klass = api_class_from_path(parent_path, method: true)
     meth_def = JABA::MethodDefinition.new(calling_location, name)
     MethodDefinitionAPI.execute(meth_def, &block) if block_given?
     meth_def.post_create
@@ -101,11 +110,15 @@ module JDL
     end
   end
 
-  def self.api_class_from_path(path, create: false)
+  def self.api_class_from_path(path, create: false, method: false)
     if path.nil?
       return TopLevelAPI
     elsif path == '*'
-      return BaseAPI
+      if method
+        return BaseAPI
+      else
+        return CommonAttrsAPI
+      end
     end
     name = "#{path.split("|").map { |p| p.capitalize_first }.join}API"
     if create
