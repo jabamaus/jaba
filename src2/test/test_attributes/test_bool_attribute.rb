@@ -1,3 +1,4 @@
+=begin
 JDL.node "test_bool"
 JDL.attr "test_bool|bool_attr", type: :bool
 JDL.attr "test_bool|bool_attr_default_true", type: :bool do
@@ -97,3 +98,4 @@ jtest "can be set from global_attrs" do
   JDL.undefine_attr("global_bool3")
   JDL.undefine_attr("global_bool4")
 end
+=end

@@ -1,57 +1,64 @@
 jtest "split_jdl_path" do
-  parent, elem = JDL.split_jdl_path("a|b|c")
+  parent, elem = JDL.core_jdl.send(:split_jdl_path, "a|b|c")
   parent.must_equal "a|b"
   elem.must_equal "c"
-  JDL.split_jdl_path("a|b").must_equal ["a", "b"]
-  JDL.split_jdl_path("*|b").must_equal ["*", "b"]
-  JDL.split_jdl_path("a").must_equal [nil, "a"]
+  JDL.core_jdl.send(:split_jdl_path, "a|b").must_equal ["a", "b"]
+  JDL.core_jdl.send(:split_jdl_path, "*|b").must_equal ["*", "b"]
+  JDL.core_jdl.send(:split_jdl_path, "a").must_equal [nil, "a"]
 end
 
 jtest "validates jdl paths" do
-  JDL.node "node_0CD5F0E3"
-  assert_jaba_error "'node_0CD5F0E3/a' is in invalid format." do
-    JDL.attr "node_0CD5F0E3/a" # slashes not allowed
-  end
-  assert_jaba_error "'node_0CD5F0E3|a__b' is in invalid format." do
-    JDL.attr "node_0CD5F0E3|a__b" # only 1 underscore allowed
-  end
-  assert_jaba_error "'node_0CD5F0E3|a b' is in invalid format." do
-    JDL.attr "node_0CD5F0E3|a b" # spaces not allowed
-  end
-  assert_jaba_error "'node_0CD5F0E3||a_b' is in invalid format." do
-    JDL.attr "node_0CD5F0E3||a_b" # double pipes not allowed
-  end
-  assert_jaba_error "'node_0CD5F0E3|a_b|' is in invalid format." do
-    JDL.attr "node_0CD5F0E3|a_b|" # cannot end in pipe
+  jdl do
+    node "n"
+    JTest.assert_jaba_error "'n/a' is in invalid format." do
+      attr "n/a" # slashes not allowed
+    end
+    JTest.assert_jaba_error "'n|a__b' is in invalid format." do
+      attr "n|a__b" # only 1 underscore allowed
+    end
+    JTest.assert_jaba_error "'n|a b' is in invalid format." do
+      attr "n|a b" # spaces not allowed
+    end
+    JTest.assert_jaba_error "'n||a_b' is in invalid format." do
+      attr "n||a_b" # double pipes not allowed
+    end
+    JTest.assert_jaba_error "'n|a_b|' is in invalid format." do
+      attr "n|a_b|" # cannot end in pipe
+    end
   end
 end
 
 jtest "can register methods at top level" do
-  JDL.method "meth_E5FBCDED" do
-    on_called do Kernel.print "meth_E5FBCDED" end
+  jdl do
+    method "m" do
+      on_called do Kernel.print "m" end
+    end
   end
-  assert_output "meth_E5FBCDED" do
-    jaba do
-      meth_E5FBCDED
+  jaba do
+    # available_methods.must_equal ["m"] # TODO
+    JTest.assert_output "m" do
+      m
     end
   end
 end
 
 jtest "can register methods globally" do
-  JDL.node "node_5CD704E0"
-  JDL.node "node_5CD704E0|node_AD7707C3"
-  JDL.method "*|meth_124B8839" do
-    on_called do Kernel.print "meth_124B8839|" end
+  jdl do
+    node "n1"
+    node "n1|n2"
+    method "*|m" do
+      on_called do Kernel.print "m|" end
+    end
   end
-  assert_output "meth_124B8839|meth_124B8839|meth_124B8839|" do
+  assert_output "m|m|m|" do
     jaba do
-      meth_124B8839
-      node_5CD704E0 :n do
-        meth_124B8839
+      m
+      n1 :n1 do
+        m
       end
-      node_5CD704E0 :n do
-        node_AD7707C3 :n2 do
-          meth_124B8839
+      n1 :n1a do
+        n2 :n2 do
+          m
         end
       end
     end

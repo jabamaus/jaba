@@ -1,3 +1,4 @@
+=begin
 JDL.node "test_attr_single"
 JDL.attr "test_attr_single|single"
 

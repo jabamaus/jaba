@@ -3,6 +3,10 @@ require_relative "../jaba"
 JABA.running_tests!
 
 module JabaTestMethods
+  def jdl(&block)
+    JDL.define(private: true, &block)
+  end
+
   def jaba(
     want_exceptions: true,
     src_root: nil,
@@ -18,7 +22,7 @@ module JabaTestMethods
       c.src_root = src_root # Most unit tests don't have a src_root as everything is defined inline in code
       c.build_root = build_root
       c.definitions do
-        default_configs configs
+        #default_configs configs
       end
       c.definitions(&block) if block_given?
       c.global_attrs = global_attrs

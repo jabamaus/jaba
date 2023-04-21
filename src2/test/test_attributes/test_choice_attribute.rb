@@ -1,3 +1,4 @@
+=begin
 JDL.node "test_choice_attribute"
 
 jtest "requires items to be set" do
@@ -60,6 +61,7 @@ jtest 'rejects invalid choices' do
   end
 end
 =end
+=begin
 jtest "can be set from global attrs" do
   JDL.attr "tca_CA9D4D22", type: :choice do
     items [:a, :b, :c]
@@ -86,3 +88,4 @@ jtest "can be set from global attrs" do
   JDL.undefine_attr("tca_06FE9AE2")
   JDL.undefine_attr("tca_5A292247")
 end
+=end

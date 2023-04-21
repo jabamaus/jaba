@@ -6,6 +6,8 @@ module JABA
   class Context
     def initialize(want_exceptions, &block)
       JABA.set_context(self)
+      @jdl = JDL.current_jdl
+      @project_api_class = @jdl.class_from_path("project")
       @want_exceptions = want_exceptions
       @input_block = block
       @invoking_dir = Dir.getwd.freeze
@@ -105,9 +107,9 @@ module JABA
       @input_block&.call(input)
       init_root_paths
 
-      @top_level_node = Node.new(JDL::TopLevelAPI, "top_level", nil, nil)
+      @top_level_node = Node.new(@jdl.top_level_api_class, "top_level", nil, nil)
       @output[:root] = @top_level_node
-      JDL::TopLevelAPI.singleton.__internal_set_node(@top_level_node)
+      @jdl.top_level_api_class.singleton.__internal_set_node(@top_level_node)
 
       set_top_level_attrs_from_input
 
@@ -115,7 +117,6 @@ module JABA
       load_jaba_files
 
       @top_level_node.post_create
-      @default_configs = @top_level_node[:default_configs]
 
       @node_defs.each do |nd|
         process_node_def(nd)
@@ -285,13 +286,13 @@ module JABA
 
     def execute_jdl(*args, file: nil, str: nil, &block)
       if str
-        JDL::TopLevelAPI.singleton.instance_eval(str, file)
+        @jdl.top_level_api_class.singleton.instance_eval(str, file)
       elsif file
         log "Executing #{file}"
-        JDL::TopLevelAPI.singleton.instance_eval(file_manager.read(file), file)
+        @jdl.top_level_api_class.singleton.instance_eval(file_manager.read(file), file)
       end
       if block_given?
-        JDL::TopLevelAPI.singleton.instance_exec(*args, &block)
+        @jdl.top_level_api_class.singleton.instance_exec(*args, &block)
       end
     end
 
@@ -304,7 +305,9 @@ module JABA
     end
 
     def process_node_def(nd)
-      if nd.api_klass == JDL::ProjectAPI
+      if nd.api_klass == @project_api_class
+        @default_configs ||= @top_level_node[:default_configs]
+
         proj_node = create_node(nd)
         @default_configs.each do |id|
           create_node(nd, parent: proj_node) do |node|

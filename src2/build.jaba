@@ -1,11 +1,12 @@
 shared :myshared do
 end
 
+default_configs [:Debug, :Release]
 project :myapp, root: 'myroot' do
-  
+  type :app
   #include :myshared
 end
 
 project :mylib, root: 'mylibroot' do
-  
+  type :lib
 end
