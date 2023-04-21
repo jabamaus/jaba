@@ -8,9 +8,13 @@ JDL.attr "test_bool|bool_attr_default_false", type: :bool do
 end
 
 jtest "defaults to false" do
+  jdl do
+    node "n"
+    attr "n|a", type: :bool
+  end
   jaba do
-    test_bool :t do
-      bool_attr.must_equal(false)
+    n :n do
+      a.must_equal(false)
     end
   end
 end
