@@ -1,21 +1,21 @@
- jtest "compound attr not allowed a default" do
- end
+jtest "compound attr not allowed a default" do
+end
 
- jtest "works with compound as single attribute" do
+jtest "works with compound as single attribute" do
   JDL.node "node_38E8D01A"
   JDL.attr "node_38E8D01A|compound", type: :compound
   JDL.attr "node_38E8D01A|compound|a" do default 10 end
   JDL.attr "node_38E8D01A|compound|b"
   JDL.attr_array "node_38E8D01A|compound|c" do default [1] end
   JDL.attr_hash "node_38E8D01A|compound|d" do default(a: :b) end
-  
+
   op = jaba do
     node_38E8D01A :n do
       # check defaults
       compound.a.must_equal 10
       compound.b.must_be_nil # no default value
-      compound.c.must_equal [1] 
-      compound.d.must_equal({a: :b})
+      compound.c.must_equal [1]
+      compound.d.must_equal({ a: :b })
 
       compound do # can be set in block form
         a 1
@@ -26,12 +26,12 @@
       compound.a.must_equal 1
       compound.b.must_equal 2
       compound.c.must_equal [1, 2]
-      compound.d.must_equal({a: :b, c: :d})
+      compound.d.must_equal({ a: :b, c: :d })
 
       compound.b 3 # can set in object form
       compound.b.must_equal 3
       compound.d :e, :f
-      compound.d.must_equal({a: :b, c: :d, e: :f})
+      compound.d.must_equal({ a: :b, c: :d, e: :f })
 
       compound do # repeated calls refer to same compound attr
         a 4
@@ -42,19 +42,19 @@
       compound.a.must_equal 4
       compound.b.must_equal 5
       compound.c.must_equal [1, 2, 3, 4]
-      compound.d.must_equal({a: :b, c: :d, e: :g})
+      compound.d.must_equal({ a: :b, c: :d, e: :g })
 
       compound.b 6
       compound.b.must_equal 6
       compound.c [5, 6]
       compound.c.must_equal [1, 2, 3, 4, 5, 6]
-    end 
+    end
   end
   n = op[:root].children[0]
   n[:compound][:a].must_equal 4
   n[:compound][:b].must_equal 6
   n[:compound][:c].must_equal [1, 2, 3, 4, 5, 6]
-  n[:compound][:d].must_equal({a: :b, c: :d, e: :g})
+  n[:compound][:d].must_equal({ a: :b, c: :d, e: :g })
 end
 
 jtest "works with compound as single attribute with nesting" do

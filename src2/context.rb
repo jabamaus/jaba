@@ -17,7 +17,7 @@ module JABA
       @src_root = @build_root = @temp_dir = nil
       @warnings = []
       @warning_lookup = {}
-      @output = {warnings: @warnings, error: nil}
+      @output = { warnings: @warnings, error: nil }
       @log_msgs = [] # JABA.running_tests? ? nil : [] # Disable logging when running tests
       @file_manager = FileManager.new
       @jdl_files = []

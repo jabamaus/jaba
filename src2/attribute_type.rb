@@ -148,9 +148,9 @@ module JABA
       super(:compound)
       set_title "Compound attribute type"
     end
+
     def init_attr_def(attr_def)
       attr_def.set_flags(:no_sort) if attr_def.array?
     end
   end
 end
-

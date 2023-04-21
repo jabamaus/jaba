@@ -8,6 +8,7 @@ module JABA
       @examples = []
       self.class.all << self
     end
+
     def self.all = @all ||= []
 
     def src_loc = @src_loc
@@ -58,7 +59,9 @@ module JABA
     end
 
     def describe = "'#{name.inspect_unquoted}' attribute definition flag"
+
     def self.lookup(name) = all.find { |fd| fd.name == name }
+
     def set_compatible?(&block) = @on_compatible = block
 
     def check_compatibility(attr_def)
@@ -72,6 +75,7 @@ module JABA
     end
 
     def describe = "'#{name.inspect_unquoted}' basedir_spec"
+
     def self.lookup(name) = all.find { |fd| fd.name == name }
   end
 
@@ -150,7 +154,7 @@ module JABA
     def set_basedir_spec(s)
       sd = BasedirSpecDefinition.lookup(s)
       if sd.nil?
-        definition_error("'#{s.inspect_unquoted}' basedir_spec must be one of #{BasedirSpecDefinition.all.map{|s_| s_.name}}")
+        definition_error("'#{s.inspect_unquoted}' basedir_spec must be one of #{BasedirSpecDefinition.all.map { |s_| s_.name }}")
       end
       @basedir_spec = s
     end

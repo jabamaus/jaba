@@ -63,4 +63,5 @@ module JabaTestMethods
 end
 
 class JTestCaseAPI; include JabaTestMethods; end
+
 JTest.extend(JabaTestMethods)
