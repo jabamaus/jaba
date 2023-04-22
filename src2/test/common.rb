@@ -25,6 +25,10 @@ module JabaTestMethods
     end
   end
 
+  def jtest_post_test
+    JABA.restore_core_api
+  end
+
   def assert_jaba_error(msg, trace: nil, hint: nil, &block)
     src_loc = calling_location
     e = assert_raises(JABA::JabaError, src_loc: src_loc, msg: hint) do

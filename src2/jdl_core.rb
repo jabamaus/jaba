@@ -25,7 +25,7 @@ module JABA
   ).include(CommonAPI)
 
   def self.current_api = @@current_api
-
+  def self.restore_core_api = @@current_api = @@core_api # Used by unit tests
   def self.define_api(private: false, &block)
     @@current_api = if private
       JDLBuilder.new
