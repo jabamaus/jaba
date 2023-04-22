@@ -13,25 +13,20 @@ end
 jtest "catches jdl errors in jaba file form" do
   assert_jaba_file_error "'invalid id' is an invalid id. Must be an alphanumeric " \
                          "string or symbol (-_. permitted), eg :my_id, 'my-id', 'my.id'.", "32C24F15" do
-    %Q{
-project 'invalid id' do # 32C24F15
-end
-}
+    "project \"invalid id\" # 32C24F15"
   end
 end
 
 jtest "catches constant errors in block form" do
-  assert_jaba_error "Error at #{src_loc("138FA33C")}: uninitialized constant", ignore_rest: true do
+  assert_jaba_error(/Error at #{src_loc("138FA33C")}: uninitialized constant BADCODE/) do
     jaba do
-      shared :a do
-      end
       BADCODE # 138FA33C
     end
   end
 end
 
 jtest "catches constant errors in jaba file form" do
-  assert_jaba_file_error "uninitialized constant JDL::TopLevelAPI::BADCODE.", 1 do
+  assert_jaba_file_error(/uninitialized constant #<Class:.+>::BADCODE\./, 1) do
     "BADCODE"
   end
 end
@@ -60,20 +55,14 @@ end
 jtest "allows errors to be raised from definitions in block form" do
   assert_jaba_error "Error at #{src_loc("7FAC4085")}: Error msg." do
     jaba do
-      project :test do
-        fail "Error msg" # 7FAC4085
-      end
+      fail "Error msg" # 7FAC4085
     end
   end
 end
 
 jtest "allows errors to be raised from definitions in jaba file form" do
   assert_jaba_file_error "Error msg.", "D3BBCE42" do
-    %Q{
-project :test do
-  fail "Error msg" # D3BBCE42
-end
-}
+    "fail \"Error msg\" # D3BBCE42"
   end
 end
 

@@ -1,4 +1,4 @@
-JDL.define do
+JABA.define_api do
   # Flags
 
   flag :allow_dupes do

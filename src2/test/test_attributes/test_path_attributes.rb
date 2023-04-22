@@ -1,16 +1,15 @@
 jtest "checks path is valid" do
-  JDL.node "node_83D99E1E"
-  JDL.attr "node_83D99E1E|file", type: :file
-  JDL.attr "node_83D99E1E|dir", type: :dir
-  JDL.attr "node_83D99E1E|src_spec", type: :src_spec
-  JDL.attr "node_83D99E1E|basename", type: :basename
+  jdl do
+    attr "file", type: :file
+    attr "dir", type: :dir
+    attr "src_spec", type: :src_spec
+    attr "basename", type: :basename
+  end
   op = jaba(want_exceptions: false) do
-    node_83D99E1E :t do
-      file "a\\b" # 4E60BC17
-      dir "a\\b" # F7B16193
-      src_spec "a\\b" # CE17A7F3
-      basename "a\\b" # CB2F8547
-    end
+    file "a\\b" # 4E60BC17
+    dir "a\\b" # F7B16193
+    src_spec "a\\b" # CE17A7F3
+    basename "a\\b" # CB2F8547
   end
   w = op[:warnings]
   w.size.must_equal 3

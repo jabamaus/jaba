@@ -1,5 +1,6 @@
 jtest "project" do
   op = jaba do
+    default_configs [:Debug, :Release]
     project :myapp do
       type :console
       case config

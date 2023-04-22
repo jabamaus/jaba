@@ -67,7 +67,7 @@ module JABA
       @value_options = nil
     end
 
-    def describe = "'#{@node.id}.#{@attr_def.name}' attribute element"
+    def describe = "'#{@attr_def.name}' attribute element"
 
     def value
       record_last_call_location
@@ -155,7 +155,7 @@ module JABA
       end
     end
 
-    def describe = "'#{@node.id}.#{@attr_def.name}' attribute"
+    def describe = "'#{@attr_def.name}' attribute"
 
     def value
       record_last_call_location

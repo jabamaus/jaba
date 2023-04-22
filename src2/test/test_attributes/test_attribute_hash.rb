@@ -179,86 +179,82 @@ end
 =end
 
 jtest "can be set" do
-  JDL.node "tha_252A1CCB"
-  JDL.attr_hash "tha_252A1CCB|a"
-  JDL.attr "tha_252A1CCB|b", type: :choice do
-    items [1, 2]
+  jdl do
+    attr_hash "a"
+    attr "b", type: :choice do
+      items [1, 2]
+    end
   end
   jaba do
-    tha_252A1CCB :t do
-      # Test basic set
-      a :k, :v
-      a[:k].must_equal(:v)
+    # Test basic set
+    a :k, :v
+    a[:k].must_equal(:v)
 
-      # Overwrite value
-      a :k, nil
-      a[:k].must_be_nil
+    # Overwrite value
+    a :k, nil
+    a[:k].must_be_nil
 
-      # Overwrite back to original
-      a :k, :v
-      a[:k].must_equal(:v)
+    # Overwrite back to original
+    a :k, :v
+    a[:k].must_equal(:v)
 
-      # Add key
-      a :k2, :v2
-      a[:k2].must_equal(:v2)
+    # Add key
+    a :k2, :v2
+    a[:k2].must_equal(:v2)
 
-      # Value can be set in block
-      #
-      b 1
-      a :key do
-        case b
-        when 1
-          :yes
-        else
-          :no
-        end
+    # Value can be set in block
+    #
+    b 1
+    a :key do
+      case b
+      when 1
+        :yes
+      else
+        :no
       end
-      a[:key].must_equal :yes
-      b 2
-      a :key do
-        case b
-        when 1
-          :yes
-        else
-          :no
-        end
-      end
-      a[:key].must_equal :no
     end
+    a[:key].must_equal :yes
+    b 2
+    a :key do
+      case b
+      when 1
+        :yes
+      else
+        :no
+      end
+    end
+    a[:key].must_equal :no
   end
 end
 
 jtest "is not possible to modify returned hash" do
-  JDL.node "tah_78CC6AD0"
-  JDL.attr_hash "tah_78CC6AD0|a" do
-    default({ k: :v })
+  jdl do
+    attr_hash "a" do
+      default({ k: :v })
+    end
   end
   assert_jaba_error "Error at #{src_loc("F788FD64")}: Can't modify read only Hash." do
     jaba do
-      tah_78CC6AD0 :t do
-        a[:k] = :v2 # F788FD64
+      a[:k] = :v2 # F788FD64
+    end
+  end
+end
+
+jtest "disallows no_sort and allow_dupes flags" do
+  jdl do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("366C343A")}: ':no_sort' attribute definition flag invalid: only allowed on array attributes." do
+      attr_hash "a" do
+        flags :no_sort # 366C343A
+      end
+    end
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("2E453551")}: ':allow_dupes' attribute definition flag invalid: only allowed on array attributes." do
+      attr_hash "b" do
+        flags :allow_dupes # 2E453551
       end
     end
   end
 end
 
-jtest "disallows no_sort flag" do
-  JDL.node "tah_6502C5DE"
-  assert_jaba_error "Error at #{src_loc("366C343A")}: ':no_sort' attribute definition flag invalid: only allowed on array attributes." do
-    JDL.attr_hash "tah_6502C5DE|a" do
-      flags :no_sort # 366C343A
-    end
-  end
-end
-
-jtest "disallows allow_dupes flag" do
-  JDL.node "tah_681D76BC"
-  assert_jaba_error "Error at #{src_loc("2E453551")}: ':allow_dupes' attribute definition flag invalid: only allowed on array attributes." do
-    JDL.attr_hash "tah_681D76BC|a" do
-      flags :allow_dupes # 2E453551
-    end
-  end
-end
 =begin
 jtest "can accept flag options" do
   jaba(barebones: true) do

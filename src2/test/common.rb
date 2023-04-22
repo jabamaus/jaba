@@ -4,7 +4,7 @@ JABA.running_tests!
 
 module JabaTestMethods
   def jdl(&block)
-    JDL.define(private: true, &block)
+    JABA.define_api(private: true, &block)
   end
 
   def jaba(
@@ -12,7 +12,6 @@ module JabaTestMethods
     src_root: nil,
     build_root: nil,
     global_attrs: nil,
-    configs: [:Debug, :Release],
     &block
   )
     td = temp_dir(create: false)
@@ -21,22 +20,19 @@ module JabaTestMethods
     JABA.run(want_exceptions: want_exceptions) do |c|
       c.src_root = src_root # Most unit tests don't have a src_root as everything is defined inline in code
       c.build_root = build_root
-      c.definitions do
-        #default_configs configs
-      end
       c.definitions(&block) if block_given?
       c.global_attrs = global_attrs
     end
   end
 
-  def assert_jaba_error(msg, trace: nil, ignore_rest: false, hint: nil, &block)
+  def assert_jaba_error(msg, trace: nil, hint: nil, &block)
     src_loc = calling_location
     e = assert_raises(JABA::JabaError, src_loc: src_loc, msg: hint) do
       yield
     end
 
-    if ignore_rest
-      e.message.slice(0, msg.length).must_equal(msg, src_loc: src_loc)
+    if msg.is_a?(Regexp)
+      e.message.must_match(msg, src_loc: src_loc)
     else
       e.message.must_equal(msg, src_loc: src_loc)
     end
@@ -62,7 +58,11 @@ module JabaTestMethods
     str = block.call
     make_file(fn, content: str)
     op = jaba(src_root: fn, want_exceptions: false)
-    op[:error].must_equal("Error at #{src_loc(tag, file: fn)}: #{msg}", src_loc: src_loc_)
+    if msg.is_a?(Regexp)
+      op[:error].must_match(/Error at #{src_loc(tag, file: fn)}: #{msg}/, src_loc: src_loc_)
+    else
+      op[:error].must_equal("Error at #{src_loc(tag, file: fn)}: #{msg}", src_loc: src_loc_)
+    end
   end
 end
 

@@ -17,7 +17,7 @@ module JABA
 
     # Used in error messages.
     #
-    def describe = "'#{node.id}.#{attr_def.name}' hash attribute"
+    def describe = "'#{attr_def.name}' hash attribute"
 
     # Returns a read only hash of key->attribute values. Expensive because it must map attributes to their values.
     #

@@ -29,26 +29,18 @@ module JABA
     end
 
     def __check(var)
-      definition_error_post_create("var must be specified as a symbol") if !var.symbol?
+      definition_error("var must be specified as a symbol") if !var.symbol?
       if instance_variable_get(var).nil?
-        definition_error_post_create("#{describe} requires '#{var.to_s.delete_prefix("@")}' to be specified")
+        definition_error("#{describe} requires '#{var.to_s.delete_prefix("@")}' to be specified")
       end
     end
 
-    def definition_error(msg, err_loc: APIBuilder.last_call_location)
-      JABA.error("Error at #{err_loc.src_loc_describe}: #{describe} invalid: #{msg}")
+    def definition_error(msg)
+      JABA.error("Error at #{APIBuilder.last_call_location.src_loc_describe}: #{describe} invalid: #{msg}")
     end
 
-    def definition_error_post_create(msg)
-      definition_error(msg, err_loc: src_loc)
-    end
-
-    def definition_warn(msg, warn_loc: APIBuilder.last_call_location)
-      puts("Warning at #{warn_loc.src_loc_describe}: #{msg}")
-    end
-
-    def definition_warn_post_create(msg)
-      definition_warn(msg, warn_loc: src_loc)
+    def definition_warn(msg)
+      puts("Warning at #{APIBuilder.last_call_location.src_loc_describe}: #{msg}")
     end
   end
 
@@ -206,7 +198,7 @@ module JABA
       @flag_options.freeze
 
       if type_id == :choice && @items.empty?
-        definition_error_post_create("'items' must be set")
+        definition_error("'items' must be set")
       end
     end
 

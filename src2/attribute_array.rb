@@ -10,7 +10,7 @@ module JABA
     end
 
     def to_s = "#{attr_def} [#{@elems.size} elems]"
-    def describe = "'#{node.id}.#{attr_def.name}' array attribute"
+    def describe = "'#{attr_def.name}' array attribute"
 
     def value
       record_last_call_location

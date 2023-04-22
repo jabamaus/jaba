@@ -121,7 +121,8 @@ module JABA
     end
 
     def attr_not_found_error(name)
-      JABA.error("'#{name}' attribute or method not defined. Available in this context:\n#{available.join(", ")}")
+      str = !available.empty? ? "\n#{available.join(", ")}" : " none"
+      JABA.error("'#{name}' attribute or method not defined. Available in this context:#{str}")
     end
 
     def make_read_only

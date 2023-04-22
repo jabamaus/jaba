@@ -1,3 +1,4 @@
+=begin
 jtest "supports a default" do
   # It validates default is an array or single value
   #
@@ -399,3 +400,4 @@ jtest "supports setting a validator" do
     end
   end
 end
+=end

@@ -1,4 +1,4 @@
-module JDL
+module JABA
   JDLTopLevelAPI = APIBuilder.define(
     :flag,
     :basedir_spec,
@@ -24,15 +24,15 @@ module JDL
     :basedir_spec, # Used by path attributes
   ).include(CommonAPI)
 
-  def self.current_jdl = @@current_jdl
+  def self.current_api = @@current_api
 
-  def self.define(private: false, &block)
-    @@current_jdl = if private
+  def self.define_api(private: false, &block)
+    @@current_api = if private
       JDLBuilder.new
     else
-      @@core_jdl ||= JDLBuilder.new
+      @@core_api ||= JDLBuilder.new
     end
-    JDLTopLevelAPI.execute(@@current_jdl, &block)
+    JDLTopLevelAPI.execute(@@current_api, &block)
   end
 
   class JDLBuilder
@@ -49,7 +49,10 @@ module JDL
           self
         end
     
-        def method_missing(id, ...) = @node.attr_not_found_error(id)
+        def method_missing(id, ...)
+          $last_call_location = ::Kernel.calling_location
+          @node.attr_not_found_error(id)
+        end
       end
       @toplevel_api_class = Class.new(@base_api_class)
       @common_attrs_module = Module.new do
@@ -59,19 +62,19 @@ module JDL
 
     def top_level_api_class = @toplevel_api_class
     
-    def class_from_path(path)
+    def class_from_path(path, fail_if_not_found: true)
       klass = @path_to_class[path]
-      JABA.error("class not registered for '#{path}' path") if klass.nil?
+      JABA.error("class not registered for '#{path}' path") if klass.nil? && fail_if_not_found
       klass
     end
 
     def set_flag(name, &block)
-      fd = JABA::FlagDefinition.new(calling_location, name)
+      fd = JABA::FlagDefinition.new(APIBuilder.last_call_location, name)
       FlagDefinitionAPI.execute(fd, &block) if block_given?
     end
 
     def set_basedir_spec(name, &block)
-      d = JABA::BasedirSpecDefinition.new(calling_location, name)
+      d = JABA::BasedirSpecDefinition.new(APIBuilder.last_call_location, name)
       BasedirSpecDefinitionAPI.execute(d, &block) if block_given?
     end
 
@@ -86,7 +89,7 @@ module JDL
       end
       parent_path, name = split_jdl_path(path)
       parent_klass = api_class_from_path(parent_path)
-      node_def = JABA::NodeDefinition.new(calling_location, name)
+      node_def = JABA::NodeDefinition.new(APIBuilder.last_call_location, name)
       NodeDefinitionAPI.execute(node_def, &block) if block_given?
       node_def.post_create
       parent_klass.define_method(name) do |*args, **kwargs, &node_block|
@@ -96,22 +99,22 @@ module JDL
     end
 
     def set_attr(path, type: nil, &block)
-      process_attr(calling_location, path, JABA::AttributeSingleDefinition, type, &block)
+      process_attr(APIBuilder.last_call_location, path, JABA::AttributeSingleDefinition, type, &block)
     end
 
     def set_attr_array(path, type: nil, &block)
-      process_attr(calling_location, path, JABA::AttributeArrayDefinition, type, &block)
+      process_attr(APIBuilder.last_call_location, path, JABA::AttributeArrayDefinition, type, &block)
     end
 
     def set_attr_hash(path, type: nil, &block)
-      process_attr(calling_location, path, JABA::AttributeHashDefinition, type, &block)
+      process_attr(APIBuilder.last_call_location, path, JABA::AttributeHashDefinition, type, &block)
     end
 
     def set_method(path, &block)
       validate_path(path)
       parent_path, name = split_jdl_path(path)
       klass = api_class_from_path(parent_path, method: true)
-      meth_def = JABA::MethodDefinition.new(calling_location, name)
+      meth_def = JABA::MethodDefinition.new(APIBuilder.last_call_location, name)
       MethodDefinitionAPI.execute(meth_def, &block) if block_given?
       meth_def.post_create
       klass.define_method(name) do |*args, **kwargs|

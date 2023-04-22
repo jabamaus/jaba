@@ -1,101 +1,73 @@
-=begin
-JDL.node "test_bool"
-JDL.attr "test_bool|bool_attr", type: :bool
-JDL.attr "test_bool|bool_attr_default_true", type: :bool do
-  default true
-end
-JDL.attr "test_bool|bool_attr_default_false", type: :bool do
-  default false
-end
-
 jtest "defaults to false" do
   jdl do
-    node "n"
-    attr "n|a", type: :bool
+    attr "a", type: :bool
   end
   jaba do
-    n :n do
-      a.must_equal(false)
-    end
+    a.must_be_false
   end
 end
 
 jtest "requires default to be true or false" do
-  assert_jaba_error "Error at #{src_loc("2521765F")}: 'invalid_default' attribute invalid: 'default' invalid: '1' is a integer - expected [true|false]" do
-    JDL.attr "test_bool|invalid_default", type: :bool do
-      default 1 # 2521765F
+  jdl do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("2521765F")}: 'invalid' attribute invalid: 'default' invalid: '1' is a integer - expected [true|false]" do
+      attr "invalid", type: :bool do
+        default 1 # 2521765F
+      end
+    end
+    attr "b_true", type: :bool do
+      default true
+    end
+    attr "b_false", type: :bool do
+      default false
     end
   end
   jaba do
-    test_bool :t do
-      bool_attr_default_true.must_equal(true)
-      bool_attr_default_false.must_equal(false)
-    end
+    b_true.must_be_true
+    b_false.must_be_false
   end
 end
 
 jtest "only allows boolean values" do
-  assert_jaba_file_error "'b.bool_attr_default_false' attribute invalid: '1' is a integer - expected [true|false]", "0108AEFB" do
-    %Q{
-test_bool :b do
-  bool_attr_default_false 1 # 0108AEFB
-end
-}
+  jdl do
+    attr "b", type: :bool
   end
-  jaba do
-    test_bool :t do
-      bool_attr_default_true false
-      bool_attr_default_false true
-      bool_attr_default_true.must_equal(false)
-      bool_attr_default_false.must_equal(true)
-    end
+  assert_jaba_file_error "'b' attribute invalid: '1' is a integer - expected [true|false]", "0108AEFB" do
+    "b 1 # 0108AEFB"
   end
-end
-
-JDL.node "test_bool_required"
-JDL.attr "test_bool_required|bool_attr", type: :bool do
-  flags :required
 end
 
 jtest "works with required flag" do
-  assert_jaba_file_error "'t.bool_attr' attribute requires a value.", "3C869B0D" do
-    %Q{
-test_bool_required :t do # 3C869B0D
-end
-}
+  jdl do
+    node "node"
+    attr "node|b" do
+      flags :required
+    end
+  end
+  assert_jaba_file_error "'b' attribute requires a value.", "3C869B0D" do
+    "node :n # 3C869B0D"
   end
 end
 
 jtest "can be set from global_attrs" do
-  JDL.attr "global_bool1", type: :bool do default false end
-  JDL.attr "global_bool2", type: :bool do default true end
-  JDL.attr "global_bool3", type: :bool do default false end
-  JDL.attr "global_bool4", type: :bool do default true end
-  output = jaba(global_attrs: {
-                  'global_bool1': "true",
-                  'global_bool2': false,
-                  'global_bool3': "1",
-                  'global_bool4': 0,
-                }) do
-    global_bool1.must_equal true
-    global_bool2.must_equal false
-    global_bool3.must_equal true
-    global_bool4.must_equal false
+  jdl do
+    attr "b1", type: :bool do default false end
+    attr "b2", type: :bool do default true end
+    attr "b3", type: :bool do default false end
+    attr "b4", type: :bool do default true end
+  end
+  output = jaba(global_attrs: {'b1': "true", 'b2': false, 'b3': "1", 'b4': 0}) do
+    b1.must_equal true
+    b2.must_equal false
+    b3.must_equal true
+    b4.must_equal false
   end
 
   root = output[:root]
-  root[:global_bool1].must_equal true
-  root[:global_bool2].must_equal false
-  root[:global_bool3].must_equal true
-  root[:global_bool4].must_equal false
+  root[:b1].must_equal true
+  root[:b2].must_equal false
+  root[:b3].must_equal true
+  root[:b4].must_equal false
 
-  op = jaba(global_attrs: { 'global_bool1': "10" }, want_exceptions: false)
-  op[:error].must_equal "Error: '10' invalid value for 'global_bool1' attribute - [true|false|0|1] expected."
-
-  # undefine to not pollute toplevel namespace
-  JDL.undefine_attr("global_bool1")
-  JDL.undefine_attr("global_bool2")
-  JDL.undefine_attr("global_bool3")
-  JDL.undefine_attr("global_bool4")
+  op = jaba(global_attrs: { 'b1': "10" }, want_exceptions: false)
+  op[:error].must_equal "Error: '10' invalid value for 'b1' attribute - [true|false|0|1] expected."
 end
-=end

@@ -6,8 +6,8 @@ module JABA
   class Context
     def initialize(want_exceptions, &block)
       JABA.set_context(self)
-      @jdl = JDL.current_jdl
-      @project_api_class = @jdl.class_from_path("project")
+      @jdl = JABA.current_api
+      @project_api_class = @jdl.class_from_path("project", fail_if_not_found: !JABA.running_tests?)
       @want_exceptions = want_exceptions
       @input_block = block
       @invoking_dir = Dir.getwd.freeze
