@@ -8,30 +8,51 @@ jtest "split_jdl_path" do
   b.send(:split_jdl_path, "a").must_equal [nil, "a"]
 end
 
-jtest "validates jdl paths" do
+jtest "validates jdl path format" do
+  jdl do
+    node :n
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("5CFB9574")}: 'n/a' is in invalid format." do
+      attr "n/a" # 5CFB9574 slashes not allowed
+    end
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("9B9B965C")}: 'n|a__b' is in invalid format." do
+      attr "n|a__b" # 9B9B965C only 1 underscore allowed
+    end
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("C42FF3D2")}: 'n|a b' is in invalid format." do
+      attr "n|a b" # C42FF3D2 spaces not allowed
+    end
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("B90811C7")}: 'n||a_b' is in invalid format." do
+      attr "n||a_b" # B90811C7 double pipes not allowed
+    end
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("D54FA196")}: 'n|a_b|' is in invalid format." do
+      attr "n|a_b|" # D54FA196 cannot end in pipe
+    end
+  end
+end
+
+jtest "checks parent path valid" do
+  jdl do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("24DB3815")}: class not registered for 'a' path." do
+      attr "a|b" # 24DB3815
+    end
+  end
+end
+
+jtest "checks for duplicate paths" do
   jdl do
     node "n"
-    JTest.assert_jaba_error "'n/a' is in invalid format." do
-      attr "n/a" # slashes not allowed
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("99E1CB75")}: Duplicate path 'n' registered." do
+      node "n" # 99E1CB75
     end
-    JTest.assert_jaba_error "'n|a__b' is in invalid format." do
-      attr "n|a__b" # only 1 underscore allowed
-    end
-    JTest.assert_jaba_error "'n|a b' is in invalid format." do
-      attr "n|a b" # spaces not allowed
-    end
-    JTest.assert_jaba_error "'n||a_b' is in invalid format." do
-      attr "n||a_b" # double pipes not allowed
-    end
-    JTest.assert_jaba_error "'n|a_b|' is in invalid format." do
-      attr "n|a_b|" # cannot end in pipe
+    attr "n|a"
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("BC9DD62C")}: Duplicate 'n|a' attribute registered." do
+      attr "n|a" # BC9DD62C
     end
   end
 end
 
 jtest "can register methods at top level" do
   jdl do
-    method "m" do
+    method :m do
       on_called do Kernel.print "m" end
     end
   end

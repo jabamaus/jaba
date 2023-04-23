@@ -1,156 +1,143 @@
-=begin
-JDL.node "test_attr_single"
-JDL.attr "test_attr_single|single"
-
 jtest "only accepts single values" do
-  assert_jaba_error "Error at #{src_loc("787CC36C")}: 'single_invalid_default' attribute invalid: 'default' expects a single value but got '[]'." do
-    JDL.attr "test_attr_single|single_invalid_default" do
-      default [] # 787CC36C
+  jdl do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("787CC36C")}: 'a' attribute invalid: 'default' expects a single value but got '[]'." do
+      attr :a do
+        default [] # 787CC36C
+      end
     end
+    attr :b
   end
 
-  assert_jaba_error "Error at #{src_loc("6D4B452C")}: 't.single' attribute invalid: 'single' attribute must be a single value not a 'Array'." do
+  assert_jaba_error "Error at #{src_loc("6D4B452C")}: 'b' attribute invalid: 'b' attribute must be a single value not a 'Array'." do
     jaba do
-      test_attr_single :t do
-        single [1, 2] # 6D4B452C
-      end
+      b [1, 2] # 6D4B452C
     end
   end
 end
-
-JDL.attr "test_attr_single|a"
-JDL.attr "test_attr_single|b"
 
 jtest "allows setting value with block" do
-  jaba do
-    test_attr_single :t do
-      b 1
-      a do
-        b + 1
-      end
-      a.must_equal 2
-    end
+  jdl do
+    attr :a
+    attr :b
   end
-end
-
-JDL.attr "test_attr_single|read_only" do
-  flags :read_only
-  default 1
+  jaba do
+    b 1
+    a do
+      b + 1
+    end
+    a.must_equal 2
+  end
 end
 
 jtest "rejects modifying returned values" do
+  jdl do
+    attr :a
+  end
   assert_jaba_file_error "Can't modify read only String.", "45925C07" do
     %Q{
-test_attr_single :t do
   a "b"
   val = a
   val.upcase! # 45925C07
-end
 }
   end
 end
 
 jtest "rejects modifying read only attributes" do
-  assert_jaba_file_error "'t.read_only' attribute is read only.", "D4AE68B1" do
+  jdl do
+    attr :a do
+      flags :read_only
+      default 1
+    end
+  end
+  assert_jaba_file_error "'a' attribute is read only.", "D4AE68B1" do
     %Q{
-test_attr_single :t do
-  read_only.must_equal(1)
-  read_only 2 # D4AE68B1
-end
+  a.must_equal(1)
+  a 2 # D4AE68B1
 }
   end
 end
 
-JDL.attr "test_attr_single|block_default" do
-  default do
-    "#{a}_#{b}"
-  end
-end
-
-JDL.attr "test_attr_single|block_default2" do
-  default do
-    block_default
-  end
-end
-
 jtest "works with block style default" do
-  jaba do
-    test_attr_single :t do
-      a 1
-      b 2
-      block_default.must_equal "1_2"
+  jdl do
+    attr :a
+    attr :b
+    attr :block_default do
+      default do
+        "#{a}_#{b}"
+      end
     end
+    attr :block_default2 do
+      default do
+        block_default
+      end
+    end
+  end
+  jaba do
+    a 1
+    b 2
+    block_default.must_equal "1_2"
   end
 
   # test with attr default using an unset attr
-  #
-  assert_jaba_error "Error at #{src_loc("2F003EB7")}: 't.block_default' attribute default read uninitialised 't.b' attribute - 't.b' attribute might need a default value." do
+  assert_jaba_error "Error at #{src_loc("2F003EB7")}: 'block_default' attribute default read uninitialised 'b' attribute - 'b' attribute might need a default value." do
     jaba do
-      test_attr_single :t do
-        a 1
-        block_default # 2F003EB7
-      end
+      a 1
+      block_default # 2F003EB7
     end
   end
-
+  
   # test with another attr using unset attr
-  #
-  assert_jaba_error "Error at #{src_loc("A0C828F8")}: 't.block_default2' attribute default read uninitialised 't.a' attribute - 't.a' attribute might need a default value." do
+  assert_jaba_error "Error at #{src_loc("A0C828F8")}: 'block_default2' attribute default read uninitialised 'a' attribute - 'a' attribute might need a default value." do
     jaba do
-      test_attr_single :t do
-        b 1
-        block_default2 # A0C828F8
-      end
+      b 1
+      block_default2 # A0C828F8
     end
-  end
-end
-
-JDL.attr "test_attr_single|default_tries_to_set" do
-  default do
-    a 1 # 218296F2
   end
 end
 
 jtest "fails if default block sets attribute" do
-  assert_jaba_error "Error at #{src_loc("218296F2")}: 't.a' attribute is read only in this context." do
-    jaba do
-      test_attr_single :t do
-        default_tries_to_set
+  jdl do
+    attr :a
+    attr :b do
+      default do
+        a 1 # 218296F2
       end
     end
   end
-end
-
-JDL.attr "test_attr_single|with_flag_options" do
-  flag_options :a, :b, :c
+  assert_jaba_error "Error at #{src_loc("218296F2")}: 'a' attribute is read only in this context." do
+    jaba do
+      b
+    end
+  end
 end
 
 jtest "validates flag options" do
-  assert_jaba_error "Error at #{src_loc("0BE71C6C")}: Invalid flag option ':d' passed to 't.with_flag_options' attribute. Valid flags are [:a, :b, :c]" do
-    jaba do
-      test_attr_single :t do
-        with_flag_options 1, :a, :b, :d # 0BE71C6C
-      end
+  jdl do
+    attr :a do
+      flag_options :a, :b, :c
     end
   end
-end
-
-JDL.attr "test_attr_single|with_flag_and_value_options" do
-  flag_options :fo1, :fo2, :fo3
-  value_option :kv1
-  value_option :kv2
-  value_option :kv3
+  assert_jaba_error "Error at #{src_loc("0BE71C6C")}: Invalid flag option ':d' passed to 'a' attribute. Valid flags are [:a, :b, :c]" do
+    jaba do
+      a 1, :a, :b, :d # 0BE71C6C
+    end
+  end
 end
 
 jtest "overwrites flag and value options on successive calls" do
-  op = jaba do
-    test_attr_single :t do
-      with_flag_and_value_options 1, :fo1, kv1: 2
-      with_flag_and_value_options 2, :fo2, :fo3, kv2: 3, kv3: 4
+  jdl do
+    attr :a do
+      flag_options :fo1, :fo2, :fo3
+      value_option :kv1
+      value_option :kv2
+      value_option :kv3
     end
   end
-  node = op[:root].children[0]
-  a = node.get_attr("with_flag_and_value_options")
+  op = jaba do
+    a 1, :fo1, kv1: 2
+    a 2, :fo2, :fo3, kv2: 3, kv3: 4
+  end
+  a = op[:root].get_attr(:a)
   a.has_flag_option?(:fo1).must_equal(false)
   a.has_flag_option?(:fo2).must_equal(true)
   a.has_flag_option?(:fo3).must_equal(true)
