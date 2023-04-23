@@ -130,7 +130,7 @@ module JABA
       attr = AttributeElement.new(@attr_def, @node)
 
       if __validate && attr_def.on_validate_key
-        call_validators do
+        call_validators do # TODO: change to yield style
           node.eval_jdl(key, &attr_def.on_validate_key)
         end
       end

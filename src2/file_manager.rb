@@ -77,7 +77,7 @@ module JABA
       fn = file.filename
 
       if file.str.empty?
-        JABA.warn("'#{fn}' is empty")
+        JABA.warn("'#{fn}' is empty", want_warn_line: false)
       end
 
       if @generated_lookup.key?(fn)

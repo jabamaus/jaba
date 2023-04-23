@@ -27,6 +27,7 @@ jtest "validates jdl path format" do
       attr "n|a_b|" # D54FA196 cannot end in pipe
     end
   end
+  jaba
 end
 
 jtest "checks parent path valid" do
@@ -35,6 +36,7 @@ jtest "checks parent path valid" do
       attr "a|b" # 24DB3815
     end
   end
+  jaba
 end
 
 jtest "checks for duplicate paths" do
@@ -48,6 +50,7 @@ jtest "checks for duplicate paths" do
       attr "n|a" # BC9DD62C
     end
   end
+  jaba
 end
 
 jtest "can register methods at top level" do
@@ -56,10 +59,10 @@ jtest "can register methods at top level" do
       on_called do Kernel.print "m" end
     end
   end
-  assert_output "m" do
-    jaba do
-      # TODO: add support for available_methods
-      # available_methods.must_equal ["m"] # TODO
+  jaba do
+    # TODO: add support for available_methods
+    # available_methods.must_equal ["m"] # TODO
+    JTest.assert_output "m" do
       m
     end
   end
@@ -95,15 +98,10 @@ jtest "can register attributes into nodes" do
     attr "*|b" # registers into all nodes, except top level
     node "node2"
   end
-  # TODO: it is not possible to use one jaba context and call assert_jaba_error because correct exception
-  # handling relies on exception handler called at the end of jaba context, which never gets called.
-  # Maybe all exception processing code could be moved to JABA.error?
-  assert_jaba_error "Error at #{src_loc("2D0B33FE")}: 'b' attribute or method not defined. Available in this context: none." do
-    jaba do
+  jaba do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("2D0B33FE")}: 'b' attribute or method not defined. Available in this context: none." do
       b 1 # 2D0B33FE
     end
-  end
-  jaba do
     node1 :n1 do
       a 1
       b 2
@@ -122,8 +120,7 @@ jtest "can register attributes as node options" do
     end
   end
   jaba do
-    node :n, a: true do
-    end
+    node :n, a: true
   end
 end
 
@@ -145,6 +142,6 @@ jtest "fails if invalid basedir_spec specified" do
         basedir_spec :unknown # EC9914E5
       end
     end
+    jaba
   end
-  jaba
 end

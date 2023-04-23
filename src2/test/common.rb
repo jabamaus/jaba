@@ -17,7 +17,8 @@ module JabaTestMethods
     td = temp_dir(create: false)
     build_root = build_root || td
 
-    JABA.run(want_exceptions: want_exceptions) do |c|
+    JABA.run do |c|
+      c.want_exceptions = want_exceptions
       c.src_root = src_root # Most unit tests don't have a src_root as everything is defined inline in code
       c.build_root = build_root
       c.definitions(&block) if block_given?

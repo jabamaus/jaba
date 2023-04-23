@@ -61,22 +61,22 @@ jtest "supports a default" do
       d.must_equal({ k1: 3, k2: 2, k3: :v3, k4: :v4 })
       generate do
         a = get_attr(:a)
-        a.fetch(:k).has_flag_option?(:opt1).must_equal(true)
+        a.fetch(:k).has_flag_option?(:opt1).must_be_true
         b = get_attr(:b)
-        b.fetch(:k).has_flag_option?(:opt1).must_equal(true)
-        b.fetch(:k2).has_flag_option?(:opt1).must_equal(true)
+        b.fetch(:k).has_flag_option?(:opt1).must_be_true
+        b.fetch(:k2).has_flag_option?(:opt1).must_be_true
         b.fetch(:k2).get_option_value(:vopt).must_equal(1)
-        b.fetch(:k3).has_flag_option?(:opt2).must_equal(true)
+        b.fetch(:k3).has_flag_option?(:opt2).must_be_true
         c = get_attr(:c)
-        c.fetch(:k1).has_flag_option?(:opt1).must_equal(true)
-        c.fetch(:k2).has_flag_option?(:opt1).must_equal(true)
-        c.fetch(:k3).has_flag_option?(:opt1).must_equal(true)
-        c.fetch(:k4).has_flag_option?(:opt2).must_equal(true)
+        c.fetch(:k1).has_flag_option?(:opt1).must_be_true
+        c.fetch(:k2).has_flag_option?(:opt1).must_be_true
+        c.fetch(:k3).has_flag_option?(:opt1).must_be_true
+        c.fetch(:k4).has_flag_option?(:opt2).must_be_true
         d = get_attr(:d)
-        d.fetch(:k1).has_flag_option?(:opt2).must_equal(true)
-        d.fetch(:k2).has_flag_option?(:opt2).must_equal(true)
-        d.fetch(:k3).has_flag_option?(:opt2).must_equal(true)
-        d.fetch(:k4).has_flag_option?(:opt1).must_equal(true)
+        d.fetch(:k1).has_flag_option?(:opt2).must_be_true
+        d.fetch(:k2).has_flag_option?(:opt2).must_be_true
+        d.fetch(:k3).has_flag_option?(:opt2).must_be_true
+        d.fetch(:k4).has_flag_option?(:opt1).must_be_true
       end
     end
   end
@@ -269,9 +269,9 @@ jtest "can accept flag options" do
         a = get_attr(:a)
         elem = a.fetch(:k)
         elem.value.must_equal(:v)
-        elem.has_flag_option?(:f1).must_equal(true)
-        elem.has_flag_option?(:f2).must_equal(true)
-        elem.has_flag_option?(:f3).must_equal(false)
+        elem.has_flag_option?(:f1).must_be_true
+        elem.has_flag_option?(:f2).must_be_true
+        elem.has_flag_option?(:f3).must_be_false
         elem.flag_options.must_equal [:f1, :f2]
       end
     end
@@ -314,9 +314,9 @@ jtest "can accept value and flag options" do
         a = get_attr(:a)
         elem = a.fetch(:k)
         elem.value.must_equal(:v)
-        elem.has_flag_option?(:flag_opt1).must_equal(true)
-        elem.has_flag_option?(:flag_opt2).must_equal(true)
-        elem.has_flag_option?(:flag_opt3).must_equal(false)
+        elem.has_flag_option?(:flag_opt1).must_be_true
+        elem.has_flag_option?(:flag_opt2).must_be_true
+        elem.has_flag_option?(:flag_opt3).must_be_false
         elem.flag_options.must_equal [:flag_opt1, :flag_opt2]
         elem.get_option_value(:kv1).must_equal("a")
         elem.get_option_value(:kv2).must_equal("b")

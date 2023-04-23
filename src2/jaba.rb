@@ -28,6 +28,7 @@ module JABA
     attr_block :definitions
     attr_bool :verbose
     attr_bool :profile
+    attr_bool :want_exceptions # defaults to false
     attr_accessor :global_attrs # Initialise global attrs from a hash of name to value(s)
   end
 
@@ -38,10 +39,10 @@ module JABA
 
   # Jaba entry point. Returns output hash object.
   #
-  def self.run(want_exceptions: false, &block)
-    c = Context.new(want_exceptions, &block)
+  def self.run(&block)
+    c = Context.new(&block)
     c.execute
-    return c.output
+    c.output
   end
 end
 

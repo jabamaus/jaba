@@ -1,31 +1,31 @@
 jtest "requires items to be set" do
-  assert_jaba_error "Error at #{src_loc("A2047AFC")}: 'a' attribute invalid: 'items' must be set." do
-    jdl do
-      attr "a", type: :choice # A2047AFC
-    end
+  jdl do
+    attr "a", type: :choice # A2047AFC
   end
-  jaba
+  assert_jaba_error "Error at #{src_loc("A2047AFC")}: 'a' attribute invalid: 'items' must be set." do
+    jaba
+  end
 end
 
 jtest "warns if items contains duplicates" do
-  assert_output "Warning at #{src_loc("234928DC")}: 'items' contains duplicates\n" do
-    jdl do
-      attr "b", type: :choice do
-        items [:a, :a, :b, :b] # 234928DC
-      end
+  jdl do
+    attr "b", type: :choice do
+      items [:a, :a, :b, :b] # 234928DC
     end
   end
-  jaba
+  op = jaba
+  op[:warnings].size.must_equal 1
+  op[:warnings][0].must_equal "Warning at #{src_loc("234928DC")}: 'items' contains duplicates."
 end
 
 jtest "requires default to be in items" do
-  assert_jaba_error "Error at #{src_loc("8D88FA0D")}: 'a' attribute invalid: 'default' invalid: Must be one of [1, 2, 3] but got '4'." do
-    jdl do  
-      attr "a", type: :choice do
-        items [1, 2, 3]
-        default 4 # 8D88FA0D
-      end
+  jdl do
+    attr "a", type: :choice do
+      items [1, 2, 3]
+      default 4 # 8D88FA0D
     end
+  end
+  assert_jaba_error "Error at #{src_loc("8D88FA0D")}: 'a' attribute invalid: 'default' invalid: Must be one of [1, 2, 3] but got '4'." do
     jaba
   end
   #  assert_jaba_error "Error at #{src_loc('CDCFF3A7')}: ':a' array attribute default invalid: Must be one of [1, 2, 3] but got '4'. See #{src_loc('0C81C8C8')}." do
@@ -67,7 +67,7 @@ jtest 'rejects invalid choices' do
   end
 end
 =end
-jtest "can be set from global attrs" do
+jtest "choice can be set from global attrs" do
   jdl do
     attr "a", type: :choice do
       items [:a, :b, :c]

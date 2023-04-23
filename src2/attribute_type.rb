@@ -5,7 +5,7 @@ module JABA
       @default = default
     end
 
-    def self.singleton = @instance ||= self.new.tap { |i| i.post_create }
+    def self.singleton = @instance ||= new.tap { |i| i.post_create }
 
     def describe = "'#{name.inspect_unquoted}' attribute type"
     def default = @default
@@ -100,7 +100,7 @@ module JABA
   class AttributePathBase < AttributeType
     def validate_value(attr_def, path)
       path.validate_path do |msg|
-        JABA.warn("#{attr_def.describe} not specified cleanly: #{msg}")
+        JABA.warn("#{attr_def.describe} not specified cleanly: #{msg}", line: $last_call_location)
       end
     end
   end
@@ -138,7 +138,7 @@ module JABA
 
     def validate_value(attr_def, value)
       if value.contains_slashes?
-        JABA.error("#{attr_def.describe} invalid - '#{value}' must not contain slashes", want_backtrace: false)
+        yield "'#{value}' must not contain slashes"
       end
     end
   end

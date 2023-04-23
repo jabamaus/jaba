@@ -45,12 +45,12 @@ module JABA
         def self.singleton = @instance ||= new
         def self.attr_defs = @attr_defs ||= []
         def self.each_attr_def(&block) = attr_defs.each(&block)
-    
+
         def __internal_set_node(n); @node = n; self; end
-   
+
         def method_missing(id, ...)
           $last_call_location = ::Kernel.calling_location
-          @node.attr_not_found_error(id)
+          @node.attr_not_found_error(id, errline: $last_call_location)
         end
       end
       @top_level_api_class = Class.new(@base_api_class)
@@ -60,7 +60,7 @@ module JABA
     end
 
     def top_level_api_class = @top_level_api_class
-    
+
     def class_from_path(path, fail_if_not_found: true)
       klass = @path_to_class[path]
       error("class not registered for '#{path}' path") if klass.nil? && fail_if_not_found
@@ -170,7 +170,7 @@ module JABA
       return klass
     end
 
-    def error(msg) = JABA.error("Error at #{APIBuilder.last_call_location.src_loc_describe}: #{msg}")
+    def error(msg) = JABA.error(msg, line: APIBuilder.last_call_location)
 
     # Allows eg node_name|node2_name|attr or *|attr
     def validate_path(path)

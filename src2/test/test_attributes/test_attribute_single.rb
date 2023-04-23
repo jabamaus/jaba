@@ -8,7 +8,7 @@ jtest "only accepts single values" do
     attr :b
   end
 
-  assert_jaba_error "Error at #{src_loc("6D4B452C")}: 'b' attribute invalid: 'b' attribute must be a single value not a 'Array'." do
+  assert_jaba_error "Error at #{src_loc("6D4B452C")}: 'b' attribute invalid - must be a single value not a 'Array'." do
     jaba do
       b [1, 2] # 6D4B452C
     end
@@ -85,7 +85,7 @@ jtest "works with block style default" do
       block_default # 2F003EB7
     end
   end
-  
+
   # test with another attr using unset attr
   assert_jaba_error "Error at #{src_loc("A0C828F8")}: 'block_default2' attribute default read uninitialised 'a' attribute - 'a' attribute might need a default value." do
     jaba do
@@ -138,9 +138,9 @@ jtest "overwrites flag and value options on successive calls" do
     a 2, :fo2, :fo3, kv2: 3, kv3: 4
   end
   a = op[:root].get_attr(:a)
-  a.has_flag_option?(:fo1).must_equal(false)
-  a.has_flag_option?(:fo2).must_equal(true)
-  a.has_flag_option?(:fo3).must_equal(true)
+  a.has_flag_option?(:fo1).must_be_false
+  a.has_flag_option?(:fo2).must_be_true
+  a.has_flag_option?(:fo3).must_be_true
   a.get_option_value(:kv1, fail_if_not_found: false).must_be_nil
   a.get_option_value(:kv2).must_equal(3)
   a.get_option_value(:kv3).must_equal(4)

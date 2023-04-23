@@ -103,18 +103,17 @@ module JABA
           end
         end
         if !new_value.nil?
-          # TODO: change back to call_validators
           attr_type.validate_value(@attr_def, new_value) do |msg|
-            attr_error("#{describe} invalid: #{msg}")
+            attr_error("#{describe} invalid - #{msg}")
           end
           attr_def.validate_value(new_value) do |msg|
-            attr_error("#{describe} invalid: #{msg}")
+            attr_error("#{describe} invalid - #{msg}")
           end
           if attr_def.on_validate
             begin
               node.eval_jdl(new_value, @flag_options, **@value_options, &attr_def.on_validate)
             rescue => e
-              attr_error("#{describe} invalid: #{e.message}")
+              attr_error("#{describe} invalid - #{e.message}")
             end
           end
         end

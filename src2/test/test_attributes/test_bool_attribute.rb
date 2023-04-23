@@ -31,7 +31,7 @@ jtest "only allows boolean values" do
   jdl do
     attr "b", type: :bool
   end
-  assert_jaba_file_error "'b' attribute invalid: '1' is a integer - expected [true|false]", "0108AEFB" do
+  assert_jaba_file_error "'b' attribute invalid - '1' is a integer - expected [true|false]", "0108AEFB" do
     "b 1 # 0108AEFB"
   end
 end
@@ -55,7 +55,7 @@ jtest "can be set from global_attrs" do
     attr "b3", type: :bool do default false end
     attr "b4", type: :bool do default true end
   end
-  output = jaba(global_attrs: {'b1': "true", 'b2': false, 'b3': "1", 'b4': 0}) do
+  output = jaba(global_attrs: { 'b1': "true", 'b2': false, 'b3': "1", 'b4': 0 }) do
     b1.must_equal true
     b2.must_equal false
     b3.must_equal true

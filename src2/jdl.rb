@@ -95,7 +95,7 @@ JABA.define_api do
   method "*|fail" do
     title "Raise an error"
     note "Stops execution"
-    on_called do |msg| JABA.error(msg, want_backtrace: false) end
+    on_called do |msg| JABA.error(msg, line: $last_call_location) end
   end
 
   # Global attributes

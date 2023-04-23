@@ -92,7 +92,7 @@ module JABA
       else
         a = get_attr(name)
         if @read_only
-          JABA.error("#{a.describe} is read only in this context", want_backtrace: false)
+          JABA.error("#{a.describe} is read only in this context", line: $last_call_location)
         end
         a.set(*args, **kwargs, &block)
         return nil
@@ -120,9 +120,9 @@ module JABA
       attrs
     end
 
-    def attr_not_found_error(name)
+    def attr_not_found_error(name, errline: nil)
       str = !available.empty? ? "\n#{available.join(", ")}" : " none"
-      JABA.error("'#{name}' attribute or method not defined. Available in this context:#{str}")
+      JABA.error("'#{name}' attribute or method not defined. Available in this context:#{str}", line: errline)
     end
 
     def make_read_only

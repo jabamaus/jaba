@@ -36,11 +36,11 @@ module JABA
     end
 
     def definition_error(msg)
-      JABA.error("Error at #{APIBuilder.last_call_location.src_loc_describe}: #{describe} invalid: #{msg}")
+      JABA.error("#{describe} invalid: #{msg}", line: APIBuilder.last_call_location)
     end
 
     def definition_warn(msg)
-      puts("Warning at #{APIBuilder.last_call_location.src_loc_describe}: #{msg}")
+      JABA.warn(msg, line: APIBuilder.last_call_location)
     end
   end
 
@@ -158,18 +158,18 @@ module JABA
 
     def set_value_option(name, required: false, items: [])
       if !name.symbol?
-        JABA.error("In #{describe} value_option id must be specified as a symbol, eg :option")
+        definition_error("In #{describe} value_option id must be specified as a symbol, eg :option")
       end
       @value_options << ValueOption.new(name, required, items)
     end
 
     def get_value_option(name)
       if @value_options.empty?
-        JABA.error("Invalid value option '#{name.inspect_unquoted}' - no options defined in #{describe}")
+        definition_error("Invalid value option '#{name.inspect_unquoted}' - no options defined in #{describe}")
       end
       vo = @value_options.find { |v| v.name == name }
       if !vo
-        JABA.error("Invalid value option '#{name.inspect_unquoted}'. Valid #{describe} options: #{@value_options.map { |v| v.name }}")
+        definition_error("Invalid value option '#{name.inspect_unquoted}'. Valid #{describe} options: #{@value_options.map { |v| v.name }}")
       end
       vo
     end
@@ -223,7 +223,7 @@ module JABA
 
     def validate_value(val)
       if val.is_a?(Enumerable)
-        yield "#{describe} must be a single value not a '#{val.class}'"
+        yield "must be a single value not a '#{val.class}'"
       end
     end
 

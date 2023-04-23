@@ -6,28 +6,28 @@ module JABA
   def self.running_tests! = @@running_tests = true
   def self.running_tests? = @@running_tests
 
-  def self.error(...) = JABA.context.error(...)
-  def self.warn(...) = JABA.context.warn(...)
+  def self.error(msg, caller_step_back: 2, **kwargs) = JABA.context.error(msg, caller_step_back: caller_step_back, **kwargs)
+  def self.warn(msg, caller_step_back: 2, **kwargs) = JABA.context.warn(msg, caller_step_back: caller_step_back, **kwargs)
   def self.log(...) = JABA.context.log(...)
 
   class Context
     @@core_api_builder = nil
 
-    def initialize(want_exceptions, &block)
+    def initialize(&block)
       JABA.set_context(self)
-      @want_exceptions = want_exceptions
+      @warnings = []
+      @warning_lookup = {}
+      @log_msgs = JABA.running_tests? ? nil : [] # Disable logging when running tests
       @input_block = block
-      @invoking_dir = Dir.getwd.freeze
       @input = Input.new
       @input.instance_variable_set(:@build_root, nil)
       @input.instance_variable_set(:@src_root, nil)
       @input.instance_variable_set(:@definitions, [])
       @input.instance_variable_set(:@global_attrs, {})
-      @src_root = @build_root = @temp_dir = nil
-      @warnings = []
-      @warning_lookup = {}
+      @input.instance_variable_set(:@want_exceptions, false)
       @output = { warnings: @warnings, error: nil }
-      @log_msgs = [] # JABA.running_tests? ? nil : [] # Disable logging when running tests
+      @invoking_dir = Dir.getwd.freeze
+      @src_root = @build_root = @temp_dir = nil
       @file_manager = FileManager.new
       @jdl_files = []
       @jdl_includes = []
@@ -50,22 +50,8 @@ module JABA
         profile(input.profile?) do
           run
         end
-      rescue StandardError, ScriptError, JabaError => e
-        log e.full_message(highlight: false), :ERROR
-        bt = @executing_jdl ? get_jdl_backtrace(e.backtrace) : e.backtrace
-        want_backtrace = !@executing_jdl
-        want_backtrace = e.instance_variable_get(:@want_backtrace) if e.is_a?(JabaError)
-        want_err_line = true
-        want_err_line = e.instance_variable_get(:@want_err_line) if e.is_a?(JabaError)
-        info = make_error_info(e.message, bt, exception: e, want_err_line: want_err_line)
-        output[:error] = want_backtrace ? info.full_message : info.message
-        if @want_exceptions
-          e = JabaError.new(info.message)
-          e.instance_variable_set(:@file, info.file)
-          e.instance_variable_set(:@line, info.line)
-          e.set_backtrace(bt)
-          raise e
-        end
+      rescue JabaError => e
+        raise e if input.want_exceptions?
       ensure
         term_log
       end
@@ -128,7 +114,7 @@ module JABA
       init_root_paths
 
       @executing_jdl = true
-      
+
       tld = NodeDefData.new(@jdl.top_level_api_class, "top_level", nil, nil, nil, nil)
       create_node(tld, parent: nil) do |n|
         @top_level_node = n
@@ -141,7 +127,7 @@ module JABA
       @node_defs.each do |nd|
         process_node_def(nd)
       end
-      
+
       @executing_jdl = false
 
       @top_level_node.visit do |n|
@@ -306,14 +292,20 @@ module JABA
     def executing_jdl? = @executing_jdl
 
     def execute_jdl(*args, file: nil, str: nil, &block)
-      if str
-        @jdl.top_level_api_class.singleton.instance_eval(str, file)
-      elsif file
-        log "Executing #{file}"
-        @jdl.top_level_api_class.singleton.instance_eval(file_manager.read(file), file)
-      end
-      if block_given?
-        @jdl.top_level_api_class.singleton.instance_exec(*args, &block)
+      begin
+        if str
+          @jdl.top_level_api_class.singleton.instance_eval(str, file)
+        elsif file
+          log "Executing #{file}"
+          @jdl.top_level_api_class.singleton.instance_eval(file_manager.read(file), file)
+        end
+        if block_given?
+          @jdl.top_level_api_class.singleton.instance_exec(*args, &block)
+        end
+      rescue ScriptError => e # script errors don't have a backtrace
+        JABA.error(e.message, type: :script_error)
+      rescue NameError => e
+        JABA.error(e.message, line: e.backtrace[0])
       end
     end
 
@@ -350,7 +342,7 @@ module JABA
       rescue FrozenError => e
         msg = e.message.sub("frozen", "read only").capitalize_first
         msg.sub!(/:.*?$/, ".") if !mruby? # mruby does not inspect the value
-        JABA.error(msg, backtrace: e.backtrace, want_backtrace: false)
+        JABA.error(msg, line: e.backtrace[0])
       end
     end
 
@@ -377,28 +369,35 @@ module JABA
       IO.write(log_fn, @log_msgs.join("\n"))
     end
 
-    def error(msg, errobj: nil, want_err_line: true, want_backtrace: true, backtrace: nil)
-      msg = msg.ensure_end_with(".") if msg =~ /[a-zA-Z0-9']$/
-      e = JabaError.new(msg)
-      if errobj.proc?
-        backtrace = "#{errobj.source_location[0]}:#{errobj.source_location[1]}"
-        errobj = nil
+    def error(msg, line: nil, type: :error, caller_step_back: 1, errobj: nil, want_err_line: true, want_backtrace: true)
+      if errobj
+        line = if errobj.proc?
+            "#{errobj.source_location[0]}:#{errobj.source_location[1]}"
+          else
+            errobj.src_loc
+          end
       end
-      bt = Array(errobj&.src_loc || backtrace || caller).map(&:to_s)
+      bt = if line
+          want_backtrace = false
+          Array(line)
+        else
+          caller(caller_step_back)
+        end
+      info = make_error_info(msg, bt, type: type, want_err_line: want_err_line)
+      log info.full_message, :ERROR
+      output[:error] = want_backtrace ? info.full_message : info.message
+      e = JabaError.new(info.message)
       e.set_backtrace(bt)
-      e.instance_variable_set(:@want_backtrace, want_backtrace)
-      e.instance_variable_set(:@want_err_line, want_err_line)
       raise e
     end
 
-    def warn(msg, errobj: nil)
-      callstack = Array(errobj&.src_loc || caller)
-      jdl_bt = get_jdl_backtrace(callstack)
-      msg = if jdl_bt.empty?
-          "Warning: #{msg}"
+    def warn(msg, line: nil, caller_step_back: 0, errobj: nil, want_warn_line: true)
+      bt = if line
+          Array(line)
         else
-          make_error_info(msg, jdl_bt).message
+          caller(caller_step_back)
         end
+      msg = make_error_info(msg, bt, type: :warn, want_err_line: want_warn_line).message
       if !@warning_lookup.has_key?(msg)
         log(msg, :WARN)
         @warnings << msg
@@ -408,30 +407,15 @@ module JABA
       nil
     end
 
-    def get_jdl_backtrace(callstack)
-      # Extract any lines in the callstack that contain references to definition source files.
-      #
-      jdl_bt = callstack.select { |c| @jdl_files.any? { |sf| c.include?(sf) } }
-
-      # remove the unwanted ':in ...' suffix from user level definition errors
-      #
-      jdl_bt.map! { |l| l.clean_backtrace }
-
-      # Can contain unhelpful duplicates due to loops, make unique.
-      #
-      jdl_bt.uniq!
-      jdl_bt
-    end
-
     ErrorInfo = Data.define(:message, :full_message, :file, :line)
 
-    def make_error_info(msg, backtrace, exception: nil, want_err_line: true)
+    def make_error_info(msg, backtrace, type:, want_err_line: true)
       m = String.new
-      case exception
-      when nil
+      case type
+      when :warn
         err_line = backtrace[0]
         m << "Warning"
-      when ScriptError
+      when :script_error
         # With ruby ScriptErrors there is no useful callstack. The error location is in the msg itself.
         #
         err_line = msg
@@ -482,7 +466,7 @@ module JABA
             "'#{id}' is an invalid id"
           end
         msg << ". Must be an alphanumeric string or symbol (-_. permitted), eg :my_id, 'my-id', 'my.id'"
-        JABA.error(msg)
+        JABA.error(msg, line: $last_call_location)
       end
     end
 
