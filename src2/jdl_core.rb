@@ -68,12 +68,12 @@ module JABA
     end
 
     def set_flag(name, &block)
-      fd = JABA::FlagDefinition.new(APIBuilder.last_call_location, name)
+      fd = FlagDefinition.new(APIBuilder.last_call_location, name)
       FlagDefinitionAPI.execute(fd, &block) if block_given?
     end
 
     def set_basedir_spec(name, &block)
-      d = JABA::BasedirSpecDefinition.new(APIBuilder.last_call_location, name)
+      d = BasedirSpecDefinition.new(APIBuilder.last_call_location, name)
       BasedirSpecDefinitionAPI.execute(d, &block) if block_given?
     end
 
@@ -88,7 +88,7 @@ module JABA
       end
       parent_path, name = split_jdl_path(path)
       parent_class = get_or_make_class(parent_path)
-      node_def = JABA::NodeDefinition.new(APIBuilder.last_call_location, name)
+      node_def = NodeDefinition.new(APIBuilder.last_call_location, name)
       NodeDefinitionAPI.execute(node_def, &block) if block_given?
       node_def.post_create
       parent_class.define_method(name) do |*args, **kwargs, &node_block|
@@ -98,22 +98,22 @@ module JABA
     end
 
     def set_attr(path, type: nil, &block)
-      process_attr(APIBuilder.last_call_location, path, JABA::AttributeSingleDefinition, type, &block)
+      process_attr(path, AttributeSingleDefinition, type, &block)
     end
 
     def set_attr_array(path, type: nil, &block)
-      process_attr(APIBuilder.last_call_location, path, JABA::AttributeArrayDefinition, type, &block)
+      process_attr(path, AttributeArrayDefinition, type, &block)
     end
 
     def set_attr_hash(path, type: nil, &block)
-      process_attr(APIBuilder.last_call_location, path, JABA::AttributeHashDefinition, type, &block)
+      process_attr(path, AttributeHashDefinition, type, &block)
     end
 
     def set_method(path, &block)
       path = validate_path(path)
       parent_path, name = split_jdl_path(path)
       parent_class = get_or_make_class(parent_path, method: true)
-      meth_def = JABA::MethodDefinition.new(APIBuilder.last_call_location, name)
+      meth_def = MethodDefinition.new(APIBuilder.last_call_location, name)
       MethodDefinitionAPI.execute(meth_def, &block) if block_given?
       meth_def.post_create
       parent_class.define_method(name) do |*args, **kwargs|
@@ -124,7 +124,7 @@ module JABA
 
     private
 
-    def process_attr(src_loc, path, def_class, type, &block)
+    def process_attr(path, def_class, type, &block)
       path = validate_path(path)
       parent_path, attr_name = split_jdl_path(path)
       parent_class = get_or_make_class(parent_path)
@@ -138,7 +138,7 @@ module JABA
       type = "Null" if type.nil?
       attr_type_class = JABA.const_get("AttributeType#{type.to_s.capitalize_first}")
       attr_type = attr_type_class.singleton
-      attr_def = def_class.new(src_loc, attr_name, attr_type)
+      attr_def = def_class.new(APIBuilder.last_call_location, attr_name, attr_type)
       attr_type.init_attr_def(attr_def)
       if type == :compound
         # Compound attr interface inherits parent nodes interface so it has read only access to its attrs
