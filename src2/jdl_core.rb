@@ -54,13 +54,13 @@ module JABA
           @node.attr_not_found_error(id)
         end
       end
-      @toplevel_api_class = Class.new(@base_api_class)
+      @top_level_api_class = Class.new(@base_api_class)
       @common_attrs_module = Module.new do
         def self.attr_defs = @attr_defs ||= []
       end
     end
 
-    def top_level_api_class = @toplevel_api_class
+    def top_level_api_class = @top_level_api_class
     
     def class_from_path(path, fail_if_not_found: true)
       klass = @path_to_class[path]
@@ -142,7 +142,7 @@ module JABA
 
     def api_class_from_path(path, superklass: @base_api_class, create: false, method: false)
       if path.nil?
-        return @toplevel_api_class
+        return @top_level_api_class
       elsif path == "*"
         if method
           return @base_api_class

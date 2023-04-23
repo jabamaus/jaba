@@ -107,20 +107,21 @@ module JABA
       @input_block&.call(input)
       init_root_paths
 
-      @top_level_node = Node.new(@jdl.top_level_api_class, "top_level", nil, nil)
-      @output[:root] = @top_level_node
-      @jdl.top_level_api_class.singleton.__internal_set_node(@top_level_node)
-
-      set_top_level_attrs_from_input
-
       @executing_jdl = true
-      load_jaba_files
-
-      @top_level_node.post_create
+      
+      tld = NodeDefData.new(@jdl.top_level_api_class, "top_level", nil, nil, nil, nil)
+      create_node(tld, parent: nil) do |n|
+        @top_level_node = n
+        @output[:root] = n
+        @jdl.top_level_api_class.singleton.__internal_set_node(n)
+        set_top_level_attrs_from_input
+        load_jaba_files
+      end
 
       @node_defs.each do |nd|
         process_node_def(nd)
       end
+      
       @executing_jdl = false
 
       @top_level_node.visit do |n|
