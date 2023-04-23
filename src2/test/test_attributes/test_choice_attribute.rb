@@ -4,6 +4,7 @@ jtest "requires items to be set" do
       attr "a", type: :choice # A2047AFC
     end
   end
+  jaba
 end
 
 jtest "warns if items contains duplicates" do
@@ -14,6 +15,7 @@ jtest "warns if items contains duplicates" do
       end
     end
   end
+  jaba
 end
 
 jtest "requires default to be in items" do
@@ -24,6 +26,7 @@ jtest "requires default to be in items" do
         default 4 # 8D88FA0D
       end
     end
+    jaba
   end
   #  assert_jaba_error "Error at #{src_loc('CDCFF3A7')}: ':a' array attribute default invalid: Must be one of [1, 2, 3] but got '4'. See #{src_loc('0C81C8C8')}." do
   #    jaba(barebones: true) do

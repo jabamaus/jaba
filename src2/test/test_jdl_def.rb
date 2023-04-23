@@ -134,6 +134,7 @@ jtest "fails if flag does not exist" do
         flags :unknown # 01E55971
       end
     end
+    jaba
   end
 end
 
@@ -145,4 +146,5 @@ jtest "fails if invalid basedir_spec specified" do
       end
     end
   end
+  jaba
 end

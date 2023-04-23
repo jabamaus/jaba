@@ -1,13 +1,12 @@
 module JABA
   def self.set_context(c) = @@context = c
-  set_context(nil)
   def self.context = @@context
 
   class Context
+    @@core_api_builder = nil
+
     def initialize(want_exceptions, &block)
       JABA.set_context(self)
-      @jdl = JABA.current_api
-      @project_api_class = @jdl.class_from_path("project", fail_if_not_found: !JABA.running_tests?)
       @want_exceptions = want_exceptions
       @input_block = block
       @invoking_dir = Dir.getwd.freeze
@@ -105,6 +104,19 @@ module JABA
     def do_run
       log "Starting Jaba at #{Time.now}", section: true
       @input_block&.call(input)
+
+      if @@core_api_builder.nil?
+        @@core_api_builder = JDLBuilder.new
+        JDLTopLevelAPI.execute(@@core_api_builder, &JABA.core_api_block)
+      end
+      if JABA.current_api_block == JABA.core_api_block
+        @jdl = @@core_api_builder
+      else
+        @jdl = JDLBuilder.new
+        JDLTopLevelAPI.execute(@jdl, &JABA.current_api_block)
+      end
+      @project_api_class = @jdl.class_from_path("project", fail_if_not_found: !JABA.running_tests?)
+
       init_root_paths
 
       @executing_jdl = true

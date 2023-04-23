@@ -4,7 +4,7 @@ JABA.running_tests!
 
 module JabaTestMethods
   def jdl(&block)
-    JABA.define_api(blank: true, &block)
+    JABA.define_api(&block)
   end
 
   def jaba(

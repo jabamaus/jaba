@@ -22,6 +22,6 @@ module JABA
     raise e
   end
 
-  def self.warn(...) = JABA.context&.warn(...)
-  def self.log(...) = JABA.context&.log(...)
+  def self.warn(...) = JABA.context.warn(...)
+  def self.log(...) = JABA.context.log(...)
 end

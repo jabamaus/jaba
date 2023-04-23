@@ -24,15 +24,17 @@ module JABA
     :basedir_spec, # Used by path attributes
   ).include(CommonAPI)
 
-  def self.current_api = @@current_api
-  def self.restore_core_api = @@current_api = @@core_api # Used by unit tests
-  def self.define_api(blank: false, &block)
-    @@current_api = if blank
-      JDLBuilder.new
-    else
-      @@core_api ||= JDLBuilder.new
+  @@core_api_block = nil
+  @@current_api_block = nil
+
+  def self.core_api_block = @@core_api_block
+  def self.current_api_block = @@current_api_block
+  def self.restore_core_api = @@current_api_block = @@core_api_block # Used by unit tests
+  def self.define_api(&block)
+    if @@core_api_block.nil?
+      @@core_api_block = block
     end
-    JDLTopLevelAPI.execute(@@current_api, &block)
+    @@current_api_block = block
   end
 
   class JDLBuilder
