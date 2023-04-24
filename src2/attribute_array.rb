@@ -78,7 +78,7 @@ module JABA
       end
       if !dupes.empty?
         JABA.warn("Stripping duplicates #{dupes} from #{describe}. See previous at #{first_dupe.src_loc.src_loc_describe}. " \
-        "Flag with :allow_dupes to allow.")
+        "Flag with :allow_dupes to allow.", line: src_loc)
       end
 
       if delete
@@ -170,7 +170,7 @@ module JABA
           end
         end
         if @elems.size == n_elems
-          JABA.warn("'#{to_remove}' did not #{mode} any elements")
+          JABA.warn("'#{to_remove}' did not #{mode} any elements", line: src_loc)
         end
       end
     end
