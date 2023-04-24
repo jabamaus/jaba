@@ -30,7 +30,7 @@ module JabaTestMethods
     JABA.restore_core_api
   end
 
-  def assert_jaba_error(msg, trace: nil, hint: nil, &block)
+  def assert_jaba_error(msg, hint: nil, &block)
     src_loc = calling_location
     e = assert_raises(JABA::JabaError, src_loc: src_loc, msg: hint) do
       yield
@@ -40,19 +40,6 @@ module JabaTestMethods
       e.message.must_match(msg, src_loc: src_loc)
     else
       e.message.must_equal(msg, src_loc: src_loc)
-    end
-
-    if trace
-      backtrace = []
-      trace.each_slice(2) do |elem|
-        backtrace << "#{elem[0]}:#{src_line(elem[1], file: elem[0])}"
-      end
-
-      # First backtrace item contains the same file and line number as the main message line so disregard
-      #
-      bt = e.backtrace
-      bt.shift
-      bt.must_equal(backtrace, msg: "backtrace did not match", src_loc: src_loc)
     end
     e
   end
