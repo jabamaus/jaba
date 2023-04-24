@@ -17,6 +17,7 @@ module JABA
       if !set?
         if attr_def.default_is_block?
           values = JABA.context.execute_attr_default_block(self)
+          validate_default_block_value(values)
           at = attr_def.attr_type
           return values.map { |e| at.map_value(e) }
         elsif JABA.context.in_attr_default_block?
@@ -53,14 +54,7 @@ module JABA
       #
       if !set? && attr_def.default_is_block?
         default_values = JABA.context.execute_attr_default_block(self)
-        if !default_values.is_a?(Array)
-          JABA.error("#{describe} 'default' invalid: requires an array not a '#{default_values.class}'", errobj: attr_def.get_default)
-        end
-        default_values.each do |d|
-          attr_def.attr_type.validate_value(attr_def, d) do |msg|
-            JABA.error("#{describe} 'default' invalid: #{msg}", errobj: attr_def)
-          end
-        end
+        validate_default_block_value(default_values)
         values.prepend(*default_values)
       end
 
@@ -96,6 +90,18 @@ module JABA
 
       @set = true
       nil
+    end
+
+    def validate_default_block_value(value)
+      if !value.is_a?(Array)
+        JABA.error("#{describe} 'default' invalid: requires an array not a '#{value.class}'", errobj: attr_def.get_default)
+      end
+      at = attr_def.attr_type
+      value.each do |d|
+        at.validate_value(attr_def, d) do |msg|
+          JABA.error("#{describe} 'default' invalid: #{msg}", errobj: attr_def)
+        end
+      end
     end
 
     def make_elem(val, *args, add: true, **kwargs)
