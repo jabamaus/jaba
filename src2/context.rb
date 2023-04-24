@@ -311,6 +311,10 @@ module JABA
 
     NodeDefData = Data.define(:api_klass, :id, :src_loc, :args, :kwargs, :block)
 
+    # Nodes are registerd in the first pass and then subsequently processed. They
+    # cannot be processed immediately because top level attributes need to be fully
+    # initialised first
+    #
     def register_node(api_klass, *args, **kwargs, &block)
       id = args.shift
       validate_id(id, :node)
