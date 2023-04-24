@@ -84,30 +84,26 @@ jtest "works with compound as single attribute with nesting" do
   compound[:nested1][:b].must_equal 2
   compound[:nested1][:nested2][:c].must_equal 5
 end
-=begin
+
 jtest "has read only access to parent attrs" do
-  JDL.node "node_41D631B9"
-  JDL.attr "node_41D631B9|a"
-  JDL.attr "node_41D631B9|compound", type: :compound
-  JDL.attr "node_41D631B9|compound|b"
+  jdl do
+    attr :toplevel
+    node :node
+    attr "node|compound", type: :compound
+  end
   jaba do
-    node_41D631B9 :n do
-      a 1
+    toplevel 1
+    node :n do
       compound do
-        b a
-        b.must_equal 1
-        available
-      end
-      compound.b.must_equal 1
-      JTest.assert_jaba_error "" do
-        compound do
-          a 2
+        toplevel.must_equal 1
+        JTest.assert_jaba_error "Error at #{JTest.src_loc("082F7661")}: Available in this context:\ntoplevel (read)" do
+          toplevel 2 # 082F7661
         end
       end
     end
   end
 end
-=end
+
 jtest "works with array" do
   jdl do
     attr_array "compound", type: :compound

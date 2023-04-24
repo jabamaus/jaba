@@ -115,7 +115,7 @@ module JABA
 
       @executing_jdl = true
 
-      tld = NodeDefData.new(@jdl.top_level_api_class, "top_level", nil, nil, nil, nil)
+      tld = NodeDefData.new(@jdl.top_level_api_class_base, "top_level", nil, nil, nil, nil)
       create_node(tld, parent: nil) do |n|
         @top_level_node = n
         @output[:root] = n
@@ -395,7 +395,7 @@ module JABA
       raise e
     end
 
-    def warn(msg, line: nil, caller_step_back: 0, errobj: nil, want_warn_line: true)
+    def warn(msg, line: nil, caller_step_back: 0, want_warn_line: true)
       bt = if line
           Array(line)
         else

@@ -53,13 +53,17 @@ module JABA
           @node.attr_not_found_error(id, errline: $last_call_location)
         end
       end
-      @top_level_api_class = Class.new(@base_api_class)
+      # attrs get registered into top_level_api_class_base and methods and nodes get registered into top_level_api_class
+      # Nodes inherit from top_level_api_class_base so facilitate read only access to attributes but no access to methods
+      @top_level_api_class_base = Class.new(@base_api_class)
+      @top_level_api_class = Class.new(@top_level_api_class_base)
       @common_attrs_module = Module.new do
         def self.attr_defs = @attr_defs ||= []
       end
     end
 
     def top_level_api_class = @top_level_api_class
+    def top_level_api_class_base = @top_level_api_class_base
 
     def class_from_path(path, fail_if_not_found: true)
       klass = @path_to_class[path]
@@ -77,9 +81,10 @@ module JABA
       BasedirSpecDefinitionAPI.execute(d, &block) if block_given?
     end
 
+    # TODO: disallow nesting nodes
     def set_node(path, &block)
       path = validate_path(path)
-      node_class = get_or_make_class(path, create: true)
+      node_class = get_or_make_class(path, superklass: @top_level_api_class_base, what: :node)
       node_class.include(@common_attrs_module)
       common_attrs_module = @common_attrs_module
       node_class.define_singleton_method :each_attr_def do |&block|
@@ -87,7 +92,7 @@ module JABA
         common_attrs_module.attr_defs.each(&block)
       end
       parent_path, name = split_jdl_path(path)
-      parent_class = get_or_make_class(parent_path)
+      parent_class = get_or_make_class(parent_path, what: :node)
       node_def = NodeDefinition.new(APIBuilder.last_call_location, name)
       NodeDefinitionAPI.execute(node_def, &block) if block_given?
       node_def.post_create
@@ -112,7 +117,7 @@ module JABA
     def set_method(path, &block)
       path = validate_path(path)
       parent_path, name = split_jdl_path(path)
-      parent_class = get_or_make_class(parent_path, method: true)
+      parent_class = get_or_make_class(parent_path, what: :method)
       meth_def = MethodDefinition.new(APIBuilder.last_call_location, name)
       MethodDefinitionAPI.execute(meth_def, &block) if block_given?
       meth_def.post_create
@@ -127,7 +132,7 @@ module JABA
     def process_attr(path, def_class, type, &block)
       path = validate_path(path)
       parent_path, attr_name = split_jdl_path(path)
-      parent_class = get_or_make_class(parent_path)
+      parent_class = get_or_make_class(parent_path, what: :attribute)
       if parent_class.method_defined?(attr_name)
         error("Duplicate '#{path}' attribute registered")
       end
@@ -142,7 +147,7 @@ module JABA
       attr_type.init_attr_def(attr_def)
       if type == :compound
         # Compound attr interface inherits parent nodes interface so it has read only access to its attrs
-        attr_def.set_compound_api(get_or_make_class(path, superklass: parent_class, create: true))
+        attr_def.set_compound_api(get_or_make_class(path, superklass: parent_class, what: :attribute))
       end
 
       AttributeDefinitionAPI.execute(attr_def, &block) if block_given?
@@ -150,18 +155,26 @@ module JABA
       parent_class.attr_defs << attr_def
     end
 
-    def get_or_make_class(path, superklass: @base_api_class, create: false, method: false)
+    def get_or_make_class(path, superklass: nil, what:)
       if path.nil?
-        return @top_level_api_class
-      elsif path == "*"
-        if method
-          return @base_api_class
+        case what
+        when :attribute
+          return @top_level_api_class_base
         else
+          return @top_level_api_class
+        end
+      elsif path == "*"
+        case what
+        when :method
+          return @base_api_class
+        when :attribute
           return @common_attrs_module
+        else
+          JABA.error("'#{what}' not handled")
         end
       end
-      klass = class_from_path(path, fail_if_not_found: !create)
-      if create
+      klass = class_from_path(path, fail_if_not_found: superklass.nil?)
+      if superklass
         error("Duplicate path '#{path}' registered.") if klass
         klass = Class.new(superklass)
         @path_to_class[path] = klass
