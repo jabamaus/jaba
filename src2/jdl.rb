@@ -77,26 +77,6 @@ JABA.define_api do
 
   # Global methods
 
-  method "*|available" do
-    title "Array of attributes/methods available in current context"
-    on_called do |str, node:| node.available end
-  end
-
-  method "*|print" do
-    title "Prints a non-newline terminated string to stdout"
-    on_called do |str| Kernel.print(str) end
-  end
-
-  method "*|puts" do
-    title "Prints a newline terminated string to stdout"
-    on_called do |str| Kernel.puts(str) end
-  end
-
-  method "*|fail" do
-    title "Raise an error"
-    note "Stops execution"
-    on_called do |msg| JABA.error(msg, line: $last_call_location) end
-  end
 
   # Global attributes
 
