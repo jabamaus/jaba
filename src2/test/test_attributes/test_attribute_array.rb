@@ -223,23 +223,16 @@ jtest "supports prefix and postfix options" do
     attr_array :a do
       flags :no_sort, :allow_dupes
     end
+    attr_array :b
   end
   jaba do
     a ["j", "a", "b", "a"], prefix: "1", postfix: "z"
     a.must_equal ["1jz", "1az", "1bz", "1az"]
-  end
-end
-
-jtest "only strings support prefix and postfix" do
-  jdl do
-    attr_array :a
-  end
-  jaba do
     JTest.assert_jaba_error "Error at #{JTest.src_loc("DBBF56B8")}: [prefix|postfix] can only be applied to string values." do
-      a [1, 2, 3], prefix: "a" # DBBF56B8
+      b [1, 2, 3], prefix: "a" # DBBF56B8
     end
     JTest.assert_jaba_error "Error at #{JTest.src_loc("C27E4668")}: [prefix|postfix] can only be applied to string values." do
-      a [1, 2, 3], postfix: "b" # C27E4668
+      b [1, 2, 3], postfix: "b" # C27E4668
     end
   end
 end
