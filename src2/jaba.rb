@@ -33,8 +33,7 @@ module JABA
   end
 
   class JabaError < StandardError
-    attr_reader :file
-    attr_reader :line
+    attr_reader :raw_message # Basic message without src location. Useful when wrapping exceptions.
   end
 
   # Jaba entry point. Returns output hash object.

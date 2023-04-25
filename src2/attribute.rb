@@ -113,7 +113,7 @@ module JABA
             begin
               node.eval_jdl(new_value, @flag_options, **@value_options, &attr_def.on_validate)
             rescue => e
-              attr_error("#{describe} invalid - #{e.message}")
+              attr_error("#{describe} invalid - #{e.raw_message}")
             end
           end
         end

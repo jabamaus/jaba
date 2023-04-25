@@ -30,6 +30,7 @@ jtest "validates jdl path format" do
   jaba
 end
 
+# TODO: better msg like "'a' node not found"
 jtest "checks parent path valid" do
   jdl do
     JTest.assert_jaba_error "Error at #{JTest.src_loc("24DB3815")}: class not registered for 'a' path." do

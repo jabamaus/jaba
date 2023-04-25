@@ -391,6 +391,7 @@ module JABA
       log info.full_message, :ERROR
       output[:error] = want_backtrace ? info.full_message : info.message
       e = JabaError.new(info.message)
+      e.instance_variable_set(:@raw_message, msg) # For use when exeception wrapped
       e.set_backtrace(bt)
       raise e
     end
