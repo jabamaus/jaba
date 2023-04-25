@@ -67,17 +67,17 @@ module JABA
           title "Array of attributes/methods available in current context"
           on_called do |str, node:| node.available end
         end
-      
+
         method "*|print" do
           title "Prints a non-newline terminated string to stdout"
           on_called do |str| Kernel.print(str) end
         end
-      
+
         method "*|puts" do
           title "Prints a newline terminated string to stdout"
           on_called do |str| Kernel.puts(str) end
         end
-      
+
         method "*|fail" do
           title "Raise an error"
           note "Stops execution"

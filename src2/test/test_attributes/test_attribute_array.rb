@@ -41,7 +41,7 @@ jtest "array supports a default" do
       end
     end
   end
- 
+
   assert_jaba_error "Error at #{src_loc("33EF0612")}: 'd' array attribute 'default' invalid: 'not a bool' is a string - expected [true|false]" do
     jaba
   end
@@ -89,7 +89,7 @@ jtest "checks for accessing uninitialised attributes" do
       end
     end
   end
-  
+
   # test with array attr default using an unset attr
   assert_jaba_error "Error at #{src_loc("9BCB5240")}: 'c' array attribute default read uninitialised 'b' attribute - 'b' attribute might need a default value." do
     jaba do
@@ -388,4 +388,3 @@ jtest "supports setting a validator" do
     end
   end
 end
-

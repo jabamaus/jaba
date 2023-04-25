@@ -77,7 +77,6 @@ JABA.define_api do
 
   # Global methods
 
-
   # Global attributes
 
   attr "*|root", type: :dir do
