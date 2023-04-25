@@ -10,6 +10,13 @@ module JABA
     end
 
     def self.all = @all ||= []
+    def self.lookup(name, from:, fail_if_not_found: true)
+      d = all.find { |fd| fd.name == name }
+      if d.nil? && fail_if_not_found
+        from.definition_error("'#{name.inspect_unquoted}' must be one of #{all.map { |s| s.name }}")
+      end
+      d
+    end
 
     def src_loc = @src_loc
     def name = @name
@@ -52,8 +59,6 @@ module JABA
 
     def describe = "'#{name.inspect_unquoted}' attribute definition flag"
 
-    def self.lookup(name) = all.find { |fd| fd.name == name }
-
     def set_compatible?(&block) = @on_compatible = block
 
     def check_compatibility(attr_def)
@@ -67,8 +72,6 @@ module JABA
     end
 
     def describe = "'#{name.inspect_unquoted}' basedir_spec"
-
-    def self.lookup(name) = all.find { |fd| fd.name == name }
   end
 
   class NodeDefinition < Definition
@@ -118,10 +121,7 @@ module JABA
 
     def set_flags(*flags)
       flags.flatten.each do |f|
-        fd = FlagDefinition.lookup(f)
-        if fd.nil?
-          definition_error("'#{f.inspect_unquoted}' flag does not exist")
-        end
+        fd = FlagDefinition.lookup(f, from: self)
         fd.check_compatibility(self)
         @flags << f
       end
@@ -144,11 +144,7 @@ module JABA
     def get_basedir_spec = @basedir_spec
 
     def set_basedir_spec(s)
-      sd = BasedirSpecDefinition.lookup(s)
-      if sd.nil?
-        definition_error("'#{s.inspect_unquoted}' basedir_spec must be one of #{BasedirSpecDefinition.all.map { |s_| s_.name }}")
-      end
-      @basedir_spec = s
+      @basedir_spec = BasedirSpecDefinition.lookup(s, from: self)
     end
 
     def set_validate(&block) = @on_validate = block
