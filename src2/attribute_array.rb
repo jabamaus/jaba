@@ -94,12 +94,12 @@ module JABA
 
     def validate_default_block_value(value)
       if !value.is_a?(Array)
-        JABA.error("#{describe} 'default' invalid: requires an array not a '#{value.class}'", errobj: attr_def.get_default)
+        attr_error("#{describe} 'default' invalid - requires an array not a '#{value.class}'", errobj: attr_def.get_default)
       end
       at = attr_def.attr_type
       value.each do |d|
         at.validate_value(attr_def, d) do |msg|
-          JABA.error("#{describe} 'default' invalid: #{msg}", errobj: attr_def)
+          attr_error("#{describe} 'default' invalid - #{msg}", errobj: attr_def)
         end
       end
     end

@@ -1,6 +1,6 @@
 jtest "only accepts single values" do
   jdl do
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("787CC36C")}: 'a' attribute invalid: 'default' expects a single value but got '[]'." do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("787CC36C")}: 'a' attribute invalid - 'default' expects a single value but got '[]'." do
       attr :a do
         default [] # 787CC36C
       end

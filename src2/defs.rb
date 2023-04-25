@@ -43,7 +43,7 @@ module JABA
     end
 
     def definition_error(msg)
-      JABA.error("#{describe} invalid: #{msg}", line: APIBuilder.last_call_location)
+      JABA.error("#{describe} invalid - #{msg}", line: APIBuilder.last_call_location)
     end
 
     def definition_warn(msg)
@@ -230,7 +230,7 @@ module JABA
           definition_error("'default' expects a single value but got '#{val}'")
         end
         attr_type.validate_value(self, val) do |msg|
-          definition_error("'default' invalid: #{msg}")
+          definition_error("'default' invalid - #{msg}")
         end
       end
     end
@@ -249,7 +249,7 @@ module JABA
         end
         val.each do |elem|
           attr_type.validate_value(self, elem) do |msg|
-            definition_error("'default' invalid: #{msg}")
+            definition_error("'default' invalid - #{msg}")
           end
         end
       end

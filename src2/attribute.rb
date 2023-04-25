@@ -16,7 +16,7 @@ module JABA
     def required? = @attr_def.has_flag?(:required)
     def read_only? = attr_def.has_flag?(:read_only)
     def src_loc = @last_call_location
-    def attr_error(msg) = JABA.error(msg, errobj: self)
+    def attr_error(msg, errobj: self) = JABA.error(msg, errobj: errobj)
     def process_flags; end # override as necessary
 
     def value_from_block(&block)
@@ -54,7 +54,7 @@ module JABA
       begin
         yield
       rescue => e
-        attr_error("#{describe} invalid: #{e.message}")
+        attr_error("#{describe} invalid - #{e.message}")
       end
     end
   end

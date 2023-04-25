@@ -9,7 +9,7 @@ end
 
 jtest "requires default to be true or false" do
   jdl do
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("2521765F")}: 'invalid' attribute invalid: 'default' invalid: '1' is a integer - expected [true|false]" do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("2521765F")}: 'invalid' attribute invalid - 'default' invalid - '1' is a integer - expected [true|false]" do
       attr "invalid", type: :bool do
         default 1 # 2521765F
       end

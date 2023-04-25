@@ -1,14 +1,14 @@
 jtest "array supports a default" do
   jdl do
     # Validates default is an array
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("C3E1CABD")}: 'a' array attribute invalid: 'default' expects an array but got '{:a=>:b}'." do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("C3E1CABD")}: 'a' array attribute invalid - 'default' expects an array but got '{:a=>:b}'." do
       attr_array :a do
         default({ a: :b }) # C3E1CABD
       end
     end
 
     # Validates default elements respect attribute type
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("7F5657F4")}: 'b' array attribute invalid: 'default' invalid: 'not a bool' is a string - expected [true|false]" do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("7F5657F4")}: 'b' array attribute invalid - 'default' invalid - 'not a bool' is a string - expected [true|false]" do
       attr_array :b, type: :bool do
         default ["not a bool"] # 7F5657F4
       end
@@ -25,12 +25,12 @@ jtest "array supports a default" do
   end
   # Have to put this round the whole jaba context because the default block is called twice, once when it is called explicitly
   # and again by jaba itself when the value is baked in
-  assert_jaba_error "Error at #{src_loc("9F62104F")}: 'c' array attribute 'default' invalid: requires an array not a 'Integer'." do
+  assert_jaba_error "Error at #{src_loc("9F62104F")}: 'c' array attribute 'default' invalid - requires an array not a 'Integer'." do
     jaba do
       c # Validates default is an array when block form is called explicity
     end
   end
-  assert_jaba_error "Error at #{src_loc("9F62104F")}: 'c' array attribute 'default' invalid: requires an array not a 'Integer'." do
+  assert_jaba_error "Error at #{src_loc("9F62104F")}: 'c' array attribute 'default' invalid - requires an array not a 'Integer'." do
     jaba # It validates default is an array when block form is called implicitly
   end
 
@@ -42,7 +42,7 @@ jtest "array supports a default" do
     end
   end
 
-  assert_jaba_error "Error at #{src_loc("33EF0612")}: 'd' array attribute 'default' invalid: 'not a bool' is a string - expected [true|false]" do
+  assert_jaba_error "Error at #{src_loc("33EF0612")}: 'd' array attribute 'default' invalid - 'not a bool' is a string - expected [true|false]" do
     jaba
   end
 
