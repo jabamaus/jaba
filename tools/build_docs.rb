@@ -43,6 +43,9 @@ class DocBuilder
     
     @file_manager = JABA::FileManager.new
 
+    # Build documentable API objects
+    JABA::JDLTopLevelAPI.execute(JABA::JDLBuilder.new, &JABA.core_api_block)
+
     generate_handwritten
     generate_versioned_index
     generate_reference_doc
@@ -88,6 +91,9 @@ class DocBuilder
   def generate_reference_doc
     write_markdown_page('jaba_reference.md', 'Jaba language reference', versioned: true) do |w|
       w << ""
+      JABA::NodeDefinition.all.each do |nd|
+        w << "  - [#{nd.name}](TODO)"
+      end
 =begin
       w << "- Types"
       @jaba_types.sort_by {|jt| jt.defn_id}.each do |jt|
@@ -101,21 +107,17 @@ class DocBuilder
         generate_jaba_type_reference(jt)
       end
 =end
-      w << "- Attribute types"
+# TODO: move into developer docs section
+      #w << "- Attribute types"
       #@jaba_attr_types.each do |at|
       #  w << "  - #{at.id}"
       #end
 
-      w << "- Attribute variants"
-      w << "  - single"
-      w << "  - array"
-      w << "  - hash"
-
-      w << "- Attribute flags"
-      JABA::FlagDefinition.all.each do |fd|
-        w << "  - #{fd.name}"
-      end
-      w << ""
+      #w << "- Attribute flags"
+      #JABA::FlagDefinition.all.each do |fd|
+      #  w << "  - #{fd.name}"
+      #end
+      #w << ""
     end
   end
 
@@ -235,7 +237,7 @@ class DocBuilder
   def write_markdown_page(md, title, versioned:, want_home: true, versioned_home: true)
     fn = versioned ? "#{DOCS_MARKDOWN_VERSIONED_DIR}/#{md}" : "#{DOCS_MARKDOWN_DIR}/#{md}"
     puts "Writing #{fn}"
-    file = @file_manager.new_file(fn, capacity: 16 * 1024)
+    file = @file_manager.new_file(fn)
     w = file.writer
     w << "## #{title}"
     if versioned
