@@ -81,7 +81,7 @@ module JABA
     def validate_value(attr_def, value)
       items = attr_def.get_items
       if !items.include?(value)
-        yield "Must be one of #{items} but got '#{value.inspect_unquoted}'"
+        yield "must be one of #{items} but got '#{value.inspect_unquoted}'"
       end
     end
   end
