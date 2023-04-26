@@ -124,7 +124,16 @@ jtest "can register attributes as node options" do
     node :n, a: true
   end
 end
-
+=begin
+jtest "fails if attribute type does not exist" do
+  assert_jaba_error "Error at #{src_loc("CE16AD90")}: 'a' attribute invalid: ':unknown' must be one of [:allow_dupes, :no_sort, :node_option, :per_project, :per_config, :read_only, :required]" do
+    jdl do
+      attr :a, type: :unknown # CE16AD90
+    end
+    jaba
+  end
+end
+=end
 jtest "fails if flag does not exist" do
   assert_jaba_error "Error at #{src_loc("01E55971")}: 'a' attribute invalid - ':unknown' must be one of [:allow_dupes, :no_sort, :node_option, :per_project, :per_config, :read_only, :required]" do
     jdl do
