@@ -267,9 +267,18 @@ module JABA
     def initialize(src_loc, name, attr_type)
       super(src_loc, name, :hash, attr_type)
       @on_validate_key = nil
+      @key_type = nil
     end
 
+    def set_key_type(key_type) = @key_type = key_type
     def set_validate_key(&block) = @on_validate_key = block
     def on_validate_key = @on_validate_key
+
+    def post_create
+      super
+      if @key_type.nil?
+        definition_error("key_type must be set")
+      end
+    end
   end
 end

@@ -134,8 +134,9 @@ module JABA
       process_attr(path, AttributeArrayDefinition, type, &block)
     end
 
-    def set_attr_hash(path, type: nil, &block)
-      process_attr(path, AttributeHashDefinition, type, &block)
+    def set_attr_hash(path, key_type: nil, type: nil, &block)
+      d = process_attr(path, AttributeHashDefinition, type, &block)
+      d.sey_key_type(key_type)
     end
 
     def set_method(path, &block)
@@ -177,6 +178,7 @@ module JABA
       AttributeDefinitionAPI.execute(attr_def, &block) if block_given?
       attr_def.post_create
       parent_class.attr_defs << attr_def
+      attr_def
     end
 
     def get_or_make_class(path, superklass: nil, what:)

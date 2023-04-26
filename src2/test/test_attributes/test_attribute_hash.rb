@@ -10,18 +10,18 @@ jtest "supports a default" do
       attr_hash :a, key_type: :symbol do
         flag_options :opt1, :opt2
       end
-      attr_hash :b, key_type: :symbol do
+      attr_hash :b, key_type: :string do
         default({ k: :v }) # value style default
         flag_options :opt1, :opt2
         value_option :vopt
       end
-      attr_hash :c, key_type: :symbol do
+      attr_hash :c, key_type: :string do
         default do # block style default
           { k1: 1, k2: 2 }
         end
         flag_options :opt1, :opt2
       end
-      attr_hash :d, key_type: :symbol do
+      attr_hash :d, key_type: :string do
         default do # block style default that references other attributes
           { k1: single1, k2: single2 }
         end
@@ -86,7 +86,7 @@ jtest "supports a default" do
   assert_jaba_error "Error at #{src_loc("DA7750A0")}: 'default' expects a hash but got '[]'." do
     jaba(barebones: true) do
       type :test do
-        attr_hash :a, key_type: :symbol do
+        attr_hash :a, key_type: :string do
           default [] # DA7750A0
         end
       end
@@ -98,7 +98,7 @@ jtest "supports a default" do
   assert_jaba_error "Error at #{src_loc("BE9F9661")}: 't.a' hash attribute default requires a hash not a 'Integer'." do
     jaba(barebones: true) do
       type :test do
-        attr_hash :a, key_type: :symbol do # BE9F9661
+        attr_hash :a, key_type: :string do # BE9F9661
           default do
             1
           end
@@ -113,7 +113,7 @@ jtest "supports a default" do
   assert_jaba_error "Error at #{src_loc("251B0D72")}: ':a' hash attribute default invalid: 'not a symbol' is a string - expected a symbol." do
     jaba(barebones: true) do
       type :test do
-        attr_hash :a, key_type: :symbol, type: :symbol do
+        attr_hash :a, key_type: :string, type: :symbol do
           default({ k: "not a symbol" }) # 251B0D72
         end
       end
@@ -136,34 +136,30 @@ jtest "supports a default" do
     end
   end
 end
-
+=end
 jtest "checks for accessing uninitialised attributes" do
   # test with hash attr default using an unset attr
-  #
-  assert_jaba_error "Error at #{src_loc("6E82E6E7")}: Cannot read uninitialised 't.b' attribute - it might need a default value.", trace: [__FILE__, "4E88B4A0"] do
-    jaba(barebones: true) do
-      type :test do
-        attr :a
-        attr :b
-        attr_hash :c, key_type: :symbol do
-          default do
-            { k1: a, k2: b } # 6E82E6E7
-          end
-        end
-      end
-      test :t do
-        a 1
-        c # 4E88B4A0
+  jdl do
+    attr :a
+    attr :b
+    attr_hash :c, key_type: :string do
+      default do
+        { k1: a, k2: b } # 6E82E6E7
       end
     end
   end
-
+  assert_jaba_error "Error at #{src_loc("6E82E6E7")}: Cannot read uninitialised 'b' attribute - it might need a default value." do
+    jaba do
+      a 1
+      c
+    end
+  end
+=begin
   # test with another attr using unset hash attr
-  #
   assert_jaba_error "Error at #{src_loc("CE4EB215")}: Cannot read uninitialised 't.a' hash attribute - it might need a default value.", trace: [__FILE__, "AA737C96"] do
     jaba(barebones: true) do
       type :test do
-        attr_hash :a, key_type: :symbol
+        attr_hash :a, key_type: :string
         attr :b do
           default do
             a[:k] # CE4EB215
@@ -175,12 +171,12 @@ jtest "checks for accessing uninitialised attributes" do
       end
     end
   end
-end
 =end
+end
 
 jtest "can be set" do
   jdl do
-    attr_hash "a"
+    attr_hash "a", key_type: :string
     attr "b", type: :choice do
       items [1, 2]
     end
@@ -229,7 +225,7 @@ end
 
 jtest "is not possible to modify returned hash" do
   jdl do
-    attr_hash "a" do
+    attr_hash "a", key_type: :string do
       default({ k: :v })
     end
   end
@@ -243,12 +239,12 @@ end
 jtest "disallows no_sort and allow_dupes flags" do
   jdl do
     JTest.assert_jaba_error "Error at #{JTest.src_loc("366C343A")}: ':no_sort' attribute definition flag invalid: only allowed on array attributes." do
-      attr_hash "a" do
+      attr_hash "a", key_type: :string do
         flags :no_sort # 366C343A
       end
     end
     JTest.assert_jaba_error "Error at #{JTest.src_loc("2E453551")}: ':allow_dupes' attribute definition flag invalid: only allowed on array attributes." do
-      attr_hash "b" do
+      attr_hash "b", key_type: :string do
         flags :allow_dupes # 2E453551
       end
     end
@@ -259,7 +255,7 @@ end
 jtest "can accept flag options" do
   jaba(barebones: true) do
     type :test do
-      attr_hash :a, key_type: :symbol do
+      attr_hash :a, key_type: :string do
         flag_options :f1, :f2, :f3
       end
     end
@@ -281,7 +277,7 @@ end
 jtest "can accept value options" do
   jaba(barebones: true) do
     type :test do
-      attr_hash :a, key_type: :symbol do
+      attr_hash :a, key_type: :string do
         value_option :kv1
         value_option :kv2
       end
@@ -302,7 +298,7 @@ end
 jtest "can accept value and flag options" do
   jaba(barebones: true) do
     type :test do
-      attr_hash :a, key_type: :symbol do
+      attr_hash :a, key_type: :string do
         value_option :kv1
         value_option :kv2
         flag_options [:flag_opt1, :flag_opt2, :flag_opt3]
@@ -329,7 +325,7 @@ jtest "validates key value supplied correctly" do
   assert_jaba_error "Error at #{src_loc("E4932204")}: 't.a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"" do
     jaba(barebones: true) do
       type :test do
-        attr_hash :a, key_type: :symbol
+        attr_hash :a, key_type: :string
       end
       test :t do
         a key: "val" # E4932204
@@ -339,7 +335,7 @@ jtest "validates key value supplied correctly" do
   assert_jaba_error "Error at #{src_loc("C567DBCD")}: 't.a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"" do
     jaba(barebones: true) do
       type :test do
-        attr_hash :a, key_type: :symbol
+        attr_hash :a, key_type: :string
       end
       test :t do
         a :key # C567DBCD
