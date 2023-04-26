@@ -50,11 +50,11 @@ module JABA
         end
     end
 
-    def call_validators
+    def rescue_on_validate
       begin
         yield
       rescue => e
-        attr_error("#{describe} invalid - #{e.message}")
+        attr_error("#{describe} invalid - #{e.raw_message}")
       end
     end
   end
@@ -110,10 +110,8 @@ module JABA
             attr_error("#{describe} invalid - #{msg}")
           end
           if attr_def.on_validate
-            begin
+            rescue_on_validate do
               node.eval_jdl(new_value, @flag_options, **@value_options, &attr_def.on_validate)
-            rescue => e
-              attr_error("#{describe} invalid - #{e.raw_message}")
             end
           end
         end
