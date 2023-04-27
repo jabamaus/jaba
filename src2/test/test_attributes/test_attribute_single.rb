@@ -79,7 +79,7 @@ jtest "works with block style default" do
   end
 
   # test with attr default using an unset attr
-  assert_jaba_error "Error at #{src_loc("2F003EB7")}: 'block_default' attribute default read uninitialised 'b' attribute - 'b' attribute might need a default value." do
+  assert_jaba_error "Error at #{src_loc("2F003EB7")}: 'block_default' attribute default read uninitialised 'b' attribute - it might need a default value." do
     jaba do
       a 1
       block_default # 2F003EB7
@@ -87,7 +87,7 @@ jtest "works with block style default" do
   end
 
   # test with another attr using unset attr
-  assert_jaba_error "Error at #{src_loc("A0C828F8")}: 'block_default2' attribute default read uninitialised 'a' attribute - 'a' attribute might need a default value." do
+  assert_jaba_error "Error at #{src_loc("A0C828F8")}: 'block_default2' attribute default read uninitialised 'a' attribute - it might need a default value." do
     jaba do
       b 1
       block_default2 # A0C828F8

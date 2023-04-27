@@ -74,6 +74,8 @@ module JABA
       @value
     end
 
+    def flag_options = @flag_options
+
     # This can only be called after the value has had its final value set as it gives raw access to value.
     def raw_value = @value
 
@@ -169,7 +171,7 @@ module JABA
           @attr_def.attr_type.map_value(val)
         elsif JABA.context.in_attr_default_block?
           outer = JABA.context.outer_default_attr_read
-          outer.attr_error("#{outer.describe} default read uninitialised #{describe} - #{describe} might need a default value")
+          outer.attr_error("#{outer.describe} default read uninitialised #{describe} - it might need a default value")
         else
           nil
         end

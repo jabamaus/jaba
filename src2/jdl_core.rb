@@ -127,16 +127,17 @@ module JABA
     end
 
     def set_attr(path, type: nil, &block)
-      process_attr(path, AttributeSingleDefinition, type, &block)
+      process_attr(path, AttributeSingleDefinition, type, block)
     end
 
     def set_attr_array(path, type: nil, &block)
-      process_attr(path, AttributeArrayDefinition, type, &block)
+      process_attr(path, AttributeArrayDefinition, type, block)
     end
 
     def set_attr_hash(path, key_type: nil, type: nil, &block)
-      d = process_attr(path, AttributeHashDefinition, type, &block)
-      d.sey_key_type(key_type)
+      process_attr(path, AttributeHashDefinition, type, block) do |attr_def|
+        attr_def.set_key_type(key_type)
+      end
     end
 
     def set_method(path, &block)
@@ -154,7 +155,7 @@ module JABA
 
     private
 
-    def process_attr(path, def_class, type, &block)
+    def process_attr(path, def_class, type, block)
       path = validate_path(path)
       parent_path, attr_name = split_jdl_path(path)
       parent_class = get_or_make_class(parent_path, what: :attribute)
@@ -174,11 +175,11 @@ module JABA
         # Compound attr interface inherits parent nodes interface so it has read only access to its attrs
         attr_def.set_compound_api(get_or_make_class(path, superklass: parent_class, what: :attribute))
       end
+      yield attr_def if block_given?
 
-      AttributeDefinitionAPI.execute(attr_def, &block) if block_given?
+      AttributeDefinitionAPI.execute(attr_def, &block) if block
       attr_def.post_create
       parent_class.attr_defs << attr_def
-      attr_def
     end
 
     def get_or_make_class(path, superklass: nil, what:)

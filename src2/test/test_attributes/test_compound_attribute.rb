@@ -7,7 +7,7 @@ jtest "works with compound as single attribute" do
     attr "compound|a" do default 10 end
     attr "compound|b"
     attr_array "compound|c" do default [1] end
-    attr_hash "compound|d" do default(a: :b) end
+    attr_hash "compound|d", key_type: :string do default(a: :b) end
   end
   op = jaba do
     # check defaults

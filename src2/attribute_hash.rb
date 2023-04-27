@@ -30,7 +30,7 @@ module JABA
           return default_hash.transform_values { |e| at.map_value(e) }
         elsif JABA.context.in_attr_default_block?
           outer = JABA.context.outer_default_attr_read
-          outer.attr_error("#{outer.describe} default read uninitialised #{describe} - #{describe} might need a default value")
+          outer.attr_error("#{outer.describe} default read uninitialised #{describe} - it might need a default value")
         end
       end
       values = @hash.transform_values { |e| e.value }

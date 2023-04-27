@@ -91,7 +91,7 @@ jtest "checks for accessing uninitialised attributes" do
   end
 
   # test with array attr default using an unset attr
-  assert_jaba_error "Error at #{src_loc("9BCB5240")}: 'c' array attribute default read uninitialised 'b' attribute - 'b' attribute might need a default value." do
+  assert_jaba_error "Error at #{src_loc("9BCB5240")}: 'c' array attribute default read uninitialised 'b' attribute - it might need a default value." do
     jaba do
       a 1
       c # 9BCB5240
@@ -108,7 +108,7 @@ jtest "checks for accessing uninitialised attributes" do
   end
 
   # test with another attr using unset array attr
-  assert_jaba_error "Error at #{src_loc("49323AB4")}: 'b' attribute default read uninitialised 'a' array attribute - 'a' array attribute might need a default value." do
+  assert_jaba_error "Error at #{src_loc("49323AB4")}: 'b' attribute default read uninitialised 'a' array attribute - it might need a default value." do
     jaba do
       b # 49323AB4
     end

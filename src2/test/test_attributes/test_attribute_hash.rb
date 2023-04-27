@@ -144,14 +144,14 @@ jtest "checks for accessing uninitialised attributes" do
     attr :b
     attr_hash :c, key_type: :string do
       default do
-        { k1: a, k2: b } # 6E82E6E7
+        { k1: a, k2: b }
       end
     end
   end
-  assert_jaba_error "Error at #{src_loc("6E82E6E7")}: Cannot read uninitialised 'b' attribute - it might need a default value." do
+  assert_jaba_error "Error at #{src_loc("6E82E6E7")}: 'c' hash attribute default read uninitialised 'b' attribute - it might need a default value." do
     jaba do
       a 1
-      c
+      c # 6E82E6E7
     end
   end
 =begin
@@ -251,76 +251,63 @@ jtest "disallows no_sort and allow_dupes flags" do
   end
 end
 
-=begin
 jtest "can accept flag options" do
-  jaba(barebones: true) do
-    type :test do
-      attr_hash :a, key_type: :string do
-        flag_options :f1, :f2, :f3
-      end
-    end
-    test :t do
-      a :k, :v, :f1, :f2
-      generate do
-        a = get_attr(:a)
-        elem = a.fetch(:k)
-        elem.value.must_equal(:v)
-        elem.has_flag_option?(:f1).must_be_true
-        elem.has_flag_option?(:f2).must_be_true
-        elem.has_flag_option?(:f3).must_be_false
-        elem.flag_options.must_equal [:f1, :f2]
-      end
+  jdl do
+    attr_hash :a, key_type: :string do
+      flag_options :f1, :f2, :f3
     end
   end
+  op = jaba do
+    a :k, :v, :f1, :f2
+  end
+  a = op[:root].get_attr(:a)
+  elem = a.fetch(:k)
+  elem.value.must_equal(:v)
+  elem.has_flag_option?(:f1).must_be_true
+  elem.has_flag_option?(:f2).must_be_true
+  elem.has_flag_option?(:f3).must_be_false
+  elem.flag_options.must_equal [:f1, :f2]
 end
 
 jtest "can accept value options" do
-  jaba(barebones: true) do
-    type :test do
-      attr_hash :a, key_type: :string do
-        value_option :kv1
-        value_option :kv2
-      end
-    end
-    test :t do
-      a :k, :v, kv1: "a", kv2: "b"
-      generate do
-        a = get_attr(:a)
-        elem = a.fetch(:k)
-        elem.value.must_equal(:v)
-        elem.get_option_value(:kv1).must_equal("a")
-        elem.get_option_value(:kv2).must_equal("b")
-      end
+  jdl do
+    attr_hash :a, key_type: :string do
+      value_option :kv1
+      value_option :kv2
     end
   end
+  op = jaba do
+    a :k, :v, kv1: "a", kv2: "b"
+  end
+  a = op[:root].get_attr(:a)
+  elem = a.fetch(:k)
+  elem.value.must_equal(:v)
+  elem.get_option_value(:kv1).must_equal("a")
+  elem.get_option_value(:kv2).must_equal("b")
 end
 
 jtest "can accept value and flag options" do
-  jaba(barebones: true) do
-    type :test do
-      attr_hash :a, key_type: :string do
-        value_option :kv1
-        value_option :kv2
-        flag_options [:flag_opt1, :flag_opt2, :flag_opt3]
-      end
-    end
-    test :t do
-      a :k, :v, :flag_opt1, :flag_opt2, kv1: "a", kv2: "b"
-      generate do
-        a = get_attr(:a)
-        elem = a.fetch(:k)
-        elem.value.must_equal(:v)
-        elem.has_flag_option?(:flag_opt1).must_be_true
-        elem.has_flag_option?(:flag_opt2).must_be_true
-        elem.has_flag_option?(:flag_opt3).must_be_false
-        elem.flag_options.must_equal [:flag_opt1, :flag_opt2]
-        elem.get_option_value(:kv1).must_equal("a")
-        elem.get_option_value(:kv2).must_equal("b")
-      end
+  jdl do
+    attr_hash :a, key_type: :string do
+      value_option :kv1
+      value_option :kv2
+      flag_options :flag_opt1, :flag_opt2, :flag_opt3
     end
   end
+  op = jaba do
+    a :k, :v, :flag_opt1, :flag_opt2, kv1: "a", kv2: "b"
+  end
+  a = op[:root].get_attr(:a)
+  elem = a.fetch(:k)
+  elem.value.must_equal(:v)
+  elem.has_flag_option?(:flag_opt1).must_be_true
+  elem.has_flag_option?(:flag_opt2).must_be_true
+  elem.has_flag_option?(:flag_opt3).must_be_false
+  elem.flag_options.must_equal [:flag_opt1, :flag_opt2]
+  elem.get_option_value(:kv1).must_equal("a")
+  elem.get_option_value(:kv2).must_equal("b")
 end
-
+=begin
 jtest "validates key value supplied correctly" do
   assert_jaba_error "Error at #{src_loc("E4932204")}: 't.a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"" do
     jaba(barebones: true) do
