@@ -29,8 +29,7 @@ module JABA
     attr_bool :verbose
     attr_bool :profile
     attr_bool :want_exceptions # defaults to false
-    attr_accessor :global_attrs # Initialise global attrs from a hash of name to value(s)
-    attr_accessor :global_attrs_as_strings # As global_attrs but values are strings. Used when passing in from cmdline.
+    attr_accessor :global_attrs_from_cmdline # Values will all be in string form
   end
 
   class JabaError < StandardError
@@ -98,7 +97,7 @@ if __FILE__ == $PROGRAM_NAME
       output = JABA.run do |j|
         j.src_root = @src_root
         j.build_root = @build_root
-        j.global_attrs_as_strings = @globals
+        j.global_attrs_from_cmdline = @globals
         j.profile = @profile
         j.verbose = @verbose
       end

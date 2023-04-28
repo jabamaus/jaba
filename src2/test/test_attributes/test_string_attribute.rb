@@ -39,12 +39,12 @@ jtest "can default to id" do
 end
 =end
 
-jtest "can be set from global_attrs" do
+jtest "can be set from cmdline" do
   jdl do
     attr :a, type: :string do default "a" end
     attr :b, type: :string
   end
-  output = jaba(global_attrs: { "a": "b", "b": "c" }) do
+  output = jaba(global_attrs_from_cmdline: { "a": "b", "b": "c" }) do
     a.must_equal "b"
     b.must_equal "c"
   end
@@ -52,7 +52,4 @@ jtest "can be set from global_attrs" do
   root = output[:root]
   root[:a].must_equal "b"
   root[:b].must_equal "c"
-
-  op = jaba(global_attrs: { 'a': 1 }, want_exceptions: false)
-  op[:error].must_equal "'a' attribute invalid - '1' is a integer - expected a string."
 end

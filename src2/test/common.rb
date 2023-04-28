@@ -11,8 +11,7 @@ module JabaTestMethods
     want_exceptions: true,
     src_root: nil,
     build_root: nil,
-    global_attrs: nil,
-    global_attrs_as_strings: nil,
+    global_attrs_from_cmdline: nil,
     &block
   )
     td = temp_dir(create: false)
@@ -23,8 +22,7 @@ module JabaTestMethods
       c.src_root = src_root # Most unit tests don't have a src_root as everything is defined inline in code
       c.build_root = build_root
       c.definitions(&block) if block_given?
-      c.global_attrs = global_attrs
-      c.global_attrs_as_strings = global_attrs_as_strings
+      c.global_attrs_from_cmdline = global_attrs_from_cmdline
     end
   end
 

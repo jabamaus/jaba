@@ -48,7 +48,7 @@ jtest "works with required flag" do
   end
 end
 
-jtest "can be set from global_attrs" do
+jtest "can be set from cmdline" do
   jdl do
     attr "b1", type: :bool do default false end
     attr "b2", type: :bool do default true end
@@ -56,8 +56,7 @@ jtest "can be set from global_attrs" do
     attr "b4", type: :bool do default true end
   end
   output = jaba(
-    global_attrs: { 'b1': true, 'b2': false},
-    global_attrs_as_strings: { 'b3': "1", 'b4': "0" }
+    global_attrs_from_cmdline: { 'b1': "true", 'b2': "false", 'b3': "1", 'b4': "0" }
     ) do
     b1.must_equal true
     b2.must_equal false
@@ -71,6 +70,6 @@ jtest "can be set from global_attrs" do
   root[:b3].must_equal true
   root[:b4].must_equal false
 
-  op = jaba(global_attrs: { 'b1': 10 }, want_exceptions: false)
+  op = jaba(global_attrs_from_cmdline: { 'b1': 10 }, want_exceptions: false)
   op[:error].must_equal "Error: '10' invalid value for 'b1' attribute - [true|false|0|1] expected."
 end

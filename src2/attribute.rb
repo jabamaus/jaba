@@ -82,7 +82,6 @@ module JABA
     def set(*args,
       __validate: true,
       __call_on_set: true,
-      __allow_set_from_string: false,
       **kwargs, &block
       )
       record_last_call_location

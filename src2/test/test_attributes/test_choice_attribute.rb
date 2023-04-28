@@ -58,7 +58,7 @@ jtest "rejects invalid choices" do
   end
 end
 
-jtest "choice can be set from global attrs" do
+jtest "can be set from cmdline" do
   jdl do
     attr "a", type: :choice do
       items [:a, :b, :c]
@@ -73,12 +73,12 @@ jtest "choice can be set from global attrs" do
       default "b"
     end
   end
-  jaba(global_attrs: { 'a': "b", 'b': "", 'c': "1" }) do
+  jaba(global_attrs_from_cmdline: { 'a': "b", 'b': "", 'c': "1" }) do
     a.must_equal :b
     b.must_be_nil
     c.must_equal 1
   end
 
-  op = jaba(global_attrs: { 'a': "d" }, want_exceptions: false)
+  op = jaba(global_attrs_from_cmdline: { 'a': "d" }, want_exceptions: false)
   op[:error].must_equal "Error: 'd' invalid value for 'a' attribute - [a|b|c] expected."
 end

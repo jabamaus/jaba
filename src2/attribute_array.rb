@@ -39,7 +39,6 @@ module JABA
       postfix: nil,
       delete: nil,
       exclude: nil,
-      __allow_set_from_string: false,
       **kwargs, &block
       )
       record_last_call_location
