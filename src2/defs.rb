@@ -271,6 +271,7 @@ module JABA
     end
 
     def set_key_type(key_type) = @key_type = key_type
+    def key_type = @key_type
     def set_validate_key(&block) = @on_validate_key = block
     def on_validate_key = @on_validate_key
 

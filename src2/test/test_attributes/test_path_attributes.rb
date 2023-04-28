@@ -2,7 +2,7 @@ jtest "checks path is valid" do
   jdl do
     attr "file", type: :file
     attr "dir", type: :dir
-    attr "src_spec", type: :src_spec
+    attr "src_spec", type: :src
     attr "basename", type: :basename
   end
   op = jaba(want_exceptions: false) do

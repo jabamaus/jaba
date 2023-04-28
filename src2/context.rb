@@ -199,7 +199,7 @@ module JABA
           if values.empty? || values.size % 2 != 0
             JABA.error("'#{name}' hash attribute requires one or more pairs of values", want_backtrace: false)
           end
-          key_type = attr.attr_def.attr_key_type
+          key_type = attr.attr_def.key_type
           values.each_slice(2) do |kv|
             key = key_type.value_from_cmdline(kv[0], attr_def) 
             value = type.value_from_cmdline(kv[1], attr_def)

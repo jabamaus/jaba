@@ -99,7 +99,7 @@ JABA.define_api do
 
   # Top level attributes
 
-  attr_array "default_configs" do
+  attr_array "default_configs", type: :symbol do
     title "Default configs"
     flags :required
   end
@@ -110,14 +110,14 @@ JABA.define_api do
     title "Define a project"
   end
 
-  attr "project|config" do #, type: :symbol_or_string do
+  attr "project|config", type: :symbol do
     title "Current target config as an id"
     note "Returns current config being processed. Use to define control flow to set config-specific atttributes"
     flags :per_config, :read_only
     # TODO: examples, including regexes
   end
 
-  attr_array "project|define" do #, type: :symbol_or_string do
+  attr_array "project|define", type: :string do
     title "Preprocessor defines"
     #flags :exportable
   end
@@ -127,7 +127,7 @@ JABA.define_api do
     flags :per_config
   end
 
-  attr "project|rule|input", type: :src_spec do
+  attr "project|rule|input", type: :src do
     title "TODO"
   end
 

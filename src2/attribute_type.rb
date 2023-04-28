@@ -41,9 +41,36 @@ module JABA
       super(:string, default: '')
       set_title "String attribute type"
     end
+
+    # Can be specified as a symbol but stored internally as a string
+    def map_value(value)
+      if value.is_a?(Symbol)
+        value.to_s
+      else
+        value
+      end
+    end
+
     def validate_value(attr_def, value, &block)
       if !value.string?
         type_error(value, 'a string', &block)
+      end
+    end
+  end
+
+  class AttributeTypeSymbol < AttributeType
+    def initialize
+      super(:symbol)
+      set_title "Symbol attribute type"
+    end
+
+    def value_from_cmdline(str, attr_def)
+      str.to_sym
+    end
+
+    def validate_value(attr_def, value, &block)
+      if !value.symbol?
+        type_error(value, 'a symbol', &block)
       end
     end
   end
@@ -132,9 +159,9 @@ module JABA
     end
   end
 
-  class AttributeTypeSrc_spec < AttributePathBase
+  class AttributeTypeSrc < AttributePathBase
     def initialize
-      super(:src_spec)
+      super(:src)
       set_title "Source file specification pattern"
       set_note "Can be file glob match an explicit path or a directory"
     end

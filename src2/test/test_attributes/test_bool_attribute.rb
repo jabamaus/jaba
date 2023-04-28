@@ -50,12 +50,12 @@ end
 
 jtest "can be set from cmdline" do
   jdl do
-    attr "b1", type: :bool do default false end
-    attr "b2", type: :bool do default true end
-    attr "b3", type: :bool do default false end
-    attr "b4", type: :bool do default true end
+    attr :b1, type: :bool
+    attr :b2, type: :bool
+    attr :b3, type: :bool
+    attr :b4, type: :bool
   end
-  output = jaba(
+  jaba(
     global_attrs_from_cmdline: { 'b1': "true", 'b2': "false", 'b3': "1", 'b4': "0" }
     ) do
     b1.must_equal true
@@ -63,12 +63,6 @@ jtest "can be set from cmdline" do
     b3.must_equal true
     b4.must_equal false
   end
-
-  root = output[:root]
-  root[:b1].must_equal true
-  root[:b2].must_equal false
-  root[:b3].must_equal true
-  root[:b4].must_equal false
 
   op = jaba(global_attrs_from_cmdline: { 'b1': 10 }, want_exceptions: false)
   op[:error].must_equal "Error: '10' invalid value for 'b1' attribute - [true|false|0|1] expected."

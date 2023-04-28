@@ -9,16 +9,21 @@ jtest "validates default" do
   end
 end
 
-=begin
-jtest "accepts symbols" do
+jtest "accepts symbols but stored as strings" do
   jdl do
     attr :a, type: :string
+    attr_array :b, type: :string
+    attr_hash :c, key_type: :string, type: :string
   end
   jaba do
     a :b
-    a.must
+    a.must_equal "b"
+    b [:c, :d, "e"]
+    b.must_equal ["c", "d", "e"]
+    c :a, :b
+    c.must_equal({"a": "b"})
+  end
 end
-=end
 
 # TODO: add support for id attribute as a node option
 =begin
@@ -41,15 +46,13 @@ end
 
 jtest "can be set from cmdline" do
   jdl do
-    attr :a, type: :string do default "a" end
-    attr :b, type: :string
+    attr :a, type: :string
+    attr_array :b, type: :string
+    attr_hash :c, key_type: :string, type: :string
   end
-  output = jaba(global_attrs_from_cmdline: { "a": "b", "b": "c" }) do
+  jaba(global_attrs_from_cmdline: { "a": "b", "b": ["c", "d"], "c": ["e", "f", "g", "h"] }) do
     a.must_equal "b"
-    b.must_equal "c"
+    b.must_equal ["c", "d"]
+    c.must_equal({"e": "f", "g": "h"})
   end
-
-  root = output[:root]
-  root[:a].must_equal "b"
-  root[:b].must_equal "c"
 end
