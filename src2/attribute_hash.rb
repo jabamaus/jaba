@@ -37,7 +37,11 @@ module JABA
       values.freeze # make read only
     end
 
-    def set(*args, __no_keyval: false, **kwargs, &block)
+    def set(*args,
+      __no_keyval: false,
+      __allow_set_from_string: false,
+      **kwargs, &block
+      )
       record_last_call_location
 
       key = val = nil

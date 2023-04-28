@@ -34,7 +34,14 @@ module JABA
     #  - exclude: Cache exclusion and apply later. Allows order independent deletion and deletion
     #             of elements added later by dependencies
     #
-    def set(*args, prefix: nil, postfix: nil, delete: nil, exclude: nil, **kwargs, &block)
+    def set(*args,
+      prefix: nil,
+      postfix: nil,
+      delete: nil,
+      exclude: nil,
+      __allow_set_from_string: false,
+      **kwargs, &block
+      )
       record_last_call_location
 
       # It is possible for values to be nil, which happens if no args are passed. This can happen if the user

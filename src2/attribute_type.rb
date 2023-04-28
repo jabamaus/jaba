@@ -11,7 +11,8 @@ module JABA
     def default = @default
 
     def init_attr_def(attr_def); end         # override as necessary
-    def from_cmdline(str, attr_def) = str    # override as necessary
+    # override as necessary. Return nil if no conversion possible.
+    def value_from_string(str, attr_def) = JABA.error("not implemented")
     def map_value(value) = value             # override as necessary
     def validate_value(attr_def, value); end # override as necessary
 
@@ -36,6 +37,19 @@ module JABA
     end
   end
 
+  class AttributeTypeString < AttributeType
+    def initialize
+      super(:string, default: '')
+      set_title "String attribute type"
+    end
+    def value_from_string(str, attr_def) = str
+    def validate_value(attr_def, value, &block)
+      if !value.string?
+        type_error(value, 'a string', &block)
+      end
+    end
+  end
+
   class AttributeTypeBool < AttributeType
     def initialize
       super(:bool, default: false)
@@ -43,14 +57,15 @@ module JABA
       set_note "Accepts [true|false]. Defaults to false unless value must be supplied by user."
     end
 
-    def from_cmdline(str, attr_def)
+    def value_from_string(str, attr_def)
       case str
       when "true", "1"
         true
       when "false", "0"
         false
       else
-        JABA.error("'#{str}' invalid value for #{attr_def.describe} - [true|false|0|1] expected", want_err_line: false, want_backtrace: false)
+        nil
+        #JABA.error("'#{str}' invalid value for #{attr_def.describe} - [true|false|0|1] expected", want_err_line: false, want_backtrace: false)
       end
     end
 
@@ -68,12 +83,13 @@ module JABA
       set_note "Can take exactly one of a set of unique values"
     end
 
-    def from_cmdline(str, attr_def)
+    def value_from_string(str, attr_def)
       items = attr_def.get_items
       # Use find_index to allow for nil being a valid choice
       index = items.find_index { |i| i.to_s == str }
       if index.nil?
-        JABA.error("'#{str}' invalid value for #{attr_def.describe} - [#{items.map { |i| i.to_s }.join("|")}] expected", want_err_line: false, want_backtrace: false)
+        return nil
+        #JABA.error("'#{str}' invalid value for #{attr_def.describe} - [#{items.map { |i| i.to_s }.join("|")}] expected", want_err_line: false, want_backtrace: false)
       end
       items[index]
     end
@@ -91,7 +107,7 @@ module JABA
       super(:uuid)
       set_title "UUID attribute type"
     end
-
+    def value_from_string(str, attr_def) = str
     def map_value(value)
       Kernel.generate_uuid(namespace: "AttributeTypeUuid", name: value, braces: true)
     end
@@ -103,6 +119,7 @@ module JABA
         JABA.warn("#{attr_def.describe} not specified cleanly: #{msg}", line: $last_call_location)
       end
     end
+    def value_from_string(str, attr_def) = str
   end
 
   class AttributeTypeFile < AttributePathBase

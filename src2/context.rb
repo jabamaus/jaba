@@ -25,6 +25,7 @@ module JABA
       @input.instance_variable_set(:@src_root, nil)
       @input.instance_variable_set(:@definitions, [])
       @input.instance_variable_set(:@global_attrs, {})
+      @input.instance_variable_set(:@global_attrs_as_strings, {})
       @input.instance_variable_set(:@want_exceptions, false)
       @output = { warnings: @warnings, error: nil }
       @invoking_dir = Dir.getwd.freeze
@@ -121,7 +122,8 @@ module JABA
         @top_level_node = n
         @output[:root] = n
         @jdl.top_level_api_class.singleton.__internal_set_node(n)
-        set_top_level_attrs_from_input
+        set_top_level_attrs_from_input(input.global_attrs, convert_from_string: false)
+        set_top_level_attrs_from_input(input.global_attrs_as_strings, convert_from_string: true)
         load_jaba_files
       end
 
@@ -169,9 +171,9 @@ module JABA
       log "temp_dir=#{temp_dir}"
     end
 
-    def set_top_level_attrs_from_input
-      input.global_attrs&.each do |name, values|
-        values = Array(values).map { |e| e.to_s }
+    def set_top_level_attrs_from_input(hash, convert_from_string:)
+      hash&.each do |name, values|
+        values = Array(values)
 
         attr = @top_level_node.get_attr(name.to_s, fail_if_not_found: false)
         if attr.nil?
@@ -185,25 +187,26 @@ module JABA
           if values.size > 1
             JABA.error("'#{name}' attribute only expects one value but #{values.inspect} provided", want_backtrace: false)
           end
-          value = type.from_cmdline(values[0], attr_def)
+          value = values[0]
           if attr.type_id == :file || attr.type_id == :dir
             value = value.to_absolute(base: invoking_dir, clean: true) # TODO: need to do this for array/hash elems too
           end
-          attr.set(value)
+          attr.set(value, __allow_set_from_string: true)
         when :array
           if values.empty?
             JABA.error("'#{name}' array attribute requires one or more values", want_backtrace: false)
           end
-          attr.set(values.map { |v| type.from_cmdline(v, attr_def) })
+          #values = convert_from_string ? values.map { |v| type.value_from_string(v, attr_def) } : values
+          attr.set(values, __allow_set_from_string: true)
         when :hash
           if values.empty? || values.size % 2 != 0
             JABA.error("'#{name}' hash attribute requires one or more pairs of values", want_backtrace: false)
           end
           key_type = attr.attr_def.attr_key_type
           values.each_slice(2) do |kv|
-            key = key_type.from_cmdline(kv[0], attr_def)
-            value = type.from_cmdline(kv[1], attr_def)
-            attr.set(key, value)
+            #key = convert_from_string ? key_type.value_from_string(kv[0], attr_def) : kv[0]
+            #value = convert_from_string ? type.value_from_string(kv[1], attr_def) : kv[1]
+            attr.set(key, value, __allow_set_from_string: true)
           end
         end
       end

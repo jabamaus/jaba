@@ -77,7 +77,7 @@ JABA.define_api do
 
   # Global methods
 
-  # Global attributes
+  # Global attributes. Available in all nodes but not at top level.
 
   attr "*|root", type: :dir do
     title "TODO"

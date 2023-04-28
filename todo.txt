@@ -105,3 +105,4 @@ New features:
 Rewrite todo:
 - Combine :symbol, :string and :symbol_or_string? Allow strings and symbols to be completely interchangeable?
 - Bring back boolean reader, eg if debug?
+- Add title/example/notes to flag and value option definitions

@@ -79,7 +79,12 @@ module JABA
     # This can only be called after the value has had its final value set as it gives raw access to value.
     def raw_value = @value
 
-    def set(*args, __validate: true, __call_on_set: true, **kwargs, &block)
+    def set(*args,
+      __validate: true,
+      __call_on_set: true,
+      __allow_set_from_string: false,
+      **kwargs, &block
+      )
       record_last_call_location
       if read_only? && set? # allow read only to be set the first time so they an be initialised
         attr_error("#{describe} is read only")

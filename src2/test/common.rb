@@ -12,6 +12,7 @@ module JabaTestMethods
     src_root: nil,
     build_root: nil,
     global_attrs: nil,
+    global_attrs_as_strings: nil,
     &block
   )
     td = temp_dir(create: false)
@@ -23,6 +24,7 @@ module JabaTestMethods
       c.build_root = build_root
       c.definitions(&block) if block_given?
       c.global_attrs = global_attrs
+      c.global_attrs_as_strings = global_attrs_as_strings
     end
   end
 
