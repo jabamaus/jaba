@@ -24,21 +24,35 @@ module JABA
     :basedir_spec, # Used by path attributes
   ).include(CommonAPI)
 
-  @@core_api_block = nil
-  @@current_api_block = nil
+  @@core_api_blocks = {}
+  @@current_api_blocks = []
 
-  def self.core_api_block = @@core_api_block
-  def self.current_api_block = @@current_api_block
-  def self.restore_core_api = @@current_api_block = @@core_api_block # Used by unit tests
-  def self.define_api(&block)
-    if @@core_api_block.nil?
-      @@core_api_block = block
+  def self.core_api_blocks = @@core_api_blocks
+  def self.current_api_blocks = @@current_api_blocks
+  def self.restore_core_api = @@current_api_blocks.clear # Used by unit tests
+  def self.define_api(id, &block)
+    @@core_api_blocks[id] = block
+  end
+
+  # Set which apis are required. Used as efficiency mechanism for unit tests
+  def self.set_api_level(apis, &block)
+    @@current_api_blocks.clear
+    @@current_api_blocks << @@core_api_blocks[:core] # Core always required
+    apis.each do |id|
+      if id == :core
+        JABA.warn("No need to specify :core api as always included")
+      else
+        api = @@core_api_blocks[id]
+        JABA.error("'#{id}' api undefined") if api.nil?
+        @@current_api_blocks << api
+      end
     end
-    @@current_api_block = block
+    @@current_api_blocks << block if block
   end
 
   class JDLBuilder
     def initialize
+      @definition_lookup = {}
       @path_to_class = {}
       @base_api_class = Class.new(BasicObject) do
         undef_method :!, :!=, :==, :equal?, :__id__
@@ -60,30 +74,6 @@ module JABA
       @common_attrs_module = Module.new do
         def self.attr_defs = @attr_defs ||= []
       end
-
-      # register some always available methods
-      JDLTopLevelAPI.execute(self) do
-        method "*|available" do
-          title "Array of attributes/methods available in current context"
-          on_called do |str, node:| node.available end
-        end
-
-        method "*|print" do
-          title "Prints a non-newline terminated string to stdout"
-          on_called do |str| Kernel.print(str) end
-        end
-
-        method "*|puts" do
-          title "Prints a newline terminated string to stdout"
-          on_called do |str| Kernel.puts(str) end
-        end
-
-        method "*|fail" do
-          title "Raise an error"
-          note "Stops execution"
-          on_called do |msg| JABA.error(msg, line: $last_call_location) end
-        end
-      end
     end
 
     def top_level_api_class = @top_level_api_class
@@ -96,12 +86,12 @@ module JABA
     end
 
     def set_flag(name, &block)
-      fd = FlagDefinition.new(APIBuilder.last_call_location, name)
+      fd = make_definition(FlagDefinition, name)
       FlagDefinitionAPI.execute(fd, &block) if block_given?
     end
 
     def set_basedir_spec(name, &block)
-      d = BasedirSpecDefinition.new(APIBuilder.last_call_location, name)
+      d = make_definition(BasedirSpecDefinition, name)
       BasedirSpecDefinitionAPI.execute(d, &block) if block_given?
     end
 
@@ -117,7 +107,7 @@ module JABA
       end
       parent_path, name = split_jdl_path(path)
       parent_class = get_or_make_class(parent_path, what: :node)
-      node_def = NodeDefinition.new(APIBuilder.last_call_location, name)
+      node_def = make_definition(NodeDefinition, name)
       NodeDefinitionAPI.execute(node_def, &block) if block_given?
       node_def.post_create
       parent_class.define_method(name) do |*args, **kwargs, &node_block|
@@ -144,13 +134,40 @@ module JABA
       path = validate_path(path)
       parent_path, name = split_jdl_path(path)
       parent_class = get_or_make_class(parent_path, what: :method)
-      meth_def = MethodDefinition.new(APIBuilder.last_call_location, name)
+      meth_def = make_definition(MethodDefinition, name)
       MethodDefinitionAPI.execute(meth_def, &block) if block_given?
       meth_def.post_create
       parent_class.define_method(name) do |*args, **kwargs|
         $last_call_location = ::Kernel.calling_location
         instance_exec(*args, **kwargs, node: @node, &meth_def.on_called)
       end
+    end
+
+    def lookup_definition(klass, name, fail_if_not_found: true, attr_def: nil)
+      all = @definition_lookup[klass]
+      if all.nil?
+        JABA.error("No '#{klass}' definition class registered") if fail_if_not_found
+        return nil
+      end
+      d = all.find { |fd| fd.name == name }
+      if d.nil? && fail_if_not_found
+        msg = "'#{name.inspect_unquoted}' must be one of #{all.map { |s| s.name }}"
+        if attr_def
+          attr_def.definition_error(msg)
+        else
+          JABA.error(msg)
+        end
+      end
+      d
+    end
+
+    def each_definition(klass, &block)
+      all = @definition_lookup[klass]
+      if all.nil?
+        JABA.error("No '#{klass}' definition class registered") if fail_if_not_found
+        return nil
+      end
+      all.each(&block)
     end
 
     private
@@ -169,7 +186,7 @@ module JABA
       type = "Null" if type.nil?
       attr_type_class = JABA.const_get("AttributeType#{type.to_s.capitalize_first}")
       attr_type = attr_type_class.singleton
-      attr_def = def_class.new(APIBuilder.last_call_location, attr_name, attr_type)
+      attr_def = make_definition(def_class, attr_name, attr_type)
       attr_type.init_attr_def(attr_def)
       if type == :compound
         # Compound attr interface inherits parent nodes interface so it has read only access to its attrs
@@ -208,6 +225,13 @@ module JABA
         klass
       end
       return klass
+    end
+
+    def make_definition(klass, name, ...)
+      d = klass.new(APIBuilder.last_call_location, name, ...)
+      d.instance_variable_set(:@jdl_builder, self)
+      @definition_lookup.push_value(klass, d)
+      d
     end
 
     def error(msg) = JABA.error(msg, line: APIBuilder.last_call_location)

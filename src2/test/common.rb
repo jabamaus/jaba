@@ -3,8 +3,8 @@ require_relative "../jaba"
 JABA.running_tests!
 
 module JabaTestMethods
-  def jdl(&block)
-    JABA.define_api(&block)
+  def jdl(required_apis: [], &block)
+    JABA.set_api_level(required_apis, &block)
   end
 
   def jaba(

@@ -102,13 +102,17 @@ module JABA
 
       if @@core_api_builder.nil?
         @@core_api_builder = JDLBuilder.new
-        JDLTopLevelAPI.execute(@@core_api_builder, &JABA.core_api_block)
+        JABA.core_api_blocks.each do |id, b|
+          JDLTopLevelAPI.execute(@@core_api_builder, &b)
+        end
       end
-      if JABA.current_api_block == JABA.core_api_block
-        @jdl = @@core_api_builder
-      else
+      if !JABA.current_api_blocks.empty?
         @jdl = JDLBuilder.new
-        JDLTopLevelAPI.execute(@jdl, &JABA.current_api_block)
+        JABA.current_api_blocks.each do |b|
+          JDLTopLevelAPI.execute(@jdl, &b)
+        end
+      else
+        @jdl = @@core_api_builder
       end
       @project_api_class = @jdl.class_from_path("project", fail_if_not_found: !JABA.running_tests?)
 

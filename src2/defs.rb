@@ -6,16 +6,6 @@ module JABA
       @title = nil
       @notes = []
       @examples = []
-      self.class.all << self
-    end
-
-    def self.all = @all ||= []
-    def self.lookup(name, from:, fail_if_not_found: true)
-      d = all.find { |fd| fd.name == name }
-      if d.nil? && fail_if_not_found
-        from.definition_error("'#{name.inspect_unquoted}' must be one of #{all.map { |s| s.name }}")
-      end
-      d
     end
 
     def src_loc = @src_loc
@@ -98,6 +88,7 @@ module JABA
   class AttributeDefinition < Definition
     def initialize(src_loc, name, variant, attr_type)
       super(src_loc, name)
+      @jdl_builder = nil # set by JDLBuilder
       @variant = variant
       @attr_type = attr_type
       @flags = []
@@ -121,7 +112,7 @@ module JABA
 
     def set_flags(*flags)
       flags.flatten.each do |f|
-        fd = FlagDefinition.lookup(f, from: self)
+        fd = @jdl_builder.lookup_definition(FlagDefinition, f, attr_def: self)
         fd.check_compatibility(self)
         @flags << f
       end
@@ -144,7 +135,7 @@ module JABA
     def basedir_spec = @basedir_spec
 
     def set_basedir_spec(s)
-      @basedir_spec = BasedirSpecDefinition.lookup(s, from: self)
+      @basedir_spec = @jdl_builder.lookup_definition(BasedirSpecDefinition, s, attr_def: self)
     end
 
     def set_validate(&block) = @on_validate = block

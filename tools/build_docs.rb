@@ -44,7 +44,8 @@ class DocBuilder
     @file_manager = JABA::FileManager.new
 
     # Build documentable API objects
-    JABA::JDLTopLevelAPI.execute(JABA::JDLBuilder.new, &JABA.core_api_block)
+    @jdl = JABA::JDLBuilder.new
+    JABA::JDLTopLevelAPI.execute(@jdl, &JABA.core_api_block)
 
     generate_handwritten
     generate_versioned_index
@@ -91,7 +92,7 @@ class DocBuilder
   def generate_reference_doc
     write_markdown_page('jaba_reference.md', 'Jaba language reference', versioned: true) do |w|
       w << ""
-      JABA::NodeDefinition.all.each do |nd|
+      @jdl.each_definition(JABA::NodeDefinition) do |nd|
         w << "  - [#{nd.name}](TODO)"
       end
 =begin

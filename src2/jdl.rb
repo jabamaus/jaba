@@ -1,4 +1,4 @@
-JABA.define_api do
+JABA.define_api(:core) do
   # Flags
 
   flag :allow_dupes do
@@ -77,11 +77,32 @@ JABA.define_api do
 
   # Global methods
 
-  # Global attributes. Available in all nodes but not at top level.
+  method "*|available" do
+    title "Array of attributes/methods available in current context"
+    on_called do |str, node:| node.available end
+  end
 
-  attr "*|root", type: :dir do
-    title "TODO"
-    flags :node_option
+  method "*|print" do
+    title "Prints a non-newline terminated string to stdout"
+    on_called do |str| Kernel.print(str) end
+  end
+
+  method "*|puts" do
+    title "Prints a newline terminated string to stdout"
+    on_called do |str| Kernel.puts(str) end
+  end
+
+  method "*|fail" do
+    title "Raise an error"
+    note "Stops execution"
+    on_called do |msg| JABA.error(msg, line: $last_call_location) end
+  end
+
+  method "*|include" do
+    title "Include a shared definition"
+    on_called do |id|
+      JABA.context.include_shared(id)
+    end
   end
 
   # Top level methods
@@ -97,6 +118,15 @@ JABA.define_api do
     on_called do end
   end
 
+  # Global attributes. Available in all nodes but not at top level.
+
+  attr "*|root", type: :dir do
+    title "TODO"
+    flags :node_option
+  end
+end
+
+JABA.define_api(:project) do
   # Top level attributes
 
   attr_array "default_configs", type: :symbol do
@@ -137,10 +167,4 @@ JABA.define_api do
     flags :per_config, :required
   end
 
-  method "project|include" do
-    title "Include a shared definition"
-    on_called do |id|
-      JABA.context.include_shared(id)
-    end
-  end
 end
