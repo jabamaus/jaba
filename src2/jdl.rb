@@ -1,4 +1,58 @@
 JABA.define_api(:core) do
+  # Attribute types
+  attr_type :null do
+    title "Null attribute type"
+  end
+
+  attr_type :string do
+    title "String attribute type"
+  end
+
+  attr_type :symbol do
+    title "Symbol attribute type"
+  end
+
+  attr_type :symbol do
+    title "Symbol attribute type"
+  end
+
+  attr_type :bool do
+    title "Boolean attribute type"
+  end
+
+  attr_type :choice do
+    title "Choice attribute type"
+    note "Can take exactly one of a set of unique values"
+  end
+
+  attr_type :uuid do
+    title "UUID attribute type"
+  end
+
+  attr_type :file do
+    title "File attribute type"
+    note "Validates that value is a string path representing a file"
+  end
+
+  attr_type :dir do
+    title "Directory attribute type"
+    note "Validates that value is a string path representing a directory"
+  end
+
+  attr_type :basename do
+    title "basename attribute type"
+    note "Basename of a file. Slashes are rejected."
+  end
+  
+  attr_type :src do
+    title "Source file specification pattern"
+    note "Can be file glob match an explicit path or a directory"
+  end
+
+  attr_type :compound do
+    title "Compound attribute type"
+  end
+
   # Flags
 
   flag :allow_dupes do

@@ -103,6 +103,17 @@ module JABA
       @compound_api = nil # used by compound attribute
     end
 
+    def post_create
+      super
+      @default.freeze
+      @flags.freeze
+      @flag_options.freeze
+
+      if type_id == :choice && @items.empty?
+        definition_error("'items' must be set")
+      end
+    end
+
     def describe = "'#{@name.inspect_unquoted}' #{@variant == :single ? "" : "#{@variant} "}attribute"
     def variant = @variant
     def array? = @variant == :array
@@ -178,17 +189,6 @@ module JABA
     def set_compound_api(api) = @compound_api = api
     def compound_api = @compound_api
 
-    def post_create
-      super
-      @default.freeze
-      @flags.freeze
-      @flag_options.freeze
-
-      if type_id == :choice && @items.empty?
-        definition_error("'items' must be set")
-      end
-    end
-
     def validate_value(new_val); end # Override
   end
 
@@ -262,9 +262,7 @@ module JABA
     end
 
     def set_key_type(key_type)
-      key_type = "Null" if key_type.nil?
-      attr_type_class = JABA.const_get("AttributeType#{key_type.to_s.capitalize_first}")
-      @key_type = attr_type_class.singleton
+      @key_type = @jdl_builder.lookup_definition(:attr_types, key_type)
     end
     def key_type = @key_type
     def set_validate_key(&block) = @on_validate_key = block

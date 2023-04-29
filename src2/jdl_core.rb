@@ -1,5 +1,6 @@
 module JABA
   JDLTopLevelAPI = APIBuilder.define(
+    :attr_type,
     :flag,
     :basedir_spec,
     :method,
@@ -9,6 +10,7 @@ module JABA
     :node,
   )
   CommonAPI = APIBuilder.define_module(:title, :note, :example)
+  AttributeTypeDefinitionAPI = APIBuilder.define().include(CommonAPI)
   FlagDefinitionAPI = APIBuilder.define(:compatible?).include(CommonAPI)
   BasedirSpecDefinitionAPI = APIBuilder.define().include(CommonAPI)
   MethodDefinitionAPI = APIBuilder.define(:on_called).include(CommonAPI)
@@ -85,14 +87,21 @@ module JABA
       klass
     end
 
+    def set_attr_type(name, &block)
+      attr_type_class = JABA.const_get("AttributeType#{name.to_s.capitalize_first}")
+      at = make_definition(attr_type_class, name, lookup_key: :attr_types)
+      AttributeTypeDefinitionAPI.execute(at, &block) if block
+      at.post_create
+    end
+
     def set_flag(name, &block)
       fd = make_definition(FlagDefinition, name)
-      FlagDefinitionAPI.execute(fd, &block) if block_given?
+      FlagDefinitionAPI.execute(fd, &block) if block
     end
 
     def set_basedir_spec(name, &block)
       d = make_definition(BasedirSpecDefinition, name)
-      BasedirSpecDefinitionAPI.execute(d, &block) if block_given?
+      BasedirSpecDefinitionAPI.execute(d, &block) if block
     end
 
     # TODO: disallow nesting nodes
@@ -108,7 +117,7 @@ module JABA
       parent_path, name = split_jdl_path(path)
       parent_class = get_or_make_class(parent_path, what: :node)
       node_def = make_definition(NodeDefinition, name)
-      NodeDefinitionAPI.execute(node_def, &block) if block_given?
+      NodeDefinitionAPI.execute(node_def, &block) if block
       node_def.post_create
       parent_class.define_method(name) do |*args, **kwargs, &node_block|
         $last_call_location = ::Kernel.calling_location
@@ -116,15 +125,15 @@ module JABA
       end
     end
 
-    def set_attr(path, type: nil, &block)
+    def set_attr(path, type: :null, &block)
       process_attr(path, AttributeSingleDefinition, type, block)
     end
 
-    def set_attr_array(path, type: nil, &block)
+    def set_attr_array(path, type: :null, &block)
       process_attr(path, AttributeArrayDefinition, type, block)
     end
 
-    def set_attr_hash(path, key_type: nil, type: nil, &block)
+    def set_attr_hash(path, key_type: :null, type: :null, &block)
       process_attr(path, AttributeHashDefinition, type, block) do |attr_def|
         attr_def.set_key_type(key_type)
       end
@@ -135,7 +144,7 @@ module JABA
       parent_path, name = split_jdl_path(path)
       parent_class = get_or_make_class(parent_path, what: :method)
       meth_def = make_definition(MethodDefinition, name)
-      MethodDefinitionAPI.execute(meth_def, &block) if block_given?
+      MethodDefinitionAPI.execute(meth_def, &block) if block
       meth_def.post_create
       parent_class.define_method(name) do |*args, **kwargs|
         $last_call_location = ::Kernel.calling_location
@@ -172,7 +181,7 @@ module JABA
 
     private
 
-    def process_attr(path, def_class, type, block)
+    def process_attr(path, def_class, type_id, block)
       path = validate_path(path)
       parent_path, attr_name = split_jdl_path(path)
       parent_class = get_or_make_class(parent_path, what: :attribute)
@@ -183,12 +192,10 @@ module JABA
         $last_call_location = ::Kernel.calling_location
         @node.handle_attr(attr_name, *args, **kwargs, &attr_block)
       end
-      type = "Null" if type.nil?
-      attr_type_class = JABA.const_get("AttributeType#{type.to_s.capitalize_first}")
-      attr_type = attr_type_class.singleton
+      attr_type = lookup_definition(:attr_types, type_id)
       attr_def = make_definition(def_class, attr_name, attr_type)
       attr_type.init_attr_def(attr_def)
-      if type == :compound
+      if type_id == :compound
         # Compound attr interface inherits parent nodes interface so it has read only access to its attrs
         attr_def.set_compound_api(get_or_make_class(path, superklass: parent_class, what: :attribute))
       end
@@ -227,10 +234,11 @@ module JABA
       return klass
     end
 
-    def make_definition(klass, name, ...)
-      d = klass.new(APIBuilder.last_call_location, name, ...)
+    def make_definition(klass, name, *args, lookup_key: nil)
+      lookup_key = klass if lookup_key.nil?
+      d = klass.new(APIBuilder.last_call_location, name, *args)
       d.instance_variable_set(:@jdl_builder, self)
-      @definition_lookup.push_value(klass, d)
+      @definition_lookup.push_value(lookup_key, d)
       d
     end
 
