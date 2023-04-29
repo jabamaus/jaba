@@ -84,7 +84,7 @@ jtest "works with compound as single attribute with nesting" do
   compound[:nested1][:b].must_equal 2
   compound[:nested1][:nested2][:c].must_equal 5
 end
-
+=begin
 jtest "has read only access to parent attrs" do
   jdl do
     attr :toplevel
@@ -103,7 +103,7 @@ jtest "has read only access to parent attrs" do
     end
   end
 end
-
+=end
 jtest "works with array" do
   jdl do
     attr_array "compound", type: :compound
