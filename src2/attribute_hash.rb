@@ -5,7 +5,7 @@ module JABA
       @hash = {}
       @in_on_set = false
       if attr_def.default_set? && !attr_def.default_is_block?
-        attr_def.get_default.each do |k, v|
+        attr_def.default.each do |k, v|
           insert_key(k, v, call_on_set: false)
         end
       end

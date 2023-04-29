@@ -128,12 +128,12 @@ module JABA
     end
 
     def has_flag?(flag) = @flags.include?(flag)
-    def get_flag_options = @flag_options
+    def flag_options = @flag_options
     def set_flag_options(*fo) = @flag_options.concat(fo)
     def has_flag_option?(fo) = @flag_options.include?(fo)
 
     # Items is used by choice attribute
-    def get_items = @items
+    def items = @items
 
     def set_items(items)
       definition_warn("'items' contains duplicates") if items.uniq!
@@ -141,7 +141,7 @@ module JABA
     end
 
     # basedir_spec is used by path attributes
-    def get_basedir_spec = @basedir_spec
+    def basedir_spec = @basedir_spec
 
     def set_basedir_spec(s)
       @basedir_spec = BasedirSpecDefinition.lookup(s, from: self)
@@ -159,7 +159,7 @@ module JABA
       @value_options << ValueOption.new(name, required, items)
     end
 
-    def get_value_option(name)
+    def value_option(name)
       if @value_options.empty?
         definition_error("Invalid value option '#{name.inspect_unquoted}' - no options defined in #{describe}")
       end
@@ -170,7 +170,7 @@ module JABA
       vo
     end
 
-    def get_default = @default
+    def default = @default
     def default_is_block? = @default_is_block
     def default_set? = @default_set
 
@@ -185,7 +185,7 @@ module JABA
     end
 
     def set_compound_api(api) = @compound_api = api
-    def get_compound_api = @compound_api
+    def compound_api = @compound_api
 
     def post_create
       super

@@ -5,7 +5,7 @@ module JABA
       @elems = []
       @excludes = []
       if attr_def.default_set? && !attr_def.default_is_block?
-        set(attr_def.get_default, __call_on_set: false)
+        set(attr_def.default, __call_on_set: false)
       end
     end
 
@@ -100,7 +100,7 @@ module JABA
 
     def validate_default_block_value(value)
       if !value.is_a?(Array)
-        attr_error("#{describe} 'default' invalid - requires an array not a '#{value.class}'", errobj: attr_def.get_default)
+        attr_error("#{describe} 'default' invalid - requires an array not a '#{value.class}'", errobj: attr_def.default)
       end
       at = attr_def.attr_type
       value.each do |d|

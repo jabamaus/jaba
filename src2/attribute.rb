@@ -35,7 +35,7 @@ module JABA
     protected
 
     def make_compound_attr(&block)
-      compound = Node.new(attr_def.get_compound_api, nil, @last_call_location, @node)
+      compound = Node.new(attr_def.compound_api, nil, @last_call_location, @node)
       compound.eval_jdl(&block) if block
       compound.post_create
       @set = true
@@ -105,7 +105,7 @@ module JABA
       if __validate
         @flag_options.each do |f|
           if !attr_def.has_flag_option?(f)
-            attr_error("Invalid flag option '#{f.inspect_unquoted}' passed to #{describe}. Valid flags are #{attr_def.get_flag_options}")
+            attr_error("Invalid flag option '#{f.inspect_unquoted}' passed to #{describe}. Valid flags are #{attr_def.flag_options}")
           end
         end
         if !new_value.nil?
@@ -129,8 +129,8 @@ module JABA
 
     def has_flag_option?(o) = @flag_options&.include?(o)
 
-    def get_option_value(key, fail_if_not_found: true)
-      attr_def.get_value_option(key)
+    def option_value(key, fail_if_not_found: true)
+      attr_def.value_option(key)
       if !@value_options.key?(key)
         if fail_if_not_found
           attr_error("Option key '#{key}' not found in #{describe}")
@@ -154,7 +154,7 @@ module JABA
     def initialize(attr_def, node)
       super
       if attr_def.default_set? && !attr_def.default_is_block?
-        set(attr_def.get_default, __call_on_set: false)
+        set(attr_def.default, __call_on_set: false)
       end
     end
 

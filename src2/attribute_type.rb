@@ -108,7 +108,7 @@ module JABA
     end
 
     def value_from_cmdline(str, attr_def)
-      items = attr_def.get_items
+      items = attr_def.items
       # Use find_index to allow for nil being a valid choice
       index = items.find_index { |i| i.to_s == str }
       if index.nil?
@@ -118,7 +118,7 @@ module JABA
     end
 
     def validate_value(attr_def, value)
-      items = attr_def.get_items
+      items = attr_def.items
       if !items.include?(value)
         yield "must be one of #{items} but got '#{value.inspect_unquoted}'"
       end

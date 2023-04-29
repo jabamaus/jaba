@@ -141,9 +141,9 @@ jtest "overwrites flag and value options on successive calls" do
   a.has_flag_option?(:fo1).must_be_false
   a.has_flag_option?(:fo2).must_be_true
   a.has_flag_option?(:fo3).must_be_true
-  a.get_option_value(:kv1, fail_if_not_found: false).must_be_nil
-  a.get_option_value(:kv2).must_equal(3)
-  a.get_option_value(:kv3).must_equal(4)
+  a.option_value(:kv1, fail_if_not_found: false).must_be_nil
+  a.option_value(:kv2).must_equal(3)
+  a.option_value(:kv3).must_equal(4)
 end
 
 # TODO: port

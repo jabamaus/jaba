@@ -65,7 +65,7 @@ jtest "supports a default" do
         b = get_attr(:b)
         b.fetch(:k).has_flag_option?(:opt1).must_be_true
         b.fetch(:k2).has_flag_option?(:opt1).must_be_true
-        b.fetch(:k2).get_option_value(:vopt).must_equal(1)
+        b.fetch(:k2).option_value(:vopt).must_equal(1)
         b.fetch(:k3).has_flag_option?(:opt2).must_be_true
         c = get_attr(:c)
         c.fetch(:k1).has_flag_option?(:opt1).must_be_true
@@ -282,8 +282,8 @@ jtest "can accept value options" do
   a = op[:root].get_attr(:a)
   elem = a.fetch(:k)
   elem.value.must_equal(:v)
-  elem.get_option_value(:kv1).must_equal("a")
-  elem.get_option_value(:kv2).must_equal("b")
+  elem.option_value(:kv1).must_equal("a")
+  elem.option_value(:kv2).must_equal("b")
 end
 
 jtest "can accept value and flag options" do
@@ -304,8 +304,8 @@ jtest "can accept value and flag options" do
   elem.has_flag_option?(:flag_opt2).must_be_true
   elem.has_flag_option?(:flag_opt3).must_be_false
   elem.flag_options.must_equal [:flag_opt1, :flag_opt2]
-  elem.get_option_value(:kv1).must_equal("a")
-  elem.get_option_value(:kv2).must_equal("b")
+  elem.option_value(:kv1).must_equal("a")
+  elem.option_value(:kv2).must_equal("b")
 end
 =begin
 jtest "validates key value supplied correctly" do

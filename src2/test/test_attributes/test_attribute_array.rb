@@ -332,33 +332,33 @@ jtest "gives a copy of value options to each element" do
 
   attr = a.at(0)
   attr.value.must_equal(1)
-  opt1val = attr.get_option_value(:opt1)
+  opt1val = attr.option_value(:opt1)
   opt1val.wont_be_nil
   opt1val.object_id.wont_equal(opt1.object_id)
   opt1val.must_equal("opt1")
-  opt2val = attr.get_option_value(:opt2)
+  opt2val = attr.option_value(:opt2)
   opt2val.wont_be_nil
   opt2val.object_id.wont_equal(opt2.object_id)
   opt2val.must_equal("opt2")
 
   attr = a.at(1)
   attr.value.must_equal(2)
-  opt1val = attr.get_option_value(:opt1)
+  opt1val = attr.option_value(:opt1)
   opt1val.wont_be_nil
   opt1val.object_id.wont_equal(opt1.object_id)
   opt1val.must_equal("opt1")
-  opt2val = attr.get_option_value(:opt2)
+  opt2val = attr.option_value(:opt2)
   opt2val.wont_be_nil
   opt2val.object_id.wont_equal(opt2.object_id)
   opt2val.must_equal("opt2")
 
   attr = a.at(2)
   attr.value.must_equal(3)
-  opt1val = attr.get_option_value(:opt1)
+  opt1val = attr.option_value(:opt1)
   opt1val.wont_be_nil
   opt1val.object_id.wont_equal(opt1.object_id)
   opt1val.must_equal("opt1")
-  opt2val = attr.get_option_value(:opt2)
+  opt2val = attr.option_value(:opt2)
   opt2val.wont_be_nil
   opt2val.object_id.wont_equal(opt2.object_id)
   opt2val.must_equal("opt2")
