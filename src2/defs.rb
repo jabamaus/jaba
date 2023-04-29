@@ -270,7 +270,11 @@ module JABA
       @key_type = nil
     end
 
-    def set_key_type(key_type) = @key_type = key_type
+    def set_key_type(key_type)
+      key_type = "Null" if key_type.nil?
+      attr_type_class = JABA.const_get("AttributeType#{key_type.to_s.capitalize_first}")
+      @key_type = attr_type_class.singleton
+    end
     def key_type = @key_type
     def set_validate_key(&block) = @on_validate_key = block
     def on_validate_key = @on_validate_key
