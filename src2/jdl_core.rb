@@ -192,8 +192,9 @@ module JABA
         $last_call_location = ::Kernel.calling_location
         @node.handle_attr(attr_name, *args, **kwargs, &attr_block)
       end
-      attr_type = lookup_definition(:attr_types, type_id)
-      attr_def = make_definition(def_class, attr_name, attr_type)
+      attr_def = make_definition(def_class, attr_name)
+      attr_type = lookup_definition(:attr_types, type_id, attr_def: attr_def)
+      attr_def.set_attr_type(attr_type)
       attr_type.init_attr_def(attr_def)
       if type_id == :compound
         # Compound attr interface inherits parent nodes interface so it has read only access to its attrs

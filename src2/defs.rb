@@ -86,11 +86,10 @@ module JABA
   end
 
   class AttributeDefinition < Definition
-    def initialize(src_loc, name, variant, attr_type)
+    def initialize(src_loc, name, variant)
       super(src_loc, name)
       @jdl_builder = nil # set by JDLBuilder
       @variant = variant
-      @attr_type = attr_type
       @flags = []
       @flag_options = []
       @value_options = []
@@ -103,6 +102,8 @@ module JABA
       @compound_api = nil # used by compound attribute
     end
 
+    def set_attr_type(t) = @attr_type = t
+      
     def post_create
       super
       @default.freeze
@@ -193,8 +194,8 @@ module JABA
   end
 
   class AttributeSingleDefinition < AttributeDefinition
-    def initialize(src_loc, name, attr_type)
-      super(src_loc, name, :single, attr_type)
+    def initialize(src_loc, name)
+      super(src_loc, name, :single)
     end
 
     def post_create
@@ -228,8 +229,8 @@ module JABA
   end
 
   class AttributeArrayDefinition < AttributeDefinition
-    def initialize(src_loc, name, attr_type)
-      super(src_loc, name, :array, attr_type)
+    def initialize(src_loc, name)
+      super(src_loc, name, :array)
     end
 
     def set_default(val = nil, &block)
@@ -255,8 +256,8 @@ module JABA
   end
 
   class AttributeHashDefinition < AttributeDefinition
-    def initialize(src_loc, name, attr_type)
-      super(src_loc, name, :hash, attr_type)
+    def initialize(src_loc, name)
+      super(src_loc, name, :hash)
       @on_validate_key = nil
       @key_type = nil
     end
