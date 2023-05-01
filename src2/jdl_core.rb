@@ -107,6 +107,12 @@ module JABA
     # TODO: disallow nesting nodes
     def set_node(path, &block)
       path = validate_path(path)
+      parent_path, name = split_jdl_path(path)
+
+      node_def = make_definition(NodeDefinition, name)
+      NodeDefinitionAPI.execute(node_def, &block) if block
+      node_def.post_create
+
       node_class = get_or_make_class(path, superklass: @top_level_api_class_base, what: :node)
       node_class.include(@common_attrs_module)
       common_attrs_module = @common_attrs_module
@@ -114,11 +120,8 @@ module JABA
         attr_defs.each(&block)
         common_attrs_module.attr_defs.each(&block)
       end
-      parent_path, name = split_jdl_path(path)
+
       parent_class = get_or_make_class(parent_path, what: :node)
-      node_def = make_definition(NodeDefinition, name)
-      NodeDefinitionAPI.execute(node_def, &block) if block
-      node_def.post_create
       parent_class.define_method(name) do |*args, **kwargs, &node_block|
         $last_call_location = ::Kernel.calling_location
         JABA.context.register_node(node_class, *args, **kwargs, &node_block)
@@ -142,10 +145,12 @@ module JABA
     def set_method(path, &block)
       path = validate_path(path)
       parent_path, name = split_jdl_path(path)
-      parent_class = get_or_make_class(parent_path, what: :method)
+      
       meth_def = make_definition(MethodDefinition, name)
       MethodDefinitionAPI.execute(meth_def, &block) if block
       meth_def.post_create
+      
+      parent_class = get_or_make_class(parent_path, what: :method)
       parent_class.define_method(name) do |*args, **kwargs|
         $last_call_location = ::Kernel.calling_location
         instance_exec(*args, **kwargs, node: @node, &meth_def.on_called)
@@ -184,6 +189,15 @@ module JABA
     def process_attr(path, def_class, type_id, block)
       path = validate_path(path)
       parent_path, attr_name = split_jdl_path(path)
+      
+      attr_def = make_definition(def_class, attr_name)
+      attr_type = lookup_definition(:attr_types, type_id, attr_def: attr_def)
+      attr_def.set_attr_type(attr_type)
+      attr_type.init_attr_def(attr_def)
+      yield attr_def if block_given?
+      AttributeDefinitionAPI.execute(attr_def, &block) if block
+      attr_def.post_create
+      
       parent_class = get_or_make_class(parent_path, what: :attribute)
       if parent_class.method_defined?(attr_name)
         error("Duplicate '#{path}' attribute registered")
@@ -192,18 +206,12 @@ module JABA
         $last_call_location = ::Kernel.calling_location
         @node.handle_attr(attr_name, *args, **kwargs, &attr_block)
       end
-      attr_def = make_definition(def_class, attr_name)
-      attr_type = lookup_definition(:attr_types, type_id, attr_def: attr_def)
-      attr_def.set_attr_type(attr_type)
-      attr_type.init_attr_def(attr_def)
+  
       if type_id == :compound
         # Compound attr interface inherits parent nodes interface so it has read only access to its attrs
         attr_def.set_compound_api(get_or_make_class(path, superklass: parent_class, what: :attribute))
       end
-      yield attr_def if block_given?
 
-      AttributeDefinitionAPI.execute(attr_def, &block) if block
-      attr_def.post_create
       parent_class.attr_defs << attr_def
     end
 
@@ -245,7 +253,7 @@ module JABA
 
     def error(msg) = JABA.error(msg, line: APIBuilder.last_call_location)
 
-    # Allows eg node_name|node2_name|attr or *|attr
+    # Allows eg node_name/node2_name/attr or */attr
     def validate_path(path)
       if !path.is_a?(String) && !path.is_a?(Symbol)
         error("'#{path.inspect_unquoted}' must be a String or a Symbol")
