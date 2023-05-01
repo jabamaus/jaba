@@ -89,19 +89,15 @@ module JABA
 
     def set_attr_type(name, &block)
       attr_type_class = JABA.const_get("AttributeType#{name.to_s.capitalize_first}")
-      at = make_definition(attr_type_class, name, lookup_key: :attr_types)
-      AttributeTypeDefinitionAPI.execute(at, &block) if block
-      at.post_create
+      make_definition(attr_type_class, AttributeTypeDefinitionAPI, name, block, lookup_key: :attr_types)
     end
 
     def set_flag(name, &block)
-      fd = make_definition(FlagDefinition, name)
-      FlagDefinitionAPI.execute(fd, &block) if block
+      make_definition(FlagDefinition, FlagDefinitionAPI, name, block)
     end
 
     def set_basedir_spec(name, &block)
-      d = make_definition(BasedirSpecDefinition, name)
-      BasedirSpecDefinitionAPI.execute(d, &block) if block
+      make_definition(BasedirSpecDefinition, BasedirSpecDefinitionAPI, name, block)
     end
 
     # TODO: disallow nesting nodes
@@ -109,9 +105,7 @@ module JABA
       path = validate_path(path)
       parent_path, name = split_jdl_path(path)
 
-      node_def = make_definition(NodeDefinition, name)
-      NodeDefinitionAPI.execute(node_def, &block) if block
-      node_def.post_create
+      node_def = make_definition(NodeDefinition, NodeDefinitionAPI, name, block)
 
       node_class = get_or_make_class(path, superklass: @top_level_api_class_base, what: :node)
       node_class.include(@common_attrs_module)
@@ -146,9 +140,7 @@ module JABA
       path = validate_path(path)
       parent_path, name = split_jdl_path(path)
       
-      meth_def = make_definition(MethodDefinition, name)
-      MethodDefinitionAPI.execute(meth_def, &block) if block
-      meth_def.post_create
+      meth_def = make_definition(MethodDefinition, MethodDefinitionAPI, name, block)
       
       parent_class = get_or_make_class(parent_path, what: :method)
       parent_class.define_method(name) do |*args, **kwargs|
@@ -190,13 +182,12 @@ module JABA
       path = validate_path(path)
       parent_path, attr_name = split_jdl_path(path)
       
-      attr_def = make_definition(def_class, attr_name)
-      attr_type = lookup_definition(:attr_types, type_id, attr_def: attr_def)
-      attr_def.set_attr_type(attr_type)
-      attr_type.init_attr_def(attr_def)
-      yield attr_def if block_given?
-      AttributeDefinitionAPI.execute(attr_def, &block) if block
-      attr_def.post_create
+      attr_def = make_definition(def_class, AttributeDefinitionAPI, attr_name, block) do |ad|
+        attr_type = lookup_definition(:attr_types, type_id, attr_def: ad)
+        ad.set_attr_type(attr_type)
+        attr_type.init_attr_def(ad)
+        yield ad if block_given?
+      end
       
       parent_class = get_or_make_class(parent_path, what: :attribute)
       if parent_class.method_defined?(attr_name)
@@ -243,13 +234,16 @@ module JABA
       return klass
     end
 
-    def make_definition(klass, name, lookup_key: nil)
+    def make_definition(klass, api, name, block, lookup_key: nil)
       lookup_key = klass if lookup_key.nil?
       d = klass.new
       d.instance_variable_set(:@jdl_builder, self)
       d.instance_variable_set(:@name, name)
       d.instance_variable_set(:@src_loc, APIBuilder.last_call_location)
       @definition_lookup.push_value(lookup_key, d)
+      yield d if block_given?
+      api.execute(d, &block) if block
+      d.post_create
       d
     end
 
