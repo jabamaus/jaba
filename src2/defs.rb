@@ -14,8 +14,11 @@ module JABA
     def describe = "'#{name.inspect_unquoted}'"
 
     def set_title(t) = @title = t
+    def title = @title
     def set_note(n) = @notes << n
+    def notes = @notes
     def set_example(e) = @examples << e
+    def examples = @examples
 
     def post_create
       @src_loc.freeze
