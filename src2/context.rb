@@ -9,7 +9,7 @@ module JABA
 
   def self.error(msg, caller_step_back: 2, **kwargs) = JABA.context.error(msg, caller_step_back: caller_step_back, **kwargs)
   def self.warn(msg, caller_step_back: 2, **kwargs) = JABA.context.warn(msg, caller_step_back: caller_step_back, **kwargs)
-  def self.log(...) = JABA.context&.log(...)
+  def self.log(...) = JABA.context.log(...)
 
   class Context
     @@core_api_builder = nil
