@@ -58,10 +58,11 @@ module JABA
     def initialize(api_blocks = JABA.core_api_blocks)
       @definition_lookup = {}
       @path_to_node_def = {}
-      @path_to_class = {}
       @base_api_class = Class.new(BasicObject) do
         undef_method :!, :!=, :==, :equal?, :__id__
         def self.singleton = @instance ||= new
+        def self.set_inspect_name(name) = @inspect_name = name
+        def self.inspect = "#<Class:#{@inspect_name}>"
         def __internal_set_node(n); @node = n; self; end
 
         def method_missing(id, ...)
@@ -71,22 +72,23 @@ module JABA
       end
       # attrs get registered into top_level_api_class_base and methods and nodes get registered into top_level_api_class
       # Nodes inherit from top_level_api_class_base so facilitate read only access to attributes but no access to methods
-      @top_level_api_class_base = Class.new(@base_api_class) do
-        def self.inspect = '#<Class:TopLevelAPIBase>'
-      end
-      @top_level_api_class = Class.new(@top_level_api_class_base) do
-        def self.inspect = '#<Class:TopLevelAPI>'
-      end
+      @top_level_api_class_base = Class.new(@base_api_class)
+      @top_level_api_class_base.set_inspect_name('TopLevelAPIBase')
+      
+      @top_level_api_class = Class.new(@top_level_api_class_base)
+      @top_level_api_class.set_inspect_name("TopLevelAPI")
+
       @common_attrs_module = Module.new
       @common_attr_node_def = make_definition(NodeDefinition, nil, "common", nil) do |d|
         d.set_title("TODO")
+        d.set_api_class(@common_attrs_module)
       end
-      @path_to_node_def['*'] = @common_attr_node_def
+      @path_to_node_def["*"] = @common_attr_node_def
       @top_level_node_def = make_definition(NodeDefinition, nil, "global", nil) do |d|
         d.set_title("TODO")
+        d.set_api_class(@top_level_api_class_base)
       end
       @path_to_node_def[nil] = @top_level_node_def
-      @top_level_node_def.set_api_class(@top_level_api_class_base)
 
       api_blocks.each do |b|
         JDLTopLevelAPI.execute(self, &b)
@@ -96,12 +98,6 @@ module JABA
     def common_attr_node_def = @common_attr_node_def
     def top_level_node_def = @top_level_node_def
     def top_level_api_class = @top_level_api_class
-
-    def class_from_path(path, fail_if_not_found: true)
-      klass = @path_to_class[path]
-      error("class not registered for '#{path}' path") if klass.nil? && fail_if_not_found
-      klass
-    end
 
     def set_attr_type(name, &block)
       attr_type_class = JABA.const_get("AttributeType#{name.to_s.capitalize_first}")
@@ -116,25 +112,26 @@ module JABA
       make_definition(BasedirSpecDefinition, BasedirSpecDefinitionAPI, name, block)
     end
 
-    # TODO: disallow nesting nodes
     def set_node(path, &block)
       path = validate_path(path)
+      if @path_to_node_def.has_key?(path)
+        error("Duplicate '#{path}' node registered")
+      end
+
       parent_path, name = split_jdl_path(path)
+      parent_def = lookup_node_def(parent_path)
 
-      node_def = make_definition(NodeDefinition, NodeDefinitionAPI, name, block)
-      @path_to_node_def[path] = node_def
-
-      parent_def = @path_to_node_def[parent_path]
-      # TODO: checking
-      parent_def.node_defs << node_def
-
-      api_class = get_or_make_class(path, superklass: @top_level_api_class_base, what: :node)
+      api_class = Class.new(@top_level_api_class_base)
+      api_class.set_inspect_name(name)
       api_class.include(@common_attrs_module)
 
+      node_def = make_definition(NodeDefinition, NodeDefinitionAPI, name, block)
       node_def.set_api_class(api_class)
 
-      parent_class = get_or_make_class(parent_path, what: :node)
-      parent_class.define_method(name) do |*args, **kwargs, &node_block|
+      @path_to_node_def[path] = node_def
+      parent_def.node_defs << node_def
+
+      parent_def.api_class.define_method(name) do |*args, **kwargs, &node_block|
         $last_call_location = ::Kernel.calling_location
         JABA.context.register_node(node_def, *args, **kwargs, &node_block)
       end
@@ -157,13 +154,21 @@ module JABA
     def set_method(path, &block)
       path = validate_path(path)
       parent_path, name = split_jdl_path(path)
-      
-      make_definition(MethodDefinition, MethodDefinitionAPI, name, block) do |meth_def|
-        parent_class = get_or_make_class(parent_path, what: :method)
-        parent_class.define_method(name) do |*args, **kwargs|
-          $last_call_location = ::Kernel.calling_location
-          instance_exec(*args, **kwargs, node: @node, &meth_def.on_called)
+
+      parent_class = if parent_path == "*"
+          @base_api_class
+        else
+          lookup_node_def(parent_path).api_class
         end
+      if parent_class.method_defined?(name)
+        error("Duplicate '#{path}' method registered")
+      end
+
+      meth_def = make_definition(MethodDefinition, MethodDefinitionAPI, name, block)
+
+      parent_class.define_method(name) do |*args, **kwargs|
+        $last_call_location = ::Kernel.calling_location
+        instance_exec(*args, **kwargs, node: @node, &meth_def.on_called)
       end
     end
 
@@ -190,7 +195,8 @@ module JABA
     def process_attr(path, def_class, type_id, block)
       path = validate_path(path)
       parent_path, attr_name = split_jdl_path(path)
-      
+      node_def = lookup_node_def(parent_path)
+
       attr_def = make_definition(def_class, AttributeDefinitionAPI, attr_name, block) do |ad|
         attr_type = lookup_definition(:attr_types, type_id, attr_def: ad)
         ad.set_attr_type(attr_type)
@@ -198,11 +204,11 @@ module JABA
         yield ad if block_given?
       end
 
-      node_def = @path_to_node_def[parent_path]
-      JABA.error("could not find node def for '#{parent_path}'") if node_def.nil?
       node_def.attr_defs << attr_def
-      
-      parent_class = get_or_make_class(parent_path, what: :attribute)
+
+      parent_class = node_def.api_class
+      error("api class for '#{path}' node was nil") if parent_class.nil?
+
       if parent_class.method_defined?(attr_name)
         error("Duplicate '#{path}' attribute registered")
       end
@@ -210,46 +216,18 @@ module JABA
         $last_call_location = ::Kernel.calling_location
         @node.handle_attr(attr_name, *args, **kwargs, &attr_block)
       end
-  
+
       if type_id == :compound
         # Compound attr interface inherits parent nodes interface so it has read only access to its attrs
-        compound_def = AttributeGroupDefinition.new
-        compound_def.instance_variable_set(:@jdl_builder, self)
-        compound_api = get_or_make_class(path, superklass: parent_class, what: :attribute)
-        compound_def.set_api_class(compound_api)
-        attr_def.set_compound_def(compound_def)
-        @path_to_node_def[path] = compound_def
+        cmp_api = Class.new(parent_class)
+        cmp_api.set_inspect_name(attr_name)
+        
+        cmp_def = AttributeGroupDefinition.new
+        cmp_def.instance_variable_set(:@jdl_builder, self)
+        cmp_def.set_api_class(cmp_api)
+        attr_def.set_compound_def(cmp_def)
+        @path_to_node_def[path] = cmp_def
       end
-    end
-
-    def get_or_make_class(path, superklass: nil, what:)
-      if path.nil?
-        case what
-        when :attribute
-          return @top_level_api_class_base
-        else
-          return @top_level_api_class
-        end
-      elsif path == "*"
-        case what
-        when :method
-          return @base_api_class
-        when :attribute
-          return @common_attrs_module
-        else
-          JABA.error("'#{what}' not handled")
-        end
-      end
-      klass = class_from_path(path, fail_if_not_found: superklass.nil?)
-      if superklass
-        error("Duplicate path '#{path}' registered.") if klass
-        klass = Class.new(superklass) do
-          def self.inspect = "#<Class:#{path}>"
-        end
-        @path_to_class[path] = klass
-        klass
-      end
-      return klass
     end
 
     def make_definition(klass, api, name, block, lookup_key: nil)
@@ -263,6 +241,12 @@ module JABA
       api.execute(d, &block) if block
       d.post_create
       d
+    end
+
+    def lookup_node_def(path)
+      nd = @path_to_node_def[path]
+      error("No '#{path}' node registered") if nd.nil?
+      nd
     end
 
     def error(msg) = JABA.error(msg, line: APIBuilder.last_call_location)

@@ -30,10 +30,9 @@ jtest "validates jdl path format" do
   jaba
 end
 
-# TODO: better msg like "'a' node not found"
 jtest "checks parent path valid" do
   jdl do
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("24DB3815")}: class not registered for 'a' path." do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("24DB3815")}: No 'a' node registered." do
       attr "a/b" # 24DB3815
     end
   end
@@ -43,12 +42,18 @@ end
 jtest "checks for duplicate paths" do
   jdl do
     node "n"
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("99E1CB75")}: Duplicate path 'n' registered." do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("99E1CB75")}: Duplicate 'n' node registered." do
       node "n" # 99E1CB75
     end
     attr "n/a"
     JTest.assert_jaba_error "Error at #{JTest.src_loc("BC9DD62C")}: Duplicate 'n/a' attribute registered." do
       attr "n/a" # BC9DD62C
+    end
+    method "n/m" do
+      on_called do end
+    end
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("87285F34")}: Duplicate 'n/m' method registered." do
+      method "n/m" # 87285F34
     end
   end
   jaba
@@ -65,6 +70,25 @@ jtest "can register methods at top level" do
     # available_methods.must_equal ["m"] # TODO
     JTest.assert_output "m" do
       m
+    end
+  end
+end
+
+jtest "can register methods into a specific node" do
+  jdl do
+    node :node
+    method "node/m" do
+      on_called do Kernel.print "m|" end
+    end
+  end
+  jaba do
+    node :n do
+      JTest.assert_output "m" do
+        m
+      end
+    end
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("527A4B81")}: No 'm' method defined at this scope." do
+      m # 527A4B81
     end
   end
 end
