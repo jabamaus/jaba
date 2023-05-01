@@ -1,7 +1,7 @@
 module JABA
   class AttributeType < Definition
-    def initialize(src_loc, name, default: nil)
-      super(src_loc, name)
+    def initialize(default: nil)
+      super()
       @default = default
     end
 
@@ -30,8 +30,8 @@ module JABA
   class AttributeTypeNull < AttributeType; end
 
   class AttributeTypeString < AttributeType
-    def initialize(src_loc, name)
-      super(src_loc, name, default: '')
+    def initialize
+      super(default: '')
     end
 
     # Can be specified as a symbol but stored internally as a string
@@ -63,8 +63,8 @@ module JABA
   end
 
   class AttributeTypeBool < AttributeType
-    def initialize(src_loc, name)
-      super(src_loc, name, default: false)
+    def initialize
+      super(default: false)
     end
 
     def value_from_cmdline(str, attr_def)
@@ -121,8 +121,8 @@ module JABA
   class AttributeTypeFile < AttributePathBase; end
 
   class AttributeTypeDir < AttributePathBase
-    def initialize(src_loc, name)
-      super(src_loc, name, default: ".")
+    def initialize
+      super(default: ".")
     end
   end
   

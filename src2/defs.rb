@@ -1,8 +1,9 @@
 module JABA
   class Definition
-    def initialize(src_loc, name)
-      @src_loc = src_loc
-      @name = name
+    def initialize
+      @jdl_builder = nil # set by JDLBuilder
+      @src_loc = nil # Set by JDLBuilder
+      @name = nil # Set by JDLBuilder
       @title = nil
       @notes = []
       @examples = []
@@ -42,8 +43,8 @@ module JABA
   end
 
   class FlagDefinition < Definition
-    def initialize(src_loc, name)
-      super
+    def initialize
+      super()
       @on_compatible = nil
     end
 
@@ -57,22 +58,18 @@ module JABA
   end
 
   class BasedirSpecDefinition < Definition
-    def initialize(src_loc, name)
-      super
-    end
-
     def describe = "'#{name.inspect_unquoted}' basedir_spec"
   end
 
   class NodeDefinition < Definition
-    def initialize(src_loc, name)
-      super
+    def initialize
+      super()
     end
   end
 
   class MethodDefinition < Definition
-    def initialize(src_loc, name)
-      super
+    def initialize
+      super()
       @on_called = nil
     end
 
@@ -86,9 +83,8 @@ module JABA
   end
 
   class AttributeDefinition < Definition
-    def initialize(src_loc, name, variant)
-      super(src_loc, name)
-      @jdl_builder = nil # set by JDLBuilder
+    def initialize(variant)
+      super()
       @variant = variant
       @flags = []
       @flag_options = []
@@ -194,8 +190,8 @@ module JABA
   end
 
   class AttributeSingleDefinition < AttributeDefinition
-    def initialize(src_loc, name)
-      super(src_loc, name, :single)
+    def initialize
+      super(:single)
     end
 
     def post_create
@@ -229,8 +225,8 @@ module JABA
   end
 
   class AttributeArrayDefinition < AttributeDefinition
-    def initialize(src_loc, name)
-      super(src_loc, name, :array)
+    def initialize
+      super(:array)
     end
 
     def set_default(val = nil, &block)
@@ -256,8 +252,8 @@ module JABA
   end
 
   class AttributeHashDefinition < AttributeDefinition
-    def initialize(src_loc, name)
-      super(src_loc, name, :hash)
+    def initialize
+      super(:hash)
       @on_validate_key = nil
       @key_type = nil
     end

@@ -243,10 +243,12 @@ module JABA
       return klass
     end
 
-    def make_definition(klass, name, *args, lookup_key: nil)
+    def make_definition(klass, name, lookup_key: nil)
       lookup_key = klass if lookup_key.nil?
-      d = klass.new(APIBuilder.last_call_location, name, *args)
+      d = klass.new
       d.instance_variable_set(:@jdl_builder, self)
+      d.instance_variable_set(:@name, name)
+      d.instance_variable_set(:@src_loc, APIBuilder.last_call_location)
       @definition_lookup.push_value(lookup_key, d)
       d
     end
