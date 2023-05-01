@@ -80,10 +80,9 @@ module JABA
     def raw_value = @value
 
     def set(*args,
-      __validate: true,
-      __call_on_set: true,
-      **kwargs, &block
-      )
+            __validate: true,
+            __call_on_set: true,
+            **kwargs, &block)
       record_last_call_location
       if read_only? && set? # allow read only to be set the first time so they an be initialised
         attr_error("#{describe} is read only")

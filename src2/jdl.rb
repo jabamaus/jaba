@@ -43,7 +43,7 @@ JABA.define_api(:core) do
     title "basename attribute type"
     note "Basename of a file. Slashes are rejected."
   end
-  
+
   attr_type :src do
     title "Source file specification pattern"
     note "Can be file glob match an explicit path or a directory"
@@ -220,5 +220,4 @@ JABA.define_api(:project) do
     items [:app, :console, :lib, :dll]
     flags :per_config, :required
   end
-
 end

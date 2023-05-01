@@ -37,6 +37,6 @@ jtest "can be set from cmdline" do
   jaba(global_attrs_from_cmdline: { "a": "b", "b": ["c", "d"], "c": ["e", "f"] }) do
     a.must_equal :b
     b.must_equal [:c, :d]
-    c.must_equal({e: :f})
+    c.must_equal({ e: :f })
   end
 end

@@ -35,12 +35,11 @@ module JABA
     #             of elements added later by dependencies
     #
     def set(*args,
-      prefix: nil,
-      postfix: nil,
-      delete: nil,
-      exclude: nil,
-      **kwargs, &block
-      )
+            prefix: nil,
+            postfix: nil,
+            delete: nil,
+            exclude: nil,
+            **kwargs, &block)
       record_last_call_location
 
       # It is possible for values to be nil, which happens if no args are passed. This can happen if the user

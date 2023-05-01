@@ -31,7 +31,7 @@ module JABA
 
   class AttributeTypeString < AttributeType
     def initialize
-      super(default: '')
+      super(default: "")
     end
 
     # Can be specified as a symbol but stored internally as a string
@@ -45,7 +45,7 @@ module JABA
 
     def validate_value(attr_def, value, &block)
       if !value.string?
-        type_error(value, 'a string', &block)
+        type_error(value, "a string", &block)
       end
     end
   end
@@ -57,7 +57,7 @@ module JABA
 
     def validate_value(attr_def, value, &block)
       if !value.symbol?
-        type_error(value, 'a symbol', &block)
+        type_error(value, "a symbol", &block)
       end
     end
   end
@@ -125,7 +125,7 @@ module JABA
       super(default: ".")
     end
   end
-  
+
   class AttributeTypeBasename < AttributePathBase
     def validate_value(attr_def, value)
       if value.contains_slashes?

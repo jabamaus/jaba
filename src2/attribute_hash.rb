@@ -38,9 +38,8 @@ module JABA
     end
 
     def set(*args,
-      __no_keyval: false,
-      **kwargs, &block
-      )
+            __no_keyval: false,
+            **kwargs, &block)
       record_last_call_location
 
       key = val = nil

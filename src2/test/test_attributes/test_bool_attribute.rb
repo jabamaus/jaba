@@ -56,8 +56,8 @@ jtest "can be set from cmdline" do
     attr :b4, type: :bool
   end
   jaba(
-    global_attrs_from_cmdline: { 'b1': "true", 'b2': "false", 'b3': "1", 'b4': "0" }
-    ) do
+    global_attrs_from_cmdline: { 'b1': "true", 'b2': "false", 'b3': "1", 'b4': "0" },
+  ) do
     b1.must_equal true
     b2.must_equal false
     b3.must_equal true

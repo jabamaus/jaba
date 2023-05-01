@@ -198,7 +198,7 @@ module JABA
           end
           key_type = attr.attr_def.key_type
           values.each_slice(2) do |kv|
-            key = key_type.value_from_cmdline(kv[0], attr_def) 
+            key = key_type.value_from_cmdline(kv[0], attr_def)
             value = type.value_from_cmdline(kv[1], attr_def)
             attr.set(key, value)
           end
@@ -320,7 +320,7 @@ module JABA
     end
 
     def process_node_def(nd)
-      if nd.node_def.name == 'project'
+      if nd.node_def.name == "project"
         @default_configs ||= @top_level_node[:default_configs]
 
         proj_node = create_node(nd)

@@ -71,6 +71,7 @@ module JABA
       @api_class = nil
       @attr_defs = []
     end
+
     def set_api_class(c) = @api_class = c
     def api_class = @api_class
     def attr_defs = @attr_defs
@@ -81,6 +82,7 @@ module JABA
       super()
       @child_node_defs = []
     end
+
     def node_defs = @child_node_defs
   end
 
@@ -116,7 +118,7 @@ module JABA
     end
 
     def set_attr_type(t) = @attr_type = t
-      
+
     def post_create
       super
       @default.freeze
@@ -137,6 +139,7 @@ module JABA
     def type_id = @attr_type.name
 
     def flags = @flags
+
     def set_flags(*flags)
       flags.flatten.each do |f|
         fd = @jdl_builder.lookup_definition(FlagDefinition, f, attr_def: self)
@@ -280,6 +283,7 @@ module JABA
     def set_key_type(key_type)
       @key_type = @jdl_builder.lookup_definition(:attr_types, key_type)
     end
+
     def key_type = @key_type
     def set_validate_key(&block) = @on_validate_key = block
     def on_validate_key = @on_validate_key

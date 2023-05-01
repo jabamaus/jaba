@@ -134,13 +134,13 @@ module JABA
 
     def add_attr(attr_def)
       a = case attr_def.variant
-      when :single
-        AttributeSingle.new(attr_def, self)
-      when :array
-        AttributeArray.new(attr_def, self)
-      when :hash
-        AttributeHash.new(attr_def, self)
-      end
+        when :single
+          AttributeSingle.new(attr_def, self)
+        when :array
+          AttributeArray.new(attr_def, self)
+        when :hash
+          AttributeHash.new(attr_def, self)
+        end
       @attributes << a
       @attribute_lookup[attr_def.name] = a
     end

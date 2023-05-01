@@ -21,7 +21,7 @@ jtest "accepts symbols but stored as strings" do
     b [:c, :d, "e"]
     b.must_equal ["c", "d", "e"]
     c :a, :b
-    c.must_equal({"a": "b"})
+    c.must_equal({ "a": "b" })
   end
 end
 
@@ -53,6 +53,6 @@ jtest "can be set from cmdline" do
   jaba(global_attrs_from_cmdline: { "a": "b", "b": ["c", "d"], "c": ["e", "f", "g", "h"] }) do
     a.must_equal "b"
     b.must_equal ["c", "d"]
-    c.must_equal({"e" => "f", "g" => "h"})
+    c.must_equal({ "e" => "f", "g" => "h" })
   end
 end
