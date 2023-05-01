@@ -251,17 +251,17 @@ module JABA
         error("'#{path.inspect_unquoted}' must be a String or a Symbol")
       end
       path = path.to_s # Use strings internally
-      if path !~ /^(\*\|)?([a-zA-Z0-9]+_?\|?)+$/ || path !~ /[a-zA-Z0-9]$/
+      if path !~ /^(\*\/)?([a-zA-Z0-9]+_?\/?)+$/ || path !~ /[a-zA-Z0-9]$/
         error("'#{path}' is in invalid format")
       end
       path
     end
 
     def split_jdl_path(path)
-      if path !~ /\|/
+      if path !~ /\//
         [nil, path]
       else
-        [path.sub(/\|(\w+)$/, ""), $1]
+        [path.sub(/\/(\w+)$/, ""), $1]
       end
     end
   end

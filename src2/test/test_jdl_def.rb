@@ -1,30 +1,30 @@
 jtest "split_jdl_path" do
   b = JABA::JDLBuilder.new
-  parent, elem = b.send(:split_jdl_path, "a|b|c")
-  parent.must_equal "a|b"
+  parent, elem = b.send(:split_jdl_path, "a/b/c")
+  parent.must_equal "a/b"
   elem.must_equal "c"
-  b.send(:split_jdl_path, "a|b").must_equal ["a", "b"]
-  b.send(:split_jdl_path, "*|b").must_equal ["*", "b"]
+  b.send(:split_jdl_path, "a/b").must_equal ["a", "b"]
+  b.send(:split_jdl_path, "*/b").must_equal ["*", "b"]
   b.send(:split_jdl_path, "a").must_equal [nil, "a"]
 end
 
 jtest "validates jdl path format" do
   jdl do
     node :n
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("5CFB9574")}: 'n/a' is in invalid format." do
-      attr "n/a" # 5CFB9574 slashes not allowed
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("5CFB9574")}: 'n|a' is in invalid format." do
+      attr "n|a" # 5CFB9574 pipes not allowed
     end
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("9B9B965C")}: 'n|a__b' is in invalid format." do
-      attr "n|a__b" # 9B9B965C only 1 underscore allowed
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("9B9B965C")}: 'n/a__b' is in invalid format." do
+      attr "n/a__b" # 9B9B965C only 1 underscore allowed
     end
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("C42FF3D2")}: 'n|a b' is in invalid format." do
-      attr "n|a b" # C42FF3D2 spaces not allowed
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("C42FF3D2")}: 'n/a b' is in invalid format." do
+      attr "n/a b" # C42FF3D2 spaces not allowed
     end
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("B90811C7")}: 'n||a_b' is in invalid format." do
-      attr "n||a_b" # B90811C7 double pipes not allowed
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("B90811C7")}: 'n//a_b' is in invalid format." do
+      attr "n//a_b" # B90811C7 double slashes not allowed
     end
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("D54FA196")}: 'n|a_b|' is in invalid format." do
-      attr "n|a_b|" # D54FA196 cannot end in pipe
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("D54FA196")}: 'n/a_b/' is in invalid format." do
+      attr "n/a_b/" # D54FA196 cannot end in slash
     end
   end
   jaba
@@ -34,7 +34,7 @@ end
 jtest "checks parent path valid" do
   jdl do
     JTest.assert_jaba_error "Error at #{JTest.src_loc("24DB3815")}: class not registered for 'a' path." do
-      attr "a|b" # 24DB3815
+      attr "a/b" # 24DB3815
     end
   end
   jaba
@@ -46,9 +46,9 @@ jtest "checks for duplicate paths" do
     JTest.assert_jaba_error "Error at #{JTest.src_loc("99E1CB75")}: Duplicate path 'n' registered." do
       node "n" # 99E1CB75
     end
-    attr "n|a"
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("BC9DD62C")}: Duplicate 'n|a' attribute registered." do
-      attr "n|a" # BC9DD62C
+    attr "n/a"
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("BC9DD62C")}: Duplicate 'n/a' attribute registered." do
+      attr "n/a" # BC9DD62C
     end
   end
   jaba
@@ -72,8 +72,8 @@ end
 jtest "can register methods globally" do
   jdl do
     node "node1"
-    node "node1|node2"
-    method "*|m" do
+    node "node1/node2"
+    method "*/m" do
       on_called do Kernel.print "m|" end
     end
   end
@@ -95,8 +95,8 @@ end
 jtest "can register attributes into nodes" do
   jdl do
     node "node1"
-    attr "node1|a"
-    attr "*|b" # registers into all nodes, except top level
+    attr "node1/a"
+    attr "*/b" # registers into all nodes, except top level
     node "node2"
   end
   jaba do
@@ -116,7 +116,7 @@ end
 jtest "can register attributes as node options" do
   jdl do
     node "node"
-    attr "node|a", type: :bool do
+    attr "node/a", type: :bool do
       flags :node_option
     end
   end

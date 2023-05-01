@@ -39,7 +39,7 @@ end
 jtest "works with required flag" do
   jdl do
     node "node"
-    attr "node|b" do
+    attr "node/b" do
       flags :required
     end
   end

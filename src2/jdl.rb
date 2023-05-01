@@ -131,28 +131,28 @@ JABA.define_api(:core) do
 
   # Global methods
 
-  method "*|available" do
+  method "*/available" do
     title "Array of attributes/methods available in current context"
     on_called do |str, node:| node.available end
   end
 
-  method "*|print" do
+  method "*/print" do
     title "Prints a non-newline terminated string to stdout"
     on_called do |str| Kernel.print(str) end
   end
 
-  method "*|puts" do
+  method "*/puts" do
     title "Prints a newline terminated string to stdout"
     on_called do |str| Kernel.puts(str) end
   end
 
-  method "*|fail" do
+  method "*/fail" do
     title "Raise an error"
     note "Stops execution"
     on_called do |msg| JABA.error(msg, line: $last_call_location) end
   end
 
-  method "*|include" do
+  method "*/include" do
     title "Include a shared definition"
     on_called do |id|
       JABA.context.include_shared(id)
@@ -174,7 +174,7 @@ JABA.define_api(:core) do
 
   # Global attributes. Available in all nodes but not at top level.
 
-  attr "*|root", type: :dir do
+  attr "*/root", type: :dir do
     title "TODO"
     flags :node_option
   end
@@ -194,28 +194,28 @@ JABA.define_api(:project) do
     title "Define a project"
   end
 
-  attr "project|config", type: :symbol do
+  attr "project/config", type: :symbol do
     title "Current target config as an id"
     note "Returns current config being processed. Use to define control flow to set config-specific atttributes"
     flags :per_config, :read_only
     # TODO: examples, including regexes
   end
 
-  attr_array "project|define", type: :string do
+  attr_array "project/define", type: :string do
     title "Preprocessor defines"
     #flags :exportable
   end
 
-  attr "project|rule", type: :compound do
+  attr "project/rule", type: :compound do
     title "TODO"
     flags :per_config
   end
 
-  attr "project|rule|input", type: :src do
+  attr "project/rule/input", type: :src do
     title "TODO"
   end
 
-  attr "project|type", type: :choice do
+  attr "project/type", type: :choice do
     title "Project type"
     items [:app, :console, :lib, :dll]
     flags :per_config, :required

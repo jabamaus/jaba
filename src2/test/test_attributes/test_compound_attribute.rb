@@ -4,10 +4,10 @@ end
 jtest "works with compound as single attribute" do
   jdl do
     attr "compound", type: :compound
-    attr "compound|a" do default 10 end
-    attr "compound|b"
-    attr_array "compound|c" do default [1] end
-    attr_hash "compound|d", key_type: :string do default(a: :b) end
+    attr "compound/a" do default 10 end
+    attr "compound/b"
+    attr_array "compound/c" do default [1] end
+    attr_hash "compound/d", key_type: :string do default(a: :b) end
   end
   op = jaba do
     # check defaults
@@ -58,11 +58,11 @@ end
 jtest "works with compound as single attribute with nesting" do
   jdl do
     attr "compound", type: :compound
-    attr "compound|a" do default 1 end
-    attr "compound|nested1", type: :compound
-    attr "compound|nested1|b" do default 2 end
-    attr "compound|nested1|nested2", type: :compound
-    attr "compound|nested1|nested2|c" do default 3 end
+    attr "compound/a" do default 1 end
+    attr "compound/nested1", type: :compound
+    attr "compound/nested1/b" do default 2 end
+    attr "compound/nested1/nested2", type: :compound
+    attr "compound/nested1/nested2/c" do default 3 end
   end
   op = jaba do
     compound.nested1.nested2.c.must_equal 3
@@ -107,8 +107,8 @@ end
 jtest "works with array" do
   jdl do
     attr_array "compound", type: :compound
-    attr "compound|a"
-    attr "compound|b"
+    attr "compound/a"
+    attr "compound/b"
   end
   jaba do
     compound do
