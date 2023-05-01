@@ -26,20 +26,22 @@ module JABA
     :basedir_spec, # Used by path attributes
   ).include(CommonAPI)
 
-  @@core_api_blocks = {}
+  @@core_api_blocks = []
+  @@core_api_blocks_lookup = {}
   @@current_api_blocks = []
 
   def self.core_api_blocks = @@core_api_blocks
   def self.current_api_blocks = @@current_api_blocks
   def self.restore_core_api = @@current_api_blocks.clear # Used by unit tests
   def self.define_api(id, &block)
-    @@core_api_blocks[id] = block
+    @@core_api_blocks << block
+    @@core_api_blocks_lookup[id] = block
   end
 
   # Set which apis are required. Used as efficiency mechanism for unit tests
   def self.set_api_level(apis, &block)
     @@current_api_blocks.clear
-    @@current_api_blocks << @@core_api_blocks[:core] # Core always required
+    @@current_api_blocks << @@core_api_blocks_lookup[:core] # Core always required
     apis.each do |id|
       if id == :core
         JABA.warn("No need to specify :core api as always included")
@@ -53,7 +55,7 @@ module JABA
   end
 
   class JDLBuilder
-    def initialize
+    def initialize(api_blocks = JABA.core_api_blocks)
       @definition_lookup = {}
       @path_to_class = {}
       @base_api_class = Class.new(BasicObject) do
@@ -82,6 +84,10 @@ module JABA
       end
       @top_level_node_def = NodeDefinition.new
       @top_level_node_def.set_api_class(@top_level_api_class_base)
+
+      api_blocks.each do |b|
+        JDLTopLevelAPI.execute(self, &b)
+      end
     end
 
     def top_level_node_def = @top_level_node_def

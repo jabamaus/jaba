@@ -1,5 +1,5 @@
 jtest "split_jdl_path" do
-  b = JABA::JDLBuilder.new
+  b = JABA::JDLBuilder.new([])
   parent, elem = b.send(:split_jdl_path, "a/b/c")
   parent.must_equal "a/b"
   elem.must_equal "c"

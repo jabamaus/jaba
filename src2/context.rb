@@ -102,18 +102,12 @@ module JABA
 
       if @@core_api_builder.nil?
         @@core_api_builder = JDLBuilder.new
-        JABA.core_api_blocks.each do |id, b|
-          JDLTopLevelAPI.execute(@@core_api_builder, &b)
-        end
       end
-      if !JABA.current_api_blocks.empty?
-        @jdl = JDLBuilder.new
-        JABA.current_api_blocks.each do |b|
-          JDLTopLevelAPI.execute(@jdl, &b)
+      @jdl = if !JABA.current_api_blocks.empty?
+          JDLBuilder.new(JABA.current_api_blocks)
+        else
+          @@core_api_builder
         end
-      else
-        @jdl = @@core_api_builder
-      end
 
       init_root_paths
 
