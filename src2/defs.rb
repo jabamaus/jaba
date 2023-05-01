@@ -64,13 +64,23 @@ module JABA
     def describe = "'#{name.inspect_unquoted}' basedir_spec"
   end
 
-  class NodeDefinition < Definition
+  class AttributeGroupDefinition < Definition
     def initialize
       super()
       @api_class = nil
+      @attr_defs = []
     end
     def set_api_class(c) = @api_class = c
     def api_class = @api_class
+    def attr_defs = @attr_defs
+  end
+
+  class NodeDefinition < AttributeGroupDefinition
+    def initialize
+      super()
+      @child_node_defs = []
+    end
+    def node_defs = @child_node_defs
   end
 
   class MethodDefinition < Definition
@@ -120,10 +130,12 @@ module JABA
     def describe = "'#{@name.inspect_unquoted}' #{@variant == :single ? "" : "#{@variant} "}attribute"
     def variant = @variant
     def array? = @variant == :array
+    def hash? = @variant == :hash
     def compound? = type_id == :compound
     def attr_type = @attr_type
     def type_id = @attr_type.name
 
+    def flags = @flags
     def set_flags(*flags)
       flags.flatten.each do |f|
         fd = @jdl_builder.lookup_definition(FlagDefinition, f, attr_def: self)

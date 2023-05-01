@@ -57,6 +57,7 @@ module JABA
   class JDLBuilder
     def initialize(api_blocks = JABA.core_api_blocks)
       @definition_lookup = {}
+      @path_to_node_def = {}
       @path_to_class = {}
       @base_api_class = Class.new(BasicObject) do
         undef_method :!, :!=, :==, :equal?, :__id__
@@ -82,7 +83,14 @@ module JABA
       @common_attrs_module = Module.new do
         def self.attr_defs = @attr_defs ||= []
       end
-      @top_level_node_def = NodeDefinition.new
+      @common_attr_node_def = make_definition(NodeDefinition, nil, "common", nil) do |d|
+        d.set_title("TODO")
+      end
+      @path_to_node_def['*'] = @common_attr_node_def
+      @top_level_node_def = make_definition(NodeDefinition, nil, "global", nil) do |d|
+        d.set_title("TODO")
+      end
+      @path_to_node_def[nil] = @top_level_node_def
       @top_level_node_def.set_api_class(@top_level_api_class_base)
 
       api_blocks.each do |b|
@@ -118,6 +126,11 @@ module JABA
       parent_path, name = split_jdl_path(path)
 
       node_def = make_definition(NodeDefinition, NodeDefinitionAPI, name, block)
+      @path_to_node_def[path] = node_def
+
+      parent_def = @path_to_node_def[parent_path]
+      # TODO: checking
+      parent_def.node_defs << node_def
 
       api_class = get_or_make_class(path, superklass: @top_level_api_class_base, what: :node)
       api_class.include(@common_attrs_module)
@@ -180,15 +193,6 @@ module JABA
       d
     end
 
-    def each_definition(klass, &block)
-      all = @definition_lookup[klass]
-      if all.nil?
-        JABA.error("No '#{klass}' definition class registered") if fail_if_not_found
-        return nil
-      end
-      all.each(&block)
-    end
-
     private
 
     def process_attr(path, def_class, type_id, block)
@@ -201,6 +205,10 @@ module JABA
         attr_type.init_attr_def(ad)
         yield ad if block_given?
       end
+
+      node_def = @path_to_node_def[parent_path]
+      JABA.error("could not find node def for '#{parent_path}'") if node_def.nil?
+      node_def.attr_defs << attr_def
       
       parent_class = get_or_make_class(parent_path, what: :attribute)
       if parent_class.method_defined?(attr_name)
@@ -213,10 +221,11 @@ module JABA
   
       if type_id == :compound
         # Compound attr interface inherits parent nodes interface so it has read only access to its attrs
-        compound_def = NodeDefinition.new
+        compound_def = AttributeGroupDefinition.new
         compound_api = get_or_make_class(path, superklass: parent_class, what: :attribute)
         compound_def.set_api_class(compound_api)
         attr_def.set_compound_def(compound_def)
+        @path_to_node_def[path] = compound_def
       end
 
       parent_class.attr_defs << attr_def

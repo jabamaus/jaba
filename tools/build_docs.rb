@@ -44,8 +44,8 @@ class DocBuilder
     @file_manager = JABA::FileManager.new
 
     # Build documentable API objects
+    JABA::Context.new
     @jdl = JABA::JDLBuilder.new
-    JABA::JDLTopLevelAPI.execute(@jdl, &JABA.core_api_block)
 
     generate_handwritten
     generate_versioned_index
@@ -89,94 +89,104 @@ class DocBuilder
     end
   end
 
-  def generate_reference_doc
-    write_markdown_page('jaba_reference.md', 'Jaba language reference', versioned: true) do |w|
-      w << ""
-      @jdl.each_definition(JABA::NodeDefinition) do |nd|
-        w << "  - [#{nd.name}](TODO)"
-      end
-=begin
-      w << "- Types"
-      @jaba_types.sort_by {|jt| jt.defn_id}.each do |jt|
-        w << "  - [#{jt.defn_id}](#{jt.reference_manual_page})"
-        jt.attribute_defs.each do |ad|
-          w << "    - [#{ad.defn_id}](#{jt.reference_manual_page}##{ad.defn_id})"
+  def write_reference_tree_node(node_def, w, depth)
+    w << "#{'    ' * depth}- [#{node_def.name}](#{node_def.name}.html)"
+    depth += 1
+    node_def.attr_defs.each do |ad|
+      w << "#{'    ' * depth}- [#{ad.name}](#{node_def.name}.html##{ad.name})"
+      if ad.type_id == :compound
+        depth += 1
+        ad.compound_def.attr_defs.each do |c|
+          w << "#{'    ' * depth}- [#{c.name}](#{node_def.name}.html##{c.name})"
         end
+        depth -= 1
       end
+    end
+    node_def.node_defs.each do |child|
+      write_reference_tree_node(child, w, depth)
+    end
+    depth -= 1
+  end
 
-      @jaba_types.each do |jt|
-        generate_jaba_type_reference(jt)
-      end
-=end
-# TODO: move into developer docs section
-      #w << "- Attribute types"
-      #@jaba_attr_types.each do |at|
-      #  w << "  - #{at.id}"
-      #end
-
-      #w << "- Attribute flags"
-      #JABA::FlagDefinition.all.each do |fd|
-      #  w << "  - #{fd.name}"
-      #end
-      #w << ""
+  def visit_node_def(node_def, &block)
+    yield node_def
+    node_def.node_defs.each do |child|
+      visit_node_def(child, &block)
     end
   end
 
-  def generate_jaba_type_reference(jt)
-    write_markdown_page(jt.reference_manual_page(ext: '.md'), "#{jt.defn_id}", versioned: true) do |w|
-      w << "[#{JABA::VERSION} reference home](jaba_reference.html)  "
-      w << "> "
-      w << "> _#{jt.title}_"
-      w << "> "
-      w << "> #{jt.notes.make_sentence}"
-      w << "> "
-      w << "> | Property | Value  |"
-      w << "> |-|-|"
-      md_row(w, 'defined in', "$(jaba_install)/#{jt.src_loc.describe(style: :absolute, relative_to: JABA.install_dir, line: false)}")
-      md_row(w, 'depends on', jt.dependencies.map{|d| "[#{d}](#{d.reference_manual_page})"}.join(", "))
-      w << "> "
+  def generate_reference_doc
+    write_markdown_page('jaba_reference.md', 'Jaba language reference', versioned: true) do |w|
       w << ""
-      w << "#{jt.attribute_defs.size} attributes:  "
-      jt.attribute_defs.each do |ad|
-        w << "- [#{ad.defn_id}](##{ad.defn_id})"
+
+      write_reference_tree_node(@jdl.top_level_node_def, w, 0)
+
+      visit_node_def(@jdl.top_level_node_def) do |nd|
+       generate_node_reference(nd)
       end
       w << ""
-      jt.attribute_defs.each do |ad|
-        w << "<a id=\"#{ad.defn_id}\"></a>" # anchor for the attribute eg 'src_ext'
-        w << "#### #{ad.defn_id}"
-        w << "> _#{ad.title}_"
-        w << "> "
-        w << "> #{ad.notes.make_sentence.to_markdown_links(@services)}" if !ad.notes.empty?
-        w << "> "
-        w << "> | Property | Value  |"
-        w << "> |-|-|"
-        
-        type = String.new
-        if ad.type_id
-          type << "#{ad.type_id.inspect}"
+    end
+  end
+
+  def generate_node_reference(n)
+    write_markdown_page("#{n.name}.md", n.name, versioned: true) do |w|
+      w << "[#{JABA::VERSION} reference home](jaba_reference.html)  "
+      w << "> "
+      w << "> _#{n.title}_"
+      w << "> "
+      w << "> #{n.notes.make_sentence}"
+      w << "> "
+      w << ""
+      w << "#{n.attr_defs.size} attribute#{n.attr_defs.size == 1 ? '' : 's'}:  "
+      n.attr_defs.each do |ad|
+        w << "- [#{ad.name}](##{ad.name})"
+      end
+      w << ""
+      n.attr_defs.each do |ad|
+        write_attr_def(ad, w)
+        if ad.type_id == :compound
+          ad.compound_def.attr_defs.each do |ca|
+            # TODO: distinguish compound attrs somehow. Maybe use path instead of just name
+            write_attr_def(ca, w)
+          end
         end
-        if ad.array?
-          type << " array"
-        elsif ad.hash?
-          type << " hash"
-        end
-        md_row(w, :type, type)
-        ad.jaba_attr_type.get_reference_manual_rows(ad)&.each do |id, value|
-          md_row(w, id, value)
-        end
-        md_row(w, :default, ad.default.proc? ? nil : !ad.default.nil? ? ad.default.inspect : nil)
-        md_row(w, :flags, ad.flags.map(&:inspect).join(', '))
-        md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
-        md_row(w, 'defined in', "$(jaba_install)/#{ad.src_loc.describe(style: :absolute, relative_to: JABA.install_dir, line: false)}")
-        w << ">"
-        if !ad.examples.empty?
-          w << "> *Examples*"
-          md_code(w, prefix: '>') do
-            ad.examples.each do |e|
-              split_and_trim_leading_whitespace(e).each do |line|
-                w << "> #{line}"
-              end
-            end
+      end
+    end
+  end
+
+  def write_attr_def(ad, w)
+    w << "<a id=\"#{ad.name}\"></a>" # anchor for the attribute eg 'src_ext'
+    w << "#### #{ad.name}"
+    w << "> _#{ad.title}_"
+    w << "> "
+    w << "> #{ad.notes.make_sentence.to_markdown_links(@services)}" if !ad.notes.empty?
+    w << "> "
+    w << "> | Property | Value  |"
+    w << "> |-|-|"
+    
+    type = String.new
+    if ad.type_id
+      type << "#{ad.type_id.inspect}"
+    end
+    if ad.array?
+      type << " array"
+    elsif ad.hash?
+      type << " hash"
+    end
+    md_row(w, :type, type)
+    #ad.jaba_attr_type.get_reference_manual_rows(ad)&.each do |id, value|
+    #  md_row(w, id, value)
+    #end
+    md_row(w, :default, ad.default.proc? ? nil : !ad.default.nil? ? ad.default.inspect : nil)
+    md_row(w, :flags, ad.flags.map(&:inspect).join(', '))
+    md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
+    w << ">"
+    if !ad.examples.empty?
+      w << "> *Examples*"
+      md_code(w, prefix: '>') do
+        ad.examples.each do |e|
+          split_and_trim_leading_whitespace(e).each do |line|
+            w << "> #{line}"
           end
         end
       end
