@@ -71,15 +71,21 @@ module JABA
       end
       # attrs get registered into top_level_api_class_base and methods and nodes get registered into top_level_api_class
       # Nodes inherit from top_level_api_class_base so facilitate read only access to attributes but no access to methods
-      @top_level_api_class_base = Class.new(@base_api_class)
-      @top_level_api_class = Class.new(@top_level_api_class_base)
+      @top_level_api_class_base = Class.new(@base_api_class) do
+        def self.inspect = '#<Class:TopLevelAPIBase>'
+      end
+      @top_level_api_class = Class.new(@top_level_api_class_base) do
+        def self.inspect = '#<Class:TopLevelAPI>'
+      end
       @common_attrs_module = Module.new do
         def self.attr_defs = @attr_defs ||= []
       end
+      @top_level_node_def = NodeDefinition.new
+      @top_level_node_def.set_api_class(@top_level_api_class_base)
     end
 
+    def top_level_node_def = @top_level_node_def
     def top_level_api_class = @top_level_api_class
-    def top_level_api_class_base = @top_level_api_class_base
 
     def class_from_path(path, fail_if_not_found: true)
       klass = @path_to_class[path]
@@ -107,18 +113,19 @@ module JABA
 
       node_def = make_definition(NodeDefinition, NodeDefinitionAPI, name, block)
 
-      node_class = get_or_make_class(path, superklass: @top_level_api_class_base, what: :node)
-      node_class.include(@common_attrs_module)
+      api_class = get_or_make_class(path, superklass: @top_level_api_class_base, what: :node)
+      api_class.include(@common_attrs_module)
       common_attrs_module = @common_attrs_module
-      node_class.define_singleton_method :each_attr_def do |&block|
+      api_class.define_singleton_method :each_attr_def do |&block|
         attr_defs.each(&block)
         common_attrs_module.attr_defs.each(&block)
       end
+      node_def.set_api_class(api_class)
 
       parent_class = get_or_make_class(parent_path, what: :node)
       parent_class.define_method(name) do |*args, **kwargs, &node_block|
         $last_call_location = ::Kernel.calling_location
-        JABA.context.register_node(node_class, *args, **kwargs, &node_block)
+        JABA.context.register_node(node_def, *args, **kwargs, &node_block)
       end
     end
 
@@ -140,12 +147,12 @@ module JABA
       path = validate_path(path)
       parent_path, name = split_jdl_path(path)
       
-      meth_def = make_definition(MethodDefinition, MethodDefinitionAPI, name, block)
-      
-      parent_class = get_or_make_class(parent_path, what: :method)
-      parent_class.define_method(name) do |*args, **kwargs|
-        $last_call_location = ::Kernel.calling_location
-        instance_exec(*args, **kwargs, node: @node, &meth_def.on_called)
+      make_definition(MethodDefinition, MethodDefinitionAPI, name, block) do |meth_def|
+        parent_class = get_or_make_class(parent_path, what: :method)
+        parent_class.define_method(name) do |*args, **kwargs|
+          $last_call_location = ::Kernel.calling_location
+          instance_exec(*args, **kwargs, node: @node, &meth_def.on_called)
+        end
       end
     end
 
@@ -200,7 +207,10 @@ module JABA
   
       if type_id == :compound
         # Compound attr interface inherits parent nodes interface so it has read only access to its attrs
-        attr_def.set_compound_api(get_or_make_class(path, superklass: parent_class, what: :attribute))
+        compound_def = NodeDefinition.new
+        compound_api = get_or_make_class(path, superklass: parent_class, what: :attribute)
+        compound_def.set_api_class(compound_api)
+        attr_def.set_compound_def(compound_def)
       end
 
       parent_class.attr_defs << attr_def
@@ -227,7 +237,9 @@ module JABA
       klass = class_from_path(path, fail_if_not_found: superklass.nil?)
       if superklass
         error("Duplicate path '#{path}' registered.") if klass
-        klass = Class.new(superklass)
+        klass = Class.new(superklass) do
+          def self.inspect = "#<Class:#{path}>"
+        end
         @path_to_class[path] = klass
         klass
       end

@@ -72,7 +72,7 @@ end
 jtest "can register methods globally" do
   jdl do
     node "node1"
-    node "node1/node2"
+    node "node2"
     method "*/m" do
       on_called do Kernel.print "m|" end
     end
@@ -83,10 +83,8 @@ jtest "can register methods globally" do
       node1 :n1 do
         m
       end
-      node1 :n1a do
-        node2 :n2 do
-          m
-        end
+      node2 :n2 do
+        m
       end
     end
   end

@@ -64,7 +64,10 @@ module JABA
   class NodeDefinition < Definition
     def initialize
       super()
+      @api_class = nil
     end
+    def set_api_class(c) = @api_class = c
+    def api_class = @api_class
   end
 
   class MethodDefinition < Definition
@@ -95,7 +98,7 @@ module JABA
       @default_set = false
       @on_validate = nil
       @basedir_spec = nil
-      @compound_api = nil # used by compound attribute
+      @compound_def = nil # used by compound attribute
     end
 
     def set_attr_type(t) = @attr_type = t
@@ -183,8 +186,8 @@ module JABA
       end
     end
 
-    def set_compound_api(api) = @compound_api = api
-    def compound_api = @compound_api
+    def set_compound_def(d) = @compound_def = d
+    def compound_def = @compound_def
 
     def validate_value(new_val); end # Override
   end

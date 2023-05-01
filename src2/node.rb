@@ -6,9 +6,9 @@ module JABA
   end
 
   class Node
-    def initialize(api_klass, id, src_loc, parent)
-      JABA.error("api_klass must not be nil") if api_klass.nil?
-      @api_klass = api_klass
+    def initialize(node_def, id, src_loc, parent)
+      JABA.error("node_def must not be nil") if node_def.nil?
+      @node_def = node_def
       @id = id
       @src_loc = src_loc
       @attributes = []
@@ -17,7 +17,7 @@ module JABA
       @read_only = false
       @parent = parent
       @parent.children << self if @parent
-      api_klass.each_attr_def do |d|
+      node_def.api_class.each_attr_def do |d|
         a = case d.variant
           when :single
             AttributeSingle.new(d, self)
@@ -31,7 +31,7 @@ module JABA
       end
     end
 
-    def api_obj = @api_klass.singleton.__internal_set_node(self)
+    def api_obj = @node_def.api_class.singleton.__internal_set_node(self)
     def eval_jdl(...) = api_obj.instance_exec(...)
 
     def post_create

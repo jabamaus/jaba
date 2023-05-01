@@ -114,15 +114,14 @@ module JABA
       else
         @jdl = @@core_api_builder
       end
-      @project_api_class = @jdl.class_from_path("project", fail_if_not_found: !JABA.running_tests?)
 
       init_root_paths
 
-      tld = NodeDefData.new(@jdl.top_level_api_class_base, "top_level", nil, nil, nil, nil)
+      tld = NodeDefData.new(@jdl.top_level_node_def, "top_level", nil, nil, nil, nil)
       create_node(tld, parent: nil) do |n|
         @top_level_node = n
         @output[:root] = n
-        @jdl.top_level_api_class.singleton.__internal_set_node(n)
+        @top_level_api_obj = @jdl.top_level_api_class.singleton.__internal_set_node(n)
         set_top_level_attrs_from_cmdline
         @executing_jdl = true
         load_jaba_files
@@ -299,13 +298,13 @@ module JABA
     def execute_jdl(*args, file: nil, str: nil, &block)
       begin
         if str
-          @jdl.top_level_api_class.singleton.instance_eval(str, file)
+          @top_level_api_obj.instance_eval(str, file)
         elsif file
           log "Executing #{file}"
-          @jdl.top_level_api_class.singleton.instance_eval(file_manager.read(file), file)
+          @top_level_api_obj.instance_eval(file_manager.read(file), file)
         end
         if block_given?
-          @jdl.top_level_api_class.singleton.instance_exec(*args, &block)
+          @top_level_api_obj.instance_exec(*args, &block)
         end
       rescue ScriptError => e # script errors don't have a backtrace
         JABA.error(e.message, type: :script_error)
@@ -314,20 +313,20 @@ module JABA
       end
     end
 
-    NodeDefData = Data.define(:api_klass, :id, :src_loc, :args, :kwargs, :block)
+    NodeDefData = Data.define(:node_def, :id, :src_loc, :args, :kwargs, :block)
 
     # Nodes are registered in the first pass and then subsequently processed. They
     # cannot be processed immediately because top level attributes need to be fully
     # initialised first
     #
-    def register_node(api_klass, *args, **kwargs, &block)
+    def register_node(node_def, *args, **kwargs, &block)
       id = args.shift
       validate_id(id, :node)
-      @node_defs << NodeDefData.new(api_klass, id, $last_call_location, args, kwargs, block)
+      @node_defs << NodeDefData.new(node_def, id, $last_call_location, args, kwargs, block)
     end
 
     def process_node_def(nd)
-      if nd.api_klass == @project_api_class
+      if nd.node_def.name == 'project'
         @default_configs ||= @top_level_node[:default_configs]
 
         proj_node = create_node(nd)
@@ -343,7 +342,7 @@ module JABA
 
     def create_node(nd, parent: @top_level_node)
       begin
-        node = Node.new(nd.api_klass, nd.id, nd.src_loc, parent)
+        node = Node.new(nd.node_def, nd.id, nd.src_loc, parent)
         yield node if block_given?
         node.eval_jdl(&nd.block) if nd.block
         node.post_create
