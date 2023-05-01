@@ -62,9 +62,6 @@ module JABA
       @base_api_class = Class.new(BasicObject) do
         undef_method :!, :!=, :==, :equal?, :__id__
         def self.singleton = @instance ||= new
-        def self.attr_defs = @attr_defs ||= []
-        def self.each_attr_def(&block) = attr_defs.each(&block)
-
         def __internal_set_node(n); @node = n; self; end
 
         def method_missing(id, ...)
@@ -80,9 +77,7 @@ module JABA
       @top_level_api_class = Class.new(@top_level_api_class_base) do
         def self.inspect = '#<Class:TopLevelAPI>'
       end
-      @common_attrs_module = Module.new do
-        def self.attr_defs = @attr_defs ||= []
-      end
+      @common_attrs_module = Module.new
       @common_attr_node_def = make_definition(NodeDefinition, nil, "common", nil) do |d|
         d.set_title("TODO")
       end
@@ -98,6 +93,7 @@ module JABA
       end
     end
 
+    def common_attr_node_def = @common_attr_node_def
     def top_level_node_def = @top_level_node_def
     def top_level_api_class = @top_level_api_class
 
@@ -134,11 +130,7 @@ module JABA
 
       api_class = get_or_make_class(path, superklass: @top_level_api_class_base, what: :node)
       api_class.include(@common_attrs_module)
-      common_attrs_module = @common_attrs_module
-      api_class.define_singleton_method :each_attr_def do |&block|
-        attr_defs.each(&block)
-        common_attrs_module.attr_defs.each(&block)
-      end
+
       node_def.set_api_class(api_class)
 
       parent_class = get_or_make_class(parent_path, what: :node)
@@ -222,13 +214,12 @@ module JABA
       if type_id == :compound
         # Compound attr interface inherits parent nodes interface so it has read only access to its attrs
         compound_def = AttributeGroupDefinition.new
+        compound_def.instance_variable_set(:@jdl_builder, self)
         compound_api = get_or_make_class(path, superklass: parent_class, what: :attribute)
         compound_def.set_api_class(compound_api)
         attr_def.set_compound_def(compound_def)
         @path_to_node_def[path] = compound_def
       end
-
-      parent_class.attr_defs << attr_def
     end
 
     def get_or_make_class(path, superklass: nil, what:)

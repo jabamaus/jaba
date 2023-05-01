@@ -9,6 +9,7 @@ module JABA
       @examples = []
     end
 
+    def jdl_builder = @jdl_builder
     def src_loc = @src_loc
     def name = @name
     def describe = "'#{name.inspect_unquoted}'"

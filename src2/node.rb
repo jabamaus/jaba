@@ -16,18 +16,15 @@ module JABA
       @children = []
       @read_only = false
       @parent = parent
-      @parent.children << self if @parent
-      node_def.api_class.each_attr_def do |d|
-        a = case d.variant
-          when :single
-            AttributeSingle.new(d, self)
-          when :array
-            AttributeArray.new(d, self)
-          when :hash
-            AttributeHash.new(d, self)
-          end
-        @attributes << a
-        @attribute_lookup[d.name] = a
+      if parent
+        parent.children << self
+        # Top level node does not have common attrs included
+        node_def.jdl_builder.common_attr_node_def.attr_defs.each do |ad|
+          add_attr(ad)
+        end
+      end
+      node_def.attr_defs.each do |d|
+        add_attr(d)
       end
     end
 
@@ -131,6 +128,21 @@ module JABA
         yield
         @read_only = false
       end
+    end
+
+    private
+
+    def add_attr(attr_def)
+      a = case attr_def.variant
+      when :single
+        AttributeSingle.new(attr_def, self)
+      when :array
+        AttributeArray.new(attr_def, self)
+      when :hash
+        AttributeHash.new(attr_def, self)
+      end
+      @attributes << a
+      @attribute_lookup[attr_def.name] = a
     end
   end
 end
