@@ -21,7 +21,7 @@ module JABA
 
     def value_from_block(&block)
       if attr_def.compound?
-        if @value # If node has already been made but the compound attr is being set again, re-evaluate existing value against block
+        if @value # If compound has already been made but is being set again, re-evaluate existing value against block
           @value.eval_jdl(&block)
           return @value
         else
@@ -71,7 +71,7 @@ module JABA
 
     def value
       record_last_call_location
-      if @value.is_a?(Node) && JABA.context.executing_jdl?
+      if attr_def.compound? && JABA.context.executing_jdl?
         @value.api_obj
       else
         @value

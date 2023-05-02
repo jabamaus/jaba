@@ -85,6 +85,23 @@ jtest "works with compound as single attribute with nesting" do
   cmpd[:nested1][:nested2][:c].must_equal 5
 end
 
+jtest "returned values cannot be modified" do
+  jdl do
+    attr "cmpd1", type: :compound
+    attr "cmpd1/cmpd2", type: :compound
+    attr_array "cmpd1/cmpd2/a" do default [1] end
+  end
+  assert_jaba_error "Error at #{src_loc("0B4498EC")}: Can't modify read only Array." do
+    jaba do
+      cmpd1 do
+        cmpd2 do
+          a << 2 # 0B4498EC
+        end
+      end
+    end
+  end
+end
+
 jtest "has read only access to parent attrs" do
   jdl do
     attr :toplevel
@@ -100,6 +117,24 @@ jtest "has read only access to parent attrs" do
           toplevel 2 # 082F7661
         end
       end
+    end
+  end
+end
+
+jtest "has write access to sibling attrs" do
+  jdl do
+    node :node
+    attr "node/cmpd", type: :compound
+    attr "node/cmpd/a"
+    attr "node/b"
+  end
+  jaba do
+    node :n do
+      b 1
+      cmpd do
+        b 2
+      end
+      b.must_equal 2
     end
   end
 end

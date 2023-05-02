@@ -32,6 +32,9 @@ module JABA
     def api_obj = @api_obj
     def eval_jdl(...) = api_obj.instance_exec(...)
 
+    # Compound attrs don't have ids
+    def compound_attr? = @id.nil?
+    
     def post_create
       @attributes.each do |a|
         if !a.set? && a.required?
@@ -104,7 +107,12 @@ module JABA
           # readonly. Issue a suitable error.
           a = search_attr(name, skip_self: true, fail_if_not_found: false)
           if a
-            JABA.error("#{a.describe} is read only in this scope", line: $last_call_location)
+            # Compound attributes are allowed to set 'sibling' attributes which are in its parent node
+            if compound_attr? && a.node == @parent
+              a.set(*args, **kwargs, &block)
+            else
+              JABA.error("#{a.describe} is read only in this scope", line: $last_call_location)
+            end
           else
             attr_not_found_error(name)
           end
