@@ -48,7 +48,9 @@ module JABA
     def src_loc = @src_loc
     def parent = @parent
     def children = @children
-
+    def attributes = @attributes
+    def [](name) = get_attr(name).value    
+    
     def visit(&block)
       yield self
       @children.each do |c|
@@ -56,7 +58,14 @@ module JABA
       end
     end
 
-    def attributes = @attributes
+    def visit_parents(skip_self, &block)
+      yield self if !skip_self
+      p = @parent
+      while p
+        yield p
+        p = p.parent
+      end
+    end
 
     def get_attr(name, fail_if_not_found: true)
       a = @attribute_lookup[name]
@@ -66,19 +75,15 @@ module JABA
       a
     end
 
-    def [](name) = get_attr(name).value
-
-    def search_attr(name, fail_if_not_found: true)
-      a = get_attr(name, fail_if_not_found: false)
-      if !a
-        if @parent
-          a = @parent.search_attr(name, fail_if_not_found: false)
-        end
+    def search_attr(name, skip_self: false, fail_if_not_found: true)
+      visit_parents(skip_self) do |node|
+        a = node.get_attr(name, fail_if_not_found: false)
+        return a if a
       end
-      if !a && fail_if_not_found
+      if fail_if_not_found
         attr_not_found_error(name)
       end
-      a
+      nil
     end
 
     def handle_attr(name, *args, **kwargs, &block)
@@ -87,11 +92,22 @@ module JABA
         a = search_attr(name)
         return a.value
       else
-        a = get_attr(name)
-        if @read_only
-          JABA.error("#{a.describe} is read only in this context", line: $last_call_location)
+        a = get_attr(name, fail_if_not_found: false)
+        if a
+          if @read_only
+            JABA.error("#{a.describe} is read only in this scope", line: $last_call_location)
+          end
+          a.set(*args, **kwargs, &block)
+        else
+          # if attr not found on this node search for it in parents. If found it is therefore
+          # readonly. Issue a suitable error.
+          a = search_attr(name, skip_self: true, fail_if_not_found: false)
+          if a
+            JABA.error("#{a.describe} is read only in this scope", line: $last_call_location)
+          else
+            attr_not_found_error(name)
+          end
         end
-        a.set(*args, **kwargs, &block)
         return nil
       end
     end
@@ -107,19 +123,40 @@ module JABA
       @parent&.visit_callable_attrs(rdonly: true, &block)
     end
 
-    # TODO: include methods
-    def available
-      attrs = []
-      visit_callable_attrs do |a, type|
-        attrs << "#{a.name} (#{type})"
+    def visit_callable_methods(&block)
+      @node_def.method_defs.each(&block)
+      p = @node_def.parent_node_def
+      while p
+        p.method_defs.each(&block)
+        p = p.parent_node_def
       end
-      attrs.sort!
-      attrs
+      @node_def.jdl_builder.global_methods_node_def.method_defs.each(&block)
     end
 
-    def attr_not_found_error(name, errline: nil)
-      str = !available.empty? ? "\n#{available.join(", ")}" : " none"
-      JABA.error("'#{name}' attribute or method not defined. Available in this context:#{str}", line: errline)
+    def available(attrs_only: false)
+      av = []
+      visit_callable_attrs do |a, type|
+        av << "#{a.name} (#{type})"
+      end
+      if !attrs_only
+        visit_callable_methods do |m|
+          av << m.name
+        end
+      end
+      av.sort!
+      av
+    end
+
+    def attr_or_method_not_found_error(name, errline: $last_call_location)
+      av = available
+      str = !av.empty? ? "\n#{av.join(", ")}" : " none"
+      JABA.error("'#{name}' attr/method not defined. Available in this scope:#{str}", line: errline)
+    end
+
+    def attr_not_found_error(name, errline: $last_call_location)
+      av = available(attrs_only: true)
+      str = !av.empty? ? "\n#{av.join(", ")}" : " none"
+      JABA.error("'#{name}' attribute not defined. Available in this scope:#{str}", line: errline)
     end
 
     def make_read_only

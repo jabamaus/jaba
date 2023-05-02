@@ -1,5 +1,4 @@
-JABA.define_api(:core) do
-  # Attribute types
+JABA.define_api(:attr_types) do
   attr_type :null do
     title "Null attribute type"
   end
@@ -52,7 +51,9 @@ JABA.define_api(:core) do
   attr_type :compound do
     title "Compound attribute type"
   end
+end
 
+JABA.define_api(:core) do
   # Flags
 
   flag :allow_dupes do
@@ -132,7 +133,7 @@ JABA.define_api(:core) do
   # Global methods
 
   method "*/available" do
-    title "Array of attributes/methods available in current context"
+    title "Array of attributes/methods available in current scope"
     on_called do |str, node:| node.available end
   end
 
@@ -172,15 +173,16 @@ JABA.define_api(:core) do
     on_called do end
   end
 
+end
+
+JABA.define_api(:project) do
   # Global attributes. Available in all nodes but not at top level.
 
   attr "*/root", type: :dir do
     title "TODO"
     flags :node_option
   end
-end
-
-JABA.define_api(:project) do
+  
   # Top level attributes
 
   attr_array "default_configs", type: :symbol do

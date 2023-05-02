@@ -9,7 +9,7 @@ jtest "split_jdl_path" do
 end
 
 jtest "validates jdl path format" do
-  jdl do
+  jdl(blank: true) do
     node :n
     JTest.assert_jaba_error "Error at #{JTest.src_loc("5CFB9574")}: 'n|a' is in invalid format." do
       attr "n|a" # 5CFB9574 pipes not allowed
@@ -31,7 +31,7 @@ jtest "validates jdl path format" do
 end
 
 jtest "checks parent path valid" do
-  jdl do
+  jdl(blank: true) do
     JTest.assert_jaba_error "Error at #{JTest.src_loc("24DB3815")}: No 'a' node registered." do
       attr "a/b" # 24DB3815
     end
@@ -40,7 +40,7 @@ jtest "checks parent path valid" do
 end
 
 jtest "checks for duplicate paths" do
-  jdl do
+  jdl(apis: [:attr_types]) do
     node "n"
     JTest.assert_jaba_error "Error at #{JTest.src_loc("99E1CB75")}: Duplicate 'n' node registered." do
       node "n" # 99E1CB75
@@ -60,14 +60,13 @@ jtest "checks for duplicate paths" do
 end
 
 jtest "can register methods at top level" do
-  jdl do
+  jdl(apis: [:attr_types, :core]) do
     method :m do
       on_called do Kernel.print "m" end
     end
   end
   jaba do
-    # TODO: add support for available_methods
-    # available_methods.must_equal ["m"] # TODO
+    available.must_equal ["available", "fail", "glob", "include", "m", "print", "puts", "shared"]
     JTest.assert_output "m" do
       m
     end
@@ -75,10 +74,10 @@ jtest "can register methods at top level" do
 end
 
 jtest "can register methods into a specific node" do
-  jdl do
+  jdl(blank: true) do
     node :node
     method "node/m" do
-      on_called do Kernel.print "m|" end
+      on_called do Kernel.print "m" end
     end
   end
   jaba do
@@ -87,14 +86,14 @@ jtest "can register methods into a specific node" do
         m
       end
     end
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("527A4B81")}: No 'm' method defined at this scope." do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("527A4B81")}: 'm' attr/method not defined. Available in this scope: none." do
       m # 527A4B81
     end
   end
 end
 
 jtest "can register methods globally" do
-  jdl do
+  jdl(blank: true) do
     node "node1"
     node "node2"
     method "*/m" do
@@ -115,14 +114,14 @@ jtest "can register methods globally" do
 end
 
 jtest "can register attributes into nodes" do
-  jdl do
+  jdl(apis: [:attr_types]) do
     node "node1"
     attr "node1/a"
     attr "*/b" # registers into all nodes, except top level
     node "node2"
   end
   jaba do
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("2D0B33FE")}: 'b' attribute or method not defined. Available in this context: none." do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("2D0B33FE")}: 'b' attr/method not defined. Available in this scope: none." do
       b 1 # 2D0B33FE
     end
     node1 :n1 do

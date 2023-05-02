@@ -104,7 +104,7 @@ jtest "fails if default block sets attribute" do
       end
     end
   end
-  assert_jaba_error "Error at #{src_loc("218296F2")}: 'a' attribute is read only in this context." do
+  assert_jaba_error "Error at #{src_loc("218296F2")}: 'a' attribute is read only in this scope." do
     jaba do
       b
     end

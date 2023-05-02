@@ -33,6 +33,8 @@ module JABA
   def self.core_api_blocks = @@core_api_blocks
   def self.current_api_blocks = @@current_api_blocks
   def self.restore_core_api = @@current_api_blocks.clear # Used by unit tests
+  
+  # TODO: allow an api to depend on another
   def self.define_api(id, &block)
     @@core_api_blocks << block
     @@core_api_blocks_lookup[id] = block
@@ -41,15 +43,10 @@ module JABA
   # Set which apis are required. Used as efficiency mechanism for unit tests
   def self.set_api_level(apis, &block)
     @@current_api_blocks.clear
-    @@current_api_blocks << @@core_api_blocks_lookup[:core] # Core always required
     apis.each do |id|
-      if id == :core
-        JABA.warn("No need to specify :core api as always included")
-      else
-        api = @@core_api_blocks[id]
-        JABA.error("'#{id}' api undefined") if api.nil?
-        @@current_api_blocks << api
-      end
+      api = @@core_api_blocks_lookup[id]
+      JABA.error("'#{id}' api undefined") if api.nil?
+      @@current_api_blocks << api
     end
     @@current_api_blocks << block if block
   end
@@ -67,7 +64,7 @@ module JABA
 
         def method_missing(id, ...)
           $last_call_location = ::Kernel.calling_location
-          @node.attr_not_found_error(id, errline: $last_call_location)
+          @node.attr_or_method_not_found_error(id)
         end
       end
       # attrs get registered into top_level_api_class_base and methods and nodes get registered into top_level_api_class
@@ -79,12 +76,20 @@ module JABA
       @top_level_api_class.set_inspect_name("TopLevelAPI")
 
       @common_attrs_module = Module.new
-      @common_attr_node_def = make_definition(NodeDefinition, nil, "common", nil) do |d|
+      @common_attr_node_def = make_definition(NodeDefinition, nil, "common_attrs", nil) do |d|
         d.set_title("TODO")
         d.set_api_class(@common_attrs_module)
       end
+
+      @global_methods_module = Module.new
+      @global_methods_node_def = make_definition(NodeDefinition, nil, "global_methods", nil) do |d|
+        d.set_title("TODO")
+        d.set_api_class(@global_methods_module)
+      end
+      @base_api_class.include(@global_methods_module)
+
       @path_to_node_def["*"] = @common_attr_node_def
-      @top_level_node_def = make_definition(NodeDefinition, nil, "global", nil) do |d|
+      @top_level_node_def = make_definition(NodeDefinition, nil, "top_level", nil) do |d|
         d.set_title("TODO")
         d.set_api_class(@top_level_api_class_base)
       end
@@ -96,6 +101,7 @@ module JABA
     end
 
     def common_attr_node_def = @common_attr_node_def
+    def global_methods_node_def = @global_methods_node_def
     def top_level_node_def = @top_level_node_def
     def top_level_api_class = @top_level_api_class
 
@@ -130,6 +136,7 @@ module JABA
 
       @path_to_node_def[path] = node_def
       parent_def.node_defs << node_def
+      node_def.set_parent_node_def(parent_def)
 
       parent_def.api_class.define_method(name) do |*args, **kwargs, &node_block|
         $last_call_location = ::Kernel.calling_location
@@ -155,16 +162,19 @@ module JABA
       path = validate_path(path)
       parent_path, name = split_jdl_path(path)
 
-      parent_class = if parent_path == "*"
-          @base_api_class
-        else
-          lookup_node_def(parent_path).api_class
-        end
+      node_def = if parent_path == "*"
+        @global_methods_node_def
+      else
+        lookup_node_def(parent_path)
+      end
+
+      parent_class = node_def.api_class
       if parent_class.method_defined?(name)
         error("Duplicate '#{path}' method registered")
       end
 
       meth_def = make_definition(MethodDefinition, MethodDefinitionAPI, name, block)
+      node_def.method_defs << meth_def
 
       parent_class.define_method(name) do |*args, **kwargs|
         $last_call_location = ::Kernel.calling_location
@@ -225,6 +235,7 @@ module JABA
         cmp_def = AttributeGroupDefinition.new
         cmp_def.instance_variable_set(:@jdl_builder, self)
         cmp_def.set_api_class(cmp_api)
+        cmp_def.set_parent_node_def(node_def)
         attr_def.set_compound_def(cmp_def)
         @path_to_node_def[path] = cmp_def
       end
