@@ -113,6 +113,7 @@ module JABA
 
       tld = NodeDefData.new(@jdl.top_level_node_def, "top_level", nil, nil, nil, nil)
       create_node(tld, parent: nil) do |n|
+        n.add_attrs(@jdl.top_level_node_def.attr_defs)
         @top_level_node = n
         @output[:root] = n
         @top_level_api_obj = @jdl.top_level_api_class.new(n)
@@ -320,25 +321,42 @@ module JABA
     end
 
     def process_node_def(nd)
+      parent = @top_level_node
+      if !nd.node_def.option_attr_defs.empty?
+        parent = create_node(nd, parent: parent, eval_jdl: false) do |node|
+          node.add_attrs(nd.node_def.option_attr_defs)
+          nd.kwargs.each do |attr_name, val|
+            node.get_attr(attr_name).set(val)
+          end
+        end
+      end
       if nd.node_def.name == "project"
         @default_configs ||= @top_level_node[:default_configs]
 
-        proj_node = create_node(nd)
+        proj_attrs, config_attrs = nd.node_def.attr_defs.partition{|ad| ad.has_flag?(:per_project)}
+        proj_node = create_node(nd, parent: parent) do |node|
+          node.add_attrs(@jdl.common_attr_node_def.attr_defs)
+          node.add_attrs(proj_attrs)
+        end
         @default_configs.each do |id|
           create_node(nd, parent: proj_node) do |node|
+            node.add_attrs(config_attrs)
             node.get_attr(:config).set(id)
           end
         end
       else
-        create_node(nd)
+        create_node(nd, parent: parent) do |node|
+          node.add_attrs(@jdl.common_attr_node_def.attr_defs)
+          node.add_attrs(nd.node_def.attr_defs)
+        end
       end
     end
 
-    def create_node(nd, parent: @top_level_node)
+    def create_node(nd, parent:, eval_jdl: true)
       begin
         node = Node.new(nd.node_def, nd.id, nd.src_loc, parent)
         yield node if block_given?
-        node.eval_jdl(&nd.block) if nd.block
+        node.eval_jdl(&nd.block) if nd.block && eval_jdl
         node.post_create
         return node
       rescue FrozenError => e

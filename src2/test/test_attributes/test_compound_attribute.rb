@@ -139,6 +139,28 @@ jtest "has write access to sibling attrs" do
   end
 end
 
+jtest "does not get copy of common attrs" do
+  jdl do
+    node :node
+    attr "*/common"
+    attr_array "node/cmpd", type: :compound
+    attr "node/cmpd/a"
+  end
+  jaba do
+    node :n do
+      common 1
+      cmpd do
+        common.must_equal 1
+        common 2 # compound attrs can set sibling attrs 
+      end
+      common.must_equal 2
+    end
+    node :n2 do
+      common 2
+    end
+  end
+end
+
 jtest "works with array" do
   jdl do
     attr_array "cmpd", type: :compound

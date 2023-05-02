@@ -36,6 +36,7 @@ module JABA
 
     def make_compound_attr(&block)
       compound = Node.new(attr_def.compound_def, nil, @last_call_location, @node)
+      compound.add_attrs(attr_def.compound_def.attr_defs)
       compound.eval_jdl(&block) if block
       compound.post_create
       @set = true

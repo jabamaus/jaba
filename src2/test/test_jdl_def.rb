@@ -137,12 +137,18 @@ end
 jtest "can register attributes as node options" do
   jdl do
     node "node"
-    attr "node/a", type: :bool do
+    attr "node/a" do
       flags :node_option
     end
   end
   jaba do
-    node :n, a: true
+    node :n, a: 1 do
+      a.must_equal 1
+      available.must_equal ["a (read)"]
+      JTest.assert_jaba_error "Error at #{JTest.src_loc("70E5EB5C")}: 'a' attribute is read only in this scope." do
+        a 2 # 70E5EB5C
+      end
+    end
   end
 end
 

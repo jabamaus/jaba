@@ -205,7 +205,7 @@ JABA.define_api(:project) do
 
   attr_array "project/define", type: :string do
     title "Preprocessor defines"
-    #flags :exportable
+    flags :per_config #, :exportable
   end
 
   attr "project/rule", type: :compound do

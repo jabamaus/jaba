@@ -213,7 +213,11 @@ module JABA
         yield ad if block_given?
       end
 
-      node_def.attr_defs << attr_def
+      if attr_def.has_flag?(:node_option)
+        node_def.option_attr_defs << attr_def
+      else
+        node_def.attr_defs << attr_def
+      end
 
       parent_class = node_def.api_class
       error("api class for '#{path}' node was nil") if parent_class.nil?

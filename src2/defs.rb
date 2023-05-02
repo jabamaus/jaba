@@ -70,12 +70,14 @@ module JABA
       super()
       @api_class = nil
       @attr_defs = []
+      @option_attr_defs = []
       @parent_node_def = nil
     end
 
     def set_api_class(c) = @api_class = c
     def api_class = @api_class
     def attr_defs = @attr_defs
+    def option_attr_defs = @option_attr_defs
     def set_parent_node_def(nd) = @parent_node_def = nd
     def parent_node_def = @parent_node_def
   end

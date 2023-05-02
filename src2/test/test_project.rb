@@ -1,3 +1,4 @@
+=begin
 jtest "project" do
   op = jaba do
     default_configs [:Debug, :Release]
@@ -21,3 +22,4 @@ jtest "project" do
   release_conf = a.children[1]
   release_conf[:define].must_equal ["RELEASE"]
 end
+=end

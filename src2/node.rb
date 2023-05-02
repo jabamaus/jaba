@@ -19,12 +19,11 @@ module JABA
       @parent = parent
       if parent
         parent.children << self
-        # Top level node does not have common attrs included
-        node_def.jdl_builder.common_attr_node_def.attr_defs.each do |ad|
-          add_attr(ad)
-        end
       end
-      node_def.attr_defs.each do |d|
+    end
+
+    def add_attrs(attr_defs)
+      attr_defs.each do |d|
         add_attr(d)
       end
     end
