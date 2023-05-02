@@ -307,30 +307,21 @@ jtest "can accept value and flag options" do
   elem.option_value(:kv1).must_equal("a")
   elem.option_value(:kv2).must_equal("b")
 end
-=begin
+
 jtest "validates key value supplied correctly" do
-  assert_jaba_error "Error at #{src_loc("E4932204")}: 't.a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"" do
-    jaba(barebones: true) do
-      type :test do
-        attr_hash :a, key_type: :string
-      end
-      test :t do
-        a key: "val" # E4932204
-      end
-    end
+  jdl do
+    attr_hash :a, key_type: :string
   end
-  assert_jaba_error "Error at #{src_loc("C567DBCD")}: 't.a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"" do
-    jaba(barebones: true) do
-      type :test do
-        attr_hash :a, key_type: :string
-      end
-      test :t do
-        a :key # C567DBCD
-      end
+  jaba do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("E4932204")}: 'a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"" do
+      a key: "val" # E4932204
+    end
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("C567DBCD")}: 'a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"" do
+      a :key # C567DBCD
     end
   end
 end
-
+=begin
 jtest "supports setting a validator" do
   # only hash attr has validate_key property
   assert_jaba_error "Error at #{src_loc("95BFB40C")}: 'validate_key' property undefined." do
