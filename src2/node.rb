@@ -9,6 +9,7 @@ module JABA
     def initialize(node_def, id, src_loc, parent)
       JABA.error("node_def must not be nil") if node_def.nil?
       @node_def = node_def
+      @api_obj = @node_def.api_class.new(self)
       @id = id
       @src_loc = src_loc
       @attributes = []
@@ -28,7 +29,7 @@ module JABA
       end
     end
 
-    def api_obj = @node_def.api_class.singleton.__internal_set_node(self)
+    def api_obj = @api_obj
     def eval_jdl(...) = api_obj.instance_exec(...)
 
     def post_create

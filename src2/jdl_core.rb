@@ -57,10 +57,9 @@ module JABA
       @path_to_node_def = {}
       @base_api_class = Class.new(BasicObject) do
         undef_method :!, :!=, :==, :equal?, :__id__
-        def self.singleton = @instance ||= new
+        def initialize(node) = @node = node
         def self.set_inspect_name(name) = @inspect_name = name
         def self.inspect = "#<Class:#{@inspect_name}>"
-        def __internal_set_node(n); @node = n; self; end
 
         def method_missing(id, ...)
           $last_call_location = ::Kernel.calling_location

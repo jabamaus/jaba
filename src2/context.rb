@@ -115,7 +115,7 @@ module JABA
       create_node(tld, parent: nil) do |n|
         @top_level_node = n
         @output[:root] = n
-        @top_level_api_obj = @jdl.top_level_api_class.singleton.__internal_set_node(n)
+        @top_level_api_obj = @jdl.top_level_api_class.new(n)
         set_top_level_attrs_from_cmdline
         @executing_jdl = true
         load_jaba_files

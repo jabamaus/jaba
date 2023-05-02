@@ -71,7 +71,11 @@ module JABA
 
     def value
       record_last_call_location
-      @value
+      if @value.is_a?(Node) && JABA.context.executing_jdl?
+        @value.api_obj
+      else
+        @value
+      end
     end
 
     def flag_options = @flag_options

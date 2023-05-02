@@ -124,5 +124,37 @@ jtest "works with array" do
       b 6
     end
     cmpd.size.must_equal 3
+    cmpd[0].a.must_equal 1
+    cmpd[0].b.must_equal 2
+    cmpd[1].a.must_equal 3
+    cmpd[1].b.must_equal 4
+    cmpd[2].a.must_equal 5
+    cmpd[2].b.must_equal 6
+  end
+end
+
+jtest "works with hash" do
+  jdl do
+    attr_hash "cmpd", type: :compound, key_type: :symbol
+    attr "cmpd/a"
+    attr "cmpd/b"
+  end
+  jaba do
+    cmpd :a do
+      a 1
+      b 2
+    end
+    cmpd :b do
+      a 3
+      b 4
+    end
+    cmpd.size.must_equal 2
+    cmpd.has_key?(:a).must_be_true
+    cmpd.has_key?(:b).must_be_true
+    cmpd.has_key?(:c).must_be_false
+    cmpd[:a].a.must_equal 1
+    cmpd[:a].b.must_equal 2
+    cmpd[:b].a.must_equal 3
+    cmpd[:b].b.must_equal 4
   end
 end
