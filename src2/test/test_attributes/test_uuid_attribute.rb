@@ -18,17 +18,14 @@ jtest "generates a UUID from a string" do
       end
       flags :no_sort
     end
-    # TODO: bring online when attr_hash ported
-=begin
-    attr_hash "tuu_C3C87104|e", key_type: :symbol, type: :uuid do
+    attr_hash "e", key_type: :symbol, type: :uuid do
       default({ k1: "a", k2: "b" })
     end
-    attr_hash "tuu_C3C87104|f", key_type: :symbol, type: :uuid do
+    attr_hash "f", key_type: :symbol, type: :uuid do
       default do # block form
         { k1: "a", k2: "b" }
       end
     end
-=end
   end
   a_uuid = "{239B21D9-641E-517D-9532-88054E2B777F}"
   b_uuid = "{DD1FBB35-694F-574F-B508-0517B327CA75}"
@@ -48,7 +45,7 @@ jtest "generates a UUID from a string" do
     d.must_equal [a_uuid, b_uuid]
     d ["c", "d"]
     d.must_equal [a_uuid, b_uuid, c_uuid, d_uuid]
-=begin
+
     e.must_equal({ k1: a_uuid, k2: b_uuid })
     e :k1, "c" # overwrite default
     e :k3, "d" # insert
@@ -58,6 +55,5 @@ jtest "generates a UUID from a string" do
     f :k1, "c" # overwrite default
     f :k3, "d" # insert
     f.must_equal({ k1: c_uuid, k2: b_uuid, k3: d_uuid })
-=end
   end
 end

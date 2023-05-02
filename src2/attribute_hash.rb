@@ -66,8 +66,8 @@ module JABA
       # value to make use of other attributes.
       #
       if !set? && attr_def.default_is_block?
-        default_hash = services.execute_attr_default_block(self)
-        if !default_hash.hash?
+        default_hash = JABA.context.execute_attr_default_block(self)
+        if !default_hash.is_a?(Hash)
           attr_error("#{describe} default requires a hash not a '#{default_hash.class}'")
         end
         default_hash.each do |k, v|
