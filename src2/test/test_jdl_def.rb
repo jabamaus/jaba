@@ -136,8 +136,15 @@ end
 
 jtest "can register attributes as node options" do
   jdl do
-    node "node"
-    attr "node/a" do
+    attr "*/common_option" do
+      flags :node_option
+      default 3
+    end
+    attr "*/common_option_required" do
+      flags :node_option, :required
+    end
+    node "node1"
+    attr "node1/a" do
       flags :node_option
     end
     node "node2"
@@ -146,20 +153,32 @@ jtest "can register attributes as node options" do
     end
   end
   jaba do
-    node :n, a: 1 do
+    node1 :n, a: 1, common_option: 2, common_option_required: 3 do
       a.must_equal 1
+      common_option.must_equal 2
+      common_option_required.must_equal 3
       # TODO
       #available.must_equal ["a (read)"]
       JTest.assert_jaba_error "Error at #{JTest.src_loc("70E5EB5C")}: 'a' attribute is read only in this scope." do
         a 2 # 70E5EB5C
       end
     end
+    node2 :n2, b: 1, common_option_required: 3 do
+      b.must_equal 1
+      common_option.must_equal 3 # default
+      common_option_required.must_equal 3
+    end
   end
   # Test works with :required flag
   # Wrap exception round whole jaba context as nodes are not processed immediately
   JTest.assert_jaba_error "Error at #{JTest.src_loc("AE7F70E6")}: 'node2' requires 'b' attribute to be passed in." do
     jaba do
-      node2 :n2 # AE7F70E6
+      node2 :n2, common_option_required: 3 # AE7F70E6
+    end
+  end
+  JTest.assert_jaba_error "Error at #{JTest.src_loc("4B0E0102")}: 'node2' requires 'common_option_required' attribute to be passed in." do
+    jaba do
+      node2 :n2, b: 1 # 4B0E0102
     end
   end
 end

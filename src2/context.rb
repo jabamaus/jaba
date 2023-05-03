@@ -322,8 +322,9 @@ module JABA
 
     def process_node_def(nd)
       parent = @top_level_node
-      if !nd.node_def.option_attr_defs.empty?
+      if !nd.node_def.option_attr_defs.empty? || !@jdl.common_attr_node_def.option_attr_defs.empty?
         parent = create_node(nd, parent: parent, eval_jdl: false) do |node|
+          node.add_attrs(@jdl.common_attr_node_def.option_attr_defs)
           node.add_attrs(nd.node_def.option_attr_defs)
           nd.kwargs.each do |attr_name, val|
             node.get_attr(attr_name).set(val)
