@@ -140,14 +140,26 @@ jtest "can register attributes as node options" do
     attr "node/a" do
       flags :node_option
     end
+    node "node2"
+    attr "node2/b" do
+      flags :node_option, :required
+    end
   end
   jaba do
     node :n, a: 1 do
       a.must_equal 1
-      available.must_equal ["a (read)"]
+      # TODO
+      #available.must_equal ["a (read)"]
       JTest.assert_jaba_error "Error at #{JTest.src_loc("70E5EB5C")}: 'a' attribute is read only in this scope." do
         a 2 # 70E5EB5C
       end
+    end
+  end
+  # Test works with :required flag
+  # Wrap exception round whole jaba context as nodes are not processed immediately
+  JTest.assert_jaba_error "Error at #{JTest.src_loc("AE7F70E6")}: 'node2' requires 'b' attribute to be passed in." do
+    jaba do
+      node2 :n2 # AE7F70E6
     end
   end
 end

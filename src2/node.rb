@@ -28,6 +28,7 @@ module JABA
       end
     end
 
+    def node_def = @node_def
     def api_obj = @api_obj
     def eval_jdl(...) = api_obj.instance_exec(...)
 
@@ -37,7 +38,11 @@ module JABA
     def post_create
       @attributes.each do |a|
         if !a.set? && a.required?
-          JABA.error("#{a.describe} requires a value", errobj: self)
+          if a.attr_def.has_flag?(:node_option)
+            JABA.error("#{describe} requires #{a.describe} to be passed in", errobj: self)
+          else
+            JABA.error("#{describe} requires #{a.describe} to be set", errobj: self)
+          end
         end
 
         a.finalise
@@ -47,6 +52,7 @@ module JABA
       end
     end
 
+    def describe = "'#{node_def.name.inspect_unquoted}'"
     def id = @id
     def src_loc = @src_loc
     def parent = @parent

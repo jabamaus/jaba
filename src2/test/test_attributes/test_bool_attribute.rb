@@ -43,7 +43,7 @@ jtest "works with required flag" do
       flags :required
     end
   end
-  assert_jaba_file_error "'b' attribute requires a value.", "3C869B0D" do
+  assert_jaba_file_error "'node' requires 'b' attribute to be set.", "3C869B0D" do
     "node :n # 3C869B0D"
   end
 end
