@@ -12,6 +12,7 @@ module JABA
       @api_obj = @node_def.api_class.new(self)
       @id = id
       @src_loc = src_loc
+      @src_dir = src_loc ? src_loc.src_loc_info[0].parent_path : nil # top level root node does not have src_loc
       @attributes = []
       @attribute_lookup = AttributeLookupHash.new
       @children = []
@@ -34,7 +35,7 @@ module JABA
 
     # Compound attrs don't have ids
     def compound_attr? = @id.nil?
-    
+
     def post_create
       @attributes.each do |a|
         if !a.set? && a.required?
@@ -55,11 +56,12 @@ module JABA
     def describe = "'#{node_def.name.inspect_unquoted}'"
     def id = @id
     def src_loc = @src_loc
+    def src_dir = @src_dir
     def parent = @parent
     def children = @children
     def attributes = @attributes
-    def [](name) = get_attr(name).value    
-    
+    def [](name) = get_attr(name).value
+
     def visit(&block)
       yield self
       @children.each do |c|

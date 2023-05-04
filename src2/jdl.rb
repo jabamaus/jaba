@@ -31,6 +31,7 @@ JABA.define_api(:attr_types) do
   attr_type :file do
     title "File attribute type"
     note "Validates that value is a string path representing a file"
+    # TODO: document basedir_spec
   end
 
   attr_type :dir do
@@ -172,7 +173,6 @@ JABA.define_api(:core) do
     title "Define a shared definition"
     on_called do end
   end
-
 end
 
 JABA.define_api(:project) do
@@ -181,8 +181,9 @@ JABA.define_api(:project) do
   attr "*/root", type: :dir do
     title "TODO"
     flags :node_option
+    basedir_spec :jaba_file
   end
-  
+
   # Top level attributes
 
   attr_array "default_configs", type: :symbol do
@@ -215,6 +216,7 @@ JABA.define_api(:project) do
 
   attr "project/rule/input", type: :src do
     title "TODO"
+    basedir_spec :jaba_file
   end
 
   attr "project/type", type: :choice do

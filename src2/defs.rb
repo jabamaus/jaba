@@ -115,26 +115,24 @@ module JABA
       @flags = []
       @flag_options = []
       @value_options = []
-      @items = []
       @default = nil
       @default_is_block = false
       @default_set = false
       @on_validate = nil
-      @basedir_spec = nil
       @compound_def = nil # used by compound attribute
     end
 
-    def set_attr_type(t) = @attr_type = t
+    def set_attr_type(t)
+      @attr_type = t
+      @attr_type.init_attr_def(self)
+    end
 
     def post_create
       super
       @default.freeze
       @flags.freeze
       @flag_options.freeze
-
-      if type_id == :choice && @items.empty?
-        definition_error("'items' must be set")
-      end
+      @attr_type.post_create_attr_def(self)
     end
 
     def describe = "'#{@name.inspect_unquoted}' #{@variant == :single ? "" : "#{@variant} "}attribute"
@@ -159,21 +157,6 @@ module JABA
     def flag_options = @flag_options
     def set_flag_options(*fo) = @flag_options.concat(fo)
     def has_flag_option?(fo) = @flag_options.include?(fo)
-
-    # Items is used by choice attribute
-    def items = @items
-
-    def set_items(items)
-      definition_warn("'items' contains duplicates") if items.uniq!
-      @items.concat(items)
-    end
-
-    # basedir_spec is used by path attributes
-    def basedir_spec = @basedir_spec
-
-    def set_basedir_spec(s)
-      @basedir_spec = @jdl_builder.lookup_definition(BasedirSpecDefinition, s, attr_def: self)
-    end
 
     def set_validate(&block) = @on_validate = block
     def on_validate = @on_validate

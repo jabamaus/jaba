@@ -334,7 +334,7 @@ module JABA
       if nd.node_def.name == "project"
         @default_configs ||= @top_level_node[:default_configs]
 
-        proj_attrs, config_attrs = nd.node_def.attr_defs.partition{|ad| ad.has_flag?(:per_project)}
+        proj_attrs, config_attrs = nd.node_def.attr_defs.partition { |ad| ad.has_flag?(:per_project) }
         proj_node = create_node(nd, parent: parent) do |node|
           node.add_attrs(@jdl.common_attr_node_def.attr_defs)
           node.add_attrs(proj_attrs)

@@ -19,7 +19,7 @@ module JABA
           values = JABA.context.execute_attr_default_block(self)
           validate_default_block_value(values)
           at = attr_def.attr_type
-          return values.map { |e| at.map_value(e) }
+          return values.map { |e| at.map_value(e, self) }
         elsif JABA.context.in_attr_default_block?
           outer = JABA.context.outer_default_attr_read
           outer.attr_error("#{outer.describe} default read uninitialised #{describe} - it might need a default value")

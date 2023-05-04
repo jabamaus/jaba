@@ -92,19 +92,21 @@ module JABA
       if read_only? && set? # allow read only to be set the first time so they an be initialised
         attr_error("#{describe} is read only")
       end
+
       new_value = if block_given?
           value_from_block(&block)
         else
           args.shift
         end
-      attr_type = @attr_def.attr_type
-      new_value = attr_type.map_value(new_value)
+
       @flag_options = args
       # Take a deep copy of value_options so they are private to this attribute
       @value_options = {}
       kwargs.each do |k, v|
         @value_options[k] = v.dup
       end
+
+      attr_type = @attr_def.attr_type
 
       if __validate
         @flag_options.each do |f|
@@ -126,7 +128,7 @@ module JABA
           end
         end
       end
-      @value = new_value
+      @value = attr_type.map_value(new_value, self)
       @value.freeze # Prevents value from being changed directly after it has been returned by 'value' method
       @set = true
     end
@@ -176,7 +178,7 @@ module JABA
           end
         elsif attr_def.default_is_block?
           val = JABA.context.execute_attr_default_block(self)
-          @attr_def.attr_type.map_value(val)
+          @attr_def.attr_type.map_value(val, self)
         elsif JABA.context.in_attr_default_block?
           outer = JABA.context.outer_default_attr_read
           outer.attr_error("#{outer.describe} default read uninitialised #{describe} - it might need a default value")

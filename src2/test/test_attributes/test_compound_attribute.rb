@@ -151,7 +151,7 @@ jtest "does not get copy of common attrs" do
       common 1
       cmpd do
         common.must_equal 1
-        common 2 # compound attrs can set sibling attrs 
+        common 2 # compound attrs can set sibling attrs
       end
       common.must_equal 2
     end

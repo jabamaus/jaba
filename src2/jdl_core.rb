@@ -15,6 +15,8 @@ module JABA
   BasedirSpecDefinitionAPI = APIBuilder.define().include(CommonAPI)
   MethodDefinitionAPI = APIBuilder.define(:on_called).include(CommonAPI)
   NodeDefinitionAPI = APIBuilder.define().include(CommonAPI)
+
+  # Additional attribute type-specific properties are added by attribute types
   AttributeDefinitionAPI = APIBuilder.define(
     :flags,
     :flag_options,
@@ -22,8 +24,6 @@ module JABA
     :default,
     :validate,
     :validate_key, # Used by hash attribute
-    :items, # Used by choice attribute
-    :basedir_spec, # Used by path attributes
   ).include(CommonAPI)
 
   @@core_api_blocks = []
@@ -33,7 +33,7 @@ module JABA
   def self.core_api_blocks = @@core_api_blocks
   def self.current_api_blocks = @@current_api_blocks
   def self.restore_core_api = @@current_api_blocks.clear # Used by unit tests
-  
+
   # TODO: allow an api to depend on another
   def self.define_api(id, &block)
     @@core_api_blocks << block
@@ -57,7 +57,9 @@ module JABA
       @path_to_node_def = {}
       @base_api_class = Class.new(BasicObject) do
         undef_method :!, :!=, :==, :equal?, :__id__
+
         def initialize(node) = @node = node
+
         def self.set_inspect_name(name) = @inspect_name = name
         def self.inspect = "#<Class:#{@inspect_name}>"
 
@@ -69,8 +71,8 @@ module JABA
       # attrs get registered into top_level_api_class_base and methods and nodes get registered into top_level_api_class
       # Nodes inherit from top_level_api_class_base so facilitate read only access to attributes but no access to methods
       @top_level_api_class_base = Class.new(@base_api_class)
-      @top_level_api_class_base.set_inspect_name('TopLevelAPIBase')
-      
+      @top_level_api_class_base.set_inspect_name("TopLevelAPIBase")
+
       @top_level_api_class = Class.new(@top_level_api_class_base)
       @top_level_api_class.set_inspect_name("TopLevelAPI")
 
@@ -162,10 +164,10 @@ module JABA
       parent_path, name = split_jdl_path(path)
 
       node_def = if parent_path == "*"
-        @global_methods_node_def
-      else
-        lookup_node_def(parent_path)
-      end
+          @global_methods_node_def
+        else
+          lookup_node_def(parent_path)
+        end
 
       parent_class = node_def.api_class
       if parent_class.method_defined?(name)
@@ -182,11 +184,7 @@ module JABA
     end
 
     def lookup_definition(klass, name, fail_if_not_found: true, attr_def: nil)
-      all = @definition_lookup[klass]
-      if all.nil?
-        JABA.error("No '#{klass}' definition class registered") if fail_if_not_found
-        return nil
-      end
+      all = lookup_definitions(klass, fail_if_not_found: fail_if_not_found)
       d = all.find { |fd| fd.name == name }
       if d.nil? && fail_if_not_found
         msg = "'#{name.inspect_unquoted}' must be one of #{all.map { |s| s.name }}"
@@ -199,6 +197,14 @@ module JABA
       d
     end
 
+    def lookup_definitions(klass, fail_if_not_found: true)
+      all = @definition_lookup[klass]
+      if all.nil? && fail_if_not_found
+        JABA.error("No '#{klass}' definition class registered")
+      end
+      all
+    end
+
     private
 
     def process_attr(path, def_class, type_id, block)
@@ -209,7 +215,6 @@ module JABA
       attr_def = make_definition(def_class, AttributeDefinitionAPI, attr_name, block) do |ad|
         attr_type = lookup_definition(:attr_types, type_id, attr_def: ad)
         ad.set_attr_type(attr_type)
-        attr_type.init_attr_def(ad)
         yield ad if block_given?
       end
 
@@ -234,7 +239,7 @@ module JABA
         # Compound attr interface inherits parent nodes interface so it has read only access to its attrs
         cmp_api = Class.new(parent_class)
         cmp_api.set_inspect_name(attr_name)
-        
+
         cmp_def = AttributeGroupDefinition.new
         cmp_def.instance_variable_set(:@jdl_builder, self)
         cmp_def.set_api_class(cmp_api)

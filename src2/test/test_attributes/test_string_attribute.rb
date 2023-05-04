@@ -4,7 +4,7 @@ jtest "validates default" do
       default 1 # 4847EA74
     end
   end
-  assert_jaba_error "Error at #{src_loc("4847EA74")}: 'a' attribute invalid - 'default' invalid - '1' is a integer - expected a string." do
+  assert_jaba_error "Error at #{src_loc("4847EA74")}: 'a' attribute invalid - 'default' invalid - '1' is a integer - expected a string or symbol." do
     jaba
   end
 end

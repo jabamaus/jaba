@@ -9,9 +9,10 @@ module JABA
     def default = @default
 
     def init_attr_def(attr_def); end            # override as necessary
+    def post_create_attr_def(attr_def); end     # override as necessary
     def value_from_cmdline(str, attr_def) = str # override as necessary
-    def map_value(value) = value                # override as necessary
     def validate_value(attr_def, value); end    # override as necessary
+    def map_value(value, attr) = value          # override as necessary
 
     def post_create
       super
@@ -34,18 +35,18 @@ module JABA
       super(default: "")
     end
 
+    def validate_value(attr_def, value, &block)
+      if !value.string? && !value.symbol?
+        type_error(value, "a string or symbol", &block)
+      end
+    end
+
     # Can be specified as a symbol but stored internally as a string
-    def map_value(value)
+    def map_value(value, attr)
       if value.is_a?(Symbol)
         value.to_s
       else
         value
-      end
-    end
-
-    def validate_value(attr_def, value, &block)
-      if !value.string?
-        type_error(value, "a string", &block)
       end
     end
   end
@@ -86,6 +87,27 @@ module JABA
   end
 
   class AttributeTypeChoice < AttributeType
+    APIBuilder.add_method(AttributeDefinitionAPI, :items)
+    AttributeDefinition.class_eval do
+      def items = @items
+
+      def set_items(items)
+        definition_warn("'items' contains duplicates") if items.uniq!
+        @items.concat(items)
+      end
+    end
+
+    def init_attr_def(attr_def)
+      attr_def.instance_variable_set(:@items, [])
+    end
+
+    def post_create_attr_def(attr_def)
+      super
+      if attr_def.items.empty?
+        attr_def.definition_error("'items' must be set")
+      end
+    end
+
     def value_from_cmdline(str, attr_def)
       items = attr_def.items
       # Use find_index to allow for nil being a valid choice
@@ -105,15 +127,60 @@ module JABA
   end
 
   class AttributeTypeUuid < AttributeType
-    def map_value(value)
+    def map_value(value, attr)
       Kernel.generate_uuid(namespace: "AttributeTypeUuid", name: value, braces: true)
     end
   end
 
+  class AttributeTypeBasename < AttributeType
+    def validate_value(attr_def, value)
+      if value.contains_slashes?
+        yield "'#{value}' must not contain slashes"
+      end
+    end
+  end
+
   class AttributePathBase < AttributeType
+    # Register basedir_spec property into AttributeDefinition
+    APIBuilder.add_method(AttributeDefinitionAPI, :basedir_spec)
+    AttributeDefinition.class_eval do
+      def basedir_spec = @basedir_spec
+
+      def set_basedir_spec(s)
+        # check its valid
+        @jdl_builder.lookup_definition(BasedirSpecDefinition, s, attr_def: self)
+        @basedir_spec = s
+      end
+    end
+
+    def init_attr_def(attr_def)
+      attr_def.instance_variable_set(:@basedir_spec, nil)
+    end
+
+    def post_create_attr_def(attr_def)
+      super
+      if attr_def.basedir_spec.nil?
+        attr_def.set_basedir_spec(:jaba_file)
+      end
+    end
+
     def validate_value(attr_def, path)
       path.validate_path do |msg|
         JABA.warn("#{attr_def.describe} not specified cleanly: #{msg}", line: $last_call_location)
+      end
+    end
+
+    # TOOO: need to think carefully about how path specification works with shared defs
+    # and how to force paths to be specified relative to jaba file.
+    def map_value(value, attr)
+      if value.absolute_path?
+        value
+      else
+        base = case attr.attr_def.basedir_spec
+          when :jaba_file
+            attr.src_loc.src_loc_info[0].parent_path
+          end
+        "#{base}/#{value}".cleanpath
       end
     end
   end
@@ -123,14 +190,6 @@ module JABA
   class AttributeTypeDir < AttributePathBase
     def initialize
       super(default: ".")
-    end
-  end
-
-  class AttributeTypeBasename < AttributePathBase
-    def validate_value(attr_def, value)
-      if value.contains_slashes?
-        yield "'#{value}' must not contain slashes"
-      end
     end
   end
 
