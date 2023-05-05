@@ -1,89 +1,54 @@
-- Change to make all modules manually included. eg 'include 'cpp''. Get rid of 'grab'.
-- Stop globals from having dependencies, reference attrs and compound attrs.
-- compound attr should not need a title. Could use the title of the jaba type.
-- Add test demonstrating plugins creating dependent objects as they are being processed, eg cpp plugin creates workspaces
-- Should be able to map property value in pre_property_set
-- I wonder whether the role of build_output could be done by a plugin using process_definition
 - Put version number into every type and force it to be set in instance.
-- Consider storing whole callstack and then introducing JabaObject#error method.
-- Move block arg number checking into eval_jdl?
 - Add invocations.txt to each example which cam execute in multiple ways
 - Ability to 'grab' a text plugin that auto-adds ability to generate a text file to cpp projects.
 - Validate paths for missing / eg '../..debase-ruby_core_source/
 - option in tests to log to stdout
-- Add text_plugin.rb to examples in docs
-- Moving text into plugin has raised question about host. Need to set requied cpp_project_classname to ''. Not clean.
-- Should | be allowed in ids? Probably not.
-- Check error reporting in the case that there is an argument error inside Services#define. Needs to present internal callstack.
-- not sure about using inspect_unquoted everywhere in error msgs to explicitly show symbols...
 - localise error strings into a single file, using macros for variable substitution. As well as being better for standardisation could support multiple languages.
-- jaba attr types could register option into JabaAttributeDefinition. noderef/compound types could use it.
-- remove text plugin. Or even better turn into a compound attr and add to cpp.
-- consider optional way of making all paths relative to jaba file when in defaults and shared definitions
-- optimise copying of value options once they are more locked down.
-- Should :definition_root basedir_spec be able to take its value from the setting attr? Eg if globals attr specifies a definition root base spec it be relative to the user definition.
-- Could be moving towards concept of a type requiring configuration
 - Support vcfprop at project level too
 - Review whether '.' is allowed in :basename type. Maybe Introduce and allow_ext option.
 - Introduce :extension type. Use for src_ext
-- rename windows_x86 to win_86?
-- Standardise 'expected/available' error msg, eg Available: [a|b|c|]
-- Regression tests for generated files!
-- enforce that paths stay within their base dir spec
+- Regression tests for generated files.
+- enforce that paths stay within their base dir spec?
 - Implement element deletion for hash attribute
 - Add 'install' to copy exes somewhere post build
 - Stats in docs, eg number of files in jaba release, size of zip.
-- Disallow nested src_roots 
 - should string attr be allowed to be set to nil? Probably not.
 - make jaba clean clean the generated src, the .vs folder, the 'build' folder and optionally the 'buildsystem' folder.
 - Disallow ruby keywords as attr names, eg 'in' fails
 - Consider making all attributes require a type
 - reorg tests into core folder and cpp folder
 - Stronger spec for value_options. Need to flag as array.
-- Overhaul workspace project glob matching
-- add cmd line test for
-  - symbol attr
-  - node ref attr
-  - symbol or string attr
 - add --list-globals option
-- rename items to choices
-* Implement jaba build command to build vs2019 solution
-* Categories in solution files.
+- Implement jaba build command to build vs solution
+- Categories in solution files.
 - flag to control whether absolute paths allowed in file/dir attrs. Eg build_root_offset is not an offset if absolute path used.
   Is it even a path attr?
 - ability to have build tree out of src but projects in src? config option to base projdir off src_root instead of dest_root?
 - Make defaults work per-file. Introduce global_defaults. Or a scope option to defaults.
-* Automatically pull in dependencies into workspace
-- Allow default values to take options?
+- Automatically pull in dependencies into workspace
 - RUBY LICENSE REQUIREMENTS
 - validate when --src-root can be specified. Should be required if no .jaba files in cwd and disallowed if there are.
-- Check attribute validators when parsing cmd line.
 - Employ did you mean style error reporting
   Error at basic_dll.jaba:8: 'defines' attribute not defined. Did you mean 'define'?
 - tag attrs as control flow attrs somehow for benefit of docs
 - add slnproperty which can address sln sections. Particularly useful when used with ExtensibilityGlobals
 - disband VSProj in favour of VSUtilities module
 - Have a command line switch to make all error messages contain absolute paths
-- Make :nocheckexists do something
-- test :required flag compatibility
 - Revisit set_to_default and wipe. Have way of clearing to default and clearing fully, but don't count that as set=true
-- In defaults block are paths relative to the defaults file or the file of the definition being instanced?
 - Allow 'axes' of configs. Bear in mind that platforms can be any string.
-- check for duplicate filenames at plugin level, with proper error reporting
 - Make _ID be id of the definition the code is in, such that it works even inside a block that is being executed in the context of a different jaba object
 - Ability to reverse engineer jaba definitions from existing vsprojects
-- Add check for re-entrancy when evaluating default blocks
-- consistent method names across tests and consistent brackets on must_equal
-- Create a table of attr mappings from jaba->premake->cmake
 - Add 'underlying type' to attribute types? eg file.dir/src_spec are strings. Use this for extra validation and also to sort using casecmp
 - resolve issues around sorting with mixed type elements
 - Add wildcard validation to dir property
 - workspace categories
 - Support **.h as alternative to **/*.h?
 - Make shell build events use macros
-- add grab bag to reference docs
 - Is ToolsVersion='16.0' needed?
 - support for debugger working directory via .user file
+- Bring back boolean reader, eg if debug?
+- Add title/example/notes to flag and value option definitions
+- move attribute type out of jdl_builder
 
 Rewrite simplifications:
 - ditch generic type system
@@ -98,11 +63,7 @@ New features:
  - src files calculated immediately
  - ninja support
  - emscripten support
+ - fastbuild support
  - pull dependencies into solution automatically
  - per file defaults
  - delete stale projects in build system
-
-Rewrite todo:
-- Combine :symbol, :string and :symbol_or_string? Allow strings and symbols to be completely interchangeable?
-- Bring back boolean reader, eg if debug?
-- Add title/example/notes to flag and value option definitions
