@@ -49,6 +49,7 @@
 - Bring back boolean reader, eg if debug?
 - Add title/example/notes to flag and value option definitions
 - move attribute type out of jdl_builder
+- Ability to define attrs directly in jaba files maybe in 'extend' section.
 
 Rewrite simplifications:
 - ditch generic type system
@@ -67,3 +68,6 @@ New features:
  - pull dependencies into solution automatically
  - per file defaults
  - delete stale projects in build system
+ - ability to set src per config instead of per-project
+ - ability to set project type per config instead of per-project
+ - rethought transitive properties of dependencies
