@@ -186,10 +186,6 @@ JABA.define_api(:project) do
 
   # Top level attributes
 
-  attr_array "default_configs", type: :symbol do
-    title "Default configs"
-    flags :required
-  end
 
   # Project node
 

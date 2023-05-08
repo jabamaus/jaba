@@ -1,7 +1,6 @@
 =begin
 jtest "project" do
   op = jaba do
-    default_configs [:Debug, :Release]
     project :myapp do
       type :console
       case config
@@ -13,7 +12,6 @@ jtest "project" do
     end
   end
   r = op[:root]
-  r[:default_configs].must_equal [:Debug, :Release]
   a = r.children[0]
   a.id.must_equal :myapp
   a.children.size.must_equal 2

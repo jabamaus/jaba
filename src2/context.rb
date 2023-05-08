@@ -332,19 +332,17 @@ module JABA
         end
       end
       if nd.node_def.name == "project"
-        @default_configs ||= @top_level_node[:default_configs]
-
         proj_attrs, config_attrs = nd.node_def.attr_defs.partition { |ad| ad.has_flag?(:per_project) }
         proj_node = create_node(nd, parent: parent) do |node|
           node.add_attrs(@jdl.common_attr_node_def.attr_defs)
           node.add_attrs(proj_attrs)
         end
-        @default_configs.each do |id|
-          create_node(nd, parent: proj_node) do |node|
-            node.add_attrs(config_attrs)
-            node.get_attr(:config).set(id)
-          end
-        end
+        #@default_configs.each do |id|
+        #  create_node(nd, parent: proj_node) do |node|
+        #    node.add_attrs(config_attrs)
+        #    node.get_attr(:config).set(id)
+        #  end
+        #end
       else
         create_node(nd, parent: parent) do |node|
           node.add_attrs(@jdl.common_attr_node_def.attr_defs)
