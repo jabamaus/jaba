@@ -69,12 +69,8 @@ module JABA
           @node.attr_or_method_not_found_error(id)
         end
       end
-      # attrs get registered into top_level_api_class_base and methods and nodes get registered into top_level_api_class
-      # Nodes inherit from top_level_api_class_base so facilitate read only access to attributes but no access to methods
-      @top_level_api_class_base = Class.new(@base_api_class)
-      @top_level_api_class_base.set_inspect_name("TopLevelAPIBase")
 
-      @top_level_api_class = Class.new(@top_level_api_class_base)
+      @top_level_api_class = Class.new(@base_api_class)
       @top_level_api_class.set_inspect_name("TopLevelAPI")
 
       @common_attrs_module = Module.new
@@ -99,7 +95,7 @@ module JABA
       @path_to_node_def["*"] = @common_attr_node_def
       @top_level_node_def = make_definition(NodeDefinition, nil, "top_level", nil) do |d|
         d.set_title("TODO")
-        d.set_api_class(@top_level_api_class_base)
+        d.set_api_class(@top_level_api_class)
       end
       @path_to_node_def[nil] = @top_level_node_def
 
@@ -138,7 +134,7 @@ module JABA
       parent_path, name = split_jdl_path(path)
       parent_def = lookup_node_def(parent_path)
 
-      api_class = Class.new(@top_level_api_class_base)
+      api_class = Class.new(@top_level_api_class)
       api_class.set_inspect_name(name)
       api_class.include(@common_attrs_module)
       api_class.include(@common_methods_module)
