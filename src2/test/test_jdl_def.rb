@@ -66,7 +66,7 @@ jtest "can register methods at top level" do
     end
   end
   jaba do
-    available.must_equal ["available", "fail", "glob", "include", "m", "print", "puts", "shared"]
+    available.must_equal ["available", "fail", "glob", "m", "print", "puts", "shared"]
     JTest.assert_output "m" do
       m
     end
@@ -92,11 +92,36 @@ jtest "can register methods into a specific node" do
   end
 end
 
-jtest "can register methods globally" do
+jtest "can register methods into all nodes except top level" do
   jdl(blank: true) do
     node "node1"
     node "node2"
     method "*/m" do
+      on_called do Kernel.print "m|" end
+    end
+  end
+  assert_output "m|m|" do
+    jaba do
+      node1 :n1 do
+        m
+      end
+      node2 :n2 do
+        m
+      end
+    end
+  end
+  jaba do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("A62A894B")}: 'm' attr/method not defined. Available in this scope: none." do
+      m # A62A894B
+    end
+  end
+end
+
+jtest "can register methods globally" do
+  jdl(blank: true) do
+    node "node1"
+    node "node2"
+    global_method "m" do
       on_called do Kernel.print "m|" end
     end
   end

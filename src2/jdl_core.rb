@@ -3,6 +3,7 @@ module JABA
     :attr_type,
     :flag,
     :basedir_spec,
+    :global_method,
     :method,
     :attr,
     :attr_array,
@@ -82,6 +83,12 @@ module JABA
         d.set_api_class(@common_attrs_module)
       end
 
+      @common_methods_module = Module.new
+      @common_methods_node_def = make_definition(NodeDefinition, nil, "common_methods", nil) do |d|
+        d.set_title("TODO")
+        d.set_api_class(@common_methods_module)
+      end
+
       @global_methods_module = Module.new
       @global_methods_node_def = make_definition(NodeDefinition, nil, "global_methods", nil) do |d|
         d.set_title("TODO")
@@ -107,15 +114,18 @@ module JABA
     def top_level_api_class = @top_level_api_class
 
     def set_attr_type(name, &block)
+      name = validate_name(name)
       attr_type_class = JABA.const_get("AttributeType#{name.to_s.capitalize_first}")
       make_definition(attr_type_class, AttributeTypeDefinitionAPI, name, block, lookup_key: :attr_types)
     end
 
     def set_flag(name, &block)
+      name = validate_name(name)
       make_definition(FlagDefinition, FlagDefinitionAPI, name, block)
     end
 
     def set_basedir_spec(name, &block)
+      name = validate_name(name)
       make_definition(BasedirSpecDefinition, BasedirSpecDefinitionAPI, name, block)
     end
 
@@ -131,6 +141,7 @@ module JABA
       api_class = Class.new(@top_level_api_class_base)
       api_class.set_inspect_name(name)
       api_class.include(@common_attrs_module)
+      api_class.include(@common_methods_module)
 
       node_def = make_definition(NodeDefinition, NodeDefinitionAPI, name, block)
       node_def.set_api_class(api_class)
@@ -159,28 +170,21 @@ module JABA
       end
     end
 
+    def set_global_method(name, &block)
+      name = validate_name(name)
+      process_method(@global_methods_node_def, name, name, block)
+    end
+
     def set_method(path, &block)
       path = validate_path(path)
       parent_path, name = split_jdl_path(path)
 
       node_def = if parent_path == "*"
-          @global_methods_node_def
+          @common_methods_node_def
         else
           lookup_node_def(parent_path)
         end
-
-      parent_class = node_def.api_class
-      if parent_class.method_defined?(name)
-        error("Duplicate '#{path}' method registered")
-      end
-
-      meth_def = make_definition(MethodDefinition, MethodDefinitionAPI, name, block)
-      node_def.method_defs << meth_def
-
-      parent_class.define_method(name) do |*args, **kwargs|
-        $last_call_location = ::Kernel.calling_location
-        instance_exec(*args, **kwargs, node: @node, &meth_def.on_called)
-      end
+      process_method(node_def, path, name, block)
     end
 
     def lookup_definition(klass, name, fail_if_not_found: true, attr_def: nil)
@@ -249,6 +253,21 @@ module JABA
       end
     end
 
+    def process_method(node_def, path, name, block)
+      parent_class = node_def.api_class
+      if parent_class.method_defined?(name)
+        error("Duplicate '#{path}' method registered")
+      end
+
+      meth_def = make_definition(MethodDefinition, MethodDefinitionAPI, name, block)
+      node_def.method_defs << meth_def
+
+      parent_class.define_method(name) do |*args, **kwargs|
+        $last_call_location = ::Kernel.calling_location
+        instance_exec(*args, **kwargs, node: @node, &meth_def.on_called)
+      end
+    end
+
     def make_definition(klass, api, name, block, lookup_key: nil)
       lookup_key = klass if lookup_key.nil?
       d = klass.new
@@ -269,6 +288,16 @@ module JABA
     end
 
     def error(msg) = JABA.error(msg, line: APIBuilder.last_call_location)
+
+    def validate_name(name)
+      if !name.is_a?(String) && !name.is_a?(Symbol)
+        error("'#{name.inspect_unquoted}' must be a String or a Symbol")
+      end
+      if name !~ /^[a-zA-Z0-9_]+$/
+        error("'#{name}' is in invalid format")
+      end
+      name
+    end
 
     # Allows eg node_name/node2_name/attr or */attr
     def validate_path(path)
