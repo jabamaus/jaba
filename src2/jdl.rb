@@ -171,7 +171,9 @@ JABA.define_api(:core) do
 
   method "shared" do
     title "Define a shared definition"
-    on_called do end
+    on_called do |id, &block|
+      JABA.context.register_shared(id, block)
+    end
   end
 end
 

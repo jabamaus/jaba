@@ -34,6 +34,7 @@ module JABA
       @jdl_includes = []
       @jdl_file_lookup = {}
       @node_defs = []
+      @shared_lookup = {}
       @executing_jdl = false
       @attr_default_read_stack = []
     end
@@ -365,6 +366,51 @@ module JABA
       end
     end
 
+    def validate_id(id, what)
+      if !(id.symbol? || id.string?) || id !~ /^[a-zA-Z0-9_\-.|]+$/
+        msg = if id.nil?
+            "'#{what}' requires an id"
+          else
+            "'#{id}' is an invalid id"
+          end
+        msg << ". Must be an alphanumeric string or symbol (-_. permitted), eg :my_id, 'my-id', 'my.id'"
+        JABA.error(msg, line: $last_call_location)
+      end
+    end
+
+    def register_shared(id, block)
+      if lookup_shared(id, fail_if_not_found: false)
+        JABA.error("shared definition '#{id.inspect_unquoted}' multiply defined", line: $last_call_location)
+      end
+      @shared_lookup[id] = block
+    end
+
+    def include_shared(node, id)
+      block = lookup_shared(id)
+      node.eval_jdl(&block)
+    end
+
+    def lookup_shared(id, fail_if_not_found: true)
+      s = @shared_lookup[id]
+      if s.nil? && fail_if_not_found
+        JABA.error("shared definition '#{id.inspect_unquoted}' not defined", line: $last_call_location)
+      end
+      s
+    end
+
+    def in_attr_default_block? = !@attr_default_read_stack.empty?
+    def outer_default_attr_read = @attr_default_read_stack.first
+
+    def execute_attr_default_block(attr)
+      @attr_default_read_stack.push(attr)
+      result = nil
+      attr.node.make_read_only do # default blocks should not attempt to set another attribute
+        result = attr.node.eval_jdl(&attr.attr_def.default)
+      end
+      @attr_default_read_stack.pop
+      result
+    end
+
     def log(msg, severity = :INFO, section: false)
       return if !@log_msgs
       if section
@@ -476,34 +522,6 @@ module JABA
       end
 
       ErrorInfo.new(m, fm, file, line)
-    end
-
-    def validate_id(id, what)
-      if !(id.symbol? || id.string?) || id !~ /^[a-zA-Z0-9_\-.|]+$/
-        msg = if id.nil?
-            "'#{what}' requires an id"
-          else
-            "'#{id}' is an invalid id"
-          end
-        msg << ". Must be an alphanumeric string or symbol (-_. permitted), eg :my_id, 'my-id', 'my.id'"
-        JABA.error(msg, line: $last_call_location)
-      end
-    end
-
-    def include_shared(id)
-    end
-
-    def in_attr_default_block? = !@attr_default_read_stack.empty?
-    def outer_default_attr_read = @attr_default_read_stack.first
-
-    def execute_attr_default_block(attr)
-      @attr_default_read_stack.push(attr)
-      result = nil
-      attr.node.make_read_only do # default blocks should not attempt to set another attribute
-        result = attr.node.eval_jdl(&attr.attr_def.default)
-      end
-      @attr_default_read_stack.pop
-      result
     end
 
     # TODO: move to jrf
