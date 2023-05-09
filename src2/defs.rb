@@ -119,6 +119,7 @@ module JABA
       @default_is_block = false
       @default_set = false
       @on_validate = nil
+      @on_set = nil
       @compound_def = nil # used by compound attribute
     end
 
@@ -160,6 +161,8 @@ module JABA
 
     def set_validate(&block) = @on_validate = block
     def on_validate = @on_validate
+    def set_on_set(&block) = @on_set = block
+    def on_set = @on_set
 
     ValueOption = Data.define(:name, :required, :items)
 

@@ -66,6 +66,7 @@ module JABA
       @value = nil
       @flag_options = nil
       @value_options = nil
+      @in_on_set = false
     end
 
     def describe = "'#{@attr_def.name}' attribute element"
@@ -131,6 +132,16 @@ module JABA
       @value = attr_type.map_value(new_value, self)
       @value.freeze # Prevents value from being changed directly after it has been returned by 'value' method
       @set = true
+
+      if __call_on_set && attr_def.on_set
+        if @in_on_set
+          attr_error("Reentrancy detected in #{describe} on_set")
+        end
+        @in_on_set = true
+        @node.eval_jdl(new_value, &attr_def.on_set)
+        @in_on_set = false
+      end
+
     end
 
     def has_flag_option?(o) = @flag_options&.include?(o)

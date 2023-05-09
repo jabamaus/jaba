@@ -25,6 +25,7 @@ module JABA
     :default,
     :validate,
     :validate_key, # Used by hash attribute
+    :on_set,
   ).include(CommonAPI)
 
   @@core_api_blocks = []
