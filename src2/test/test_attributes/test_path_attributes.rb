@@ -38,7 +38,7 @@ jtest "paths are made absolute" do
     end
     attr "node/basename", type: :basename
   end
-  op = jaba do
+  jaba do
     node :n1 do
       file "../a"
       file.must_equal "#{dir.parent_path}/a"
