@@ -149,6 +149,7 @@ module JABA
       @node_def.jdl_builder.global_methods_node_def.method_defs.each(&block)
     end
 
+    def jdl_available = available
     def available(attrs_only: false)
       av = []
       visit_callable_attrs do |a, type|
@@ -181,6 +182,11 @@ module JABA
         yield
         @read_only = false
       end
+    end
+
+    def jdl_include(id, **kwargs)
+      block = JABA.context.lookup_shared(id)
+      eval_jdl(**kwargs, &block)
     end
 
     private

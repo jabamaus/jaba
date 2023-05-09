@@ -135,7 +135,6 @@ JABA.define_api(:core) do
 
   global_method "available" do
     title "Array of attributes/methods available in current scope"
-    on_called do |str, node:| node.available end
   end
 
   global_method "print" do
@@ -156,9 +155,6 @@ JABA.define_api(:core) do
 
   method "*/include" do
     title "Include a shared definition"
-    on_called do |id|
-      JABA.context.include_shared(id)
-    end
   end
 
   # Top level methods

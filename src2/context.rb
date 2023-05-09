@@ -385,11 +385,6 @@ module JABA
       @shared_lookup[id] = block
     end
 
-    def include_shared(node, id)
-      block = lookup_shared(id)
-      node.eval_jdl(&block)
-    end
-
     def lookup_shared(id, fail_if_not_found: true)
       s = @shared_lookup[id]
       if s.nil? && fail_if_not_found

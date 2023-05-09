@@ -99,13 +99,9 @@ module JABA
       @on_called = nil
     end
 
+    # on_called is optional
     def set_on_called(&block) = @on_called = block
     def on_called = @on_called
-
-    def post_create
-      super
-      __check(:@on_called)
-    end
   end
 
   class AttributeDefinition < Definition

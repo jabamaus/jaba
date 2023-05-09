@@ -50,6 +50,7 @@
 - Add title/example/notes to flag and value option definitions
 - move attribute type out of jdl_builder
 - Ability to define attrs directly in jaba files maybe in 'extend' section.
+- Validation and documentation specification for method args, similar to attribute options
 
 Rewrite simplifications:
 - ditch generic type system
