@@ -60,7 +60,7 @@ module JABA
     def parent = @parent
     def children = @children
     def attributes = @attributes
-    def [](name) = get_attr(name).value
+    def [](name) = search_attr(name).value
 
     def visit(&block)
       yield self
