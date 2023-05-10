@@ -1,7 +1,7 @@
 =begin
-jtest "project" do
+jtest "target" do
   op = jaba do
-    project :myapp do
+    target :myapp do
       type :console
       case config
       when :Debug

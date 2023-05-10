@@ -1,11 +1,11 @@
 shared :myshared do
 end
 
-project :myapp, root: 'myroot' do
+target :myapp, root: 'myroot' do
   type :app
   #include :myshared
 end
 
-project :mylib, root: 'mylibroot' do
+target :mylib, root: 'mylibroot' do
   type :lib
 end

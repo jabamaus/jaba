@@ -5,7 +5,7 @@ jtest "catches jdl errors in block form" do
   assert_jaba_error "Error at #{src_loc("49EBF5E4")}: 'invalid id' is an invalid id. Must be an " \
                     "alphanumeric string or symbol (-_. permitted), eg :my_id, 'my-id', 'my.id'." do
     jaba do
-      project "invalid id" # 49EBF5E4
+      target "invalid id" # 49EBF5E4
     end
   end
 end
@@ -13,7 +13,7 @@ end
 jtest "catches jdl errors in jaba file form" do
   assert_jaba_file_error "'invalid id' is an invalid id. Must be an alphanumeric " \
                          "string or symbol (-_. permitted), eg :my_id, 'my-id', 'my.id'.", "32C24F15" do
-    "project \"invalid id\" # 32C24F15"
+    "target \"invalid id\" # 32C24F15"
   end
 end
 

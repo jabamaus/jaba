@@ -80,18 +80,18 @@ JABA.define_api(:core) do
   flag :node_option do
     title "Flags the attribute as being callable as an option passed into a definition"
     example %Q{
-  project :my_project, root: "my_root" do # 'root' attr is flagged with :node_option
+  target :my_app, root: "my_root" do # 'root' attr is flagged with :node_option
     ...
   end
     }
   end
 
-  flag :per_project do
-    title "Flags attributes inside the Project namespace as being per-project rather than per-config"
+  flag :per_target do
+    title "Flags attributes inside the target namespace as being per-target rather than per-config"
   end
 
   flag :per_config do
-    title "Flags attributes inside the Project namespace as being per-config rather than per-target"
+    title "Flags attributes inside the target namespace as being per-config rather than per-target"
   end
 
   flag :read_only do
@@ -177,7 +177,7 @@ JABA.define_api(:core) do
   end
 end
 
-JABA.define_api(:project) do
+JABA.define_api(:target) do
   # Global attributes. Available in all nodes but not at top level.
 
   attr "*/root", type: :dir do
@@ -189,36 +189,36 @@ JABA.define_api(:project) do
   # Top level attributes
 
 
-  # Project node
+  # Target node
 
-  node "project" do
-    title "Define a project"
+  node "target" do
+    title "Define a target"
   end
 
-  attr "project/config", type: :symbol do
+  attr "target/config", type: :symbol do
     title "Current target config as an id"
     note "Returns current config being processed. Use to define control flow to set config-specific atttributes"
     flags :per_config, :read_only
     # TODO: examples, including regexes
   end
 
-  attr_array "project/define", type: :string do
+  attr_array "target/define", type: :string do
     title "Preprocessor defines"
     flags :per_config #, :exportable
   end
 
-  attr "project/rule", type: :compound do
+  attr "target/rule", type: :compound do
     title "TODO"
     flags :per_config
   end
 
-  attr "project/rule/input", type: :src do
+  attr "target/rule/input", type: :src do
     title "TODO"
     basedir_spec :definition_root
   end
 
-  attr "project/type", type: :choice do
-    title "Project type"
+  attr "target/type", type: :choice do
+    title "Target type"
     items [:app, :console, :lib, :dll]
     flags :per_config, :required
   end

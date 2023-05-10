@@ -332,14 +332,14 @@ module JABA
           end
         end
       end
-      if nd.node_def.name == "project"
-        proj_attrs, config_attrs = nd.node_def.attr_defs.partition { |ad| ad.has_flag?(:per_project) }
-        proj_node = create_node(nd, parent: parent) do |node|
+      if nd.node_def.name == "target"
+        target_attrs, config_attrs = nd.node_def.attr_defs.partition { |ad| ad.has_flag?(:per_target) }
+        target_node = create_node(nd, parent: parent) do |node|
           node.add_attrs(@jdl.common_attr_node_def.attr_defs)
-          node.add_attrs(proj_attrs)
+          node.add_attrs(target_attrs)
         end
         #@default_configs.each do |id|
-        #  create_node(nd, parent: proj_node) do |node|
+        #  create_node(nd, parent: target_node) do |node|
         #    node.add_attrs(config_attrs)
         #    node.get_attr(:config).set(id)
         #  end
