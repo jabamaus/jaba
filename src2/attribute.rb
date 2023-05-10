@@ -116,10 +116,11 @@ module JABA
           end
         end
         if !new_value.nil?
-          attr_type.validate_value(@attr_def, new_value) do |msg|
+          # Validate whether it is a single value/array before validating type
+          attr_def.validate_value(new_value) do |msg|
             attr_error("#{describe} invalid - #{msg}")
           end
-          attr_def.validate_value(new_value) do |msg|
+          attr_type.validate_value(@attr_def, new_value) do |msg|
             attr_error("#{describe} invalid - #{msg}")
           end
           if attr_def.on_validate
