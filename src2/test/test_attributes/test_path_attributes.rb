@@ -19,6 +19,7 @@ jtest "checks path is valid" do
   op[:error].must_equal "Error at #{src_loc("CB2F8547")}: 'basename' attribute invalid - 'a\\b' must not contain slashes."
 end
 
+# TODO: test all basedir_specs
 jtest "paths are made absolute" do
   dir = __dir__
   jdl do
@@ -45,7 +46,7 @@ jtest "paths are made absolute" do
       file.must_equal "#{dir.parent_path}/a"
     end
     node :n2, root: "b" do
-      root.must_equal(dir)
+      root.must_equal("#{dir}/b")
       file "../a"
       file.must_equal "#{dir}/a"
     end
