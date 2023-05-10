@@ -119,6 +119,10 @@ JABA.define_api(:core) do
          "it will base itself off the root definition that included the shared definition"
   end
 
+  basedir_spec :definition_root do
+    title "path will be based on $(root) attribute"
+  end
+
   basedir_spec :build_root do
     title "path will be based on build_root"
   end
@@ -210,7 +214,7 @@ JABA.define_api(:project) do
 
   attr "project/rule/input", type: :src do
     title "TODO"
-    basedir_spec :jaba_file
+    basedir_spec :definition_root
   end
 
   attr "project/type", type: :choice do

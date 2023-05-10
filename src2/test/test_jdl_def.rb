@@ -209,7 +209,7 @@ jtest "can register attributes as node options" do
 end
 
 jtest "fails if attribute type does not exist" do
-  assert_jaba_error "Error at #{src_loc("CE16AD90")}: 'a' attribute invalid - ':unknown' must be one of [:null, :string, :symbol, :symbol, :bool, :choice, :uuid, :file, :dir, :basename, :src, :compound]" do
+  assert_jaba_error "Error at #{src_loc("CE16AD90")}: 'a' attribute invalid - ':unknown' must be one of [:basename, :bool, :choice, :compound, :dir, :file, :null, :src, :string, :symbol, :symbol, :uuid]" do
     jdl do
       attr :a, type: :unknown # CE16AD90
     end
@@ -218,7 +218,7 @@ jtest "fails if attribute type does not exist" do
 end
 
 jtest "fails if flag does not exist" do
-  assert_jaba_error "Error at #{src_loc("01E55971")}: 'a' attribute invalid - ':unknown' must be one of [:allow_dupes, :no_sort, :node_option, :per_project, :per_config, :read_only, :required]" do
+  assert_jaba_error "Error at #{src_loc("01E55971")}: 'a' attribute invalid - ':unknown' must be one of [:allow_dupes, :no_sort, :node_option, :per_config, :per_project, :read_only, :required]" do
     jdl do
       attr "a" do
         flags :unknown # 01E55971
@@ -229,7 +229,7 @@ jtest "fails if flag does not exist" do
 end
 
 jtest "fails if invalid basedir_spec specified" do
-  assert_jaba_error "Error at #{src_loc("EC9914E5")}: 'a' attribute invalid - ':unknown' must be one of [:jaba_file, :build_root, :buildsystem_root, :artefact_root]" do
+  assert_jaba_error "Error at #{src_loc("EC9914E5")}: 'a' attribute invalid - ':unknown' must be one of [:artefact_root, :build_root, :buildsystem_root, :definition_root, :jaba_file]" do
     jdl do
       attr "a", type: :dir do
         basedir_spec :unknown # EC9914E5

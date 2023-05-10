@@ -179,6 +179,10 @@ module JABA
         base = case attr.attr_def.basedir_spec
           when :jaba_file
             attr.src_loc.src_loc_info[0].parent_path
+          when :definition_root
+            attr.node[:root]
+          else
+            attr.attr_def.error("Unhandled basedir_spec #{attr.attr_def.basedir_spec}")            
           end
         "#{base}/#{value}".cleanpath
       end

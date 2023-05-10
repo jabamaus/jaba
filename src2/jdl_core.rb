@@ -188,7 +188,7 @@ module JABA
       all = lookup_definitions(klass, fail_if_not_found: fail_if_not_found)
       d = all.find { |fd| fd.name == name }
       if d.nil? && fail_if_not_found
-        msg = "'#{name.inspect_unquoted}' must be one of #{all.map { |s| s.name }}"
+        msg = "'#{name.inspect_unquoted}' must be one of #{all.sort_by{|d| d.name}.map { |s| s.name }}"
         if attr_def
           attr_def.definition_error(msg)
         else

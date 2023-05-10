@@ -28,24 +28,26 @@ jtest "paths are made absolute" do
     end
     node :node
     attr "node/file", type: :file do
-      basedir_spec :jaba_file
+      basedir_spec :definition_root
     end
     attr "node/dir", type: :dir do
-      basedir_spec :jaba_file
+      basedir_spec :definition_root
     end
     attr "node/src", type: :src do
-      basedir_spec :jaba_file
+      basedir_spec :definition_root
     end
     attr "node/basename", type: :basename
   end
   jaba do
     node :n1 do
+      root.must_equal(dir)
       file "../a"
       file.must_equal "#{dir.parent_path}/a"
     end
     node :n2, root: "b" do
+      root.must_equal(dir)
       file "../a"
-      #file.must_equal "#{dir.parent_path}/b/a"
+      file.must_equal "#{dir}/a"
     end
   end
 end
