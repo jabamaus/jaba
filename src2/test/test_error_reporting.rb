@@ -38,20 +38,24 @@ jtest "catches syntax errors in jaba file form" do
     jaba(src_root: fullpath)
   end
 end
-=begin
+
 jtest 'reports lines correctly when using shared modules' do
-  assert_jaba_error "Error at #{src_loc('7F3590D4')}: 't.a' attribute invalid: 'invalid' is a string - expected [true|false]", trace: [__FILE__, '70A75502'] do
+  assert_jaba_error "Error at #{src_loc('7F3590D4')}: 'a' attribute invalid - 'invalid' is a string - expected [true|false]" do
+    jdl(apis: [:attr_types, :core]) do
+      node :node
+      attr "node/a", type: :bool
+    end
     jaba do
       shared :s do
-        bool_attr 'invalid' # 7F3590D4
+        a 'invalid' # 7F3590D4
       end
-      test :t do
-        include :s # 70A75502
+      node :n do
+        include :s
       end
     end
   end
 end
-=end
+
 jtest "allows errors to be raised from definitions in block form" do
   assert_jaba_error "Error at #{src_loc("7FAC4085")}: Error msg." do
     jaba do
