@@ -13,29 +13,27 @@ jtest "warns if src not specified cleanly" do
   w.size.must_equal 1
   w[0].must_equal "Warning at #{src_loc("21957B5D")}: 'src' attribute not specified cleanly: 'a\\b.cpp' contains backslashes."
 end
-=begin
+
 jtest 'can be specified explicitly even if extension is not in src_ext' do
   make_file('a.cpp', 'b.z', 'c.z')
-  proj = jaba(cpp_app: true, dry_run: true) do
-    cpp :app do
-      project do
-        src ['a.cpp', 'b.z']
-      end
+  dir = __dir__
+  jaba do
+    target :a do
+      src ['a.cpp', 'b.z']
+      src.must_equal ["#{dir}/a.cpp", "#{dir}/b.z"]
     end
   end
-  proj[:src].must_equal ["#{temp_dir}/a.cpp", "#{temp_dir}/b.z"]
-
-  # Glob match can work without extension being in src_ext as long as the extension is specified
-  proj = jaba(cpp_app: true, dry_run: true) do
-    cpp :app do
-      project do
-        src ['*.z']
-      end
-    end
-  end
-  proj[:src].must_equal ["#{temp_dir}/b.z", "#{temp_dir}/c.z"]
+ # Glob match can work without extension being in src_ext as long as the extension is specified
+  #proj = jaba(cpp_app: true, dry_run: true) do
+  #  cpp :app do
+  #    project do
+  #      src ['*.z']
+  #    end
+  #  end
+  #end
+ # proj[:src].must_equal ["#{temp_dir}/b.z", "#{temp_dir}/c.z"]
 end
-
+=begin
 jtest 'fails if explicitly specified files do not exist unless forced' do
   assert_jaba_error "Error at #{src_loc('5CC0FC29')}: '#{temp_dir}/a.cpp' does not exist on disk. Use :force to add anyway." do
     jaba(cpp_app: true, dry_run: true) do

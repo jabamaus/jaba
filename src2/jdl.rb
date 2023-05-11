@@ -217,6 +217,69 @@ JABA.define_api(:target) do
     basedir_spec :definition_root
   end
 
+  attr_array "target/src", type: :src do
+    title 'Source file specification'
+    basedir_spec :definition_root
+    flags :per_target # TODO: change to :per_config?
+    flags :required # Must be specified by user
+    #flags :no_sort # Final source will be sorted so no need to sort this
+    #flags :exportable # TODO
+    flag_options :force # Specify when explicitly specified src does not exist on disk but still want to add to project
+    value_option :vpath # For organising files in a generated project
+    # TODO: examples for excludes
+    example %Q{
+      # Add all src in $(root) whose extension is in $(src_ext)
+      src ['*']
+
+      # Add all src in $(root)/src whose extension is in $(src_ext), recursively
+      src ['src/**/*']
+
+      # Glob matches are not required to add whole directory recursively (whose extension is in $(src_ext))
+      src ['src']
+
+      # Add src explicitly
+      src ['main.c', 'io.c']
+
+      # Array brackets not required for one item
+      src 'main.c'
+
+      # Add src explicitly even if extension not in $(src_ext)
+      src ['build.jaba']
+
+      # Add src by glob match even if extension not in $(src_ext) only if has explicit extension
+      src ['*.jaba']
+
+      # Force addition of file not on disk
+      src ['does_not_exist.cpp'], :force
+
+      # Precede with ./ to force path to be relative to current jaba file even if $(root) points elsewhere.
+      # Useful if you want to make $(root) point to a 3rd party distro but you want to add a local file
+      src ['./local.cxx']
+
+      # Add src in bulk without needing quotes, commas or square brackets. Options can be added as normal.
+      src %w(main.c dmydln.c miniinit.c array.c ast.c bignum.c class.c compar.c compile.c)
+      src %w(
+        main.c dmydln.c miniinit.c array.c
+        ast.c bignum.c class.c compar.c compile.c
+      )
+
+      # Place matching files in a specific folder location within the project file
+      src '*_win.cpp', vpath: 'win32'
+    }
+  end
+
+  attr_array "target/src_ext", type: :string do
+    title 'File extensions used when matching src files'
+    note 'Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.'
+    flags :no_sort#, :exportable # TODO
+    default do
+      ext = ['.cpp', '.h', '.inl', '.c', '.cc', '.cxx', '.hpp']
+      #ext.concat(host.cpp_src_ext) # TODO
+      #ext.concat(platform.cpp_src_ext) # TODO
+      ext
+    end
+  end
+
   attr "target/type", type: :choice do
     title "Target type"
     items [:app, :console, :lib, :dll]
