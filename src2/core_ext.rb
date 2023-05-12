@@ -21,6 +21,30 @@ class Object
   def proc? = is_a?(Proc)
 end
 
+# In jaba string and symbols are interchangeable in case statements
+class String
+  alias_method :old_case_equality, :===
+  def ===(other)
+    if other.is_a?(Symbol)
+      self == other.to_s
+    else
+      old_case_equality(other)
+    end
+  end
+end
+
+# In jaba string and symbols are interchangeable in case statements
+class Symbol
+  alias_method :old_case_equality, :===
+  def ===(other)
+    if other.is_a?(String)
+      self == other.to_sym
+    else
+      old_case_equality(other)
+    end
+  end
+end
+
 class String
   def validate_path
     JABA.error("block expected") if !block_given?

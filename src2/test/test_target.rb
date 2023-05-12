@@ -6,7 +6,7 @@ jtest "target" do
       case config
       when :debug
         define "DEBUG"
-      when :release
+      when "release" # string should work too
         define "RELEASE"
       end
     end

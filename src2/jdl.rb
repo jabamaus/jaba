@@ -11,10 +11,6 @@ JABA.define_api(:attr_types) do
     title "Symbol attribute type"
   end
 
-  attr_type :symbol do
-    title "Symbol attribute type"
-  end
-
   attr_type :bool do
     title "Boolean attribute type"
   end
@@ -204,13 +200,13 @@ JABA.define_api(:target) do
     title "Define a target"
   end
 
-  attr_array "target/configs", type: :symbol do
+  attr_array "target/configs", type: :string do
     title 'Build configurations'
     flags :per_target, :required, :no_sort#, :exportable
     example 'configs [:debug, :release]'
   end
 
-  attr "target/config", type: :symbol do
+  attr "target/config", type: :string do
     title "Current target config as an id"
     note "Returns current config being processed. Use to define control flow to set config-specific atttributes"
     flags :per_config, :read_only
