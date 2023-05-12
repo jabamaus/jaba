@@ -32,13 +32,30 @@ end
 jtest "rejects modifying returned values" do
   jdl do
     attr :a
+    attr :b do
+      default "b"
+    end
+    attr :c do
+      default do
+        "d"
+      end
+    end
   end
-  assert_jaba_file_error "Can't modify read only String.", "45925C07" do
-    %Q{
-  a "b"
-  val = a
-  val.upcase! # 45925C07
-}
+  assert_jaba_error "Error at #{src_loc("45925C07")}: Can't modify read only String." do
+    jaba do
+      a "b"
+      a.upcase! # 45925C07
+    end
+  end
+  assert_jaba_error "Error at #{src_loc("DAFA4190")}: Can't modify read only String." do
+    jaba do
+      b.upcase! # DAFA4190
+    end
+  end
+  assert_jaba_error "Error at #{src_loc("BE7A76FA")}: Can't modify read only String." do
+    jaba do
+      c.upcase! # BE7A76FA
+    end
   end
 end
 
@@ -57,7 +74,7 @@ jtest "rejects modifying read only attributes" do
   end
 end
 
-jtest "works with block style default" do
+jtest "supports default value" do
   jdl do
     attr :a
     attr :b

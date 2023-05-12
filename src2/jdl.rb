@@ -86,6 +86,15 @@ JABA.define_api(:core) do
     }
   end
 
+  flag :overwrite_default do
+    title "If set default is overwritten if set by user else default is extended"
+    compatible? do |attr_def|
+      if attr_def.single?
+        definition_error("only allowed on array and hash attributes")
+      end
+    end
+  end
+
   flag :per_target do
     title "Flags attributes inside the target namespace as being per-target rather than per-config"
   end

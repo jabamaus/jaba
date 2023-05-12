@@ -25,13 +25,19 @@ jtest "array supports a default" do
   end
   # Have to put this round the whole jaba context because the default block is called twice, once when it is called explicitly
   # and again by jaba itself when the value is baked in
-  assert_jaba_error "Error at #{src_loc("9F62104F")}: 'c' array attribute 'default' invalid - requires an array not a 'Integer'." do
+  assert_jaba_error "Error at #{src_loc("9F62104F")}: 'c' array attribute 'default' invalid - expects an array but got '1'." do
     jaba do
       c # Validates default is an array when block form is called explicity
     end
   end
-  assert_jaba_error "Error at #{src_loc("9F62104F")}: 'c' array attribute 'default' invalid - requires an array not a 'Integer'." do
-    jaba # It validates default is an array when block form is called implicitly
+
+  jdl do
+    attr_array :d do
+      default 1 # 1E5D0C2E
+    end
+  end
+  assert_jaba_error "Error at #{src_loc("1E5D0C2E")}: 'd' array attribute invalid - 'default' expects an array but got '1'." do
+    jaba # It validates default is an array when value form is called implicitly
   end
 
   jdl do
@@ -64,6 +70,10 @@ jtest "array supports a default" do
     attr_array :e do
       default [7, 8]
     end
+    attr_array :f do
+      default [9]
+      flags :overwrite_default
+    end
   end
 
   jaba do
@@ -76,6 +86,9 @@ jtest "array supports a default" do
     d.must_equal [1, 2, 3, 4, 5, 6, 7, 8, 9]
     e [9] # default array values are appended to not overwritten when value style used
     e.must_equal [7, 8, 9]
+    f.must_equal [9]
+    f 10 # default will be overwritten not appended to due to :overwrite_default flag
+    f.must_equal [10]
   end
 end
 
@@ -140,12 +153,27 @@ end
 jtest "is not possible to modify returned array" do
   jdl do
     attr_array :a do
-      default [:a]
+      default [1]
+    end
+    attr_array :b do
+      default do
+        [2]
+      end
     end
   end
   assert_jaba_error "Error at #{src_loc("B50C68BE")}: Can't modify read only Array." do
     jaba do
-      a << :b # B50C68BE
+      a << 3 # B50C68BE
+    end
+  end
+  assert_jaba_error "Error at #{src_loc("EFB142BD")}: Can't modify read only Array." do
+    jaba do
+      b << 4 # EFB142BD
+    end
+  end
+  assert_jaba_error "Error at #{src_loc("4BE55ADE")}: Can't modify read only Array." do
+    jaba do
+      b[0] = 5 # 4BE55ADE
     end
   end
 end

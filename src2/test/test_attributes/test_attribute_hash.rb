@@ -225,13 +225,29 @@ end
 
 jtest "is not possible to modify returned hash" do
   jdl do
-    attr_hash "a", key_type: :string do
+    attr_hash "a", key_type: :string
+    attr_hash "b", key_type: :string do
       default({ k: :v })
+    end
+    attr_hash "c", key_type: :string do
+      default do
+       { k: :v }
+      end
+    end
+  end
+  assert_jaba_error "Error at #{src_loc("648F776E")}: Can't modify read only Hash." do
+    jaba do
+      a[:k] = :v # 648F776E
     end
   end
   assert_jaba_error "Error at #{src_loc("F788FD64")}: Can't modify read only Hash." do
     jaba do
-      a[:k] = :v2 # F788FD64
+      b[:k] = :v2 # F788FD64
+    end
+  end
+  assert_jaba_error "Error at #{src_loc("1F6A1970")}: Can't modify read only Hash." do
+    jaba do
+      b[:k] = :v2 # 1F6A1970
     end
   end
 end

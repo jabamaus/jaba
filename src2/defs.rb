@@ -134,6 +134,7 @@ module JABA
 
     def describe = "'#{@name.inspect_unquoted}' #{@variant == :single ? "" : "#{@variant} "}attribute"
     def variant = @variant
+    def single? = @variant == :single
     def array? = @variant == :array
     def hash? = @variant == :hash
     def compound? = type_id == :compound
@@ -244,7 +245,7 @@ module JABA
       super
       if !default_is_block?
         if !val.is_a?(Array)
-          definition_error("'default' expects an array but got '#{val}'")
+          definition_error("'default' expects an array but got '#{val.inspect_unquoted}'")
         end
         val.each do |elem|
           attr_type.validate_value(self, elem) do |msg|

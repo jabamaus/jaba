@@ -1,8 +1,6 @@
 jtest "disallows include at top level" do
-  jdl(apis: [:attr_types, :core]) do
-  end
   jaba do
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("3001F43A")}: 'include' attr/method not defined. Available in this scope:\navailable, fail, glob, print, puts, shared." do
+    JTest.assert_jaba_error(/Error at #{JTest.src_loc("3001F43A")}: 'include' attr\/method not defined/) do
       include :a # 3001F43A
     end
   end

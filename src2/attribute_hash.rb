@@ -1,14 +1,11 @@
 module JABA
+  HashSentinel = {}.freeze
+
   class AttributeHash < AttributeBase
     def initialize(attr_def, node)
       super(attr_def, node)
       @hash = {}
       @in_on_set = false
-      if attr_def.default_set? && !attr_def.default_is_block?
-        attr_def.default.each do |k, v|
-          insert_key(k, v, call_on_set: false)
-        end
-      end
     end
 
     # For ease of debugging.
@@ -23,18 +20,22 @@ module JABA
     #
     def value
       record_last_call_location
-      if !set?
-        if attr_def.default_is_block?
-          default_hash = JABA.context.execute_attr_default_block(self)
-          at = attr_def.attr_type
-          return default_hash.transform_values { |e| at.map_value(e, self) }
-        elsif JABA.context.in_attr_default_block?
-          outer = JABA.context.outer_default_attr_read
-          outer.attr_error("#{outer.describe} default read uninitialised #{describe} - it might need a default value")
-        end
+      hash = if set?
+        @hash.transform_values { |e| e.value }
+      elsif attr_def.default_is_block?
+        default_hash = JABA.context.execute_attr_default_block(self)
+        at = attr_def.attr_type
+        default_hash.transform_values { |e| at.map_value(e, self) }
+      elsif attr_def.default_set?
+        at = attr_def.attr_type
+        attr_def.default.transform_values { |e| at.map_value(e, self) }
+      elsif JABA.context.in_attr_default_block?
+        outer = JABA.context.outer_default_attr_read
+        outer.attr_error("#{outer.describe} default read uninitialised #{describe} - it might need a default value")
+      else
+        HashSentinel
       end
-      values = @hash.transform_values { |e| e.value }
-      values.freeze # make read only
+      hash.freeze # make read only
     end
 
     def set(*args,
@@ -65,10 +66,15 @@ module JABA
       # and merge them into the hash. Defaults specified in blocks are handled lazily to allow the default
       # value to make use of other attributes.
       #
-      if !set? && attr_def.default_is_block?
-        default_hash = JABA.context.execute_attr_default_block(self)
-        if !default_hash.is_a?(Hash)
-          attr_error("#{describe} default requires a hash not a '#{default_hash.class}'")
+      if !set? && attr_def.default_set? && !attr_def.has_flag?(:overwrite_default)
+        default_hash = if attr_def.default_is_block?
+          dh = JABA.context.execute_attr_default_block(self)
+          if !dh.is_a?(Hash)
+            attr_error("#{describe} default requires a hash not a '#{dh.class}'")
+          end
+          dh
+        else
+          attr_def.default
         end
         default_hash.each do |k, v|
           insert_key(k, v, *args, **kwargs)
@@ -85,11 +91,11 @@ module JABA
       nil
     end
 
-    # If the attribute was never set by the user and it has a default specified in block form ensure that the default value
+    # If the attribute was never set by the user and it has a default set ensure that the default value
     # is applied. Call set with no args to achieve this.
     #
     def finalise
-      if !set? && attr_def.default_is_block?
+      if !set? && attr_def.default_set?
         set(__no_keyval: true)
       end
     end
@@ -128,7 +134,7 @@ module JABA
 
     private
 
-    def insert_key(key, val, *args, __validate: true, __call_on_set: true, **kwargs)
+    def insert_key(key, val, *args, __validate: true, **kwargs)
       attr = AttributeElement.new(@attr_def, @node)
 
       if __validate && attr_def.on_validate_key
@@ -137,9 +143,9 @@ module JABA
         end
       end
 
-      attr.set(val, *args, __validate: __validate, __key: key, __call_on_set: false, **kwargs)
+      attr.set(val, *args, __validate: __validate, __key: key, **kwargs)
 
-      if __call_on_set
+      if attr_def.on_set
         # if @in_on_set
         #   JABA.error("Reentrancy detected in #{describe} on_set")
         # end

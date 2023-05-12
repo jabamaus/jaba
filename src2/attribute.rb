@@ -76,7 +76,7 @@ module JABA
       if attr_def.compound? && JABA.context.executing_jdl?
         @value.api_obj
       else
-        @value
+        @value.freeze
       end
     end
 
@@ -87,12 +87,9 @@ module JABA
 
     def set(*args,
             __validate: true,
-            __call_on_set: true,
             **kwargs, &block)
       record_last_call_location
-      if read_only? && set? # allow read only to be set the first time so they an be initialised
-        attr_error("#{describe} is read only")
-      end
+      attr_error("#{describe} is read only") if read_only?
 
       new_value = if block_given?
           value_from_block(&block)
@@ -131,10 +128,9 @@ module JABA
         end
       end
       @value = attr_type.map_value(new_value, self)
-      @value.freeze # Prevents value from being changed directly after it has been returned by 'value' method
       @set = true
 
-      if __call_on_set && attr_def.on_set
+      if attr_def.on_set
         if @in_on_set
           attr_error("Reentrancy detected in #{describe} on_set")
         end
@@ -142,7 +138,6 @@ module JABA
         @node.eval_jdl(new_value, &attr_def.on_set)
         @in_on_set = false
       end
-
     end
 
     def has_flag_option?(o) = @flag_options&.include?(o)
@@ -169,13 +164,6 @@ module JABA
   end
 
   class AttributeSingle < AttributeElement
-    def initialize(attr_def, node)
-      super
-      if attr_def.default_set? && !attr_def.default_is_block?
-        set(attr_def.default, __call_on_set: false)
-      end
-    end
-
     def describe = "'#{@attr_def.name}' attribute"
 
     def value
@@ -190,7 +178,9 @@ module JABA
           end
         elsif attr_def.default_is_block?
           val = JABA.context.execute_attr_default_block(self)
-          @attr_def.attr_type.map_value(val, self)
+          @attr_def.attr_type.map_value(val, self).freeze
+        elsif attr_def.default_set?
+          @attr_def.attr_type.map_value(attr_def.default, self).freeze
         elsif JABA.context.in_attr_default_block?
           outer = JABA.context.outer_default_attr_read
           outer.attr_error("#{outer.describe} default read uninitialised #{describe} - it might need a default value")
@@ -200,18 +190,22 @@ module JABA
       elsif attr_def.compound? && JABA.context.executing_jdl?
         @value.api_obj
       else
-        @value
+        @value.freeze
       end
     end
 
-    # If attribute's default value was specified as a block it is executed here, after the node has been created, since
-    # default blocks can be implemented in terms of other attributes. If the user has already supplied a value then the
-    # default block will not be executed.
+    # If the attribute was never set by the user and it has a default set ensure that the default value
+    # is applied. Call set with no args to achieve this.
     #
     def finalise
-      #return if !@default_block || @set
-      #val = Context.instance.execute_attr_default_block(@node, @default_block)
-      #set(val)
+      # TODO: exercise this code in test
+      if !set?
+      #  if attr_def.default_is_block?
+      #    set(JABA.context.execute_attr_default_block(self))
+      #  elsif attr_def.default_set?
+      #    set(attr_def.default)
+      #  end
+      end
     end
   end
 end
