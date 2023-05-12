@@ -87,9 +87,10 @@ module JABA
 
     def set(*args,
             __validate: true,
+            __force: false,
             **kwargs, &block)
       record_last_call_location
-      attr_error("#{describe} is read only") if read_only?
+      attr_error("#{describe} is read only") if read_only? && !__force
 
       new_value = if block_given?
           value_from_block(&block)

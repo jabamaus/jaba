@@ -204,6 +204,12 @@ JABA.define_api(:target) do
     title "Define a target"
   end
 
+  attr_array "target/configs", type: :symbol do
+    title 'Build configurations'
+    flags :per_target, :required, :no_sort#, :exportable
+    example 'configs [:debug, :release]'
+  end
+
   attr "target/config", type: :symbol do
     title "Current target config as an id"
     note "Returns current config being processed. Use to define control flow to set config-specific atttributes"
@@ -230,7 +236,7 @@ JABA.define_api(:target) do
     title 'Source file specification'
     basedir_spec :definition_root
     flags :per_target # TODO: change to :per_config?
-    flags :required # Must be specified by user
+    #flags :required # Must be specified by user
     #flags :no_sort # Final source will be sorted so no need to sort this
     #flags :exportable # TODO
     flag_options :force # Specify when explicitly specified src does not exist on disk but still want to add to project
@@ -292,6 +298,7 @@ JABA.define_api(:target) do
   attr "target/type", type: :choice do
     title "Target type"
     items [:app, :console, :lib, :dll]
-    flags :per_config, :required
+    flags :per_config
+    default :app
   end
 end

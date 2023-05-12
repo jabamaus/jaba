@@ -333,17 +333,28 @@ module JABA
         end
       end
       if nd.node_def.name == "target"
-        target_attrs, config_attrs = nd.node_def.attr_defs.partition { |ad| ad.has_flag?(:per_target) }
+        if @target_attr_defs.nil?
+          @target_attr_defs, @config_attr_defs = nd.node_def.attr_defs.partition { |ad| ad.has_flag?(:per_target) }
+          @target_attrs_ignore = AttributeLookupHash.new.tap do |h|
+            @target_attr_defs.each{|ta| h[ta.name] = true}
+          end
+          @config_attrs_ignore = AttributeLookupHash.new.tap do |h|
+            @config_attr_defs.each{|ca| h[ca.name] = true}
+          end
+        end
         target_node = create_node(nd, parent: parent) do |node|
           node.add_attrs(@jdl.common_attr_node_def.attr_defs)
-          node.add_attrs(target_attrs)
+          node.add_attrs(@target_attr_defs)
+          node.ignore_attrs(set: @config_attrs_ignore, get: @config_attrs_ignore)
         end
-        #@default_configs.each do |id|
-        #  create_node(nd, parent: target_node) do |node|
-        #    node.add_attrs(config_attrs)
-        #    node.get_attr(:config).set(id)
-        #  end
-        #end
+        configs = target_node[:configs]
+        configs.each do |id|
+          create_node(nd, parent: target_node) do |node|
+            node.add_attrs(@config_attr_defs)
+            node.ignore_attrs(set: @target_attrs_ignore)
+            node.get_attr(:config).set(id, __force: true)
+          end
+        end
       else
         create_node(nd, parent: parent) do |node|
           node.add_attrs(@jdl.common_attr_node_def.attr_defs)

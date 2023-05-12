@@ -19,6 +19,7 @@ jtest 'can be specified explicitly even if extension is not in src_ext' do
   dir = __dir__
   jaba do
     target :a do
+      configs [:debug, :release]
       src ['a.cpp', 'b.z']
       src.must_equal ["#{dir}/a.cpp", "#{dir}/b.z"]
     end

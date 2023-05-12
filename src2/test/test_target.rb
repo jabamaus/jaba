@@ -1,23 +1,23 @@
-=begin
 jtest "target" do
   op = jaba do
     target :myapp do
       type :console
+      configs [:debug, :release]
       case config
-      when :Debug
+      when :debug
         define "DEBUG"
-      when :Release
+      when :release
         define "RELEASE"
       end
     end
   end
-  r = op[:root]
-  a = r.children[0]
-  a.id.must_equal :myapp
-  a.children.size.must_equal 2
-  debug_conf = a.children[0]
+  r = op[:root].children[0] # app root node
+  r.id.must_equal :myapp
+  r.children.size.must_equal 1
+  t = r.children[0] # target node
+  t.children.size.must_equal 2 
+  debug_conf = t.children[0]
   debug_conf[:define].must_equal ["DEBUG"]
-  release_conf = a.children[1]
+  release_conf = t.children[1]
   release_conf[:define].must_equal ["RELEASE"]
 end
-=end

@@ -2,6 +2,7 @@ module JABA
   # Attriute lookup hash converts keys to symbols so can lookup with strings or symbols
   class AttributeLookupHash < Hash
     def [](key) = super(key.to_sym)
+    def has_key?(key) = super(key.to_sym)
     def []=(key, value); super(key.to_sym, value); end
   end
 
@@ -15,6 +16,8 @@ module JABA
       @src_dir = src_loc ? src_loc.src_loc_info[0].parent_path : nil # top level root node does not have src_loc
       @attributes = []
       @attribute_lookup = AttributeLookupHash.new
+      @attrs_to_ignore_when_setting = nil
+      @attrs_to_ignore_when_getting = nil
       @children = []
       @read_only = false
       @parent = parent
@@ -29,6 +32,14 @@ module JABA
       end
     end
 
+    def ignore_attrs(set: nil, get: nil)
+      @attrs_to_ignore_when_setting = set
+      @attrs_to_ignore_when_getting = get
+    end
+
+    def ignore_attr_get?(name) = @attrs_to_ignore_when_getting&.has_key?(name)
+    def ignore_attr_set?(name) = @attrs_to_ignore_when_setting&.has_key?(name)
+  
     def node_def = @node_def
     def api_obj = @api_obj
     def eval_jdl(...) = api_obj.instance_exec(...)
@@ -100,9 +111,11 @@ module JABA
     def handle_attr(name, *args, **kwargs, &block)
       is_get = (args.empty? && kwargs.empty? && !block_given?)
       if is_get
+        return nil if ignore_attr_get?(name)
         a = search_attr(name)
         return a.value
       else
+        return nil if ignore_attr_set?(name)
         a = get_attr(name, fail_if_not_found: false)
         if a
           if @read_only
