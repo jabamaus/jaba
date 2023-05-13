@@ -63,6 +63,19 @@ JABA.define_api(:core) do
     end
   end
 
+  flag :exportable do
+    title "Attribute is exportable"
+    note "Flags an attribute as being able to be exported to dependents. Only array and hash attributes can be flagged with this."
+    compatible? do |attr_def|
+      if !attr_def.array? && !attr_def.hash?
+        definition_error("only allowed on array/hash attributes")
+      end
+    end
+    init_attr_def do |attr_def|
+      attr_def.set_flag_options(:export, :export_only)
+    end
+  end
+
   flag :no_sort do
     title "Do not sort array attributes"
     note "Allows array attributes to remain in the order they are set in. If not specified arrays are sorted"
@@ -202,7 +215,7 @@ JABA.define_api(:target) do
 
   attr_array "target/configs", type: :string do
     title 'Build configurations'
-    flags :per_target, :required, :no_sort#, :exportable
+    flags :per_target, :required, :no_sort, :exportable
     example 'configs [:debug, :release]'
   end
 
@@ -215,7 +228,7 @@ JABA.define_api(:target) do
 
   attr_array "target/define", type: :string do
     title "Preprocessor defines"
-    flags :per_config #, :exportable
+    flags :per_config, :exportable
   end
 
   attr "target/rule", type: :compound do
@@ -234,7 +247,7 @@ JABA.define_api(:target) do
     flags :per_config
     #flags :required # Must be specified by user
     #flags :no_sort # Final source will be sorted so no need to sort this
-    #flags :exportable # TODO
+    flags :exportable
     flag_options :force # Specify when explicitly specified src does not exist on disk but still want to add to project
     value_option :vpath # For organising files in a generated project
     # TODO: examples for excludes
@@ -282,7 +295,7 @@ JABA.define_api(:target) do
   attr_array "target/src_ext", type: :string do
     title 'File extensions used when matching src files'
     note 'Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.'
-    flags :no_sort#, :exportable # TODO
+    flags :no_sort, :exportable
     default do
       ext = ['.cpp', '.h', '.inl', '.c', '.cc', '.cxx', '.hpp']
       #ext.concat(host.cpp_src_ext) # TODO

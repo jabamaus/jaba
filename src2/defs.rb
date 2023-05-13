@@ -50,15 +50,14 @@ module JABA
     def initialize
       super()
       @on_compatible = nil
+      @on_init_attr_def = nil
     end
 
     def describe = "'#{name.inspect_unquoted}' attribute definition flag"
-
     def set_compatible?(&block) = @on_compatible = block
-
-    def check_compatibility(attr_def)
-      instance_exec(attr_def, &@on_compatible) if @on_compatible
-    end
+    def on_compatible = @on_compatible
+    def set_init_attr_def(&block) = @on_init_attr_def = block
+    def on_init_attr_def = @on_init_attr_def
   end
 
   class BasedirSpecDefinition < Definition
@@ -146,7 +145,8 @@ module JABA
     def set_flags(*flags)
       flags.flatten.each do |f|
         fd = @jdl_builder.lookup_definition(FlagDefinition, f, attr_def: self)
-        fd.check_compatibility(self)
+        fd.on_compatible&.call(self)
+        fd.on_init_attr_def&.call(self)
         @flags << f
       end
     end

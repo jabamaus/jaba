@@ -12,7 +12,7 @@ module JABA
   )
   CommonAPI = APIBuilder.define_module(:title, :note, :example)
   AttributeTypeDefinitionAPI = APIBuilder.define().include(CommonAPI)
-  FlagDefinitionAPI = APIBuilder.define(:compatible?).include(CommonAPI)
+  FlagDefinitionAPI = APIBuilder.define(:compatible?, :init_attr_def).include(CommonAPI)
   BasedirSpecDefinitionAPI = APIBuilder.define().include(CommonAPI)
   MethodDefinitionAPI = APIBuilder.define(:on_called).include(CommonAPI)
   NodeDefinitionAPI = APIBuilder.define().include(CommonAPI)

@@ -218,7 +218,7 @@ jtest "fails if attribute type does not exist" do
 end
 
 jtest "fails if flag does not exist" do
-  assert_jaba_error "Error at #{src_loc("01E55971")}: 'a' attribute invalid - ':unknown' must be one of [:allow_dupes, :no_sort, :node_option, :overwrite_default, :per_config, :per_target, :read_only, :required]" do
+  assert_jaba_error "Error at #{src_loc("01E55971")}: 'a' attribute invalid - ':unknown' must be one of [:allow_dupes, :exportable, :no_sort, :node_option, :overwrite_default, :per_config, :per_target, :read_only, :required]" do
     jdl do
       attr "a" do
         flags :unknown # 01E55971
