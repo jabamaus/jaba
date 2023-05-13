@@ -2,14 +2,11 @@ include '../02-basic_static_lib'
 include '../03-basic_dynamic_lib'
 include '3rdParty/ThirdPartyLib'
 
-cpp :AppWithDependencies do
-  platforms [:windows_x86_64]
-  project do
-    type :console
-    configs [:Debug, :Release]
-    src ['main.cpp']
-    deps [:BasicStaticLib, :BasicDynamicLib, :ThirdPartyLib]
-  end
+target :AppWithDependencies do
+  type :console
+  configs [:debug, :release]
+  src ['main.cpp']
+  deps [:BasicStaticLib, :BasicDynamicLib, :ThirdPartyLib]
 end
 
 # TODO: add soft dependency example

@@ -1,12 +1,7 @@
-cpp :BasicDynamicLib do
-  platforms [:windows_x86_64]
-  project do
-    type :dll
-    configs [:Debug, :Release]
-    src ['.']
-  end
-  config do
-    inc ['include'], :export
-    define ['DLL_EXPORT']
-  end
+target :BasicDynamicLib do
+  type :dll
+  configs [:debug, :release]
+  src ['.']
+  inc ['include'], :export
+  define ['DLL_EXPORT']
 end
