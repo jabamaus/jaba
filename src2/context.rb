@@ -173,7 +173,7 @@ module JABA
 
         attr = @top_level_node.get_attr(name.to_s, fail_if_not_found: false)
         if attr.nil?
-          JABA.error("'#{name}' attribute not defined in :globals type", want_backtrace: false)
+          JABA.error("'#{name}' top level attribute not defined", want_backtrace: false)
         end
 
         attr_def = attr.attr_def
