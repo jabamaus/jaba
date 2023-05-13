@@ -51,18 +51,6 @@ module JABA
     end
   end
 
-  class AttributeTypeSymbol < AttributeType
-    def value_from_cmdline(str, attr_def)
-      str.to_sym
-    end
-
-    def validate_value(attr_def, value, &block)
-      if !value.symbol?
-        type_error(value, "a symbol", &block)
-      end
-    end
-  end
-
   class AttributeTypeBool < AttributeType
     def initialize
       super(default: false)

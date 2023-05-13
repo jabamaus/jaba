@@ -7,10 +7,6 @@ JABA.define_api(:attr_types) do
     title "String attribute type"
   end
 
-  attr_type :symbol do
-    title "Symbol attribute type"
-  end
-
   attr_type :bool do
     title "Boolean attribute type"
   end

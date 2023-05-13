@@ -192,7 +192,7 @@ end
 
 jtest "works with hash" do
   jdl do
-    attr_hash "cmpd", type: :compound, key_type: :symbol
+    attr_hash "cmpd", type: :compound, key_type: :string
     attr "cmpd/a"
     attr "cmpd/b"
   end

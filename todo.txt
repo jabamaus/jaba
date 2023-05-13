@@ -53,12 +53,13 @@
 - Validation and documentation specification for method args, similar to attribute options
 
 Rewrite simplifications:
-- ditch generic type system
-- ditch generic referencing system
-- ditch property system
-- ditch json file
-- ditch dry-run
-- ditch plugin system
+- ditched generic type system
+- ditched generic referencing system
+- ditched property system
+- ditched json file
+- ditched dry-run
+- ditched plugin system
+- string/symbol/symbol_or_string combined into just string
 
 New features:
  - rebased onto mruby
