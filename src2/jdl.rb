@@ -231,7 +231,7 @@ JABA.define_api(:target) do
   attr_array "target/src", type: :src do
     title 'Source file specification'
     basedir_spec :definition_root
-    flags :per_target # TODO: change to :per_config?
+    flags :per_config
     #flags :required # Must be specified by user
     #flags :no_sort # Final source will be sorted so no need to sort this
     #flags :exportable # TODO
