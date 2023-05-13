@@ -231,6 +231,14 @@ JABA.define_api(:target) do
     flags :per_config, :exportable
   end
 
+  attr_array "target/inc", type: :dir do
+    title 'Include paths'
+    basedir_spec :definition_root
+    flags :no_sort, :exportable
+    example "inc ['mylibrary/include']"
+    example "inc ['mylibrary/include'], :export # Export include path to dependents"
+  end
+
   attr "target/rule", type: :compound do
     title "TODO"
     flags :per_config
