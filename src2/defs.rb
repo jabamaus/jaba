@@ -38,11 +38,13 @@ module JABA
     end
 
     def definition_error(msg)
-      JABA.error("#{describe} invalid - #{msg}", line: APIBuilder.last_call_location)
+      line = @jdl_builder.building_jdl? ? APIBuilder.last_call_location : src_loc
+      JABA.error("#{describe} invalid - #{msg}", line: line)
     end
 
     def definition_warn(msg)
-      JABA.warn(msg, line: APIBuilder.last_call_location)
+      line = @jdl_builder.building_jdl? ? APIBuilder.last_call_location : src_loc
+      JABA.warn(msg, line: line)
     end
   end
 

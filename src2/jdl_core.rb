@@ -48,6 +48,7 @@ module JABA
 
   class JDLBuilder
     def initialize(api_blocks = JABA.core_api_blocks)
+      @building_jdl = false
       @definition_lookup = {}
       @path_to_node_def = {}
       @base_api_class = Class.new(BasicObject) do
@@ -93,11 +94,14 @@ module JABA
       end
       @path_to_node_def[nil] = @top_level_node_def
 
+      @building_jdl = true
       api_blocks.each do |b|
         JDLTopLevelAPI.execute(self, &b)
       end
+      @building_jdl = false
     end
 
+    def building_jdl? = @building_jdl
     def common_attr_node_def = @common_attr_node_def
     def global_methods_node_def = @global_methods_node_def
     def top_level_node_def = @top_level_node_def
