@@ -23,10 +23,6 @@ end
 jtest "paths are made absolute" do
   dir = __dir__
   jdl do
-    attr "*/root", type: :dir do
-      flags :node_option
-      basedir_spec :jaba_file
-    end
     node :node
     attr "node/file", type: :file do
       basedir_spec :definition_root

@@ -25,14 +25,12 @@ jtest "accepts symbols but stored as strings" do
   end
 end
 
-# TODO: add support for id attribute as a node option
-=begin
 jtest "can default to id" do
-  jdl do
+  jdl(apis: [:attr_types, :core]) do
     node :node
-    attr "node|a", type: :string do
+    attr "node/a", type: :string do
       default do
-        id.to_s
+        id
       end
     end
   end
@@ -42,7 +40,6 @@ jtest "can default to id" do
     end
   end
 end
-=end
 
 jtest "can be set from cmdline" do
   jdl do

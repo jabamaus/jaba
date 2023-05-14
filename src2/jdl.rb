@@ -189,22 +189,22 @@ JABA.define_api(:core) do
       JABA.context.register_shared(id, block)
     end
   end
-end
 
-JABA.define_api(:target) do
   # Global attributes. Available in all nodes but not at top level.
+
+  attr "*/id", type: :string do
+    title "TODO"
+    flags :node_option
+  end
 
   attr "*/root", type: :dir do
     title "TODO"
     flags :node_option
     basedir_spec :jaba_file
   end
+end
 
-  # Top level attributes
-
-
-  # Target node
-
+JABA.define_api(:target) do
   node "target" do
     title "Define a target"
   end
@@ -250,7 +250,9 @@ JABA.define_api(:target) do
   attr "target/projname", type: :basename do
     title 'Base name of project files'
     note 'Defaults to $(id)$(projsuffix)'
-    default "#{id}#{projsuffix}"
+    default do
+      "#{id}#{projsuffix}"
+    end
   end
 
   attr "target/projsuffix", type: :string do

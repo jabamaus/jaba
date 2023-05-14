@@ -113,7 +113,7 @@ module JABA
 
       init_root_paths
 
-      tld = NodeDefData.new(@jdl.top_level_node_def, "top_level", nil, nil, nil, nil)
+      tld = NodeDefData.new(@jdl.top_level_node_def, "top_level", nil, nil, nil)
       create_node(tld, parent: nil) do |n|
         n.add_attrs(@jdl.top_level_node_def.attr_defs)
         @top_level_node = n
@@ -310,7 +310,7 @@ module JABA
       end
     end
 
-    NodeDefData = Data.define(:node_def, :id, :src_loc, :args, :kwargs, :block)
+    NodeDefData = Data.define(:node_def, :id, :src_loc, :kwargs, :block)
 
     # Nodes are registered in the first pass and then subsequently processed. They
     # cannot be processed immediately because top level attributes need to be fully
@@ -319,7 +319,8 @@ module JABA
     def register_node(node_def, *args, **kwargs, &block)
       id = args.shift
       validate_id(id, :node)
-      @node_defs << NodeDefData.new(node_def, id, $last_call_location, args, kwargs, block)
+      JABA.error("Only a single id argument can be passed to '#{node_def.name.inspect_unquoted}'") if !args.empty?
+      @node_defs << NodeDefData.new(node_def, id, $last_call_location, kwargs, block)
     end
 
     def process_node_def(nd)
@@ -328,6 +329,7 @@ module JABA
         parent = create_node(nd, parent: parent, eval_jdl: false) do |node|
           node.add_attrs(@jdl.common_attr_node_def.option_attr_defs)
           node.add_attrs(nd.node_def.option_attr_defs)
+          node.get_attr(:id).set(nd.id)
           nd.kwargs.each do |attr_name, val|
             node.get_attr(attr_name).set(val)
           end

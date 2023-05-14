@@ -1,6 +1,6 @@
 module JABA
   class Vcxproj
-    def initialise(target_node)
+    def initialize(target_node)
       @node = target_node
     end
 
