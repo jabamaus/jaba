@@ -337,7 +337,17 @@ module JABA
       end
       if nd.node_def.name == "target"
         if @target_attr_defs.nil?
-          @target_attr_defs, @config_attr_defs = nd.node_def.attr_defs.partition { |ad| ad.has_flag?(:per_target) }
+          @target_attr_defs = []
+          @config_attr_defs = []
+          nd.node_def.attr_defs.each do |ad|
+            if ad.has_flag?(:per_target)
+              @target_attr_defs << ad
+            elsif ad.has_flag?(:per_config)
+              @config_attr_defs << ad
+            else
+              ad.definition_error("must be flagged with either :per_target or :per_config")
+            end
+          end
           @target_attrs_ignore = AttributeLookupHash.new.tap do |h|
             @target_attr_defs.each{|ta| h[ta.name] = true}
           end

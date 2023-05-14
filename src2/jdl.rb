@@ -228,13 +228,14 @@ JABA.define_api do
   attr_array "target/inc", type: :dir do
     title 'Include paths'
     basedir_spec :definition_root
-    flags :no_sort, :exportable
+    flags :per_target, :no_sort, :exportable
     example "inc ['mylibrary/include']"
     example "inc ['mylibrary/include'], :export # Export include path to dependents"
   end
 
   attr "target/projdir", type: :dir do
     title 'Directory in which projects will be generated'
+    flags :per_target
     #flags :no_check_exist # May get created during generation # TODO
     basedir_spec :buildsystem_root
     example %Q{
@@ -248,6 +249,7 @@ JABA.define_api do
   attr "target/projname", type: :basename do
     title 'Base name of project files'
     note 'Defaults to $(id)$(projsuffix)'
+    flags :per_target
     default do
       "#{id}#{projsuffix}"
     end
@@ -256,6 +258,7 @@ JABA.define_api do
   attr "target/projsuffix", type: :string do
     title 'Optional suffix to be applied to $(projname)'
     note 'Has no effect if $(projname) is set explicitly'
+    flags :per_target
   end
 
   attr "target/rule", type: :compound do
@@ -322,7 +325,7 @@ JABA.define_api do
   attr_array "target/src_ext", type: :string do
     title 'File extensions used when matching src files'
     note 'Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.'
-    flags :no_sort, :exportable
+    flags :per_config, :no_sort, :exportable
     default do
       ext = ['.cpp', '.h', '.inl', '.c', '.cc', '.cxx', '.hpp']
       #ext.concat(host.cpp_src_ext) # TODO
