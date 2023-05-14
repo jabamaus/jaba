@@ -170,7 +170,7 @@ module JABA
           when :definition_root
             attr.node[:root]
           else
-            attr.attr_def.error("Unhandled basedir_spec #{attr.attr_def.basedir_spec}")            
+            attr.attr_def.definition_error("Unhandled basedir_spec #{attr.attr_def.basedir_spec}")            
           end
         "#{base}/#{value}".cleanpath
       end
