@@ -37,6 +37,7 @@ module JABA
       @shared_lookup = {}
       @executing_jdl = false
       @attr_default_read_stack = []
+      @projects = []
     end
 
     def input = @input
@@ -355,6 +356,10 @@ module JABA
             node.get_attr(:config).set(id, __force: true)
           end
         end
+        @target_node_to_vcxproj ||= {}
+        vcxproj = Vcxproj.new(target_node)
+        @target_node_to_vcxproj[target_node] = vcxproj
+        @projects << vcxproj
       else
         create_node(nd, parent: parent) do |node|
           node.add_attrs(@jdl.common_attr_node_def.attr_defs)

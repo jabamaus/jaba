@@ -21,7 +21,7 @@ jtest 'can be specified explicitly even if extension is not in src_ext' do
     target :a do
       configs [:debug, :release]
       src ['a.cpp', 'b.z']
-      src.must_equal ["#{dir}/a.cpp", "#{dir}/b.z"]
+      src.must_equal ["#{dir}/a.cpp", "#{dir}/b.z"], skip_calls: 1
     end
   end
  # Glob match can work without extension being in src_ext as long as the extension is specified

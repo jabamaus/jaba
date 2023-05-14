@@ -32,7 +32,6 @@
   Error at basic_dll.jaba:8: 'defines' attribute not defined. Did you mean 'define'?
 - tag attrs as control flow attrs somehow for benefit of docs
 - add slnproperty which can address sln sections. Particularly useful when used with ExtensibilityGlobals
-- disband VSProj in favour of VSUtilities module
 - Have a command line switch to make all error messages contain absolute paths
 - Revisit set_to_default and wipe. Have way of clearing to default and clearing fully, but don't count that as set=true
 - Allow 'axes' of configs. Bear in mind that platforms can be any string.

@@ -235,6 +235,29 @@ JABA.define_api(:target) do
     example "inc ['mylibrary/include'], :export # Export include path to dependents"
   end
 
+  attr "target/projdir", type: :dir do
+    title 'Directory in which projects will be generated'
+    #flags :no_check_exist # May get created during generation # TODO
+    basedir_spec :buildsystem_root
+    example %Q{
+      cpp :MyApp do
+        src ['**/*'] # Get all src in $(root), which defaults to directory of definition file
+        projdir 'projects' # Place generated projects in 'projects' directory
+      end
+    }
+  end
+
+  attr "target/projname", type: :basename do
+    title 'Base name of project files'
+    note 'Defaults to $(id)$(projsuffix)'
+    default "#{id}#{projsuffix}"
+  end
+
+  attr "target/projsuffix", type: :string do
+    title 'Optional suffix to be applied to $(projname)'
+    note 'Has no effect if $(projname) is set explicitly'
+  end
+
   attr "target/rule", type: :compound do
     title "TODO"
     flags :per_config
