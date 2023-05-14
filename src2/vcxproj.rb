@@ -1,5 +1,7 @@
 module JABA
   class Vcxproj
+    include VSUtilities
+    
     def initialize(target_node)
       @node = target_node
     end
@@ -16,6 +18,10 @@ module JABA
       write_vcxproj_filters
     end
 
+    def each_config(&block)
+      @node.children.each(&block)
+    end
+
     XMLVERSION = "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>"
     XMLNS = "http://schemas.microsoft.com/developer/msbuild/2003"
 
@@ -30,8 +36,25 @@ module JABA
       @ps = file.work_area
       @idg = file.work_area
 
+      each_config do |cfg|
+        platform = "x64" # TODO: cfg.attrs.arch.attrs.vsname
+        cfg_name = cfg[:configname]
+        @item_def_groups = {}
+
+        @pc.yield_self do |w|
+          w << "    <ProjectConfiguration Include=\"#{cfg_name}|#{platform}\">"
+          w << "      <Configuration>#{cfg_name}</Configuration>"
+          w << "      <Platform>#{platform}</Platform>"
+          w << "    </ProjectConfiguration>"
+        end
+      end
+
       w << XMLVERSION
       w << "<Project DefaultTargets=\"Build\" ToolsVersion=\"#{tools_version}\" xmlns=\"#{XMLNS}\">"
+      
+      item_group(w, label: :ProjectConfigurations) do
+        w.write_raw(@pc)
+      end
 
       w << '</Project>'
       w.chomp!

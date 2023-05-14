@@ -47,6 +47,7 @@ module JABA
     def build_root = @build_root
     def temp_dir = @temp_dir
     def file_manager = @file_manager
+    def top_level_node = @top_level_node
 
     def execute
       begin
@@ -134,6 +135,11 @@ module JABA
         n.attributes.each do |a|
           a.process_flags
         end
+      end
+
+      @projects.each do |p|
+        p.process
+        p.generate
       end
     end
 

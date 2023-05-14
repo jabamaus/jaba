@@ -220,6 +220,14 @@ JABA.define_api do
     # TODO: examples, including regexes
   end
 
+  attr "target/configname", type: :string do
+    title 'Display name of config as seen in IDE'
+    flags :per_config
+    default do
+      config
+    end
+  end
+
   attr_array "target/define", type: :string do
     title "Preprocessor defines"
     flags :per_config, :exportable
