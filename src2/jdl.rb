@@ -1,4 +1,4 @@
-JABA.define_api(:attr_types) do
+JABA.define_api do
   attr_type :null do
     title "Null attribute type"
   end
@@ -44,9 +44,7 @@ JABA.define_api(:attr_types) do
   attr_type :compound do
     title "Compound attribute type"
   end
-end
 
-JABA.define_api(:core) do
   # Flags
 
   flag :allow_dupes do
@@ -202,9 +200,9 @@ JABA.define_api(:core) do
     flags :node_option
     basedir_spec :jaba_file
   end
-end
 
-JABA.define_api(:target) do
+  # Target node
+  
   node "target" do
     title "Define a target"
   end

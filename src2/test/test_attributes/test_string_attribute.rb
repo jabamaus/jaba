@@ -26,7 +26,7 @@ jtest "accepts symbols but stored as strings" do
 end
 
 jtest "can default to id" do
-  jdl(apis: [:attr_types, :core]) do
+  jdl do
     node :node
     attr "node/a", type: :string do
       default do

@@ -29,28 +29,21 @@ module JABA
   ).include(CommonAPI)
 
   @@core_api_blocks = []
-  @@core_api_blocks_lookup = {}
   @@current_api_blocks = []
 
   def self.core_api_blocks = @@core_api_blocks
   def self.current_api_blocks = @@current_api_blocks
   def self.restore_core_api = @@current_api_blocks.clear # Used by unit tests
 
-  # TODO: allow an api to depend on another
-  def self.define_api(id, &block)
+  def self.define_api(&block)
     @@core_api_blocks << block
-    @@core_api_blocks_lookup[id] = block
   end
 
-  # Set which apis are required. Used as efficiency mechanism for unit tests
-  def self.set_api_level(apis, &block)
+  def self.set_test_api_block(&block)
+    raise "block required" if !block
     @@current_api_blocks.clear
-    apis.each do |id|
-      api = @@core_api_blocks_lookup[id]
-      JABA.error("'#{id}' api undefined") if api.nil?
-      @@current_api_blocks << api
-    end
-    @@current_api_blocks << block if block
+    @@current_api_blocks.concat(@@core_api_blocks)
+    @@current_api_blocks << block
   end
 
   class JDLBuilder

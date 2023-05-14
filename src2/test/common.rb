@@ -3,9 +3,8 @@ require_relative "../jaba"
 JABA.running_tests!
 
 module JabaTestMethods
-  def jdl(apis: [:attr_types, :core], blank: false, &block)
-    apis = [] if blank
-    JABA.set_api_level(apis, &block)
+  def jdl(&block)
+    JABA.set_test_api_block(&block)
   end
 
   def jaba(

@@ -41,7 +41,7 @@ end
 
 jtest 'reports lines correctly when using shared modules' do
   assert_jaba_error "Error at #{src_loc('7F3590D4')}: 'a' attribute invalid - 'invalid' is a string - expected [true|false]" do
-    jdl(apis: [:attr_types, :core]) do
+    jdl do
       node :node
       attr "node/a", type: :bool
     end
