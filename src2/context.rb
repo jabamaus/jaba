@@ -36,7 +36,7 @@ module JABA
       @node_defs = []
       @shared_lookup = {}
       @executing_jdl = false
-      @attr_default_read_stack = []
+      @attr_def_block_stack = []
       @projects = []
     end
 
@@ -427,16 +427,16 @@ module JABA
       s
     end
 
-    def in_attr_default_block? = !@attr_default_read_stack.empty?
-    def outer_default_attr_read = @attr_default_read_stack.first
+    def in_attr_def_block? = !@attr_def_block_stack.empty?
+    def outer_attr_def_block_attr = @attr_def_block_stack.first
 
-    def execute_attr_default_block(attr)
-      @attr_default_read_stack.push(attr)
+    def execute_attr_def_block(attr, block)
+      @attr_def_block_stack.push(attr)
       result = nil
-      attr.node.make_read_only do # default blocks should not attempt to set another attribute
-        result = attr.node.eval_jdl(&attr.attr_def.default)
+      attr.node.make_read_only do # attr def blocks should only read attributes not set them
+        result = attr.node.eval_jdl(&block)
       end
-      @attr_default_read_stack.pop
+      @attr_def_block_stack.pop
       result
     end
 

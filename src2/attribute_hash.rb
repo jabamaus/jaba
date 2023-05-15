@@ -23,14 +23,14 @@ module JABA
       hash = if set?
         @hash.transform_values { |e| e.value }
       elsif attr_def.default_is_block?
-        default_hash = JABA.context.execute_attr_default_block(self)
+        default_hash = JABA.context.execute_attr_def_block(self, attr_def.default)
         at = attr_def.attr_type
         default_hash.transform_values { |e| at.map_value(e, self) }
       elsif attr_def.default_set?
         at = attr_def.attr_type
         attr_def.default.transform_values { |e| at.map_value(e, self) }
-      elsif JABA.context.in_attr_default_block?
-        outer = JABA.context.outer_default_attr_read
+      elsif JABA.context.in_attr_def_block?
+        outer = JABA.context.outer_attr_def_block_attr
         outer.attr_error("#{outer.describe} default read uninitialised #{describe} - it might need a default value")
       else
         HashSentinel
@@ -68,7 +68,7 @@ module JABA
       #
       if !set? && attr_def.default_set? && !attr_def.has_flag?(:overwrite_default)
         default_hash = if attr_def.default_is_block?
-          dh = JABA.context.execute_attr_default_block(self)
+          dh = JABA.context.execute_attr_def_block(self, attr_def.default)
           if !dh.is_a?(Hash)
             attr_error("#{describe} default requires a hash not a '#{dh.class}'")
           end

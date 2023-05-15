@@ -16,15 +16,15 @@ module JABA
       values = if set?
         @elems.map { |e| e.value }
       elsif attr_def.default_is_block?
-        values = JABA.context.execute_attr_default_block(self)
+        values = JABA.context.execute_attr_def_block(self, attr_def.default)
         validate_default_block_value(values)
         at = attr_def.attr_type
         values.map { |e| at.map_value(e, self) }
       elsif attr_def.default_set?
         at = attr_def.attr_type
         attr_def.default.map { |e| at.map_value(e, self) }
-      elsif JABA.context.in_attr_default_block?
-        outer = JABA.context.outer_default_attr_read
+      elsif JABA.context.in_attr_def_block?
+        outer = JABA.context.outer_attr_def_block_attr
         outer.attr_error("#{outer.describe} default read uninitialised #{describe} - it might need a default value")
       else
         ArraySentinel
@@ -59,7 +59,7 @@ module JABA
       # and prepend them to the values passed in. Allows default value to make use of other attributes.
       if !set? && attr_def.default_set? && !attr_def.has_flag?(:overwrite_default)
         if attr_def.default_is_block?
-          default_values = JABA.context.execute_attr_default_block(self)
+          default_values = JABA.context.execute_attr_def_block(self, attr_def.default)
           validate_default_block_value(default_values)
           values.prepend(*default_values)
         else
