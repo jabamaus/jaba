@@ -188,6 +188,17 @@ JABA.define_api do
     end
   end
 
+  # Top level attributes
+
+  attr "buildsystem_root", type: :dir do
+    title 'Root of generated build system'
+    default do
+      # "buildsystem/#{target_host}" # TODO
+      "buildsystem/vs2022"
+    end
+    basedir_spec :jaba_file
+  end
+
   # Global attributes. Available in all nodes but not at top level.
 
   attr "*/id", type: :string do
@@ -246,6 +257,9 @@ JABA.define_api do
     flags :per_target
     #flags :no_check_exist # May get created during generation # TODO
     basedir_spec :buildsystem_root
+    basedir do
+      buildsystem_root
+    end
     example %Q{
       cpp :MyApp do
         src ['**/*'] # Get all src in $(root), which defaults to directory of definition file

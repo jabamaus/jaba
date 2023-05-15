@@ -131,6 +131,7 @@ module JABA
   class AttributePathBase < AttributeType
     # Register basedir_spec property into AttributeDefinition
     APIBuilder.add_method(AttributeDefinitionAPI, :basedir_spec)
+    APIBuilder.add_method(AttributeDefinitionAPI, :basedir)
     AttributeDefinition.class_eval do
       def basedir_spec = @basedir_spec
 
@@ -138,6 +139,12 @@ module JABA
         # check its valid
         @jdl_builder.lookup_definition(BasedirSpecDefinition, s, attr_def: self)
         @basedir_spec = s
+      end
+      
+      def on_basedir = @on_basedir
+      def set_basedir(&block)
+        definition_error("basedir must be specified as a block") if !block
+        @on_basedir = block
       end
     end
 
@@ -164,13 +171,18 @@ module JABA
       if value.absolute_path?
         value
       else
-        base = case attr.attr_def.basedir_spec
-          when :jaba_file
-            attr.src_loc.src_loc_info[0].parent_path
-          when :definition_root
-            attr.node[:root]
-          else
-            attr.attr_def.definition_error("Unhandled basedir_spec #{attr.attr_def.basedir_spec}")            
+        ad = attr.attr_def
+        base = if ad.on_basedir
+          JABA.context.execute_attr_def_block(attr, ad.on_basedir)
+        else
+          case ad.basedir_spec
+            when :jaba_file
+              attr.src_loc.src_loc_info[0].parent_path
+            when :definition_root
+              attr.node[:root]
+            else
+              ad.definition_error("Unhandled basedir_spec #{ad.basedir_spec}")            
+            end
           end
         "#{base}/#{value}".cleanpath
       end

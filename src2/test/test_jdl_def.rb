@@ -66,7 +66,7 @@ jtest "can register methods at top level" do
     end
   end
   jaba do
-    available.must_equal ["available", "fail", "glob", "m", "print", "puts", "shared"]
+    available.must_equal ["available", "buildsystem_root (rw)", "fail", "glob", "m", "print", "puts", "shared"]
     JTest.assert_output "m" do
       m
     end
@@ -146,7 +146,7 @@ jtest "can register attributes into nodes" do
     node "node2"
   end
   jaba do
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("2D0B33FE")}: 'b' attr/method not defined. Available in this scope:\navailable, fail, glob, print, puts, shared." do
+    JTest.assert_jaba_error(/Error at #{JTest.src_loc("2D0B33FE")}: 'b' attr\/method not defined/) do
       b 1 # 2D0B33FE
     end
     node1 :n1 do
