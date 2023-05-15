@@ -23,7 +23,7 @@ module JABA
       @input = Input.new
       @input.instance_variable_set(:@build_root, nil)
       @input.instance_variable_set(:@src_root, nil)
-      @input.instance_variable_set(:@definitions, [])
+      @input.instance_variable_set(:@definitions, nil)
       @input.instance_variable_set(:@global_attrs_from_cmdline, {})
       @input.instance_variable_set(:@want_exceptions, false)
       @output = { warnings: @warnings, error: nil }
@@ -220,14 +220,11 @@ module JABA
       end
 
       # Definitions can also be provided in a block form
-      #
-      Array(input.definitions).each do |block|
-        block_file = block.source_location[0].cleanpath
-        execute_jdl(&block)
+      if input.definitions
+        execute_jdl(&input.definitions)
       end
 
       # Process include directives, accounting for included files including other files.
-      #
       while !@jdl_includes.empty?
         inc = @jdl_includes.pop
         process_load_path(inc.path)
