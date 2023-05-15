@@ -109,6 +109,7 @@ module JABA
     def initialize(variant)
       super()
       @variant = variant
+      @attr_type = nil
       @flags = []
       @flag_options = []
       @value_options = []
@@ -130,6 +131,7 @@ module JABA
       @default.freeze
       @flags.freeze
       @flag_options.freeze
+      __check(:@attr_type)
       @attr_type.post_create_attr_def(self)
     end
 
@@ -282,9 +284,7 @@ module JABA
 
     def post_create
       super
-      if @key_type.nil?
-        definition_error("key_type must be set")
-      end
+      __check(:@key_type)
     end
   end
 end
