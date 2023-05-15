@@ -222,12 +222,6 @@ JABA.define_api do
     title "Define a target"
   end
 
-  attr_array "target/configs", type: :string do
-    title "Build configurations"
-    flags :per_target, :required, :no_sort, :exportable
-    example "configs [:debug, :release]"
-  end
-
   attr "target/config", type: :string do
     title "Current target config as an id"
     note "Returns current config being processed. Use to define control flow to set config-specific atttributes"
@@ -241,6 +235,13 @@ JABA.define_api do
     default do
       config
     end
+  end
+
+  attr_array "target/configs", type: :string do
+    title "Build configurations"
+    flags :per_target, :no_sort, :exportable
+    default [:debug, :release]
+    example "configs [:debug, :release]"
   end
 
   attr_array "target/define", type: :string do
