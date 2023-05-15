@@ -27,7 +27,7 @@ jtest "validates jdl path format" do
       attr "n/a_b/" # D54FA196 cannot end in slash
     end
   end
-  jaba
+  jaba do end
 end
 
 jtest "checks parent path valid" do
@@ -36,7 +36,7 @@ jtest "checks parent path valid" do
       attr "a/b" # 24DB3815
     end
   end
-  jaba
+  jaba do end
 end
 
 jtest "checks for duplicate paths" do
@@ -56,7 +56,7 @@ jtest "checks for duplicate paths" do
       method "n/m" # 87285F34
     end
   end
-  jaba
+  jaba do end
 end
 
 jtest "can register methods at top level" do
@@ -213,7 +213,7 @@ jtest "fails if attribute type does not exist" do
     jdl do
       attr :a, type: :unknown # CE16AD90
     end
-    jaba
+    jaba do end
   end
 end
 
@@ -224,7 +224,7 @@ jtest "fails if flag does not exist" do
         flags :unknown # 01E55971
       end
     end
-    jaba
+    jaba do end
   end
 end
 
@@ -235,6 +235,6 @@ jtest "fails if invalid basedir_spec specified" do
         basedir_spec :unknown # EC9914E5
       end
     end
-    jaba
+    jaba do end
   end
 end

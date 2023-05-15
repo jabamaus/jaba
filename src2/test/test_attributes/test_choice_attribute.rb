@@ -3,7 +3,7 @@ jtest "requires items to be set" do
     attr "a", type: :choice # A2047AFC
   end
   assert_jaba_error "Error at #{src_loc("A2047AFC")}: 'a' attribute invalid - 'items' must be set." do
-    jaba
+    jaba do end
   end
 end
 
@@ -13,7 +13,7 @@ jtest "warns if items contains duplicates" do
       items [:a, :a, :b, :b] # 234928DC
     end
   end
-  op = jaba
+  op = jaba do end
   op[:warnings].size.must_equal 1
   op[:warnings][0].must_equal "Warning at #{src_loc("234928DC")}: 'items' contains duplicates."
 end
@@ -26,7 +26,7 @@ jtest "requires default to be in items" do
     end
   end
   assert_jaba_error "Error at #{src_loc("8D88FA0D")}: 'a' attribute invalid - 'default' invalid - must be one of [1, 2, 3] but got '4'." do
-    jaba
+    jaba do end
   end
   jdl do
     attr_array :a, type: :choice do
@@ -35,7 +35,7 @@ jtest "requires default to be in items" do
     end
   end
   assert_jaba_error "Error at #{src_loc("CDCFF3A7")}: 'a' array attribute invalid - 'default' invalid - must be one of [1, 2, 3] but got '4'." do
-    jaba
+    jaba do end
   end
 end
 
@@ -79,6 +79,6 @@ jtest "can be set from cmdline" do
     c.must_equal 1
   end
 
-  op = jaba(global_attrs_from_cmdline: { 'a': "d" }, want_exceptions: false)
+  op = jaba(global_attrs_from_cmdline: { 'a': "d" }, want_exceptions: false) do end
   op[:error].must_equal "Error: 'd' invalid value for 'a' attribute - [a|b|c] expected."
 end

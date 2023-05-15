@@ -144,7 +144,6 @@ module JABA
 
     def init_root_paths
       # Initialise build_root from command line or if not present to $(cwd)/buildsystem, and ensure it exists
-      #
       @build_root = if input.build_root.nil?
           "#{invoking_dir}/buildsystem"
         else
@@ -155,17 +154,19 @@ module JABA
       @temp_dir = "#{build_root}/.jaba"
       FileUtils.makedirs(temp_dir) if !File.exist?(temp_dir)
 
-      @src_root = if input.src_root.nil?
-          invoking_dir if !JABA.running_tests?
+      if (input.definitions.nil? && input.src_root.nil?) || (!input.definitions.nil? && !input.src_root.nil?)
+        JABA.error("either src_root or definitions block must be provided but not both")
+      end
+
+      @src_root = if input.definitions
+          input.definitions.source_location[0].cleanpath
         else
           input.src_root.to_absolute(base: invoking_dir, clean: true)
         end
+      @src_root.freeze
 
-      if src_root
-        src_root.freeze
-        if !File.exist?(src_root)
-          JABA.error("source root '#{src_root}' does not exist", want_backtrace: false)
-        end
+      if !File.exist?(src_root)
+        JABA.error("source root '#{src_root}' does not exist", want_backtrace: false)
       end
 
       log "src_root=#{src_root}"
@@ -215,13 +216,11 @@ module JABA
     end
 
     def load_jaba_files
-      if src_root
-        process_load_path(src_root, fail_if_empty: true)
-      end
-
-      # Definitions can also be provided in a block form
+      # Definitions can be provided in a block form or source form but not both
       if input.definitions
         execute_jdl(&input.definitions)
+      else
+        process_load_path(src_root, fail_if_empty: true)
       end
 
       # Process include directives, accounting for included files including other files.

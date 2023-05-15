@@ -14,7 +14,7 @@ jtest "array supports a default" do
       end
     end
   end
-  jaba
+  jaba do end
 
   jdl do
     attr_array :c do
@@ -37,7 +37,7 @@ jtest "array supports a default" do
     end
   end
   assert_jaba_error "Error at #{src_loc("1E5D0C2E")}: 'd' array attribute invalid - 'default' expects an array but got '1'." do
-    jaba # It validates default is an array when value form is called implicitly
+    jaba do end# It validates default is an array when value form is called implicitly
   end
 
   jdl do
@@ -49,7 +49,7 @@ jtest "array supports a default" do
   end
 
   assert_jaba_error "Error at #{src_loc("33EF0612")}: 'd' array attribute 'default' invalid - 'not a bool' is a string - expected [true|false]" do
-    jaba
+    jaba do end
   end
 
   jdl do

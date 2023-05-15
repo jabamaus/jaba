@@ -64,6 +64,6 @@ jtest "can be set from cmdline" do
     b4.must_equal false
   end
 
-  op = jaba(global_attrs_from_cmdline: { 'b1': 10 }, want_exceptions: false)
+  op = jaba(global_attrs_from_cmdline: { 'b1': 10 }, want_exceptions: false) do end
   op[:error].must_equal "Error: '10' invalid value for 'b1' attribute - [true|false|0|1] expected."
 end
