@@ -30,7 +30,6 @@ module JABA
       @invoking_dir = Dir.getwd.freeze
       @src_root = @build_root = @temp_dir = nil
       @file_manager = FileManager.new
-      @jdl_files = []
       @jdl_includes = []
       @jdl_file_lookup = {}
       @node_defs = []
@@ -224,7 +223,6 @@ module JABA
       #
       Array(input.definitions).each do |block|
         block_file = block.source_location[0].cleanpath
-        @jdl_files << block_file
         execute_jdl(&block)
       end
 
@@ -275,7 +273,6 @@ module JABA
       end
 
       @jdl_file_lookup[f] = nil
-      @jdl_files << f
 
       execute_jdl(file: f)
     end
