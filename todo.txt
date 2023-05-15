@@ -37,7 +37,6 @@
 - Allow 'axes' of configs. Bear in mind that platforms can be any string.
 - Make _ID be id of the definition the code is in, such that it works even inside a block that is being executed in the context of a different jaba object
 - Ability to reverse engineer jaba definitions from existing vsprojects
-- Add 'underlying type' to attribute types? eg file.dir/src_spec are strings. Use this for extra validation and also to sort using casecmp
 - resolve issues around sorting with mixed type elements
 - Add wildcard validation to dir property
 - workspace categories

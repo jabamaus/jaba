@@ -51,8 +51,8 @@ module JABA
   end
 
   class AttributeTypeString < AttributeType
-    def initialize
-      super(default: "")
+    def initialize(default: "")
+      super(default: default)
     end
 
     def validate_value(attr_def, value, &block)
@@ -140,15 +140,16 @@ module JABA
     end
   end
 
-  class AttributeTypeBasename < AttributeType
+  class AttributeTypeBasename < AttributeTypeString
     def validate_value(attr_def, value)
+      super
       if value.contains_slashes?
         yield "'#{value}' must not contain slashes"
       end
     end
   end
 
-  class AttributePathBase < AttributeType
+  class AttributePathBase < AttributeTypeString
     # Register basedir_spec property into AttributeDefinition
     APIBuilder.add_method(AttributeDefinitionAPI, :basedir_spec)
     APIBuilder.add_method(AttributeDefinitionAPI, :basedir)
@@ -181,6 +182,7 @@ module JABA
     end
 
     def validate_value(attr_def, path)
+      super
       path.validate_path do |msg|
         JABA.warn("#{attr_def.describe} not specified cleanly: #{msg}", line: $last_call_location)
       end
@@ -215,7 +217,7 @@ module JABA
   class AttributeTypeDir < AttributePathBase
     def initialize
       super(default: ".")
-    end
+    end 
   end
 
   class AttributeTypeSrc < AttributePathBase; end
