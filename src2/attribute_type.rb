@@ -30,6 +30,26 @@ module JABA
 
   class AttributeTypeNull < AttributeType; end
 
+  class AttributeTypeInt < AttributeType
+    def initialize
+      super(default: 0)
+    end
+
+    def validate_value(attr_def, value, &block)
+      if !value.integer?
+        type_error(value, "an integer", &block)
+      end
+    end
+
+    def value_from_cmdline(str, attr_def)
+      begin
+        Integer(str)
+      rescue
+        JABA.error("'#{str}' invalid value for #{attr_def.describe} - integer expected", want_err_line: false, want_backtrace: false)
+      end
+    end
+  end
+
   class AttributeTypeString < AttributeType
     def initialize
       super(default: "")

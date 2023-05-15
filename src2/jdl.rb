@@ -32,6 +32,10 @@ JABA.define_api do
     # TODO: document basedir_spec
   end
 
+  attr_type :int do
+    title "Integer attribute type"
+  end
+
   attr_type :src do
     title "Source file specification pattern"
     note "Can be file glob match an explicit path or a directory"

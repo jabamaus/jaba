@@ -209,7 +209,7 @@ jtest "can register attributes as node options" do
 end
 
 jtest "fails if attribute type does not exist" do
-  assert_jaba_error "Error at #{src_loc("CE16AD90")}: 'a' attribute invalid - ':unknown' must be one of [:basename, :bool, :choice, :compound, :dir, :file, :null, :src, :string, :uuid]" do
+  assert_jaba_error "Error at #{src_loc("CE16AD90")}: 'a' attribute invalid - ':unknown' must be one of [:basename, :bool, :choice, :compound, :dir, :file, :int, :null, :src, :string, :uuid]" do
     jdl do
       attr :a, type: :unknown # CE16AD90
     end
