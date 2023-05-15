@@ -1,6 +1,6 @@
 module JABA
   ArraySentinel = [].freeze
-  
+
   class AttributeArray < AttributeBase
     def initialize(attr_def, node)
       super(attr_def, node)
@@ -14,21 +14,21 @@ module JABA
     def value
       record_last_call_location
       values = if set?
-        @elems.map { |e| e.value }
-      elsif attr_def.default_is_block?
-        values = JABA.context.execute_attr_def_block(self, attr_def.default)
-        validate_default_block_value(values)
-        at = attr_def.attr_type
-        values.map { |e| at.map_value(e, self) }
-      elsif attr_def.default_set?
-        at = attr_def.attr_type
-        attr_def.default.map { |e| at.map_value(e, self) }
-      elsif JABA.context.in_attr_def_block?
-        outer = JABA.context.outer_attr_def_block_attr
-        outer.attr_error("#{outer.describe} default read uninitialised #{describe} - it might need a default value")
-      else
-        ArraySentinel
-      end
+          @elems.map { |e| e.value }
+        elsif attr_def.default_is_block?
+          values = JABA.context.execute_attr_def_block(self, attr_def.default)
+          validate_default_block_value(values)
+          at = attr_def.attr_type
+          values.map { |e| at.map_value(e, self) }
+        elsif attr_def.default_set?
+          at = attr_def.attr_type
+          attr_def.default.map { |e| at.map_value(e, self) }
+        elsif JABA.context.in_attr_def_block?
+          outer = JABA.context.outer_attr_def_block_attr
+          outer.attr_error("#{outer.describe} default read uninitialised #{describe} - it might need a default value")
+        else
+          ArraySentinel
+        end
       values.freeze # make read only
     end
 

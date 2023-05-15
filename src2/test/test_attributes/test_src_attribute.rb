@@ -1,7 +1,7 @@
 # TODO: test case sensitivity
 
 jtest "warns if src not specified cleanly" do
-  make_file('a/b.cpp')
+  make_file("a/b.cpp")
   jdl do
     attr :src, type: :src
   end
@@ -14,17 +14,17 @@ jtest "warns if src not specified cleanly" do
   w[0].must_equal "Warning at #{src_loc("21957B5D")}: 'src' attribute not specified cleanly: 'a\\b.cpp' contains backslashes."
 end
 
-jtest 'can be specified explicitly even if extension is not in src_ext' do
-  make_file('a.cpp', 'b.z', 'c.z')
+jtest "can be specified explicitly even if extension is not in src_ext" do
+  make_file("a.cpp", "b.z", "c.z")
   dir = __dir__
   jaba do
     target :a do
       configs [:debug, :release]
-      src ['a.cpp', 'b.z']
+      src ["a.cpp", "b.z"]
       src.must_equal ["#{dir}/a.cpp", "#{dir}/b.z"], skip_calls: 1
     end
   end
- # Glob match can work without extension being in src_ext as long as the extension is specified
+  # Glob match can work without extension being in src_ext as long as the extension is specified
   #proj = jaba(cpp_app: true, dry_run: true) do
   #  cpp :app do
   #    project do
@@ -32,7 +32,7 @@ jtest 'can be specified explicitly even if extension is not in src_ext' do
   #    end
   #  end
   #end
- # proj[:src].must_equal ["#{temp_dir}/b.z", "#{temp_dir}/c.z"]
+  # proj[:src].must_equal ["#{temp_dir}/b.z", "#{temp_dir}/c.z"]
 end
 =begin
 jtest 'fails if explicitly specified files do not exist unless forced' do

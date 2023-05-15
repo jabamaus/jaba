@@ -231,7 +231,7 @@ jtest "is not possible to modify returned hash" do
     end
     attr_hash "c", key_type: :string do
       default do
-       { k: :v }
+        { k: :v }
       end
     end
   end

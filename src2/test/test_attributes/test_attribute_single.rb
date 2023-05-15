@@ -164,7 +164,7 @@ jtest "overwrites flag and value options on successive calls" do
 end
 
 # TODO: test on_set in conjunction with exporting
-jtest 'supports on_set hook' do
+jtest "supports on_set hook" do
   jdl do
     attr :a do
       # on_set executed in context of node so all attributes available
@@ -194,7 +194,7 @@ jtest 'supports on_set hook' do
     a 1
     b.must_equal("1_b")
     c.must_equal("1_b_c")
-    JTest.assert_jaba_error "Error at #{JTest.src_loc('EF4427A6')}: Reentrancy detected in 'd' attribute on_set." do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("EF4427A6")}: Reentrancy detected in 'd' attribute on_set." do
       d 1
     end
   end

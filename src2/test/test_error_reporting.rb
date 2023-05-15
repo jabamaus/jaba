@@ -39,15 +39,15 @@ jtest "catches syntax errors in jaba file form" do
   end
 end
 
-jtest 'reports lines correctly when using shared modules' do
-  assert_jaba_error "Error at #{src_loc('7F3590D4')}: 'a' attribute invalid - 'invalid' is a string - expected [true|false]" do
+jtest "reports lines correctly when using shared modules" do
+  assert_jaba_error "Error at #{src_loc("7F3590D4")}: 'a' attribute invalid - 'invalid' is a string - expected [true|false]" do
     jdl do
       node :node
       attr "node/a", type: :bool
     end
     jaba do
       shared :s do
-        a 'invalid' # 7F3590D4
+        a "invalid" # 7F3590D4
       end
       node :n do
         include :s

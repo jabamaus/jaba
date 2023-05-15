@@ -15,7 +15,7 @@ jtest "target" do
   r.id.must_equal :myapp
   r.children.size.must_equal 1
   t = r.children[0] # target node
-  t.children.size.must_equal 2 
+  t.children.size.must_equal 2
   debug_conf = t.children[0]
   debug_conf[:define].must_equal ["DEBUG"]
   release_conf = t.children[1]

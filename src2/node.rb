@@ -39,7 +39,7 @@ module JABA
 
     def ignore_attr_get?(name) = @attrs_to_ignore_when_getting&.has_key?(name)
     def ignore_attr_set?(name) = @attrs_to_ignore_when_setting&.has_key?(name)
-  
+
     def node_def = @node_def
     def api_obj = @api_obj
     def eval_jdl(...) = api_obj.instance_exec(...)
@@ -163,6 +163,7 @@ module JABA
     end
 
     def jdl_available = available
+
     def available(attrs_only: false)
       av = []
       visit_callable_attrs do |a, type|

@@ -1,7 +1,7 @@
 module JABA
   class Vcxproj
     include VSUtilities
-    
+
     def initialize(target_node)
       @node = target_node
     end
@@ -28,7 +28,7 @@ module JABA
     # See https://docs.microsoft.com/en-us/cpp/build/reference/vcxproj-file-structure?view=vs-2019
     def write_vcxproj
       JABA.log "Generating #{@vcxproj_file}", section: true
-      file = JABA.context.file_manager.new_file(@vcxproj_file, eol: :windows, encoding: 'UTF-8')
+      file = JABA.context.file_manager.new_file(@vcxproj_file, eol: :windows, encoding: "UTF-8")
       w = file.writer
       @pc = file.work_area
       @pg1 = file.work_area
@@ -51,12 +51,12 @@ module JABA
 
       w << XMLVERSION
       w << "<Project DefaultTargets=\"Build\" ToolsVersion=\"#{tools_version}\" xmlns=\"#{XMLNS}\">"
-      
+
       item_group(w, label: :ProjectConfigurations) do
         w.write_raw(@pc)
       end
 
-      w << '</Project>'
+      w << "</Project>"
       w.chomp!
       file.write
     end
@@ -69,5 +69,5 @@ module JABA
     # See https://docs.microsoft.com/en-us/cpp/build/reference/vcxproj-filters-files?view=vs-2019
     def write_vcxproj_filters
     end
-  end 
+  end
 end

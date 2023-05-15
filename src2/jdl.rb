@@ -11,12 +11,12 @@ JABA.define_api do
   attr_type :bool do
     title "Boolean attribute type"
   end
-  
+
   attr_type :choice do
     title "Choice attribute type"
     note "Can take exactly one of a set of unique values"
   end
-  
+
   attr_type :compound do
     title "Compound attribute type"
   end
@@ -36,7 +36,7 @@ JABA.define_api do
     title "Source file specification pattern"
     note "Can be file glob match an explicit path or a directory"
   end
-  
+
   attr_type :string do
     title "String attribute type"
   end
@@ -191,7 +191,7 @@ JABA.define_api do
   # Top level attributes
 
   attr "buildsystem_root", type: :dir do
-    title 'Root of generated build system'
+    title "Root of generated build system"
     default do
       # "buildsystem/#{target_host}" # TODO
       "buildsystem/vs2022"
@@ -213,15 +213,15 @@ JABA.define_api do
   end
 
   # Target node
-  
+
   node "target" do
     title "Define a target"
   end
 
   attr_array "target/configs", type: :string do
-    title 'Build configurations'
+    title "Build configurations"
     flags :per_target, :required, :no_sort, :exportable
-    example 'configs [:debug, :release]'
+    example "configs [:debug, :release]"
   end
 
   attr "target/config", type: :string do
@@ -232,7 +232,7 @@ JABA.define_api do
   end
 
   attr "target/configname", type: :string do
-    title 'Display name of config as seen in IDE'
+    title "Display name of config as seen in IDE"
     flags :per_config
     default do
       config
@@ -245,7 +245,7 @@ JABA.define_api do
   end
 
   attr_array "target/inc", type: :dir do
-    title 'Include paths'
+    title "Include paths"
     basedir_spec :definition_root
     flags :per_target, :no_sort, :exportable
     example "inc ['mylibrary/include']"
@@ -253,7 +253,7 @@ JABA.define_api do
   end
 
   attr "target/projdir", type: :dir do
-    title 'Directory in which projects will be generated'
+    title "Directory in which projects will be generated"
     flags :per_target
     #flags :no_check_exist # May get created during generation # TODO
     basedir_spec :buildsystem_root
@@ -269,8 +269,8 @@ JABA.define_api do
   end
 
   attr "target/projname", type: :basename do
-    title 'Base name of project files'
-    note 'Defaults to $(id)$(projsuffix)'
+    title "Base name of project files"
+    note "Defaults to $(id)$(projsuffix)"
     flags :per_target
     default do
       "#{id}#{projsuffix}"
@@ -278,8 +278,8 @@ JABA.define_api do
   end
 
   attr "target/projsuffix", type: :string do
-    title 'Optional suffix to be applied to $(projname)'
-    note 'Has no effect if $(projname) is set explicitly'
+    title "Optional suffix to be applied to $(projname)"
+    note "Has no effect if $(projname) is set explicitly"
     flags :per_target
   end
 
@@ -294,7 +294,7 @@ JABA.define_api do
   end
 
   attr_array "target/src", type: :src do
-    title 'Source file specification'
+    title "Source file specification"
     basedir_spec :definition_root
     flags :per_config
     #flags :required # Must be specified by user
@@ -345,11 +345,11 @@ JABA.define_api do
   end
 
   attr_array "target/src_ext", type: :string do
-    title 'File extensions used when matching src files'
-    note 'Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.'
+    title "File extensions used when matching src files"
+    note "Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes."
     flags :per_config, :no_sort, :exportable
     default do
-      ext = ['.cpp', '.h', '.inl', '.c', '.cc', '.cxx', '.hpp']
+      ext = [".cpp", ".h", ".inl", ".c", ".cc", ".cxx", ".hpp"]
       #ext.concat(host.cpp_src_ext) # TODO
       #ext.concat(platform.cpp_src_ext) # TODO
       ext

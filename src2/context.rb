@@ -349,10 +349,10 @@ module JABA
             end
           end
           @target_attrs_ignore = AttributeLookupHash.new.tap do |h|
-            @target_attr_defs.each{|ta| h[ta.name] = true}
+            @target_attr_defs.each { |ta| h[ta.name] = true }
           end
           @config_attrs_ignore = AttributeLookupHash.new.tap do |h|
-            @config_attr_defs.each{|ca| h[ca.name] = true}
+            @config_attr_defs.each { |ca| h[ca.name] = true }
           end
         end
         target_node = create_node(nd, parent: parent) do |node|

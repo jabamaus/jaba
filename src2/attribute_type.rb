@@ -140,8 +140,9 @@ module JABA
         @jdl_builder.lookup_definition(BasedirSpecDefinition, s, attr_def: self)
         @basedir_spec = s
       end
-      
+
       def on_basedir = @on_basedir
+
       def set_basedir(&block)
         definition_error("basedir must be specified as a block") if !block
         @on_basedir = block
@@ -173,15 +174,15 @@ module JABA
       else
         ad = attr.attr_def
         base = if ad.on_basedir
-          JABA.context.execute_attr_def_block(attr, ad.on_basedir)
-        else
-          case ad.basedir_spec
+            JABA.context.execute_attr_def_block(attr, ad.on_basedir)
+          else
+            case ad.basedir_spec
             when :jaba_file
               attr.src_loc.src_loc_info[0].parent_path
             when :definition_root
               attr.node[:root]
             else
-              ad.definition_error("Unhandled basedir_spec #{ad.basedir_spec}")            
+              ad.definition_error("Unhandled basedir_spec #{ad.basedir_spec}")
             end
           end
         "#{base}/#{value}".cleanpath

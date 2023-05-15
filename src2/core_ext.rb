@@ -24,6 +24,7 @@ end
 # In jaba string and symbols are interchangeable in case statements
 class String
   alias_method :old_case_equality, :===
+
   def ===(other)
     if other.is_a?(Symbol)
       self == other.to_s
@@ -36,6 +37,7 @@ end
 # In jaba string and symbols are interchangeable in case statements
 class Symbol
   alias_method :old_case_equality, :===
+
   def ===(other)
     if other.is_a?(String)
       self == other.to_sym
