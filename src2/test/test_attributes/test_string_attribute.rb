@@ -41,6 +41,17 @@ jtest "can default to id" do
   end
 end
 
+jtest "cannot be set to nil" do
+  jdl do
+    attr :a, type: :string
+  end
+  jaba do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("77EE98F7")}: 'a' attribute invalid - 'nil' is invalid - expected a string or symbol." do
+      a nil # 77EE98F7
+    end
+  end
+end
+
 jtest "can be set from cmdline" do
   jdl do
     attr :a, type: :string

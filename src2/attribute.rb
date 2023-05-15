@@ -113,18 +113,16 @@ module JABA
             attr_error("Invalid flag option '#{f.inspect_unquoted}' passed to #{describe}. Valid flags are #{attr_def.flag_options}")
           end
         end
-        if !new_value.nil?
-          # Validate whether it is a single value/array before validating type
-          attr_def.validate_value(new_value) do |msg|
-            attr_error("#{describe} invalid - #{msg}")
-          end
-          attr_type.validate_value(@attr_def, new_value) do |msg|
-            attr_error("#{describe} invalid - #{msg}")
-          end
-          if attr_def.on_validate
-            rescue_on_validate do
-              node.eval_jdl(new_value, @flag_options, **@value_options, &attr_def.on_validate)
-            end
+        # Validate whether it is a single value/array before validating type
+        attr_def.validate_value(new_value) do |msg|
+          attr_error("#{describe} invalid - #{msg}")
+        end
+        attr_type.validate_value(@attr_def, new_value) do |msg|
+          attr_error("#{describe} invalid - #{msg}")
+        end
+        if attr_def.on_validate
+          rescue_on_validate do
+            node.eval_jdl(new_value, @flag_options, **@value_options, &attr_def.on_validate)
           end
         end
       end

@@ -24,7 +24,11 @@ module JABA
       if value_class == TrueClass || value_class == FalseClass
         value_class = "boolean"
       end
-      yield "'#{value.inspect_unquoted}' is a #{value_class.to_s.downcase} - expected #{expected}"
+      if value.nil?
+        yield "'nil' is invalid - expected #{expected}"
+      else
+        yield "'#{value.inspect_unquoted}' is a #{value_class.to_s.downcase} - expected #{expected}"
+      end
     end
   end
 

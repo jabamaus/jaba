@@ -12,7 +12,6 @@
 - Implement element deletion for hash attribute
 - Add 'install' to copy exes somewhere post build
 - Stats in docs, eg number of files in jaba release, size of zip.
-- should string attr be allowed to be set to nil? Probably not.
 - make jaba clean clean the generated src, the .vs folder, the 'build' folder and optionally the 'buildsystem' folder.
 - Disallow ruby keywords as attr names, eg 'in' fails
 - Consider making all attributes require a type
