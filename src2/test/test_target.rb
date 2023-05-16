@@ -2,7 +2,6 @@ jtest "target" do
   op = jaba do
     target :myapp do
       type :console
-      configs [:debug, :release]
       case config
       when :debug
         define "DEBUG"
@@ -17,7 +16,9 @@ jtest "target" do
   t = r.children[0] # target node
   t.children.size.must_equal 2
   debug_conf = t.children[0]
+  debug_conf[:configname].must_equal "Debug"
   debug_conf[:define].must_equal ["DEBUG"]
   release_conf = t.children[1]
+  release_conf[:configname].must_equal "Release"
   release_conf[:define].must_equal ["RELEASE"]
 end

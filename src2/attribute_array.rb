@@ -41,6 +41,7 @@ module JABA
             postfix: nil,
             delete: nil,
             exclude: nil,
+            __force_set_default: false,
             **kwargs, &block)
       record_last_call_location
 
@@ -57,7 +58,7 @@ module JABA
 
       # If attribute has not been set and there is a default 'pull' the values in
       # and prepend them to the values passed in. Allows default value to make use of other attributes.
-      if !set? && attr_def.default_set? && !attr_def.has_flag?(:overwrite_default)
+      if !set? && attr_def.default_set? && (!attr_def.has_flag?(:overwrite_default) || __force_set_default)
         if attr_def.default_is_block?
           default_values = JABA.context.execute_attr_def_block(self, attr_def.default)
           validate_default_block_value(default_values)
@@ -127,7 +128,7 @@ module JABA
     #
     def finalise
       if !set? && attr_def.default_set?
-        set
+        set(__force_set_default: true)
       end
     end
 

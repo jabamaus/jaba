@@ -1,5 +1,6 @@
 # TODO: validate key type is of specfied key_type
 =begin
+# TODO: test overwrite_default
 jtest "supports a default" do
   jaba(barebones: true) do
     type :test do

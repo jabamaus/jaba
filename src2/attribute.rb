@@ -19,6 +19,7 @@ module JABA
     def attr_error(msg, errobj: self) = JABA.error(msg, errobj: errobj)
     def process_flags; end # override as necessary
 
+    # TODO: attribute_array does not have @value...
     def value_from_block(&block)
       if attr_def.compound?
         if @value # If compound has already been made but is being set again, re-evaluate existing value against block

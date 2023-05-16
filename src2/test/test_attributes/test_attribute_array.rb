@@ -53,30 +53,34 @@ jtest "array supports a default" do
   end
 
   jdl do
-    attr_array :a
-    attr_array :b do
+    attr_array :a, type: :int
+    attr_array :b, type: :int do
       default [1, 2, 3] # value style default
     end
-    attr_array :c do
+    attr_array :c, type: :int do
       default do # block style default
         [4, 5, 6]
       end
     end
-    attr_array :d do
+    attr_array :d, type: :int do
       default do # block style default referencing other attrs
         b + c
       end
     end
-    attr_array :e do
+    attr_array :e, type: :int do
       default [7, 8]
     end
-    attr_array :f do
+    attr_array :f, type: :int do
       default [9]
+      flags :overwrite_default
+    end
+    attr_array :g, type: :int do
+      default [11]
       flags :overwrite_default
     end
   end
 
-  jaba do
+  op = jaba do
     a.must_equal [] # defaults to empty array
     b.must_equal [1, 2, 3]
     c.must_equal [4, 5, 6]
@@ -89,7 +93,16 @@ jtest "array supports a default" do
     f.must_equal [9]
     f 10 # default will be overwritten not appended to due to :overwrite_default flag
     f.must_equal [10]
+    g.must_equal [11] # Don't overwrite g, check that it still has default value when jaba completes
   end
+  r = op[:root]
+  r[:a].must_equal []
+  r[:b].must_equal [1, 2, 3]
+  r[:c].must_equal [4, 5, 6]
+  r[:d].must_equal [1, 2, 3, 4, 5, 6, 7, 8, 9]
+  r[:e].must_equal [7, 8, 9]
+  r[:f].must_equal [10]
+  r[:g].must_equal [11]
 end
 
 jtest "checks for accessing uninitialised attributes" do

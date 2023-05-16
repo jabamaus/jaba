@@ -40,6 +40,7 @@ module JABA
 
     def set(*args,
             __no_keyval: false,
+            __force_set_default: false,
             **kwargs, &block)
       record_last_call_location
 
@@ -66,7 +67,7 @@ module JABA
       # and merge them into the hash. Defaults specified in blocks are handled lazily to allow the default
       # value to make use of other attributes.
       #
-      if !set? && attr_def.default_set? && !attr_def.has_flag?(:overwrite_default)
+      if !set? && attr_def.default_set? && (!attr_def.has_flag?(:overwrite_default) || __force_set_default)
         default_hash = if attr_def.default_is_block?
             dh = JABA.context.execute_attr_def_block(self, attr_def.default)
             if !dh.is_a?(Hash)
@@ -82,7 +83,7 @@ module JABA
       end
 
       # Insert key after defaults to enable defaults to be overwritten if desired
-      #
+      # TODO: look at __no_keyval. Needed?
       if !__no_keyval
         insert_key(key, val, *args, **kwargs)
       end
@@ -96,7 +97,7 @@ module JABA
     #
     def finalise
       if !set? && attr_def.default_set?
-        set(__no_keyval: true)
+        set(__no_keyval: true, __force_set_default: true)
       end
     end
 
