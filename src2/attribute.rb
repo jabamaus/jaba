@@ -178,6 +178,7 @@ module JABA
           end
         elsif attr_def.default_is_block?
           val = JABA.context.execute_attr_def_block(self, attr_def.default)
+          # TODO: need to do validation here
           @attr_def.attr_type.map_value(val, self).freeze
         elsif attr_def.default_set?
           @attr_def.attr_type.map_value(attr_def.default, self).freeze

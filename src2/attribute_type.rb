@@ -138,7 +138,7 @@ module JABA
     end
   end
 
-  class AttributeTypeUuid < AttributeType
+  class AttributeTypeUuid < AttributeTypeString
     def map_value(value, attr)
       Kernel.generate_uuid(namespace: "AttributeTypeUuid", name: value, braces: true)
     end

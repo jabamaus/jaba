@@ -78,36 +78,47 @@ jtest "supports default value" do
   jdl do
     attr :a
     attr :b
-    attr :block_default do
+    attr :c do
       default do
         "#{a}_#{b}"
       end
     end
-    attr :block_default2 do
+    attr :d do
       default do
-        block_default
+        c
+      end
+    end
+    attr :e, type: :uuid do
+      default do
+        c
       end
     end
   end
-  jaba do
+  op = jaba do
     a 1
     b 2
-    block_default.must_equal "1_2"
+    c.must_equal "1_2"
   end
+  r = op[:root]
+  r[:a].must_equal 1
+  r[:b].must_equal 2
+  r[:c].must_equal "1_2"
+  r[:d].must_equal "1_2"
+  r[:e].must_equal "{5D1B3C76-9E0A-5ACA-976A-D6FE15023C52}" # e is not set but default should still be mapped to a uuid
 
   # test with attr default using an unset attr
-  assert_jaba_error "Error at #{src_loc("2F003EB7")}: 'block_default' attribute default read uninitialised 'b' attribute - it might need a default value." do
+  assert_jaba_error "Error at #{src_loc("2F003EB7")}: 'c' attribute default read uninitialised 'b' attribute - it might need a default value." do
     jaba do
       a 1
-      block_default # 2F003EB7
+      c # 2F003EB7
     end
   end
 
   # test with another attr using unset attr
-  assert_jaba_error "Error at #{src_loc("A0C828F8")}: 'block_default2' attribute default read uninitialised 'a' attribute - it might need a default value." do
+  assert_jaba_error "Error at #{src_loc("A0C828F8")}: 'd' attribute default read uninitialised 'a' attribute - it might need a default value." do
     jaba do
       b 1
-      block_default2 # A0C828F8
+      d # A0C828F8
     end
   end
 end
