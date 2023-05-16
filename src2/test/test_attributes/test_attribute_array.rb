@@ -37,7 +37,7 @@ jtest "array supports a default" do
     end
   end
   assert_jaba_error "Error at #{src_loc("1E5D0C2E")}: 'd' array attribute invalid - 'default' expects an array but got '1'." do
-    jaba do end# It validates default is an array when value form is called implicitly
+    jaba do end # It validates default is an array when value form is called implicitly
   end
 
   jdl do

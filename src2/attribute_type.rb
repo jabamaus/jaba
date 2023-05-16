@@ -221,7 +221,7 @@ module JABA
   class AttributeTypeDir < AttributePathBase
     def initialize
       super(default: ".")
-    end 
+    end
   end
 
   class AttributeTypeSrc < AttributePathBase; end

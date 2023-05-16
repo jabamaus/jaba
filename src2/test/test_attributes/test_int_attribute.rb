@@ -35,7 +35,7 @@ jtest "fails if value not supplied when 'required' flag specified" do
   end
 end
 
-jtest 'supports standard ops' do
+jtest "supports standard ops" do
   jdl do
     attr :a, type: :int
     attr :b, type: :int do
@@ -47,7 +47,7 @@ jtest 'supports standard ops' do
     end
     attr_hash :ah, type: :int, key_type: :string
     attr_hash :bh, type: :int, key_type: :string do
-      default({k1: 1})
+      default({ k1: 1 })
     end
   end
   jaba do
@@ -69,34 +69,34 @@ jtest 'supports standard ops' do
     # test hash attrs
     ah.must_equal({})
     ah :k1, 1
-    ah.must_equal({k1: 1})
-    bh.must_equal({k1: 1})
+    ah.must_equal({ k1: 1 })
+    bh.must_equal({ k1: 1 })
     bh :k1, 2
-    bh.must_equal({k1: 2})
+    bh.must_equal({ k1: 2 })
     bh :k2, 3
-    bh.must_equal({k1: 2, k2: 3})
+    bh.must_equal({ k1: 2, k2: 3 })
   end
 end
 
 jtest "can be set from cmdline" do
   jdl do
     attr :a, type: :int
-    attr :b, type: :int 
+    attr :b, type: :int
     attr :c, type: :int
     attr :d, type: :int
   end
   jaba(global_attrs_from_cmdline: {
-    'a': '1',
-    'b': '3433409',
-    'c': '-1',
-    'd': '0'
-    }) do
+         'a': "1",
+         'b': "3433409",
+         'c': "-1",
+         'd': "0",
+       }) do
     a.must_equal(1)
     b.must_equal(3433409)
     c.must_equal(-1)
     d.must_equal(0)
   end
 
-  op = jaba(global_attrs_from_cmdline: {'a': 'foo'}, want_exceptions: false) do end
+  op = jaba(global_attrs_from_cmdline: { 'a': "foo" }, want_exceptions: false) do end
   op[:error].must_equal "Error: 'foo' invalid value for 'a' attribute - integer expected."
 end

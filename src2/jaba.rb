@@ -96,7 +96,7 @@ if __FILE__ == $PROGRAM_NAME
       end
 
       @src_root = Dir.getwd if @src_root.nil?
-      
+
       output = JABA.run do |j|
         j.src_root = @src_root
         j.build_root = @build_root
