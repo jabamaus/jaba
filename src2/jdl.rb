@@ -234,13 +234,13 @@ JABA.define_api do
     title "Display name of config as seen in IDE"
     flags :per_config
     default do
-      config
+      config.capitalize_first
     end
   end
 
   attr_array "target/configs", type: :string do
     title "Build configurations"
-    flags :per_target, :no_sort, :exportable
+    flags :per_target, :overwrite_default
     default [:debug, :release]
     example "configs [:debug, :release]"
   end
