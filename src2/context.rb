@@ -467,7 +467,10 @@ module JABA
           else
             errobj.src_loc
           end
+      elsif line.nil? && executing_jdl?
+        line = $last_call_location
       end
+
       bt = if line
           want_backtrace = false
           Array(line)
