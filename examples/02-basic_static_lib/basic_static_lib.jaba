@@ -1,6 +1,5 @@
 target :BasicStaticLib do
   type :lib
-  configs [:debug, :release]
   src ['.']
   inc ['include'], :export
 end

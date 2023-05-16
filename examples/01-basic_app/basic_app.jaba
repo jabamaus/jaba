@@ -2,6 +2,5 @@
 #
 target :BasicApp  do
   type :console
-  configs [:debug, :release]
   src ['main.cpp']
 end

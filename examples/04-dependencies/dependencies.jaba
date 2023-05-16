@@ -4,7 +4,6 @@ include '3rdParty/ThirdPartyLib'
 
 target :AppWithDependencies do
   type :console
-  configs [:debug, :release]
   src ['main.cpp']
   deps [:BasicStaticLib, :BasicDynamicLib, :ThirdPartyLib]
 end

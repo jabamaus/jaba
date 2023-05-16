@@ -1,6 +1,5 @@
 target :BasicDynamicLib do
   type :dll
-  configs [:debug, :release]
   src ['.']
   inc ['include'], :export
   define ['DLL_EXPORT']

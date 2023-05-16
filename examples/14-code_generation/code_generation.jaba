@@ -1,6 +1,5 @@
 target :CodegenExample do
   type :console
-  configs [:debug, :release]
   src ['main.cpp', 'generator.rb', '*.xyz']
   src %w(src1.h src2.h src1.cpp src2.cpp), :force, prefix: 'generated/'
   rule do
