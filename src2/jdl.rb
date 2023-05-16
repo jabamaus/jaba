@@ -157,6 +157,17 @@ JABA.define_api do
     title "Array of attributes/methods available in current scope"
   end
 
+  global_method "fail" do
+    title "Raise an error"
+    note "Stops execution"
+    on_called do |msg| JABA.error(msg, line: $last_call_location) end
+  end
+
+  global_method "include" do
+    title "Include a shared definition or a .jaba file"
+    note "Use at file scope to include another .jaba file or inside definition blocks to include 'shared' definitions"
+  end
+
   global_method "print" do
     title "Prints a non-newline terminated string to stdout"
     on_called do |str| Kernel.print(str) end
@@ -165,16 +176,6 @@ JABA.define_api do
   global_method "puts" do
     title "Prints a newline terminated string to stdout"
     on_called do |str| Kernel.puts(str) end
-  end
-
-  global_method "fail" do
-    title "Raise an error"
-    note "Stops execution"
-    on_called do |msg| JABA.error(msg, line: $last_call_location) end
-  end
-
-  method "*/include" do
-    title "Include a shared definition"
   end
 
   # Top level methods

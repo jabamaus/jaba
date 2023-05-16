@@ -46,6 +46,7 @@ module JABA
 
     # Compound attrs don't have ids
     def compound_attr? = @id.nil?
+    def top_level_node? = @parent.nil?
 
     def post_create
       @attributes.each do |a|
@@ -198,9 +199,13 @@ module JABA
       end
     end
 
-    def jdl_include(id, **kwargs)
-      block = JABA.context.lookup_shared(id)
-      eval_jdl(**kwargs, &block)
+    def jdl_include(spec, **kwargs)
+      if top_level_node?
+        JABA.context.process_include(spec)
+      else
+        block = JABA.context.lookup_shared(spec)
+        eval_jdl(**kwargs, &block)
+      end
     end
 
     private

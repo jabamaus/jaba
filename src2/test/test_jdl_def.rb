@@ -66,7 +66,7 @@ jtest "can register methods at top level" do
     end
   end
   jaba do
-    available.must_equal ["available", "buildsystem_root (rw)", "fail", "glob", "m", "print", "puts", "shared"]
+    available.must_equal ["available", "buildsystem_root (rw)", "fail", "glob", "include", "m", "print", "puts", "shared"]
     JTest.assert_output "m" do
       m
     end

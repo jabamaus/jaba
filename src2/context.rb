@@ -30,7 +30,6 @@ module JABA
       @invoking_dir = Dir.getwd.freeze
       @src_root = @build_root = @temp_dir = nil
       @file_manager = FileManager.new
-      @jdl_includes = []
       @jdl_file_lookup = {}
       @node_defs = []
       @shared_lookup = {}
@@ -133,7 +132,12 @@ module JABA
         @top_level_api_obj = @jdl.top_level_api_class.new(n)
         set_top_level_attrs_from_cmdline
         @executing_jdl = true
-        load_jaba_files
+        # Definitions can be provided in a block form or source form but not both
+        if input.definitions
+          execute_jdl(&input.definitions)
+        else
+          process_load_path(src_root, fail_if_empty: true)
+        end
       end
 
       @node_defs.each do |nd|
@@ -227,21 +231,6 @@ module JABA
       end
     end
 
-    def load_jaba_files
-      # Definitions can be provided in a block form or source form but not both
-      if input.definitions
-        execute_jdl(&input.definitions)
-      else
-        process_load_path(src_root, fail_if_empty: true)
-      end
-
-      # Process include directives, accounting for included files including other files.
-      while !@jdl_includes.empty?
-        inc = @jdl_includes.pop
-        process_load_path(inc.path)
-      end
-    end
-
     def process_load_path(p, fail_if_empty: false)
       if !p.absolute_path?
         JABA.error("'#{p}' must be an absolute path")
@@ -285,8 +274,6 @@ module JABA
       execute_jdl(file: f)
     end
 
-    IncludeInfo = Data.define(:path, :args)
-
     def process_include(path)
       if path.nil?
         JABA.error("include requires a path")
@@ -294,10 +281,15 @@ module JABA
       if !path.absolute_path?
         path = "#{$last_call_location.src_loc_info[0].parent_path}/#{path}"
       end
+      if !File.directory?(path)
+        path = path.ensure_end_with(".jaba")
+      end
       if path.wildcard?
-        @jdl_includes.concat(@file_manager.glob_files(path).map { |d| IncludeInfo.new(d, args) })
+        @file_manager.glob_files(path).each do |p|
+          process_load_path(p)
+        end
       else
-        @jdl_includes << IncludeInfo.new(p ath, args)
+        process_load_path(path)
       end
     end
 
