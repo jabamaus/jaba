@@ -109,7 +109,8 @@ module JABA
       nil
     end
 
-    def handle_attr(name, *args, **kwargs, &block)
+    # This is the only place that attrs values can be set or retrieved from user definitions.
+    def jdl_process_attr(name, *args, **kwargs, &block)
       is_get = (args.empty? && kwargs.empty? && !block_given?)
       if is_get
         return nil if ignore_attr_get?(name)

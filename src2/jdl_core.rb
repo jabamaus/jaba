@@ -230,7 +230,7 @@ module JABA
       end
       parent_class.define_method(attr_name) do |*args, **kwargs, &attr_block|
         $last_call_location = ::Kernel.calling_location
-        @node.handle_attr(attr_name, *args, **kwargs, &attr_block)
+        @node.jdl_process_attr(attr_name, *args, **kwargs, &attr_block)
       end
 
       if type_id == :compound
