@@ -139,18 +139,6 @@ JABA.define_api do
     title "path will be based on $(root) attribute"
   end
 
-  basedir_spec :build_root do
-    title "path will be based on build_root"
-  end
-
-  basedir_spec :buildsystem_root do
-    title "path will be based on buildsystem (itself based on build_root)"
-  end
-
-  basedir_spec :artefact_root do
-    title "path will be based on build artefact root"
-  end
-
   # Global methods
 
   global_method "available" do
@@ -262,7 +250,6 @@ JABA.define_api do
     title "Directory in which projects will be generated"
     flags :per_target
     #flags :no_check_exist # May get created during generation # TODO
-    basedir_spec :buildsystem_root
     basedir do
       buildsystem_root
     end
