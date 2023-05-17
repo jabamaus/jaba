@@ -115,10 +115,10 @@ module JABA
       # Top level node methods/attrs can be split across multiple files so take its src location
       # to be the first line of the first file or the source location of the definitions block.
       src_loc = if input.src_root
-          if File.directory?(input.src_root)
-            "#{@file_manager.glob_files("#{input.src_root}/*.jaba")[0]}:1"
+          if File.directory?(@src_root)
+            "#{@file_manager.glob_files("#{@src_root}/*.jaba")[0]}:1"
           else
-            "#{input.src_root}:1"
+            "#{@src_root}:1"
           end
         else
           "#{input.definitions.source_location[0]}:#{input.definitions.source_location[1]}"
