@@ -12,8 +12,7 @@ module JABA
       @node_def = node_def
       @api_obj = @node_def.api_class.new(self)
       @id = id
-      @src_loc = src_loc
-      @src_dir = src_loc ? src_loc.src_loc_info[0].parent_path : nil # top level root node does not have src_loc
+      @src_loc = src_loc # nil for root node. Updated dynamically in eval_jdl
       @attributes = []
       @attribute_lookup = AttributeLookupHash.new
       @attrs_to_ignore_when_setting = nil
@@ -25,6 +24,15 @@ module JABA
         parent.children << self
       end
     end
+
+    def describe = "'#{node_def.name.inspect_unquoted}'"
+    def id = @id
+    def src_loc = @src_loc
+    def src_dir = @src_loc.src_loc_info[0].parent_path
+    def parent = @parent
+    def children = @children
+    def attributes = @attributes
+    def [](name) = search_attr(name).value
 
     def add_attrs(attr_defs)
       attr_defs.each do |d|
@@ -43,13 +51,24 @@ module JABA
     def node_def = @node_def
     def api_obj = @api_obj
       
-    def eval_jdl(...)
+    def eval_jdl(*args, **kwargs, &block)
+      # Root node can be set from multiple files so update src_loc to block location.
+      # All other nodes have a constant src_loc at time of creation.
+      if root_node?
+        sl = block.source_location
+        @src_loc = "#{sl[0]}:#{sl[1]}"
+      end
       do_jdl do
-        api_obj.instance_exec(...)
+        api_obj.instance_exec(*args, **kwargs, &block)
       end
     end
 
     def eval_jdl_str(str, file)
+      # Root node can be set from multiple files so update src_loc first line of file
+      # to be executed. All other nodes have a constant src_loc at time of creation.
+      if root_node?
+        @src_loc = "#{file}:1"
+      end
       do_jdl do
         api_obj.instance_eval(str, file)
       end
@@ -75,15 +94,6 @@ module JABA
         # set it and it didn't have a default. But by this point the set flag has served it purpose.
       end
     end
-
-    def describe = "'#{node_def.name.inspect_unquoted}'"
-    def id = @id
-    def src_loc = @src_loc
-    def src_dir = @src_dir
-    def parent = @parent
-    def children = @children
-    def attributes = @attributes
-    def [](name) = search_attr(name).value
 
     def visit(&block)
       yield self

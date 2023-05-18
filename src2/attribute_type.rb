@@ -204,7 +204,7 @@ module JABA
           else
             case ad.basedir_spec
             when :jaba_file
-              attr.src_loc.src_loc_info[0].parent_path
+              attr.node.src_dir
             when :definition_root
               attr.node[:root]
             else

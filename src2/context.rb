@@ -115,19 +115,7 @@ module JABA
 
       init_root_paths
 
-      # Top level node methods/attrs can be split across multiple files so take its src location
-      # to be the first line of the first file or the source location of the definitions block.
-      src_loc = if input.src_root
-          if File.directory?(@src_root)
-            "#{@file_manager.glob_files("#{@src_root}/*.jaba")[0]}:1"
-          else
-            "#{@src_root}:1"
-          end
-        else
-          "#{input.definitions.source_location[0]}:#{input.definitions.source_location[1]}"
-        end
-
-      tld = NodeDefData.new(@jdl.top_level_node_def, "root", src_loc, nil, nil)
+      tld = NodeDefData.new(@jdl.top_level_node_def, "root", nil, nil, nil)
       create_node(tld, parent: nil) do |n|
         n.add_attrs(@jdl.top_level_node_def.attr_defs)
         @root_node = n
