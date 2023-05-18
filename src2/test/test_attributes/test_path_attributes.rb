@@ -19,32 +19,68 @@ jtest "checks path is valid" do
   op[:error].must_equal "Error at #{src_loc("CB2F8547")}: 'basename' attribute invalid - 'a\\b' must not contain slashes."
 end
 
+# TODO: check base_dir is a dir attr
 # TODO: test all basedir_specs
+jtest "top level paths are made absolute based on basedir spec" do
+  dir = __dir__
+  jdl do
+    attr :f1, type: :file
+    attr :d1, type: :dir
+    attr :f2, type: :file do
+      basedir do
+        d2
+      end
+    end
+    attr :d2, type: :dir do
+      basedir do
+        d3
+      end
+    end
+    attr :d3, type: :dir
+  end
+  jaba do
+    f1 "a"
+    f1.must_equal "#{dir}/a"
+    d1 "b"
+    d3 "c"
+    d2.must_equal "#{dir}/c" # d2 based on d3
+    d2 "d"
+    d2.must_equal "#{dir}/c/d" # d2 based on d3
+    f2 "../e"
+    f2.must_equal "#{dir}/c/e"
+  end
+end
+
 jtest "paths are made absolute" do
   dir = __dir__
   jdl do
     node :node
-    attr "node/file", type: :file do
+    attr "node/file1", type: :file do
       basedir_spec :definition_root
     end
-    attr "node/dir", type: :dir do
+    attr "node/dir1", type: :dir do
       basedir_spec :definition_root
     end
-    attr "node/src", type: :src do
-      basedir_spec :definition_root
+    attr "node/file2", type: :file do # based on value of another attr
+      basedir do
+        dir1
+      end
     end
-    attr "node/basename", type: :basename
   end
   jaba do
     node :n1 do
       root.must_equal(dir)
-      file "../a"
-      file.must_equal "#{dir.parent_path}/a"
+      file1 "../a"
+      file1.must_equal "#{dir.parent_path}/a"
+      dir1 "c/d"
+      dir1.must_equal "#{dir}/c/d"
+      file2 "../e"
+      file2.must_equal "#{dir}/c/e" # based of val of file1
     end
     node :n2, root: "b" do
       root.must_equal("#{dir}/b")
-      file "../a"
-      file.must_equal "#{dir}/a"
+      file1 "../a"
+      file1.must_equal "#{dir}/a"
     end
   end
 end

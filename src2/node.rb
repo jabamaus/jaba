@@ -50,26 +50,26 @@ module JABA
 
     def node_def = @node_def
     def api_obj = @api_obj
-      
-    def eval_jdl(*args, **kwargs, &block)
+    
+    def eval_jdl(*args, called_from_jdl: true, **kwargs, &block)
       # Root node can be set from multiple files so update src_loc to block location.
       # All other nodes have a constant src_loc at time of creation.
-      if root_node?
+      if root_node? && called_from_jdl
         sl = block.source_location
         @src_loc = "#{sl[0]}:#{sl[1]}"
       end
-      do_jdl do
+      do_jdl(called_from_jdl) do
         api_obj.instance_exec(*args, **kwargs, &block)
       end
     end
 
-    def eval_jdl_str(str, file)
+    def eval_jdl_str(str, file, called_from_jdl: true)
       # Root node can be set from multiple files so update src_loc first line of file
       # to be executed. All other nodes have a constant src_loc at time of creation.
-      if root_node?
+      if root_node? && called_from_jdl
         @src_loc = "#{file}:1"
       end
-      do_jdl do
+      do_jdl(called_from_jdl) do
         api_obj.instance_eval(str, file)
       end
     end
@@ -136,7 +136,7 @@ module JABA
       if is_get
         return nil if ignore_attr_get?(name)
         a = search_attr(name)
-        a.set_last_call_location(__call_loc)
+        a.set_last_call_location(__call_loc) if JABA.context.executing_jdl?
         return a.value
       else
         return nil if ignore_attr_set?(name)
@@ -145,7 +145,7 @@ module JABA
           if @read_only
             JABA.error("#{a.describe} is read only in this scope", line: __call_loc)
           end
-          a.set_last_call_location(__call_loc)
+          a.set_last_call_location(__call_loc) if JABA.context.executing_jdl?
           a.set(*args, **kwargs, &block)
         else
           # if attr not found on this node search for it in parents. If found it is therefore
@@ -154,7 +154,7 @@ module JABA
           if a
             # Compound attributes are allowed to set 'sibling' attributes which are in its parent node
             if compound_attr? && a.node == @parent
-              a.set_last_call_location(__call_loc)
+              a.set_last_call_location(__call_loc) if JABA.context.executing_jdl?
               a.set(*args, **kwargs, &block)
             else
               JABA.error("#{a.describe} is read only in this scope", line: __call_loc)
@@ -235,15 +235,15 @@ module JABA
 
     private
 
-    def do_jdl
-      JABA.context.begin_jdl
+    def do_jdl(called_from_jdl)
+      JABA.context.begin_jdl if called_from_jdl
       yield
     rescue ScriptError => e # script errors don't have a backtrace
       JABA.error(e.message, type: :script_error)
     rescue NameError => e
       JABA.error(e.message, line: e.backtrace[0])
     ensure
-      JABA.context.end_jdl
+      JABA.context.end_jdl if called_from_jdl
     end
 
     def add_attr(attr_def)

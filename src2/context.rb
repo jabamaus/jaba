@@ -399,7 +399,7 @@ module JABA
       @attr_def_block_stack.push(attr)
       result = nil
       attr.node.make_read_only do # attr def blocks should only read attributes not set them
-        result = attr.node.eval_jdl(&block)
+        result = attr.node.eval_jdl(called_from_jdl: false, &block)
       end
       @attr_def_block_stack.pop
       result
