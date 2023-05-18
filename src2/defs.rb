@@ -62,10 +62,6 @@ module JABA
     def on_init_attr_def = @on_init_attr_def
   end
 
-  class BasedirSpecDefinition < Definition
-    def describe = "'#{name.inspect_unquoted}' basedir_spec"
-  end
-
   class AttributeGroupDefinition < Definition
     def initialize
       super()

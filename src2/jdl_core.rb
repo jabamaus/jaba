@@ -2,7 +2,6 @@ module JABA
   JDLTopLevelAPI = APIBuilder.define(
     :attr_type,
     :flag,
-    :basedir_spec,
     :global_method,
     :method,
     :attr,
@@ -13,7 +12,6 @@ module JABA
   CommonAPI = APIBuilder.define_module(:title, :note, :example)
   AttributeTypeDefinitionAPI = APIBuilder.define().include(CommonAPI)
   FlagDefinitionAPI = APIBuilder.define(:compatible?, :init_attr_def).include(CommonAPI)
-  BasedirSpecDefinitionAPI = APIBuilder.define().include(CommonAPI)
   MethodDefinitionAPI = APIBuilder.define(:on_called).include(CommonAPI)
   NodeDefinitionAPI = APIBuilder.define().include(CommonAPI)
 
@@ -115,11 +113,6 @@ module JABA
     def set_flag(name, &block)
       name = validate_name(name)
       make_definition(FlagDefinition, FlagDefinitionAPI, name, block)
-    end
-
-    def set_basedir_spec(name, &block)
-      name = validate_name(name)
-      make_definition(BasedirSpecDefinition, BasedirSpecDefinitionAPI, name, block)
     end
 
     def set_node(path, &block)

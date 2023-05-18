@@ -20,7 +20,6 @@ jtest "checks path is valid" do
 end
 
 # TODO: check base_dir is a dir attr
-# TODO: test all basedir_specs
 jtest "top level paths are made absolute based on basedir spec" do
   dir = __dir__
   jdl do
@@ -56,10 +55,10 @@ jtest "paths are made absolute" do
   jdl do
     node :node
     attr "node/file1", type: :file do
-      basedir_spec :definition_root
+      basedir :definition_root
     end
     attr "node/dir1", type: :dir do
-      basedir_spec :definition_root
+      basedir :definition_root
     end
     attr "node/file2", type: :file do # based on value of another attr
       basedir do

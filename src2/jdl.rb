@@ -29,7 +29,7 @@ JABA.define_api do
   attr_type :file do
     title "File attribute type"
     note "Validates that value is a string path representing a file"
-    # TODO: document basedir_spec
+    # TODO: document basedir
   end
 
   attr_type :int do
@@ -125,20 +125,6 @@ JABA.define_api do
     end
   end
 
-  # basedir_specs
-
-  basedir_spec :jaba_file do
-    title "path will be based on the directory of the jaba file the definition is in"
-    note "If $(root) attribute is set that will take precedence and override this. The root attribute is itself" \
-         "specified relative to the jaba file."
-    note "Another caveat is that if an attribute flagged with :jaba_file is set in a shared definition " \
-         "it will base itself off the root definition that included the shared definition"
-  end
-
-  basedir_spec :definition_root do
-    title "path will be based on $(root) attribute"
-  end
-
   # Global methods
 
   global_method "available" do
@@ -189,7 +175,7 @@ JABA.define_api do
       # "buildsystem/#{target_host}" # TODO
       "buildsystem/vs2022"
     end
-    basedir_spec :jaba_file
+    basedir :jaba_file
   end
 
   # Global attributes. Available in all nodes but not at top level.
@@ -202,7 +188,7 @@ JABA.define_api do
   attr "*/root", type: :dir do
     title "TODO"
     flags :node_option
-    basedir_spec :jaba_file
+    basedir :jaba_file
   end
 
   # Target node
@@ -240,7 +226,7 @@ JABA.define_api do
 
   attr_array "target/inc", type: :dir do
     title "Include paths"
-    basedir_spec :definition_root
+    basedir :definition_root
     flags :per_target, :no_sort, :exportable
     example "inc ['mylibrary/include']"
     example "inc ['mylibrary/include'], :export # Export include path to dependents"
@@ -283,12 +269,12 @@ JABA.define_api do
 
   attr "target/rule/input", type: :src do
     title "TODO"
-    basedir_spec :definition_root
+    basedir :definition_root
   end
 
   attr_array "target/src", type: :src do
     title "Source file specification"
-    basedir_spec :definition_root
+    basedir :definition_root
     flags :per_config
     #flags :required # Must be specified by user
     #flags :no_sort # Final source will be sorted so no need to sort this

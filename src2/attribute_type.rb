@@ -154,34 +154,32 @@ module JABA
   end
 
   class AttributePathBase < AttributeTypeString
-    # Register basedir_spec property into AttributeDefinition
-    APIBuilder.add_method(AttributeDefinitionAPI, :basedir_spec)
+    # Register basedir into AttributeDefinition
+    ValidBaseDirs = [:definition_root, :jaba_file]
+
     APIBuilder.add_method(AttributeDefinitionAPI, :basedir)
     AttributeDefinition.class_eval do
-      def basedir_spec = @basedir_spec
+      def basedir = @basedir
 
-      def set_basedir_spec(s)
-        # check its valid
-        @jdl_builder.lookup_definition(BasedirSpecDefinition, s, attr_def: self)
-        @basedir_spec = s
-      end
-
-      def on_basedir = @on_basedir
-
-      def set_basedir(&block)
-        definition_error("basedir must be specified as a block") if !block
-        @on_basedir = block
+      def set_basedir(spec = nil, &block)
+        if (spec && block) || (!spec && !block)
+          definition_error("basedir must be specified as a spec or a block")
+        end
+        if spec && !ValidBaseDirs.include?(spec)
+          definition_error("'#{spec.inspect_unquoted}' must be one of #{ValidBaseDirs}")
+        end
+        @basedir = spec ? spec : block
       end
     end
 
     def init_attr_def(attr_def)
-      attr_def.instance_variable_set(:@basedir_spec, nil)
+      attr_def.instance_variable_set(:@basedir, nil)
     end
 
     def post_create_attr_def(attr_def)
       super
-      if attr_def.basedir_spec.nil?
-        attr_def.set_basedir_spec(:jaba_file)
+      if attr_def.basedir.nil?
+        attr_def.set_basedir(:jaba_file)
       end
     end
 
@@ -199,18 +197,16 @@ module JABA
         value
       else
         ad = attr.attr_def
-        base = if ad.on_basedir
-            JABA.context.execute_attr_def_block(attr, ad.on_basedir)
-          else
-            case ad.basedir_spec
-            when :jaba_file
-              attr.node.src_dir
-            when :definition_root
-              attr.node[:root]
-            else
-              ad.definition_error("Unhandled basedir_spec #{ad.basedir_spec}")
-            end
-          end
+        base = case ad.basedir
+        when Proc
+          JABA.context.execute_attr_def_block(attr, ad.basedir)
+        when :jaba_file
+          attr.node.src_dir
+        when :definition_root
+          attr.node[:root]
+        else
+          ad.definition_error("Unhandled basedir #{ad.basedir}")
+        end
         "#{base}/#{value}".cleanpath
       end
     end
