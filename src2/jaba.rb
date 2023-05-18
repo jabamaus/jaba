@@ -25,7 +25,6 @@ module JABA
   #
   class Input
     attr_accessor :src_root
-    attr_accessor :build_root
     attr_block :definitions
     attr_bool :verbose
     attr_bool :profile
@@ -65,7 +64,6 @@ if __FILE__ == $PROGRAM_NAME
 
       clm.register_cmd(:gen, help: "Regenerate buildsystem", default: true) do |c|
         c.add_value("--src-root -S", help: "Set src root", var: :src_root)
-        c.add_value("--build-root -B", help: "Set build root", var: :build_root)
         c.add_key_values("--define -D", help: "Set global attribute value", var: :globals)
       end
 
@@ -99,7 +97,6 @@ if __FILE__ == $PROGRAM_NAME
 
       output = JABA.run do |j|
         j.src_root = @src_root
-        j.build_root = @build_root
         j.global_attrs_from_cmdline = @globals
         j.profile = @profile
         j.verbose = @verbose

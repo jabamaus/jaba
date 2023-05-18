@@ -21,14 +21,14 @@ module JABA
       @log_msgs = JABA.running_tests? ? nil : [] # Disable logging when running tests
       @input_block = block
       @input = Input.new
-      @input.instance_variable_set(:@build_root, nil)
       @input.instance_variable_set(:@src_root, nil)
       @input.instance_variable_set(:@definitions, nil)
       @input.instance_variable_set(:@global_attrs_from_cmdline, {})
       @input.instance_variable_set(:@want_exceptions, false)
       @output = { warnings: @warnings, error: nil }
       @invoking_dir = Dir.getwd.freeze
-      @src_root = @build_root = @temp_dir = nil
+      @src_root = nil
+      @buildsystem_root = nil
       @file_manager = FileManager.new
       @jdl_file_lookup = {}
       @node_defs = []
@@ -42,8 +42,7 @@ module JABA
     def output = @output
     def invoking_dir = @invoking_dir
     def src_root = @src_root
-    def build_root = @build_root
-    def temp_dir = @temp_dir
+    def buildsystem_root = @buildsystem_root
     def file_manager = @file_manager
     def root_node = @root_node
     def begin_jdl = @executing_jdl += 1
@@ -69,12 +68,10 @@ module JABA
 
       file_manager.include_untracked # Include all generated files for the purpose of reporting back to the user
 
-      # Make files that will be reported back to the user relative to build_root
-      #
-      generated = file_manager.generated.map { |f| f.relative_path_from(build_root) }
-      added = file_manager.added.map { |f| f.relative_path_from(build_root) }.sort_no_case!
-      modified = file_manager.modified.map { |f| f.relative_path_from(build_root) }.sort_no_case!
-      unchanged = file_manager.unchanged.map { |f| f.relative_path_from(build_root) }.sort_no_case!
+      generated = file_manager.generated.map { |f| f.relative_path_from(src_root) }
+      added = file_manager.added.map { |f| f.relative_path_from(src_root) }.sort_no_case!
+      modified = file_manager.modified.map { |f| f.relative_path_from(src_root) }.sort_no_case!
+      unchanged = file_manager.unchanged.map { |f| f.relative_path_from(src_root) }.sort_no_case!
 
       summary = "Generated #{generated.size} files, #{added.size} added, #{modified.size} modified, #{unchanged.size} unchanged in #{duration}"
       summary << "\n"
@@ -113,7 +110,7 @@ module JABA
           @@core_api_builder
         end
 
-      init_root_paths
+      init_src_root
 
       tld = NodeDefData.new(@jdl.top_level_node_def, "root", nil, nil, nil)
       create_node(tld, parent: nil) do |n|
@@ -128,6 +125,8 @@ module JABA
           process_load_path(src_root, fail_if_empty: true)
         end
       end
+
+      @buildsystem_root = @root_node[:buildsystem_root]
 
       @node_defs.each do |nd|
         process_node_def(nd)
@@ -145,18 +144,7 @@ module JABA
       end
     end
 
-    def init_root_paths
-      # Initialise build_root from command line or if not present to $(cwd)/buildsystem, and ensure it exists
-      @build_root = if input.build_root.nil?
-          "#{invoking_dir}/buildsystem"
-        else
-          input.build_root.to_absolute(base: invoking_dir, clean: true)
-        end
-      build_root.freeze
-
-      @temp_dir = "#{build_root}/.jaba"
-      FileUtils.makedirs(temp_dir) if !File.exist?(temp_dir)
-
+    def init_src_root
       if (input.definitions.nil? && input.src_root.nil?) || (!input.definitions.nil? && !input.src_root.nil?)
         JABA.error("either src_root or definitions block must be provided but not both")
       end
@@ -173,8 +161,6 @@ module JABA
       end
 
       log "src_root=#{src_root}"
-      log "build_root=#{build_root}"
-      log "temp_dir=#{temp_dir}"
     end
 
     def set_top_level_attrs_from_cmdline
@@ -418,12 +404,13 @@ module JABA
     end
 
     def term_log
-      return if !@log_msgs || temp_dir.nil?
-      log_fn = "#{temp_dir}/jaba.log"
+      return if !@log_msgs
+      log_dir = !buildsystem_root.nil? ? buildsystem_root : invoking_dir
+      log_fn = "#{log_dir}/jaba.log"
       if File.exist?(log_fn)
         File.delete(log_fn)
       else
-        FileUtils.makedirs(log_fn.parent_path)
+        FileUtils.makedirs(log_dir)
       end
       IO.write(log_fn, @log_msgs.join("\n"))
     end
@@ -538,7 +525,7 @@ module JABA
       RubyProf.start
       yield
       result = RubyProf.stop
-      file = "#{temp_dir}/jaba.profile"
+      file = "#{invoking_dir}/jaba.profile"
       str = String.new
       puts "Write profiling results to #{file}..."
       [RubyProf::FlatPrinter, RubyProf::GraphPrinter].each do |p|

@@ -7,19 +7,12 @@ def iterate_examples
 end
 
 if __FILE__ == $PROGRAM_NAME
-  iterate_examples do |dir|
-    Dir.chdir(dir) do
-      puts "Running jaba in #{dir}..."
-      cmdline = 'jaba -D target_host vs2022'
-      case dir
-      when /parameterisable/
-        cmdline << " -D cpp_default_lib_type lib"# -D buildsystem_root buildsystem_dynamic"
-      end
-      if !system(cmdline)
-        puts "Jaba FAILED"
-      end
+  iterate_examples do |dir, full_dir|
+    cmdline = "jaba -S #{full_dir}"
+    puts cmdline
+    if !system(cmdline)
+      puts "Jaba FAILED"
     end
   end
-
   puts "Done!"
 end

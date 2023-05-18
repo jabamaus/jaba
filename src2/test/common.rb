@@ -10,16 +10,12 @@ module JabaTestMethods
   def jaba(
     want_exceptions: true,
     src_root: nil,
-    build_root: nil,
     global_attrs_from_cmdline: nil,
     &block
   )
     if (src_root && block) || (!src_root && !block)
       raise "src_root or block must be provided but not both"
     end
-
-    td = temp_dir(create: false)
-    build_root = build_root || td
 
     JABA.run do |c|
       c.want_exceptions = want_exceptions
@@ -28,7 +24,6 @@ module JabaTestMethods
       else
         c.definitions(&block)
       end
-      c.build_root = build_root
       c.global_attrs_from_cmdline = global_attrs_from_cmdline
     end
   end
