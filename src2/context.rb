@@ -33,7 +33,7 @@ module JABA
       @jdl_file_lookup = {}
       @node_defs = []
       @shared_lookup = {}
-      @executing_jdl = false
+      @executing_jdl = 0
       @attr_def_block_stack = []
       @projects = []
     end
@@ -45,7 +45,10 @@ module JABA
     def build_root = @build_root
     def temp_dir = @temp_dir
     def file_manager = @file_manager
-    def top_level_node = @top_level_node
+    def root_node = @root_node
+    def begin_jdl = @executing_jdl += 1
+    def end_jdl = @executing_jdl -= 1
+    def executing_jdl? = @executing_jdl > 0
 
     def execute
       begin
@@ -124,17 +127,15 @@ module JABA
           "#{input.definitions.source_location[0]}:#{input.definitions.source_location[1]}"
         end
 
-      tld = NodeDefData.new(@jdl.top_level_node_def, "top_level", src_loc, nil, nil)
+      tld = NodeDefData.new(@jdl.top_level_node_def, "root", src_loc, nil, nil)
       create_node(tld, parent: nil) do |n|
         n.add_attrs(@jdl.top_level_node_def.attr_defs)
-        @top_level_node = n
+        @root_node = n
         @output[:root] = n
-        @top_level_api_obj = @jdl.top_level_api_class.new(n)
         set_top_level_attrs_from_cmdline
-        @executing_jdl = true
         # Definitions can be provided in a block form or source form but not both
         if input.definitions
-          execute_jdl(&input.definitions)
+          @root_node.eval_jdl(&input.definitions)
         else
           process_load_path(src_root, fail_if_empty: true)
         end
@@ -144,9 +145,7 @@ module JABA
         process_node_def(nd)
       end
 
-      @executing_jdl = false
-
-      @top_level_node.visit do |n|
+      @root_node.visit do |n|
         n.attributes.each do |a|
           a.process_flags
         end
@@ -194,7 +193,7 @@ module JABA
       input.global_attrs_from_cmdline&.each do |name, values|
         values = Array(values)
 
-        attr = @top_level_node.get_attr(name.to_s, fail_if_not_found: false)
+        attr = @root_node.get_attr(name.to_s, fail_if_not_found: false)
         if attr.nil?
           JABA.error("'#{name}' top level attribute not defined", want_backtrace: false)
         end
@@ -271,7 +270,8 @@ module JABA
 
       @jdl_file_lookup[f] = nil
 
-      execute_jdl(file: f)
+      str = @file_manager.read(f)
+      @root_node.eval_jdl_str(str, f)
     end
 
     def process_include(path)
@@ -293,26 +293,6 @@ module JABA
       end
     end
 
-    def executing_jdl? = @executing_jdl
-
-    def execute_jdl(*args, file: nil, str: nil, &block)
-      begin
-        if str
-          @top_level_api_obj.instance_eval(str, file)
-        elsif file
-          log "Executing #{file}"
-          @top_level_api_obj.instance_eval(file_manager.read(file), file)
-        end
-        if block_given?
-          @top_level_api_obj.instance_exec(*args, &block)
-        end
-      rescue ScriptError => e # script errors don't have a backtrace
-        JABA.error(e.message, type: :script_error)
-      rescue NameError => e
-        JABA.error(e.message, line: e.backtrace[0])
-      end
-    end
-
     NodeDefData = Data.define(:node_def, :id, :src_loc, :kwargs, :block)
 
     # Nodes are registered in the first pass and then subsequently processed. They
@@ -327,7 +307,7 @@ module JABA
     end
 
     def process_node_def(nd)
-      parent = @top_level_node
+      parent = @root_node
       if !nd.node_def.option_attr_defs.empty? || !@jdl.common_attr_node_def.option_attr_defs.empty?
         parent = create_node(nd, parent: parent, eval_jdl: false) do |node|
           node.add_attrs(@jdl.common_attr_node_def.option_attr_defs)

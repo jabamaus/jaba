@@ -42,11 +42,22 @@ module JABA
 
     def node_def = @node_def
     def api_obj = @api_obj
-    def eval_jdl(...) = api_obj.instance_exec(...)
+      
+    def eval_jdl(...)
+      do_jdl do
+        api_obj.instance_exec(...)
+      end
+    end
+
+    def eval_jdl_str(str, file)
+      do_jdl do
+        api_obj.instance_eval(str, file)
+      end
+    end
 
     # Compound attrs don't have ids
     def compound_attr? = @id.nil?
-    def top_level_node? = @parent.nil?
+    def root_node? = @parent.nil?
 
     def post_create
       @attributes.each do |a|
@@ -201,7 +212,7 @@ module JABA
     end
 
     def jdl_include(spec, **kwargs)
-      if top_level_node?
+      if root_node?
         JABA.context.process_include(spec)
       else
         block = JABA.context.lookup_shared(spec)
@@ -210,6 +221,17 @@ module JABA
     end
 
     private
+
+    def do_jdl
+      JABA.context.begin_jdl
+      yield
+    rescue ScriptError => e # script errors don't have a backtrace
+      JABA.error(e.message, type: :script_error)
+    rescue NameError => e
+      JABA.error(e.message, line: e.backtrace[0])
+    ensure
+      JABA.context.end_jdl
+    end
 
     def add_attr(attr_def)
       a = case attr_def.variant

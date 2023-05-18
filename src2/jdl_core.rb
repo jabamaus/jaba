@@ -105,7 +105,6 @@ module JABA
     def common_attr_node_def = @common_attr_node_def
     def global_methods_node_def = @global_methods_node_def
     def top_level_node_def = @top_level_node_def
-    def top_level_api_class = @top_level_api_class
 
     def set_attr_type(name, &block)
       name = validate_name(name)
