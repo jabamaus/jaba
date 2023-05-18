@@ -12,7 +12,6 @@ module JABA
     def describe = "'#{attr_def.name}' array attribute"
 
     def value
-      record_last_call_location
       values = if set?
           @elems.map { |e| e.value }
         elsif attr_def.default_is_block?
@@ -43,7 +42,6 @@ module JABA
             exclude: nil,
             __force_set_default: false,
             **kwargs, &block)
-      record_last_call_location
 
       # It is possible for values to be nil, which happens if no args are passed. This can happen if the user
       # wants to remove something from the array
@@ -116,6 +114,7 @@ module JABA
 
     def make_elem(val, *args, add: true, **kwargs)
       e = AttributeElement.new(@attr_def, @node)
+      e.set_last_call_location(last_call_location)
       e.set(val, *args, **kwargs)
       if add
         @elems << e

@@ -121,19 +121,21 @@ module JABA
     end
 
     # This is the only place that attrs values can be set or retrieved from user definitions.
-    def jdl_process_attr(name, *args, **kwargs, &block)
+    def jdl_process_attr(name, *args, __call_loc:, **kwargs, &block)
       is_get = (args.empty? && kwargs.empty? && !block_given?)
       if is_get
         return nil if ignore_attr_get?(name)
         a = search_attr(name)
+        a.set_last_call_location(__call_loc)
         return a.value
       else
         return nil if ignore_attr_set?(name)
         a = get_attr(name, fail_if_not_found: false)
         if a
           if @read_only
-            JABA.error("#{a.describe} is read only in this scope", line: $last_call_location)
+            JABA.error("#{a.describe} is read only in this scope", line: __call_loc)
           end
+          a.set_last_call_location(__call_loc)
           a.set(*args, **kwargs, &block)
         else
           # if attr not found on this node search for it in parents. If found it is therefore
@@ -142,9 +144,10 @@ module JABA
           if a
             # Compound attributes are allowed to set 'sibling' attributes which are in its parent node
             if compound_attr? && a.node == @parent
+              a.set_last_call_location(__call_loc)
               a.set(*args, **kwargs, &block)
             else
-              JABA.error("#{a.describe} is read only in this scope", line: $last_call_location)
+              JABA.error("#{a.describe} is read only in this scope", line: __call_loc)
             end
           else
             attr_not_found_error(name)

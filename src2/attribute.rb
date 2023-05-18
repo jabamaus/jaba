@@ -16,6 +16,8 @@ module JABA
     def required? = @attr_def.has_flag?(:required)
     def read_only? = attr_def.has_flag?(:read_only)
     def src_loc = @last_call_location
+    def last_call_location = @last_call_location
+    def set_last_call_location(loc) = @last_call_location = loc
     def attr_error(msg, errobj: self) = JABA.error(msg, errobj: errobj)
     def process_flags; end # override as necessary
 
@@ -44,14 +46,6 @@ module JABA
       compound
     end
 
-    def record_last_call_location
-      @last_call_location = if JABA.context.executing_jdl?
-          $last_call_location
-        else
-          calling_location(1)
-        end
-    end
-
     def rescue_on_validate
       begin
         yield
@@ -73,7 +67,6 @@ module JABA
     def describe = "'#{@attr_def.name}' attribute element"
 
     def value
-      record_last_call_location
       if attr_def.compound? && JABA.context.executing_jdl?
         @value.api_obj
       else
@@ -90,7 +83,6 @@ module JABA
             __validate: true,
             __force: false,
             **kwargs, &block)
-      record_last_call_location
       attr_error("#{describe} is read only") if read_only? && !__force
 
       new_value = if block_given?
@@ -167,7 +159,6 @@ module JABA
     def describe = "'#{@attr_def.name}' attribute"
 
     def value
-      record_last_call_location
       if !set?
         if attr_def.compound?
           @value = make_compound_attr

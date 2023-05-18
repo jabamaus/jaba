@@ -19,7 +19,6 @@ module JABA
     # Returns a read only hash of key->attribute values. Expensive because it must map attributes to their values.
     #
     def value
-      record_last_call_location
       hash = if set?
           @hash.transform_values { |e| e.value }
         elsif attr_def.default_is_block?
@@ -42,8 +41,6 @@ module JABA
             __no_keyval: false,
             __force_set_default: false,
             **kwargs, &block)
-      record_last_call_location
-
       key = val = nil
       if !__no_keyval
         if args.empty?
@@ -137,6 +134,7 @@ module JABA
 
     def insert_key(key, val, *args, __validate: true, **kwargs)
       attr = AttributeElement.new(@attr_def, @node)
+      attr.set_last_call_location(last_call_location)
 
       if __validate && attr_def.on_validate_key
         rescue_on_validate do
