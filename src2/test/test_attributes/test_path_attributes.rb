@@ -40,6 +40,7 @@ jtest "top level paths are made absolute based on basedir spec" do
   jaba do
     f1 "a"
     f1.must_equal "#{dir}/a"
+    f2.must_equal "" # f2's basedir has no been set yet so should be empty
     d1 "b"
     d3 "c"
     d2.must_equal "#{dir}/c" # d2 based on d3

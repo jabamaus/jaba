@@ -193,7 +193,7 @@ module JABA
     # TOOO: need to think carefully about how path specification works with shared defs
     # and how to force paths to be specified relative to jaba file.
     def map_value(value, attr)
-      if value.absolute_path?
+      if value.absolute_path? || value.empty?
         value
       else
         ad = attr.attr_def
