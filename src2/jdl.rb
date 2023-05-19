@@ -45,6 +45,10 @@ JABA.define_api do
     title "String attribute type"
   end
 
+  attr_type :to_s do
+    title "to_s attribute type"
+  end
+
   attr_type :uuid do
     title "UUID attribute type"
   end
@@ -340,5 +344,39 @@ JABA.define_api do
     items [:app, :console, :lib, :dll]
     flags :per_config
     default :app
+  end
+
+  attr_hash "target/vcglobal", key_type: :string, type: :to_s do
+    title 'Address Globals property group in a vcxproj directly'
+    value_option :condition
+    flags :per_target, :exportable
+  end
+
+  attr_hash :vcfprop, key_type: :string, type: :to_s do
+    title 'Add per-configuration per-file property'
+    flags :per_config, :exportable
+    validate_key do |key|
+      if key !~ /^[^|]+\|{1}[A-Za-z0-9_-]+/
+        fail "Must be of form <src file>|<property> but was '#{key}'"
+      end
+    end
+    example %Q{
+      # Set a property on win32/file.c
+      vcfprop 'win32/file.c|ObjectFileName', '$(IntDir)win32_file.obj'
+
+      # Set same property on all matching files
+      vcfprop 'win32/*|DisableSpecificWarnings', 4096
+    }
+  end
+
+  attr_hash "target/vcprop", key_type: :string, type: :to_s do
+    title 'Address per-configuration sections of a vcxproj directly'
+    value_option :condition
+    flags :per_config, :exportable
+    validate_key do |key|
+      if key !~ /^[A-Za-z0-9_-]+\|{1}[A-Za-z0-9_-]+/
+        fail "Must be of form <group>|<property> but was '#{key}'"
+      end
+    end
   end
 end

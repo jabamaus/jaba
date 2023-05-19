@@ -75,6 +75,22 @@ module JABA
     end
   end
 
+  class AttributeTypeTo_s < AttributeType
+    def initialize(default: "")
+      super(default: default)
+    end
+
+    def validate_value(attr_def, value, &block)
+      if !value.respond_to?(:to_s)
+        type_error(value, "respond to :to_s", &block)
+      end
+    end
+
+    def map_value(value, attr)
+      value.to_s
+    end
+  end
+
   class AttributeTypeBool < AttributeType
     def initialize
       super(default: false)
