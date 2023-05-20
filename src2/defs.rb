@@ -268,7 +268,7 @@ module JABA
       super(:hash)
       @on_validate_key = nil
       @key_type = nil
-      
+
       # Attributes that are stored as values in a hash have their corresponding key stored in their options. This is
       # used when cloning attributes. Store as __key to indicate it is internal and to stop it clashing with any user
       # defined option.

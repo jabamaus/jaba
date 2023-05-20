@@ -200,11 +200,11 @@ module JABA
     def finalise
       # TODO: exercise this code in test
       if !set?
-      #  if attr_def.default_is_block?
-      #    set(JABA.context.execute_attr_def_block(self, attr_def.default))
-      #  elsif attr_def.default_set?
-      #    set(attr_def.default)
-      #  end
+        #  if attr_def.default_is_block?
+        #    set(JABA.context.execute_attr_def_block(self, attr_def.default))
+        #  elsif attr_def.default_set?
+        #    set(attr_def.default)
+        #  end
       end
     end
   end

@@ -50,7 +50,7 @@ module JABA
 
     def node_def = @node_def
     def api_obj = @api_obj
-    
+
     def eval_jdl(*args, called_from_jdl: true, **kwargs, &block)
       # Root node can be set from multiple files so update src_loc to block location.
       # All other nodes have a constant src_loc at time of creation.
@@ -133,7 +133,7 @@ module JABA
     def visit_attr(attr_id, &block)
       get_attr(attr_id).visit_attr(&block)
     end
-    
+
     # This is the only place that attrs values can be set or retrieved from user definitions.
     def jdl_process_attr(name, *args, __call_loc:, **kwargs, &block)
       is_get = (args.empty? && kwargs.empty? && !block_given?)

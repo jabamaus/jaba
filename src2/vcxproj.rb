@@ -65,7 +65,7 @@ module JABA
         @ps.yield_self do |w|
           import_group(w, label: :PropertySheets, label_at_end: false, condition: cfg_condition(cfg_name, platform)) do
             w << '    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" ' \
-                'Condition="exists(\'$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props\')" Label="LocalAppDataPlatform" />'
+            'Condition="exists(\'$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props\')" Label="LocalAppDataPlatform" />'
           end
         end
 
@@ -74,13 +74,13 @@ module JABA
         item_definition_group(@idg, condition: cfg_condition(cfg_name, platform))
 
         cfg.visit_attr(:vcprop) do |attr, val|
-          group, key = attr.option_value(:__key).split('|')
+          group, key = attr.option_value(:__key).split("|")
           condition = attr.option_value(:condition, fail_if_not_found: false)
 
           case group
-          when 'PG1'
+          when "PG1"
             write_keyvalue(@pg1, key, val, condition: condition)
-          when 'PG2'
+          when "PG2"
             write_keyvalue(@pg2, key, val, condition: condition)
           else
             idg = @item_def_groups[group]
@@ -121,7 +121,7 @@ module JABA
       property_group(w, label: :Globals) do
         write_keyvalue_attr(w, @node.get_attr(:vcglobal))
       end
-      
+
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />'
       w.write_raw(@pg1)
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />'
@@ -155,7 +155,6 @@ module JABA
       end
 =end
       import_group(w, label: :ExtensionSettings) do
-
         @extension_settings.each do |es|
           w << "    <Import Project=\"#{es}\" />"
         end

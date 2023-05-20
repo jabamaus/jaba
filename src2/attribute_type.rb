@@ -223,15 +223,15 @@ module JABA
       else
         ad = attr.attr_def
         base = case ad.basedir
-        when Proc
-          JABA.context.execute_attr_def_block(attr, ad.basedir)
-        when :jaba_file
-          attr.node.src_dir
-        when :definition_root
-          attr.node[:root]
-        else
-          ad.definition_error("Unhandled basedir #{ad.basedir}")
-        end
+          when Proc
+            JABA.context.execute_attr_def_block(attr, ad.basedir)
+          when :jaba_file
+            attr.node.src_dir
+          when :definition_root
+            attr.node[:root]
+          else
+            ad.definition_error("Unhandled basedir #{ad.basedir}")
+          end
         "#{base}/#{value}".cleanpath
       end
     end
