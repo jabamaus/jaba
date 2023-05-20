@@ -4,30 +4,30 @@
 JABA.define_api do
   translator :vcxproj_windows do |vcxproj|
     vcglobal :ProjectGuid, guid
-    vcglobal :Keyword, 'Win32Proj'
+    vcglobal :Keyword, "Win32Proj"
     vcglobal :RootNamespace, projname
     #vcglobal :WindowsTargetPlatformVersion, winsdkver
     vcglobal :IgnoreWarnCompileDuplicatedFilename, true
   end
 
   translator :vcxproj_config_windows do |vcxproj, cfg_type|
-  
+
     # First set of property groups
     #
-    vcprop 'PG1|ConfigurationType' do
+    vcprop "PG1|ConfigurationType" do
       case cfg_type
       when :app, :console
-        'Application'
+        "Application"
       when :lib
-        'StaticLibrary'
+        "StaticLibrary"
       when :dll
-        'DynamicLibrary'
+        "DynamicLibrary"
       else
         fail "'#{cfg_type}' unhandled"
       end
     end
 
-    vcprop 'PG1|UseDebugLibraries', debug
+    vcprop "PG1|UseDebugLibraries", debug
 
     vcprop "PG1|CharacterSet" do
       case character_set
@@ -43,12 +43,12 @@ JABA.define_api do
     # Second set of property groups
     #
     if cfg_type != :lib
-      vcprop 'PG2|LinkIncremental' do
+      vcprop "PG2|LinkIncremental" do
         false
       end
     end
 
-    vcprop 'PG2|OutDir' do
+    vcprop "PG2|OutDir" do
       if cfg_type == :lib
         libdir.relative_path_from(vcxproj.projdir, backslashes: true, trailing: true)
       else
@@ -56,27 +56,27 @@ JABA.define_api do
       end
     end
 
-    #vcprop 'PG2|IntDir' do
-    #  objdir.relative_path_from(vcxproj.projdir, backslashes: true, trailing: true)
-    #end
+    vcprop "PG2|IntDir" do
+      objdir.relative_path_from(vcxproj.projdir, backslashes: true, trailing: true)
+    end
 
-    #vcprop 'PG2|TargetName', targetname
-    #vcprop 'PG2|TargetExt', targetext
+    vcprop "PG2|TargetName", targetname
+    vcprop "PG2|TargetExt", targetext
 
     # ClCompile
     #
-    vcprop 'ClCompile|AdditionalIncludeDirectories' do
+    vcprop "ClCompile|AdditionalIncludeDirectories" do
       inc.map do |i|
         i.relative_path_from(vcxproj.projdir, backslashes: true)
-      end.vs_join_paths(inherit: '%(AdditionalIncludeDirectories)')
+      end.vs_join_paths(inherit: "%(AdditionalIncludeDirectories)")
     end
 
     #vcprop 'ClCompile|AdditionalOptions' do
     #  cflags.vs_join(separator: ' ', inherit: '%(AdditionalOptions)')
     #end
 
-    vcprop 'ClCompile|DebugInformationFormat' do
-      'ProgramDatabase'
+    vcprop "ClCompile|DebugInformationFormat" do
+      "ProgramDatabase"
     end
 
     #vcprop 'ClCompile|DisableSpecificWarnings' do
@@ -114,13 +114,13 @@ JABA.define_api do
     #vcprop 'ClCompile|PrecompiledHeader' do
     #  :Use if pch
     #end
-    
+
     #vcprop 'ClCompile|PrecompiledHeaderFile' do
     #  pch.basename if pch
     #end
 
-    vcprop 'ClCompile|PreprocessorDefinitions' do
-      define.vs_join(inherit: '%(PreprocessorDefinitions)')
+    vcprop "ClCompile|PreprocessorDefinitions" do
+      define.vs_join(inherit: "%(PreprocessorDefinitions)")
     end
 
     #vcprop 'ClCompile|RuntimeTypeInfo', true if rtti
@@ -166,7 +166,7 @@ JABA.define_api do
     #vcprop "#{cfg_type == :lib ? :Lib : :Link}|TargetMachine" do
     #  :MachineX64 if x86_64?
     #end
-    
+
     # Resources
     #
     #if vcxproj.has_resources

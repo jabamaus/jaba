@@ -177,9 +177,26 @@ JABA.define_api do
 
   # Top level attributes
 
+  attr "buildsystem", type: :choice do
+    title "Target build system"
+    items [:vs2019, :vs2022]
+    default :vs2022
+  end
+
+  attr "platform", type: :choice do
+    title "Target platform"
+    items [:windows]
+    default :windows
+  end
+
+  attr "arch", type: :choice do
+    title "target architecture"
+    items [:x86, :x86_64]
+    default :x86_64
+  end
+
   attr "artefact_root", type: :dir do
-    title 'Root of build artefacts the build system generates'
-    note 'Specfied as an offset from main build_root'
+    title "Root of build artefacts the build system generates"
     default do
       "#{buildsystem_root}/artefact"
     end
@@ -188,21 +205,10 @@ JABA.define_api do
 
   attr "buildsystem_root", type: :dir do
     title "Root of generated build system"
-    default "buildsystem"
-    basedir :jaba_file
-  end
-
-  attr "bindir", type: :dir do
-    title 'Output directory for executables'
-    basedir do
-      artefact_root
-    end
-    # TODO
     default do
-      #"#{host}/#{arch}/bin"
-      "vs2022/x86_64/bin"
+      "buildsystem/#{buildsystem}"
     end
-    #flags :no_check_exist
+    basedir :jaba_file
   end
 
   # Global attributes. Available in all nodes but not at top level.
@@ -222,22 +228,10 @@ JABA.define_api do
 
   node "target" do
     title "Define a target"
+    note "Split into 'target' level attributes and 'config' level attributes"
   end
 
-  attr "target/config", type: :string do
-    title "Current target config as an id"
-    note "Returns current config being processed. Use to define control flow to set config-specific atttributes"
-    flags :per_config, :read_only
-    # TODO: examples, including regexes
-  end
-
-  attr "target/configname", type: :string do
-    title "Display name of config as seen in IDE"
-    flags :per_config
-    default do
-      config.capitalize_first
-    end
-  end
+  # Target level attributes, all flagged with :per_target
 
   attr_array "target/configs", type: :string do
     title "Build configurations"
@@ -246,46 +240,12 @@ JABA.define_api do
     example "configs [:debug, :release]"
   end
 
-  attr "target/debug", type: :bool do
-    title 'Flags config as a debug config'
-    note 'Defaults to true if config id contains \'debug\''
-    flags :per_config
-    default do
-      config =~ /debug/i ? true : false
-    end
-  end
-
-  attr "target/character_set", type: :choice do
-    title 'Character set'
-    items [
-      :ascii,
-      :mbcs,    # Visual Studio only
-      :unicode
-    ]
-    default :unicode
-    flags :per_config
-    example 'character_set :unicode'
-  end
-
-  attr_array "target/define", type: :string do
-    title "Preprocessor defines"
-    flags :per_config, :exportable
-  end
-
-  attr_array "target/inc", type: :dir do
-    title "Include paths"
-    basedir :definition_root
-    flags :per_target, :no_sort, :exportable
-    example "inc ['mylibrary/include']"
-    example "inc ['mylibrary/include'], :export # Export include path to dependents"
-  end
-
   attr "target/projdir", type: :dir do
     title "Directory in which projects will be generated"
     flags :per_target
     #flags :no_check_exist # May get created during generation # TODO
     basedir do
-      "#{buildsystem_root}/vs2022" # TODO soft code host
+      buildsystem_root
     end
     example %Q{
       cpp :MyApp do
@@ -308,6 +268,94 @@ JABA.define_api do
     title "Optional suffix to be applied to $(projname)"
     note "Has no effect if $(projname) is set explicitly"
     flags :per_target
+  end
+
+  # Config level attributes
+
+  attr "target/config", type: :string do
+    title "Current target config as an id"
+    note "Returns current config being processed. Use to define control flow to set config-specific atttributes"
+    flags :per_config, :read_only
+    # TODO: examples, including regexes
+  end
+
+  attr "target/configname", type: :string do
+    title "Display name of config as seen in IDE"
+    flags :per_config
+    default do
+      config.capitalize_first
+    end
+  end
+
+  attr "target/bindir", type: :dir do
+    title "Output directory for executables"
+    flags :per_config
+    basedir do
+      artefact_root
+    end
+    default do
+      "#{arch}/bin/#{config}"
+    end
+    #flags :no_check_exist
+  end
+
+  attr "target/libdir", type: :dir do
+    title "Output directory for libs"
+    flags :per_config
+    basedir do
+      artefact_root
+    end
+    default do
+      "#{arch}/lib/#{config}"
+    end
+    #flags :no_check_exist
+  end
+
+  attr "target/objdir", type: :dir do
+    title "Output directory for object files"
+    flags :per_config
+    basedir do
+      artefact_root
+    end
+    default do
+      "#{arch}/obj/#{config}/#{projname}"
+    end
+    #flags :no_check_exist
+    note "Defaults to $(arch)/obj/$(config)/$(projname)"
+  end
+
+  attr "target/debug", type: :bool do
+    title "Flags config as a debug config"
+    note 'Defaults to true if config id contains \'debug\''
+    flags :per_config
+    default do
+      config =~ /debug/i ? true : false
+    end
+  end
+
+  attr "target/character_set", type: :choice do
+    title "Character set"
+    items [
+      :ascii,
+      :mbcs,    # Visual Studio only
+      :unicode,
+    ]
+    default :unicode
+    flags :per_config
+    example "character_set :unicode"
+  end
+
+  attr_array "target/define", type: :string do
+    title "Preprocessor defines"
+    flags :per_config, :exportable
+  end
+
+  attr_array "target/inc", type: :dir do
+    title "Include paths"
+    basedir :definition_root
+    flags :per_config, :no_sort, :exportable
+    example "inc ['mylibrary/include']"
+    example "inc ['mylibrary/include'], :export # Export include path to dependents"
   end
 
   attr "target/rule", type: :compound do
@@ -383,6 +431,48 @@ JABA.define_api do
     end
   end
 
+  attr "target/targetname", type: :basename do
+    title "Base name of output file without extension"
+    note "Defaults to $(targetprefix)$(projname)$(targetsuffix)"
+    flags :per_config
+    default do
+      "#{targetprefix}#{projname}#{targetsuffix}"
+    end
+  end
+
+  attr "target/targetprefix", type: :string do
+    title "Prefix to apply to $(targetname)"
+    note "Has no effect if $(targetname) specified"
+    flags :per_config
+  end
+
+  attr "target/targetsuffix", type: :string do
+    title "Suffix to apply to $(targetname)"
+    note "Has no effect if $(targetname) specified"
+    flags :per_config
+  end
+
+  attr "target/targetext", type: :ext do
+    title "Extension to apply to $(targetname)"
+    note "Defaults to standard extension for $(type) of project for target $(platform)"
+    flags :per_config
+    default do
+      case platform
+      when :windows
+        case type
+        when :app, :console
+          ".exe"
+        when :lib
+          ".lib"
+        when :dll
+          ".dll"
+        end
+      else
+        fail "Unhandled platform '#{platform}'"
+      end
+    end
+  end
+
   attr "target/type", type: :choice do
     title "Target type"
     items [:app, :console, :lib, :dll]
@@ -393,8 +483,8 @@ JABA.define_api do
   # VisualC attributes
 
   attr "target/guid", type: :uuid do
-    title 'Globally unique id (GUID)'
-    note 'Seeded by $(projname). Required by Visual Studio project files'
+    title "Globally unique id (GUID)"
+    note "Seeded by $(projname). Required by Visual Studio project files"
     flags :per_target
     default do
       projname
@@ -402,25 +492,25 @@ JABA.define_api do
   end
 
   attr_hash "target/vcglobal", key_type: :string, type: :to_s do
-    title 'Address Globals property group in a vcxproj directly'
+    title "Address Globals property group in a vcxproj directly"
     value_option :condition
     flags :per_target, :exportable
   end
 
   attr_hash "target/vc_extension_settings", key_type: :ext, type: :src do
-    title 'Path to a .props file'
+    title "Path to a .props file"
     flags :per_target
     basedir :definition_root
   end
-  
+
   attr_hash "target/vc_extension_targets", key_type: :ext, type: :src do
-    title 'Path to a .targets file'
+    title "Path to a .targets file"
     flags :per_target
     basedir :definition_root
   end
 
   attr_hash "target/vcfprop", key_type: :string, type: :to_s do
-    title 'Add per-configuration per-file property'
+    title "Add per-configuration per-file property"
     flags :per_config, :exportable
     validate_key do |key|
       if key !~ /^[^|]+\|{1}[A-Za-z0-9_-]+/
@@ -437,7 +527,7 @@ JABA.define_api do
   end
 
   attr_hash "target/vcprop", key_type: :string, type: :to_s do
-    title 'Address per-configuration sections of a vcxproj directly'
+    title "Address per-configuration sections of a vcxproj directly"
     value_option :condition
     flags :per_config, :exportable
     validate_key do |key|
