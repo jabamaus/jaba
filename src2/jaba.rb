@@ -18,6 +18,7 @@ require_relative "attribute_array"
 require_relative "attribute_hash"
 require_relative "context"
 require_relative "vcxproj"
+require_relative "vcxproj_windows"
 
 module JABA
 

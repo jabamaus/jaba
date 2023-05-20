@@ -26,6 +26,10 @@ JABA.define_api do
     note "Validates that value is a string path representing a directory"
   end
 
+  attr_type :ext do
+    title "File extension attribute type"
+  end
+
   attr_type :file do
     title "File attribute type"
     note "Validates that value is a string path representing a file"
@@ -173,13 +177,32 @@ JABA.define_api do
 
   # Top level attributes
 
-  attr "buildsystem_root", type: :dir do
-    title "Root of generated build system"
+  attr "artefact_root", type: :dir do
+    title 'Root of build artefacts the build system generates'
+    note 'Specfied as an offset from main build_root'
     default do
-      # "buildsystem/#{target_host}" # TODO
-      "buildsystem/vs2022"
+      "#{buildsystem_root}/artefact"
     end
     basedir :jaba_file
+  end
+
+  attr "buildsystem_root", type: :dir do
+    title "Root of generated build system"
+    default "buildsystem"
+    basedir :jaba_file
+  end
+
+  attr "bindir", type: :dir do
+    title 'Output directory for executables'
+    basedir do
+      artefact_root
+    end
+    # TODO
+    default do
+      #"#{host}/#{arch}/bin"
+      "vs2022/x86_64/bin"
+    end
+    #flags :no_check_exist
   end
 
   # Global attributes. Available in all nodes but not at top level.
@@ -223,6 +246,27 @@ JABA.define_api do
     example "configs [:debug, :release]"
   end
 
+  attr "target/debug", type: :bool do
+    title 'Flags config as a debug config'
+    note 'Defaults to true if config id contains \'debug\''
+    flags :per_config
+    default do
+      config =~ /debug/i ? true : false
+    end
+  end
+
+  attr "target/character_set", type: :choice do
+    title 'Character set'
+    items [
+      :ascii,
+      :mbcs,    # Visual Studio only
+      :unicode
+    ]
+    default :unicode
+    flags :per_config
+    example 'character_set :unicode'
+  end
+
   attr_array "target/define", type: :string do
     title "Preprocessor defines"
     flags :per_config, :exportable
@@ -241,7 +285,7 @@ JABA.define_api do
     flags :per_target
     #flags :no_check_exist # May get created during generation # TODO
     basedir do
-      buildsystem_root
+      "#{buildsystem_root}/vs2022" # TODO soft code host
     end
     example %Q{
       cpp :MyApp do
@@ -327,7 +371,7 @@ JABA.define_api do
     }
   end
 
-  attr_array "target/src_ext", type: :string do
+  attr_array "target/src_ext", type: :ext do
     title "File extensions used when matching src files"
     note "Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes."
     flags :per_config, :no_sort, :exportable
@@ -346,13 +390,36 @@ JABA.define_api do
     default :app
   end
 
+  # VisualC attributes
+
+  attr "target/guid", type: :uuid do
+    title 'Globally unique id (GUID)'
+    note 'Seeded by $(projname). Required by Visual Studio project files'
+    flags :per_target
+    default do
+      projname
+    end
+  end
+
   attr_hash "target/vcglobal", key_type: :string, type: :to_s do
     title 'Address Globals property group in a vcxproj directly'
     value_option :condition
     flags :per_target, :exportable
   end
 
-  attr_hash :vcfprop, key_type: :string, type: :to_s do
+  attr_hash "target/vc_extension_settings", key_type: :ext, type: :src do
+    title 'Path to a .props file'
+    flags :per_target
+    basedir :definition_root
+  end
+  
+  attr_hash "target/vc_extension_targets", key_type: :ext, type: :src do
+    title 'Path to a .targets file'
+    flags :per_target
+    basedir :definition_root
+  end
+
+  attr_hash "target/vcfprop", key_type: :string, type: :to_s do
     title 'Add per-configuration per-file property'
     flags :per_config, :exportable
     validate_key do |key|
@@ -362,10 +429,10 @@ JABA.define_api do
     end
     example %Q{
       # Set a property on win32/file.c
-      vcfprop 'win32/file.c|ObjectFileName', '$(IntDir)win32_file.obj'
+      vcfprop "win32/file.c|ObjectFileName", "$(IntDir)win32_file.obj"
 
       # Set same property on all matching files
-      vcfprop 'win32/*|DisableSpecificWarnings', 4096
+      vcfprop "win32/*|DisableSpecificWarnings", 4096
     }
   end
 

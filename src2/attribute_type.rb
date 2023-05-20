@@ -156,7 +156,7 @@ module JABA
 
   class AttributeTypeUuid < AttributeTypeString
     def map_value(value, attr)
-      Kernel.generate_uuid(namespace: "AttributeTypeUuid", name: value, braces: true)
+      Kernel.generate_uuid(namespace: "JabaAttributeTypeUUID", name: value, braces: true)
     end
   end
 
@@ -165,6 +165,15 @@ module JABA
       super
       if value.contains_slashes?
         yield "'#{value}' must not contain slashes"
+      end
+    end
+  end
+
+  class AttributeTypeExt < AttributeTypeString
+    def validate_value(attr_def, value)
+      super
+      if !value.start_with?(".")
+        yield "'#{value}' extension must start with '.'"
       end
     end
   end

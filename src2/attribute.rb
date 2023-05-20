@@ -153,6 +153,14 @@ module JABA
         @value <=> other.value
       end
     end
+
+    def visit_attr(&block)
+      if block.arity == 2
+        yield self, value
+      else
+        yield self
+      end
+    end
   end
 
   class AttributeSingle < AttributeElement

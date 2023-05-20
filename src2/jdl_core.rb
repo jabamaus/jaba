@@ -8,6 +8,7 @@ module JABA
     :attr_array,
     :attr_hash,
     :node,
+    :translator,
   )
   CommonAPI = APIBuilder.define_module(:title, :note, :example)
   AttributeTypeDefinitionAPI = APIBuilder.define().include(CommonAPI)
@@ -49,6 +50,7 @@ module JABA
       @building_jdl = false
       @definition_lookup = {}
       @path_to_node_def = {}
+      @translator_lookup = {}
       @base_api_class = Class.new(BasicObject) do
         undef_method :!, :!=, :==, :equal?, :__id__
 
@@ -171,6 +173,16 @@ module JABA
           lookup_node_def(parent_path)
         end
       process_method(node_def, path, name, block)
+    end
+
+    def set_translator(id, &block)
+      @translator_lookup[id] = block
+    end
+
+    def lookup_translator(id, fail_if_not_found: true)
+      t = @translator_lookup[id]
+      JABA.error("'#{id.inspect_unquoted}' translator not found") if t.nil? && fail_if_not_found
+      t
     end
 
     def lookup_definition(klass, name, fail_if_not_found: true, attr_def: nil)

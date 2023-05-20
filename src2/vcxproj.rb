@@ -6,11 +6,25 @@ module JABA
       @node = target_node
     end
 
+    def projdir = @projdir
+
     def process
       @projname = @node[:projname]
       @projdir = @node[:projdir]
       @vcxproj_file = "#{@projdir}/#{@projname}.vcxproj"
       @vcxproj_filters_file = "#{@vcxproj_file}.filters"
+      @per_file_props = {}
+      @extension_settings = []
+      @extension_targets = []
+
+      t = @node.node_def.jdl_builder.lookup_translator(:vcxproj_windows)
+      @node.eval_jdl(self, &t)
+
+      t = @node.node_def.jdl_builder.lookup_translator(:vcxproj_config_windows)
+
+      each_config do |cfg|
+        cfg.eval_jdl(self, cfg[:type], &t)
+      end
     end
 
     def generate
@@ -58,10 +72,10 @@ module JABA
         property_group(@pg1, label: :Configuration, label_at_end: true, condition: cfg_condition(cfg_name, platform))
         property_group(@pg2, condition: cfg_condition(cfg_name, platform))
         item_definition_group(@idg, condition: cfg_condition(cfg_name, platform))
-=begin
+
         cfg.visit_attr(:vcprop) do |attr, val|
-          group, key = attr.get_option_value(:__key).split('|')
-          condition = attr.get_option_value(:condition, fail_if_not_found: false)
+          group, key = attr.option_value(:__key).split('|')
+          condition = attr.option_value(:condition, fail_if_not_found: false)
 
           case group
           when 'PG1'
@@ -71,16 +85,16 @@ module JABA
           else
             idg = @item_def_groups[group]
             if !idg
-              idg = StringWriter.new(capacity: 2 * 1024)
+              idg = StringWriter.new
               @item_def_groups[group] = idg
               idg << "    <#{group}>"
             end
             write_keyvalue(idg, key, val, condition: condition, depth: 3)
           end
         end
-
+=begin
         cfg.visit_attr(:vcfprop) do |attr, val|
-          file_with_prop, prop = attr.get_option_value(:__key).split('|')
+          file_with_prop, prop = attr.option_value(:__key).split('|')
           sfs = get_matching_src_objs(file_with_prop, @src, errobj: attr)
           sfs.each do |sf|
             @per_file_props.push_value(sf, [prop, cfg_name, platform, val])
@@ -141,10 +155,11 @@ module JABA
       end
 =end
       import_group(w, label: :ExtensionSettings) do
-=begin
+
         @extension_settings.each do |es|
           w << "    <Import Project=\"#{es}\" />"
         end
+=begin
         if @masm_required
           w << '  <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />'
         end
