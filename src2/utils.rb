@@ -42,7 +42,7 @@ module JABA
     end
 
     def write_keyvalue(w, key, val, condition: nil, depth: 2)
-      return if val.nil?
+      return if val.empty?
       w << if condition
         "#{"  " * depth}<#{key} Condition=\"#{condition}\">#{val}</#{key}>"
       else

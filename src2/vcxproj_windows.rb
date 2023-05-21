@@ -1,12 +1,13 @@
+# TODO
 #open_instance 'platform|windows' do
 #  cpp_src_ext ['.def', '.rc']
 #end
 JABA.define_api do
   translator :vcxproj_windows do |vcxproj|
-    vcglobal :ProjectGuid, guid
+    vcglobal :ProjectGuid, vcguid
     vcglobal :Keyword, "Win32Proj"
     vcglobal :RootNamespace, projname
-    #vcglobal :WindowsTargetPlatformVersion, winsdkver
+    vcglobal :WindowsTargetPlatformVersion, winsdkver
     vcglobal :IgnoreWarnCompileDuplicatedFilename, true
   end
 
@@ -30,7 +31,7 @@ JABA.define_api do
     vcprop "PG1|UseDebugLibraries", debug
 
     vcprop "PG1|CharacterSet" do
-      case character_set
+      case charset
       when :mbcs
         :MultiByte
       when :unicode
@@ -38,7 +39,7 @@ JABA.define_api do
       end
     end
 
-    #vcprop 'PG1|PlatformToolset', toolset
+    vcprop 'PG1|PlatformToolset', vctoolset
 
     # Second set of property groups
     #
@@ -79,9 +80,9 @@ JABA.define_api do
       "ProgramDatabase"
     end
 
-    #vcprop 'ClCompile|DisableSpecificWarnings' do
-    #  nowarn.vs_join(inherit: '%(DisableSpecificWarnings)')
-    #end
+    vcprop "ClCompile|DisableSpecificWarnings" do
+      vcnowarn.vs_join(inherit: "%(DisableSpecificWarnings)")
+    end
 
     #vcprop 'ClCompile|ExceptionHandling' do
     #  case exceptions
@@ -96,20 +97,20 @@ JABA.define_api do
     #  end
     #end
 
-    #vcprop 'ClCompile|LanguageStandard' do
-    #  case cpp_standard
-    #  when 'C++11'
-    #    :stdcpp11
-    #  when 'C++14'
-    #    :stdcpp14
-    #  when 'C++17'
-    #    :stdcpp17
-    #  when 'C++20'
-    #    :stdcpplatest
-    #  when 'C++23'
-    #    fail "#{cpp_standard} not supported in Visual Studio yet"
-    #  end
-    #end
+    vcprop 'ClCompile|LanguageStandard' do
+      case cpplang
+      when 'C++11'
+        :stdcpp11
+      when 'C++14'
+        :stdcpp14
+      when 'C++17'
+        :stdcpp17
+      when 'C++20'
+        :stdcpplatest
+      when 'C++23'
+        fail "#{cpplang} not supported in Visual Studio yet"
+      end
+    end
 
     #vcprop 'ClCompile|PrecompiledHeader' do
     #  :Use if pch
@@ -127,7 +128,7 @@ JABA.define_api do
 
     #vcprop 'ClCompile|TreatWarningAsError', true if warnerror
 
-    #vcprop 'ClCompile|WarningLevel', "Level#{vcwarnlevel}"
+    vcprop "ClCompile|WarningLevel", "Level#{vcwarnlevel}"
 
     # Link
     #

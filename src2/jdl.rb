@@ -248,7 +248,7 @@ JABA.define_api do
       buildsystem_root
     end
     example %Q{
-      cpp :MyApp do
+      target :MyApp do
         src ['**/*'] # Get all src in $(root), which defaults to directory of definition file
         projdir 'projects' # Place generated projects in 'projects' directory
       end
@@ -285,6 +285,13 @@ JABA.define_api do
     default do
       config.capitalize_first
     end
+  end
+
+  attr "target/cpplang", type: :choice do
+    title "C++ language standard"
+    flags :per_config
+    items ["C++11", "C++14", "C++17", "C++20", "C++23"]
+    default "C++14"
   end
 
   attr "target/bindir", type: :dir do
@@ -333,7 +340,7 @@ JABA.define_api do
     end
   end
 
-  attr "target/character_set", type: :choice do
+  attr "target/charset", type: :choice do
     title "Character set"
     items [
       :ascii,
@@ -342,7 +349,7 @@ JABA.define_api do
     ]
     default :unicode
     flags :per_config
-    example "character_set :unicode"
+    example "charset :unicode"
   end
 
   attr_array "target/define", type: :string do
@@ -480,9 +487,9 @@ JABA.define_api do
     default :app
   end
 
-  # VisualC attributes
+  # VisualC per-target attributes
 
-  attr "target/guid", type: :uuid do
+  attr "target/vcguid", type: :uuid do
     title "Globally unique id (GUID)"
     note "Seeded by $(projname). Required by Visual Studio project files"
     flags :per_target
@@ -507,6 +514,38 @@ JABA.define_api do
     title "Path to a .targets file"
     flags :per_target
     basedir :definition_root
+  end
+
+  attr "target/winsdkver", type: :choice do
+    title "Windows SDK version"
+    flags :per_target
+    items [
+      "10.0.16299.0",  # Included in VS2017 ver.15.4
+      "10.0.17134.0",  # Included in VS2017 ver.15.7
+      "10.0.17763.0",  # Included in VS2017 ver.15.8
+      "10.0.18362.0",  # Included in VS2019
+      nil,
+    ]
+    default nil
+    example "winsdkver '10.0.18362.0'"
+    example "# wrapper for"
+    example "vcglobal :WindowsTargetPlatformVersion, winsdkver"
+  end
+  
+  # VisualC Per-config attributes
+
+  attr "target/vcwarnlevel", type: :choice do
+    title "Visual Studio warning level"
+    flags :per_config
+    items [1, 2, 3, 4]
+    default 3
+  end
+
+  attr_array "target/vcnowarn", type: :int do
+    title "Warnings to disable"
+    flags :per_config
+    flags :exportable
+    example "vcnowarn [4100, 4127, 4244]"
   end
 
   attr_hash "target/vcfprop", key_type: :string, type: :to_s do
@@ -534,6 +573,17 @@ JABA.define_api do
       if key !~ /^[A-Za-z0-9_-]+\|{1}[A-Za-z0-9_-]+/
         fail "Must be of form <group>|<property> but was '#{key}'"
       end
+    end
+  end
+
+  attr "target/vctoolset", type: :choice do
+    title "Toolset version to use"
+    note "Defaults to host's default toolset"
+    flags :per_config
+    items ["v100", "v110", "v120", "v140", "v141", "v142", "v143"]
+    default do
+      "v143" # TODO
+      #host.toolset
     end
   end
 end
