@@ -39,7 +39,7 @@ JABA.define_api do
       end
     end
 
-    vcprop 'PG1|PlatformToolset', vctoolset
+    vcprop "PG1|PlatformToolset", vctoolset
 
     # Second set of property groups
     #
@@ -72,9 +72,9 @@ JABA.define_api do
       end.vs_join_paths(inherit: "%(AdditionalIncludeDirectories)")
     end
 
-    #vcprop 'ClCompile|AdditionalOptions' do
-    #  cflags.vs_join(separator: ' ', inherit: '%(AdditionalOptions)')
-    #end
+    vcprop 'ClCompile|AdditionalOptions' do
+      cflags.vs_join(separator: ' ', inherit: '%(AdditionalOptions)')
+    end
 
     vcprop "ClCompile|DebugInformationFormat" do
       "ProgramDatabase"
@@ -84,30 +84,30 @@ JABA.define_api do
       vcnowarn.vs_join(inherit: "%(DisableSpecificWarnings)")
     end
 
-    #vcprop 'ClCompile|ExceptionHandling' do
-    #  case exceptions
-    #  when true
-    #    nil # Visual Studio enables exception handling by default so don't add to vcxproj
-    #  when false
-    #    false
-    #  when :structured
-    #    :Async
-    #  else
-    #    fail "'#{exceptions}' unhandled"
-    #  end
-    #end
+    vcprop "ClCompile|ExceptionHandling" do
+      case exceptions
+      when true
+        nil # Visual Studio enables exception handling by default so don't add to vcxproj
+      when false
+        false
+      when :structured
+        :Async
+      else
+        fail "'#{exceptions}' unhandled"
+      end
+    end
 
-    vcprop 'ClCompile|LanguageStandard' do
+    vcprop "ClCompile|LanguageStandard" do
       case cpplang
-      when 'C++11'
+      when "C++11"
         :stdcpp11
-      when 'C++14'
+      when "C++14"
         :stdcpp14
-      when 'C++17'
+      when "C++17"
         :stdcpp17
-      when 'C++20'
+      when "C++20"
         :stdcpplatest
-      when 'C++23'
+      when "C++23"
         fail "#{cpplang} not supported in Visual Studio yet"
       end
     end
@@ -124,9 +124,9 @@ JABA.define_api do
       define.vs_join(inherit: "%(PreprocessorDefinitions)")
     end
 
-    #vcprop 'ClCompile|RuntimeTypeInfo', true if rtti
+    vcprop "ClCompile|RuntimeTypeInfo", true if rtti
 
-    #vcprop 'ClCompile|TreatWarningAsError', true if warnerror
+    vcprop "ClCompile|TreatWarningAsError", true if warnerror
 
     vcprop "ClCompile|WarningLevel", "Level#{vcwarnlevel}"
 
@@ -137,32 +137,32 @@ JABA.define_api do
     #  all_libs.vs_join_paths(inherit: '%(AdditionalDependencies)')
     #end
 
-    #vcprop "#{cfg_type == :lib ? :Lib : :Link}|AdditionalOptions" do
-    #  lflags.vs_join(separator: ' ', inherit: '%(AdditionalOptions)')
-    #end
+    vcprop "#{cfg_type == :lib ? :Lib : :Link}|AdditionalOptions" do
+      lflags.vs_join(separator: ' ', inherit: '%(AdditionalOptions)')
+    end
 
-    #if cfg_type != :lib
-    #  vcprop 'Link|SubSystem' do
-    #    case cfg_type
-    #    when :console
-    #      :Console
-    #    when :app, :dll
-    #      :Windows
-    #    else
-    #      fail "'#{type}' unhandled"
-    #    end
-    #  end
-    #  vcprop 'ProjectReference|LinkLibraryDependencies', false
-    #end
+    if cfg_type != :lib
+      vcprop "Link|SubSystem" do
+        case cfg_type
+        when :console
+          :Console
+        when :app, :dll
+          :Windows
+        else
+          fail "'#{type}' unhandled"
+        end
+      end
+      vcprop "ProjectReference|LinkLibraryDependencies", false
+    end
 
-    #if cfg_type == :dll
-    #  il = importlib
-    #  if il
-    #    vcprop 'Link|ImportLibrary' do
-    #      "#{libdir}/#{il}".relative_path_from(vcxproj.projdir, backslashes: true)
-    #    end
-    #  end
-    #end
+    if cfg_type == :dll
+      il = vcimportlib
+      if il
+        vcprop 'Link|ImportLibrary' do
+          il.relative_path_from(vcxproj.projdir, backslashes: true)
+        end
+      end
+    end
 
     #vcprop "#{cfg_type == :lib ? :Lib : :Link}|TargetMachine" do
     #  :MachineX64 if x86_64?

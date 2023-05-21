@@ -352,6 +352,16 @@ JABA.define_api do
     example "charset :unicode"
   end
 
+  attr_array "target/cflags", type: :string do
+    title 'Raw compiler command line switches'
+    flags :per_config, :exportable
+  end
+
+  attr_array "target/lflags", type: :string do
+    title 'Raw linker command line switches'
+    flags :per_config, :exportable
+  end
+
   attr_array "target/define", type: :string do
     title "Preprocessor defines"
     flags :per_config, :exportable
@@ -363,6 +373,21 @@ JABA.define_api do
     flags :per_config, :no_sort, :exportable
     example "inc ['mylibrary/include']"
     example "inc ['mylibrary/include'], :export # Export include path to dependents"
+  end
+
+  attr "target/exceptions", type: :choice do
+    title "Enables C++ exceptions"
+    flags :per_config
+    items [true, false]
+    items [:structured] # Windows only
+    default true
+    example "exceptions false # disable exceptions"
+  end
+
+  attr "target/rtti", type: :bool do
+    title 'Enables runtime type information'
+    flags :per_config
+    example "rtti true"
   end
 
   attr "target/rule", type: :compound do
@@ -487,6 +512,12 @@ JABA.define_api do
     default :app
   end
 
+  attr "target/warnerror", type: :bool do
+    title "Enable warnings as errors"
+    flags :per_config
+    example "warnerror true"
+  end
+
   # VisualC per-target attributes
 
   attr "target/vcguid", type: :uuid do
@@ -533,6 +564,18 @@ JABA.define_api do
   end
   
   # VisualC Per-config attributes
+
+  attr "target/vcimportlib", type: :file do
+    title "Name of import lib for use will dlls"
+    flags :per_config
+    note "Defaults to $(projname)$(targetsuffix).lib"
+    default do
+      "#{projname}#{targetsuffix}.lib"
+    end
+    basedir do
+      libdir
+    end
+  end
 
   attr "target/vcwarnlevel", type: :choice do
     title "Visual Studio warning level"
