@@ -175,12 +175,10 @@ module JABA
           else
             @value
           end
-        elsif attr_def.default_is_block?
+        elsif attr_def.default_set?
           val = JABA.context.execute_attr_def_block(self, attr_def.default)
           # TODO: need to do validation here
           @attr_def.attr_type.map_value(val, self).freeze
-        elsif attr_def.default_set?
-          @attr_def.attr_type.map_value(attr_def.default, self).freeze
         elsif JABA.context.in_attr_def_block?
           outer = JABA.context.outer_attr_def_block_attr
           outer.attr_error("#{outer.describe} default read uninitialised #{describe} - it might need a default value")
@@ -200,10 +198,8 @@ module JABA
     def finalise
       # TODO: exercise this code in test
       if !set?
-        #  if attr_def.default_is_block?
+        #  if attr_def.default_set?
         #    set(JABA.context.execute_attr_def_block(self, attr_def.default))
-        #  elsif attr_def.default_set?
-        #    set(attr_def.default)
         #  end
       end
     end

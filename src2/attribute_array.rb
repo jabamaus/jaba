@@ -14,14 +14,11 @@ module JABA
     def value
       values = if set?
           @elems.map { |e| e.value }
-        elsif attr_def.default_is_block?
+        elsif attr_def.default_set?
           values = JABA.context.execute_attr_def_block(self, attr_def.default)
           validate_default_block_value(values)
           at = attr_def.attr_type
           values.map { |e| at.map_value(e, self) }
-        elsif attr_def.default_set?
-          at = attr_def.attr_type
-          attr_def.default.map { |e| at.map_value(e, self) }
         elsif JABA.context.in_attr_def_block?
           outer = JABA.context.outer_attr_def_block_attr
           outer.attr_error("#{outer.describe} default read uninitialised #{describe} - it might need a default value")
@@ -57,13 +54,9 @@ module JABA
       # If attribute has not been set and there is a default 'pull' the values in
       # and prepend them to the values passed in. Allows default value to make use of other attributes.
       if !set? && attr_def.default_set? && (!attr_def.has_flag?(:overwrite_default) || __force_set_default)
-        if attr_def.default_is_block?
-          default_values = JABA.context.execute_attr_def_block(self, attr_def.default)
-          validate_default_block_value(default_values)
-          values.prepend(*default_values)
-        else
-          values.prepend(*attr_def.default)
-        end
+        default_values = JABA.context.execute_attr_def_block(self, attr_def.default)
+        validate_default_block_value(default_values)
+        values.prepend(*default_values)
       end
 
       dupes = []

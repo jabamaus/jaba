@@ -21,13 +21,11 @@ module JABA
     def value
       hash = if set?
           @hash.transform_values { |e| e.value }
-        elsif attr_def.default_is_block?
+        elsif attr_def.default_set?
           default_hash = JABA.context.execute_attr_def_block(self, attr_def.default)
+          # TODO: validate
           at = attr_def.attr_type
           default_hash.transform_values { |e| at.map_value(e, self) }
-        elsif attr_def.default_set?
-          at = attr_def.attr_type
-          attr_def.default.transform_values { |e| at.map_value(e, self) }
         elsif JABA.context.in_attr_def_block?
           outer = JABA.context.outer_attr_def_block_attr
           outer.attr_error("#{outer.describe} default read uninitialised #{describe} - it might need a default value")
@@ -65,16 +63,11 @@ module JABA
       # value to make use of other attributes.
       #
       if !set? && attr_def.default_set? && (!attr_def.has_flag?(:overwrite_default) || __force_set_default)
-        default_hash = if attr_def.default_is_block?
-            dh = JABA.context.execute_attr_def_block(self, attr_def.default)
-            if !dh.is_a?(Hash)
-              attr_error("#{describe} default requires a hash not a '#{dh.class}'")
-            end
-            dh
-          else
-            attr_def.default
-          end
-        default_hash.each do |k, v|
+        dh = JABA.context.execute_attr_def_block(self, attr_def.default)
+        if !dh.is_a?(Hash)
+          attr_error("#{describe} default requires a hash not a '#{dh.class}'")
+        end
+        dh.each do |k, v|
           insert_key(k, v, *args, **kwargs)
         end
       end

@@ -382,6 +382,7 @@ module JABA
     def outer_attr_def_block_attr = @attr_def_block_stack.first
 
     def execute_attr_def_block(attr, block)
+      return block if !block.proc?
       @attr_def_block_stack.push(attr)
       result = nil
       attr.node.make_read_only do # attr def blocks should only read attributes not set them
