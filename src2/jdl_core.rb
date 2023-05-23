@@ -273,7 +273,7 @@ module JABA
             return @node.send(node_meth, *args, **kwargs, &meth_block)
           end
         end
-        error("No method handler for #{name.inspect_unquoted} defined")
+        JABA.error("No method handler for #{name.inspect_unquoted} defined")
       end
     end
 
