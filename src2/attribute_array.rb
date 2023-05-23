@@ -49,7 +49,9 @@ module JABA
           args.shift
         end
 
-      values = Array(values)
+      values = Array(values).map do |val|
+        apply_pre_post_fix(prefix, postfix, val)
+      end
 
       # If attribute has not been set and there is a default 'pull' the values in
       # and prepend them to the values passed in. Allows default value to make use of other attributes.
@@ -62,8 +64,6 @@ module JABA
       dupes = []
       first_dupe = nil
       values.each do |val|
-        val = apply_pre_post_fix(prefix, postfix, val)
-
         elem = make_elem(val, *args, add: false, **kwargs)
         existing = nil
         if !attr_def.has_flag?(:allow_dupes)
