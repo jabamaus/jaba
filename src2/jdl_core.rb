@@ -17,16 +17,19 @@ module JABA
   NodeDefinitionAPI = APIBuilder.define().include(CommonAPI)
 
   # Additional attribute type-specific properties are added by attribute types
-  AttributeDefinitionAPI = APIBuilder.define(
+  AttributeDefinitionCommonAPI = APIBuilder.define_module(
     :flags,
     :flag_options,
     :value_option,
     :default,
     :validate,
-    :validate_key, # Used by hash attribute
     :on_set,
   ).include(CommonAPI)
 
+  AttributeSingleDefinitionAPI = APIBuilder.define().include(AttributeDefinitionCommonAPI)
+  AttributeArrayDefinitionAPI = APIBuilder.define().include(AttributeDefinitionCommonAPI)
+  AttributeHashDefinitionAPI = APIBuilder.define(:validate_key).include(AttributeDefinitionCommonAPI)
+  
   @@core_api_blocks = []
   @@current_api_blocks = []
 
@@ -145,15 +148,15 @@ module JABA
     end
 
     def set_attr(path, type: :null, &block)
-      process_attr(path, AttributeSingleDefinition, type, block)
+      process_attr(path, AttributeSingleDefinitionAPI, AttributeSingleDefinition, type, block)
     end
 
     def set_attr_array(path, type: :null, &block)
-      process_attr(path, AttributeArrayDefinition, type, block)
+      process_attr(path, AttributeArrayDefinitionAPI, AttributeArrayDefinition, type, block)
     end
 
     def set_attr_hash(path, key_type: :null, type: :null, &block)
-      process_attr(path, AttributeHashDefinition, type, block) do |attr_def|
+      process_attr(path, AttributeHashDefinitionAPI, AttributeHashDefinition, type, block) do |attr_def|
         attr_def.set_key_type(key_type)
       end
     end
@@ -209,12 +212,12 @@ module JABA
 
     private
 
-    def process_attr(path, def_class, type_id, block)
+    def process_attr(path, api_class, def_class, type_id, block)
       path = validate_path(path)
       parent_path, attr_name = split_jdl_path(path)
       node_def = lookup_node_def(parent_path)
 
-      attr_def = make_definition(def_class, AttributeDefinitionAPI, attr_name, block) do |ad|
+      attr_def = make_definition(def_class, api_class, attr_name, block) do |ad|
         attr_type = lookup_definition(:attr_types, type_id, attr_def: ad)
         ad.set_attr_type(attr_type)
         yield ad if block_given?

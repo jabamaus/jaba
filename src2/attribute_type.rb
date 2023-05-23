@@ -115,7 +115,7 @@ module JABA
   end
 
   class AttributeTypeChoice < AttributeType
-    APIBuilder.add_method(AttributeDefinitionAPI, :items)
+    APIBuilder.add_method(AttributeDefinitionCommonAPI, :items)
     AttributeDefinition.class_eval do
       def items = @items
 
@@ -182,7 +182,7 @@ module JABA
     # Register basedir into AttributeDefinition
     ValidBaseDirs = [:definition_root, :jaba_file]
 
-    APIBuilder.add_method(AttributeDefinitionAPI, :basedir)
+    APIBuilder.add_method(AttributeDefinitionCommonAPI, :basedir)
     AttributeDefinition.class_eval do
       def basedir = @basedir
 
