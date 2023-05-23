@@ -151,9 +151,18 @@ module JABA
       end
     end
 
+    # TODO: check flag is valid
     def has_flag?(flag) = @flags.include?(flag)
     def flag_options = @flag_options
-    def set_flag_options(*fo) = @flag_options.concat(fo)
+    def set_flag_options(*fo)
+      fo.each do |o|
+        if @flag_options.include?(o)
+          definition_warn("Duplicate flag option '#{o.inspect_unquoted}' specified")
+        else
+          @flag_options << o
+        end
+      end
+    end
     def has_flag_option?(fo) = @flag_options.include?(fo)
 
     def set_validate(&block) = @on_validate = block
