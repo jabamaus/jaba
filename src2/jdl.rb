@@ -82,6 +82,18 @@ JABA.define_api do
     end
   end
 
+  flag :no_check_exist do
+    title "Do not check that specified paths exist on disk"
+    note "Applies to file, dir and src attribute types."
+    compatible? do |attr_def|
+      case attr_def.type_id
+      when :file, :dir, :src
+      else
+        definition_error("only allowed on file, dir and src attribute types")
+      end
+    end
+  end
+
   flag :no_sort do
     title "Do not sort array attributes"
     note "Allows array attributes to remain in the order they are set in. If not specified arrays are sorted"
@@ -201,6 +213,7 @@ JABA.define_api do
 
   attr "artefact_root", type: :dir do
     title "Root of build artefacts the build system generates"
+    flags :no_check_exist
     default do
       "#{buildsystem_root}/artefact"
     end
@@ -209,6 +222,7 @@ JABA.define_api do
 
   attr "buildsystem_root", type: :dir do
     title "Root of generated build system"
+    flags :no_check_exist
     default do
       "buildsystem/#{buildsystem}"
     end
@@ -246,8 +260,7 @@ JABA.define_api do
 
   attr "target/projdir", type: :dir do
     title "Directory in which projects will be generated"
-    flags :per_target
-    #flags :no_check_exist # May get created during generation # TODO
+    flags :per_target, :no_check_exist
     basedir do
       buildsystem_root
     end
@@ -300,38 +313,35 @@ JABA.define_api do
 
   attr "target/bindir", type: :dir do
     title "Output directory for executables"
-    flags :per_config
+    flags :per_config, :no_check_exist
     basedir do
       artefact_root
     end
     default do
       "#{arch}/bin/#{config}"
     end
-    #flags :no_check_exist
   end
 
   attr "target/libdir", type: :dir do
     title "Output directory for libs"
-    flags :per_config
+    flags :per_config, :no_check_exist
     basedir do
       artefact_root
     end
     default do
       "#{arch}/lib/#{config}"
     end
-    #flags :no_check_exist
   end
 
   attr "target/objdir", type: :dir do
     title "Output directory for object files"
-    flags :per_config
+    flags :per_config, :no_check_exist
     basedir do
       artefact_root
     end
     default do
       "#{arch}/obj/#{config}/#{projname}"
     end
-    #flags :no_check_exist
     note "Defaults to $(arch)/obj/$(config)/$(projname)"
   end
 
@@ -407,12 +417,7 @@ JABA.define_api do
   attr_array "target/src", type: :src do
     title "Source file specification"
     basedir :definition_root
-    flags :per_config
-    #flags :required # Must be specified by user
-    #flags :no_sort # Final source will be sorted so no need to sort this
-    flags :exportable
-    flag_options :force # Specify when explicitly specified src does not exist on disk but still want to add to project
-    value_option :vpath # For organising files in a generated project
+    flags :per_config, :exportable
     # TODO: examples for excludes
     example %Q{
       # Add all src in $(root) whose extension is in $(src_ext)

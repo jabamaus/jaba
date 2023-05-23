@@ -1,4 +1,5 @@
 # TODO: test case sensitivity
+# TODO: only array supports wildcards
 
 jtest "warns if src not specified cleanly" do
   make_file("a/b.cpp")
@@ -6,7 +7,7 @@ jtest "warns if src not specified cleanly" do
     attr :src, type: :src
   end
   op = jaba(want_exceptions: false) do
-    src "a\\b.cpp" # 21957B5D
+    src "a\\b.cpp", :force # 21957B5D
   end
   op[:error].must_be_nil
   w = op[:warnings]
@@ -16,46 +17,56 @@ end
 
 jtest "can be specified explicitly even if extension is not in src_ext" do
   make_file("a.cpp", "b.z", "c.z")
-  dir = __dir__
-  jaba do
-    target :a do
-      configs [:debug, :release]
-      src ["a.cpp", "b.z"]
-      src.must_equal ["#{dir}/a.cpp", "#{dir}/b.z"], skip_calls: 1
-    end
+  jdl do
+    attr_array :src, type: :src
   end
+  str = %q{
+    src ["a.cpp", "b.z"]
+    src.size.must_equal 2
+    src[0].check(absolute_path: "#{__dir__}/a.cpp", extname: ".cpp")
+    src[1].check(absolute_path: "#{__dir__}/b.z", extname: ".z")
+  }
+  make_file("test1.jaba", content: str)
+  op = jaba(src_root: "#{temp_dir}/test1.jaba").check(warnings: [], error: nil)
+  op[:root][:src][0].absolute_path.must_equal "#{temp_dir}/a.cpp"
+  op[:root][:src][1].absolute_path.must_equal "#{temp_dir}/b.z"
+
   # Glob match can work without extension being in src_ext as long as the extension is specified
+  str = %q{
+    src ['*.z']
+    src.size.must_equal 2
+    src[0].check(absolute_path: "#{__dir__}/b.z", extname: ".z")
+    src[1].check(absolute_path: "#{__dir__}/c.z", extname: ".z")
+  }
+  make_file("test2.jaba", content: str)
+  op = jaba(src_root: "#{temp_dir}/test2.jaba").check(warnings: [], error: nil)
+  op[:root][:src][0].absolute_path.must_equal "#{temp_dir}/b.z"
+  op[:root][:src][1].absolute_path.must_equal "#{temp_dir}/c.z"
+end
+
+jtest "fails if explicitly specified files do not exist unless forced" do
+  jdl do
+    attr_array :src, type: :src
+  end
+  dir = __dir__
+  op = jaba do
+    src ['a.cpp'], :force
+    JTest.assert_jaba_error "Error at #{JTest.src_loc('5CC0FC29')}: '#{dir}/b.cpp' does not exist on disk - use :force to add anyway." do
+      src ['b.cpp'] # 5CC0FC29
+    end
+  end.check(warnings: [])
+  op[:root][:src][0].absolute_path.must_equal("#{__dir__}/a.cpp")
+  
   #proj = jaba(cpp_app: true, dry_run: true) do
   #  cpp :app do
   #    project do
-  #      src ['*.z']
+  #      src ['main.cpp'], :force
   #    end
   #  end
   #end
-  # proj[:src].must_equal ["#{temp_dir}/b.z", "#{temp_dir}/c.z"]
+  #proj[:src].must_equal ["#{temp_dir}/main.cpp"]
 end
 =begin
-jtest 'fails if explicitly specified files do not exist unless forced' do
-  assert_jaba_error "Error at #{src_loc('5CC0FC29')}: '#{temp_dir}/a.cpp' does not exist on disk. Use :force to add anyway." do
-    jaba(cpp_app: true, dry_run: true) do
-      cpp :app do
-        project do
-          src ['a.cpp'] # 5CC0FC29
-          src ['c.cpp'], :force
-        end
-      end
-    end
-  end
-  proj = jaba(cpp_app: true, dry_run: true) do
-    cpp :app do
-      project do
-        src ['main.cpp'], :force
-      end
-    end
-  end
-  proj[:src].must_equal ["#{temp_dir}/main.cpp"]
-end
-
 jtest 'disallows wildcards when force adding src' do
   make_file('a/a.cpp')
   assert_jaba_error "Error at #{src_loc('0042DF50')}: Wildcards are not allowed when force adding src - only explicitly specified source files." do

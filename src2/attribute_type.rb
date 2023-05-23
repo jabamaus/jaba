@@ -13,6 +13,7 @@ module JABA
     def value_from_cmdline(str, attr_def) = str # override as necessary
     def validate_value(attr_def, value); end    # override as necessary
     def map_value(value, attr) = value          # override as necessary
+    def map_value_array(value, attr_array, **kwargs) = value    # override as necessary
 
     def post_create
       super
@@ -198,6 +199,7 @@ module JABA
     end
 
     def init_attr_def(attr_def)
+      attr_def.set_flag_options(:force)
       attr_def.instance_variable_set(:@basedir, nil)
     end
 
@@ -217,23 +219,31 @@ module JABA
 
     # TOOO: need to think carefully about how path specification works with shared defs
     # and how to force paths to be specified relative to jaba file.
-    def map_value(value, attr)
-      if value.absolute_path? || value.empty?
-        value
-      else
-        ad = attr.attr_def
-        base = case ad.basedir
-          when Proc
-            JABA.context.execute_attr_def_block(attr, ad.basedir)
-          when :jaba_file
-            attr.node.src_dir
-          when :definition_root
-            attr.node[:root]
-          else
-            ad.definition_error("Unhandled basedir #{ad.basedir}")
-          end
-        "#{base}/#{value}".cleanpath
+    def map_value(path, attr)
+      return path if path.empty?
+      abs_path = make_path_absolute(path, attr)
+      if !JABA.context.file_manager.exist?(abs_path) &&
+         !attr.attr_def.has_flag?(:no_check_exist) &&
+         !attr.has_flag_option?(:force)
+        JABA.error("'#{abs_path.inspect_unquoted}' does not exist on disk - use :force to add anyway.", line: $last_call_location)
       end
+      abs_path
+    end
+
+    def make_path_absolute(path, attr)
+      return path if path.absolute_path?
+      ad = attr.attr_def
+      base = case ad.basedir
+        when Proc
+          JABA.context.execute_attr_def_block(attr, ad.basedir)
+        when :jaba_file
+          attr.node.src_dir
+        when :definition_root
+          attr.node[:root]
+        else
+          ad.definition_error("Unhandled basedir #{ad.basedir}")
+        end
+      "#{base}/#{path}".cleanpath
     end
   end
 
@@ -245,7 +255,56 @@ module JABA
     end
   end
 
-  class AttributeTypeSrc < AttributePathBase; end
+  SrcFileInfo = Data.define(
+    :absolute_path,
+    :projdir_rel,
+    :vpath,
+    :file_type,
+    :extname
+  )
+  SrcFileInfo.define_method :<=> do |other|
+    absolute_path <=> other.absolute_path
+  end
+
+  class AttributeTypeSrc < AttributePathBase
+    def init_attr_def(attr_def)
+      super
+      attr_def.set_value_option(:vpath)
+    end
+
+    def map_value(value, attr)
+      abs_path = super
+      SrcFileInfo.new(abs_path, nil, nil, nil, abs_path.extname)
+    end
+
+    def map_value_array(path, attr_array)
+      abs_path = make_path_absolute(path, attr_array)
+      fm = JABA.context.file_manager
+      is_dir = fm.directory?(abs_path)
+      is_wc = abs_path.wildcard?
+      return abs_path if !is_wc && !is_dir
+ 
+      src_ext = [".cpp", ".h"] # TODO
+      
+      files = if is_wc
+        extname = abs_path.extname
+        src_ext << extname if !extname.empty? # ensure explicitly specified extensions are included
+        fm.glob_files(abs_path)
+      elsif is_dir
+        if !fm.exist?(abs_path)
+          attr_array.attr_error("'#{abs_path}' does not exist on disk")
+        end
+        fm.glob_files("#{abs_path}/**/*")
+      end
+
+      if files.empty?
+        JABA.warn("'#{abs_path}' did not match any files ", line: attr_array.last_call_location)
+        return files
+      end
+      files = files.select{|f| src_ext.include?(f.extname)}
+      files
+    end
+  end
 
   class AttributeTypeCompound < AttributeType
     def init_attr_def(attr_def)

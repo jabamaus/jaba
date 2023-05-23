@@ -49,8 +49,11 @@ module JABA
           args.shift
         end
 
-      values = Array(values).map do |val|
-        apply_pre_post_fix(prefix, postfix, val)
+      at = attr_def.attr_type
+      
+      values = Array(values).flat_map do |val|
+        val = apply_pre_post_fix(prefix, postfix, val)
+        at.map_value_array(val, self)
       end
 
       # If attribute has not been set and there is a default 'pull' the values in
