@@ -535,13 +535,13 @@ JABA.define_api do
     flags :per_target, :exportable
   end
 
-  attr_hash "target/vc_extension_settings", key_type: :ext, type: :src do
+  attr_hash "target/vc_extension_settings", key_type: :ext, type: :file do
     title "Path to a .props file"
     flags :per_target
     basedir :definition_root
   end
 
-  attr_hash "target/vc_extension_targets", key_type: :ext, type: :src do
+  attr_hash "target/vc_extension_targets", key_type: :ext, type: :file do
     title "Path to a .targets file"
     flags :per_target
     basedir :definition_root
