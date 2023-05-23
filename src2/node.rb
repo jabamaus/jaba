@@ -29,6 +29,7 @@ module JABA
     def id = @id
     def src_loc = @src_loc
     def src_dir = @src_loc.src_loc_info[0].parent_path
+    def jdl___dir__ = src_dir
     def parent = @parent
     def children = @children
     def attributes = @attributes

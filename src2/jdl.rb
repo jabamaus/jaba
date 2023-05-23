@@ -135,6 +135,10 @@ JABA.define_api do
 
   # Global methods
 
+  global_method "__dir__" do
+    title "Returns the directory of the currently executing .jaba file"
+  end
+
   global_method "available" do
     title "Array of attributes/methods available in current scope"
   end
