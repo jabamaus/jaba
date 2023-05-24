@@ -154,6 +154,7 @@ module JABA
     # TODO: check flag is valid
     def has_flag?(flag) = @flags.include?(flag)
     def flag_options = @flag_options
+
     def set_flag_options(*fo)
       fo.each do |o|
         if @flag_options.include?(o)
@@ -163,6 +164,7 @@ module JABA
         end
       end
     end
+
     def has_flag_option?(fo) = @flag_options.include?(fo)
 
     def set_validate(&block) = @on_validate = block

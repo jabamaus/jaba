@@ -50,7 +50,7 @@ module JABA
         end
 
       at = attr_def.attr_type
-      
+
       values = Array(values).flat_map do |val|
         val = apply_pre_post_fix(prefix, postfix, val)
         at.map_value_array(val, self)

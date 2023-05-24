@@ -50,13 +50,13 @@ jtest "fails if explicitly specified files do not exist unless forced" do
   end
   dir = __dir__
   op = jaba do
-    src ['a.cpp'], :force
-    JTest.assert_jaba_error "Error at #{JTest.src_loc('5CC0FC29')}: '#{dir}/b.cpp' does not exist on disk - use :force to add anyway." do
-      src ['b.cpp'] # 5CC0FC29
+    src ["a.cpp"], :force
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("5CC0FC29")}: '#{dir}/b.cpp' does not exist on disk - use :force to add anyway." do
+      src ["b.cpp"] # 5CC0FC29
     end
   end.check(warnings: [])
   op[:root][:src][0].absolute_path.must_equal("#{__dir__}/a.cpp")
-  
+
   #proj = jaba(cpp_app: true, dry_run: true) do
   #  cpp :app do
   #    project do

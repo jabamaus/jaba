@@ -367,12 +367,12 @@ JABA.define_api do
   end
 
   attr_array "target/cflags", type: :string do
-    title 'Raw compiler command line switches'
+    title "Raw compiler command line switches"
     flags :per_config, :exportable
   end
 
   attr_array "target/lflags", type: :string do
-    title 'Raw linker command line switches'
+    title "Raw linker command line switches"
     flags :per_config, :exportable
   end
 
@@ -399,7 +399,7 @@ JABA.define_api do
   end
 
   attr "target/rtti", type: :bool do
-    title 'Enables runtime type information'
+    title "Enables runtime type information"
     flags :per_config
     example "rtti true"
   end
@@ -571,7 +571,7 @@ JABA.define_api do
     example "# wrapper for"
     example "vcglobal :WindowsTargetPlatformVersion, winsdkver"
   end
-  
+
   # VisualC Per-config attributes
 
   attr "target/vcimportlib", type: :file do

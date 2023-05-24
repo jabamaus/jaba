@@ -29,7 +29,7 @@ module JABA
   AttributeSingleDefinitionAPI = APIBuilder.define().include(AttributeDefinitionCommonAPI)
   AttributeArrayDefinitionAPI = APIBuilder.define().include(AttributeDefinitionCommonAPI)
   AttributeHashDefinitionAPI = APIBuilder.define(:validate_key).include(AttributeDefinitionCommonAPI)
-  
+
   @@core_api_blocks = []
   @@current_api_blocks = []
 

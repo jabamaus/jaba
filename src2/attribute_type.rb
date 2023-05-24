@@ -283,25 +283,25 @@ module JABA
       is_dir = fm.directory?(abs_path)
       is_wc = abs_path.wildcard?
       return abs_path if !is_wc && !is_dir
- 
+
       src_ext = [".cpp", ".h"] # TODO
-      
+
       files = if is_wc
-        extname = abs_path.extname
-        src_ext << extname if !extname.empty? # ensure explicitly specified extensions are included
-        fm.glob_files(abs_path)
-      elsif is_dir
-        if !fm.exist?(abs_path)
-          attr_array.attr_error("'#{abs_path}' does not exist on disk")
+          extname = abs_path.extname
+          src_ext << extname if !extname.empty? # ensure explicitly specified extensions are included
+          fm.glob_files(abs_path)
+        elsif is_dir
+          if !fm.exist?(abs_path)
+            attr_array.attr_error("'#{abs_path}' does not exist on disk")
+          end
+          fm.glob_files("#{abs_path}/**/*")
         end
-        fm.glob_files("#{abs_path}/**/*")
-      end
 
       if files.empty?
         JABA.warn("'#{abs_path}' did not match any files ", line: attr_array.last_call_location)
         return files
       end
-      files = files.select{|f| src_ext.include?(f.extname)}
+      files = files.select { |f| src_ext.include?(f.extname) }
       files
     end
   end

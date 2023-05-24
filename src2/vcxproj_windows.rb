@@ -72,8 +72,8 @@ JABA.define_api do
       end.vs_join_paths(inherit: "%(AdditionalIncludeDirectories)")
     end
 
-    vcprop 'ClCompile|AdditionalOptions' do
-      cflags.vs_join(separator: ' ', inherit: '%(AdditionalOptions)')
+    vcprop "ClCompile|AdditionalOptions" do
+      cflags.vs_join(separator: " ", inherit: "%(AdditionalOptions)")
     end
 
     vcprop "ClCompile|DebugInformationFormat" do
@@ -138,7 +138,7 @@ JABA.define_api do
     #end
 
     vcprop "#{cfg_type == :lib ? :Lib : :Link}|AdditionalOptions" do
-      lflags.vs_join(separator: ' ', inherit: '%(AdditionalOptions)')
+      lflags.vs_join(separator: " ", inherit: "%(AdditionalOptions)")
     end
 
     if cfg_type != :lib
@@ -158,7 +158,7 @@ JABA.define_api do
     if cfg_type == :dll
       il = vcimportlib
       if il
-        vcprop 'Link|ImportLibrary' do
+        vcprop "Link|ImportLibrary" do
           il.relative_path_from(vcxproj.projdir, backslashes: true)
         end
       end
