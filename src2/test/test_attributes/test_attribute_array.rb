@@ -214,8 +214,8 @@ jtest "handles duplicates" do
   w = op[:warnings]
   w.size.must_equal 2
   # Previous duplicate location only reported if on different line
-  w[0].must_equal "Warning at #{src_loc("DD827579")}: Stripping duplicates [6, 7, 7] from 'a' array attribute. Flag with :allow_dupes to allow."
-  w[1].must_equal "Warning at #{src_loc("A34DE72A")}: Stripping duplicates [\"aa\", \"ab\", \"ac\"] from 'd' array attribute. See previous at test_attribute_array.rb:#{src_line("3A77A0E4")}. Flag with :allow_dupes to allow."
+  w[0].must_equal "Warning at #{src_loc("DD827579")}: Stripping duplicates [6, 7, 7] from 'a' array attribute - flag with :allow_dupes to allow."
+  w[1].must_equal "Warning at #{src_loc("A34DE72A")}: Stripping duplicates [\"aa\", \"ab\", \"ac\"] from 'd' array attribute. See previous at test_attribute_array.rb:#{src_line("3A77A0E4")} - flag with :allow_dupes to allow."
 end
 
 jtest "handles sorting" do
