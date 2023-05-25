@@ -1,3 +1,14 @@
+=begin
+jtest "fails if no src matched" do
+  assert_jaba_error "Error at #{src_loc("FF78746B")}: 'app|windows' node does not have any source files." do
+    jaba do
+      target :app do # FF78746B
+        src ["**/*.h"]
+      end
+    end
+  end
+end
+=end
 jtest "target" do
   op = jaba do
     target :myapp do

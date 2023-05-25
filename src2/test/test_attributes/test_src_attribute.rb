@@ -22,26 +22,22 @@ jtest "can be specified explicitly even if extension is not in src_ext" do
   end
   str = %q{
     src ["a.cpp", "b.z"]
-    src.size.must_equal 2
-    src[0].check(absolute_path: "#{__dir__}/a.cpp", extname: ".cpp")
-    src[1].check(absolute_path: "#{__dir__}/b.z", extname: ".z")
+    src.must_equal ["#{__dir__}/a.cpp", "#{__dir__}/b.z"]
   }
   make_file("test1.jaba", content: str)
   op = jaba(src_root: "#{temp_dir}/test1.jaba").check(warnings: [], error: nil)
-  op[:root][:src][0].absolute_path.must_equal "#{temp_dir}/a.cpp"
-  op[:root][:src][1].absolute_path.must_equal "#{temp_dir}/b.z"
+  op[:root][:src][0].must_equal "#{temp_dir}/a.cpp"
+  op[:root][:src][1].must_equal "#{temp_dir}/b.z"
 
   # Glob match can work without extension being in src_ext as long as the extension is specified
   str = %q{
     src ['*.z']
-    src.size.must_equal 2
-    src[0].check(absolute_path: "#{__dir__}/b.z", extname: ".z")
-    src[1].check(absolute_path: "#{__dir__}/c.z", extname: ".z")
+    src.must_equal ["#{__dir__}/b.z", "#{__dir__}/c.z"]
   }
   make_file("test2.jaba", content: str)
   op = jaba(src_root: "#{temp_dir}/test2.jaba").check(warnings: [], error: nil)
-  op[:root][:src][0].absolute_path.must_equal "#{temp_dir}/b.z"
-  op[:root][:src][1].absolute_path.must_equal "#{temp_dir}/c.z"
+  op[:root][:src][0].must_equal "#{temp_dir}/b.z"
+  op[:root][:src][1].must_equal "#{temp_dir}/c.z"
 end
 
 jtest "fails if explicitly specified files do not exist unless forced" do
@@ -55,7 +51,7 @@ jtest "fails if explicitly specified files do not exist unless forced" do
       src ["b.cpp"] # 5CC0FC29
     end
   end.check(warnings: [])
-  op[:root][:src][0].absolute_path.must_equal("#{__dir__}/a.cpp")
+  op[:root][:src][0].must_equal("#{__dir__}/a.cpp")
 
   #proj = jaba(cpp_app: true, dry_run: true) do
   #  cpp :app do
@@ -259,34 +255,33 @@ jtest 'supports glob matches' do
     "#{temp_dir}/d/e/f/g.cpp"
   ]
 end
-
-jtest 'strips duplicate src' do
+=end
+jtest "strips duplicate src" do
+  jdl do
+    attr_array :src, type: :src
+  end
   # It strips items that are exactly the same, and warns
-  assert_jaba_warn "Stripping duplicate 'a.cpp' from 'app.src' array attribute" do
-    jaba(cpp_app: true, dry_run: true) do
-      cpp :app do
-        project do
-          src ['a.cpp', 'a.cpp'], :force
-        end
-      end
-    end
+  op = jaba do
+    src ["a.cpp", "a.cpp"], :force # BFE9E793
   end
+  op[:warnings].must_equal ["Warning at #{src_loc("BFE9E793")}: Stripping duplicates [\"#{__dir__}/a.cpp\"] from 'src' array attribute - flag with :allow_dupes to allow."]
+  op[:error].must_be_nil
   # It strips files that match different specs
-  make_file('a/a.cpp', 'a/a.h')
-  proj = jaba(cpp_app: true, dry_run: true) do
-    cpp :app do
-      project do
-        src ['a']
-        src ['**/*.h']
-      end
-    end
-  end
-  proj[:src].must_equal [
-    "#{temp_dir}/a/a.cpp",
-    "#{temp_dir}/a/a.h"
-  ]
+  make_file("a/a.cpp", "a/a.h")
+  #proj = jaba(cpp_app: true, dry_run: true) do
+  #  cpp :app do
+  #    project do
+  #      src ["a"]
+  #      src ["**/*.h"]
+  #    end
+  #  end
+  #end
+  #proj[:src].must_equal [
+  #  "#{temp_dir}/a/a.cpp",
+  #  "#{temp_dir}/a/a.h",
+  #]
 end
-
+=begin
 jtest 'supports excludes' do
   files = ['a.cpp', 'b.cpp', 'c.cpp', 'd.x', 'e.y', 'a/b/e.cpp', 'a/b/h.y', 'b/c/d.cpp']
   make_file(*files)
@@ -311,17 +306,6 @@ jtest 'supports excludes' do
     "#{temp_dir}/e.y"
   ]
 end
-
-jtest 'fails if no src matched' do
-  assert_jaba_error "Error at #{src_loc('FF78746B')}: 'app|windows' node does not have any source files.", trace: nil do
-    jaba(cpp_app: true, dry_run: true) do
-      cpp :app do # FF78746B
-        project do
-          src ['**/*.h']
-        end
-      end
-    end
-  end
-end
 =end
+
 # TODO: test vcfprop with recursive glob matches

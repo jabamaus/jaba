@@ -255,26 +255,10 @@ module JABA
     end
   end
 
-  SrcFileInfo = Data.define(
-    :absolute_path,
-    :projdir_rel,
-    :vpath,
-    :file_type,
-    :extname
-  )
-  SrcFileInfo.define_method :<=> do |other|
-    absolute_path <=> other.absolute_path
-  end
-
   class AttributeTypeSrc < AttributePathBase
     def init_attr_def(attr_def)
       super
       attr_def.set_value_option(:vpath)
-    end
-
-    def map_value(value, attr)
-      abs_path = super
-      SrcFileInfo.new(abs_path, nil, nil, nil, abs_path.extname)
     end
 
     def map_value_array(path, attr_array)
