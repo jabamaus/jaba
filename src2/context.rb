@@ -139,7 +139,6 @@ module JABA
       end
 
       @projects.each do |p|
-        p.process
         p.generate
       end
     end

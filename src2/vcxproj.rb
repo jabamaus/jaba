@@ -1,4 +1,12 @@
 module JABA
+  SrcFileInfo = Data.define(
+    :absolute_path,
+    :projdir_rel,
+    :vpath,
+    :file_type,
+    :extname
+  )
+
   class Vcxproj
     include VSUtilities
 
@@ -8,7 +16,7 @@ module JABA
 
     def projdir = @projdir
 
-    def process
+    def generate
       @projname = @node[:projname]
       @projdir = @node[:projdir]
       @vcxproj_file = "#{@projdir}/#{@projname}.vcxproj"
@@ -16,6 +24,9 @@ module JABA
       @per_file_props = {}
       @extension_settings = []
       @extension_targets = []
+      @src = []
+      @src_set = Set.new
+      @file_type_hash = JABA.context.root_node[:vcfiletype]
 
       t = @node.node_def.jdl_builder.lookup_translator(:vcxproj_windows)
       @node.eval_jdl(self, &t)
@@ -24,10 +35,16 @@ module JABA
 
       each_config do |cfg|
         cfg.eval_jdl(self, cfg[:type], &t)
+        cfg[:src].each do |sf|
+          if @src_set.add?(sf)
+            ext = sf.extname
+            rel = sf.relative_path_from(@projdir, backslashes: true)
+            ft = @file_type_hash[ext]
+            ft = :None if ft.nil?
+            @src << SrcFileInfo.new(sf, rel, nil, ft, ext)
+          end
+        end
       end
-    end
-
-    def generate
       write_vcxproj
       write_vcxproj_filters
     end
@@ -125,8 +142,8 @@ module JABA
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />'
       w.write_raw(@pg1)
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />'
-=begin
-      src_area = file.work_area(capacity: c)
+
+      src_area = file.work_area
       @src.each do |sf|
         ft = sf.file_type
         file_props = @per_file_props[sf]
@@ -141,19 +158,19 @@ module JABA
           src_area << " />"
         end
 
-        es = @attrs.vc_extension_settings[sf.extname]
+        es = @node[:vc_extension_settings][sf.extname]
         if es
           @extension_settings << es.relative_path_from(projdir, backslashes: true)
         end
-        et = @attrs.vc_extension_targets[sf.extname]
+        et = @node[:vc_extension_targets][sf.extname]
         if et
           @extension_targets << et.relative_path_from(projdir, backslashes: true)
         end
-        if ft == :MASM
-          @masm_required = true
-        end
+        #if ft == :MASM
+        #  @masm_required = true
+        #end
       end
-=end
+
       import_group(w, label: :ExtensionSettings) do
         @extension_settings.each do |es|
           w << "    <Import Project=\"#{es}\" />"
@@ -175,7 +192,7 @@ module JABA
       w.write_raw(@idg)
 
       item_group(w) do
-        #w.write_raw(src_area)
+        w.write_raw(src_area)
       end
 =begin
       if !@attrs.deps.empty?

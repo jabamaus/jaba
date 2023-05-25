@@ -229,6 +229,23 @@ JABA.define_api do
     basedir :jaba_file
   end
 
+  attr_hash "vcfiletype", key_type: :ext, type: :string do
+    title 'Visual C++ file types'
+    default({
+      '.h' => :ClInclude,
+      '.inl' => :ClInclude,
+      '.hpp' => :ClInclude,
+      '.cpp' => :ClCompile,
+      '.c' => :ClCompile,
+      '.cxx' => :ClCompile,
+      '.cc' => :ClCompile,
+      '.png' => :Image,
+      '.asm' => :MASM,
+      '.rc' => :ResourceCompile,
+      '.natvis' => :Natvis,
+    })
+  end
+
   # Global attributes. Available in all nodes but not at top level.
 
   attr "*/id", type: :string do
