@@ -68,6 +68,7 @@ module JABA
       super()
       @api_class = nil
       @attr_defs = []
+      @method_defs = []
       @option_attr_defs = []
       @parent_node_def = nil
     end
@@ -75,6 +76,7 @@ module JABA
     def set_api_class(c) = @api_class = c
     def api_class = @api_class
     def attr_defs = @attr_defs
+    def method_defs = @method_defs
     def option_attr_defs = @option_attr_defs
     def set_parent_node_def(nd) = @parent_node_def = nd
     def parent_node_def = @parent_node_def
@@ -84,11 +86,9 @@ module JABA
     def initialize
       super()
       @child_node_defs = []
-      @method_defs = []
     end
 
     def node_defs = @child_node_defs
-    def method_defs = @method_defs
   end
 
   class MethodDefinition < Definition
