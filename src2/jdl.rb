@@ -593,7 +593,7 @@ JABA.define_api do
 
   attr "target/vcimportlib", type: :file do
     title "Name of import lib for use will dlls"
-    flags :per_config
+    flags :per_config, :no_check_exist
     note "Defaults to $(projname)$(targetsuffix).lib"
     default do
       "#{projname}#{targetsuffix}.lib"
