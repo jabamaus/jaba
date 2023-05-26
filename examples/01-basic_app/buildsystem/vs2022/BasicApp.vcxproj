@@ -41,15 +41,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>artefact\x86_64\bin\Debug\</OutDir>
-    <IntDir>artefact\x86_64\obj\Debug\BasicApp\</IntDir>
+    <OutDir>artefact\x86_64\bin\debug\</OutDir>
+    <IntDir>artefact\x86_64\obj\debug\BasicApp\</IntDir>
     <TargetName>BasicApp</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>artefact\x86_64\bin\Release\</OutDir>
-    <IntDir>artefact\x86_64\obj\Release\BasicApp\</IntDir>
+    <OutDir>artefact\x86_64\bin\release\</OutDir>
+    <IntDir>artefact\x86_64\obj\release\BasicApp\</IntDir>
     <TargetName>BasicApp</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
@@ -61,7 +61,6 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
@@ -75,7 +74,6 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>

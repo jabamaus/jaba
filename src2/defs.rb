@@ -12,6 +12,7 @@ module JABA
     def jdl_builder = @jdl_builder
     def src_loc = @src_loc
     def name = @name
+    def to_s = @name
     def describe = "'#{name.inspect_unquoted}'"
 
     def set_title(t) = @title = t
