@@ -147,22 +147,22 @@ module JABA
         return nil if ignore_attr_set?(name)
         a = get_attr(name, fail_if_not_found: false)
         if a
-          if @read_only
-            JABA.error("#{a.describe} is read only in this scope", line: __call_loc)
-          end
           a.set_last_call_location(__call_loc) if JABA.context.executing_jdl?
+          if @read_only
+            a.attr_error("#{a.describe} is read only in this scope")
+          end
           a.set(*args, **kwargs, &block)
         else
           # if attr not found on this node search for it in parents. If found it is therefore
           # readonly. Issue a suitable error.
           a = search_attr(name, skip_self: true, fail_if_not_found: false)
           if a
+            a.set_last_call_location(__call_loc) if JABA.context.executing_jdl?
             # Compound attributes are allowed to set 'sibling' attributes which are in its parent node
             if compound_attr? && a.node == @parent
-              a.set_last_call_location(__call_loc) if JABA.context.executing_jdl?
               a.set(*args, **kwargs, &block)
             else
-              JABA.error("#{a.describe} is read only in this scope", line: __call_loc)
+              a.attr_error("#{a.describe} is read only in this scope")
             end
           else
             attr_not_found_error(name)
