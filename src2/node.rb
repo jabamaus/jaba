@@ -209,16 +209,16 @@ module JABA
       av
     end
 
-    def attr_or_method_not_found_error(name, errline: $last_call_location)
+    def attr_or_method_not_found_error(name)
       av = available
       str = !av.empty? ? "\n#{av.join(", ")}" : " none"
-      JABA.error("'#{name}' attr/method not defined. Available in this scope:#{str}", line: errline)
+      JABA.error("'#{name}' attr/method not defined. Available in this scope:#{str}")
     end
 
-    def attr_not_found_error(name, errline: $last_call_location)
+    def attr_not_found_error(name)
       av = available(attrs_only: true)
       str = !av.empty? ? "\n#{av.join(", ")}" : " none"
-      JABA.error("'#{name}' attribute not defined. Available in this scope:#{str}", line: errline)
+      JABA.error("'#{name}' attribute not defined. Available in this scope:#{str}")
     end
 
     def make_read_only
