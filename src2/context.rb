@@ -287,7 +287,9 @@ module JABA
           node.add_attrs(nd.node_def.option_attr_defs)
           node.get_attr(:id).set(nd.id)
           nd.kwargs.each do |attr_name, val|
-            node.get_attr(attr_name).set(val)
+            attr = node.get_attr(attr_name)
+            attr.set_last_call_location(node.src_loc)
+            attr.set(val)
           end
         end
       end
