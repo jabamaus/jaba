@@ -6,7 +6,6 @@
 - localise error strings into a single file, using macros for variable substitution. As well as being better for standardisation could support multiple languages.
 - Support vcfprop at project level too
 - Review whether '.' is allowed in :basename type. Maybe Introduce and allow_ext option.
-- Introduce :extension type. Use for src_ext
 - Regression tests for generated files.
 - enforce that paths stay within their base dir spec?
 - Implement element deletion for hash attribute
@@ -14,7 +13,6 @@
 - Stats in docs, eg number of files in jaba release, size of zip.
 - make jaba clean clean the generated src, the .vs folder, the 'build' folder and optionally the 'buildsystem' folder.
 - Disallow ruby keywords as attr names, eg 'in' fails
-- Consider making all attributes require a type
 - reorg tests into core folder and cpp folder
 - Stronger spec for value_options. Need to flag as array.
 - add --list-globals option
@@ -22,7 +20,6 @@
 - Categories in solution files.
 - flag to control whether absolute paths allowed in file/dir attrs. Eg build_root_offset is not an offset if absolute path used.
   Is it even a path attr?
-- ability to have build tree out of src but projects in src? config option to base projdir off src_root instead of dest_root?
 - Make defaults work per-file. Introduce global_defaults. Or a scope option to defaults.
 - Automatically pull in dependencies into workspace
 - RUBY LICENSE REQUIREMENTS

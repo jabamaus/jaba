@@ -7,6 +7,18 @@ jtest "defaults to false" do
   end
 end
 
+jtest "supports boolean reader" do
+  jdl do
+    attr :a, type: :bool
+  end
+  jaba do
+    a?.must_be_false # question notation allowed for reading
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("3816FC96")}: 'a?' is a read only accessor and does not accept arguments." do
+      a? true # 3816FC96
+    end
+  end
+end
+
 jtest "requires default to be true or false" do
   jdl do
     JTest.assert_jaba_error "Error at #{JTest.src_loc("2521765F")}: 'invalid' attribute invalid - 'default' invalid - '1' is a integer - expected [true|false]" do

@@ -244,8 +244,16 @@ module JABA
         $last_call_location = ::Kernel.calling_location
         @node.jdl_process_attr(attr_name, *args, __call_loc: $last_call_location, **kwargs, &attr_block)
       end
-
-      if type_id == :compound
+      case type_id
+      when :bool
+        parent_class.define_method("#{attr_name}?") do |*args, **kwargs, &attr_block|
+          $last_call_location = ::Kernel.calling_location
+          if !args.empty? || !kwargs.empty? || attr_block
+            JABA.error("'#{attr_name}?' is a read only accessor and does not accept arguments", line: $last_call_location)
+          end
+          @node.jdl_process_attr(attr_name, *args, __call_loc: $last_call_location, **kwargs, &attr_block)
+        end
+      when :compound
         # Compound attr interface inherits parent nodes interface so it has read only access to its attrs
         cmp_api = Class.new(parent_class)
         cmp_api.set_inspect_name(attr_name)
