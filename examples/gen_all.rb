@@ -8,11 +8,12 @@ end
 
 if __FILE__ == $PROGRAM_NAME
   iterate_examples do |dir, full_dir|
-    cmdline = "jaba -S #{full_dir}"
+    cmdline = "jaba -S #{dir}"
     puts cmdline
     if !system(cmdline)
       puts "Jaba FAILED"
     end
+    puts
   end
   puts "Done!"
 end
