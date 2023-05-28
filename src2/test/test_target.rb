@@ -13,10 +13,9 @@ jtest "target" do
   op = jaba do
     target :myapp do
       type :console
-      case config
-      when :debug
+      if debug?
         define "DEBUG"
-      when "release" # string should work too
+      else
         define "RELEASE"
       end
     end

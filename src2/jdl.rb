@@ -271,7 +271,7 @@ JABA.define_api do
   attr_array "target/configs", type: :string do
     title "Build configurations"
     flags :per_target, :overwrite_default
-    default [:debug, :release]
+    default [:Debug, :Release]
     example "configs [:debug, :release]"
   end
 
