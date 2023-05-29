@@ -19,6 +19,19 @@ jtest "checks path is valid" do
   op[:error].must_equal "Error at #{src_loc("CB2F8547")}: 'basename' attribute invalid - 'a\\b' must not contain slashes."
 end
 
+jtest "only array attrs can accept wildcards" do
+  jdl do
+    attr_array :files, type: :file
+    attr :file, type: :file
+  end
+  jaba do
+    files "*.cpp", :force
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("FA5CC57C")}: 'file' attribute invalid - only array attributes can accept wildcards." do
+      file "*.cpp", :force # FA5CC57C
+    end
+  end
+end
+
 jtest "top level paths are made absolute based on base_attr" do
   dir = __dir__
   jdl do

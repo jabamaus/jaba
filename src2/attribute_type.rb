@@ -194,6 +194,9 @@ module JABA
 
     def validate_value(attr_def, path)
       super
+      if path.wildcard? && !attr_def.array?
+        yield "only array attributes can accept wildcards"
+      end
       path.validate_path do |msg|
         JABA.warn("#{attr_def.describe} not specified cleanly: #{msg}", line: $last_call_location)
       end
