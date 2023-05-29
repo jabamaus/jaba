@@ -33,7 +33,6 @@ JABA.define_api do
   attr_type :file do
     title "File attribute type"
     note "Validates that value is a string path representing a file"
-    # TODO: document basedir
   end
 
   attr_type :int do
@@ -217,7 +216,6 @@ JABA.define_api do
     default do
       "#{buildsystem_root}/artefact"
     end
-    basedir :jaba_file
   end
 
   attr "buildsystem_root", type: :dir do
@@ -226,7 +224,6 @@ JABA.define_api do
     default do
       "buildsystem/#{buildsystem}"
     end
-    basedir :jaba_file
   end
 
   attr_hash "vcfiletype", key_type: :ext, type: :string do
@@ -256,7 +253,6 @@ JABA.define_api do
   attr "*/root", type: :dir do
     title "TODO"
     flags :node_option
-    basedir :jaba_file
   end
 
   # Target node
@@ -278,9 +274,7 @@ JABA.define_api do
   attr "target/projdir", type: :dir do
     title "Directory in which projects will be generated"
     flags :per_target, :no_check_exist
-    basedir do
-      buildsystem_root
-    end
+    base_attr :buildsystem_root
     example %Q{
       target :MyApp do
         src ['**/*'] # Get all src in $(root), which defaults to directory of definition file
@@ -331,9 +325,7 @@ JABA.define_api do
   attr "target/bindir", type: :dir do
     title "Output directory for executables"
     flags :per_config, :no_check_exist
-    basedir do
-      artefact_root
-    end
+    base_attr :artefact_root
     default do
       "#{arch}/bin/#{config}"
     end
@@ -342,9 +334,7 @@ JABA.define_api do
   attr "target/libdir", type: :dir do
     title "Output directory for libs"
     flags :per_config, :no_check_exist
-    basedir do
-      artefact_root
-    end
+    base_attr :artefact_root
     default do
       "#{arch}/lib/#{config}"
     end
@@ -353,9 +343,7 @@ JABA.define_api do
   attr "target/objdir", type: :dir do
     title "Output directory for object files"
     flags :per_config, :no_check_exist
-    basedir do
-      artefact_root
-    end
+    base_attr :artefact_root
     default do
       "#{arch}/obj/#{config}/#{projname}"
     end
@@ -400,7 +388,7 @@ JABA.define_api do
 
   attr_array "target/inc", type: :dir do
     title "Include paths"
-    basedir :definition_root
+    base_attr :root
     flags :per_config, :no_sort, :exportable
     example "inc ['mylibrary/include']"
     example "inc ['mylibrary/include'], :export # Export include path to dependents"
@@ -428,12 +416,12 @@ JABA.define_api do
 
   attr "target/rule/input", type: :src do
     title "TODO"
-    basedir :definition_root
+    base_attr :root
   end
 
   attr_array "target/src", type: :src do
     title "Source file specification"
-    basedir :definition_root
+    base_attr :root
     flags :per_config, :exportable
     # TODO: examples for excludes
     example %Q{
@@ -564,13 +552,13 @@ JABA.define_api do
   attr_hash "target/vc_extension_settings", key_type: :ext, type: :file do
     title "Path to a .props file"
     flags :per_target
-    basedir :definition_root
+    base_attr :root
   end
 
   attr_hash "target/vc_extension_targets", key_type: :ext, type: :file do
     title "Path to a .targets file"
     flags :per_target
-    basedir :definition_root
+    base_attr :root
   end
 
   attr "target/winsdkver", type: :choice do
@@ -598,9 +586,7 @@ JABA.define_api do
     default do
       "#{projname}#{targetsuffix}.lib"
     end
-    basedir do
-      libdir
-    end
+    base_attr :libdir
   end
 
   attr "target/vcwarnlevel", type: :choice do

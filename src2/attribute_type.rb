@@ -180,34 +180,16 @@ module JABA
   end
 
   class AttributePathBase < AttributeTypeString
-    # Register basedir into AttributeDefinition
-    ValidBaseDirs = [:definition_root, :jaba_file]
-
-    APIBuilder.add_method(AttributeDefinitionCommonAPI, :basedir)
+    # Register base_attr into AttributeDefinition
+    APIBuilder.add_method(AttributeDefinitionCommonAPI, :base_attr)
     AttributeDefinition.class_eval do
-      def basedir = @basedir
-
-      def set_basedir(spec = nil, &block)
-        if (spec && block) || (!spec && !block)
-          definition_error("basedir must be specified as a spec or a block")
-        end
-        if spec && !ValidBaseDirs.include?(spec)
-          definition_error("'#{spec.inspect_unquoted}' must be one of #{ValidBaseDirs}")
-        end
-        @basedir = spec ? spec : block
-      end
+      def base_attr = @base_attr
+      def set_base_attr(attr_name) = @base_attr = attr_name
     end
 
     def init_attr_def(attr_def)
       attr_def.set_flag_options(:force)
-      attr_def.instance_variable_set(:@basedir, nil)
-    end
-
-    def post_create_attr_def(attr_def)
-      super
-      if attr_def.basedir.nil?
-        attr_def.set_basedir(:jaba_file)
-      end
+      attr_def.instance_variable_set(:@base_attr, nil)
     end
 
     def validate_value(attr_def, path)
@@ -232,16 +214,16 @@ module JABA
 
     def make_path_absolute(path, attr)
       return path if path.absolute_path?
-      ad = attr.attr_def
-      base = case ad.basedir
-        when Proc
-          JABA.context.execute_attr_def_block(attr, ad.basedir)
-        when :jaba_file
+      ba = attr.attr_def.base_attr
+      base = case ba
+        when nil
           attr.node.src_dir
-        when :definition_root
-          attr.node[:root]
         else
-          ad.definition_error("Unhandled basedir #{ad.basedir}")
+          battr = attr.node.search_attr(ba)
+          if battr.type_id != :dir
+            attr.attr_error("#{attr.describe} has #{battr.describe} as its base dir but #{battr.describe} is of type '#{battr.type_id}' but must be ':dir'")
+          end
+          battr.value
         end
       "#{base}/#{path}".cleanpath
     end
