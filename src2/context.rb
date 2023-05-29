@@ -453,7 +453,6 @@ module JABA
       if !@warning_lookup.has_key?(msg)
         log(msg, :WARN)
         @warnings << msg
-      else
         @warning_lookup[msg] = true
       end
       nil
