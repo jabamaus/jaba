@@ -414,9 +414,39 @@ JABA.define_api do
     flags :per_config
   end
 
-  attr "target/rule/input", type: :src do
+  attr_array "target/rule/input", type: :src do
     title "TODO"
     base_attr :root
+  end
+
+  # TODO: shouldn't this be array?
+  attr "target/rule/implicit_input", type: :src do
+    title "Implicit input files"
+    base_attr :root
+  end
+
+  attr "target/rule/output", type: :src do
+    title "Output files"
+    base_attr :root
+    flags :required, :no_check_exist
+    on_set do |path|
+      src path, :force 
+    end
+  end
+
+  attr "target/rule/cmd", type: :string do
+    title "Command line to execute"
+    flags :required
+    flag_options :absolute
+    note "Use :absolute to make usage of $(input) or $(output) in the command line use absolute paths. " \
+         "Otherwise they will be relative to the generated project."
+  end
+
+  attr "target/rule/msg", type: :string do
+    title "Message"
+    note "Message that will be echoed to console on execution of the rule."
+    note "Certain characters like < > | & are automatically escaped to prevent unwanted side effects such as writing text to a file - " \
+          "this is a common reason why Visual Studio users are sometimes baffled as to why their custom build tool messages are not being printed."
   end
 
   attr_array "target/src", type: :src do
