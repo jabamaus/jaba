@@ -264,7 +264,7 @@ jtest "strips duplicate src" do
   op = jaba do
     src ["a.cpp", "a.cpp"], :force # BFE9E793
   end
-  op[:warnings].must_equal ["Warning at #{src_loc("BFE9E793")}: Stripping duplicates [\"#{__dir__}/a.cpp\"] from 'src' array attribute - flag with :allow_dupes to allow."]
+  op[:warnings].must_equal ["Warning at #{src_loc("BFE9E793")}: Stripping duplicates [\"#{__dir__}/a.cpp\"] from 'src' array attribute."]
   op[:error].must_be_nil
   # It strips files that match different specs
   make_file("a/a.cpp", "a/a.h")

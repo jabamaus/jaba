@@ -85,7 +85,6 @@ module JABA
         if first_dupe.src_loc != src_loc
           msg <<  ". See previous at #{first_dupe.src_loc.src_loc_describe}"
         end
-        msg << " - flag with :allow_dupes to allow."
         JABA.warn(msg, line: src_loc)
       end
 
