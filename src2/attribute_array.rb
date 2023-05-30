@@ -186,11 +186,15 @@ module JABA
     def process_flags
       process_removes(@excludes, mode: :exclude)
       if !attr_def.has_flag?(:no_sort)
-        begin
-          @elems.stable_sort!
-        rescue StandardError => e
-          attr_error("Failed to sort #{describe}: #{e}")
-        end
+        sort!
+      end
+    end
+
+    def sort!
+      begin
+        @elems.stable_sort!
+      rescue StandardError => e
+        attr_error("Failed to sort #{describe}: #{e}")
       end
     end
   end

@@ -409,7 +409,7 @@ JABA.define_api do
     example "rtti true"
   end
 
-  attr "target/rule", type: :compound do
+  attr_array "target/rule", type: :compound do
     title "TODO"
     flags :per_config
   end
@@ -420,18 +420,16 @@ JABA.define_api do
   end
 
   # TODO: shouldn't this be array?
-  attr "target/rule/implicit_input", type: :src do
+  attr "target/rule/implicit_input", type: :file do
     title "Implicit input files"
     base_attr :root
   end
 
-  attr "target/rule/output", type: :src do
+  # TODO: shouldn't this be array?
+  attr "target/rule/output", type: :file do
     title "Output files"
     base_attr :root
     flags :required, :no_check_exist
-    on_set do |path|
-      src path, :force 
-    end
   end
 
   attr "target/rule/cmd", type: :string do
@@ -453,6 +451,7 @@ JABA.define_api do
     title "Source file specification"
     base_attr :root
     flags :per_config, :exportable
+    flags :no_sort # sorted at project generation time
     # TODO: examples for excludes
     example %Q{
       # Add all src in $(root) whose extension is in $(src_ext)

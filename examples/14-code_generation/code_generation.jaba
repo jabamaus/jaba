@@ -1,7 +1,7 @@
 target :CodegenExample do
   type :console
-  src ['main.cpp', 'generator.rb', '*.xyz']
-  src %w(src1.h src2.h src1.cpp src2.cpp), :force, prefix: 'generated/'
+  src ['main.cpp', 'generator.rb']
+  src %w(src1.h src2.h), :force, prefix: 'generated/'
   rule do
     input '*.xyz'
     output 'generated/$(input.basename_no_ext).cpp'

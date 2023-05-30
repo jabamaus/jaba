@@ -58,6 +58,7 @@ Rewrite simplifications:
 New features:
  - rebased onto mruby
  - src files calculated immediately
+ - rule inputs/outputs automatically added to src
  - ninja support
  - emscripten support
  - fastbuild support
