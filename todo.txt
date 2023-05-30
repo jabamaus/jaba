@@ -45,6 +45,8 @@
 - move attribute type out of jdl_builder
 - Ability to define attrs directly in jaba files maybe in 'extend' section.
 - Validation and documentation specification for method args, similar to attribute options
+- Add :no_wildcard flag to disallow wildcards in file/dir/src array
+- Make custom build rule support multiple outputs. Requires adding array subscript support to macros.
 
 Rewrite simplifications:
 - ditched generic type system
