@@ -304,10 +304,10 @@ module JABA
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />'
 
       import_group(w, label: :ExtensionTargets) do
-=begin
         @extension_targets.each do |et|
           w << "    <Import Project=\"#{et}\" />"
         end
+=begin
         if @masm_required
           w << '    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />'
         end
