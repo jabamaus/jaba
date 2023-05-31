@@ -45,6 +45,7 @@ test
 - Regression tests for generated files.
 - option in tests to log to stdout
 - reorg tests into core folder and target folder?
+- bring attr_hash tests back
 
 possible features
 - Ability to define attrs directly in jaba files maybe in 'extend' section.
