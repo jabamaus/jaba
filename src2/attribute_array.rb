@@ -83,7 +83,7 @@ module JABA
       if !dupes.empty?
         msg = "Stripping duplicates #{dupes} from #{describe}"
         if first_dupe.src_loc != src_loc
-          msg <<  ". See previous at #{first_dupe.src_loc.src_loc_describe}"
+          msg << ". See previous at #{first_dupe.src_loc.src_loc_describe}"
         end
         JABA.warn(msg, line: src_loc)
       end

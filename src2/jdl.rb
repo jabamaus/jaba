@@ -227,19 +227,19 @@ JABA.define_api do
   end
 
   attr_hash "vcfiletype", key_type: :ext, type: :string do
-    title 'Visual C++ file types'
+    title "Visual C++ file types"
     default({
-      '.h' => :ClInclude,
-      '.inl' => :ClInclude,
-      '.hpp' => :ClInclude,
-      '.cpp' => :ClCompile,
-      '.c' => :ClCompile,
-      '.cxx' => :ClCompile,
-      '.cc' => :ClCompile,
-      '.png' => :Image,
-      '.asm' => :MASM,
-      '.rc' => :ResourceCompile,
-      '.natvis' => :Natvis,
+      ".h" => :ClInclude,
+      ".inl" => :ClInclude,
+      ".hpp" => :ClInclude,
+      ".cpp" => :ClCompile,
+      ".c" => :ClCompile,
+      ".cxx" => :ClCompile,
+      ".cc" => :ClCompile,
+      ".png" => :Image,
+      ".asm" => :MASM,
+      ".rc" => :ResourceCompile,
+      ".natvis" => :Natvis,
     })
   end
 
@@ -444,7 +444,7 @@ JABA.define_api do
     title "Message"
     note "Message that will be echoed to console on execution of the rule."
     note "Certain characters like < > | & are automatically escaped to prevent unwanted side effects such as writing text to a file - " \
-          "this is a common reason why Visual Studio users are sometimes baffled as to why their custom build tool messages are not being printed."
+         "this is a common reason why Visual Studio users are sometimes baffled as to why their custom build tool messages are not being printed."
   end
 
   attr_array "target/src", type: :src do

@@ -38,7 +38,7 @@ module JABA
         cfg.eval_jdl(self, cfg[:type], &t)
         src_attr = cfg.get_attr(:src)
         vcfprop_attr = cfg.get_attr(:vcfprop)
-        
+
         cfg[:rule].each do |rule|
           output = rule[:output]
           imp_input = rule[:implicit_input]
@@ -46,7 +46,7 @@ module JABA
           cmd = cmd_attr.value
           cmd_abs = cmd_attr.has_flag_option?(:absolute)
           msg = rule[:msg]
-          
+
           rule[:input].each do |input|
             src_attr.set(input)
             @file_to_file_type[input] = :CustomBuild
@@ -58,14 +58,13 @@ module JABA
             output_rel = d_output.relative_path_from(@projdir, backslashes: true)
 
             d_cmd = if cmd_abs
-              demacroise(cmd, input, imp_input ? "$(ProjectDir)#{imp_input_rel}" : nil, d_output)
-            else
-              demacroise(cmd,
-                "$(ProjectDir)#{input_rel}",
-                imp_input ? "$(ProjectDir)#{imp_input_rel}" : nil,
-                "$(ProjectDir)#{output_rel}"
-              )
-            end
+                demacroise(cmd, input, imp_input ? "$(ProjectDir)#{imp_input_rel}" : nil, d_output)
+              else
+                demacroise(cmd,
+                           "$(ProjectDir)#{input_rel}",
+                           imp_input ? "$(ProjectDir)#{imp_input_rel}" : nil,
+                           "$(ProjectDir)#{output_rel}")
+              end
             d_cmd = d_cmd.to_escaped_xml
             # Characters like < > | & are escaped to prevent unwanted behaviour when the msg is echoed
             d_msg = demacroise(msg, input, imp_input, d_output).to_escaped_DOS.to_escaped_xml
@@ -92,26 +91,24 @@ module JABA
           end
         end
       end
-      
+
       write_vcxproj
       write_vcxproj_filters
     end
 
-    def each_config(&block)
-      @node.children.each(&block)
-    end
+    def each_config(&block) = @node.children.each(&block)
 
     def get_matching_src(abs_spec, fail_if_not_found: true, errobj: nil)
       JABA.error("'#{abs_spec.inspect_unquoted}' must be an absolute path") if !abs_spec.absolute_path?
       if abs_spec.wildcard?
         # Use File::FNM_PATHNAME so eg dir/**/*.c matches dir/a.c
-        files = @src.select{|s| File.fnmatch?(abs_spec, s.absolute_path, File::FNM_PATHNAME)}
+        files = @src.select { |s| File.fnmatch?(abs_spec, s.absolute_path, File::FNM_PATHNAME) }
         if files.empty? && fail_if_not_found
           JABA.error("'#{spec}' did not match any files")
         end
         return files
       end
-      s = @src.find{|s| s.absolute_path == abs_spec}
+      s = @src.find { |s| s.absolute_path == abs_spec }
       if !s && fail_if_not_found
         JABA.error("'#{spec}' src file not in project", errobj: errobj)
       end
@@ -126,14 +123,14 @@ module JABA
         var = match[1]
         method = match[3]
         repl = case var
-        when /^input/
-          input
-        when /^implicit_input/
-          JABA.error("No  implicit_input supplied") if implicit_input.nil?
-          implicit_input
-        when /^output/
-          output
-        end
+          when /^input/
+            input
+          when /^implicit_input/
+            JABA.error("No  implicit_input supplied") if implicit_input.nil?
+            implicit_input
+          when /^output/
+            output
+          end
         if repl.nil?
           JABA.error("Invalid macro '#{full_var}' in #{str}") # TODO: err_obj
         end
@@ -141,8 +138,7 @@ module JABA
           repl = repl.instance_eval(method)
         end
         # Important to use block form of gsub to disable backreferencing
-        #
-        str.gsub!(full_var){ repl }
+        str.gsub!(full_var) { repl }
       end
       str
     end
@@ -205,7 +201,7 @@ module JABA
         end
 
         cfg.visit_attr(:vcfprop) do |attr, val|
-          file_with_prop, prop = attr.option_value(:__key).split('|')
+          file_with_prop, prop = attr.option_value(:__key).split("|")
           sfs = get_matching_src(file_with_prop, errobj: attr)
           sfs.each do |sf|
             @per_file_props.push_value(sf, [prop, cfg_name, platform, val])

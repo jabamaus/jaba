@@ -102,10 +102,10 @@ module JABA
         JDLTopLevelAPI.execute(self, &b)
       end
       @building_jdl = false
-      @definition_lookup.transform_values!{|ary| ary.sort_by!{|d| d.name}}
+      @definition_lookup.transform_values! { |ary| ary.sort_by! { |d| d.name } }
       @path_to_node_def.each do |path, node_def|
-        node_def.attr_defs.sort_by!{|ad| ad.name}
-        node_def.method_defs.sort_by!{|ad| ad.name}
+        node_def.attr_defs.sort_by! { |ad| ad.name }
+        node_def.method_defs.sort_by! { |ad| ad.name }
       end
     end
 
