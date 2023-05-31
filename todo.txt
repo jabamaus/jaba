@@ -1,72 +1,77 @@
-- Put version number into every type and force it to be set in instance.
-- Add invocations.txt to each example which cam execute in multiple ways
-- Ability to 'grab' a text plugin that auto-adds ability to generate a text file to cpp projects.
-- Validate paths for missing / eg '../..debase-ruby_core_source/
-- option in tests to log to stdout
-- localise error strings into a single file, using macros for variable substitution. As well as being better for standardisation could support multiple languages.
-- Support vcfprop at project level too
-- Review whether '.' is allowed in :basename type. Maybe Introduce and allow_ext option.
-- Regression tests for generated files.
-- enforce that paths stay within their base dir spec?
-- Implement element deletion for hash attribute
-- Add 'install' to copy exes somewhere post build
-- Stats in docs, eg number of files in jaba release, size of zip.
-- make jaba clean clean the generated src, the .vs folder, the 'build' folder and optionally the 'buildsystem' folder.
-- Disallow ruby keywords as attr names, eg 'in' fails
-- reorg tests into core folder and cpp folder
-- Stronger spec for value_options. Need to flag as array.
-- add --list-globals option
-- Implement jaba build command to build vs solution
-- Categories in solution files.
-- flag to control whether absolute paths allowed in file/dir attrs. Eg build_root_offset is not an offset if absolute path used.
-  Is it even a path attr?
-- Make defaults work per-file. Introduce global_defaults. Or a scope option to defaults.
-- Automatically pull in dependencies into workspace
-- RUBY LICENSE REQUIREMENTS
-- validate when --src-root can be specified. Should be required if no .jaba files in cwd and disallowed if there are.
+core
+- versioning support
+- resolve issues around sorting with mixed type elements
+- Revisit set_to_default and wipe. Have way of clearing to default and clearing fully, but don't count that as set=true
 - Employ did you mean style error reporting
   Error at basic_dll.jaba:8: 'defines' attribute not defined. Did you mean 'define'?
-- tag attrs as control flow attrs somehow for benefit of docs
-- add slnproperty which can address sln sections. Particularly useful when used with ExtensibilityGlobals
-- Have a command line switch to make all error messages contain absolute paths
-- Revisit set_to_default and wipe. Have way of clearing to default and clearing fully, but don't count that as set=true
-- Allow 'axes' of configs. Bear in mind that platforms can be any string.
-- Make _ID be id of the definition the code is in, such that it works even inside a block that is being executed in the context of a different jaba object
-- Ability to reverse engineer jaba definitions from existing vsprojects
-- resolve issues around sorting with mixed type elements
-- Add wildcard validation to dir property
-- workspace categories
-- Support **.h as alternative to **/*.h?
-- Make shell build events use macros
-- Is ToolsVersion='16.0' needed?
-- support for debugger working directory via .user file
-- Bring back boolean reader, eg if debug?
+- move attribute type out of jdl_builder?
 - Add title/example/notes to flag and value option definitions
-- move attribute type out of jdl_builder
-- Ability to define attrs directly in jaba files maybe in 'extend' section.
+- Stronger spec for value_options. Need to flag as array.
 - Validation and documentation specification for method args, similar to attribute options
-- Add :no_wildcard flag to disallow wildcards in file/dir/src array
+- Make _ID be id of the definition the code is in, such that it works even inside a block that is being executed in the context of a different jaba object
+- Make defaults work per-file. Introduce global_defaults. Or a scope option to defaults.
+- localise error strings into a single file, using macros for variable substitution. As well as being better for standardisation could support multiple languages.
+- Implement element deletion for hash attribute
+- Disallow ruby keywords as attr names, eg 'in' fails
+
+path attrs/src
+- Support **.h as alternative to **/*.h
+- :no_wildcard flag to disallow wildcards
+- wildcard validation
+- Validate paths for missing / eg '../..debase-ruby_core_source/
+- vpath support
+- flag to control whether absolute paths allowed in file/dir attrs. Eg build_root_offset is not an offset if absolute path used.
+  Is it even a path attr?
+- Review whether '.' is allowed in :basename type. Maybe Introduce and allow_ext option.
+- enforce that paths stay within their base dir spec?
+
+workspace
+- Automatically pull in dependencies in
+- categories
+- add slnproperty which can address sln sections. Particularly useful when used with ExtensibilityGlobals
+
+target
 - Make custom build rule support multiple outputs. Requires adding array subscript support to macros.
+- Make shell build events use macros
+- Add 'install' to copy exes somewhere post build
+- Allow 'axes' of configs? Bear in mind that platforms can be any string.
 
-Rewrite simplifications:
-- ditched generic type system
-- ditched generic referencing system
-- ditched property system
-- ditched json file
-- ditched dry-run
-- ditched plugin system
-- string/symbol/symbol_or_string combined into just string
+VisualC
+- support for debugger working directory via .user file
+- Is ToolsVersion='16.0' needed?
 
-New features:
+test
+- vpath
+- Regression tests for generated files.
+- option in tests to log to stdout
+- reorg tests into core folder and target folder?
+
+possible features
+- Ability to define attrs directly in jaba files maybe in 'extend' section.
+- Ability to reverse engineer jaba definitions from existing vsprojects
+- Have a command line switch to make all error messages contain absolute paths
+- Add invocations.txt to each example which cam execute in multiple ways?
+- Ability to 'grab' functionality that auto-adds abilities, eg text file
+
+docs
+- tag attrs as control flow attrs somehow for benefit of docs
+- ruby license requirements
+- Stats in docs, eg number of files in jaba release, size of zip.
+
+jaba tool
+- add --list-globals option
+- Implement jaba build command to build vs solution
+- clean command
+
+v2 new features/changes:
+ - removed json output
  - rebased onto mruby
  - src files calculated immediately
  - rule inputs/outputs automatically added to src
- - ninja support
- - emscripten support
- - fastbuild support
  - pull dependencies into solution automatically
  - per file defaults
  - delete stale projects in build system
  - ability to set src per config instead of per-project
  - ability to set project type per config instead of per-project
  - rethought transitive properties of dependencies
+ - string/symbol/symbol_or_string combined into just string
