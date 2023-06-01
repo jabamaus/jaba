@@ -175,6 +175,13 @@ JABA.define_api do
     on_called do |str| Kernel.puts(str) end
   end
 
+  global_method "x86_64?" do
+    title "Returns true if targeting x86_64"
+    on_called do
+      JABA.context.root_node[:arch] == :x86_64
+    end
+  end
+
   # Top level methods
 
   method "glob" do

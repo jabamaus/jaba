@@ -89,7 +89,9 @@ jtest "returned values cannot be modified" do
   jdl do
     attr "cmpd1", type: :compound
     attr "cmpd1/cmpd2", type: :compound
-    attr_array "cmpd1/cmpd2/a" do default [1] end
+    attr_array "cmpd1/cmpd2/a" do
+      default [1]
+    end
   end
   assert_jaba_error "Error at #{src_loc("0B4498EC")}: Can't modify read only Array." do
     jaba do

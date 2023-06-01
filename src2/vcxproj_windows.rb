@@ -164,9 +164,9 @@ JABA.define_api do
       end
     end
 
-    #vcprop "#{cfg_type == :lib ? :Lib : :Link}|TargetMachine" do
-    #  :MachineX64 if x86_64?
-    #end
+    vcprop "#{cfg_type == :lib ? :Lib : :Link}|TargetMachine" do
+      :MachineX64 if x86_64?
+    end
 
     # Resources
     #

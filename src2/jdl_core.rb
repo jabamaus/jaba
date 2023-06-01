@@ -167,7 +167,7 @@ module JABA
     end
 
     def set_global_method(name, &block)
-      name = validate_name(name)
+      name = validate_name(name, regex: /^[a-zA-Z0-9_]+(\?)?$/)
       process_method(@global_methods_node_def, name, name, block)
     end
 
@@ -311,11 +311,11 @@ module JABA
 
     def error(msg) = JABA.error(msg, line: APIBuilder.last_call_location)
 
-    def validate_name(name)
+    def validate_name(name, regex: /^[a-zA-Z0-9_]+$/)
       if !name.is_a?(String) && !name.is_a?(Symbol)
         error("'#{name.inspect_unquoted}' must be a String or a Symbol")
       end
-      if name !~ /^[a-zA-Z0-9_]+$/
+      if name !~ regex
         error("'#{name}' is in invalid format")
       end
       name
@@ -337,7 +337,7 @@ module JABA
       if path !~ /\//
         [nil, path]
       else
-        [path.sub(/\/(\w+)$/, ""), $1]
+        [path.sub(/\/([^\/]+)$/, ""), $1]
       end
     end
   end
