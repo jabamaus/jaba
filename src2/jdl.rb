@@ -605,7 +605,7 @@ JABA.define_api do
 
   attr "target/type", type: :choice do
     title "Target type"
-    items [:app, :console, :lib, :dll]
+    items [:app, :console, :lib, :dll, :virtual]
     flags :per_config
     default :app
   end
