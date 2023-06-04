@@ -550,6 +550,17 @@ JABA.define_api do
     end
   end
 
+  attr_array "target/libs", type: :file do
+    title 'Paths to required non-system libs'
+    base_attr :root
+    flags :per_config, :no_sort, :no_check_exist, :exportable
+  end
+
+  attr_array "target/syslibs", type: :string do
+    title 'System libs'
+    flags :per_config, :no_sort, :exportable
+  end
+
   attr "target/targetname", type: :basename do
     title "Base name of output file without extension"
     note "Defaults to $(targetprefix)$(projname)$(targetsuffix)"

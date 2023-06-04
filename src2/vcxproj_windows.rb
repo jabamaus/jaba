@@ -132,10 +132,10 @@ JABA.define_api do
 
     # Link
     #
-    #vcprop "#{cfg_type == :lib ? :Lib : :Link}|AdditionalDependencies" do
-    #  all_libs = libs.map{|l| l.relative_path_from(vcxproj.projdir, backslashes: true)} + syslibs
-    #  all_libs.vs_join_paths(inherit: '%(AdditionalDependencies)')
-    #end
+    vcprop "#{cfg_type == :lib ? :Lib : :Link}|AdditionalDependencies" do
+      all_libs = libs.map{|l| l.relative_path_from(vcxproj.projdir, backslashes: true)} + syslibs
+      all_libs.vs_join_paths(inherit: '%(AdditionalDependencies)')
+    end
 
     vcprop "#{cfg_type == :lib ? :Lib : :Link}|AdditionalOptions" do
       lflags.vs_join(separator: " ", inherit: "%(AdditionalOptions)")
