@@ -4,7 +4,7 @@
 #end
 JABA.define_api do
   translator :vcxproj_windows do |vcxproj|
-    vcglobal :ProjectGuid, vcguid
+    vcglobal :ProjectGuid, vcxproj.guid
     vcglobal :Keyword, "Win32Proj"
     vcglobal :RootNamespace, projname
     vcglobal :WindowsTargetPlatformVersion, winsdkver

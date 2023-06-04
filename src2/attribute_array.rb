@@ -151,7 +151,8 @@ module JABA
       end
     end
 
-    def at(index) = @elems[index]
+    def empty? = @elems.empty?
+    def [](index) = @elems[index]
 
     def visit_attr(&block)
       @elems.delete_if do |attr|

@@ -35,8 +35,9 @@ module JABA
       @shared_lookup = {}
       @executing_jdl = 0
       @attr_def_block_stack = []
+      @target_lookup = SymbolKeyHash.new # target id to target node
       @projects = []
-      @project_lookup = {}
+      @project_lookup = {} # target node to project
     end
 
     def input = @input
@@ -137,6 +138,13 @@ module JABA
         n.attributes.each do |a|
           a.process_flags
         end
+      end
+
+      @projects.each do |p|
+        p.node.get_attr(:deps).map_value! do |dep_id|
+          lookup_target(dep_id)
+        end
+        p.process
       end
 
       @projects.each do |p|
@@ -307,14 +315,15 @@ module JABA
               ad.definition_error("must be flagged with either :per_target or :per_config")
             end
           end
-          @target_attrs_ignore = AttributeLookupHash.new.tap do |h|
+          @target_attrs_ignore = SymbolKeyHash.new.tap do |h|
             @target_attr_defs.each { |ta| h[ta.name] = true }
           end
-          @config_attrs_ignore = AttributeLookupHash.new.tap do |h|
+          @config_attrs_ignore = SymbolKeyHash.new.tap do |h|
             @config_attr_defs.each { |ca| h[ca.name] = true }
           end
         end
         target_node = create_node(nd, parent: parent) do |node|
+          @target_lookup[nd.id] = node
           node.add_attrs(@jdl.common_attr_node_def.attr_defs)
           node.add_attrs(@target_attr_defs)
           node.ignore_attrs(set: @config_attrs_ignore, get: @config_attrs_ignore)
@@ -327,11 +336,9 @@ module JABA
             node.get_attr(:config).set(id, __force: true)
           end
         end
-        @target_node_to_vcxproj ||= {}
         vcxproj = Vcxproj.new(target_node)
-        @target_node_to_vcxproj[target_node] = vcxproj
         @projects << vcxproj
-        @project_lookup[nd.id] = vcxproj
+        @project_lookup[target_node] = vcxproj
       else
         create_node(nd, parent: parent) do |node|
           node.add_attrs(@jdl.common_attr_node_def.attr_defs)
@@ -366,9 +373,15 @@ module JABA
       end
     end
 
-    def lookup_project(id, fail_if_not_found: true)
-      p = @project_lookup[id]
-      JABA.error("'#{id.inspect_unquoted}' not found") if p.nil? && fail_if_not_found
+    def lookup_target(id, fail_if_not_found: true)
+      t = @target_lookup[id]
+      JABA.error("'#{id.inspect_unquoted}' not found") if t.nil? && fail_if_not_found
+      t
+    end
+
+    def lookup_project(target_node, fail_if_not_found: true)
+      p = @project_lookup[target_node]
+      JABA.error("#{target_node.describe} not found") if p.nil? && fail_if_not_found
       p
     end
     

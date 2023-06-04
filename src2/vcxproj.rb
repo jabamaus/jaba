@@ -14,13 +14,17 @@ module JABA
       @node = target_node
     end
 
+    def node = @node
     def projdir = @projdir
+    def vcxproj_file = @vcxproj_file
+    def guid = @guid
 
-    def generate
+    def process
       @projname = @node[:projname]
       @projdir = @node[:projdir]
       @vcxproj_file = "#{@projdir}/#{@projname}.vcxproj"
       @vcxproj_filters_file = "#{@vcxproj_file}.filters"
+      @guid = @node[:vcguid]
       @per_file_props = {}
       @extension_settings = []
       @extension_targets = []
@@ -91,7 +95,9 @@ module JABA
           end
         end
       end
+    end
 
+    def generate
       write_vcxproj
       write_vcxproj_filters
     end
@@ -284,23 +290,23 @@ module JABA
       item_group(w) do
         w.write_raw(src_area)
       end
-=begin
-      if !@attrs.deps.empty?
+
+      deps = @node.get_attr(:deps)
+      if !deps.empty?
         item_group(w) do
-          @node.visit_attr(:deps) do |attr, value|
+          deps.visit_attr do |attr, dep_node|
             soft = attr.has_flag_option?(:soft)
             if !soft
-              dep_node = value
-              proj_ref = @plugin.project_from_node(dep_node)
-              w << "    <ProjectReference Include=\"#{proj_ref.vcxproj_file.relative_path_from(projdir, backslashes: true)}\">"
-              w << "      <Project>#{proj_ref.guid}</Project>"
+              proj = JABA.context.lookup_project(dep_node)
+              w << "    <ProjectReference Include=\"#{proj.vcxproj_file.relative_path_from(projdir, backslashes: true)}\">"
+              w << "      <Project>#{proj.guid}</Project>"
               # TODO: reference properties
               w << '    </ProjectReference>'
             end
           end
         end
       end
-=end
+
       w << '  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />'
 
       import_group(w, label: :ExtensionTargets) do

@@ -1,11 +1,4 @@
 module JABA
-  # Attriute lookup hash converts keys to symbols so can lookup with strings or symbols
-  class AttributeLookupHash < Hash
-    def [](key) = super(key.to_sym)
-    def has_key?(key) = super(key.to_sym)
-    def []=(key, value); super(key.to_sym, value); end
-  end
-
   class Node
     def initialize(node_def, id, src_loc, parent)
       JABA.error("node_def must not be nil") if node_def.nil?
@@ -14,7 +7,7 @@ module JABA
       @id = id
       @src_loc = src_loc # nil for root node. Updated dynamically in eval_jdl
       @attributes = []
-      @attribute_lookup = AttributeLookupHash.new
+      @attribute_lookup = SymbolKeyHash.new
       @attrs_to_ignore_when_setting = nil
       @attrs_to_ignore_when_getting = nil
       @children = []
@@ -132,7 +125,7 @@ module JABA
     end
 
     def visit_attr(attr_id, &block)
-      get_attr(attr_id).visit_attr(&block)
+      search_attr(attr_id).visit_attr(&block)
     end
 
     # This is the only place that attrs values can be set or retrieved from user definitions.
