@@ -13,6 +13,7 @@ core
 - localise error strings into a single file, using macros for variable substitution. As well as being better for standardisation could support multiple languages.
 - Implement element deletion for hash attribute
 - Disallow ruby keywords as attr names, eg 'in' fails
+- [BUG] methods should only be callable from their node. At the moment top level methods can be called globally.
 
 path attrs/src
 - Support **.h as alternative to **/*.h
@@ -53,6 +54,7 @@ possible features
 - Have a command line switch to make all error messages contain absolute paths
 - Add invocations.txt to each example which cam execute in multiple ways?
 - Ability to 'grab' functionality that auto-adds abilities, eg text file
+- Auto-delete non-generated files in buildsystem dir (cruft removal)
 
 docs
 - tag attrs as control flow attrs somehow for benefit of docs

@@ -64,11 +64,17 @@ jtest "can register methods at top level" do
     method :m do
       on_called do Kernel.print "m" end
     end
+    node :node
   end
   jaba do
     available.include?("m").must_be_true
     JTest.assert_output "m" do
       m
+    end
+    node :n do
+      JTest.assert_jaba_error(/Error at #{JTest.src_loc("8140CFB7")}: 'm' attr\/method not defined/) do
+        m # 8140CFB7
+      end
     end
   end
 end

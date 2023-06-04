@@ -182,6 +182,13 @@ JABA.define_api do
     end
   end
 
+  global_method "windows?" do
+    title "Returns true if targeting windows"
+    on_called do
+      JABA.context.root_node[:platform] == :windows
+    end
+  end
+  
   # Top level methods
 
   method "glob" do
