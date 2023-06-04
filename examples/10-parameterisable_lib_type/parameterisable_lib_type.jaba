@@ -7,8 +7,7 @@ target :AppWithStaticOrDynamicLib do
   deps [:StaticOrDynamicLib]
 end
 
-target :StaticOrDynamicLib do
-  root 'StaticOrDynamicLib'
+target :StaticOrDynamicLib, root: 'StaticOrDynamicLib' do
   type globals.cpp_default_lib_type
   src ['.']
   inc ['include'], :export

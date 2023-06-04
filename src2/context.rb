@@ -36,6 +36,7 @@ module JABA
       @executing_jdl = 0
       @attr_def_block_stack = []
       @projects = []
+      @project_lookup = {}
     end
 
     def input = @input
@@ -330,6 +331,7 @@ module JABA
         vcxproj = Vcxproj.new(target_node)
         @target_node_to_vcxproj[target_node] = vcxproj
         @projects << vcxproj
+        @project_lookup[nd.id] = vcxproj
       else
         create_node(nd, parent: parent) do |node|
           node.add_attrs(@jdl.common_attr_node_def.attr_defs)
@@ -364,6 +366,12 @@ module JABA
       end
     end
 
+    def lookup_project(id, fail_if_not_found: true)
+      p = @project_lookup[id]
+      JABA.error("'#{id.inspect_unquoted}' not found") if p.nil? && fail_if_not_found
+      p
+    end
+    
     def register_shared(id, block)
       if lookup_shared(id, fail_if_not_found: false)
         JABA.error("shared definition '#{id.inspect_unquoted}' multiply defined", line: $last_call_location)

@@ -159,6 +159,12 @@ module JABA
       end
     end
 
+    def map_value!(&block)
+      @elems.each do |e|
+        e.map_value!(&block)
+      end
+    end
+    
     def process_removes(to_remove, mode:)
       if !to_remove.empty?
         n_elems = @elems.size

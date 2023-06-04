@@ -278,6 +278,36 @@ JABA.define_api do
     example "configs [:debug, :release]"
   end
 
+  attr_array "target/deps", type: :string do
+    title "Target dependencies"
+    note 'List of ids of other cpp definitions. When a dependency is specified all the dependency\'s exports ' \
+         'will be imported, the library will be linked to and a project level dependency created (unless :soft specified). ' \
+         'To prevent linking specify :nolink - useful if only headers are required. A hard dependency is the default.' \
+         'This can be used for \'header only\' dependencies'
+    flags :per_target
+    flag_options :hard, :soft, :nolink
+    example %Q{
+      target :MyApp do
+        type :app
+        ...
+        deps [:MyLib]
+        deps [:MyLib2], :soft # No hard project dependency so not required in workspace
+      end
+      
+      target :MyLib do
+        type :lib
+        ...
+      end
+
+      target :MyLib2 do
+        type :lib
+        inc ['.'], :export
+        define ['MYLIB2'], :export
+        ...
+      end
+    }
+  end
+
   attr "target/projdir", type: :dir do
     title "Directory in which projects will be generated"
     flags :per_target, :no_check_exist
