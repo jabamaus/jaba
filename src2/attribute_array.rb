@@ -89,11 +89,17 @@ module JABA
       end
 
       if delete
+        # TODO: map_value
         process_removes(Array(delete).map { |r| apply_pre_post_fix(prefix, postfix, r) }, mode: :delete)
       end
       if exclude
-        @excludes.concat(Array(exclude).map { |r| apply_pre_post_fix(prefix, postfix, r) })
+        excludes = Array(exclude).flat_map do |val|
+          val = apply_pre_post_fix(prefix, postfix, val)
+          at.map_value_array(val, self)
+        end
+        @excludes.concat(excludes)
       end
+      process_removes(@excludes, mode: :exclude)
 
       @set = true
       nil

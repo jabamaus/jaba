@@ -496,7 +496,6 @@ JABA.define_api do
     base_attr :root
     flags :per_config, :exportable
     flags :no_sort # sorted at project generation time
-    # TODO: examples for excludes
     example %Q{
       # Add all src in $(root) whose extension is in $(src_ext)
       src ['*']
@@ -506,6 +505,9 @@ JABA.define_api do
 
       # Glob matches are not required to add whole directory recursively (whose extension is in $(src_ext))
       src ['src']
+
+      # Add all src recursively but excluding test files
+      src ['src'], exclude: ['test/**/*']
 
       # Add src explicitly
       src ['main.c', 'io.c']

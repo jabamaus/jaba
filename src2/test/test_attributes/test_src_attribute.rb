@@ -281,31 +281,32 @@ jtest "strips duplicate src" do
   #  "#{temp_dir}/a/a.h",
   #]
 end
-=begin
-jtest 'supports excludes' do
+
+jtest "supports excludes" do
   files = ['a.cpp', 'b.cpp', 'c.cpp', 'd.x', 'e.y', 'a/b/e.cpp', 'a/b/h.y', 'b/c/d.cpp']
   make_file(*files)
-
-  proj = jaba(cpp_app: true, dry_run: true) do
-    cpp :app do
-      project do
-        src ['a.cpp', 'b.cpp', 'c.cpp', 'd.x', 'e.y', 'a/b/e.cpp', 'a/b/h.y', 'b/c/d.cpp']
-        src_exclude [
-          'b.cpp', # exclude explicit file
-          '*.x', # exclude with glob match 
-          'a/**/*.cpp', # exclude with glob match recursively
-          'b' # exclude whole dir. Equivalent to b/**/*
-        ]
-      end
+  td = temp_dir
+  jdl do
+    node :node
+    attr_array "node/src", type: :src do
+      base_attr :root
     end
   end
-  proj[:src].must_equal [
-    "#{temp_dir}/a.cpp",
-    "#{temp_dir}/a/b/h.y",
-    "#{temp_dir}/c.cpp", 
-    "#{temp_dir}/e.y"
-  ]
+  jaba do
+    node :n, root: td do
+      src ['a.cpp', 'b.cpp', 'c.cpp', 'd.x', 'e.y', 'a/b/e.cpp', 'a/b/h.y', 'b/c/d.cpp']
+      src exclude: [
+        'b.cpp', # exclude explicit file
+        '*.x', # exclude with glob match 
+        'a/**/*.cpp', # exclude with glob match recursively
+        'b' # exclude whole dir. Equivalent to b/**/*
+      ]
+      src.must_equal [
+        "#{td}/a.cpp",
+        "#{td}/c.cpp", 
+        "#{td}/e.y",
+        "#{td}/a/b/h.y",
+      ]
+    end
+  end
 end
-=end
-
-# TODO: test vcfprop with recursive glob matches

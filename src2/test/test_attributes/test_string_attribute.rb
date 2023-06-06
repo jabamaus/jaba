@@ -25,6 +25,18 @@ jtest "accepts symbols but stored as strings" do
   end
 end
 
+jtest "supports standard ops" do
+  jdl do
+    attr :a, type: :string
+    attr_array :b, type: :string
+    attr_hash :c, key_type: :string, type: :string
+  end
+  jaba do
+    b [:a, :b, :c, :d], exclude: [:b, :d]
+    b.must_equal ["a", "c"]
+  end
+end
+
 jtest "can default to id" do
   jdl do
     node :node

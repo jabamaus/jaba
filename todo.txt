@@ -14,6 +14,7 @@ core
 - Implement element deletion for hash attribute
 - Disallow ruby keywords as attr names, eg 'in' fails
 - [BUG] methods should only be callable from their node. At the moment top level methods can be called globally.
+- implement 'virtual' (export only) and general export system
 
 path attrs/src
 - Support **.h as alternative to **/*.h
