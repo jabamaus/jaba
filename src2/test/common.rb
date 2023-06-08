@@ -48,7 +48,7 @@ module JabaTestMethods
 
   def assert_jaba_file_error(msg, tag, hint: nil, &block)
     src_loc_ = calling_location
-    fn = "#{temp_dir}/test.jaba"
+    fn = "#{temp_dir}/test_#{tag}.jaba"
     str = block.call
     make_file(fn, content: str)
     op = jaba(src_root: fn, want_exceptions: false)
