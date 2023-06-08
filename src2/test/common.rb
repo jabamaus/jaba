@@ -46,16 +46,16 @@ module JabaTestMethods
     e
   end
 
-  def assert_jaba_file_error(msg, tag, &block)
+  def assert_jaba_file_error(msg, tag, hint: nil, &block)
     src_loc_ = calling_location
     fn = "#{temp_dir}/test.jaba"
     str = block.call
     make_file(fn, content: str)
     op = jaba(src_root: fn, want_exceptions: false)
     if msg.is_a?(Regexp)
-      op[:error].must_match(/Error at #{src_loc(tag, file: fn)}: #{msg}/, src_loc: src_loc_)
+      op[:error].must_match(/Error at #{src_loc(tag, file: fn)}: #{msg}/, src_loc: src_loc_, msg: hint)
     else
-      op[:error].must_equal("Error at #{src_loc(tag, file: fn)}: #{msg}", src_loc: src_loc_)
+      op[:error].must_equal("Error at #{src_loc(tag, file: fn)}: #{msg}", src_loc: src_loc_, msg: hint)
     end
   end
 end
