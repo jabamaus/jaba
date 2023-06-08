@@ -8,8 +8,7 @@ module JABA
       @excludes = []
     end
 
-    def to_s = "#{attr_def} [#{@elems.size} elems]"
-    def describe = "'#{attr_def.name}' array attribute"
+    def to_s = "#{attr_def} [#{@elems.size} elems]" # For debugger
 
     def value
       values = if set?

@@ -8,16 +8,9 @@ module JABA
       @in_on_set = false
     end
 
-    # For ease of debugging.
-    #
-    def to_s = "#{attr_def} {#{@hash.size} elems}"
-
-    # Used in error messages.
-    #
-    def describe = "'#{attr_def.name}' hash attribute"
+    def to_s = "#{attr_def} {#{@hash.size} elems}" # For debugger
 
     # Returns a read only hash of key->attribute values. Expensive because it must map attributes to their values.
-    #
     def value
       hash = if set?
           @hash.transform_values { |e| e.value }

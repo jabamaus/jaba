@@ -132,7 +132,7 @@ module JABA
       @attr_type.post_create_attr_def(self)
     end
 
-    def describe = "'#{@name.inspect_unquoted}' #{@variant == :single ? "" : "#{@variant} "}attribute"
+    def describe = "'#{@name.inspect_unquoted}' attribute"
     def variant = @variant
     def single? = @variant == :single
     def array? = @variant == :array

@@ -34,7 +34,7 @@ jtest "requires default to be in items" do
       default [1, 2, 4] # CDCFF3A7
     end
   end
-  assert_jaba_error "Error at #{src_loc("CDCFF3A7")}: 'a' array attribute invalid - 'default' invalid - must be one of [1, 2, 3] but got '4'." do
+  assert_jaba_error "Error at #{src_loc("CDCFF3A7")}: 'a' attribute invalid - 'default' invalid - must be one of [1, 2, 3] but got '4'." do
     jaba do end
   end
 end
@@ -52,7 +52,7 @@ jtest "rejects invalid choices" do
     JTest.assert_jaba_error "Error at #{JTest.src_loc("21E33D49")}: 'a' attribute invalid - must be one of [:a, :b, :c] but got ':d'." do
       a :d # 21E33D49
     end
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("E22800D3")}: 'b' attribute element invalid - must be one of [:a, :b, :c] but got ':d'." do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("E22800D3")}: 'b' attribute invalid - must be one of [:a, :b, :c] but got ':d'." do
       b [:a, :b, :c, :d] # E22800D3
     end
   end

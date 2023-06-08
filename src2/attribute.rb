@@ -7,7 +7,8 @@ module JABA
       @set = false
     end
 
-    def to_s = "#{type_id} attribute"
+    def to_s = "#{type_id} attribute" # For debugger
+    def describe = "'#{@attr_def.name}' attribute"
     def node = @node
     def type_id = @attr_def.type_id
     def name = @attr_def.name
@@ -63,8 +64,6 @@ module JABA
       @value_options = nil
       @in_on_set = false
     end
-
-    def describe = "'#{@attr_def.name}' attribute element"
 
     def value
       if attr_def.compound? && JABA.context.executing_jdl?
@@ -161,8 +160,6 @@ module JABA
   end
 
   class AttributeSingle < AttributeElement
-    def describe = "'#{@attr_def.name}' attribute"
-
     def value
       if !set?
         if attr_def.compound?

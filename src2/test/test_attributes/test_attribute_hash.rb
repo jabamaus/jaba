@@ -149,7 +149,7 @@ jtest "checks for accessing uninitialised attributes" do
       end
     end
   end
-  assert_jaba_error "Error at #{src_loc("6E82E6E7")}: 'c' hash attribute default read uninitialised 'b' attribute - it might need a default value." do
+  assert_jaba_error "Error at #{src_loc("6E82E6E7")}: 'c' attribute default read uninitialised 'b' attribute - it might need a default value." do
     jaba do
       a 1
       c # 6E82E6E7
@@ -330,10 +330,10 @@ jtest "validates key value supplied correctly" do
     attr :a, variant: :hash, key_type: :string
   end
   jaba do
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("E4932204")}: 'a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"" do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("E4932204")}: 'a' attribute requires a key/value eg \"a :my_key, 'my value'\"" do
       a key: "val" # E4932204
     end
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("C567DBCD")}: 'a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"" do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("C567DBCD")}: 'a' attribute requires a key/value eg \"a :my_key, 'my value'\"" do
       a :key # C567DBCD
     end
   end

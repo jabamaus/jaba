@@ -1,14 +1,14 @@
 jtest "array supports a default" do
   jdl do
     # Validates default is an array
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("C3E1CABD")}: 'a' array attribute invalid - 'default' expects an array but got '{:a=>:b}'." do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("C3E1CABD")}: 'a' attribute invalid - 'default' expects an array but got '{:a=>:b}'." do
       attr :a, variant: :array do
         default({ a: :b }) # C3E1CABD
       end
     end
 
     # Validates default elements respect attribute type
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("7F5657F4")}: 'b' array attribute invalid - 'default' invalid - 'not a bool' is a string - expected [true|false]" do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("7F5657F4")}: 'b' attribute invalid - 'default' invalid - 'not a bool' is a string - expected [true|false]" do
       attr :b, variant: :array, type: :bool do
         default ["not a bool"] # 7F5657F4
       end
@@ -25,7 +25,7 @@ jtest "array supports a default" do
   end
   # Have to put this round the whole jaba context because the default block is called twice, once when it is called explicitly
   # and again by jaba itself when the value is baked in
-  assert_jaba_error "Error at #{src_loc("9F62104F")}: 'c' array attribute 'default' invalid - expects an array but got '1'." do
+  assert_jaba_error "Error at #{src_loc("9F62104F")}: 'c' attribute 'default' invalid - expects an array but got '1'." do
     jaba do
       c # Validates default is an array when block form is called explicity
     end
@@ -36,7 +36,7 @@ jtest "array supports a default" do
       default 1 # 1E5D0C2E
     end
   end
-  assert_jaba_error "Error at #{src_loc("1E5D0C2E")}: 'd' array attribute invalid - 'default' expects an array but got '1'." do
+  assert_jaba_error "Error at #{src_loc("1E5D0C2E")}: 'd' attribute invalid - 'default' expects an array but got '1'." do
     jaba do end # It validates default is an array when value form is called implicitly
   end
 
@@ -48,7 +48,7 @@ jtest "array supports a default" do
     end
   end
 
-  assert_jaba_error "Error at #{src_loc("33EF0612")}: 'd' array attribute 'default' invalid - 'not a bool' is a string - expected [true|false]" do
+  assert_jaba_error "Error at #{src_loc("33EF0612")}: 'd' attribute 'default' invalid - 'not a bool' is a string - expected [true|false]" do
     jaba do end
   end
 
@@ -117,7 +117,7 @@ jtest "checks for accessing uninitialised attributes" do
   end
 
   # test with array attr default using an unset attr
-  assert_jaba_error "Error at #{src_loc("9BCB5240")}: 'c' array attribute default read uninitialised 'b' attribute - it might need a default value." do
+  assert_jaba_error "Error at #{src_loc("9BCB5240")}: 'c' attribute default read uninitialised 'b' attribute - it might need a default value." do
     jaba do
       a 1
       c # 9BCB5240
@@ -134,7 +134,7 @@ jtest "checks for accessing uninitialised attributes" do
   end
 
   # test with another attr using unset array attr
-  assert_jaba_error "Error at #{src_loc("49323AB4")}: 'b' attribute default read uninitialised 'a' array attribute - it might need a default value." do
+  assert_jaba_error "Error at #{src_loc("49323AB4")}: 'b' attribute default read uninitialised 'a' attribute - it might need a default value." do
     jaba do
       b # 49323AB4
     end
@@ -214,8 +214,8 @@ jtest "handles duplicates" do
   w = op[:warnings]
   w.size.must_equal 2
   # Previous duplicate location only reported if on different line
-  w[0].must_equal "Warning at #{src_loc("DD827579")}: Stripping duplicates [6, 7, 7] from 'a' array attribute."
-  w[1].must_equal "Warning at #{src_loc("A34DE72A")}: Stripping duplicates [\"aa\", \"ab\", \"ac\"] from 'd' array attribute. See previous at test_attribute_array.rb:#{src_line("3A77A0E4")}."
+  w[0].must_equal "Warning at #{src_loc("DD827579")}: Stripping duplicates [6, 7, 7] from 'a' attribute."
+  w[1].must_equal "Warning at #{src_loc("A34DE72A")}: Stripping duplicates [\"aa\", \"ab\", \"ac\"] from 'd' attribute. See previous at test_attribute_array.rb:#{src_line("3A77A0E4")}."
 end
 
 jtest "handles sorting" do
@@ -251,7 +251,7 @@ jtest "validates element types are valid" do
   jdl do
     attr :a, variant: :array, type: :bool
   end
-  assert_jaba_error "Error at #{src_loc("F18B556A")}: 'a' attribute element invalid - 'true' is a string - expected [true|false]" do
+  assert_jaba_error "Error at #{src_loc("F18B556A")}: 'a' attribute invalid - 'true' is a string - expected [true|false]" do
     jaba do
       a [true, false, false, true]
       a ["true"] # F18B556A
@@ -422,7 +422,7 @@ jtest "supports setting a validator" do
   end
   jaba do
     a ["val"]
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("78A6546B")}: 'a' attribute element invalid - failed." do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("78A6546B")}: 'a' attribute invalid - failed." do
       a ["invalid"] # 78A6546B
     end
   end
