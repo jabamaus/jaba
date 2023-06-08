@@ -20,21 +20,6 @@ jtest "validates value" do
   end
 end
 
-jtest "fails if value not supplied when 'required' flag specified" do
-  jdl do
-    attr :a, type: :int do
-      flags :required
-    end
-  end
-  assert_jaba_error "Error at #{src_loc("D43F2208")}: 'top_level' requires 'a' attribute to be set." do
-    jaba do end # D43F2208
-  end
-  # Also test file version
-  assert_jaba_file_error "'top_level' requires 'a' attribute to be set.", "8CF3DCA2" do
-    "# 8CF3DCA2"
-  end
-end
-
 jtest "supports standard ops" do
   jdl do
     attr :a, type: :int

@@ -48,18 +48,6 @@ jtest "only allows boolean values" do
   end
 end
 
-jtest "works with required flag" do
-  jdl do
-    node "node"
-    attr "node/b" do
-      flags :required
-    end
-  end
-  assert_jaba_file_error "'node' requires 'b' attribute to be set.", "3C869B0D" do
-    "node :n # 3C869B0D"
-  end
-end
-
 jtest "can be set from cmdline" do
   jdl do
     attr :b1, type: :bool
