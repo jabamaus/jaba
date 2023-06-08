@@ -329,16 +329,22 @@ module JABA
           node.ignore_attrs(set: @config_attrs_ignore, get: @config_attrs_ignore)
         end
         configs = target_node[:configs]
+        all_virtual = true
         configs.each do |id|
-          create_node(nd, parent: target_node) do |node|
+          config = create_node(nd, parent: target_node) do |node|
             node.add_attrs(@config_attr_defs)
             node.ignore_attrs(set: @target_attrs_ignore)
             node.get_attr(:config).set(id, __force: true)
           end
+          if config[:type] != :virtual
+            all_virtual = false
+          end
         end
-        vcxproj = Vcxproj.new(target_node)
-        @projects << vcxproj
-        @project_lookup[target_node] = vcxproj
+        if !all_virtual
+          vcxproj = Vcxproj.new(target_node)
+          @projects << vcxproj
+          @project_lookup[target_node] = vcxproj
+        end
       else
         create_node(nd, parent: parent) do |node|
           node.add_attrs(@jdl.common_attr_node_def.attr_defs)
