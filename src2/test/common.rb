@@ -39,9 +39,9 @@ module JabaTestMethods
     end
 
     if msg.is_a?(Regexp)
-      e.message.must_match(msg, src_loc: src_loc)
+      e.message.must_match(msg, src_loc: src_loc, msg: hint)
     else
-      e.message.must_equal(msg, src_loc: src_loc)
+      e.message.must_equal(msg, src_loc: src_loc, msg: hint)
     end
     e
   end
