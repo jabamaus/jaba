@@ -240,8 +240,9 @@ JABA.define_api do
     end
   end
 
-  attr "vcfiletype", variant: :hash, key_type: :ext, type: :string do
+  attr "vcfiletype", variant: :hash, type: :string do
     title "Visual C++ file types"
+    key_type :ext
     default({
       ".h" => :ClInclude,
       ".inl" => :ClInclude,
@@ -629,20 +630,23 @@ JABA.define_api do
     end
   end
 
-  attr "target/vcglobal", variant: :hash, key_type: :string, type: :to_s do
+  attr "target/vcglobal", variant: :hash, type: :to_s do
     title "Address Globals property group in a vcxproj directly"
+    key_type :string
     value_option :condition
     flags :per_target, :exportable
   end
 
-  attr "target/vc_extension_settings", variant: :hash, key_type: :ext, type: :file do
+  attr "target/vc_extension_settings", variant: :hash, type: :file do
     title "Path to a .props file"
+    key_type :ext
     flags :per_target
     base_attr :root
   end
 
-  attr "target/vc_extension_targets", variant: :hash, key_type: :ext, type: :file do
+  attr "target/vc_extension_targets", variant: :hash, type: :file do
     title "Path to a .targets file"
+    key_type :ext
     flags :per_target
     base_attr :root
   end
@@ -689,8 +693,9 @@ JABA.define_api do
     example "vcnowarn [4100, 4127, 4244]"
   end
 
-  attr "target/vcfprop", variant: :hash, key_type: :string, type: :to_s do
+  attr "target/vcfprop", variant: :hash, type: :to_s do
     title "Add per-configuration per-file property"
+    key_type :string
     flags :per_config, :exportable
     validate_key do |key|
       if key !~ /^[^|]+\|{1}[A-Za-z0-9_-]+/
@@ -706,8 +711,9 @@ JABA.define_api do
     }
   end
 
-  attr "target/vcprop", variant: :hash, key_type: :string, type: :to_s do
+  attr "target/vcprop", variant: :hash, type: :to_s do
     title "Address per-configuration sections of a vcxproj directly"
+    key_type :string
     value_option :condition
     flags :per_config, :exportable
     validate_key do |key|

@@ -4,10 +4,17 @@ end
 jtest "works with compound as single attribute" do
   jdl do
     attr "cmpd", type: :compound
-    attr "cmpd/a" do default 10 end
+    attr "cmpd/a" do
+      default 10
+    end
     attr "cmpd/b"
-    attr "cmpd/c", variant: :array do default [1] end
-    attr "cmpd/d", variant: :hash, key_type: :string do default(a: :b) end
+    attr "cmpd/c", variant: :array do
+      default [1]
+    end
+    attr "cmpd/d", variant: :hash do
+      key_type :string
+      default(a: :b)
+    end
   end
   op = jaba do
     # check defaults
@@ -194,7 +201,9 @@ end
 
 jtest "works with hash" do
   jdl do
-    attr "cmpd", variant: :hash, type: :compound, key_type: :string
+    attr "cmpd", variant: :hash, type: :compound do
+      key_type :string
+    end
     attr "cmpd/a"
     attr "cmpd/b"
   end

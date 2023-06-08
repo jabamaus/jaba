@@ -143,7 +143,8 @@ jtest "checks for accessing uninitialised attributes" do
   jdl do
     attr :a
     attr :b
-    attr :c, variant: :hash, key_type: :string do
+    attr :c, variant: :hash do
+      key_type :string
       default do
         { k1: a, k2: b }
       end
@@ -177,7 +178,9 @@ end
 
 jtest "can be set" do
   jdl do
-    attr "a", variant: :hash, key_type: :string
+    attr "a", variant: :hash do
+      key_type :string
+    end
     attr "b", type: :choice do
       items [1, 2]
     end
@@ -226,11 +229,15 @@ end
 
 jtest "is not possible to modify returned hash" do
   jdl do
-    attr "a", variant: :hash, key_type: :string
-    attr "b", variant: :hash, key_type: :string do
+    attr "a", variant: :hash do
+      key_type :string
+    end
+    attr "b", variant: :hash do
+      key_type :string
       default({ k: :v })
     end
-    attr "c", variant: :hash, key_type: :string do
+    attr "c", variant: :hash do
+      key_type :string
       default do
         { k: :v }
       end
@@ -256,12 +263,14 @@ end
 jtest "disallows no_sort and allow_dupes flags" do
   jdl do
     JTest.assert_jaba_error "Error at #{JTest.src_loc("366C343A")}: ':no_sort' attribute definition flag invalid: only allowed on array attributes." do
-      attr "a", variant: :hash, key_type: :string do
+      attr "a", variant: :hash do
+        key_type :string
         flags :no_sort # 366C343A
       end
     end
     JTest.assert_jaba_error "Error at #{JTest.src_loc("2E453551")}: ':allow_dupes' attribute definition flag invalid: only allowed on array attributes." do
-      attr "b", variant: :hash, key_type: :string do
+      attr "b", variant: :hash do
+        key_type :string
         flags :allow_dupes # 2E453551
       end
     end
@@ -270,7 +279,8 @@ end
 
 jtest "can accept flag options" do
   jdl do
-    attr :a, variant: :hash, key_type: :string do
+    attr :a, variant: :hash do
+      key_type :string
       flag_options :f1, :f2, :f3
     end
   end
@@ -288,7 +298,8 @@ end
 
 jtest "can accept value options" do
   jdl do
-    attr :a, variant: :hash, key_type: :string do
+    attr :a, variant: :hash do
+      key_type :string
       value_option :kv1
       value_option :kv2
     end
@@ -305,7 +316,8 @@ end
 
 jtest "can accept value and flag options" do
   jdl do
-    attr :a, variant: :hash, key_type: :string do
+    attr :a, variant: :hash do
+      key_type :string
       value_option :kv1
       value_option :kv2
       flag_options :flag_opt1, :flag_opt2, :flag_opt3
@@ -327,7 +339,9 @@ end
 
 jtest "validates key value supplied correctly" do
   jdl do
-    attr :a, variant: :hash, key_type: :string
+    attr :a, variant: :hash do
+      key_type :string
+    end
   end
   jaba do
     JTest.assert_jaba_error "Error at #{JTest.src_loc("E4932204")}: 'a' attribute requires a key/value eg \"a :my_key, 'my value'\"" do

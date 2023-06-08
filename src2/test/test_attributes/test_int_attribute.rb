@@ -30,8 +30,11 @@ jtest "supports standard ops" do
     attr :ba, variant: :array, type: :int do
       default [3, 4, 5]
     end
-    attr :ah, variant: :hash, type: :int, key_type: :string
-    attr :bh, variant: :hash, type: :int, key_type: :string do
+    attr :ah, variant: :hash, type: :int do
+      key_type :string
+    end
+    attr :bh, variant: :hash, type: :int do
+      key_type :string
       default({ k1: 1 })
     end
   end

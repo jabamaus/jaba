@@ -18,10 +18,12 @@ jtest "generates a UUID from a string" do
       end
       flags :no_sort
     end
-    attr "e", variant: :hash, key_type: :string, type: :uuid do
+    attr "e", variant: :hash, type: :uuid do
+      key_type :string
       default({ k1: "a", k2: "b" })
     end
-    attr "f", variant: :hash, key_type: :string, type: :uuid do
+    attr "f", variant: :hash, type: :uuid do
+      key_type :string
       default do # block form
         { k1: "a", k2: "b" }
       end

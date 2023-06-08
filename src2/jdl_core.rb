@@ -26,7 +26,7 @@ module JABA
 
   AttributeSingleDefinitionAPI = APIBuilder.define().include(AttributeDefinitionCommonAPI)
   AttributeArrayDefinitionAPI = APIBuilder.define().include(AttributeDefinitionCommonAPI)
-  AttributeHashDefinitionAPI = APIBuilder.define(:validate_key).include(AttributeDefinitionCommonAPI)
+  AttributeHashDefinitionAPI = APIBuilder.define(:key_type, :validate_key).include(AttributeDefinitionCommonAPI)
 
   @@core_api_blocks = []
   @@current_api_blocks = []
@@ -150,7 +150,7 @@ module JABA
       end
     end
 
-    def set_attr(path, variant: :single, type: :null, key_type: nil, &block)
+    def set_attr(path, variant: :single, type: :null, &block)
       api_class, def_class = case variant
       when :single
         [AttributeSingleDefinitionAPI, AttributeSingleDefinition]
@@ -169,9 +169,6 @@ module JABA
       attr_def = make_definition(def_class, api_class, attr_name, block) do |ad|
         attr_type = lookup_definition(:attr_types, type, attr_def: ad)
         ad.set_attr_type(attr_type)
-        if variant == :hash
-          ad.set_key_type(key_type)
-        end
       end
 
       if attr_def.has_flag?(:node_option)
