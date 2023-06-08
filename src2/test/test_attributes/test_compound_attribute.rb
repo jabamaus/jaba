@@ -6,8 +6,8 @@ jtest "works with compound as single attribute" do
     attr "cmpd", type: :compound
     attr "cmpd/a" do default 10 end
     attr "cmpd/b"
-    attr_array "cmpd/c" do default [1] end
-    attr_hash "cmpd/d", key_type: :string do default(a: :b) end
+    attr "cmpd/c", variant: :array do default [1] end
+    attr "cmpd/d", variant: :hash, key_type: :string do default(a: :b) end
   end
   op = jaba do
     # check defaults
@@ -89,7 +89,7 @@ jtest "returned values cannot be modified" do
   jdl do
     attr "cmpd1", type: :compound
     attr "cmpd1/cmpd2", type: :compound
-    attr_array "cmpd1/cmpd2/a" do
+    attr "cmpd1/cmpd2/a", variant: :array do
       default [1]
     end
   end
@@ -145,7 +145,7 @@ jtest "does not get copy of common attrs" do
   jdl do
     node :node
     attr "*/common"
-    attr_array "node/cmpd", type: :compound
+    attr "node/cmpd", variant: :array, type: :compound
     attr "node/cmpd/a"
   end
   jaba do
@@ -165,7 +165,7 @@ end
 
 jtest "works with array" do
   jdl do
-    attr_array "cmpd", type: :compound
+    attr "cmpd", variant: :array, type: :compound
     attr "cmpd/a"
     attr "cmpd/b"
   end
@@ -194,7 +194,7 @@ end
 
 jtest "works with hash" do
   jdl do
-    attr_hash "cmpd", type: :compound, key_type: :string
+    attr "cmpd", variant: :hash, type: :compound, key_type: :string
     attr "cmpd/a"
     attr "cmpd/b"
   end

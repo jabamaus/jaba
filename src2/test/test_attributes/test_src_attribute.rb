@@ -18,7 +18,7 @@ end
 jtest "can be specified explicitly even if extension is not in src_ext" do
   make_file("a.cpp", "b.z", "c.z")
   jdl do
-    attr_array :src, type: :src
+    attr :src, variant: :array, type: :src
   end
   str = %q{
     src ["a.cpp", "b.z"]
@@ -42,7 +42,7 @@ end
 
 jtest "fails if explicitly specified files do not exist unless forced" do
   jdl do
-    attr_array :src, type: :src
+    attr :src, variant: :array, type: :src
   end
   dir = __dir__
   op = jaba do
@@ -258,7 +258,7 @@ end
 =end
 jtest "strips duplicate src" do
   jdl do
-    attr_array :src, type: :src
+    attr :src, variant: :array, type: :src
   end
   # It strips items that are exactly the same, and warns
   op = jaba do
@@ -288,7 +288,7 @@ jtest "supports excludes" do
   td = temp_dir
   jdl do
     node :node
-    attr_array "node/src", type: :src do
+    attr "node/src", variant: :array, type: :src do
       base_attr :root
     end
   end

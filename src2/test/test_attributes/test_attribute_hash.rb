@@ -143,7 +143,7 @@ jtest "checks for accessing uninitialised attributes" do
   jdl do
     attr :a
     attr :b
-    attr_hash :c, key_type: :string do
+    attr :c, variant: :hash, key_type: :string do
       default do
         { k1: a, k2: b }
       end
@@ -177,7 +177,7 @@ end
 
 jtest "can be set" do
   jdl do
-    attr_hash "a", key_type: :string
+    attr "a", variant: :hash, key_type: :string
     attr "b", type: :choice do
       items [1, 2]
     end
@@ -226,11 +226,11 @@ end
 
 jtest "is not possible to modify returned hash" do
   jdl do
-    attr_hash "a", key_type: :string
-    attr_hash "b", key_type: :string do
+    attr "a", variant: :hash, key_type: :string
+    attr "b", variant: :hash, key_type: :string do
       default({ k: :v })
     end
-    attr_hash "c", key_type: :string do
+    attr "c", variant: :hash, key_type: :string do
       default do
         { k: :v }
       end
@@ -256,12 +256,12 @@ end
 jtest "disallows no_sort and allow_dupes flags" do
   jdl do
     JTest.assert_jaba_error "Error at #{JTest.src_loc("366C343A")}: ':no_sort' attribute definition flag invalid: only allowed on array attributes." do
-      attr_hash "a", key_type: :string do
+      attr "a", variant: :hash, key_type: :string do
         flags :no_sort # 366C343A
       end
     end
     JTest.assert_jaba_error "Error at #{JTest.src_loc("2E453551")}: ':allow_dupes' attribute definition flag invalid: only allowed on array attributes." do
-      attr_hash "b", key_type: :string do
+      attr "b", variant: :hash, key_type: :string do
         flags :allow_dupes # 2E453551
       end
     end
@@ -270,7 +270,7 @@ end
 
 jtest "can accept flag options" do
   jdl do
-    attr_hash :a, key_type: :string do
+    attr :a, variant: :hash, key_type: :string do
       flag_options :f1, :f2, :f3
     end
   end
@@ -288,7 +288,7 @@ end
 
 jtest "can accept value options" do
   jdl do
-    attr_hash :a, key_type: :string do
+    attr :a, variant: :hash, key_type: :string do
       value_option :kv1
       value_option :kv2
     end
@@ -305,7 +305,7 @@ end
 
 jtest "can accept value and flag options" do
   jdl do
-    attr_hash :a, key_type: :string do
+    attr :a, variant: :hash, key_type: :string do
       value_option :kv1
       value_option :kv2
       flag_options :flag_opt1, :flag_opt2, :flag_opt3
@@ -327,7 +327,7 @@ end
 
 jtest "validates key value supplied correctly" do
   jdl do
-    attr_hash :a, key_type: :string
+    attr :a, variant: :hash, key_type: :string
   end
   jaba do
     JTest.assert_jaba_error "Error at #{JTest.src_loc("E4932204")}: 'a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"" do
@@ -344,7 +344,7 @@ jtest "supports setting a validator" do
   assert_jaba_error "Error at #{src_loc("95BFB40C")}: 'validate_key' property undefined." do
     jaba(barebones: true) do
       type :test do
-        attr_array :a do
+        attr :a, variant: :array do
           validate_key do |key| # 95BFB40C
           end
         end

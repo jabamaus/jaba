@@ -29,7 +29,7 @@ jtest "requires default to be in items" do
     jaba do end
   end
   jdl do
-    attr_array :a, type: :choice do
+    attr :a, variant: :array, type: :choice do
       items [1, 2, 3]
       default [1, 2, 4] # CDCFF3A7
     end
@@ -44,7 +44,7 @@ jtest "rejects invalid choices" do
     attr :a, type: :choice do
       items [:a, :b, :c]
     end
-    attr_array :b, type: :choice do
+    attr :b, variant: :array, type: :choice do
       items [:a, :b, :c]
     end
   end

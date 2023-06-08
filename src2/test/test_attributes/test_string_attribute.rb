@@ -12,8 +12,8 @@ end
 jtest "accepts symbols but stored as strings" do
   jdl do
     attr :a, type: :string
-    attr_array :b, type: :string
-    attr_hash :c, key_type: :string, type: :string
+    attr :b, variant: :array, type: :string
+    attr :c, variant: :hash, key_type: :string, type: :string
   end
   jaba do
     a :b
@@ -28,8 +28,8 @@ end
 jtest "supports standard ops" do
   jdl do
     attr :a, type: :string
-    attr_array :b, type: :string
-    attr_hash :c, key_type: :string, type: :string
+    attr :b, variant: :array, type: :string
+    attr :c, variant: :hash, key_type: :string, type: :string
   end
   jaba do
     b [:a, :b, :c, :d], exclude: [:b, :d]
@@ -67,8 +67,8 @@ end
 jtest "can be set from cmdline" do
   jdl do
     attr :a, type: :string
-    attr_array :b, type: :string
-    attr_hash :c, key_type: :string, type: :string
+    attr :b, variant: :array, type: :string
+    attr :c, variant: :hash, key_type: :string, type: :string
   end
   jaba(global_attrs_from_cmdline: { "a": "b", "b": ["c", "d"], "c": ["e", "f", "g", "h"] }) do
     a.must_equal "b"

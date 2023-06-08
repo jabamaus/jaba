@@ -2,14 +2,14 @@ jtest "array supports a default" do
   jdl do
     # Validates default is an array
     JTest.assert_jaba_error "Error at #{JTest.src_loc("C3E1CABD")}: 'a' array attribute invalid - 'default' expects an array but got '{:a=>:b}'." do
-      attr_array :a do
+      attr :a, variant: :array do
         default({ a: :b }) # C3E1CABD
       end
     end
 
     # Validates default elements respect attribute type
     JTest.assert_jaba_error "Error at #{JTest.src_loc("7F5657F4")}: 'b' array attribute invalid - 'default' invalid - 'not a bool' is a string - expected [true|false]" do
-      attr_array :b, type: :bool do
+      attr :b, variant: :array, type: :bool do
         default ["not a bool"] # 7F5657F4
       end
     end
@@ -17,7 +17,7 @@ jtest "array supports a default" do
   jaba do end
 
   jdl do
-    attr_array :c do
+    attr :c, variant: :array do
       default do # 9F62104F
         1
       end
@@ -32,7 +32,7 @@ jtest "array supports a default" do
   end
 
   jdl do
-    attr_array :d do
+    attr :d, variant: :array do
       default 1 # 1E5D0C2E
     end
   end
@@ -41,7 +41,7 @@ jtest "array supports a default" do
   end
 
   jdl do
-    attr_array :d, type: :bool do # 33EF0612
+    attr :d, variant: :array, type: :bool do # 33EF0612
       default do
         ["not a bool"] # Validates default elements respect attribute type when block form used
       end
@@ -53,28 +53,28 @@ jtest "array supports a default" do
   end
 
   jdl do
-    attr_array :a, type: :int
-    attr_array :b, type: :int do
+    attr :a, variant: :array, type: :int
+    attr :b, variant: :array, type: :int do
       default [1, 2, 3] # value style default
     end
-    attr_array :c, type: :int do
+    attr :c, variant: :array, type: :int do
       default do # block style default
         [4, 5, 6]
       end
     end
-    attr_array :d, type: :int do
+    attr :d, variant: :array, type: :int do
       default do # block style default referencing other attrs
         b + c
       end
     end
-    attr_array :e, type: :int do
+    attr :e, variant: :array, type: :int do
       default [7, 8]
     end
-    attr_array :f, type: :int do
+    attr :f, variant: :array, type: :int do
       default [9]
       flags :overwrite_default
     end
-    attr_array :g, type: :int do
+    attr :g, variant: :array, type: :int do
       default [11]
       flags :overwrite_default
     end
@@ -109,7 +109,7 @@ jtest "checks for accessing uninitialised attributes" do
   jdl do
     attr :a
     attr :b
-    attr_array :c do
+    attr :c, variant: :array do
       default do
         [a, b]
       end
@@ -125,7 +125,7 @@ jtest "checks for accessing uninitialised attributes" do
   end
 
   jdl do
-    attr_array :a
+    attr :a, variant: :array
     attr :b do
       default do
         a[0]
@@ -143,7 +143,7 @@ end
 
 jtest "allows setting value with block" do
   jdl do
-    attr_array :a
+    attr :a, variant: :array
     attr :b
     attr :c
     attr :d
@@ -165,10 +165,10 @@ end
 
 jtest "is not possible to modify returned array" do
   jdl do
-    attr_array :a do
+    attr :a, variant: :array do
       default [1]
     end
-    attr_array :b do
+    attr :b, variant: :array do
       default do
         [2]
       end
@@ -193,12 +193,12 @@ end
 
 jtest "handles duplicates" do
   jdl do
-    attr_array :a # Duplicates will be stripped by default
-    attr_array :b do
+    attr :a, variant: :array # Duplicates will be stripped by default
+    attr :b, variant: :array do
       flags :allow_dupes
     end
-    attr_array :c, type: :bool
-    attr_array :d
+    attr :c, variant: :array, type: :bool
+    attr :d, variant: :array
   end
   op = jaba do
     a [5, 6, 6, 7, 7, 7, 8] # DD827579
@@ -220,12 +220,12 @@ end
 
 jtest "handles sorting" do
   jdl do
-    attr_array :a
-    attr_array :b
-    attr_array :c
-    attr_array :d
-    attr_array :e, type: :bool
-    attr_array :f do
+    attr :a, variant: :array
+    attr :b, variant: :array
+    attr :c, variant: :array
+    attr :d, variant: :array
+    attr :e, variant: :array, type: :bool
+    attr :f, variant: :array do
       flags :no_sort
     end
   end
@@ -249,7 +249,7 @@ end
 
 jtest "validates element types are valid" do
   jdl do
-    attr_array :a, type: :bool
+    attr :a, variant: :array, type: :bool
   end
   assert_jaba_error "Error at #{src_loc("F18B556A")}: 'a' attribute element invalid - 'true' is a string - expected [true|false]" do
     jaba do
@@ -261,10 +261,10 @@ end
 
 jtest "supports prefix and postfix options" do
   jdl do
-    attr_array :a do
+    attr :a, variant: :array do
       flags :no_sort, :allow_dupes
     end
-    attr_array :b do
+    attr :b, variant: :array do
       default ["a"]
     end
   end
@@ -285,7 +285,7 @@ end
 
 jtest "supports immediately deleting elements" do
   jdl do
-    attr_array :a
+    attr :a, variant: :array
   end
   jaba do
     a [:a, :b], delete: [:a, :b]
@@ -336,7 +336,7 @@ end
 
 jtest "fails if deleting with regex on non-strings" do
   jdl do
-    attr_array :a
+    attr :a, variant: :array
   end
   jaba do
     JTest.assert_jaba_error "Error at #{JTest.src_loc("2CC0D619")}: delete with a regex can only operate on strings or symbols." do
@@ -347,7 +347,7 @@ end
 
 jtest "warns if nothing deleted" do
   jdl do
-    attr_array :a
+    attr :a, variant: :array
   end
   op = jaba do
     a [1, 2, 3, 4, 43], delete: [7, 8] # D5F5139A
@@ -365,7 +365,7 @@ jtest "gives a copy of value options to each element" do
   opt1 = "opt1"
   opt2 = "opt2"
   jdl do
-    attr_array :a do
+    attr :a, variant: :array do
       value_option :opt1
       value_option :opt2
     end
@@ -412,7 +412,7 @@ end
 
 jtest "supports setting a validator" do
   jdl do
-    attr_array :a do
+    attr :a, variant: :array do
       validate do |val|
         if val == "invalid"
           fail "failed"

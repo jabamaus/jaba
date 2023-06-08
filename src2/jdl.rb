@@ -240,7 +240,7 @@ JABA.define_api do
     end
   end
 
-  attr_hash "vcfiletype", key_type: :ext, type: :string do
+  attr "vcfiletype", variant: :hash, key_type: :ext, type: :string do
     title "Visual C++ file types"
     default({
       ".h" => :ClInclude,
@@ -278,14 +278,14 @@ JABA.define_api do
 
   # Target level attributes, all flagged with :per_target
 
-  attr_array "target/configs", type: :string do
+  attr "target/configs", variant: :array, type: :string do
     title "Build configurations"
     flags :per_target, :overwrite_default
     default [:Debug, :Release]
     example "configs [:debug, :release]"
   end
 
-  attr_array "target/deps", type: :string do
+  attr "target/deps", variant: :array, type: :string do
     title "Target dependencies"
     note 'List of ids of other cpp definitions. When a dependency is specified all the dependency\'s exports ' \
          'will be imported, the library will be linked to and a project level dependency created (unless :soft specified). ' \
@@ -415,22 +415,22 @@ JABA.define_api do
     example "charset :unicode"
   end
 
-  attr_array "target/cflags", type: :string do
+  attr "target/cflags", variant: :array, type: :string do
     title "Raw compiler command line switches"
     flags :per_config, :exportable
   end
 
-  attr_array "target/lflags", type: :string do
+  attr "target/lflags", variant: :array, type: :string do
     title "Raw linker command line switches"
     flags :per_config, :exportable
   end
 
-  attr_array "target/define", type: :string do
+  attr "target/define", variant: :array, type: :string do
     title "Preprocessor defines"
     flags :per_config, :exportable
   end
 
-  attr_array "target/inc", type: :dir do
+  attr "target/inc", variant: :array, type: :dir do
     title "Include paths"
     base_attr :root
     flags :per_config, :no_sort, :exportable
@@ -453,12 +453,12 @@ JABA.define_api do
     example "rtti true"
   end
 
-  attr_array "target/rule", type: :compound do
+  attr "target/rule", variant: :array, type: :compound do
     title "TODO"
     flags :per_config
   end
 
-  attr_array "target/rule/input", type: :src do
+  attr "target/rule/input", variant: :array, type: :src do
     title "TODO"
     base_attr :root
   end
@@ -491,7 +491,7 @@ JABA.define_api do
          "this is a common reason why Visual Studio users are sometimes baffled as to why their custom build tool messages are not being printed."
   end
 
-  attr_array "target/src", type: :src do
+  attr "target/src", variant: :array, type: :src do
     title "Source file specification"
     base_attr :root
     flags :per_config, :exportable
@@ -540,7 +540,7 @@ JABA.define_api do
     }
   end
 
-  attr_array "target/src_ext", type: :ext do
+  attr "target/src_ext", variant: :array, type: :ext do
     title "File extensions used when matching src files"
     note "Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes."
     flags :per_config, :no_sort, :exportable
@@ -552,13 +552,13 @@ JABA.define_api do
     end
   end
 
-  attr_array "target/libs", type: :file do
+  attr "target/libs", variant: :array, type: :file do
     title 'Paths to required non-system libs'
     base_attr :root
     flags :per_config, :no_sort, :no_check_exist, :exportable
   end
 
-  attr_array "target/syslibs", type: :string do
+  attr "target/syslibs", variant: :array, type: :string do
     title 'System libs'
     flags :per_config, :no_sort, :exportable
   end
@@ -629,19 +629,19 @@ JABA.define_api do
     end
   end
 
-  attr_hash "target/vcglobal", key_type: :string, type: :to_s do
+  attr "target/vcglobal", variant: :hash, key_type: :string, type: :to_s do
     title "Address Globals property group in a vcxproj directly"
     value_option :condition
     flags :per_target, :exportable
   end
 
-  attr_hash "target/vc_extension_settings", key_type: :ext, type: :file do
+  attr "target/vc_extension_settings", variant: :hash, key_type: :ext, type: :file do
     title "Path to a .props file"
     flags :per_target
     base_attr :root
   end
 
-  attr_hash "target/vc_extension_targets", key_type: :ext, type: :file do
+  attr "target/vc_extension_targets", variant: :hash, key_type: :ext, type: :file do
     title "Path to a .targets file"
     flags :per_target
     base_attr :root
@@ -682,14 +682,14 @@ JABA.define_api do
     default 3
   end
 
-  attr_array "target/vcnowarn", type: :int do
+  attr "target/vcnowarn", variant: :array, type: :int do
     title "Warnings to disable"
     flags :per_config
     flags :exportable
     example "vcnowarn [4100, 4127, 4244]"
   end
 
-  attr_hash "target/vcfprop", key_type: :string, type: :to_s do
+  attr "target/vcfprop", variant: :hash, key_type: :string, type: :to_s do
     title "Add per-configuration per-file property"
     flags :per_config, :exportable
     validate_key do |key|
@@ -706,7 +706,7 @@ JABA.define_api do
     }
   end
 
-  attr_hash "target/vcprop", key_type: :string, type: :to_s do
+  attr "target/vcprop", variant: :hash, key_type: :string, type: :to_s do
     title "Address per-configuration sections of a vcxproj directly"
     value_option :condition
     flags :per_config, :exportable

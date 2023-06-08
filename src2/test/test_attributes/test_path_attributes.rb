@@ -21,7 +21,7 @@ end
 
 jtest "only array attrs can accept wildcards" do
   jdl do
-    attr_array :files, type: :file
+    attr :files, variant: :array, type: :file
     attr :file, type: :file
   end
   jaba do

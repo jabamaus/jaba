@@ -5,8 +5,6 @@ module JABA
     :global_method,
     :method,
     :attr,
-    :attr_array,
-    :attr_hash,
     :node,
     :translator,
   )
@@ -152,17 +150,66 @@ module JABA
       end
     end
 
-    def set_attr(path, type: :null, &block)
-      process_attr(path, AttributeSingleDefinitionAPI, AttributeSingleDefinition, type, block)
-    end
+    def set_attr(path, variant: :single, type: :null, key_type: nil, &block)
+      api_class, def_class = case variant
+      when :single
+        [AttributeSingleDefinitionAPI, AttributeSingleDefinition]
+      when :array
+        [AttributeArrayDefinitionAPI, AttributeArrayDefinition]
+      when :hash
+        [AttributeHashDefinitionAPI, AttributeHashDefinition]
+      else
+        error("Invalid attribute variant '#{variant.inspect_unquoted}'")
+      end
 
-    def set_attr_array(path, type: :null, &block)
-      process_attr(path, AttributeArrayDefinitionAPI, AttributeArrayDefinition, type, block)
-    end
+      path = validate_path(path)
+      parent_path, attr_name = split_jdl_path(path)
+      node_def = lookup_node_def(parent_path)
 
-    def set_attr_hash(path, key_type: :null, type: :null, &block)
-      process_attr(path, AttributeHashDefinitionAPI, AttributeHashDefinition, type, block) do |attr_def|
-        attr_def.set_key_type(key_type)
+      attr_def = make_definition(def_class, api_class, attr_name, block) do |ad|
+        attr_type = lookup_definition(:attr_types, type, attr_def: ad)
+        ad.set_attr_type(attr_type)
+        if variant == :hash
+          ad.set_key_type(key_type)
+        end
+      end
+
+      if attr_def.has_flag?(:node_option)
+        node_def.option_attr_defs << attr_def
+      else
+        node_def.attr_defs << attr_def
+      end
+
+      parent_class = node_def.api_class
+      error("api class for '#{path}' node was nil") if parent_class.nil?
+
+      if parent_class.method_defined?(attr_name)
+        error("Duplicate '#{path}' attribute registered")
+      end
+      parent_class.define_method(attr_name) do |*args, **kwargs, &attr_block|
+        $last_call_location = ::Kernel.calling_location
+        @node.jdl_process_attr(attr_name, *args, __call_loc: $last_call_location, **kwargs, &attr_block)
+      end
+      case type
+      when :bool
+        parent_class.define_method("#{attr_name}?") do |*args, **kwargs, &attr_block|
+          $last_call_location = ::Kernel.calling_location
+          if !args.empty? || !kwargs.empty? || attr_block
+            JABA.error("'#{attr_name}?' is a read only accessor and does not accept arguments", line: $last_call_location)
+          end
+          @node.jdl_process_attr(attr_name, *args, __call_loc: $last_call_location, **kwargs, &attr_block)
+        end
+      when :compound
+        # Compound attr interface inherits parent nodes interface so it has read only access to its attrs
+        cmp_api = Class.new(parent_class)
+        cmp_api.set_inspect_name(attr_name)
+
+        cmp_def = AttributeGroupDefinition.new
+        cmp_def.instance_variable_set(:@jdl_builder, self)
+        cmp_def.set_api_class(cmp_api)
+        cmp_def.set_parent_node_def(node_def)
+        attr_def.set_compound_def(cmp_def)
+        @path_to_node_def[path] = cmp_def
       end
     end
 
@@ -216,56 +263,6 @@ module JABA
     end
 
     private
-
-    def process_attr(path, api_class, def_class, type_id, block)
-      path = validate_path(path)
-      parent_path, attr_name = split_jdl_path(path)
-      node_def = lookup_node_def(parent_path)
-
-      attr_def = make_definition(def_class, api_class, attr_name, block) do |ad|
-        attr_type = lookup_definition(:attr_types, type_id, attr_def: ad)
-        ad.set_attr_type(attr_type)
-        yield ad if block_given?
-      end
-
-      if attr_def.has_flag?(:node_option)
-        node_def.option_attr_defs << attr_def
-      else
-        node_def.attr_defs << attr_def
-      end
-
-      parent_class = node_def.api_class
-      error("api class for '#{path}' node was nil") if parent_class.nil?
-
-      if parent_class.method_defined?(attr_name)
-        error("Duplicate '#{path}' attribute registered")
-      end
-      parent_class.define_method(attr_name) do |*args, **kwargs, &attr_block|
-        $last_call_location = ::Kernel.calling_location
-        @node.jdl_process_attr(attr_name, *args, __call_loc: $last_call_location, **kwargs, &attr_block)
-      end
-      case type_id
-      when :bool
-        parent_class.define_method("#{attr_name}?") do |*args, **kwargs, &attr_block|
-          $last_call_location = ::Kernel.calling_location
-          if !args.empty? || !kwargs.empty? || attr_block
-            JABA.error("'#{attr_name}?' is a read only accessor and does not accept arguments", line: $last_call_location)
-          end
-          @node.jdl_process_attr(attr_name, *args, __call_loc: $last_call_location, **kwargs, &attr_block)
-        end
-      when :compound
-        # Compound attr interface inherits parent nodes interface so it has read only access to its attrs
-        cmp_api = Class.new(parent_class)
-        cmp_api.set_inspect_name(attr_name)
-
-        cmp_def = AttributeGroupDefinition.new
-        cmp_def.instance_variable_set(:@jdl_builder, self)
-        cmp_def.set_api_class(cmp_api)
-        cmp_def.set_parent_node_def(node_def)
-        attr_def.set_compound_def(cmp_def)
-        @path_to_node_def[path] = cmp_def
-      end
-    end
 
     def process_method(node_def, path, name, block)
       parent_class = node_def.api_class
