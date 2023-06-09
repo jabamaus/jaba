@@ -8,11 +8,13 @@ require_relative "../../jrf/libs/jrfutils/api_builder"
 require_relative "core_ext"
 require_relative "utils"
 require_relative "version"
-require_relative "defs"
-require_relative "jdl_core"
+require_relative "registry"
+require_relative "jdl_builder"
+require_relative "jdl"
 require_relative "file_manager"
 require_relative "node"
 require_relative "attribute_type"
+require_relative "attribute_flags"
 require_relative "attribute"
 require_relative "attribute_array"
 require_relative "attribute_hash"
@@ -45,8 +47,6 @@ module JABA
     c.output
   end
 end
-
-require_relative "jdl"
 
 if __FILE__ == $PROGRAM_NAME
   require_relative "../../jrf/libs/jrfutils/cmdline"

@@ -15,7 +15,7 @@ core
 - Disallow ruby keywords as attr names, eg 'in' fails
 - [BUG] methods should only be callable from their node. At the moment top level methods can be called globally.
 - implement 'virtual' (export only) and general export system
-= [BUG] Fix issue with buildsystem default being different in different files.
+- [BUG] Fix issue with buildsystem default being different in different files.
 
 path attrs/src
 - Support **.h as alternative to **/*.h

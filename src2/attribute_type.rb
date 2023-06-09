@@ -1,11 +1,14 @@
 module JABA
-  class AttributeType < Definition
-    def initialize(default: nil)
-      super()
+
+  class AttributeType
+    def initialize(id, default: nil)
+      @id = id
       @default = default
+      @default.freeze
     end
 
-    def describe = "'#{name.inspect_unquoted}' attribute type"
+    def id = @id
+    def describe = "'#{@id.inspect_unquoted}' attribute type"
     def default = @default
 
     def init_attr_def(attr_def); end            # override as necessary
@@ -14,11 +17,6 @@ module JABA
     def validate_value(attr_def, value); end    # override as necessary
     def map_value(value, attr) = value          # override as necessary
     def map_value_array(value, attr_array, **kwargs) = value    # override as necessary
-
-    def post_create
-      super
-      @default.freeze
-    end
 
     def type_error(value, expected)
       value_class = value.class
@@ -33,12 +31,12 @@ module JABA
     end
   end
 
-  class AttributeTypeNull < AttributeType; end
+  class AttributeTypeNull < AttributeType
+    def initialize = super(:null)
+  end
 
   class AttributeTypeInt < AttributeType
-    def initialize
-      super(default: 0)
-    end
+    def initialize = super(:int, default: 0)
 
     def validate_value(attr_def, value, &block)
       if !value.integer?
@@ -56,9 +54,7 @@ module JABA
   end
 
   class AttributeTypeString < AttributeType
-    def initialize(default: "")
-      super(default: default)
-    end
+    def initialize(id = :string, default: "") = super(id, default: default)
 
     def validate_value(attr_def, value, &block)
       if !value.string? && !value.symbol?
@@ -77,9 +73,7 @@ module JABA
   end
 
   class AttributeTypeTo_s < AttributeType
-    def initialize(default: "")
-      super(default: default)
-    end
+    def initialize(default: "") = super(:to_s, default: default)
 
     def validate_value(attr_def, value, &block)
       if !value.respond_to?(:to_s)
@@ -93,9 +87,7 @@ module JABA
   end
 
   class AttributeTypeBool < AttributeType
-    def initialize
-      super(default: false)
-    end
+    def initialize = super(:bool, default: false)
 
     def value_from_cmdline(str, attr_def)
       case str
@@ -116,8 +108,8 @@ module JABA
   end
 
   class AttributeTypeChoice < AttributeType
-    APIBuilder.add_method(AttributeDefinitionCommonAPI, :items)
-    AttributeDefinition.class_eval do
+    APIBuilder.add_method(AttributeDefCommonAPI, :items)
+    AttributeDef.class_eval do
       def items = @items
 
       def set_items(items)
@@ -125,6 +117,8 @@ module JABA
         @items.concat(items)
       end
     end
+
+    def initialize = super(:choice)
 
     def init_attr_def(attr_def)
       attr_def.instance_variable_set(:@items, [])
@@ -156,12 +150,14 @@ module JABA
   end
 
   class AttributeTypeUuid < AttributeTypeString
+    def initialize = super(:uuid)
     def map_value(value, attr)
       Kernel.generate_uuid(namespace: "JabaAttributeTypeUUID", name: value, braces: true)
     end
   end
 
   class AttributeTypeBasename < AttributeTypeString
+    def initialize = super(:basename)
     def validate_value(attr_def, value)
       super
       if value.contains_slashes?
@@ -171,6 +167,7 @@ module JABA
   end
 
   class AttributeTypeExt < AttributeTypeString
+    def initialize = super(:ext)
     def validate_value(attr_def, value)
       super
       if !value.start_with?(".")
@@ -180,9 +177,9 @@ module JABA
   end
 
   class AttributePathBase < AttributeTypeString
-    # Register base_attr into AttributeDefinition
-    APIBuilder.add_method(AttributeDefinitionCommonAPI, :base_attr)
-    AttributeDefinition.class_eval do
+    # Register base_attr into AttributeDef
+    APIBuilder.add_method(AttributeDefCommonAPI, :base_attr)
+    AttributeDef.class_eval do
       def base_attr = @base_attr
       def set_base_attr(attr_name) = @base_attr = attr_name
     end
@@ -232,15 +229,17 @@ module JABA
     end
   end
 
-  class AttributeTypeFile < AttributePathBase; end
+  class AttributeTypeFile < AttributePathBase
+    def initialize = super(:file)
+  end
 
   class AttributeTypeDir < AttributePathBase
-    def initialize
-      super(default: ".")
-    end
+    def initialize = super(:dir, default: ".")
   end
 
   class AttributeTypeSrc < AttributePathBase
+    def initialize = super(:src)
+
     def init_attr_def(attr_def)
       super
       attr_def.set_value_option(:vpath)
@@ -276,6 +275,8 @@ module JABA
   end
 
   class AttributeTypeCompound < AttributeType
+    def initialize = super(:compound)
+      
     def init_attr_def(attr_def)
       attr_def.set_flags(:no_sort) if attr_def.array?
     end
