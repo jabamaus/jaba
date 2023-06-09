@@ -108,8 +108,8 @@ module JABA
   end
 
   class AttributeTypeChoice < AttributeType
-    APIBuilder.add_method(AttributeDefCommonAPI, :items)
-    AttributeDef.class_eval do
+    APIBuilder.add_method(AttributeBaseDef::API, :items)
+    AttributeBaseDef.class_eval do
       def items = @items
 
       def set_items(items)
@@ -178,8 +178,8 @@ module JABA
 
   class AttributePathBase < AttributeTypeString
     # Register base_attr into AttributeDef
-    APIBuilder.add_method(AttributeDefCommonAPI, :base_attr)
-    AttributeDef.class_eval do
+    APIBuilder.add_method(AttributeBaseDef::API, :base_attr)
+    AttributeBaseDef.class_eval do
       def base_attr = @base_attr
       def set_base_attr(attr_name) = @base_attr = attr_name
     end

@@ -1,29 +1,4 @@
 module JABA
-  JDLTopLevelAPI = APIBuilder.define(
-    :global_method,
-    :method,
-    :attr,
-    :node,
-    :translator,
-  )
-  CommonAPI = APIBuilder.define_module(:title, :note, :example)
-  MethodDefAPI = APIBuilder.define(:on_called).include(CommonAPI)
-  NodeDefAPI = APIBuilder.define().include(CommonAPI)
-
-  # Additional attribute type-specific properties are added by attribute types
-  AttributeDefCommonAPI = APIBuilder.define_module(
-    :flags,
-    :flag_options,
-    :value_option,
-    :default,
-    :validate,
-    :on_set,
-  ).include(CommonAPI)
-
-  AttributeSingleDefAPI = APIBuilder.define().include(AttributeDefCommonAPI)
-  AttributeArrayDefAPI = APIBuilder.define().include(AttributeDefCommonAPI)
-  AttributeHashDefAPI = APIBuilder.define(:key_type, :validate_key).include(AttributeDefCommonAPI)
-
   @@core_api_blocks = []
   @@current_api_blocks = []
 
@@ -43,6 +18,14 @@ module JABA
   end
 
   class JDLBuilder
+    TopLevelAPI = APIBuilder.define(
+      :global_method,
+      :method,
+      :attr,
+      :node,
+      :translator,
+    )
+
     def initialize(api_blocks = JABA.core_api_blocks)
       @building_jdl = false
       @path_to_node_def = {}
@@ -65,26 +48,26 @@ module JABA
       @top_level_api_class.set_inspect_name("TopLevelAPI")
 
       @common_attrs_module = Module.new
-      @common_attr_node_def = make_definition(NodeDef, nil, "common_attrs", nil) do |d|
+      @common_attr_node_def = make_definition(NodeDef, "common_attrs", nil) do |d|
         d.set_title("TODO")
         d.set_api_class(@common_attrs_module)
       end
 
       @common_methods_module = Module.new
-      @common_methods_node_def = make_definition(NodeDef, nil, "common_methods", nil) do |d|
+      @common_methods_node_def = make_definition(NodeDef, "common_methods", nil) do |d|
         d.set_title("TODO")
         d.set_api_class(@common_methods_module)
       end
 
       @global_methods_module = Module.new
-      @global_methods_node_def = make_definition(NodeDef, nil, "global_methods", nil) do |d|
+      @global_methods_node_def = make_definition(NodeDef, "global_methods", nil) do |d|
         d.set_title("TODO")
         d.set_api_class(@global_methods_module)
       end
       @base_api_class.include(@global_methods_module)
 
       @path_to_node_def["*"] = @common_attr_node_def
-      @top_level_node_def = make_definition(NodeDef, nil, "top_level", nil) do |d|
+      @top_level_node_def = make_definition(NodeDef, "top_level", nil) do |d|
         d.set_title("TODO")
         d.set_api_class(@top_level_api_class)
       end
@@ -92,7 +75,7 @@ module JABA
 
       @building_jdl = true
       api_blocks.each do |b|
-        JDLTopLevelAPI.execute(self, &b)
+        TopLevelAPI.execute(self, &b)
       end
       @building_jdl = false
       @path_to_node_def.each do |path, node_def|
@@ -120,7 +103,7 @@ module JABA
       api_class.include(@common_attrs_module)
       api_class.include(@common_methods_module)
 
-      node_def = make_definition(NodeDef, NodeDefAPI, name, block)
+      node_def = make_definition(NodeDef, name, block)
       node_def.set_api_class(api_class)
 
       @path_to_node_def[path] = node_def
@@ -134,13 +117,13 @@ module JABA
     end
 
     def set_attr(path, variant: :single, type: :null, &block)
-      api_class, def_class = case variant
+      def_class = case variant
       when :single
-        [AttributeSingleDefAPI, AttributeSingleDef]
+        AttributeSingleDef
       when :array
-        [AttributeArrayDefAPI, AttributeArrayDef]
+        AttributeArrayDef
       when :hash
-        [AttributeHashDefAPI, AttributeHashDef]
+        AttributeHashDef
       else
         error("Invalid attribute variant '#{variant.inspect_unquoted}'")
       end
@@ -149,7 +132,7 @@ module JABA
       parent_path, attr_name = split_jdl_path(path)
       node_def = lookup_node_def(parent_path)
 
-      attr_def = make_definition(def_class, api_class, attr_name, block) do |ad|
+      attr_def = make_definition(def_class, attr_name, block) do |ad|
         ad.set_attr_type(type)
       end
 
@@ -228,7 +211,7 @@ module JABA
         error("Duplicate '#{path}' method registered")
       end
 
-      meth_def = make_definition(MethodDef, MethodDefAPI, name, block)
+      meth_def = make_definition(MethodDef, name, block)
       node_def.method_defs << meth_def
 
       parent_class.define_method(name) do |*args, **kwargs, &meth_block|
@@ -245,13 +228,13 @@ module JABA
       end
     end
 
-    def make_definition(klass, api, name, block)
+    def make_definition(klass, name, block)
       d = klass.new
       d.instance_variable_set(:@jdl_builder, self)
       d.instance_variable_set(:@name, name)
       d.instance_variable_set(:@src_loc, APIBuilder.last_call_location)
       yield d if block_given?
-      api.execute(d, &block) if block
+      klass.const_get("API").execute(d, &block) if block
       d.post_create
       d
     end
@@ -296,6 +279,8 @@ module JABA
   end
 
   class JDLDefinition
+    API = APIBuilder.define_module(:title, :note, :example)
+
     def initialize
       @jdl_builder = nil # set by JDLBuilder
       @src_loc = nil # Set by JDLBuilder
@@ -365,6 +350,8 @@ module JABA
   end
 
   class NodeDef < AttributeGroupDef
+    API = APIBuilder.define().include(JDLDefinition::API)
+
     def initialize
       super()
       @child_node_defs = []
@@ -374,6 +361,7 @@ module JABA
   end
 
   class MethodDef < JDLDefinition
+    API = APIBuilder.define(:on_called).include(JDLDefinition::API)
     def initialize
       super()
       @on_called = nil
@@ -384,7 +372,18 @@ module JABA
     def on_called = @on_called
   end
 
-  class AttributeDef < JDLDefinition
+  class AttributeBaseDef < JDLDefinition
+
+    # Additional attribute type-specific properties are added by attribute types
+    API = APIBuilder.define_module(
+      :flags,
+      :flag_options,
+      :value_option,
+      :default,
+      :validate,
+      :on_set,
+    ).include(JDLDefinition::API)
+
     def initialize(variant)
       super()
       @variant = variant
@@ -495,7 +494,9 @@ module JABA
     def validate_value(new_val); end # Override
   end
 
-  class AttributeSingleDef < AttributeDef
+  class AttributeSingleDef < AttributeBaseDef
+    API = APIBuilder.define().include(AttributeBaseDef::API)
+    
     def initialize
       super(:single)
     end
@@ -530,7 +531,9 @@ module JABA
     end
   end
 
-  class AttributeArrayDef < AttributeDef
+  class AttributeArrayDef < AttributeBaseDef
+    API = APIBuilder.define().include(AttributeBaseDef::API)
+
     def initialize
       super(:array)
     end
@@ -557,7 +560,9 @@ module JABA
     end
   end
 
-  class AttributeHashDef < AttributeDef
+  class AttributeHashDef < AttributeBaseDef
+    API = APIBuilder.define(:key_type, :validate_key).include(AttributeBaseDef::API)
+
     def initialize
       super(:hash)
       @on_validate_key = nil

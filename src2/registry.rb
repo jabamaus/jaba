@@ -30,7 +30,7 @@ module JABA
 
     def define_attr_flag(name, &block)
       fd = AttributeFlag.new(name)
-      FlagDefinitionAPI.execute(fd, &block) if block
+      AttributeFlag::API.execute(fd, &block) if block
       @attr_flags << fd
       @attr_flag_lookup[name] = fd
     end
