@@ -22,7 +22,7 @@ module JABA
     @@standard_jdl_blocks = []
     @@overridden_jdl_blocks = [] # used in testing
 
-    def self.all_attr_types = @@attr_types
+    def self.all_attr_type_names = @@attr_types.map{|at| at.name}
     def self.lookup_attr_type(name, fail_if_not_found: true)
       at = @@attr_type_lookup[name]
       if at.nil? && fail_if_not_found
@@ -75,6 +75,19 @@ module JABA
       @@overridden_jdl_blocks << block
     end
     def self.restore_standard_jdl = @@overridden_jdl_blocks.clear # Used by unit tests
+
+    def self.init
+      attr_types = JABA.constants(false).select{|c| c =~ /^AttributeType./}
+      attr_types.each do |c|
+        klass = JABA.const_get(c)
+        at = klass.new
+        @@attr_types << at
+        @@attr_type_lookup[at.name] = at
+      end
+      @@attr_types.sort_by!(&:name)
+      @@attr_flags.sort_by!(&:name)
+      @@standard_jdl_builder = JDLBuilder.new
+    end
 
     def initialize(&block)
       JABA.set_context(self)
@@ -162,19 +175,6 @@ module JABA
     def do_run
       log "Starting Jaba at #{Time.now}", section: true
       @input_block&.call(input)
-
-      if @@standard_jdl_builder.nil?
-        attr_types = JABA.constants(false).select{|c| c =~ /^AttributeType./}
-        attr_types.each do |c|
-          klass = JABA.const_get(c)
-          at = klass.new
-          @@attr_types << at
-          @@attr_type_lookup[at.name] = at
-        end
-        @@attr_types.sort_by!(&:name)
-        @@attr_flags.sort_by!(&:name)
-        @@standard_jdl_builder = JDLBuilder.new
-      end
 
       @jdl = if !@@overridden_jdl_blocks.empty?
           JDLBuilder.new(@@overridden_jdl_blocks)

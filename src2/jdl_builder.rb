@@ -371,7 +371,7 @@ module JABA
     def set_attr_type(type_id)
       @attr_type = Context.lookup_attr_type(type_id, fail_if_not_found: false)
       if @attr_type.nil?
-        definition_error("'#{type_id.inspect_unquoted}' must be one of #{Context.all_attr_types.map{|af| af.name}}")
+        definition_error("'#{type_id.inspect_unquoted}' must be one of #{Context.all_attr_type_names}")
       end
       @attr_type.init_attr_def(self)
     end
@@ -553,7 +553,7 @@ module JABA
     def set_key_type(type_id)
       @key_type = Context.lookup_attr_type(type_id, fail_if_not_found: false)
       if @key_type.nil?
-        definition_error("'#{type_id.inspect_unquoted}' must be one of #{Context.all_attr_types.map{|af| af.name}}")
+        definition_error("'#{type_id.inspect_unquoted}' must be one of #{Context.all_attr_type_names}")
       end
     end
 

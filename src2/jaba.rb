@@ -38,6 +38,8 @@ module JABA
     attr_reader :raw_message # Basic message without src location. Useful when wrapping exceptions.
   end
 
+  Context.init
+  
   # Jaba entry point. Returns output hash object.
   #
   def self.run(&block)
