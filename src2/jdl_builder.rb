@@ -369,6 +369,9 @@ module JABA
     end
 
     def set_attr_type(type_id)
+      if type_id == :null && !JABA.running_tests?
+        definition_error("'type' must be specified")
+      end
       @attr_type = Context.lookup_attr_type(type_id, fail_if_not_found: false)
       if @attr_type.nil?
         definition_error("'#{type_id.inspect_unquoted}' must be one of #{Context.all_attr_type_names}")
