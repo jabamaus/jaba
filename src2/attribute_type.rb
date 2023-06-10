@@ -1,14 +1,14 @@
 module JABA
 
   class AttributeType
-    def initialize(id, default: nil)
-      @id = id
+    def initialize(name, default: nil)
+      @name = name
       @default = default
       @default.freeze
     end
 
-    def id = @id
-    def describe = "'#{@id.inspect_unquoted}' attribute type"
+    def name = @name
+    def describe = "'#{@name.inspect_unquoted}' attribute type"
     def default = @default
 
     def init_attr_def(attr_def); end            # override as necessary

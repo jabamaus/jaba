@@ -27,7 +27,7 @@ module JABA
     def on_init_attr_def = @on_init_attr_def
   end
 
-  Registry.define_attr_flag :allow_dupes do
+  Context.define_attr_flag :allow_dupes do
     title "Array duplicates strategy"
     note "Allows array attributes to contain duplicates. If not specified duplicates are stripped"
     compatible? do |attr_def|
@@ -37,7 +37,7 @@ module JABA
     end
   end
 
-  Registry.define_attr_flag :exportable do
+  Context.define_attr_flag :exportable do
     title "Attribute is exportable"
     note "Flags an attribute as being able to be exported to dependents. Only array and hash attributes can be flagged with this."
     compatible? do |attr_def|
@@ -50,7 +50,7 @@ module JABA
     end
   end
 
-  Registry.define_attr_flag :no_check_exist do
+  Context.define_attr_flag :no_check_exist do
     title "Do not check that specified paths exist on disk"
     note "Applies to file, dir and src attribute types."
     compatible? do |attr_def|
@@ -62,7 +62,7 @@ module JABA
     end
   end
 
-  Registry.define_attr_flag :no_sort do
+  Context.define_attr_flag :no_sort do
     title "Do not sort array attributes"
     note "Allows array attributes to remain in the order they are set in. If not specified arrays are sorted"
     compatible? do |attr_def|
@@ -72,7 +72,7 @@ module JABA
     end
   end
 
-  Registry.define_attr_flag :node_option do
+  Context.define_attr_flag :node_option do
     title "Flags the attribute as being callable as an option passed into a definition"
     example %Q{
   target :my_app, root: "my_root" do # 'root' attr is flagged with :node_option
@@ -81,7 +81,7 @@ module JABA
     }
   end
 
-  Registry.define_attr_flag :overwrite_default do
+  Context.define_attr_flag :overwrite_default do
     title "If set default is overwritten if set by user else default is extended"
     compatible? do |attr_def|
       if attr_def.single?
@@ -90,20 +90,20 @@ module JABA
     end
   end
 
-  Registry.define_attr_flag :per_target do
+  Context.define_attr_flag :per_target do
     title "Flags attributes inside the target namespace as being per-target rather than per-config"
   end
 
-  Registry.define_attr_flag :per_config do
+  Context.define_attr_flag :per_config do
     title "Flags attributes inside the target namespace as being per-config rather than per-target"
   end
 
-  Registry.define_attr_flag :read_only do
+  Context.define_attr_flag :read_only do
     title "Prevents user from writing to value"
     note "Specifies that the attribute can only be read and not set from user definitions. The value will be initialised inside Jaba"
   end
 
-  Registry.define_attr_flag :required do
+  Context.define_attr_flag :required do
     title "Force user to supply a value"
     note "Specifies that the definition writer must supply a value for this attribute"
     compatible? do |attr_def|

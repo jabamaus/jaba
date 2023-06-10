@@ -13,6 +13,36 @@ module JABA
 
   class Context
     @@core_api_builder = nil
+    @@attr_types = []
+    @@attr_type_lookup = {}
+    @@attr_flags = []
+    @@attr_flag_lookup = {}
+    @@core_object_initialised = false
+
+    def self.all_attr_types = @@attr_types
+    def self.lookup_attr_type(name, fail_if_not_found: true)
+      at = @@attr_type_lookup[name]
+      if at.nil? && fail_if_not_found
+        JABA.error("'#{name.inspect_unquoted}' attribute type not found")
+      end
+      at
+    end
+
+    def self.define_attr_flag(name, &block)
+      fd = AttributeFlag.new(name)
+      AttributeFlag::API.execute(fd, &block)
+      @@attr_flags << fd
+      @@attr_flag_lookup[name] = fd
+    end
+
+    def self.all_attr_flags = @@attr_flags
+    def self.lookup_attr_flag(name, fail_if_not_found: true)
+      af = @@attr_flag_lookup[name]
+      if af.nil? && fail_if_not_found
+        JABA.error("'#{name.inspect_unquoted}' attribute flag not found")
+      end
+      af
+    end
 
     def initialize(&block)
       JABA.set_context(self)
@@ -103,9 +133,20 @@ module JABA
       log "Starting Jaba at #{Time.now}", section: true
       @input_block&.call(input)
 
-      if @@core_api_builder.nil?
+      if !@@core_object_initialised
+        attr_types = JABA.constants(false).select{|c| c =~ /^AttributeType./}
+        attr_types.each do |c|
+          klass = JABA.const_get(c)
+          at = klass.new
+          @@attr_types << at
+          @@attr_type_lookup[at.name] = at
+        end
+        @@attr_types.sort_by!(&:name)
+        @@attr_flags.sort_by!(&:name)
         @@core_api_builder = JDLBuilder.new
+        @@core_object_initialised = true
       end
+      
       @jdl = if !JABA.current_api_blocks.empty?
           JDLBuilder.new(JABA.current_api_blocks)
         else

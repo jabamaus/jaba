@@ -400,7 +400,10 @@ module JABA
     end
 
     def set_attr_type(type_id)
-      @attr_type = Registry.instance.lookup_attr_type(type_id)
+      @attr_type = Context.lookup_attr_type(type_id, fail_if_not_found: false)
+      if @attr_type.nil?
+        definition_error("'#{type_id.inspect_unquoted}' must be one of #{Context.all_attr_types.map{|af| af.name}}")
+      end
       @attr_type.init_attr_def(self)
     end
 
@@ -420,13 +423,16 @@ module JABA
     def hash? = @variant == :hash
     def compound? = type_id == :compound
     def attr_type = @attr_type
-    def type_id = @attr_type.id
+    def type_id = @attr_type.name
 
     def flags = @flags
 
     def set_flags(*flags)
       flags.flatten.each do |f|
-        fd = Registry.instance.lookup_attr_flag(f)
+        fd = Context.lookup_attr_flag(f, fail_if_not_found: false)
+        if fd.nil?
+          definition_error("'#{f.inspect_unquoted}' must be one of #{Context.all_attr_flags.map{|af| af.name}}")
+        end
         fd.on_compatible&.call(self)
         fd.on_init_attr_def&.call(self)
         @flags << f
@@ -575,8 +581,11 @@ module JABA
       set_value_option(:__key)
     end
 
-    def set_key_type(key_type)
-      @key_type = Registry.instance.lookup_attr_type(key_type)
+    def set_key_type(type_id)
+      @key_type = Context.lookup_attr_type(type_id, fail_if_not_found: false)
+      if @key_type.nil?
+        definition_error("'#{type_id.inspect_unquoted}' must be one of #{Context.all_attr_types.map{|af| af.name}}")
+      end
     end
 
     def key_type = @key_type
