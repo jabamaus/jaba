@@ -12,12 +12,15 @@ module JABA
   def self.log(...) = JABA.context.log(...)
 
   class Context
-    @@core_api_builder = nil
     @@attr_types = []
     @@attr_type_lookup = {}
     @@attr_flags = []
     @@attr_flag_lookup = {}
-    @@core_object_initialised = false
+
+    @@standard_jdl_builder = nil
+    @@core_jdl_block = nil
+    @@standard_jdl_blocks = []
+    @@overridden_jdl_blocks = [] # used in testing
 
     def self.all_attr_types = @@attr_types
     def self.lookup_attr_type(name, fail_if_not_found: true)
@@ -44,6 +47,35 @@ module JABA
       af
     end
 
+    def self.define_core_jdl(&block)
+      define_jdl(&block)
+      @@core_jdl_block = block
+    end
+
+    def self.define_jdl(&block)
+      raise "block required" if !block
+      @@standard_jdl_blocks << block
+    end
+
+    def self.standard_jdl_blocks = @@standard_jdl_blocks
+
+    def self.define_jdl_override(level:, &block)
+      raise "block required" if !block
+      @@overridden_jdl_blocks.clear
+      case level
+      when :blank
+        # nothing
+      when :core
+        @@overridden_jdl_blocks << @@core_jdl_block
+      when :full
+        @@overridden_jdl_blocks.concat(@@standard_jdl_blocks)
+      else
+        raise "Invalid jdl override level '#{level.inspect_unquoted}'"
+      end
+      @@overridden_jdl_blocks << block
+    end
+    def self.restore_standard_jdl = @@overridden_jdl_blocks.clear # Used by unit tests
+
     def initialize(&block)
       JABA.set_context(self)
       @warnings = []
@@ -58,7 +90,6 @@ module JABA
       @output = { warnings: @warnings, error: nil }
       @invoking_dir = Dir.getwd.freeze
       @src_root = nil
-      @buildsystem_root = nil
       @file_manager = FileManager.new
       @jdl_file_lookup = {}
       @node_defs = []
@@ -74,7 +105,6 @@ module JABA
     def output = @output
     def invoking_dir = @invoking_dir
     def src_root = @src_root
-    def buildsystem_root = @buildsystem_root
     def file_manager = @file_manager
     def root_node = @root_node
     def begin_jdl = @executing_jdl += 1
@@ -133,7 +163,7 @@ module JABA
       log "Starting Jaba at #{Time.now}", section: true
       @input_block&.call(input)
 
-      if !@@core_object_initialised
+      if @@standard_jdl_builder.nil?
         attr_types = JABA.constants(false).select{|c| c =~ /^AttributeType./}
         attr_types.each do |c|
           klass = JABA.const_get(c)
@@ -143,14 +173,13 @@ module JABA
         end
         @@attr_types.sort_by!(&:name)
         @@attr_flags.sort_by!(&:name)
-        @@core_api_builder = JDLBuilder.new
-        @@core_object_initialised = true
+        @@standard_jdl_builder = JDLBuilder.new
       end
-      
-      @jdl = if !JABA.current_api_blocks.empty?
-          JDLBuilder.new(JABA.current_api_blocks)
+
+      @jdl = if !@@overridden_jdl_blocks.empty?
+          JDLBuilder.new(@@overridden_jdl_blocks)
         else
-          @@core_api_builder
+          @@standard_jdl_builder
         end
 
       init_src_root
@@ -168,8 +197,6 @@ module JABA
           process_load_path(src_root, fail_if_empty: true)
         end
       end
-
-      @buildsystem_root = @root_node[:buildsystem_root]
 
       @node_defs.each do |nd|
         process_node_def(nd)
@@ -475,7 +502,7 @@ module JABA
 
     def term_log
       return if !@log_msgs
-      log_dir = !buildsystem_root.nil? ? buildsystem_root : invoking_dir
+      log_dir = invoking_dir
       log_fn = "#{log_dir}/jaba.log"
       if File.exist?(log_fn)
         File.delete(log_fn)

@@ -17,7 +17,7 @@ end
 
 jtest "can be specified explicitly even if extension is not in src_ext" do
   make_file("a.cpp", "b.z", "c.z")
-  jdl do
+  jdl(level: :core) do
     attr :src, variant: :array, type: :src
   end
   str = %q{
@@ -286,7 +286,7 @@ jtest "supports excludes" do
   files = ['a.cpp', 'b.cpp', 'c.cpp', 'd.x', 'e.y', 'a/b/e.cpp', 'a/b/h.y', 'b/c/d.cpp']
   make_file(*files)
   td = temp_dir
-  jdl do
+  jdl(level: :core) do
     node :node
     attr "node/src", variant: :array, type: :src do
       base_attr :root

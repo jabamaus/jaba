@@ -4,7 +4,6 @@ core
 - Revisit set_to_default and wipe. Have way of clearing to default and clearing fully, but don't count that as set=true
 - Employ did you mean style error reporting
   Error at basic_dll.jaba:8: 'defines' attribute not defined. Did you mean 'define'?
-- move attribute type out of jdl_builder?
 - Add title/example/notes to flag and value option definitions
 - Stronger spec for value_options. Need to flag as array.
 - Validation and documentation specification for method args, similar to attribute options

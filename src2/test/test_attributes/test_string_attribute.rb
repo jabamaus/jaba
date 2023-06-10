@@ -42,7 +42,7 @@ jtest "supports standard ops" do
 end
 
 jtest "can default to id" do
-  jdl do
+  jdl(level: :core) do
     node :node
     attr "node/a", type: :string do
       default do

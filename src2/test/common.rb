@@ -3,8 +3,8 @@ require_relative "../jaba"
 JABA.running_tests!
 
 module JabaTestMethods
-  def jdl(&block)
-    JABA.set_test_api_block(&block)
+  def jdl(level: :blank, &block)
+    JABA::Context.define_jdl_override(level: level, &block)
   end
 
   def jaba(
@@ -29,7 +29,7 @@ module JabaTestMethods
   end
 
   def jtest_post_test
-    JABA.restore_core_api
+    JABA::Context.restore_standard_jdl
   end
 
   def assert_jaba_error(msg, hint: nil, &block)

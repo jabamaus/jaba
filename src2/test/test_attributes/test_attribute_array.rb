@@ -411,7 +411,7 @@ jtest "gives a copy of value options to each element" do
 end
 
 jtest "supports setting a validator" do
-  jdl do
+  jdl(level: :core) do
     attr :a, variant: :array do
       validate do |val|
         if val == "invalid"

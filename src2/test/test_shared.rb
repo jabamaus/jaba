@@ -14,7 +14,7 @@ jtest "includes jaba file when called at file scope" do
   td = temp_dir
   dir = __dir__
 
-  jdl do
+  jdl(level: :core) do
     attr :a, type: :int
     attr :b, type: :int
     attr :c, type: :int
@@ -42,7 +42,7 @@ jtest "includes jaba file when called at file scope" do
 end
 
 jtest "fails if shared definition does not exist" do
-  jdl do
+  jdl(level: :core) do
     node :node
   end
   jaba do
@@ -68,7 +68,7 @@ jtest "fails if shared definition multiply defined" do
 end
 
 jtest "includes things" do
-  jdl do
+  jdl(level: :core) do
     node :node
     attr "node/a"
   end
@@ -87,7 +87,7 @@ jtest "includes things" do
 end
 
 jtest "supports passing keyword args to shared definitions" do
-  jdl do
+  jdl(level: :core) do
     node :node
     attr "node/c"
   end

@@ -2,7 +2,7 @@
 #open_instance 'platform|windows' do
 #  cpp_src_ext ['.def', '.rc']
 #end
-JABA.define_jdl do
+JABA::Context.define_jdl do
   translator :vcxproj_windows do |vcxproj|
     vcglobal :ProjectGuid, vcxproj.guid
     vcglobal :Keyword, "Win32Proj"

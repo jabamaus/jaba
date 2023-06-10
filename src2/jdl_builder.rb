@@ -1,22 +1,4 @@
 module JABA
-  @@core_api_blocks = []
-  @@current_api_blocks = []
-
-  def self.core_api_blocks = @@core_api_blocks
-  def self.current_api_blocks = @@current_api_blocks
-  def self.restore_core_api = @@current_api_blocks.clear # Used by unit tests
-
-  def self.define_jdl(&block)
-    @@core_api_blocks << block
-  end
-
-  def self.set_test_api_block(&block)
-    raise "block required" if !block
-    @@current_api_blocks.clear
-    @@current_api_blocks.concat(@@core_api_blocks)
-    @@current_api_blocks << block
-  end
-
   class JDLBuilder
     TopLevelAPI = APIBuilder.define(
       :global_method,
@@ -26,7 +8,7 @@ module JABA
       :translator,
     )
 
-    def initialize(api_blocks = JABA.core_api_blocks)
+    def initialize(api_blocks = Context.standard_jdl_blocks)
       @building_jdl = false
       @path_to_node_def = {}
       @translator_lookup = {}

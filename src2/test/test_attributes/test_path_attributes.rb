@@ -78,7 +78,7 @@ end
 
 jtest "paths are made absolute" do
   dir = __dir__
-  jdl do
+  jdl(level: :core) do
     node :node
     attr "node/file1", type: :file do
       flags :no_check_exist

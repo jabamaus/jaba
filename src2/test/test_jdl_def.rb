@@ -60,7 +60,7 @@ jtest "checks for duplicate paths" do
 end
 
 jtest "can register methods at top level" do
-  jdl do
+  jdl(level: :core) do
     method :m do
       on_called do Kernel.print "m" end
     end
@@ -166,7 +166,7 @@ jtest "can register attributes into nodes" do
 end
 
 jtest "can register attributes as node options" do
-  jdl do
+  jdl(level: :core) do
     attr "*/common_option" do
       flags :node_option
       default 3

@@ -1,4 +1,4 @@
-JABA.define_jdl do
+JABA::Context.define_core_jdl do
 
   global_method "__dir__" do
     title "Returns the directory of the currently executing .jaba file"
@@ -124,7 +124,9 @@ JABA.define_jdl do
     flags :node_option
   end
 
-  # Target node
+end # end core jdl
+
+JABA::Context.define_jdl do
 
   node "target" do
     title "Define a target"
