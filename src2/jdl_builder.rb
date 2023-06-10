@@ -5,13 +5,11 @@ module JABA
       :method,
       :attr,
       :node,
-      :translator,
     )
 
     def initialize(api_blocks = Context.standard_jdl_blocks)
       @building_jdl = false
       @path_to_node_def = {}
-      @translator_lookup = {}
       @base_api_class = Class.new(BasicObject) do
         undef_method :!, :!=, :==, :equal?, :__id__
 
@@ -172,17 +170,6 @@ module JABA
           lookup_node_def(parent_path)
         end
       process_method(node_def, path, name, block)
-    end
-
-    # TODO: remove
-    def set_translator(id, &block)
-      @translator_lookup[id] = block
-    end
-
-    def lookup_translator(id, fail_if_not_found: true)
-      t = @translator_lookup[id]
-      JABA.error("'#{id.inspect_unquoted}' translator not found") if t.nil? && fail_if_not_found
-      t
     end
 
     private

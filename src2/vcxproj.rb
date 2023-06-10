@@ -10,6 +10,12 @@ module JABA
   class Vcxproj
     include VSUtilities
 
+    @@project_builder = {}
+    @@config_builder = {}
+
+    def self.project_builder(platform, &block) = @@project_builder[platform] = block
+    def self.config_builder(platform, &block) = @@config_builder[platform] = block
+    
     def initialize(target_node)
       @node = target_node
     end
@@ -33,13 +39,17 @@ module JABA
       @file_type_hash = JABA.context.root_node[:vcfiletype]
       @file_to_file_type = {}
 
-      t = @node.node_def.jdl_builder.lookup_translator(:vcxproj_windows)
-      @node.eval_jdl(self, &t)
+      platform = @node[:platform]
+      pb = @@project_builder[platform]
+      JABA.error("No vcxproj project builder for '#{platform.inspect_unquoted}' platform") if pb.nil?
 
-      t = @node.node_def.jdl_builder.lookup_translator(:vcxproj_config_windows)
+      cb = @@config_builder[platform]
+      JABA.error("No vcxproj config builder for '#{platform.inspect_unquoted}' platform") if cb.nil?
+
+      @node.eval_jdl(self, &pb)
 
       each_config do |cfg|
-        cfg.eval_jdl(self, cfg[:type], &t)
+        cfg.eval_jdl(self, cfg[:type], &cb)
         src_attr = cfg.get_attr(:src)
         vcfprop_attr = cfg.get_attr(:vcfprop)
 
