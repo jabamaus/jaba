@@ -285,18 +285,10 @@ end
 
 jtest "supports immediately deleting elements" do
   jdl do
-    attr :a, variant: :array
+    attr :a, variant: :array, type: :int
+    attr :b, variant: :array, type: :string
   end
   jaba do
-    a [:a, :b], delete: [:a, :b]
-    a.must_equal []
-    a [:c, :d, :e]
-    a delete: :d
-    a delete: :e
-    a.must_equal [:c]
-    a delete: :c
-    a.must_equal []
-
     a [1, 2, 3, 4]
     a delete: [2, 3]
     a.must_equal [1, 4]
@@ -304,31 +296,51 @@ jtest "supports immediately deleting elements" do
     a delete: 4
     a.must_equal []
 
+    b ["a", "b"], delete: ["a", "b"]
+    b.must_equal []
+    b ["c", "d", "e"]
+    b delete: "d"
+    b delete: "e"
+    b.must_equal ["c"]
+    b delete: "c"
+    b.must_equal []
+
+    # Delete works with attributes that map values, eg string attribute maps symbols to strings
+    #
+    b [:a, :b], delete: [:a, :b]
+    b.must_equal []
+    b [:c, :d, :e]
+    b delete: :d
+    b delete: :e
+    b.must_equal ["c"]
+    b delete: :c
+    b.must_equal []
+
     # delete works with prefix and postfix options
     #
-    a ["abc", "acc", "adc", "aec"]
-    a delete: ["c", "d"], prefix: "a", postfix: "c"
-    a.must_equal ["abc", "aec"]
-    a delete: ["abc", "aec"]
-    a.must_equal []
+    b ["abc", "acc", "adc", "aec"]
+    b delete: ["c", "d"], prefix: "a", postfix: "c"
+    b.must_equal ["abc", "aec"]
+    b delete: ["abc", "aec"]
+    b.must_equal []
 
     # delete works with regexes
     #
-    a ["one", "two", "three", "four"]
-    a delete: [/o/, "three"]
-    a.must_equal []
+    b ["one", "two", "three", "four"]
+    b delete: [/o/, "three"]
+    b.must_equal []
 
-    a [:one, :two, :three, :four]
-    a delete: [/o/, :three]
-    a.must_equal []
+    b [:one, :two, :three, :four]
+    b delete: [/o/, :three]
+    b.must_equal []
 
     # deletion can be conditional
     #
-    a [:a, :b, :c, :d, :e]
-    a delete: ->(e) { (e == :d) || (e == :c) }
-    a.must_equal [:a, :b, :e]
-    a delete: ->(e) { true }
-    a.must_equal []
+    b ["a", "b", "c", "d", "e"]
+    b delete: ->(e) { (e == "d") || (e == "c") }
+    b.must_equal ["a", "b", "e"]
+    b delete: ->(e) { true }
+    b.must_equal []
     a [1, 2, 3, 4], delete: ->(e) { e > 2 }
     a.must_equal [1, 2]
   end

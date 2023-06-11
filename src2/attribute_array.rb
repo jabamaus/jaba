@@ -88,15 +88,10 @@ module JABA
       end
 
       if delete
-        # TODO: map_value
-        process_removes(Array(delete).map { |r| apply_pre_post_fix(prefix, postfix, r) }, mode: :delete)
+        process_removes(make_removes(delete, at, prefix, postfix, *args, **kwargs), mode: :delete)
       end
       if exclude
-        excludes = Array(exclude).flat_map do |val|
-          val = apply_pre_post_fix(prefix, postfix, val)
-          at.map_value_array(val, self)
-        end
-        @excludes.concat(excludes)
+        @excludes.concat(make_removes(exclude, at, prefix, postfix, *args, **kwargs))
       end
       process_removes(@excludes, mode: :exclude)
 
@@ -170,7 +165,18 @@ module JABA
         e.map_value!(&block)
       end
     end
-    
+
+    def make_removes(values, at, prefix, postfix, *args, **kwargs)
+      Array(values).flat_map do |val|
+        if val.proc? || val.is_a?(Regexp)
+          val
+        else
+          val = apply_pre_post_fix(prefix, postfix, val)
+          Array(at.map_value_array(val, self)).map{|e| make_elem(e, *args, add: false, **kwargs)}
+        end
+      end
+    end
+
     def process_removes(to_remove, mode:)
       if !to_remove.empty?
         n_elems = @elems.size
@@ -185,7 +191,7 @@ module JABA
               end
               val =~ d ? true : false
             else
-              d == val
+              d.value == val
             end
           end
         end
