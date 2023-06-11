@@ -59,21 +59,6 @@ jtest "rejects modifying returned values" do
   end
 end
 
-jtest "rejects modifying read only attributes" do
-  jdl do
-    attr :a do
-      flags :read_only
-      default 1
-    end
-  end
-  assert_jaba_file_error "'a' attribute is read only.", "D4AE68B1" do
-    %Q{
-  a.must_equal(1)
-  a 2 # D4AE68B1
-}
-  end
-end
-
 jtest "supports default value" do
   jdl do
     attr :a

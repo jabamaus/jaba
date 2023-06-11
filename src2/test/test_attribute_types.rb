@@ -1,19 +1,47 @@
-# TODO: should get this dynamically
 ATTR_VARIANTS = [:single, :array, :hash]
-ATTR_TYPES = {
-  basename: "basename",
-  bool: false,
-  choice: :a,
-  compound: nil,
-  dir: "dir",
-  ext: ".ext",
-  file: "file",
-  int: 1,
-  src: "src",
-  string: "string",
-  to_s: "to_s",
-  uuid: "uuid",
-}
+ATTR_TYPES = JABA::Context.all_attr_type_names
+ATTR_TYPES.delete(:null)
+
+module JabaTestMethods
+  def get_default(variant, type)
+    val = case type
+    when :basename
+      "basename"
+    when :bool
+      false
+    when :choice
+      :a
+    when :compound
+      nil
+    when :dir
+      "dir"
+    when :ext
+      ".ext"
+    when :file
+      "file"
+    when :int
+      1
+    when :src
+      "src"
+    when :string
+      "string"
+    when :to_s
+      "to_s"
+    when :uuid
+      "uuid"
+    else
+      raise "unhandled attr type '#{type}'"
+    end
+    case variant
+    when :single
+      val
+    when :array
+      [val]
+    when :hash
+      {key: val}
+    end
+  end
+end
 
 def each_attr
   ATTR_VARIANTS.each do |av|
@@ -62,7 +90,7 @@ jtest "fails if value not supplied when flagged with :required" do
     end
   end
 end
-=begin
+
 jtest "rejects modifying read only attributes" do
   each_attr do |av, at, desc, default_|
     jdl do
@@ -70,14 +98,13 @@ jtest "rejects modifying read only attributes" do
         flags :read_only
         items [:a, :b, :c] if at == :choice
         key_type :string if av == :hash
-        #default default_ 
+        default JTest.get_default(av, at)
       end
     end
-    jaba do
-      JTest.assert_jaba_error "Error at #{JTest.src_loc("D4AE68B1")}: 'a' attribute is read only.", hint: desc do
-        a default_ # D4AE68B1
+    assert_jaba_error "Error at #{JTest.src_loc("D4AE68B1")}: 'a' attribute is read only.", hint: desc do
+      jaba do
+        a JTest.get_default(av, at) # D4AE68B1
       end
     end
   end
 end
-=end
