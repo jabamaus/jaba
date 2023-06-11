@@ -366,7 +366,7 @@ jtest "warns if nothing deleted" do
   end
   w = op[:warnings]
   w.size.must_equal 1
-  w[0].must_equal "Warning at #{src_loc("D5F5139A")}: '[7, 8]' did not delete any elements."
+  w[0].must_equal "Warning at #{src_loc("D5F5139A")}: no elements deleted."
 end
 
 jtest "supports excluding elements" do

@@ -196,7 +196,7 @@ module JABA
           end
         end
         if @elems.size == n_elems
-          JABA.warn("'#{to_remove}' did not #{mode} any elements", line: src_loc)
+          JABA.warn("no elements deleted", line: src_loc)
         end
       end
     end
