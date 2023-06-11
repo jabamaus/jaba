@@ -409,21 +409,3 @@ jtest "gives a copy of value options to each element" do
   opt2val.object_id.wont_equal(opt2.object_id)
   opt2val.must_equal("opt2")
 end
-
-jtest "supports setting a validator" do
-  jdl(level: :core) do
-    attr :a, variant: :array do
-      validate do |val|
-        if val == "invalid"
-          fail "failed"
-        end
-      end
-    end
-  end
-  jaba do
-    a ["val"]
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("78A6546B")}: 'a' attribute invalid - failed." do
-      a ["invalid"] # 78A6546B
-    end
-  end
-end

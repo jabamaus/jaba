@@ -357,56 +357,7 @@ jtest "validates key value supplied correctly" do
   end
 end
 =begin
-jtest "supports setting a validator" do
-  # only hash attr has validate_key property
-  assert_jaba_error "Error at #{src_loc("95BFB40C")}: 'validate_key' property undefined." do
-    jaba(barebones: true) do
-      type :test do
-        attr :a, variant: :array do
-          validate_key do |key| # 95BFB40C
-          end
-        end
-      end
-    end
-  end
-  assert_jaba_error "Error at #{src_loc("52EE0D37")}: 't.a' hash attribute invalid: failed.", trace: [__FILE__, "51591CF8"] do
-    jaba(barebones: true) do
-      type :test do
-        attr_hash :a, key_type: :string do
-          validate_key do |key|
-            if key == "invalid"
-              fail "failed" # 52EE0D37
-            end
-          end
-        end
-      end
-      test :t do
-        a "k1", :v
-        a "invalid", :v # 51591CF8
-      end
-    end
-  end
-
-  assert_jaba_error "Error at #{src_loc("A01B3D5E")}: 't.a' hash attribute invalid: failed.", trace: [__FILE__, "AC0009E0"] do
-    jaba(barebones: true) do
-      type :test do
-        attr_hash :a, key_type: :symbol do
-          validate do |val|
-            if val == "invalid"
-              fail "failed" # A01B3D5E
-            end
-          end
-        end
-      end
-      test :t do
-        a :k, :v
-        a :k, "invalid" # AC0009E0
-      end
-    end
-  end
-end
-
-# TODO: test wipe
+# TODO: test clear
 
 jtest "supports on_set hook" do
   jaba(barebones: true) do

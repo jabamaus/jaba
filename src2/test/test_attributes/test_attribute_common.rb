@@ -1,9 +1,20 @@
-ATTR_VARIANTS = [:single, :array, :hash]
-ATTR_TYPES = JABA::Context.all_attr_type_names
-ATTR_TYPES.delete(:null)
-
 module JabaTestMethods
-  def get_default(variant, type)
+  ATTR_VARIANTS = [:single, :array, :hash]
+  ATTR_TYPES = JABA::Context.all_attr_type_names
+  ATTR_TYPES.delete(:null)
+
+  def coerce_to_variant(variant, val)
+    case variant
+    when :single
+      val
+    when :array
+      [val]
+    when :hash
+      {key: val}
+    end
+  end
+
+  def make_args(variant, type, include_option: false, single: false)
     val = case type
     when :basename
       "basename"
@@ -32,21 +43,23 @@ module JabaTestMethods
     else
       raise "unhandled attr type '#{type}'"
     end
-    case variant
-    when :single
-      val
-    when :array
-      [val]
-    when :hash
-      {key: val}
+    return val if single
+    args = []
+    args << coerce_to_variant(variant, val)
+    if include_option
+      case type
+      when :src
+        args << :force
+      end
     end
+    args
   end
-end
 
-def each_attr
-  ATTR_VARIANTS.each do |av|
-    ATTR_TYPES.each do |at, default|
-      yield av, at, "(#{at} #{av})", default
+  def each_attr
+    ATTR_VARIANTS.each do |av|
+      ATTR_TYPES.each do |at, default|
+        yield av, at, "(#{at} #{av})", default
+      end
     end
   end
 end
@@ -98,12 +111,45 @@ jtest "rejects modifying read only attributes" do
         flags :read_only
         items [:a, :b, :c] if at == :choice
         key_type :string if av == :hash
-        default JTest.get_default(av, at)
+        default *JTest.make_args(av, at)
       end
     end
     assert_jaba_error "Error at #{JTest.src_loc("D4AE68B1")}: 'a' attribute is read only.", hint: desc do
       jaba do
-        a JTest.get_default(av, at) # D4AE68B1
+        a *JTest.make_args(av, at) # D4AE68B1
+      end
+    end
+  end
+end
+
+jtest "supports setting a validator" do
+  each_attr do |av, at, desc|
+    jdl(level: :core) do
+      attr :a, variant: av, type: at do
+        items [:a, :b, :c] if at == :choice
+        key_type :string if av == :hash
+        validate do |val|
+          fail "failed"
+        end
+      end
+      if av == :hash
+        attr :b, variant: av, type: at do
+          items [:a, :b, :c] if at == :choice
+          key_type :string if av == :hash
+          validate_key do |key|
+            fail "key failed"
+          end
+        end
+      end
+    end
+    jaba do
+      JTest.assert_jaba_error "Error at #{JTest.src_loc("78A6546B")}: 'a' attribute invalid - failed.", hint: desc do
+        a *JTest.make_args(av, at, include_option: true) # 78A6546B
+      end
+      if av == :hash
+        JTest.assert_jaba_error "Error at #{JTest.src_loc("2EDD4A7C")}: 'b' attribute invalid - key failed.", hint: desc do
+          b *JTest.make_args(av, at, include_option: true) # 2EDD4A7C
+        end
       end
     end
   end
