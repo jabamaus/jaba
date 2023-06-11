@@ -1,5 +1,4 @@
 JABA::Context.define_core_jdl do
-
   global_method "__dir__" do
     title "Returns the directory of the currently executing .jaba file"
   end
@@ -42,7 +41,7 @@ JABA::Context.define_core_jdl do
       JABA.context.root_node[:platform] == :windows
     end
   end
-  
+
   # Top level methods
 
   method "glob" do
@@ -123,11 +122,9 @@ JABA::Context.define_core_jdl do
     title "TODO"
     flags :node_option
   end
-
 end # end core jdl
 
 JABA::Context.define_jdl do
-
   node "target" do
     title "Define a target"
     note "Split into 'target' level attributes and 'config' level attributes"
@@ -145,8 +142,8 @@ JABA::Context.define_jdl do
   attr "target/deps", variant: :array, type: :string do
     title "Target dependencies"
     note 'List of ids of other cpp definitions. When a dependency is specified all the dependency\'s exports ' \
-         'will be imported, the library will be linked to and a project level dependency created (unless :soft specified). ' \
-         'To prevent linking specify :nolink - useful if only headers are required. A hard dependency is the default.' \
+         "will be imported, the library will be linked to and a project level dependency created (unless :soft specified). " \
+         "To prevent linking specify :nolink - useful if only headers are required. A hard dependency is the default." \
          'This can be used for \'header only\' dependencies'
     flags :per_target
     flag_options :hard, :soft, :nolink
@@ -410,13 +407,13 @@ JABA::Context.define_jdl do
   end
 
   attr "target/libs", variant: :array, type: :file do
-    title 'Paths to required non-system libs'
+    title "Paths to required non-system libs"
     base_attr :root
     flags :per_config, :no_sort, :no_check_exist, :exportable
   end
 
   attr "target/syslibs", variant: :array, type: :string do
-    title 'System libs'
+    title "System libs"
     flags :per_config, :no_sort, :exportable
   end
 

@@ -10,39 +10,39 @@ module JabaTestMethods
     when :array
       [val]
     when :hash
-      {key: val}
+      { key: val }
     end
   end
 
   def make_args(variant, type, include_option: false, single: false)
     val = case type
-    when :basename
-      "basename"
-    when :bool
-      false
-    when :choice
-      :a
-    when :compound
-      nil
-    when :dir
-      "dir"
-    when :ext
-      ".ext"
-    when :file
-      "file"
-    when :int
-      1
-    when :src
-      "src"
-    when :string
-      "string"
-    when :to_s
-      "to_s"
-    when :uuid
-      "uuid"
-    else
-      raise "unhandled attr type '#{type}'"
-    end
+      when :basename
+        "basename"
+      when :bool
+        false
+      when :choice
+        :a
+      when :compound
+        nil
+      when :dir
+        "dir"
+      when :ext
+        ".ext"
+      when :file
+        "file"
+      when :int
+        1
+      when :src
+        "src"
+      when :string
+        "string"
+      when :to_s
+        "to_s"
+      when :uuid
+        "uuid"
+      else
+        raise "unhandled attr type '#{type}'"
+      end
     return val if single
     args = []
     args << coerce_to_variant(variant, val)

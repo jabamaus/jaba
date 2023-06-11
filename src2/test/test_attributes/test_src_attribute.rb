@@ -283,7 +283,7 @@ jtest "strips duplicate src" do
 end
 
 jtest "supports excludes" do
-  files = ['a.cpp', 'b.cpp', 'c.cpp', 'd.x', 'e.y', 'a/b/e.cpp', 'a/b/h.y', 'b/c/d.cpp']
+  files = ["a.cpp", "b.cpp", "c.cpp", "d.x", "e.y", "a/b/e.cpp", "a/b/h.y", "b/c/d.cpp"]
   make_file(*files)
   td = temp_dir
   jdl(level: :core) do
@@ -294,16 +294,16 @@ jtest "supports excludes" do
   end
   jaba do
     node :n, root: td do
-      src ['a.cpp', 'b.cpp', 'c.cpp', 'd.x', 'e.y', 'a/b/e.cpp', 'a/b/h.y', 'b/c/d.cpp']
+      src ["a.cpp", "b.cpp", "c.cpp", "d.x", "e.y", "a/b/e.cpp", "a/b/h.y", "b/c/d.cpp"]
       src exclude: [
-        'b.cpp', # exclude explicit file
-        '*.x', # exclude with glob match 
-        'a/**/*.cpp', # exclude with glob match recursively
-        'b' # exclude whole dir. Equivalent to b/**/*
+        "b.cpp", # exclude explicit file
+        "*.x", # exclude with glob match
+        "a/**/*.cpp", # exclude with glob match recursively
+        "b", # exclude whole dir. Equivalent to b/**/*
       ]
       src.must_equal [
         "#{td}/a.cpp",
-        "#{td}/c.cpp", 
+        "#{td}/c.cpp",
         "#{td}/e.y",
         "#{td}/a/b/h.y",
       ]

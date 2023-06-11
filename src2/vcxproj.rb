@@ -15,7 +15,7 @@ module JABA
 
     def self.project_builder(platform, &block) = @@project_builder[platform] = block
     def self.config_builder(platform, &block) = @@config_builder[platform] = block
-    
+
     def initialize(target_node)
       @node = target_node
     end
@@ -311,7 +311,7 @@ module JABA
               w << "    <ProjectReference Include=\"#{proj.vcxproj_file.relative_path_from(projdir, backslashes: true)}\">"
               w << "      <Project>#{proj.guid}</Project>"
               # TODO: reference properties
-              w << '    </ProjectReference>'
+              w << "    </ProjectReference>"
             end
           end
         end

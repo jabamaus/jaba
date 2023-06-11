@@ -10,7 +10,7 @@ module JABA
     def has_key?(key) = super(key.to_sym)
     def []=(key, value); super(key.to_sym, value); end
   end
-  
+
   module VSUtilities
     def xml_group(w, tag, label: nil, label_at_end: true, condition: nil, close: false, depth: 1)
       if !close

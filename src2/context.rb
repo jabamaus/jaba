@@ -22,7 +22,7 @@ module JABA
     @@standard_jdl_blocks = []
     @@overridden_jdl_blocks = [] # used in testing
 
-    def self.all_attr_type_names = @@attr_types.map{|at| at.name}
+    def self.all_attr_type_names = @@attr_types.map { |at| at.name }
     def self.lookup_attr_type(name, fail_if_not_found: true)
       at = @@attr_type_lookup[name]
       if at.nil? && fail_if_not_found
@@ -77,7 +77,7 @@ module JABA
     def self.restore_standard_jdl = @@overridden_jdl_blocks.clear # Used by unit tests
 
     def self.init
-      attr_types = JABA.constants(false).select{|c| c =~ /^AttributeType./}
+      attr_types = JABA.constants(false).select { |c| c =~ /^AttributeType./ }
       attr_types.each do |c|
         klass = JABA.const_get(c)
         at = klass.new
@@ -458,7 +458,7 @@ module JABA
       JABA.error("#{target_node.describe} not found") if p.nil? && fail_if_not_found
       p
     end
-    
+
     def register_shared(id, block)
       if lookup_shared(id, fail_if_not_found: false)
         JABA.error("shared definition '#{id.inspect_unquoted}' multiply defined", line: $last_call_location)

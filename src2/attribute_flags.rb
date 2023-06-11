@@ -1,7 +1,7 @@
 module JABA
   class AttributeFlag
     API = APIBuilder.define(:title, :note, :example, :compatible?, :init_attr_def)
-    
+
     def initialize(name)
       @name = name
       @title = nil

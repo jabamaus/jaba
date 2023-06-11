@@ -105,15 +105,15 @@ module JABA
 
     def set_attr(path, variant: :single, type: :null, &block)
       def_class = case variant
-      when :single
-        AttributeSingleDef
-      when :array
-        AttributeArrayDef
-      when :hash
-        AttributeHashDef
-      else
-        error("Invalid attribute variant '#{variant.inspect_unquoted}'")
-      end
+        when :single
+          AttributeSingleDef
+        when :array
+          AttributeArrayDef
+        when :hash
+          AttributeHashDef
+        else
+          error("Invalid attribute variant '#{variant.inspect_unquoted}'")
+        end
 
       path = validate_path(path)
       parent_path, attr_name = split_jdl_path(path)
@@ -338,6 +338,7 @@ module JABA
 
   class MethodDef < JDLDefinition
     API = APIBuilder.define(:on_called).include(JDLDefinition::API)
+
     def initialize
       super()
       @on_called = nil
@@ -410,7 +411,7 @@ module JABA
       flags.flatten.each do |f|
         fd = Context.lookup_attr_flag(f, fail_if_not_found: false)
         if fd.nil?
-          definition_error("'#{f.inspect_unquoted}' must be one of #{Context.all_attr_flags.map{|af| af.name}}")
+          definition_error("'#{f.inspect_unquoted}' must be one of #{Context.all_attr_flags.map { |af| af.name }}")
         end
         fd.on_compatible&.call(self)
         fd.on_init_attr_def&.call(self)
@@ -481,7 +482,7 @@ module JABA
 
   class AttributeSingleDef < AttributeBaseDef
     API = APIBuilder.define().include(AttributeBaseDef::API)
-    
+
     def initialize
       super(:single)
     end

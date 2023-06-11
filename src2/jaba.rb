@@ -39,7 +39,7 @@ module JABA
   end
 
   Context.init
-  
+
   # Jaba entry point. Returns output hash object.
   #
   def self.run(&block)

@@ -172,7 +172,7 @@ module JABA
           val
         else
           val = apply_pre_post_fix(prefix, postfix, val)
-          Array(at.map_value_array(val, self)).map{|e| make_elem(e, *args, add: false, **kwargs)}
+          Array(at.map_value_array(val, self)).map { |e| make_elem(e, *args, add: false, **kwargs) }
         end
       end
     end

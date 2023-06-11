@@ -127,8 +127,8 @@ JABA::Vcxproj.config_builder(:windows) do |vcxproj, cfg_type|
   # Link
   #
   vcprop "#{cfg_type == :lib ? :Lib : :Link}|AdditionalDependencies" do
-    all_libs = libs.map{|l| l.relative_path_from(vcxproj.projdir, backslashes: true)} + syslibs
-    all_libs.vs_join_paths(inherit: '%(AdditionalDependencies)')
+    all_libs = libs.map { |l| l.relative_path_from(vcxproj.projdir, backslashes: true) } + syslibs
+    all_libs.vs_join_paths(inherit: "%(AdditionalDependencies)")
   end
 
   vcprop "#{cfg_type == :lib ? :Lib : :Link}|AdditionalOptions" do

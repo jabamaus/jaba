@@ -49,13 +49,13 @@ module JABA
         else
           key = value
           val = if block_given?
-            value_from_block(&block)
-          else
-            if args.empty?
-              attr_error("#{describe} requires a key/value eg \"#{attr_def.name} :my_key, 'my value'\"")
+              value_from_block(&block)
+            else
+              if args.empty?
+                attr_error("#{describe} requires a key/value eg \"#{attr_def.name} :my_key, 'my value'\"")
+              end
+              args.shift
             end
-            args.shift
-          end
         end
       end
 

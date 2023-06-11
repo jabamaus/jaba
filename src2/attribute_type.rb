@@ -1,5 +1,4 @@
 module JABA
-
   class AttributeType
     def initialize(name, default: nil)
       @name = name
@@ -81,9 +80,7 @@ module JABA
       end
     end
 
-    def map_value(value, attr)
-      value.to_s
-    end
+    def map_value(value, attr) = value.to_s
   end
 
   class AttributeTypeBool < AttributeType
@@ -151,6 +148,7 @@ module JABA
 
   class AttributeTypeUuid < AttributeTypeString
     def initialize = super(:uuid)
+
     def map_value(value, attr)
       Kernel.generate_uuid(namespace: "JabaAttributeTypeUUID", name: value, braces: true)
     end
@@ -158,6 +156,7 @@ module JABA
 
   class AttributeTypeBasename < AttributeTypeString
     def initialize = super(:basename)
+
     def validate_value(attr_def, value)
       super
       if value.contains_slashes?
@@ -168,6 +167,7 @@ module JABA
 
   class AttributeTypeExt < AttributeTypeString
     def initialize = super(:ext)
+
     def validate_value(attr_def, value)
       super
       if !value.empty? && !value.start_with?(".")
@@ -276,7 +276,7 @@ module JABA
 
   class AttributeTypeCompound < AttributeType
     def initialize = super(:compound)
-      
+
     def init_attr_def(attr_def)
       attr_def.set_flags(:no_sort) if attr_def.array?
     end
