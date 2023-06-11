@@ -202,6 +202,10 @@ jtest "can be set" do
     a :k2, :v2
     a[:k2].must_equal(:v2)
 
+    # Can be set by passing a hash
+    a({k3: :v3})
+    a.must_equal({k: :v, k2: :v2, k3: :v3})
+
     # Value can be set in block
     #
     b 1

@@ -37,11 +37,18 @@ module JABA
         if args.empty?
           attr_error("#{describe} requires a key/value eg \"#{attr_def.name} :my_key, 'my value'\"")
         end
-        key = args.shift
+        value = args.shift
 
-        # If block given, use it to evaluate value
-        #
-        val = if block_given?
+        # TODO: support multiple key vals in hash not just first
+        if value.is_a?(Hash)
+          key = value.keys[0]
+          val = value[key]
+          if block_given?
+            attr_error("Cannot pass a hash in conjunction with a block")
+          end
+        else
+          key = value
+          val = if block_given?
             value_from_block(&block)
           else
             if args.empty?
@@ -49,6 +56,7 @@ module JABA
             end
             args.shift
           end
+        end
       end
 
       # If attribute has not been set and there is a default that was specified in block form 'pull' the values in
