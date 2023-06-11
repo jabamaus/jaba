@@ -203,9 +203,7 @@ module JABA
       end
 
       @root_node.visit do |n|
-        n.attributes.each do |a|
-          a.process_flags
-        end
+        n.attributes.each(&:process_flags)
       end
 
       @projects.each do |p|
@@ -215,9 +213,7 @@ module JABA
         p.process
       end
 
-      @projects.each do |p|
-        p.generate
-      end
+      @projects.each(&:generate)
     end
 
     def init_src_root
