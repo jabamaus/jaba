@@ -170,7 +170,7 @@ module JABA
     def initialize = super(:ext)
     def validate_value(attr_def, value)
       super
-      if !value.start_with?(".")
+      if !value.empty? && !value.start_with?(".")
         yield "'#{value}' extension must start with '.'"
       end
     end
