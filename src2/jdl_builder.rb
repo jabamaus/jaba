@@ -94,6 +94,13 @@ module JABA
         $last_call_location = ::Kernel.calling_location
         JABA.context.register_node(node_def, *args, **kwargs, &node_block)
       end
+
+      sklass = node_def.parent_node_def&.api_class
+      if sklass
+        node_def.parent_node_def.method_defs.each do |m|
+          api_class.undef_method(m.name)
+        end
+      end
     end
 
     def set_attr(path, variant: :single, type: :null, &block)
@@ -175,15 +182,15 @@ module JABA
     private
 
     def process_method(node_def, path, name, block)
-      parent_class = node_def.api_class
-      if parent_class.method_defined?(name)
+      klass = node_def.api_class
+      if klass.method_defined?(name)
         error("Duplicate '#{path}' method registered")
       end
 
       meth_def = make_definition(MethodDef, name, block)
       node_def.method_defs << meth_def
 
-      parent_class.define_method(name) do |*args, **kwargs, &meth_block|
+      klass.define_method(name) do |*args, **kwargs, &meth_block|
         $last_call_location = ::Kernel.calling_location
         if meth_def.on_called
           return meth_def.on_called.call(*args, **kwargs, &meth_block)
