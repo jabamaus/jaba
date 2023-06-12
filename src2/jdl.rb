@@ -7,6 +7,13 @@ JABA::Context.define_core_jdl do
     title "Array of attributes/methods available in current scope"
   end
 
+  global_method "extend_jdl" do
+    title "Extend jaba"
+    on_called do |&block|
+      JABA.context.extend_jdl_on_the_fly(&block)
+    end
+  end
+
   global_method "fail" do
     title "Raise an error"
     note "Stops execution"

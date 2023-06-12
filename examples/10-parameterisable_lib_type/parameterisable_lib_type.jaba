@@ -1,6 +1,14 @@
 # This example demonstrates how to set up a lib so that it can be either static or dynamic without duplicating code or
 # changing the app that depends on it.
 
+extend_jdl do
+  attr :lib_type, type: :choice do
+    title "Lib type"
+    items [:lib, :dll]
+    default :lib
+  end
+end
+
 target :AppWithStaticOrDynamicLib do
   type :console
   src 'main.cpp'
@@ -8,7 +16,7 @@ target :AppWithStaticOrDynamicLib do
 end
 
 target :StaticOrDynamicLib, root: 'StaticOrDynamicLib' do
-  type globals.cpp_default_lib_type
+  type lib_type
   src ['.']
   inc ['include'], :export
   case type

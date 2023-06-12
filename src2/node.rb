@@ -27,6 +27,7 @@ module JABA
     def children = @children
     def attributes = @attributes
     def [](name) = search_attr(name).value
+    def has_attribute?(name) = @attribute_lookup.has_key?(name)
 
     def add_attrs(attr_defs)
       attr_defs.each do |d|
@@ -34,6 +35,19 @@ module JABA
       end
     end
 
+    def add_attr(attr_def)
+      a = case attr_def.variant
+        when :single
+          AttributeSingle.new(attr_def, self)
+        when :array
+          AttributeArray.new(attr_def, self)
+        when :hash
+          AttributeHash.new(attr_def, self)
+        end
+      @attributes << a
+      @attribute_lookup[attr_def.name] = a
+    end
+    
     def ignore_attrs(set: nil, get: nil)
       @attrs_to_ignore_when_setting = set
       @attrs_to_ignore_when_getting = get
@@ -242,19 +256,6 @@ module JABA
       JABA.error(e.message, line: e.backtrace[0])
     ensure
       JABA.context.end_jdl if called_from_jdl
-    end
-
-    def add_attr(attr_def)
-      a = case attr_def.variant
-        when :single
-          AttributeSingle.new(attr_def, self)
-        when :array
-          AttributeArray.new(attr_def, self)
-        when :hash
-          AttributeHash.new(attr_def, self)
-        end
-      @attributes << a
-      @attribute_lookup[attr_def.name] = a
     end
   end
 end
