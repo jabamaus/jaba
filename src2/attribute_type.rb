@@ -35,7 +35,7 @@ module JABA
   end
 
   class AttributeTypeInt < AttributeType
-    def initialize = super(:int, default: 0)
+    def initialize(name = :int) = super(name, default: 0)
 
     def validate_value(attr_def, value, &block)
       if !value.integer?
@@ -53,7 +53,7 @@ module JABA
   end
 
   class AttributeTypeString < AttributeType
-    def initialize(id = :string, default: "") = super(id, default: default)
+    def initialize(name = :string, default: "") = super(name, default: default)
 
     def validate_value(attr_def, value, &block)
       if !value.string? && !value.symbol?
@@ -72,7 +72,7 @@ module JABA
   end
 
   class AttributeTypeTo_s < AttributeType
-    def initialize(default: "") = super(:to_s, default: default)
+    def initialize(name = :to_s, default: "") = super(name, default: default)
 
     def validate_value(attr_def, value, &block)
       if !value.respond_to?(:to_s)
@@ -84,7 +84,7 @@ module JABA
   end
 
   class AttributeTypeBool < AttributeType
-    def initialize = super(:bool, default: false)
+    def initialize(name = :bool) = super(name, default: false)
 
     def value_from_cmdline(str, attr_def)
       case str
@@ -115,7 +115,7 @@ module JABA
       end
     end
 
-    def initialize = super(:choice)
+    def initialize(name = :choice) = super(name)
 
     def init_attr_def(attr_def)
       attr_def.instance_variable_set(:@items, [])
@@ -147,7 +147,7 @@ module JABA
   end
 
   class AttributeTypeUuid < AttributeTypeString
-    def initialize = super(:uuid)
+    def initialize(name = :uuid) = super(name)
 
     def map_value(value, attr)
       Kernel.generate_uuid(namespace: "JabaAttributeTypeUUID", name: value, braces: true)
@@ -155,7 +155,7 @@ module JABA
   end
 
   class AttributeTypeBasename < AttributeTypeString
-    def initialize = super(:basename)
+    def initialize(name = :basename) = super(name)
 
     def validate_value(attr_def, value)
       super
@@ -166,7 +166,7 @@ module JABA
   end
 
   class AttributeTypeExt < AttributeTypeString
-    def initialize = super(:ext)
+    def initialize(name = :ext) = super(name)
 
     def validate_value(attr_def, value)
       super
@@ -230,15 +230,15 @@ module JABA
   end
 
   class AttributeTypeFile < AttributePathBase
-    def initialize = super(:file)
+    def initialize(name = :file) = super(name)
   end
 
   class AttributeTypeDir < AttributePathBase
-    def initialize = super(:dir, default: ".")
+    def initialize(name = :dir) = super(name, default: ".")
   end
 
   class AttributeTypeSrc < AttributePathBase
-    def initialize = super(:src)
+    def initialize(name = :src) = super(name)
 
     def init_attr_def(attr_def)
       super
