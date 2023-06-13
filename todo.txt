@@ -57,6 +57,7 @@ possible features
 - Add invocations.txt to each example which cam execute in multiple ways?
 - Ability to 'grab' functionality that auto-adds abilities, eg text file
 - Auto-delete non-generated files in buildsystem dir (cruft removal)
+- Support arrays in hash values? That would allow src attr to work
 
 docs
 - tag attrs as control flow attrs somehow for benefit of docs

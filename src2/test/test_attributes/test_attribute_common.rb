@@ -14,7 +14,7 @@ module JabaTestMethods
     end
   end
 
-  def make_args(variant, type, include_option: false, single: false)
+  def make_args(variant, type, single: false)
     val = case type
       when :basename
         "basename"
@@ -33,7 +33,7 @@ module JabaTestMethods
       when :int
         1
       when :src
-        "src"
+        "#{__dir__}/../../../examples/01-basic_app"
       when :string
         "string"
       when :to_s
@@ -46,12 +46,6 @@ module JabaTestMethods
     return val if single
     args = []
     args << coerce_to_variant(variant, val)
-    if include_option
-      case type
-      when :src
-        args << :force
-      end
-    end
     args
   end
 
@@ -144,11 +138,11 @@ jtest "supports setting a validator" do
     end
     jaba do
       JTest.assert_jaba_error "Error at #{JTest.src_loc("78A6546B")}: 'a' attribute invalid - failed.", hint: desc do
-        a *JTest.make_args(av, at, include_option: true) # 78A6546B
+        a *JTest.make_args(av, at) # 78A6546B
       end
       if av == :hash
         JTest.assert_jaba_error "Error at #{JTest.src_loc("2EDD4A7C")}: 'b' attribute invalid - key failed.", hint: desc do
-          b *JTest.make_args(av, at, include_option: true) # 2EDD4A7C
+          b *JTest.make_args(av, at) # 2EDD4A7C
         end
       end
     end
