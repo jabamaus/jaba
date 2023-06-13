@@ -384,3 +384,23 @@ jtest "supports on_set hook" do
   end
 end
 =end
+jtest "supports expanding keys to arrays" do
+  make_file("a.txt", "b.txt", "c.txt")
+  td = temp_dir
+  jdl(level: :core) do
+    node :node
+    attr "node/a", variant: :hash, type: :string do
+      key_type :src
+      flag_options :fo
+      base_attr :root
+    end
+  end
+  jaba do
+    node :n, root: td do
+      a "*.txt", "val", :fo
+      a.must_equal({"#{td}/a.txt" => "val", "#{td}/b.txt" => "val", "#{td}/c.txt" => "val"})
+      clear :a
+      a.must_equal({})
+    end
+  end
+end

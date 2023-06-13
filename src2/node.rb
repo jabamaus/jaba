@@ -236,6 +236,14 @@ module JABA
       end
     end
 
+    def jdl_clear(attr_name)
+      a = get_attr(attr_name)
+      if !a.attr_def.array? && !a.attr_def.hash?
+        JABA.error("Only array and hash attributes can be cleared")
+      end
+      a.clear
+    end
+
     def jdl_include(spec, **kwargs)
       if root_node?
         JABA.context.process_include(spec)

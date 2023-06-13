@@ -3,18 +3,18 @@ module JabaTestMethods
   ATTR_TYPES = JABA::Context.all_attr_type_names
   ATTR_TYPES.delete(:null)
 
-  def coerce_to_variant(variant, val)
+  def coerce_to_variant(variant, val, key: :key)
     case variant
     when :single
       val
     when :array
       [val]
     when :hash
-      { key: val }
+      { key => val }
     end
   end
 
-  def make_args(variant, type, single: false)
+  def make_args(variant, type, key: nil, single: false)
     val = case type
       when :basename
         "basename"
@@ -23,13 +23,13 @@ module JabaTestMethods
       when :choice
         :a
       when :compound
-        nil
+        # handled by calling code
       when :dir
-        "dir"
+        "#{__dir__}/../../../examples/01-basic_app"
       when :ext
         ".ext"
       when :file
-        "file"
+        "#{__dir__}/../../../examples/01-basic_app/basic_app.jaba"
       when :int
         1
       when :src
@@ -45,12 +45,30 @@ module JabaTestMethods
       end
     return val if single
     args = []
-    args << coerce_to_variant(variant, val)
+    args << coerce_to_variant(variant, val, key: key)
     args
   end
 
-  def each_attr
+  def set_attr(receiver, attr_name, variant, type, key: :key)
+    if type == :compound
+      if variant == :hash
+        raise "key must be specified" if key.nil?
+        receiver.__send__(attr_name, key, __call_loc: Kernel.calling_location) do
+        end
+      else
+        receiver.__send__(attr_name, __call_loc: Kernel.calling_location) do
+        end
+      end
+    else
+      receiver.__send__(attr_name, *make_args(variant, type, key: key), __call_loc: Kernel.calling_location)
+    end
+  end
+
+  def each_attr(single: true, array: true, hash: true)
     ATTR_VARIANTS.each do |av|
+      next if av == :single && !single
+      next if av == :array && !array
+      next if av == :hash && !hash
       ATTR_TYPES.each do |at, default|
         yield av, at, "(#{at} #{av})", default
       end
@@ -105,7 +123,7 @@ jtest "rejects modifying read only attributes" do
         flags :read_only
         items [:a, :b, :c] if at == :choice
         key_type :string if av == :hash
-        default(*JTest.make_args(av, at))
+        default(*JTest.make_args(av, at)) if at != :compound
       end
     end
     assert_jaba_error "Error at #{JTest.src_loc("D4AE68B1")}: 'a' attribute is read only.", hint: desc do
@@ -138,12 +156,39 @@ jtest "supports setting a validator" do
     end
     jaba do
       JTest.assert_jaba_error "Error at #{JTest.src_loc("78A6546B")}: 'a' attribute invalid - failed.", hint: desc do
-        a(*JTest.make_args(av, at)) # 78A6546B
+        JTest.set_attr(self, :a, av, at) # 78A6546B
       end
       if av == :hash
         JTest.assert_jaba_error "Error at #{JTest.src_loc("2EDD4A7C")}: 'b' attribute invalid - key failed.", hint: desc do
-          b(*JTest.make_args(av, at)) # 2EDD4A7C
+          JTest.set_attr(self, :b, av, at) # 2EDD4A7C
         end
+      end
+    end
+  end
+end
+
+jtest "arrays and hashes can be cleared" do
+  each_attr do |av, at, desc|
+    jdl(level: :core) do
+      attr :a, variant: av, type: at do
+        items [:a, :b, :c] if at == :choice
+        key_type :int if av == :hash
+        flags :allow_dupes if av == :array
+      end
+    end
+    jaba do
+      if av == :single
+        JTest.assert_jaba_error "Error at #{JTest.src_loc("58A58F0F")}: Only array and hash attributes can be cleared.", hint: desc do
+          clear :a # 58A58F0F
+        end
+      else
+        5.times do |i|
+          JTest.set_attr(self, :a, av, at, key: i)
+        end
+        a.size.must_equal 5, msg: desc
+        clear :a
+        a.size.must_equal 0, msg: desc
+        a.empty?.must_be_true(msg: desc)
       end
     end
   end

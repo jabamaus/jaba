@@ -151,6 +151,7 @@ module JABA
       end
     end
 
+    def clear = @elems.clear
     def empty? = @elems.empty?
     def [](index) = @elems[index]
 

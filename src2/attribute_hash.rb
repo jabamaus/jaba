@@ -34,7 +34,7 @@ module JABA
             **kwargs, &block)
       
       to_insert = {}
-      at = attr_def.attr_type
+      kt = attr_def.key_type
 
       if !__no_keyval
         if args.empty?
@@ -48,7 +48,7 @@ module JABA
           end
           #arg.each do |key, val|
           #  keys = Array(key).flat_map do |k|
-          #    at.map_value_array(k, self)
+          #    kt.map_value_array(k, self)
           #  end
           #  keys.each do |k|
           #    to_insert[k] = val
@@ -57,7 +57,7 @@ module JABA
           to_insert.merge!(arg)
         else
           keys = Array(arg).flat_map do |k|
-            at.map_value_array(k, self)
+            kt.map_value_array(k, self)
           end
           val = if block_given?
               value_from_block(&block)

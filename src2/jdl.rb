@@ -7,6 +7,10 @@ JABA::Context.define_core_jdl do
     title "Array of attributes/methods available in current scope"
   end
 
+  global_method "clear" do
+    title "Clear an array or hash attribute"
+  end
+
   global_method "extend_jdl" do
     title "Extend jaba"
     on_called do |&block|

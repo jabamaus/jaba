@@ -135,8 +135,9 @@ module JABA
       if parent_class.method_defined?(attr_name)
         error("Duplicate '#{path}' attribute registered")
       end
-      parent_class.define_method(attr_name) do |*args, **kwargs, &attr_block|
-        $last_call_location = ::Kernel.calling_location
+      # __call_loc is passed in in some unit tests.
+      parent_class.define_method(attr_name) do |*args, __call_loc: ::Kernel.calling_location, **kwargs, &attr_block|
+        $last_call_location = __call_loc
         @node.jdl_process_attr(attr_name, *args, __call_loc: $last_call_location, **kwargs, &attr_block)
       end
       case type
