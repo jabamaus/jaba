@@ -128,7 +128,7 @@ jtest "rejects modifying read only attributes" do
     end
     assert_jaba_error "Error at #{JTest.src_loc("D4AE68B1")}: 'a' attribute is read only.", hint: desc do
       jaba do
-        a(*JTest.make_args(av, at)) # D4AE68B1
+        JTest.set_attr(self, :a, av, at) # D4AE68B1
       end
     end
   end

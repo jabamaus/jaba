@@ -385,22 +385,36 @@ jtest "supports on_set hook" do
 end
 =end
 jtest "supports expanding keys to arrays" do
-  make_file("a.txt", "b.txt", "c.txt")
+  make_file("a.txt", "b.txt", "c.txt", "d.rb", "e.rb")
   td = temp_dir
   jdl(level: :core) do
     node :node
     attr "node/a", variant: :hash, type: :string do
       key_type :src
       flag_options :fo
+      value_option :vo
       base_attr :root
     end
   end
-  jaba do
+  op = jaba do
     node :n, root: td do
-      a "*.txt", "val", :fo
-      a.must_equal({"#{td}/a.txt" => "val", "#{td}/b.txt" => "val", "#{td}/c.txt" => "val"})
+      a "*.txt", "txt", :fo, vo: 1
+      a.must_equal({"#{td}/a.txt" => "txt", "#{td}/b.txt" => "txt", "#{td}/c.txt" => "txt"})
       clear :a
       a.must_equal({})
+      a({"*.txt" => "txt", "*.rb" => "rb"}, :fo, vo: 2)
+      a.must_equal({"#{td}/a.txt" => "txt", "#{td}/b.txt" => "txt", "#{td}/c.txt" => "txt", "#{td}/d.rb" => "rb", "#{td}/e.rb" => "rb"})
     end
   end
+  a = op[:root].children[0].children[0].get_attr(:a)
+  a.fetch("#{td}/a.txt").has_flag_option?(:fo).must_be_true
+  a.fetch("#{td}/a.txt").option_value(:vo).must_equal(2)
+  a.fetch("#{td}/b.txt").has_flag_option?(:fo).must_be_true
+  a.fetch("#{td}/b.txt").option_value(:vo).must_equal(2)
+  a.fetch("#{td}/c.txt").has_flag_option?(:fo).must_be_true
+  a.fetch("#{td}/c.txt").option_value(:vo).must_equal(2)
+  a.fetch("#{td}/d.rb").has_flag_option?(:fo).must_be_true
+  a.fetch("#{td}/d.rb").option_value(:vo).must_equal(2)
+  a.fetch("#{td}/e.rb").has_flag_option?(:fo).must_be_true
+  a.fetch("#{td}/e.rb").option_value(:vo).must_equal(2)
 end

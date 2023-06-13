@@ -28,48 +28,36 @@ module JABA
       hash.freeze # make read only
     end
 
-    def set(*args,
-            __no_keyval: false,
-            __force_set_default: false,
-            **kwargs, &block)
-      
+    def set(*args, **kwargs, &block)
       to_insert = {}
       kt = attr_def.key_type
 
-      if !__no_keyval
-        if args.empty?
-          attr_error("#{describe} requires a key/value eg \"#{attr_def.name} :my_key, 'my value'\"")
-        end
-        arg = args.shift
+      if args.empty?
+        attr_error("#{describe} requires a key/value eg \"#{attr_def.name} :my_key, 'my value'\"")
+      end
+      arg = args.shift
 
-        if arg.is_a?(Hash)
-          if block_given?
-            attr_error("Cannot pass a hash in conjunction with a block")
-          end
-          #arg.each do |key, val|
-          #  keys = Array(key).flat_map do |k|
-          #    kt.map_value_array(k, self)
-          #  end
-          #  keys.each do |k|
-          #    to_insert[k] = val
-          #  end
-          #end
-          to_insert.merge!(arg)
-        else
-          keys = Array(arg).flat_map do |k|
-            kt.map_value_array(k, self)
-          end
-          val = if block_given?
-              value_from_block(&block)
-            else
-              if args.empty?
-                attr_error("#{describe} requires a key/value eg \"#{attr_def.name} :my_key, 'my value'\"")
-              end
-              args.shift
-            end
-          keys.each do |k|
+      if arg.is_a?(Hash)
+        if block_given?
+          attr_error("Cannot pass a hash in conjunction with a block")
+        end
+        arg.each do |key, val|
+          Array(kt.map_value_array(key, self)).each do |k|
             to_insert[k] = val
           end
+        end
+      else
+        keys = Array(kt.map_value_array(arg, self))
+        val = if block_given?
+            value_from_block(&block)
+          else
+            if args.empty?
+              attr_error("#{describe} requires a key/value eg \"#{attr_def.name} :my_key, 'my value'\"")
+            end
+            args.shift
+          end
+        keys.each do |k|
+          to_insert[k] = val
         end
       end
 
@@ -77,21 +65,11 @@ module JABA
       # and merge them into the hash. Defaults specified in blocks are handled lazily to allow the default
       # value to make use of other attributes.
       #
-      if !set? && attr_def.default_set? && (!attr_def.has_flag?(:overwrite_default) || __force_set_default)
-        dh = JABA.context.execute_attr_def_block(self, attr_def.default)
-        if !dh.is_a?(Hash)
-          attr_error("#{describe} default requires a hash not a '#{dh.class}'")
-        end
-        dh.each do |k, v|
-          insert_key(k, v, *args, **kwargs)
-        end
-      end
+      apply_default
 
       # Insert key after defaults to enable defaults to be overwritten if desired
-      if !__no_keyval
-        to_insert.each do |k, v|
-          insert_key(k, v, *args, **kwargs)
-        end
+      to_insert.each do |k, v|
+        insert_key(k, v, *args, **kwargs)
       end
 
       @set = true
@@ -103,7 +81,7 @@ module JABA
     #
     def finalise
       if !set? && attr_def.default_set?
-        set(__no_keyval: true, __force_set_default: true)
+        apply_default(force: true)
       end
     end
 
@@ -140,6 +118,18 @@ module JABA
     def process_flags; end # nothing yet
 
     private
+
+    def apply_default(force: false)
+      if !set? && attr_def.default_set? && (!attr_def.has_flag?(:overwrite_default) || force)
+        dh = JABA.context.execute_attr_def_block(self, attr_def.default)
+        if !dh.is_a?(Hash)
+          attr_error("#{describe} default requires a hash not a '#{dh.class}'")
+        end
+        dh.each do |k, v|
+          insert_key(k, v)
+        end
+      end
+    end
 
     def insert_key(key, val, *args, __validate: true, **kwargs)
       attr = AttributeElement.new(@attr_def, @node)
