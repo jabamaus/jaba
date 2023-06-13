@@ -32,22 +32,33 @@ module JABA
             __no_keyval: false,
             __force_set_default: false,
             **kwargs, &block)
-      key = val = nil
+      
+      to_insert = {}
+      at = attr_def.attr_type
+
       if !__no_keyval
         if args.empty?
           attr_error("#{describe} requires a key/value eg \"#{attr_def.name} :my_key, 'my value'\"")
         end
-        value = args.shift
+        arg = args.shift
 
-        # TODO: support multiple key vals in hash not just first
-        if value.is_a?(Hash)
-          key = value.keys[0]
-          val = value[key]
+        if arg.is_a?(Hash)
           if block_given?
             attr_error("Cannot pass a hash in conjunction with a block")
           end
+          #arg.each do |key, val|
+          #  keys = Array(key).flat_map do |k|
+          #    at.map_value_array(k, self)
+          #  end
+          #  keys.each do |k|
+          #    to_insert[k] = val
+          #  end
+          #end
+          to_insert.merge!(arg)
         else
-          key = value
+          keys = Array(arg).flat_map do |k|
+            at.map_value_array(k, self)
+          end
           val = if block_given?
               value_from_block(&block)
             else
@@ -56,6 +67,9 @@ module JABA
               end
               args.shift
             end
+          keys.each do |k|
+            to_insert[k] = val
+          end
         end
       end
 
@@ -74,9 +88,10 @@ module JABA
       end
 
       # Insert key after defaults to enable defaults to be overwritten if desired
-      # TODO: look at __no_keyval. Needed?
       if !__no_keyval
-        insert_key(key, val, *args, **kwargs)
+        to_insert.each do |k, v|
+          insert_key(k, v, *args, **kwargs)
+        end
       end
 
       @set = true
