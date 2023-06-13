@@ -280,5 +280,9 @@ module JABA
     def init_attr_def(attr_def)
       attr_def.set_flags(:no_sort) if attr_def.array?
     end
+
+    def validate_value(attr_def, value)
+      yield "compound cannot be nil" if value.nil?
+    end
   end
 end

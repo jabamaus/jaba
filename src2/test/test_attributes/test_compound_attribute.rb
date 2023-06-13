@@ -1,4 +1,14 @@
 jtest "compound attr not allowed a default" do
+  jdl do
+    attr "cmpd", type: :compound do
+      default do # AE0C836F
+      end
+    end
+  end
+  JTest.assert_jaba_error "Error at #{JTest.src_loc("AE0C836F")}: 'cmpd' attribute invalid - compound attributes do not support a default value." do
+    jaba do
+    end
+  end
 end
 
 jtest "works with compound as single attribute" do

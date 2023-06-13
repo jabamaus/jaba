@@ -465,6 +465,9 @@ module JABA
     def default_set? = @default_set
 
     def set_default(val = nil, &block)
+      if type_id == :compound
+        definition_error("compound attributes do not support a default value")
+      end
       @default_set = true
       if block_given?
         @default = block
