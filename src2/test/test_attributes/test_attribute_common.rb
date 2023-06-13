@@ -105,12 +105,12 @@ jtest "rejects modifying read only attributes" do
         flags :read_only
         items [:a, :b, :c] if at == :choice
         key_type :string if av == :hash
-        default *JTest.make_args(av, at)
+        default(*JTest.make_args(av, at))
       end
     end
     assert_jaba_error "Error at #{JTest.src_loc("D4AE68B1")}: 'a' attribute is read only.", hint: desc do
       jaba do
-        a *JTest.make_args(av, at) # D4AE68B1
+        a(*JTest.make_args(av, at)) # D4AE68B1
       end
     end
   end
@@ -138,11 +138,11 @@ jtest "supports setting a validator" do
     end
     jaba do
       JTest.assert_jaba_error "Error at #{JTest.src_loc("78A6546B")}: 'a' attribute invalid - failed.", hint: desc do
-        a *JTest.make_args(av, at) # 78A6546B
+        a(*JTest.make_args(av, at)) # 78A6546B
       end
       if av == :hash
         JTest.assert_jaba_error "Error at #{JTest.src_loc("2EDD4A7C")}: 'b' attribute invalid - key failed.", hint: desc do
-          b *JTest.make_args(av, at) # 2EDD4A7C
+          b(*JTest.make_args(av, at)) # 2EDD4A7C
         end
       end
     end
