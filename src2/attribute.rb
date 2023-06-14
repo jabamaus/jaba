@@ -78,10 +78,7 @@ module JABA
     # This can only be called after the value has had its final value set as it gives raw access to value.
     def raw_value = @value
 
-    def set(*args,
-            __validate: true,
-            __force: false,
-            **kwargs, &block)
+    def set(*args, __validate: true, __force: false, **kwargs, &block)
       attr_error("#{describe} is read only") if read_only? && !__force
 
       new_value = if block_given?
@@ -94,7 +91,22 @@ module JABA
       # Take a deep copy of value_options so they are private to this attribute
       @value_options = {}
       kwargs.each do |k, v|
-        @value_options[k] = v.dup
+        option_def = @attr_def.option_defs.find{|od| od.name.to_s == k.to_s}
+        if option_def
+          a = case option_def.variant
+          when :single
+            AttributeSingle.new(option_def, self)
+          when :array
+            AttributeArray.new(option_def, self)
+          when :hash
+            AttributeHash.new(option_def, self)
+          end
+          a.set_last_call_location(src_loc)
+          a.set(v)
+          @value_options[k] = a
+        else
+          @value_options[k] = v.dup
+        end
       end
 
       attr_type = @attr_def.attr_type
@@ -134,7 +146,7 @@ module JABA
     def has_flag_option?(o) = @flag_options&.include?(o)
 
     def option_value(key, fail_if_not_found: true)
-      attr_def.value_option(key)
+      #attr_def.value_option(key)
       if !@value_options.key?(key)
         if fail_if_not_found
           attr_error("Option key '#{key}' not found in #{describe}")

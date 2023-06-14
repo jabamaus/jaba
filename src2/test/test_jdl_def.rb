@@ -218,14 +218,16 @@ end
 jtest "can register attributes as attrbute options" do
   jdl(level: :core) do
     attr "a"
-    attr "a/option", type: :choice do
+    attr_option "a/option", type: :choice do
       items [:a, :b, :c]
-      flags :attr_option
     end
   end
-  jaba do
+  op = jaba do
     a 1, option: :b
   end
+  a = op[:root].get_attr(:a)
+  a.value.must_equal 1
+  a.option_value(:option).value.must_equal :b
 end
 
 jtest "fails if attribute type does not exist" do
@@ -238,7 +240,7 @@ jtest "fails if attribute type does not exist" do
 end
 
 jtest "fails if flag does not exist" do
-  assert_jaba_error "Error at #{src_loc("01E55971")}: 'a' attribute invalid - ':unknown' must be one of [:allow_dupes, :attr_option, :exportable, :no_check_exist, :no_sort, :node_option, :overwrite_default, :per_config, :per_target, :read_only, :required]" do
+  assert_jaba_error "Error at #{src_loc("01E55971")}: 'a' attribute invalid - ':unknown' must be one of [:allow_dupes, :exportable, :no_check_exist, :no_sort, :node_option, :overwrite_default, :per_config, :per_target, :read_only, :required]" do
     jdl do
       attr "a" do
         flags :unknown # 01E55971

@@ -4,12 +4,14 @@ module JABA
       :global_method,
       :method,
       :attr,
+      :attr_option,
       :node,
     )
 
     def initialize(api_blocks = Context.standard_jdl_blocks)
       @building_jdl = false
       @path_to_node_def = {}
+      @path_to_attr_def = {}
       @base_api_class = Class.new(BasicObject) do
         undef_method :!, :!=, :==, :equal?, :__id__
 
@@ -121,6 +123,7 @@ module JABA
       attr_def = make_definition(def_class, attr_name, block) do |ad|
         ad.set_attr_type(type)
       end
+      @path_to_attr_def[path] = attr_def
 
       node_def = lookup_node_def(parent_path)
       if attr_def.has_flag?(:node_option)
@@ -161,6 +164,31 @@ module JABA
         attr_def.set_compound_def(cmp_def)
         @path_to_node_def[path] = cmp_def
       end
+    end
+
+    def set_attr_option(path, variant: :single, type: :null, &block)
+      def_class = case variant
+        when :single
+          AttributeSingleDef
+        when :array
+          AttributeArrayDef
+        when :hash
+          AttributeHashDef
+        else
+          error("Invalid attribute variant '#{variant.inspect_unquoted}'")
+        end
+
+      path = validate_path(path)
+      parent_attr_path, attr_name = split_jdl_path(path)
+
+      attr_def = lookup_attr_def(parent_attr_path)
+
+      option_def = make_definition(def_class, attr_name, block) do |ad|
+        ad.set_attr_type(type)
+      end
+      @path_to_attr_def[path] = option_def
+
+      attr_def.option_defs << option_def
     end
 
     def set_global_method(name, &block)
@@ -220,6 +248,12 @@ module JABA
       nd = @path_to_node_def[path]
       error("No '#{path}' node registered") if nd.nil?
       nd
+    end
+
+    def lookup_attr_def(path)
+      ad = @path_to_attr_def[path]
+      error("No '#{path}' attribute registered") if ad.nil?
+      ad
     end
 
     def error(msg) = JABA.error(msg, line: APIBuilder.last_call_location)
@@ -369,6 +403,7 @@ module JABA
       @flags = []
       @flag_options = []
       @value_options = []
+      @option_defs = []
       @default = nil
       @default_is_block = false
       @default_set = false
@@ -435,6 +470,7 @@ module JABA
     end
 
     def has_flag_option?(fo) = @flag_options.include?(fo)
+    def option_defs = @option_defs
 
     def set_validate(&block) = @on_validate = block
     def on_validate = @on_validate
