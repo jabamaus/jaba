@@ -21,13 +21,15 @@ path attrs/src
 - :no_wildcard flag to disallow wildcards
 - wildcard validation
 - Validate paths for missing / eg '../..debase-ruby_core_source/
-- vpath support
+- vpath support. Macros would make it more powerful.
 - flag to control whether absolute paths allowed in file/dir attrs. Eg build_root_offset is not an offset if absolute path used.
   Is it even a path attr?
 - Review whether '.' is allowed in :basename type. Maybe Introduce and allow_ext option.
 - enforce that paths stay within their base dir spec?
 - exclude from build should be an option on src attr
-- add special attr for vcfprop that behaves like src attr
+- is vcfprop attr necessary? Could be done by eg 'src "../mruby/src/*", property: "ExcludedFromBuild|true"'
+  This would have a couple of implications. Firstly, rather than stripping duplicates, the new flag and
+  value options would need to be merged with the existing. Secondly the property value option would need to be an array.
 
 workspace
 - Automatically pull in dependencies in
@@ -57,7 +59,9 @@ possible features
 - Add invocations.txt to each example which cam execute in multiple ways?
 - Ability to 'grab' functionality that auto-adds abilities, eg text file
 - Auto-delete non-generated files in buildsystem dir (cruft removal)
-- Support arrays in hash values? That would allow src attr to work
+- Support arrays in hash values? That would allow src attr to work as a value as well as a key.
+  There could be a more general concept that value options are actually attributes like node options.
+  This would give a lot more power and validation and would remove the need for a value option spec.
 
 docs
 - tag attrs as control flow attrs somehow for benefit of docs

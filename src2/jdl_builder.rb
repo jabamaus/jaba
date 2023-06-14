@@ -117,12 +117,12 @@ module JABA
 
       path = validate_path(path)
       parent_path, attr_name = split_jdl_path(path)
-      node_def = lookup_node_def(parent_path)
 
       attr_def = make_definition(def_class, attr_name, block) do |ad|
         ad.set_attr_type(type)
       end
 
+      node_def = lookup_node_def(parent_path)
       if attr_def.has_flag?(:node_option)
         node_def.option_attr_defs << attr_def
       else

@@ -214,6 +214,20 @@ jtest "can register attributes as node options" do
   end
 end
 
+# TODO: check that attr_option cannot reference another attr_option
+jtest "can register attributes as attrbute options" do
+  jdl(level: :core) do
+    attr "a"
+    attr "a/option", type: :choice do
+      items [:a, :b, :c]
+      flags :attr_option
+    end
+  end
+  jaba do
+    a 1, option: :b
+  end
+end
+
 jtest "fails if attribute type does not exist" do
   assert_jaba_error "Error at #{src_loc("CE16AD90")}: 'a' attribute invalid - ':unknown' must be one of [:basename, :bool, :choice, :compound, :dir, :ext, :file, :int, :null, :src, :string, :to_s, :uuid]" do
     jdl do
@@ -224,7 +238,7 @@ jtest "fails if attribute type does not exist" do
 end
 
 jtest "fails if flag does not exist" do
-  assert_jaba_error "Error at #{src_loc("01E55971")}: 'a' attribute invalid - ':unknown' must be one of [:allow_dupes, :exportable, :no_check_exist, :no_sort, :node_option, :overwrite_default, :per_config, :per_target, :read_only, :required]" do
+  assert_jaba_error "Error at #{src_loc("01E55971")}: 'a' attribute invalid - ':unknown' must be one of [:allow_dupes, :attr_option, :exportable, :no_check_exist, :no_sort, :node_option, :overwrite_default, :per_config, :per_target, :read_only, :required]" do
     jdl do
       attr "a" do
         flags :unknown # 01E55971

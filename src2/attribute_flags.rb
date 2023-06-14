@@ -37,6 +37,10 @@ module JABA
     end
   end
 
+  Context.define_attr_flag :attr_option do
+    title "Flags the attribute as being an option for another attribute"
+  end
+
   Context.define_attr_flag :exportable do
     title "Attribute is exportable"
     note "Flags an attribute as being able to be exported to dependents. Only array and hash attributes can be flagged with this."
