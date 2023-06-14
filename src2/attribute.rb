@@ -165,8 +165,6 @@ module JABA
       end
     end
 
-    def visit_attr(&block) = yield self, value
-
     # This can only be called after the value has had its final value set as it gives raw access to value.
     def map_value! = @value = yield(@value)
   end

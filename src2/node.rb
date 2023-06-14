@@ -138,10 +138,6 @@ module JABA
       nil
     end
 
-    def visit_attr(attr_id, &block)
-      search_attr(attr_id).visit_attr(&block)
-    end
-
     # This is the only place that attrs values can be set or retrieved from user definitions.
     def jdl_process_attr(name, *args, __call_loc:, **kwargs, &block)
       is_get = (args.empty? && kwargs.empty? && !block_given?)

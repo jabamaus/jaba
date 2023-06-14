@@ -91,7 +91,7 @@ module JABA
     def insert_clone(other)
       v_options = other.value_options
       f_options = other.flag_options
-      key = v_options[:__key]
+      key = v_options[:__key] # TODO: __key does not exist anymore
       val = Marshal.load(Marshal.dump(other.raw_value))
       insert_key(key, val, *f_options, __validate: false, **v_options)
     end
@@ -109,12 +109,8 @@ module JABA
       @hash[key]
     end
 
-    def visit_attr(&block)
-      @hash.delete_if do |key, attr|
-        attr.visit_attr(&block) == :delete ? true : false
-      end
-    end
-
+    def each(&block) = @hash.each(&block)
+    
     def process_flags; end # nothing yet
 
     private
@@ -141,7 +137,7 @@ module JABA
         end
       end
 
-      attr.set(val, *args, __validate: __validate, __key: key, **kwargs)
+      attr.set(val, *args, __validate: __validate, **kwargs)
 
       if attr_def.on_set
         # if @in_on_set

@@ -196,9 +196,10 @@ module JABA
         property_group(@pg2, condition: cfg_condition(cfg_name, platform))
         item_definition_group(@idg, condition: cfg_condition(cfg_name, platform))
 
-        cfg.visit_attr(:vcprop) do |attr, val|
-          group, key = attr.option_value(:__key).split("|")
+        cfg.get_attr(:vcprop).each do |key, attr|
+          group, key = key.split("|")
           condition = attr.option_value(:condition, fail_if_not_found: false)
+          val = attr.value
 
           case group
           when "PG1"
@@ -216,8 +217,9 @@ module JABA
           end
         end
 
-        cfg.visit_attr(:vcfprop) do |attr, val|
-          file_with_prop, prop = attr.option_value(:__key).split("|")
+        cfg.get_attr(:vcfprop).each do |key, attr|
+          file_with_prop, prop = key.split("|")
+          val = attr.value
           sfs = get_matching_src(file_with_prop, errobj: attr)
           sfs.each do |sf|
             @per_file_props.push_value(sf, [prop, cfg_name, platform, val])
@@ -304,7 +306,8 @@ module JABA
       deps = @node.get_attr(:deps)
       if !deps.empty?
         item_group(w) do
-          deps.visit_attr do |attr, dep_node|
+          deps.each do |attr|
+            dep_node = attr.value
             soft = attr.has_flag_option?(:soft)
             if !soft
               proj = JABA.context.lookup_project(dep_node)

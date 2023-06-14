@@ -36,15 +36,10 @@ module JABA
     def import_group(w, **kwargs, &block) = xml_group(w, "ImportGroup", **kwargs, &block)
     def item_definition_group(w, **kwargs, &block) = xml_group(w, "ItemDefinitionGroup", **kwargs, &block)
 
-    def write_keyvalue_attr(w, attr, group: nil, depth: 2)
-      attr.visit_attr do |elem, val|
-        if group
-          group_option = elem.option_value(:group)
-          next if group != group_option
-        end
-        key = elem.option_value(:__key)
-        condition = elem.option_value(:condition, fail_if_not_found: false)
-        write_keyvalue(w, key, val, condition: condition)
+    def write_keyvalue_attr(w, kv_attr, depth: 2)
+      kv_attr.each do |key, attr|
+        condition = attr.option_value(:condition, fail_if_not_found: false)
+        write_keyvalue(w, key, attr.value, condition: condition)
       end
     end
 

@@ -154,13 +154,8 @@ module JABA
     def clear = @elems.clear
     def empty? = @elems.empty?
     def [](index) = @elems[index]
-
-    def visit_attr(&block)
-      @elems.delete_if do |attr|
-        attr.visit_attr(&block) == :delete ? true : false
-      end
-    end
-
+    def each(&block) = @elems.each(&block)
+    
     def map_value!(&block)
       @elems.each do |e|
         e.map_value!(&block)
