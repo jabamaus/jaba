@@ -227,7 +227,7 @@ jtest "can register attributes as attrbute options" do
   end
   a = op[:root].get_attr(:a)
   a.value.must_equal 1
-  a.option_value(:option).value.must_equal :b
+  a.option_value(:option).must_equal :b
 end
 
 jtest "fails if attribute type does not exist" do

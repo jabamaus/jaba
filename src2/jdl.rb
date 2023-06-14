@@ -497,8 +497,11 @@ JABA::Context.define_jdl do
   attr "target/vcglobal", variant: :hash, type: :to_s do
     title "Address Globals property group in a vcxproj directly"
     key_type :string
-    value_option :condition
     flags :per_target, :exportable
+  end
+
+  attr_option "target/vcglobal/condition", type: :string do
+    title "Condition"
   end
 
   attr "target/vc_extension_settings", variant: :hash, type: :file do
@@ -578,13 +581,16 @@ JABA::Context.define_jdl do
   attr "target/vcprop", variant: :hash, type: :to_s do
     title "Address per-configuration sections of a vcxproj directly"
     key_type :string
-    value_option :condition
     flags :per_config, :exportable
     validate_key do |key|
       if key !~ /^[A-Za-z0-9_-]+\|{1}[A-Za-z0-9_-]+/
         fail "Must be of form <group>|<property> but was '#{key}'"
       end
     end
+  end
+
+  attr_option "target/vcprop/condition", type: :string do
+    title "Condition string"
   end
 
   attr "target/vctoolset", type: :choice do

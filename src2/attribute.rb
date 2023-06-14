@@ -88,25 +88,24 @@ module JABA
         end
 
       @flag_options = args
-      # Take a deep copy of value_options so they are private to this attribute
-      @value_options = {}
+      @value_options = SymbolKeyHash.new
+
       kwargs.each do |k, v|
         option_def = @attr_def.option_defs.find{|od| od.name.to_s == k.to_s}
-        if option_def
-          a = case option_def.variant
-          when :single
-            AttributeSingle.new(option_def, self)
-          when :array
-            AttributeArray.new(option_def, self)
-          when :hash
-            AttributeHash.new(option_def, self)
-          end
-          a.set_last_call_location(src_loc)
-          a.set(v)
-          @value_options[k] = a
-        else
-          @value_options[k] = v.dup
+        if option_def.nil?
+          attr_error("#{describe} does not support '#{k.inspect_unquoted}' option")
         end
+        a = case option_def.variant
+        when :single
+          AttributeSingle.new(option_def, self)
+        when :array
+          AttributeArray.new(option_def, self)
+        when :hash
+          AttributeHash.new(option_def, self)
+        end
+        a.set_last_call_location(src_loc)
+        a.set(v)
+        @value_options[k] = a
       end
 
       attr_type = @attr_def.attr_type
@@ -146,15 +145,15 @@ module JABA
     def has_flag_option?(o) = @flag_options&.include?(o)
 
     def option_value(key, fail_if_not_found: true)
-      #attr_def.value_option(key)
-      if !@value_options.key?(key)
+      val = @value_options ? @value_options[key] : nil
+      if val.nil?
         if fail_if_not_found
           attr_error("Option key '#{key}' not found in #{describe}")
         else
           return nil
         end
       end
-      @value_options[key]
+      val
     end
 
     def <=>(other)
