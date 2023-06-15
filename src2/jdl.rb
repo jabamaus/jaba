@@ -405,6 +405,12 @@ JABA::Context.define_jdl do
     }
   end
 
+  attr_option "target/src/vpath", type: :dir do
+    title "Virtual path"
+    note "Controls IDE project layout"
+    flags :no_check_exist
+  end
+
   attr "target/src_ext", variant: :array, type: :ext do
     title "File extensions used when matching src files"
     note "Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes."

@@ -240,11 +240,6 @@ module JABA
   class AttributeTypeSrc < AttributePathBase
     def initialize(name = :src) = super(name)
 
-    def init_attr_def(attr_def)
-      super
-      attr_def.set_value_option(:vpath)
-    end
-
     def map_value_array(path, attr_array)
       abs_path = make_path_absolute(path, attr_array)
       fm = JABA.context.file_manager
