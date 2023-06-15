@@ -49,26 +49,32 @@ module JabaTestMethods
     args
   end
 
-  def set_attr(receiver, attr_name, variant, type, key: :key)
+  def set_attr(receiver, attr_name, variant, type, key: :key, **kwargs)
     if type == :compound
       if variant == :hash
         raise "key must be specified" if key.nil?
-        receiver.__send__(attr_name, key, __call_loc: Kernel.calling_location) do
+        receiver.__send__(attr_name, key, __call_loc: Kernel.calling_location, **kwargs) do
         end
       else
-        receiver.__send__(attr_name, __call_loc: Kernel.calling_location) do
+        receiver.__send__(attr_name, __call_loc: Kernel.calling_location, **kwargs) do
         end
       end
     else
-      receiver.__send__(attr_name, *make_args(variant, type, key: key), __call_loc: Kernel.calling_location)
+      receiver.__send__(attr_name, *make_args(variant, type, key: key), __call_loc: Kernel.calling_location, **kwargs)
     end
   end
 
-  def each_attr(single: true, array: true, hash: true)
+  def each_variant(single: true, array: true, hash: true)
     ATTR_VARIANTS.each do |av|
       next if av == :single && !single
       next if av == :array && !array
       next if av == :hash && !hash
+      yield av, "(#{av})"
+    end
+  end
+
+  def each_variant_and_type(single: true, array: true, hash: true, &block)
+    each_variant(single: single, array: array, hash: hash) do |av|
       ATTR_TYPES.each do |at, default|
         yield av, at, "(#{at} #{av})", default
       end
@@ -78,7 +84,7 @@ end
 
 jtest "fails if value not supplied when flagged with :required" do
   # Test required top level attr
-  each_attr do |av, at, desc|
+  each_variant_and_type do |av, at, desc|
     jdl do
       attr :a, variant: av, type: at do
         flags :required
@@ -95,7 +101,7 @@ jtest "fails if value not supplied when flagged with :required" do
   end
 
   # Now test required node attr
-  each_attr do |av, at, desc|
+  each_variant_and_type do |av, at, desc|
     jdl do
       node :node
       attr "node/a", variant: av, type: at do
@@ -117,7 +123,7 @@ jtest "fails if value not supplied when flagged with :required" do
 end
 
 jtest "rejects modifying read only attributes" do
-  each_attr do |av, at, desc, default_|
+  each_variant_and_type do |av, at, desc, default_|
     jdl do
       attr :a, variant: av, type: at do
         flags :read_only
@@ -135,7 +141,7 @@ jtest "rejects modifying read only attributes" do
 end
 
 jtest "supports setting a validator" do
-  each_attr do |av, at, desc|
+  each_variant_and_type do |av, at, desc|
     jdl(level: :core) do
       attr :a, variant: av, type: at do
         items [:a, :b, :c] if at == :choice
@@ -168,7 +174,7 @@ jtest "supports setting a validator" do
 end
 
 jtest "arrays and hashes can be cleared" do
-  each_attr do |av, at, desc|
+  each_variant_and_type do |av, at, desc|
     jdl(level: :core) do
       attr :a, variant: av, type: at do
         items [:a, :b, :c] if at == :choice
