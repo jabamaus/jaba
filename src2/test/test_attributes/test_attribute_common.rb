@@ -40,6 +40,8 @@ module JabaTestMethods
         "to_s"
       when :uuid
         "uuid"
+      when :null, nil
+        1
       else
         raise "unhandled attr type '#{type}'"
       end
@@ -88,7 +90,6 @@ jtest "fails if value not supplied when flagged with :required" do
     jdl do
       attr :a, variant: av, type: at do
         flags :required
-        key_type :string if av == :hash
         items [:a, :b, :c] if at == :choice
       end
     end
@@ -106,7 +107,6 @@ jtest "fails if value not supplied when flagged with :required" do
       node :node
       attr "node/a", variant: av, type: at do
         flags :required
-        key_type :string if av == :hash
         items [:a, :b, :c] if at == :choice
       end
     end
@@ -128,7 +128,6 @@ jtest "rejects modifying read only attributes" do
       attr :a, variant: av, type: at do
         flags :read_only
         items [:a, :b, :c] if at == :choice
-        key_type :string if av == :hash
         default(*JTest.make_args(av, at)) if at != :compound
       end
     end
@@ -145,7 +144,6 @@ jtest "supports setting a validator" do
     jdl(level: :core) do
       attr :a, variant: av, type: at do
         items [:a, :b, :c] if at == :choice
-        key_type :string if av == :hash
         validate do |val|
           fail "failed"
         end
@@ -153,7 +151,6 @@ jtest "supports setting a validator" do
       if av == :hash
         attr :b, variant: av, type: at do
           items [:a, :b, :c] if at == :choice
-          key_type :string if av == :hash
           validate_key do |key|
             fail "key failed"
           end
