@@ -299,7 +299,7 @@ jtest "can accept flag options" do
   elem.has_flag_option?(:f3).must_be_false
   elem.flag_options.must_equal [:f1, :f2]
 end
-
+=begin
 jtest "can accept value options" do
   jdl do
     attr :a, variant: :hash do
@@ -340,7 +340,7 @@ jtest "can accept value and flag options" do
   elem.option_value(:kv1).must_equal("a")
   elem.option_value(:kv2).must_equal("b")
 end
-
+=end
 jtest "validates key value supplied correctly" do
   jdl do
     attr :a, variant: :hash do
@@ -392,9 +392,9 @@ jtest "supports expanding keys to arrays" do
     attr "node/a", variant: :hash, type: :string do
       key_type :src
       flag_options :fo
-      value_option :vo
       base_attr :root
     end
+    attr_option "node/a/vo", type: :int
   end
   op = jaba do
     node :n, root: td do

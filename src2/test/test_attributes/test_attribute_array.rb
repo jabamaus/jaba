@@ -372,7 +372,7 @@ end
 jtest "supports excluding elements" do
   # TODO
 end
-
+=begin
 jtest "gives a copy of value options to each element" do
   opt1 = "opt1"
   opt2 = "opt2"
@@ -421,3 +421,4 @@ jtest "gives a copy of value options to each element" do
   opt2val.object_id.wont_equal(opt2.object_id)
   opt2val.must_equal("opt2")
 end
+=end

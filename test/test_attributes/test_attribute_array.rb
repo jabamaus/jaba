@@ -429,7 +429,7 @@ jtest 'supports clearing excludes' do
 end
 
 # TODO: test flag option copies
-
+=begin
 jtest 'gives a copy of keyval options to each element' do
   jaba(barebones: true) do
     opt1 = 'opt1'
@@ -482,6 +482,7 @@ jtest 'gives a copy of keyval options to each element' do
     end
   end
 end
+=end
 
 jtest 'supports setting a validator' do
   assert_jaba_error "Error at #{src_loc('78A6546B')}: 't.a' array attribute invalid: failed.", trace: [__FILE__, 'C4C2D98C'] do

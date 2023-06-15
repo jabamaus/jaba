@@ -136,7 +136,7 @@ jtest "validates flag options" do
     end
   end
 end
-
+=begin
 jtest "overwrites flag and value options on successive calls" do
   jdl do
     attr :a do
@@ -158,7 +158,7 @@ jtest "overwrites flag and value options on successive calls" do
   a.option_value(:kv2).must_equal(3)
   a.option_value(:kv3).must_equal(4)
 end
-
+=end
 # TODO: test on_set in conjunction with exporting
 jtest "supports on_set hook" do
   jdl do

@@ -390,7 +390,6 @@ module JABA
     API = APIBuilder.define_module(
       :flags,
       :flag_options,
-      :value_option,
       :default,
       :validate,
       :on_set,
@@ -402,7 +401,6 @@ module JABA
       @attr_type = nil
       @flags = []
       @flag_options = []
-      @value_options = []
       @option_defs = []
       @default = nil
       @default_is_block = false
@@ -476,26 +474,6 @@ module JABA
     def on_validate = @on_validate
     def set_on_set(&block) = @on_set = block
     def on_set = @on_set
-
-    ValueOption = Data.define(:name, :required, :items)
-
-    def set_value_option(name, required: false, items: [])
-      if !name.symbol?
-        definition_error("In #{describe} value_option id must be specified as a symbol, eg :option")
-      end
-      @value_options << ValueOption.new(name, required, items)
-    end
-
-    def value_option(name)
-      if @value_options.empty?
-        definition_error("Invalid value option '#{name.inspect_unquoted}' - no options defined in #{describe}")
-      end
-      vo = @value_options.find { |v| v.name == name }
-      if !vo
-        definition_error("Invalid value option '#{name.inspect_unquoted}'. Valid #{describe} options: #{@value_options.map { |v| v.name }}")
-      end
-      vo
-    end
 
     def default = @default
     def default_is_block? = @default_is_block
