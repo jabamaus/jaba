@@ -145,15 +145,15 @@ module JABA
     def has_flag_option?(o) = @flag_options&.include?(o)
 
     def option_value(key, fail_if_not_found: true)
-      val = @value_options ? @value_options[key] : nil
-      if val.nil?
+      attr = @value_options ? @value_options[key] : nil
+      if attr.nil?
         if fail_if_not_found
           attr_error("Option key '#{key}' not found in #{describe}")
         else
           return nil
         end
       end
-      val
+      attr.value
     end
 
     def <=>(other)
