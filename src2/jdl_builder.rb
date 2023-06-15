@@ -173,7 +173,7 @@ module JABA
         when :array
           AttributeArrayDef
         when :hash
-          AttributeHashDef
+          error("Attribute options can only be single values or arrays")
         else
           error("Invalid attribute variant '#{variant.inspect_unquoted}'")
         end
