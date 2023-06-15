@@ -586,7 +586,9 @@ module JABA
 
     def post_create
       super
-      __check(:@key_type)
+      if @key_type.nil?
+        set_key_type(:string)
+      end
     end
   end
 end
