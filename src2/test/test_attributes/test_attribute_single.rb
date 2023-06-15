@@ -136,29 +136,38 @@ jtest "validates flag options" do
     end
   end
 end
-=begin
-jtest "overwrites flag and value options on successive calls" do
+
+jtest "supports value options" do
   jdl do
-    attr :a do
-      flag_options :fo1, :fo2, :fo3
-      value_option :kv1
-      value_option :kv2
-      value_option :kv3
+    attr :a
+    attr_option "a/opt_single", type: :int
+    attr_option "a/opt_array", variant: :array
+    attr_option "a/opt_single_choice", type: :choice do
+      items [:a, :b, :c]
     end
   end
   op = jaba do
-    a 1, :fo1, kv1: 2
-    a 2, :fo2, :fo3, kv2: 3, kv3: 4
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("FA31131B")}: 'a' attribute does not support ':opt_invalid' option." do
+      a 1, opt_invalid: 2 # FA31131B
+    end
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("518BF756")}: 'opt_single' attribute invalid - 'not an int' is a string - expected an integer." do
+      a 1, opt_single: "not an int" # 518BF756
+    end
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("C044A39E")}: 'opt_single_choice' attribute invalid - must be one of [:a, :b, :c] but got ':d'." do
+      a 1, opt_single_choice: :d # C044A39E
+    end
+    a 1, opt_single: 1, opt_array: [2, 3], opt_single_choice: :b
+    # opt_single previous value will be overwritten, opt_arrray will be extended
+    a 4, opt_single: 5, opt_array: [6, 7], opt_single_choice: :c
   end
   a = op[:root].get_attr(:a)
-  a.has_flag_option?(:fo1).must_be_false
-  a.has_flag_option?(:fo2).must_be_true
-  a.has_flag_option?(:fo3).must_be_true
-  a.option_value(:kv1, fail_if_not_found: false).must_be_nil
-  a.option_value(:kv2).must_equal(3)
-  a.option_value(:kv3).must_equal(4)
+  a.value.must_equal 4
+  a.option_value(:opt_single).must_equal 5
+  a.option_value("opt_single").must_equal 5
+  a.option_value(:opt_single_choice).must_equal :c
+  a.option_value(:opt_array).must_equal [2, 3, 6, 7]
 end
-=end
+
 # TODO: test on_set in conjunction with exporting
 jtest "supports on_set hook" do
   jdl do

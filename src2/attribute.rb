@@ -88,24 +88,27 @@ module JABA
         end
 
       @flag_options = args
-      @value_options = SymbolKeyHash.new
+      @value_options ||= SymbolKeyHash.new
 
       kwargs.each do |k, v|
         option_def = @attr_def.option_defs.find{|od| od.name.to_s == k.to_s}
         if option_def.nil?
           attr_error("#{describe} does not support '#{k.inspect_unquoted}' option")
         end
-        a = case option_def.variant
-        when :single
-          AttributeSingle.new(option_def, self)
-        when :array
-          AttributeArray.new(option_def, self)
-        when :hash
-          AttributeHash.new(option_def, self)
+        a = @value_options[k]
+        if a.nil?
+          a = case option_def.variant
+          when :single
+            AttributeSingle.new(option_def, self)
+          when :array
+            AttributeArray.new(option_def, self)
+          when :hash
+            AttributeHash.new(option_def, self)
+          end
+          a.set_last_call_location(src_loc)
+          @value_options[k] = a
         end
-        a.set_last_call_location(src_loc)
         a.set(v)
-        @value_options[k] = a
       end
 
       attr_type = @attr_def.attr_type
