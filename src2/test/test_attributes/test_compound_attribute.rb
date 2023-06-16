@@ -236,3 +236,5 @@ jtest "works with hash" do
     cmpd[:b].b.must_equal 4
   end
 end
+
+# TODO: test registering value options in

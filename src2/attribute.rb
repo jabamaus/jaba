@@ -20,6 +20,7 @@ module JABA
     def last_call_location = @last_call_location
     def set_last_call_location(loc) = @last_call_location = loc
     def attr_error(msg, errobj: self) = JABA.error(msg, errobj: errobj)
+    def attr_warn(msg, warnobj: self) = JABA.warn(msg, line: warnobj.src_loc)
     def process_flags; end # override as necessary
 
     # TODO: attribute_array does not have @value...
@@ -78,7 +79,7 @@ module JABA
     # This can only be called after the value has had its final value set as it gives raw access to value.
     def raw_value = @value
 
-    def set(*args, __validate: true, __force: false, **kwargs, &block)
+    def set(*args, __force: false, **kwargs, &block)
       attr_error("#{describe} is read only") if read_only? && !__force
 
       new_value = if block_given?
@@ -87,14 +88,21 @@ module JABA
           args.shift
         end
 
-      @flag_options = args
+      @flag_options ||= []
+      args.each do |f|
+        if !attr_def.has_flag_option?(f)
+          attr_error("Invalid flag option '#{f.inspect_unquoted}' passed to #{describe}. Valid flags are #{attr_def.flag_options}")
+        end
+        if @flag_options.include?(f)
+          attr_warn("#{describe} was passed duplicate flag '#{f.inspect_unquoted}'")
+        else
+          @flag_options << f
+        end
+      end
       @value_options ||= SymbolKeyHash.new
 
       kwargs.each do |k, v|
-        option_def = @attr_def.option_defs.find{|od| od.name.to_s == k.to_s}
-        if option_def.nil?
-          attr_error("#{describe} does not support '#{k.inspect_unquoted}' option")
-        end
+        option_def = @attr_def.lookup_option_def(k, self)
         a = @value_options[k]
         if a.nil?
           a = case option_def.variant
@@ -105,33 +113,27 @@ module JABA
           when :hash
             AttributeHash.new(option_def, self)
           end
-          a.set_last_call_location(src_loc)
           @value_options[k] = a
         end
+        a.set_last_call_location(last_call_location)
         a.set(v)
       end
 
       attr_type = @attr_def.attr_type
 
-      if __validate
-        @flag_options.each do |f|
-          if !attr_def.has_flag_option?(f)
-            attr_error("Invalid flag option '#{f.inspect_unquoted}' passed to #{describe}. Valid flags are #{attr_def.flag_options}")
-          end
-        end
-        # Validate whether it is a single value/array before validating type
-        attr_def.validate_value(new_value) do |msg|
-          attr_error("#{describe} invalid - #{msg}")
-        end
-        attr_type.validate_value(@attr_def, new_value) do |msg|
-          attr_error("#{describe} invalid - #{msg}")
-        end
-        if attr_def.on_validate
-          rescue_on_validate do
-            node.eval_jdl(new_value, @flag_options, **@value_options, &attr_def.on_validate)
-          end
+      # Validate whether it is a single value/array before validating type
+      attr_def.validate_value(new_value) do |msg|
+        attr_error("#{describe} invalid - #{msg}")
+      end
+      attr_type.validate_value(@attr_def, new_value) do |msg|
+        attr_error("#{describe} invalid - #{msg}")
+      end
+      if attr_def.on_validate
+        rescue_on_validate do
+          node.eval_jdl(new_value, @flag_options, **@value_options, &attr_def.on_validate)
         end
       end
+
       @value = attr_type.map_value(new_value, self)
       @set = true
 
@@ -147,15 +149,10 @@ module JABA
 
     def has_flag_option?(o) = @flag_options&.include?(o)
 
-    def option_value(key, fail_if_not_found: true)
-      attr = @value_options ? @value_options[key] : nil
-      if attr.nil?
-        if fail_if_not_found
-          attr_error("Option key '#{key}' not found in #{describe}")
-        else
-          return nil
-        end
-      end
+    def option_value(name)
+      @attr_def.lookup_option_def(name, self) # check its valid
+      attr = @value_options ? @value_options[name] : nil
+      return nil if attr.nil?
       attr.value
     end
 

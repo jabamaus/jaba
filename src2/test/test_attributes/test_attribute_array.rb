@@ -372,53 +372,73 @@ end
 jtest "supports excluding elements" do
   # TODO
 end
-=begin
-jtest "gives a copy of value options to each element" do
-  opt1 = "opt1"
-  opt2 = "opt2"
+
+jtest "supports flag options" do
   jdl do
     attr :a, variant: :array do
-      value_option :opt1
-      value_option :opt2
+      flag_options :a, :b, :c
+      flags :allow_dupes
+    end
+    attr :b, variant: :array do
+      flag_options :a, :b, :c
     end
   end
   op = jaba do
-    a [1, 2], opt1: opt1, opt2: opt2
-    a [3], opt1: opt1, opt2: opt2
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("0BE71C6C")}: Invalid flag option ':d' passed to 'a' attribute. Valid flags are [:a, :b, :c]" do
+      a 1, :d # 0BE71C6C
+    end
+    # because :allow_dupes is specified these will all be separate elements
+    a 1, :a
+    a 1, :a
+    a 2, :b
+
+    # b does not allow dupes so flags will be merged. A duplicate warning will only issued if value and flags are the same
+    b 1, :a
+    b 1, :b
   end
-  a = op[:root].get_attr("a")
+  #op[:warnings].must_equal ["Warning at #{src_loc("F5A83F4D")}: 'a' attribute was passed duplicate flag ':a'."]
+  a = op[:root].get_attr(:a)
+  a.value.must_equal [1, 1, 2]
+  a[0].flag_options.must_equal [:a]
+  a[1].flag_options.must_equal [:a]
+  a[2].flag_options.must_equal [:b]
 
-  attr = a[0]
-  attr.value.must_equal(1)
-  opt1val = attr.option_value(:opt1)
-  opt1val.wont_be_nil
-  opt1val.object_id.wont_equal(opt1.object_id)
-  opt1val.must_equal("opt1")
-  opt2val = attr.option_value(:opt2)
-  opt2val.wont_be_nil
-  opt2val.object_id.wont_equal(opt2.object_id)
-  opt2val.must_equal("opt2")
-
-  attr = a[1]
-  attr.value.must_equal(2)
-  opt1val = attr.option_value(:opt1)
-  opt1val.wont_be_nil
-  opt1val.object_id.wont_equal(opt1.object_id)
-  opt1val.must_equal("opt1")
-  opt2val = attr.option_value(:opt2)
-  opt2val.wont_be_nil
-  opt2val.object_id.wont_equal(opt2.object_id)
-  opt2val.must_equal("opt2")
-
-  attr = a[2]
-  attr.value.must_equal(3)
-  opt1val = attr.option_value(:opt1)
-  opt1val.wont_be_nil
-  opt1val.object_id.wont_equal(opt1.object_id)
-  opt1val.must_equal("opt1")
-  opt2val = attr.option_value(:opt2)
-  opt2val.wont_be_nil
-  opt2val.object_id.wont_equal(opt2.object_id)
-  opt2val.must_equal("opt2")
+  b = op[:root].get_attr(:b)
+  b.value.must_equal [1]
+  b[0].flag_options.must_equal [:a, :b]
+end
+=begin
+jtest "supports value options" do
+  jdl do
+    attr :a, variant: :array do
+      flags :allow_dupes
+    end
+    attr_option "a/opt_single", type: :int
+    attr_option "a/opt_array", variant: :array
+    attr_option "a/opt_single_choice", type: :choice do
+      items [:a, :b, :c]
+    end
+  end
+  op = jaba do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("FA31131B")}: 'a' attribute does not support ':opt_invalid' option." do
+      a({k: :v}, opt_invalid: 2) # FA31131B
+    end
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("518BF756")}: 'opt_single' attribute invalid - 'not an int' is a string - expected an integer." do
+      a :k, :v, opt_single: "not an int" # 518BF756
+    end
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("C044A39E")}: 'opt_single_choice' attribute invalid - must be one of [:a, :b, :c] but got ':d'." do
+      a :k, :v, opt_single_choice: :d # C044A39E
+    end
+    a.empty?.must_be_true
+    a :k, :v, opt_single: 1, opt_array: [2, 3], opt_single_choice: :b
+    # opt_single previous value will be overwritten, opt_arrray will be extended
+    a :k, :v, opt_single: 5, opt_array: [6, 7], opt_single_choice: :c
+  end
+  a = op[:root].get_attr(:a)
+  a.value.must_equal({k: :v})
+  v = a.fetch(:k)
+  v.option_value(:opt_single).must_equal 5
+  v.option_value(:opt_single_choice).must_equal :c
+  v.option_value(:opt_array).must_equal [2, 3, 6, 7]
 end
 =end

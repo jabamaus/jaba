@@ -202,7 +202,7 @@ jtest "can be set" do
     a :k2, :v2
     a[:k2].must_equal(:v2)
 
-    # Can be set by passing a hash
+    # Can be set by passing a hash  ``
     a({ k3: :v3, k4: :v4 })
     a.must_equal({ k: :v, k2: :v2, k3: :v3, k4: :v4 })
 
@@ -281,66 +281,60 @@ jtest "disallows no_sort and allow_dupes flags" do
   end
 end
 
-jtest "can accept flag options" do
+jtest "supports flag options" do
   jdl do
     attr :a, variant: :hash do
       key_type :string
-      flag_options :f1, :f2, :f3
+      flag_options :f1, :f2, :f3, :f4
     end
   end
   op = jaba do
-    a :k, :v, :f1, :f2
+    a :k, :v, :f1
+    a :k, :v, :f2 
+    a :k, :v2, :f3 # flags are additive even if value different
   end
   a = op[:root].get_attr(:a)
   elem = a.fetch(:k)
-  elem.value.must_equal(:v)
+  elem.value.must_equal(:v2)
   elem.has_flag_option?(:f1).must_be_true
   elem.has_flag_option?(:f2).must_be_true
-  elem.has_flag_option?(:f3).must_be_false
-  elem.flag_options.must_equal [:f1, :f2]
-end
-=begin
-jtest "can accept value options" do
-  jdl do
-    attr :a, variant: :hash do
-      key_type :string
-      value_option :kv1
-      value_option :kv2
-    end
-  end
-  op = jaba do
-    a :k, :v, kv1: "a", kv2: "b"
-  end
-  a = op[:root].get_attr(:a)
-  elem = a.fetch(:k)
-  elem.value.must_equal(:v)
-  elem.option_value(:kv1).must_equal("a")
-  elem.option_value(:kv2).must_equal("b")
+  elem.has_flag_option?(:f3).must_be_true
+  elem.has_flag_option?(:f4).must_be_false
+  elem.flag_options.must_equal [:f1, :f2, :f3]
 end
 
-jtest "can accept value and flag options" do
+jtest "supports value options" do
   jdl do
-    attr :a, variant: :hash do
-      key_type :string
-      value_option :kv1
-      value_option :kv2
-      flag_options :flag_opt1, :flag_opt2, :flag_opt3
+    attr :a, variant: :hash
+    attr_option "a/opt_single", type: :int
+    attr_option "a/opt_array", variant: :array
+    attr_option "a/opt_single_choice", type: :choice do
+      items [:a, :b, :c]
     end
   end
   op = jaba do
-    a :k, :v, :flag_opt1, :flag_opt2, kv1: "a", kv2: "b"
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("FA31131B")}: 'a' attribute does not support ':opt_invalid' option." do
+      a({k: :v}, opt_invalid: 2) # FA31131B
+    end
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("518BF756")}: 'opt_single' attribute invalid - 'not an int' is a string - expected an integer." do
+      a :k, :v, opt_single: "not an int" # 518BF756
+    end
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("C044A39E")}: 'opt_single_choice' attribute invalid - must be one of [:a, :b, :c] but got ':d'." do
+      a :k, :v, opt_single_choice: :d # C044A39E
+    end
+    a.empty?.must_be_true
+    a :k, :v, opt_single: 1, opt_array: [2, 3], opt_single_choice: :b
+    # opt_single previous value will be overwritten, opt_arrray will be extended
+    a :k, :v, opt_single: 5, opt_array: [6, 7], opt_single_choice: :c
   end
   a = op[:root].get_attr(:a)
-  elem = a.fetch(:k)
-  elem.value.must_equal(:v)
-  elem.has_flag_option?(:flag_opt1).must_be_true
-  elem.has_flag_option?(:flag_opt2).must_be_true
-  elem.has_flag_option?(:flag_opt3).must_be_false
-  elem.flag_options.must_equal [:flag_opt1, :flag_opt2]
-  elem.option_value(:kv1).must_equal("a")
-  elem.option_value(:kv2).must_equal("b")
+  a.value.must_equal({k: :v})
+  v = a.fetch(:k)
+  v.option_value(:opt_single).must_equal 5
+  v.option_value(:opt_single_choice).must_equal :c
+  v.option_value(:opt_array).must_equal [2, 3, 6, 7]
 end
-=end
+
 jtest "validates key value supplied correctly" do
   jdl do
     attr :a, variant: :hash do

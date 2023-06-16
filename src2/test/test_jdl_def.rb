@@ -217,17 +217,29 @@ end
 # TODO: check that attr_option cannot reference another attr_option
 jtest "can register attributes as attrbute options" do
   jdl(level: :core) do
+    node :node1
     attr "a"
-    attr_option "a/option", type: :choice do
-      items [:a, :b, :c]
-    end
+    attr "node1/b"
+    attr "node1/c"
+    # register 1 option into 1 top level attr
+    attr_option "a/opt1"
+    # register 1 option into 1 attribute of a specific node type
+    attr_option "node1/b/opt2"
+    # register into all attributes of a specific node type
+    attr_option "node1/*/opt3"
+    # register into all top level attributes
+    attr_option "*/opt4"
   end
   op = jaba do
-    a 1, option: :b
+    a 1, opt1: 2
+    node1 :n1 do
+      b 3, opt2: 4, opt3: 5
+      c opt3: 6 # TODO: check c does not have opt2
+    end
   end
   a = op[:root].get_attr(:a)
   a.value.must_equal 1
-  a.option_value(:option).must_equal :b
+  a.option_value(:opt1).must_equal 2
 end
 
 jtest "fails if attribute type does not exist" do

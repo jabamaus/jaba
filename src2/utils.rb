@@ -38,7 +38,7 @@ module JABA
 
     def write_keyvalue_attr(w, kv_attr, depth: 2)
       kv_attr.each do |key, attr|
-        condition = attr.option_value(:condition, fail_if_not_found: false)
+        condition = attr.option_value(:condition)
         write_keyvalue(w, key, attr.value, condition: condition)
       end
     end

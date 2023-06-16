@@ -124,17 +124,24 @@ jtest "fails if default block sets attribute" do
   end
 end
 
-jtest "validates flag options" do
+jtest "supports flag options" do
   jdl do
     attr :a do
       flag_options :a, :b, :c
     end
   end
-  assert_jaba_error "Error at #{src_loc("0BE71C6C")}: Invalid flag option ':d' passed to 'a' attribute. Valid flags are [:a, :b, :c]" do
-    jaba do
-      a 1, :a, :b, :d # 0BE71C6C
+  op = jaba do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("0BE71C6C")}: Invalid flag option ':d' passed to 'a' attribute. Valid flags are [:a, :b, :c]" do
+      a 1, :d # 0BE71C6C
     end
+    a 1, :a
+    a 2, :b # flags are additive even if value different
+    a 2, :a # F5A83F4D duplicate flag should produce warning
   end
+  op[:warnings].must_equal ["Warning at #{src_loc("F5A83F4D")}: 'a' attribute was passed duplicate flag ':a'."]
+  a = op[:root].get_attr(:a)
+  a.value.must_equal 2
+  a.flag_options.must_equal [:a, :b]
 end
 
 jtest "supports value options" do
@@ -145,6 +152,9 @@ jtest "supports value options" do
     attr_option "a/opt_single_choice", type: :choice do
       items [:a, :b, :c]
     end
+    attr :b
+    attr_option "b/opt_single", type: :int
+    attr_option "b/opt_array", variant: :array
   end
   op = jaba do
     JTest.assert_jaba_error "Error at #{JTest.src_loc("FA31131B")}: 'a' attribute does not support ':opt_invalid' option." do
@@ -157,15 +167,25 @@ jtest "supports value options" do
       a 1, opt_single_choice: :d # C044A39E
     end
     a 1, opt_single: 1, opt_array: [2, 3], opt_single_choice: :b
-    # opt_single previous value will be overwritten, opt_arrray will be extended
-    a 4, opt_single: 5, opt_array: [6, 7], opt_single_choice: :c
+
+    # Calling again with same value will cause opt_single to be overwritten and opt_arrray to be extended
+    a 1, opt_single: 5, opt_array: [6, 7], opt_single_choice: :c
+
+    # value options are additive even if value changes
+    b 8, opt_single: 9, opt_array: [10, 11]
+    b 12, opt_array: [13, 14]
   end
   a = op[:root].get_attr(:a)
-  a.value.must_equal 4
+  a.value.must_equal 1
   a.option_value(:opt_single).must_equal 5
   a.option_value("opt_single").must_equal 5
   a.option_value(:opt_single_choice).must_equal :c
   a.option_value(:opt_array).must_equal [2, 3, 6, 7]
+
+  b = op[:root].get_attr(:b)
+  b.value.must_equal 12
+  b.option_value(:opt_single).must_equal 9
+  b.option_value(:opt_array).must_equal [10, 11, 13, 14]
 end
 
 # TODO: test on_set in conjunction with exporting

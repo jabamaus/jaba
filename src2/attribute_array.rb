@@ -63,23 +63,27 @@ module JABA
         values.prepend(*default_values)
       end
 
-      dupes = []
-      first_dupe = nil
+      dupes = first_dupe = nil
+      
       values.each do |val|
         elem = make_elem(val, *args, add: false, **kwargs)
-        existing = nil
-        if !attr_def.has_flag?(:allow_dupes)
-          existing = @elems.find { |e| e.raw_value == elem.raw_value }
-          first_dupe ||= existing
-        end
-
-        if existing
-          dupes << val
-        else
+        if attr_def.has_flag?(:allow_dupes)
           @elems << elem
+        else
+          existing = @elems.find { |e| e.raw_value == elem.raw_value }
+          if existing
+            elem = existing
+            first_dupe ||= elem
+            dupes ||= []
+          else
+            @elems << elem
+          end
+          elem.set_last_call_location(last_call_location)
+          elem.set(val, *args, **kwargs)
         end
       end
-      if !dupes.empty?
+
+      if dupes
         msg = "Stripping duplicates #{dupes} from #{describe}"
         if first_dupe.src_loc != src_loc
           msg << ". See previous at #{first_dupe.src_loc.src_loc_describe}"

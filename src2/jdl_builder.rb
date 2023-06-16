@@ -188,7 +188,7 @@ module JABA
       end
       @path_to_attr_def[path] = option_def
 
-      attr_def.option_defs << option_def
+      attr_def.add_option_def(option_def)
     end
 
     def set_global_method(name, &block)
@@ -402,6 +402,7 @@ module JABA
       @flags = []
       @flag_options = []
       @option_defs = []
+      @option_def_lookup = SymbolKeyHash.new
       @default = nil
       @default_is_block = false
       @default_set = false
@@ -468,7 +469,19 @@ module JABA
     end
 
     def has_flag_option?(fo) = @flag_options.include?(fo)
-    def option_defs = @option_defs
+
+    def add_option_def(od)
+      @option_defs << od
+      @option_def_lookup[od.name] = od
+    end
+    def each_option_def(&block) = @option_defs.each(&block)
+    def lookup_option_def(name, attr, fail_if_not_found: true)
+      od = @option_def_lookup[name]
+      if od.nil? && fail_if_not_found
+        attr.attr_error("#{describe} does not support '#{name.inspect_unquoted}' option")
+      end
+      od
+    end
 
     def set_validate(&block) = @on_validate = block
     def on_validate = @on_validate

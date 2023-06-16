@@ -198,7 +198,7 @@ module JABA
 
         cfg.get_attr(:vcprop).each do |key, attr|
           group, key = key.split("|")
-          condition = attr.option_value(:condition, fail_if_not_found: false)
+          condition = attr.option_value(:condition)
           val = attr.value
 
           case group

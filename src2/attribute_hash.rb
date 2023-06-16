@@ -93,7 +93,7 @@ module JABA
       f_options = other.flag_options
       key = v_options[:__key] # TODO: __key does not exist anymore
       val = Marshal.load(Marshal.dump(other.raw_value))
-      insert_key(key, val, *f_options, __validate: false, **v_options)
+      insert_key(key, val, *f_options, **v_options)
     end
 
     def clear = @hash.clear
@@ -127,17 +127,20 @@ module JABA
       end
     end
 
-    def insert_key(key, val, *args, __validate: true, **kwargs)
-      attr = AttributeElement.new(@attr_def, @node)
-      attr.set_last_call_location(last_call_location)
-
-      if __validate && attr_def.on_validate_key
+    def insert_key(key, val, *args, **kwargs)
+      if attr_def.on_validate_key
         rescue_on_validate do
           node.eval_jdl(key, &attr_def.on_validate_key)
         end
       end
 
-      attr.set(val, *args, __validate: __validate, **kwargs)
+      attr = @hash[key]
+      if attr.nil?
+        attr = AttributeElement.new(@attr_def, @node)
+        @hash[key] = attr
+      end
+      attr.set_last_call_location(last_call_location)
+      attr.set(val, *args, **kwargs)
 
       if attr_def.on_set
         # if @in_on_set
@@ -147,16 +150,6 @@ module JABA
         # @attr_def.call_block_property(:on_set, key, val, receiver: @node)
         # @in_on_set = false
       end
-
-      # Log overwrites. This behaviour could be beefed up and customised with options if necessary
-      #
-      existing = @hash[key]
-      if existing
-        if existing.value != val
-          JABA.log("Overwriting '#{key}' hash key [old=#{existing.value}, new=#{val}] in #{describe}")
-        end
-      end
-      @hash[key] = attr
       attr
     end
   end

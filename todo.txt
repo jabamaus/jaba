@@ -1,11 +1,9 @@
 core
 - versioning support
-- resolve issues around sorting with mixed type elements
 - Revisit set_to_default and wipe. Have way of clearing to default and clearing fully, but don't count that as set=true
 - Employ did you mean style error reporting
   Error at basic_dll.jaba:8: 'defines' attribute not defined. Did you mean 'define'?
-- Add title/example/notes to flag and value option definitions
-- Stronger spec for value_options. Need to flag as array.
+- Add title/example/notes to flag_options
 - Validation and documentation specification for method args, similar to attribute options
 - Make _ID be id of the definition the code is in, such that it works even inside a block that is being executed in the context of a different jaba object
 - Make defaults work per-file. Introduce global_defaults. Or a scope option to defaults.
@@ -16,6 +14,7 @@ core
 - [BUG] Fix issue with buildsystem default being different in different files.
 - look again at receiver of on_called
 - make logging and error functionality into Context class methods so they are always available.
+- prefix/postfix/delete/exclude should be specced with attr_option. exclude should get its type from its owning attr.
 
 path attrs/src
 - Support **.h as alternative to **/*.h
