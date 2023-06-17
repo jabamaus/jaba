@@ -106,11 +106,11 @@ module JABA
         if a.nil?
           a = case option_def.variant
           when :single
-            AttributeSingle.new(option_def, self)
+            AttributeSingle.new(option_def, @node)
           when :array
-            AttributeArray.new(option_def, self)
+            AttributeArray.new(option_def, @node)
           when :hash
-            AttributeHash.new(option_def, self)
+            AttributeHash.new(option_def, @node)
           end
           @value_options[k] = a
         end
