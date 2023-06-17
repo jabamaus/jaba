@@ -164,7 +164,6 @@ module JABA
 
     # See https://docs.microsoft.com/en-us/cpp/build/reference/vcxproj-file-structure?view=vs-2019
     def write_vcxproj
-      JABA.log "Generating #{@vcxproj_file}", section: true
       file = JABA.context.file_manager.new_file(@vcxproj_file, eol: :windows, encoding: "UTF-8")
       w = file.writer
       @pc = file.work_area

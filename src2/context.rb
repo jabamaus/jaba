@@ -9,7 +9,6 @@ module JABA
 
   def self.error(msg, caller_step_back: 2, **kwargs) = JABA.context.error(msg, caller_step_back: caller_step_back, **kwargs)
   def self.warn(msg, caller_step_back: 2, **kwargs) = JABA.context.warn(msg, caller_step_back: caller_step_back, **kwargs)
-  def self.log(...) = JABA.context.log(...)
 
   class Context
     @@attr_types = []
@@ -93,7 +92,6 @@ module JABA
       JABA.set_context(self)
       @warnings = []
       @warning_lookup = {}
-      @log_msgs = JABA.running_tests? ? nil : [] # Disable logging when running tests
       @input_block = block
       @input = Input.new
       @input.instance_variable_set(:@src_root, nil)
@@ -131,8 +129,6 @@ module JABA
         end
       rescue JabaError => e
         raise e if input.want_exceptions?
-      ensure
-        term_log
       end
     end
 
@@ -163,9 +159,6 @@ module JABA
         end
       end
 
-      log summary
-      log "Done! (#{duration})"
-
       output[:added] = added
       output[:modified] = modified
       output[:unchanged] = unchanged
@@ -173,7 +166,6 @@ module JABA
     end
 
     def do_run
-      log "Starting Jaba at #{Time.now}", section: true
       @input_block&.call(input)
 
       @jdl = if !@@overridden_jdl_blocks.empty?
@@ -231,8 +223,6 @@ module JABA
       if !File.exist?(src_root)
         JABA.error("source root '#{src_root}' does not exist", want_backtrace: false)
       end
-
-      log "src_root=#{src_root}"
     end
 
     def set_top_level_attrs_from_cmdline
@@ -493,30 +483,6 @@ module JABA
       result
     end
 
-    def log(msg, severity = :INFO, section: false)
-      return if !@log_msgs
-      if section
-        max_width = 130
-        n = ((max_width - msg.size) / 2).round
-        if n > 2
-          msg = "#{"=" * n} #{msg} #{"=" * n}"
-        end
-      end
-      @log_msgs << "#{severity} #{msg}"
-    end
-
-    def term_log
-      return if !@log_msgs
-      log_dir = invoking_dir
-      log_fn = "#{log_dir}/jaba.log"
-      if File.exist?(log_fn)
-        File.delete(log_fn)
-      else
-        FileUtils.makedirs(log_dir)
-      end
-      IO.write(log_fn, @log_msgs.join("\n"))
-    end
-
     def error(msg, line: nil, type: :error, caller_step_back: 1, errobj: nil, want_err_line: true, want_backtrace: true)
       if errobj
         line = if errobj.proc?
@@ -535,7 +501,6 @@ module JABA
           caller(caller_step_back)
         end
       info = make_error_info(msg, bt, type: type, want_err_line: want_err_line)
-      log info.full_message, :ERROR
       output[:error] = want_backtrace ? info.full_message : info.message
       e = JabaError.new(info.message)
       e.instance_variable_set(:@raw_message, msg) # For use when exeception wrapped
@@ -551,7 +516,6 @@ module JABA
         end
       msg = make_error_info(msg, bt, type: :warn, want_err_line: want_warn_line).message
       if !@warning_lookup.has_key?(msg)
-        log(msg, :WARN)
         @warnings << msg
         @warning_lookup[msg] = true
       end

@@ -104,12 +104,6 @@ module JABA
       end
       @generated_lookup[fn] = nil
 
-      if status
-        JABA.log "Writing #{fn} [#{status}]"
-      else
-        JABA.log "Writing #{fn}"
-      end
-
       dir = fn.parent_path
       if !exist?(dir)
         FileUtils.makedirs(dir)
