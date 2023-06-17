@@ -55,6 +55,7 @@ test
 
 possible features
 - Ability to reverse engineer jaba definitions from existing vsprojects
+- Command line option to print full exception info
 - Have a command line switch to make all error messages contain absolute paths
 - Add invocations.txt to each example which cam execute in multiple ways?
 - Ability to 'grab' functionality that auto-adds abilities, eg text file
