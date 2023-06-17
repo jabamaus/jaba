@@ -7,8 +7,23 @@ module JABA
   def self.running_tests! = @@running_tests = true
   def self.running_tests? = @@running_tests
 
-  def self.error(msg, caller_step_back: 2, **kwargs) = JABA.context.error(msg, caller_step_back: caller_step_back, **kwargs)
-  def self.warn(msg, caller_step_back: 2, **kwargs) = JABA.context.warn(msg, caller_step_back: caller_step_back, **kwargs)
+  def self.error(msg, caller_step_back: 2, **kwargs)
+    ctxt = JABA.context
+    if ctxt
+      ctxt.error(msg, caller_step_back: caller_step_back, **kwargs)
+    else
+      raise JabaError, msg
+    end
+  end
+
+  def self.warn(msg, caller_step_back: 2, **kwargs)
+    ctxt = JABA.context
+    if ctxt
+      ctxt.warn(msg, caller_step_back: caller_step_back, **kwargs)
+    else
+      puts "Warning: #{msg}"
+    end
+  end
 
   class Context
     @@attr_types = []
