@@ -83,12 +83,12 @@ module JABA
             # Characters like < > | & are escaped to prevent unwanted behaviour when the msg is echoed
             d_msg = demacroise(msg, input, imp_input, d_output).to_escaped_DOS.to_escaped_xml
 
-            props = ["FileType|Document", "Command|#{d_cmd}", "Outputs|#{output_rel}"]
+            props = {FileType: :Document, Command: d_cmd, Outputs: output_rel}
             if imp_input
-              props << "AdditionalInputs|#{imp_input_rel}"
+              props[:AdditionalInputs] = imp_input_rel
             end
-            props << "Message|#{d_msg}"
-            src_attr.set(input, property: props)
+            props[:Message] = d_msg
+            src_attr.set(input, properties: props)
           end
         end
 
@@ -106,9 +106,8 @@ module JABA
             @src << sfi
             @src_lookup[sf] = sfi
           end
-          sf_props = sf_elem.option_value(:property)
-          sf_props&.each do |p|
-            name, val = p.split("|")
+          sf_props = sf_elem.option_value(:properties)
+          sf_props&.each do |name, val|
             sfi.properties << [name, cfg_name, vsplatform, val]
           end
         end

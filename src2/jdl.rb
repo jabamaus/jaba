@@ -411,14 +411,9 @@ JABA::Context.define_jdl do
     flags :no_check_exist
   end
 
-  attr_option "target/src/property", variant: :array, type: :string do
+  attr_option "target/src/properties", variant: :hash, type: :to_s do
     title "Per-file property"
     note "In the form <name>|<value>"
-    validate do |val|
-      if val !~ /^[a-zA-Z]+\|.+$/
-        fail "Invalid property format '#{val}'"
-      end
-    end
   end
 
   attr "target/src_ext", variant: :array, type: :ext do
