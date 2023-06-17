@@ -32,7 +32,7 @@ module JABA
     note "Allows array attributes to contain duplicates. If not specified duplicates are stripped"
     compatible? do |attr_def|
       if !attr_def.array?
-        attr_def.definition_error("only allowed on array attributes")
+        attr_def.definition_error(":allow_dupes flag only allowed on array attributes")
       end
     end
   end
@@ -42,7 +42,7 @@ module JABA
     note "Flags an attribute as being able to be exported to dependents. Only array and hash attributes can be flagged with this."
     compatible? do |attr_def|
       if !attr_def.array? && !attr_def.hash?
-        attr_def.definition_error("only allowed on array/hash attributes")
+        attr_def.definition_error(":exportable flag only allowed on array/hash attributes")
       end
     end
     init_attr_def do |attr_def|
@@ -57,7 +57,7 @@ module JABA
       case attr_def.type_id
       when :file, :dir, :src
       else
-        attr_def.definition_error("only allowed on file, dir and src attribute types")
+        attr_def.definition_error(":no_check_exist flag only allowed on file, dir and src attribute types")
       end
     end
   end
@@ -67,7 +67,7 @@ module JABA
     note "Allows array attributes to remain in the order they are set in. If not specified arrays are sorted"
     compatible? do |attr_def|
       if !attr_def.array?
-        attr_def.definition_error("only allowed on array attributes")
+        attr_def.definition_error(":no_sort flag only allowed on array attributes")
       end
     end
   end
@@ -85,7 +85,7 @@ module JABA
     title "If set default is overwritten if set by user else default is extended"
     compatible? do |attr_def|
       if attr_def.single?
-        attr_def.definition_error("only allowed on array and hash attributes")
+        attr_def.definition_error(":overwrite_default flag only allowed on array and hash attributes")
       end
     end
   end
@@ -108,7 +108,7 @@ module JABA
     note "Specifies that the definition writer must supply a value for this attribute"
     compatible? do |attr_def|
       if attr_def.default_set?
-        attr_def.definition_error("can only be specified if no default specified")
+        attr_def.definition_error(":required flag can only be specified if no default specified")
       end
     end
   end
