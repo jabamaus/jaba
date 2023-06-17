@@ -120,11 +120,6 @@ jtest 'supports adding src relative to jaba file or root' do
         src ['b/c.cpp'], :force
         src ['./a/b/c.cpp'], :force
       end
-      config do
-        vcfprop './missing.rb|Foo', 'bar'
-        vcfprop 'missing.rb|Foo', 'bar'
-        vcfprop './b.cpp|Foo', 'bar'
-      end
     end
   end
 

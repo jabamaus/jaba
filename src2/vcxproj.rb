@@ -4,7 +4,8 @@ module JABA
     :projdir_rel,
     :vpath,
     :file_type,
-    :extname
+    :extname,
+    :properties
   )
 
   class Vcxproj
@@ -31,11 +32,10 @@ module JABA
       @vcxproj_file = "#{@projdir}/#{@projname}.vcxproj"
       @vcxproj_filters_file = "#{@vcxproj_file}.filters"
       @guid = @node[:vcguid]
-      @per_file_props = {}
       @extension_settings = []
       @extension_targets = []
       @src = []
-      @src_set = Set.new
+      @src_lookup = {}
       @file_type_hash = JABA.context.root_node[:vcfiletype]
       @file_to_file_type = {}
 
@@ -51,7 +51,8 @@ module JABA
       each_config do |cfg|
         cfg.eval_jdl(self, cfg[:type], &cb)
         src_attr = cfg.get_attr(:src)
-        vcfprop_attr = cfg.get_attr(:vcfprop)
+        vsplatform = "x64" # TODO: cfg.attrs.arch.attrs.vsname
+        cfg_name = cfg[:configname]
 
         cfg[:rule].each do |rule|
           output = rule[:output]
@@ -62,7 +63,6 @@ module JABA
           msg = rule[:msg]
 
           rule[:input].each do |input|
-            src_attr.set(input)
             @file_to_file_type[input] = :CustomBuild
             d_output = demacroise(output, input, imp_input, nil)
             src_attr.set(d_output, :force) # output may not exist on disk so force
@@ -83,25 +83,33 @@ module JABA
             # Characters like < > | & are escaped to prevent unwanted behaviour when the msg is echoed
             d_msg = demacroise(msg, input, imp_input, d_output).to_escaped_DOS.to_escaped_xml
 
-            vcfprop_attr.set("#{input}|FileType", :Document)
-            vcfprop_attr.set("#{input}|Command", d_cmd)
-            vcfprop_attr.set("#{input}|Outputs", output_rel)
+            props = ["FileType|Document", "Command|#{d_cmd}", "Outputs|#{output_rel}"]
             if imp_input
-              vcfprop_attr.set("#{input}|AdditionalInputs", imp_input_rel)
+              props << "AdditionalInputs|#{imp_input_rel}"
             end
-            vcfprop_attr.set("#{input}|Message", d_msg)
+            props << "Message|#{d_msg}"
+            src_attr.set(input, property: props)
           end
         end
 
         src_attr.sort!
-        src_attr.value.each do |sf|
-          if @src_set.add?(sf)
+        src_attr.each do |sf_elem|
+          sf = sf_elem.value
+          sfi = @src_lookup[sf]
+          if !sfi
             ext = sf.extname
             rel = sf.relative_path_from(@projdir, backslashes: true)
             ft = @file_to_file_type[sf]
             ft = @file_type_hash[sf.extname] if ft.nil?
             ft = :None if ft.nil?
-            @src << SrcFileInfo.new(sf, rel, nil, ft, ext)
+            sfi = SrcFileInfo.new(sf, rel, nil, ft, ext, [])
+            @src << sfi
+            @src_lookup[sf] = sfi
+          end
+          sf_props = sf_elem.option_value(:property)
+          sf_props&.each do |p|
+            name, val = p.split("|")
+            sfi.properties << [name, cfg_name, vsplatform, val]
           end
         end
       end
@@ -113,23 +121,6 @@ module JABA
     end
 
     def each_config(&block) = @node.children.each(&block)
-
-    def get_matching_src(abs_spec, fail_if_not_found: true, errobj: nil)
-      JABA.error("'#{abs_spec.inspect_unquoted}' must be an absolute path") if !abs_spec.absolute_path?
-      if abs_spec.wildcard?
-        # Use File::FNM_PATHNAME so eg dir/**/*.c matches dir/a.c
-        files = @src.select { |s| File.fnmatch?(abs_spec, s.absolute_path, File::FNM_PATHNAME) }
-        if files.empty? && fail_if_not_found
-          JABA.error("'#{spec}' did not match any files")
-        end
-        return files
-      end
-      s = @src.find { |s| s.absolute_path == abs_spec }
-      if !s && fail_if_not_found
-        JABA.error("'#{spec}' src file not in project", errobj: errobj)
-      end
-      [s] # Note that Array(s) did something unexpected - added all the struct elements to the array where the actual struct is wanted
-    end
 
     def demacroise(str, input, implicit_input, output)
       str = str.dup
@@ -216,15 +207,6 @@ module JABA
           end
         end
 
-        cfg.get_attr(:vcfprop).each do |key, attr|
-          file_with_prop, prop = key.split("|")
-          val = attr.value
-          sfs = get_matching_src(file_with_prop, errobj: attr)
-          sfs.each do |sf|
-            @per_file_props.push_value(sf, [prop, cfg_name, platform, val])
-          end
-        end
-
         property_group(@pg1, close: true)
         property_group(@pg2, close: true)
 
@@ -253,12 +235,12 @@ module JABA
       src_area = file.work_area
       @src.each do |sf|
         ft = sf.file_type
-        file_props = @per_file_props[sf]
+        file_props = sf.properties
         src_area.write_raw("    <#{ft} Include=\"#{sf.projdir_rel}\"")
-        if file_props
+        if !file_props.empty?
           src_area << ">"
-          file_props.each_slice(4) do |a|
-            src_area << "      <#{a[0]} Condition=\"#{cfg_condition(a[1], a[2])}\">#{a[3]}</#{a[0]}>"
+          file_props.each do |p|
+            src_area << "      <#{p[0]} Condition=\"#{cfg_condition(p[1], p[2])}\">#{p[3]}</#{p[0]}>"
           end
           src_area << "    </#{ft}>"
         else

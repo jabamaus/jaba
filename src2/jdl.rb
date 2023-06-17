@@ -411,6 +411,16 @@ JABA::Context.define_jdl do
     flags :no_check_exist
   end
 
+  attr_option "target/src/property", variant: :array, type: :string do
+    title "Per-file property"
+    note "In the form <name>|<value>"
+    validate do |val|
+      if val !~ /^[a-zA-Z]+\|.+$/
+        fail "Invalid property format '#{val}'"
+      end
+    end
+  end
+
   attr "target/src_ext", variant: :array, type: :ext do
     title "File extensions used when matching src files"
     note "Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes."
@@ -564,24 +574,6 @@ JABA::Context.define_jdl do
     flags :per_config
     flags :exportable
     example "vcnowarn [4100, 4127, 4244]"
-  end
-
-  attr "target/vcfprop", variant: :hash, type: :to_s do
-    title "Add per-configuration per-file property"
-    key_type :string
-    flags :per_config, :exportable
-    validate_key do |key|
-      if key !~ /^[^|]+\|{1}[A-Za-z0-9_-]+/
-        fail "Must be of form <src file>|<property> but was '#{key}'"
-      end
-    end
-    example %Q{
-      # Set a property on win32/file.c
-      vcfprop "win32/file.c|ObjectFileName", "$(IntDir)win32_file.obj"
-
-      # Set same property on all matching files
-      vcfprop "win32/*|DisableSpecificWarnings", 4096
-    }
   end
 
   attr "target/vcprop", variant: :hash, type: :to_s do
