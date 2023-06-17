@@ -215,7 +215,8 @@ jtest "can register attributes as node options" do
 end
 
 # TODO: check that attr_option cannot reference another attr_option
-jtest "can register attributes as attrbute options" do
+# TODO: check for duplicate options
+jtest "can register attributes as attribute options" do
   jdl(level: :core) do
     node :node1
     attr "a"

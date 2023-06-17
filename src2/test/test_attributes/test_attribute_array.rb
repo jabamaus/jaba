@@ -407,7 +407,7 @@ jtest "supports flag options" do
   b.value.must_equal [1]
   b[0].flag_options.must_equal [:a, :b]
 end
-=begin
+
 jtest "supports value options" do
   jdl do
     attr :a, variant: :array do
@@ -418,27 +418,35 @@ jtest "supports value options" do
     attr_option "a/opt_single_choice", type: :choice do
       items [:a, :b, :c]
     end
+    attr :b, variant: :array # dupes will be stripped
+    attr_option "b/opt_single", type: :int
+    attr_option "b/opt_array", variant: :array
+    attr_option "b/opt_single_choice", type: :choice do
+      items [:a, :b, :c]
+    end
   end
   op = jaba do
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("FA31131B")}: 'a' attribute does not support ':opt_invalid' option." do
-      a({k: :v}, opt_invalid: 2) # FA31131B
-    end
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("518BF756")}: 'opt_single' attribute invalid - 'not an int' is a string - expected an integer." do
-      a :k, :v, opt_single: "not an int" # 518BF756
-    end
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("C044A39E")}: 'opt_single_choice' attribute invalid - must be one of [:a, :b, :c] but got ':d'." do
-      a :k, :v, opt_single_choice: :d # C044A39E
-    end
-    a.empty?.must_be_true
-    a :k, :v, opt_single: 1, opt_array: [2, 3], opt_single_choice: :b
-    # opt_single previous value will be overwritten, opt_arrray will be extended
-    a :k, :v, opt_single: 5, opt_array: [6, 7], opt_single_choice: :c
+    # due to :allow_dupes these will be separate elems
+    a 1, opt_single: 2, opt_array: [3, 4], opt_single_choice: :b
+    a 1, opt_single: 5, opt_array: [6, 7], opt_single_choice: :c
+    # dupes will be stripped
+    b 8, opt_single: 9, opt_array: [10, 11], opt_single_choice: :b
+    b 8, opt_single: 12, opt_array: [13, 14] # opt_array will add to existing opt_array
+    b 8, opt_single: 12, opt_array: [13, 14], opt_single_choice: :b # ED3FB7CD exactly the same so should be stripped
   end
   a = op[:root].get_attr(:a)
-  a.value.must_equal({k: :v})
-  v = a.fetch(:k)
-  v.option_value(:opt_single).must_equal 5
-  v.option_value(:opt_single_choice).must_equal :c
-  v.option_value(:opt_array).must_equal [2, 3, 6, 7]
+  a.value.must_equal [1, 1]
+  a[0].option_value(:opt_single).must_equal 2
+  a[0].option_value(:opt_single_choice).must_equal :b
+  a[0].option_value(:opt_array).must_equal [3, 4]
+  a[1].option_value(:opt_single).must_equal 5
+  a[1].option_value(:opt_single_choice).must_equal :c
+  a[1].option_value(:opt_array).must_equal [6, 7]
+
+  b = op[:root].get_attr(:b)
+  b.value.must_equal [8]
+  b[0].option_value(:opt_single).must_equal 12
+  b[0].option_value(:opt_single_choice).must_equal :b
+  b[0].option_value(:opt_array).must_equal [10, 11, 13, 14]
+  op[:warnings].must_equal ["Warning at #{src_loc("ED3FB7CD")}: Stripping duplicates [8] from 'b' attribute"]
 end
-=end

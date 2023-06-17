@@ -72,14 +72,17 @@ module JABA
         else
           existing = @elems.find { |e| e.raw_value == elem.raw_value }
           if existing
-            elem = existing
-            first_dupe ||= elem
-            dupes ||= []
+            if elem.flag_options == existing.flag_options && elem.value_options == existing.value_options
+              first_dupe ||= existing
+              dupes ||= []
+              dupes << val
+            else
+              existing.set_last_call_location(last_call_location)
+              existing.set(val, *args, **kwargs)
+            end
           else
             @elems << elem
           end
-          elem.set_last_call_location(last_call_location)
-          elem.set(val, *args, **kwargs)
         end
       end
 

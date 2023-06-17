@@ -75,6 +75,7 @@ module JABA
     end
 
     def flag_options = @flag_options
+    def value_options = @value_options
 
     # This can only be called after the value has had its final value set as it gives raw access to value.
     def raw_value = @value
