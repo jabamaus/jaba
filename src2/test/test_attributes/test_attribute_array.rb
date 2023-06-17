@@ -394,9 +394,14 @@ jtest "supports flag options" do
 
     # b does not allow dupes so flags will be merged. A duplicate warning will only issued if value and flags are the same
     b 1, :a
-    b 1, :b
+    b 1, :b # D9F57A3F
+    b 1 # CD7C1057 duplicate warning issued and will be a noop
+    b 1, :b # 0606C35D duplicate flag warning issued
   end
-  #op[:warnings].must_equal ["Warning at #{src_loc("F5A83F4D")}: 'a' attribute was passed duplicate flag ':a'."]
+  op[:warnings].must_equal [
+    "Warning at #{src_loc("CD7C1057")}: Stripping duplicates [1] from 'b' attribute. See previous at #{src_loc("D9F57A3F")}.",
+    "Warning at #{src_loc("0606C35D")}: 'b' attribute was passed duplicate flag ':b'."
+  ]
   a = op[:root].get_attr(:a)
   a.value.must_equal [1, 1, 2]
   a[0].flag_options.must_equal [:a]
@@ -431,8 +436,8 @@ jtest "supports value options" do
     a 1, opt_single: 5, opt_array: [6, 7], opt_single_choice: :c
     # dupes will be stripped
     b 8, opt_single: 9, opt_array: [10, 11], opt_single_choice: :b
-    b 8, opt_single: 12, opt_array: [13, 14] # opt_array will add to existing opt_array
-    b 8, opt_single: 12, opt_array: [13, 14], opt_single_choice: :b # ED3FB7CD exactly the same so should be stripped
+    b 8, opt_single: 12, opt_array: [13, 14] # D08E9A99 opt_array will add to existing opt_array
+    b 8 # ED3FB7CD will have no effect, duplicate warning issued
   end
   a = op[:root].get_attr(:a)
   a.value.must_equal [1, 1]
@@ -448,5 +453,5 @@ jtest "supports value options" do
   b[0].option_value(:opt_single).must_equal 12
   b[0].option_value(:opt_single_choice).must_equal :b
   b[0].option_value(:opt_array).must_equal [10, 11, 13, 14]
-  op[:warnings].must_equal ["Warning at #{src_loc("ED3FB7CD")}: Stripping duplicates [8] from 'b' attribute"]
+  op[:warnings].must_equal ["Warning at #{src_loc("ED3FB7CD")}: Stripping duplicates [8] from 'b' attribute. See previous at #{src_loc("D08E9A99")}."]
 end

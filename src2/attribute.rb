@@ -61,8 +61,8 @@ module JABA
     def initialize(attr_def, node)
       super
       @value = nil
-      @flag_options = nil
-      @value_options = nil
+      @flag_options = []
+      @value_options = SymbolKeyHash.new
       @in_on_set = false
     end
 
@@ -89,7 +89,6 @@ module JABA
           args.shift
         end
 
-      @flag_options ||= []
       args.each do |f|
         if !attr_def.has_flag_option?(f)
           attr_error("Invalid flag option '#{f.inspect_unquoted}' passed to #{describe}. Valid flags are #{attr_def.flag_options}")
@@ -100,7 +99,6 @@ module JABA
           @flag_options << f
         end
       end
-      @value_options ||= SymbolKeyHash.new
 
       kwargs.each do |k, v|
         option_def = @attr_def.lookup_option_def(k, self)

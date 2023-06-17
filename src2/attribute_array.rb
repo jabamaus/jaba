@@ -66,13 +66,15 @@ module JABA
       dupes = first_dupe = nil
       
       values.each do |val|
+        # need to make an element so that it has correct mapped value for duplicates
+        # comparison. It will be discarded if it is a duplicate and :allow_dupes not set.
         elem = make_elem(val, *args, add: false, **kwargs)
         if attr_def.has_flag?(:allow_dupes)
           @elems << elem
         else
           existing = @elems.find { |e| e.raw_value == elem.raw_value }
           if existing
-            if elem.flag_options == existing.flag_options && elem.value_options == existing.value_options
+            if elem.flag_options.empty? && elem.value_options.empty?
               first_dupe ||= existing
               dupes ||= []
               dupes << val
