@@ -4,6 +4,7 @@ core
 - Employ did you mean style error reporting
   Error at basic_dll.jaba:8: 'defines' attribute not defined. Did you mean 'define'?
 - Add title/example/notes to flag_options
+- Add sticky/transient concept to flag and value options
 - Validation and documentation specification for method args, similar to attribute options
 - Make _ID be id of the definition the code is in, such that it works even inside a block that is being executed in the context of a different jaba object
 - Make defaults work per-file. Introduce global_defaults. Or a scope option to defaults.

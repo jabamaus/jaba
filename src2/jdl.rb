@@ -157,13 +157,13 @@ JABA::Context.define_jdl do
          "To prevent linking specify :nolink - useful if only headers are required. A hard dependency is the default." \
          'This can be used for \'header only\' dependencies'
     flags :per_target
-    flag_options :hard, :soft, :nolink
+    flag_options :nolink
     example %Q{
       target :MyApp do
         type :app
         ...
         deps [:MyLib]
-        deps [:MyLib2], :soft # No hard project dependency so not required in workspace
+        deps [:MyLib2], type: :soft # No hard project dependency so not required in workspace
       end
       
       target :MyLib do
@@ -178,6 +178,12 @@ JABA::Context.define_jdl do
         ...
       end
     }
+  end
+
+  attr_option "target/deps/type", type: :choice do
+    title "Dependency type"
+    items [:hard, :soft]
+    default :hard
   end
 
   attr "target/projdir", type: :dir do

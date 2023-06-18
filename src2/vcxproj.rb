@@ -288,7 +288,7 @@ module JABA
         item_group(w) do
           deps.each do |attr|
             dep_node = attr.value
-            soft = attr.has_flag_option?(:soft)
+            soft = attr.option_value(:type) == :soft
             if !soft
               proj = JABA.context.lookup_project(dep_node)
               w << "    <ProjectReference Include=\"#{proj.vcxproj_file.relative_path_from(projdir, backslashes: true)}\">"
