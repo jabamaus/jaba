@@ -45,14 +45,7 @@ module JABA
       at
     end
 
-    def self.define_attr_flag(name, &block)
-      fd = AttributeFlag.new(name)
-      AttributeFlag::API.execute(fd, &block)
-      @@attr_flags << fd
-      @@attr_flag_lookup[name] = fd
-    end
-
-    def self.all_attr_flags = @@attr_flags
+    def self.all_attr_flag_names = @@attr_flags.map { |at| at.name }
     def self.lookup_attr_flag(name, fail_if_not_found: true)
       af = @@attr_flag_lookup[name]
       if af.nil? && fail_if_not_found
@@ -91,12 +84,19 @@ module JABA
     def self.restore_standard_jdl = @@overridden_jdl_blocks.clear # Used by unit tests
 
     def self.init
-      attr_types = JABA.constants(false).select { |c| c =~ /^AttributeType./ }
-      attr_types.each do |c|
-        klass = JABA.const_get(c)
-        at = klass.new
-        @@attr_types << at
-        @@attr_type_lookup[at.name] = at
+      JABA.constants(false).each do |c|
+        case c
+        when /^AttributeType./
+          klass = JABA.const_get(c)
+          at = klass.new
+          @@attr_types << at
+          @@attr_type_lookup[at.name] = at
+        when /^AttributeFlag./
+          klass = JABA.const_get(c)
+          af = klass.new
+          @@attr_flags << af
+          @@attr_flag_lookup[af.name] = af
+        end
       end
       @@attr_types.sort_by!(&:name)
       @@attr_flags.sort_by!(&:name)

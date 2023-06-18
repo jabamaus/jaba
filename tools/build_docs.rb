@@ -90,14 +90,14 @@ class DocBuilder
   end
 
   def write_reference_tree_node(node_def, w, depth)
-    w << "#{'    ' * depth}- [#{node_def.name}](#{node_def.name}.html)"
+    w << "#{'    ' * depth}- [#{node_def.name}](#{node_def.reference_manual_page})"
     depth += 1
     node_def.attr_defs.each do |ad|
-      w << "#{'    ' * depth}- [#{ad.name}](#{node_def.name}.html##{ad.name})"
+      w << "#{'    ' * depth}- [#{ad.name}](#{node_def.reference_manual_page}##{ad.name})"
       if ad.type_id == :compound
         depth += 1
         ad.compound_def.attr_defs.each do |c|
-          w << "#{'    ' * depth}- [#{c.name}](#{node_def.name}.html##{c.name})"
+          w << "#{'    ' * depth}- [#{c.name}](#{node_def.reference_manual_page}##{c.name})"
         end
         depth -= 1
       end
@@ -122,9 +122,15 @@ class DocBuilder
       write_reference_tree_node(@jdl.top_level_node_def, w, 0)
 
       visit_node_def(@jdl.top_level_node_def) do |nd|
-       generate_node_reference(nd)
+        generate_node_reference(nd)
       end
       w << ""
+    end
+  end
+
+  def write_notes(w, notes)
+    notes.each do |n|
+      w << "> - #{n.to_markdown_links(@jdl)}"
     end
   end
 
@@ -134,7 +140,7 @@ class DocBuilder
       w << "> "
       w << "> _#{n.title}_"
       w << "> "
-      w << "> #{n.notes.make_sentence}"
+      write_notes(w, n.notes)
       w << "> "
       w << ""
       w << "#{n.attr_defs.size} attribute#{n.attr_defs.size == 1 ? '' : 's'}:  "
@@ -159,7 +165,7 @@ class DocBuilder
     w << "#### #{ad.name}"
     w << "> _#{ad.title}_"
     w << "> "
-    w << "> #{ad.notes.make_sentence.to_markdown_links(@services)}" if !ad.notes.empty?
+    write_notes(w, ad.notes)
     w << "> "
     w << "> | Property | Value  |"
     w << "> |-|-|"
@@ -178,7 +184,6 @@ class DocBuilder
     #  md_row(w, id, value)
     #end
     md_row(w, :default, ad.default.proc? ? nil : !ad.default.nil? ? ad.default.inspect : nil)
-    md_row(w, :flags, ad.flags.map(&:inspect).join(', '))
     md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
     w << ">"
     if !ad.examples.empty?
@@ -313,32 +318,21 @@ class DocBuilder
 end
 
 class String
-  # Convert all variables specified as $(cpp#varname) (which themselves reference attribute names) into markdown links
-  # eg [$(cpp#varname)](#jaba_type_cpp.html#varname).
+  # Convert all variables specified as $(target#varname) (which themselves reference attribute names) into markdown links
+  # eg [$(target#varname)](#target.html#varname).
   #
-  def to_markdown_links(services)
+  def to_markdown_links(jdl_builder)
     gsub(/(\$\((.*?)\))/) do
       mdl = "[#{$1}]"
       attr_ref = $2
       mdl << if attr_ref =~ /^(.*?)#(.*)/
-        type = services.get_jaba_type($1.to_sym)
-        "(#{type.reference_manual_page}##{$2})"
+        nd = jdl_builder.lookup_node_def($1)
+        "(#{nd.reference_manual_page}##{$2})"
       else
         "(##{attr_ref})"
       end
       mdl
     end
-  end
-end
-
-class Array
-  def make_sentence
-    s = String.new
-    each do |l|
-      s.concat(l.capitalize_first)
-      s.ensure_end_with!('. ')
-    end
-    s
   end
 end
 

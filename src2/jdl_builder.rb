@@ -105,6 +105,18 @@ module JABA
       end
     end
 
+    def lookup_node_def(path)
+      nd = @path_to_node_def[path]
+      error("No '#{path}' node registered") if nd.nil?
+      nd
+    end
+
+    def lookup_attr_def(path)
+      ad = @path_to_attr_def[path]
+      error("No '#{path}' attribute registered") if ad.nil?
+      ad
+    end
+
     def set_attr(path, variant: :single, type: :null, &block)
       def_class = case variant
         when :single
@@ -120,12 +132,14 @@ module JABA
       path = validate_path(path)
       parent_path, attr_name = split_jdl_path(path)
 
+      node_def = lookup_node_def(parent_path)
+      
       attr_def = make_definition(def_class, attr_name, block) do |ad|
+        ad.set_node_def(node_def)
         ad.set_attr_type(type)
       end
       @path_to_attr_def[path] = attr_def
 
-      node_def = lookup_node_def(parent_path)
       if attr_def.has_flag?(:node_option)
         node_def.option_attr_defs << attr_def
       else
@@ -184,6 +198,7 @@ module JABA
       attr_def = lookup_attr_def(parent_attr_path)
 
       option_def = make_definition(def_class, attr_name, block) do |ad|
+        ad.set_node_def(attr_def.node_def)
         ad.set_attr_type(type)
       end
       @path_to_attr_def[path] = option_def
@@ -242,18 +257,6 @@ module JABA
       klass.const_get("API").execute(d, &block) if block
       d.post_create
       d
-    end
-
-    def lookup_node_def(path)
-      nd = @path_to_node_def[path]
-      error("No '#{path}' node registered") if nd.nil?
-      nd
-    end
-
-    def lookup_attr_def(path)
-      ad = @path_to_attr_def[path]
-      error("No '#{path}' attribute registered") if ad.nil?
-      ad
     end
 
     def error(msg) = JABA.error(msg, line: APIBuilder.last_call_location)
@@ -369,6 +372,7 @@ module JABA
     end
 
     def node_defs = @child_node_defs
+    def reference_manual_page = "#{name}.html"
   end
 
   class MethodDef < JDLDefinition
@@ -409,7 +413,13 @@ module JABA
       @on_validate = nil
       @on_set = nil
       @compound_def = nil # used by compound attribute
+      @node_def = nil
     end
+
+    def set_node_def(nd) = @node_def = nd
+    def node_def = @node_def
+    def set_compound_def(d) = @compound_def = d
+    def compound_def = @compound_def
 
     def set_attr_type(type_id)
       if type_id == :null && !JABA.running_tests?
@@ -446,10 +456,12 @@ module JABA
       flags.flatten.each do |f|
         fd = Context.lookup_attr_flag(f, fail_if_not_found: false)
         if fd.nil?
-          definition_error("'#{f.inspect_unquoted}' must be one of #{Context.all_attr_flags.map { |af| af.name }}")
+          definition_error("'#{f.inspect_unquoted}' must be one of #{Context.all_attr_flag_names}")
         end
-        fd.on_compatible&.call(self)
-        fd.on_init_attr_def&.call(self)
+        fd.compatible?(self) do |msg|
+          definition_error("#{fd.describe} #{msg}")
+        end
+        fd.init_attr_def(self)
         @flags << f
       end
     end
@@ -504,9 +516,6 @@ module JABA
         @default = val
       end
     end
-
-    def set_compound_def(d) = @compound_def = d
-    def compound_def = @compound_def
 
     def validate_value(new_val); end # Override
   end

@@ -66,6 +66,10 @@ docs
 - tag attrs as control flow attrs somehow for benefit of docs
 - ruby license requirements
 - Stats in docs, eg number of files in jaba release, size of zip.
+- Add node option attrs
+- Add attribute options
+- common attrs
+- methods
 
 jaba tool
 - add --list-globals option

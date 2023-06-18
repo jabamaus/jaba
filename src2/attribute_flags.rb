@@ -1,115 +1,120 @@
 module JABA
   class AttributeFlag
-    API = APIBuilder.define(:title, :note, :example, :compatible?, :init_attr_def)
-
-    def initialize(name)
-      @name = name
-      @title = nil
-      @notes = []
-      @examples = []
-      @on_compatible = nil
-      @on_init_attr_def = nil
-    end
-
+    def initialize(name) = @name = name
     def name = @name
-    def describe = "'#{name.inspect_unquoted}' attribute definition flag"
-
-    def set_title(t) = @title = t
-    def title = @title
-    def set_note(n) = @notes << n
-    def notes = @notes
-    def set_example(e) = @examples << e
-    def examples = @examples
-
-    def set_compatible?(&block) = @on_compatible = block
-    def on_compatible = @on_compatible
-    def set_init_attr_def(&block) = @on_init_attr_def = block
-    def on_init_attr_def = @on_init_attr_def
+    def describe = "'#{name.inspect_unquoted}' flag"
+    def compatible?(attr_def); end # override as necessary
+    def init_attr_def(attr_def); end # override as necessary
   end
 
-  Context.define_attr_flag :allow_dupes do
-    title "Array duplicates strategy"
-    note "Allows array attributes to contain duplicates. If not specified duplicates are stripped"
-    compatible? do |attr_def|
+  class AttributeFlagAllowDupes < AttributeFlag
+    def initialize = super(:allow_dupes)
+    def compatible?(attr_def)
       if !attr_def.array?
-        attr_def.definition_error(":allow_dupes flag only allowed on array attributes")
+        yield "only allowed on array attributes"
       end
+    end
+    def init_attr_def(attr_def)
+      attr_def.set_note "Duplicates are allowed"
     end
   end
 
-  Context.define_attr_flag :exportable do
-    title "Attribute is exportable"
-    note "Flags an attribute as being able to be exported to dependents. Only array and hash attributes can be flagged with this."
-    compatible? do |attr_def|
+  class AttributeFlagExportable < AttributeFlag
+    def initialize = super(:exportable)
+    def compatible?(attr_def)
       if !attr_def.array? && !attr_def.hash?
-        attr_def.definition_error(":exportable flag only allowed on array/hash attributes")
+        yield "only allowed on array/hash attributes"
       end
     end
-    init_attr_def do |attr_def|
+    def init_attr_def(attr_def)
       attr_def.set_flag_options(:export, :export_only)
+      attr_def.set_note "Exportable to dependents"
     end
   end
 
-  Context.define_attr_flag :no_check_exist do
-    title "Do not check that specified paths exist on disk"
-    note "Applies to file, dir and src attribute types."
-    compatible? do |attr_def|
+  class AttributeFlagNoCheckExist < AttributeFlag
+    def initialize = super(:no_check_exist)
+    def compatible?(attr_def)
       case attr_def.type_id
       when :file, :dir, :src
       else
-        attr_def.definition_error(":no_check_exist flag only allowed on file, dir and src attribute types")
+        yield "only allowed on file, dir and src attribute types"
       end
+    end
+    def init_attr_def(attr_def)
+      attr_def.set_note "Does not check if path exists at generation time"
     end
   end
 
-  Context.define_attr_flag :no_sort do
-    title "Do not sort array attributes"
-    note "Allows array attributes to remain in the order they are set in. If not specified arrays are sorted"
-    compatible? do |attr_def|
+  class AttributeFlagNoSort < AttributeFlag
+    def initialize = super(:no_sort)
+    def compatible?(attr_def)
       if !attr_def.array?
-        attr_def.definition_error(":no_sort flag only allowed on array attributes")
+        yield "only allowed on array attributes"
       end
+    end
+    def init_attr_def(attr_def)
+      attr_def.set_note "Unsorted"
     end
   end
 
-  Context.define_attr_flag :node_option do
-    title "Flags the attribute as being callable as an option passed into a definition"
-    example %Q{
-  target :my_app, root: "my_root" do # 'root' attr is flagged with :node_option
-    ...
-  end
-    }
+  class AttributeFlagNodeOption < AttributeFlag
+    def initialize = super(:node_option)
+      # TODO
   end
 
-  Context.define_attr_flag :overwrite_default do
-    title "If set default is overwritten if set by user else default is extended"
-    compatible? do |attr_def|
+  class AttributeFlagOverwriteDefault < AttributeFlag
+    def initialize = super(:overwrite_default)
+    def compatible?(attr_def)
       if attr_def.single?
-        attr_def.definition_error(":overwrite_default flag only allowed on array and hash attributes")
+        yield "only allowed on array and hash attributes"
       end
+    end
+    def init_attr_def(attr_def)
+      attr_def.set_note "Default value is overwritten rather than extended"
     end
   end
 
-  Context.define_attr_flag :per_target do
-    title "Flags attributes inside the target namespace as being per-target rather than per-config"
-  end
-
-  Context.define_attr_flag :per_config do
-    title "Flags attributes inside the target namespace as being per-config rather than per-target"
-  end
-
-  Context.define_attr_flag :read_only do
-    title "Prevents user from writing to value"
-    note "Specifies that the attribute can only be read and not set from user definitions. The value will be initialised inside Jaba"
-  end
-
-  Context.define_attr_flag :required do
-    title "Force user to supply a value"
-    note "Specifies that the definition writer must supply a value for this attribute"
-    compatible? do |attr_def|
-      if attr_def.default_set?
-        attr_def.definition_error(":required flag can only be specified if no default specified")
+  class AttributeFlagPerTarget < AttributeFlag
+    def initialize = super(:per_target)
+    def compatible?(attr_def)
+      if attr_def.node_def.name != "target"
+        yield "only allowed on target node attributes"
       end
+    end
+    def init_attr_def(attr_def)
+      attr_def.set_note "Set on a per-target basis"
+    end
+  end
+
+  class AttributeFlagPerConfig < AttributeFlag
+    def initialize = super(:per_config)
+    def compatible?(attr_def)
+      if attr_def.node_def.name != "target"
+        yield "only allowed on target node attributes"
+      end
+    end
+    def init_attr_def(attr_def)
+      attr_def.set_note "Set on a per-config basis"
+    end
+  end
+
+  class AttributeFlagReadOnly < AttributeFlag
+    def initialize = super(:read_only)
+    def init_attr_def(attr_def)
+      attr_def.set_note "Read only"
+    end
+  end
+
+  class AttributeFlagRequired < AttributeFlag
+    def initialize = super(:required)
+    def compatible?(attr_def)
+      if attr_def.default_set?
+        yield "only allowed if no default specified"
+      end
+    end
+    def init_attr_def(attr_def)
+      attr_def.set_note("Must be specified")
     end
   end
 end
