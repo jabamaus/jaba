@@ -175,6 +175,18 @@ module JABA
       end
     end
 
+    def jdl_process_method(meth_def, block, *args, **kwargs)
+      if meth_def.on_called
+        return meth_def.on_called.call(*args, **kwargs, &block)
+      else
+        node_meth = "jdl_#{meth_def.name}"
+        if respond_to?(node_meth)
+          return send(node_meth, *args, **kwargs, &block)
+        end
+      end
+      JABA.error("No method handler for #{name.inspect_unquoted} defined")
+    end
+
     def visit_callable_attrs(rdonly: false, &block)
       @attributes.each do |a|
         if rdonly || @read_only || a.read_only?

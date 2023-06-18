@@ -234,17 +234,9 @@ module JABA
       meth_def = make_definition(MethodDef, name, block)
       node_def.method_defs << meth_def
 
-      klass.define_method(name) do |*args, **kwargs, &meth_block|
+      klass.define_method(name) do |*args, **kwargs, &block|
         $last_call_location = ::Kernel.calling_location
-        if meth_def.on_called
-          return meth_def.on_called.call(*args, **kwargs, &meth_block)
-        else
-          node_meth = "jdl_#{name}"
-          if @node.respond_to?(node_meth)
-            return @node.send(node_meth, *args, **kwargs, &meth_block)
-          end
-        end
-        JABA.error("No method handler for #{name.inspect_unquoted} defined")
+        @node.jdl_process_method(meth_def, block, *args, **kwargs)
       end
     end
 
