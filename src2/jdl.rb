@@ -362,6 +362,18 @@ JABA::Context.define_jdl do
          "this is a common reason why Visual Studio users are sometimes baffled as to why their custom build tool messages are not being printed."
   end
 
+  attr "target/shell", variant: :array, type: :string do
+    title "Shell commands to execute during build"
+    note "Maps to build events in Visual Studio"
+    flags :per_config, :exportable
+  end
+
+  attr_option "target/shell/when", type: :choice do
+    title "When shell command should be run"
+    items [:PreBuild, :PreLink, :PostBuild]
+    flags :required
+  end
+
   attr "target/src", variant: :array, type: :src do
     title "Source file specification"
     base_attr :root

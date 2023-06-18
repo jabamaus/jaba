@@ -51,8 +51,21 @@ module JABA
       each_config do |cfg|
         cfg.eval_jdl(self, cfg[:type], &cb)
         src_attr = cfg.get_attr(:src)
+        vcprop_attr = cfg.get_attr(:vcprop)
         vsplatform = "x64" # TODO: cfg.attrs.arch.attrs.vsname
         cfg_name = cfg[:configname]
+
+        shell_cmds = {}
+        cfg.get_attr(:shell).each do |attr|
+          value = attr.value
+          type = attr.option_value(:when)
+          group = "#{type}Event"
+          shell_cmds.push_value(group, value)
+        end
+
+        shell_cmds.each do |group, cmds|
+          vcprop_attr.set("#{group}|Command", cmds.join("\n"))
+        end
 
         cfg[:rule].each do |rule|
           output = rule[:output]
