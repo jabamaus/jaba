@@ -301,6 +301,8 @@ module JABA
     def name = @name
     def to_s = @name
     def describe = "'#{name.inspect_unquoted}'"
+    def attribute? = false # overridden
+    def method? = false # overridden
 
     def set_title(t) = @title = t
     def title = @title
@@ -375,6 +377,7 @@ module JABA
       @on_called = nil
     end
 
+    def method? = true
     # on_called is optional
     def set_on_called(&block) = @on_called = block
     def on_called = @on_called
@@ -408,6 +411,7 @@ module JABA
       @node_def = nil
     end
 
+    def attribute? = true
     def set_node_def(nd) = @node_def = nd
     def node_def = @node_def
     def set_compound_def(d) = @compound_def = d

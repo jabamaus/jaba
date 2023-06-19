@@ -1,8 +1,76 @@
 require_relative 'common'
 require_relative '../examples/gen_all'
 
-class DocBuilder
+class String
+  def escape_md_label = gsub("_", "\\_")
 
+  # Used when generating code example blocks in reference manual.
+  #
+  def split_and_trim_leading_whitespace
+    lines = split("\n")
+    return lines if lines.empty?
+    lines.shift if lines[0].empty?
+    lines.last.rstrip!
+    lines.pop if lines.last.empty?
+
+    if lines[0] =~ /^(\s+)/
+      lw = Regexp.last_match(1)
+      lines.each do |l|
+        l.delete_prefix!(lw)
+      end
+    end
+    lines
+  end
+
+  # Convert all variables specified as $(target#varname) (which themselves reference attribute names) into markdown links
+  # eg [$(target#varname)](#target.html#varname).
+  #
+  def to_markdown_links(jdl_builder)
+    gsub(/(\$\((.*?)\))/) do
+      mdl = "[#{$1}]"
+      attr_ref = $2
+      mdl << if attr_ref =~ /^(.*?)#(.*)/
+        nd = jdl_builder.lookup_node_def($1)
+        "(#{nd.reference_manual_page}##{$2})"
+      else
+        "(##{attr_ref})"
+      end
+      mdl
+    end
+  end
+end
+
+class JABA::JDLDefinition
+  def md_label = name.escape_md_label
+end
+
+class JABA::MethodDef
+  def md_label = "#{name}()".escape_md_label
+end
+
+class JABA::NodeDef
+  def attrs_and_methods_sorted
+    all = []
+    if parent_node_def # common attrs are not included in root
+      all.concat(@jdl_builder.common_attr_node_def.attr_defs)
+    end
+    all.concat(attr_defs)
+    all.concat(method_defs)
+    all.sort_by!{|d| d.name}
+    all
+  end
+  
+  def visit(depth = 0, &block)
+    yield self, depth
+    depth += 1
+    node_defs.each do |child|
+      child.visit(depth, &block)
+    end
+    depth -= 1
+  end
+end
+
+class DocBuilder
   include CommonUtils
   
   DOCS_REPO_DIR =               "#{__dir__}/../../jaba_docs".cleanpath
@@ -22,29 +90,18 @@ class DocBuilder
 
     doc_temp = "#{__dir__}/temp/doc"
 
-    if !File.exist?(doc_temp)
-      FileUtils.makedirs(doc_temp)
-    end
+    FileUtils.makedirs(doc_temp) if !File.exist?(doc_temp)
 
     # Delete markdown and docs dirs completely as they will be regenerated
-    #
-    if File.exist?(DOCS_HTML_DIR)
-      FileUtils.remove_dir(DOCS_HTML_DIR)
-    end
-
-    if File.exist?(DOCS_MARKDOWN_DIR)
-      FileUtils.remove_dir(DOCS_MARKDOWN_DIR)
-    end
-
+    FileUtils.remove_dir(DOCS_HTML_DIR) if File.exist?(DOCS_HTML_DIR)
+    FileUtils.remove_dir(DOCS_MARKDOWN_DIR) if File.exist?(DOCS_MARKDOWN_DIR)
     FileUtils.mkdir(DOCS_HTML_DIR)
     FileUtils.mkdir(DOCS_MARKDOWN_DIR)
 
     FileUtils.copy_file("#{DOCS_HANDWRITTEN_DIR}/mamd.css", "#{DOCS_HTML_DIR}/mamd.css")
     
-    @file_manager = JABA::FileManager.new
-
-    # Build documentable API objects
-    JABA::Context.new
+    ctxt = JABA::Context.new
+    @file_manager = ctxt.file_manager
     @jdl = JABA::JDLBuilder.new
 
     generate_handwritten
@@ -89,41 +146,35 @@ class DocBuilder
     end
   end
 
-  def write_reference_tree_node(node_def, w, depth)
-    w << "#{'    ' * depth}- [#{node_def.name}](#{node_def.reference_manual_page})"
-    depth += 1
-    node_def.attr_defs.each do |ad|
-      w << "#{'    ' * depth}- [#{ad.name}](#{node_def.reference_manual_page}##{ad.name})"
-      if ad.type_id == :compound
+  def write_reference_tree_node(node_def, w, depth, skip_self: false)
+    if !skip_self
+      w << "#{'    ' * depth}- [#{node_def.md_label}](#{node_def.reference_manual_page})"
+      depth += 1
+    end
+    # TODO: generalise compound attrs
+    node_def.attrs_and_methods_sorted.each do |d|
+      w << "#{'    ' * depth}- [#{d.md_label}](#{node_def.reference_manual_page}##{d.name})"
+      if d.attribute? && d.type_id == :compound
         depth += 1
-        ad.compound_def.attr_defs.each do |c|
-          w << "#{'    ' * depth}- [#{c.name}](#{node_def.reference_manual_page}##{c.name})"
+        d.compound_def.attr_defs.each do |c|
+          w << "#{'    ' * depth}- [#{c.md_label}](#{node_def.reference_manual_page}##{c.name})"
         end
         depth -= 1
       end
-    end
-    node_def.node_defs.each do |child|
-      write_reference_tree_node(child, w, depth)
-    end
-    depth -= 1
-  end
-
-  def visit_node_def(node_def, &block)
-    yield node_def
-    node_def.node_defs.each do |child|
-      visit_node_def(child, &block)
     end
   end
 
   def generate_reference_doc
     write_markdown_page('jaba_reference.md', 'Jaba language reference', versioned: true) do |w|
       w << ""
-
-      write_reference_tree_node(@jdl.top_level_node_def, w, 0)
-
-      visit_node_def(@jdl.top_level_node_def) do |nd|
+      @jdl.top_level_node_def.visit do |nd, depth|
+        write_reference_tree_node(nd, w, depth)
         generate_node_reference(nd)
       end
+      w << ""
+      w << "#### Global methods"
+      write_reference_tree_node(@jdl.global_methods_node_def, w, 0, skip_self: true)
+      generate_node_reference(@jdl.global_methods_node_def)
       w << ""
     end
   end
@@ -143,18 +194,26 @@ class DocBuilder
       write_notes(w, n.notes)
       w << "> "
       w << ""
-      w << "#{n.attr_defs.size} attribute#{n.attr_defs.size == 1 ? '' : 's'}:  "
-      n.attr_defs.each do |ad|
-        w << "- [#{ad.name}](##{ad.name})"
-      end
+      all = n.attrs_and_methods_sorted
+      w << "#{all.size} member#{all.size == 1 ? '' : 's'}:  "
       w << ""
-      n.attr_defs.each do |ad|
-        write_attr_def(ad, w)
-        if ad.type_id == :compound
-          ad.compound_def.attr_defs.each do |ca|
-            # TODO: distinguish compound attrs somehow. Maybe use path instead of just name
-            write_attr_def(ca, w)
+
+      all.each do |d|
+        w << "- [#{d.md_label}](##{d.name})"
+       end
+
+      all.each do |d|
+        if d.attribute?
+          write_attr_def(d, w)
+          # TODO: generalise compound attrs
+          if d.type_id == :compound
+            d.compound_def.attr_defs.each do |ca|
+              # TODO: distinguish compound attrs somehow. Maybe use path instead of just name
+              write_attr_def(ca, w)
+            end
           end
+        else # method
+          write_method_def(d, w)
         end
       end
     end
@@ -162,7 +221,7 @@ class DocBuilder
 
   def write_attr_def(ad, w)
     w << "<a id=\"#{ad.name}\"></a>" # anchor for the attribute eg 'src_ext'
-    w << "#### #{ad.name}"
+    w << "#### #{ad.md_label}"
     w << "> _#{ad.title}_"
     w << "> "
     write_notes(w, ad.notes)
@@ -170,7 +229,7 @@ class DocBuilder
     w << "> | Property | Value  |"
     w << "> |-|-|"
     
-    type = String.new
+    type = ""
     if ad.type_id
       type << "#{ad.type_id.inspect}"
     end
@@ -190,12 +249,20 @@ class DocBuilder
       w << "> *Examples*"
       md_code(w, prefix: '>') do
         ad.examples.each do |e|
-          split_and_trim_leading_whitespace(e).each do |line|
+          e.split_and_trim_leading_whitespace.each do |line|
             w << "> #{line}"
           end
         end
       end
     end
+  end
+  
+  def write_method_def(d, w)
+    w << "<a id=\"#{d.name}\"></a>"
+    w << "#### #{d.md_label}"
+    w << "> _#{d.title}_"
+    w << "> "
+    write_notes(w, d.notes)
   end
 
   def generate_examples
@@ -205,7 +272,7 @@ class DocBuilder
           str = @file_manager.read(jaba_file, fail_if_not_found: true)
           md_code(w) do
             # TODO: extract top comments and turn into formatted markdown
-            split_and_trim_leading_whitespace(str).each do |line|
+            str.split_and_trim_leading_whitespace.each do |line|
               w << line
             end
           end
@@ -270,7 +337,7 @@ class DocBuilder
       end
     end
     yield w
-    md_small(w, "Generated by #{html_link('https://github.com/ishani/MaMD', 'MaMD')} " \
+    md_small(w, "Generated on #{Time.now.strftime('%d-%B-%y at %H:%M:%S')} by #{html_link('https://github.com/ishani/MaMD', 'MaMD')} " \
       "which uses #{html_link('https://github.com/yuin/goldmark', 'Goldmark')}, " \
       "#{html_link('https://github.com/alecthomas/chroma', 'Chroma')}, " \
       "#{html_link('https://rsms.me/inter', 'Inter')} and " \
@@ -295,44 +362,6 @@ class DocBuilder
   
   def md_row(w, p, v)
     w << "> | _#{p}_ | #{v} |"
-  end
-
-  # Used when generating code example blocks in reference manual.
-  #
-  def split_and_trim_leading_whitespace(paragraph)
-    lines = paragraph.split("\n")
-    return lines if lines.empty?
-    lines.shift if lines[0].empty?
-    lines.last.rstrip!
-    lines.pop if lines.last.empty?
-
-    if lines[0] =~ /^(\s+)/
-      lw = Regexp.last_match(1)
-      lines.each do |l|
-        l.delete_prefix!(lw)
-      end
-    end
-    lines
-  end
-
-end
-
-class String
-  # Convert all variables specified as $(target#varname) (which themselves reference attribute names) into markdown links
-  # eg [$(target#varname)](#target.html#varname).
-  #
-  def to_markdown_links(jdl_builder)
-    gsub(/(\$\((.*?)\))/) do
-      mdl = "[#{$1}]"
-      attr_ref = $2
-      mdl << if attr_ref =~ /^(.*?)#(.*)/
-        nd = jdl_builder.lookup_node_def($1)
-        "(#{nd.reference_manual_page}##{$2})"
-      else
-        "(##{attr_ref})"
-      end
-      mdl
-    end
   end
 end
 
