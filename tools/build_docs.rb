@@ -54,6 +54,7 @@ class JABA::NodeDef
     if parent_node_def # common attrs are not included in root
       all.concat(@jdl_builder.common_attr_node_def.attr_defs)
     end
+    all.concat(node_defs)
     all.concat(attr_defs)
     all.concat(method_defs)
     all.sort_by!{|d| d.name}
