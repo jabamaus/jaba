@@ -146,15 +146,17 @@ end
 
 jtest "supports value options" do
   jdl do
-    attr :a
-    attr_option "a/opt_single", type: :int
-    attr_option "a/opt_array", variant: :array
-    attr_option "a/opt_single_choice", type: :choice do
-      items [:a, :b, :c]
+    attr :a do
+      option :opt_single, type: :int
+      option :opt_array, variant: :array
+      option :opt_single_choice, type: :choice do
+        items [:a, :b, :c]
+      end
     end
-    attr :b
-    attr_option "b/opt_single", type: :int
-    attr_option "b/opt_array", variant: :array
+    attr :b do
+      option :opt_single, type: :int
+      option :opt_array, variant: :array
+    end
   end
   op = jaba do
     JTest.assert_jaba_error "Error at #{JTest.src_loc("FA31131B")}: 'a' attribute does not support ':opt_invalid' option." do

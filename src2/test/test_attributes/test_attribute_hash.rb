@@ -305,11 +305,12 @@ end
 
 jtest "supports value options" do
   jdl do
-    attr :a, variant: :hash
-    attr_option "a/opt_single", type: :int
-    attr_option "a/opt_array", variant: :array
-    attr_option "a/opt_single_choice", type: :choice do
-      items [:a, :b, :c]
+    attr :a, variant: :hash do
+      option :opt_single, type: :int
+      option :opt_array, variant: :array
+      option :opt_single_choice, type: :choice do
+        items [:a, :b, :c]
+      end
     end
   end
   op = jaba do
@@ -387,8 +388,8 @@ jtest "supports expanding keys to arrays" do
       key_type :src
       flag_options :fo
       base_attr :root
+      option :vo, type: :int
     end
-    attr_option "node/a/vo", type: :int
   end
   op = jaba do
     node :n, root: td do

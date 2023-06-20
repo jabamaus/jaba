@@ -158,6 +158,11 @@ JABA::Context.define_jdl do
          'This can be used for \'header only\' dependencies'
     flags :per_target
     flag_options :nolink
+    option :type, type: :choice do
+      title "Dependency type"
+      items [:hard, :soft]
+      default :hard
+    end
     example %Q{
       target :MyApp do
         type :app
@@ -178,12 +183,6 @@ JABA::Context.define_jdl do
         ...
       end
     }
-  end
-
-  attr_option "target/deps/type", type: :choice do
-    title "Dependency type"
-    items [:hard, :soft]
-    default :hard
   end
 
   attr "target/projdir", type: :dir do
@@ -366,12 +365,11 @@ JABA::Context.define_jdl do
     title "Shell commands to execute during build"
     note "Maps to build events in Visual Studio"
     flags :per_config, :exportable
-  end
-
-  attr_option "target/shell/when", type: :choice do
-    title "When shell command should be run"
-    items [:PreBuild, :PreLink, :PostBuild]
-    flags :required
+    option :when, type: :choice do
+      title "When shell command should be run"
+      items [:PreBuild, :PreLink, :PostBuild]
+      flags :required
+    end
   end
 
   attr "target/src", variant: :array, type: :src do
@@ -379,6 +377,15 @@ JABA::Context.define_jdl do
     base_attr :root
     flags :per_config, :exportable
     flags :no_sort # sorted at project generation time
+    option :vpath, type: :dir do
+      title "Virtual path"
+      note "Controls IDE project layout"
+      flags :no_check_exist
+    end
+    option :properties, variant: :hash, type: :to_s do
+      title "Per-file property"
+      note "In the form <name>|<value>"
+    end
     example %Q{
       # Add all src in $(root) whose extension is in $(src_ext)
       src ['*']
@@ -421,17 +428,6 @@ JABA::Context.define_jdl do
       # Place matching files in a specific folder location within the project file
       src '*_win.cpp', vpath: 'win32'
     }
-  end
-
-  attr_option "target/src/vpath", type: :dir do
-    title "Virtual path"
-    note "Controls IDE project layout"
-    flags :no_check_exist
-  end
-
-  attr_option "target/src/properties", variant: :hash, type: :to_s do
-    title "Per-file property"
-    note "In the form <name>|<value>"
   end
 
   attr "target/src_ext", variant: :array, type: :ext do
@@ -527,10 +523,9 @@ JABA::Context.define_jdl do
     title "Address Globals property group in a vcxproj directly"
     key_type :string
     flags :per_target, :exportable
-  end
-
-  attr_option "target/vcglobal/condition", type: :string do
-    title "Condition"
+    option :condition, type: :string do
+      title "Condition"
+    end
   end
 
   attr "target/vc_extension_settings", variant: :hash, type: :file do
@@ -593,15 +588,14 @@ JABA::Context.define_jdl do
     title "Address per-configuration sections of a vcxproj directly"
     key_type :string
     flags :per_config, :exportable
+    option :condition, type: :string do
+      title "Condition string"
+    end
     validate_key do |key|
       if key !~ /^[A-Za-z0-9_-]+\|{1}[A-Za-z0-9_-]+/
         fail "Must be of form <group>|<property> but was '#{key}'"
       end
     end
-  end
-
-  attr_option "target/vcprop/condition", type: :string do
-    title "Condition string"
   end
 
   attr "target/vctoolset", type: :choice do

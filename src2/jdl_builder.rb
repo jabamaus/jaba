@@ -5,7 +5,6 @@ module JABA
       :method,
       :attr,
       :open_attr,
-      :attr_option,
       :node,
     )
 
@@ -131,26 +130,11 @@ module JABA
     end
 
     def set_attr(path, variant: :single, type: :null, &block)
-      def_class = case variant
-        when :single
-          AttributeSingleDef
-        when :array
-          AttributeArrayDef
-        when :hash
-          AttributeHashDef
-        else
-          error("Invalid attribute variant '#{variant.inspect_unquoted}'")
-        end
-
       path = validate_path(path)
-      parent_path, attr_name = split_jdl_path(path)
-
+      parent_path, name = split_jdl_path(path)
       node_def = lookup_node_def(parent_path)
-      
-      attr_def = make_definition(def_class, attr_name, block) do |ad|
-        ad.set_node_def(node_def)
-        ad.set_attr_type(type)
-      end
+
+      attr_def = make_attribute(name, variant, type, block, node_def)
       @path_to_attr_def[path] = attr_def
 
       if attr_def.has_flag?(:node_option)
@@ -162,27 +146,27 @@ module JABA
       parent_class = node_def.api_class
       error("api class for '#{path}' node was nil") if parent_class.nil?
 
-      if parent_class.method_defined?(attr_name)
+      if parent_class.method_defined?(name)
         error("Duplicate '#{path}' attribute registered")
       end
       # __call_loc is passed in in some unit tests.
-      parent_class.define_method(attr_name) do |*args, __call_loc: ::Kernel.calling_location, **kwargs, &attr_block|
+      parent_class.define_method(name) do |*args, __call_loc: ::Kernel.calling_location, **kwargs, &attr_block|
         $last_call_location = __call_loc
-        @node.jdl_process_attr(attr_name, *args, __call_loc: $last_call_location, **kwargs, &attr_block)
+        @node.jdl_process_attr(name, *args, __call_loc: $last_call_location, **kwargs, &attr_block)
       end
       case type
       when :bool
-        parent_class.define_method("#{attr_name}?") do |*args, **kwargs, &attr_block|
+        parent_class.define_method("#{name}?") do |*args, **kwargs, &attr_block|
           $last_call_location = ::Kernel.calling_location
           if !args.empty? || !kwargs.empty? || attr_block
-            JABA.error("'#{attr_name}?' is a read only accessor and does not accept arguments", line: $last_call_location)
+            JABA.error("'#{name}?' is a read only accessor and does not accept arguments", line: $last_call_location)
           end
-          @node.jdl_process_attr(attr_name, *args, __call_loc: $last_call_location, **kwargs, &attr_block)
+          @node.jdl_process_attr(name, *args, __call_loc: $last_call_location, **kwargs, &attr_block)
         end
       when :compound
         # Compound attr interface inherits parent nodes interface so it has read only access to its attrs
         cmp_api = Class.new(parent_class)
-        cmp_api.set_inspect_name(attr_name)
+        cmp_api.set_inspect_name(name)
 
         cmp_def = AttributeGroupDef.new
         cmp_def.instance_variable_set(:@jdl_builder, self)
@@ -195,32 +179,6 @@ module JABA
 
     def set_open_attr(path, &block)
       @attrs_to_open.push_value(path, block)
-    end
-
-    def set_attr_option(path, variant: :single, type: :null, &block)
-      def_class = case variant
-        when :single
-          AttributeSingleDef
-        when :array
-          AttributeArrayDef
-        when :hash
-          AttributeHashDef
-        else
-          error("Invalid attribute variant '#{variant.inspect_unquoted}'")
-        end
-
-      path = validate_path(path)
-      parent_attr_path, attr_name = split_jdl_path(path)
-
-      attr_def = lookup_attr_def(parent_attr_path)
-
-      option_def = make_definition(def_class, attr_name, block) do |ad|
-        ad.set_node_def(attr_def.node_def)
-        ad.set_attr_type(type)
-      end
-      @path_to_attr_def[path] = option_def
-
-      attr_def.add_option_def(option_def)
     end
 
     def set_global_method(name, &block)
@@ -257,15 +215,34 @@ module JABA
       end
     end
 
-    def make_definition(klass, name, block)
+    def make_definition(klass, name, block, add: true)
       d = klass.new
       d.instance_variable_set(:@jdl_builder, self)
       d.instance_variable_set(:@name, name)
       d.instance_variable_set(:@src_loc, APIBuilder.last_call_location)
       yield d if block_given?
       klass.const_get("API").execute(d, &block) if block
-      @all_definitions << d
+      @all_definitions << d if add
       d
+    end
+
+    def make_attribute(name, variant, type, block, node_def, add: true)
+      def_class = case variant
+      when :single
+        AttributeSingleDef
+      when :array
+        AttributeArrayDef
+      when :hash
+        AttributeHashDef
+      else
+        error("Invalid attribute variant '#{variant.inspect_unquoted}'")
+      end
+
+      attr_def = make_definition(def_class, name, block, add: add) do |ad|
+        ad.set_node_def(node_def)
+        ad.set_attr_type(type)
+      end
+      attr_def
     end
 
     def error(msg) = JABA.error(msg, line: APIBuilder.last_call_location)
@@ -406,6 +383,7 @@ module JABA
     API = APIBuilder.define_module(
       :flags,
       :flag_options,
+      :option,
       :default,
       :validate,
       :on_set,
@@ -495,10 +473,13 @@ module JABA
 
     def has_flag_option?(fo) = @flag_options.include?(fo)
 
-    def add_option_def(od)
-      @option_defs << od
-      @option_def_lookup[od.name] = od
+    def set_option(name, variant: :single, type: :null, &block)
+      attr_def = @jdl_builder.send(:make_attribute, name, variant, type, block, @node_def, add: false)
+      attr_def.post_create
+      @option_defs << attr_def
+      @option_def_lookup[attr_def.name] = attr_def
     end
+
     def each_option_def(&block) = @option_defs.each(&block)
     def lookup_option_def(name, attr, fail_if_not_found: true)
       od = @option_def_lookup[name]
