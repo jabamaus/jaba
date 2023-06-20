@@ -93,10 +93,10 @@ jtest "fails if value not supplied when flagged with :required" do
         items [:a, :b, :c] if at == :choice
       end
     end
-    assert_jaba_error "Error at #{src_loc("D43F2208")}: 'top_level' requires 'a' attribute to be set.", hint: desc do
+    assert_jaba_error "Error at #{src_loc("D43F2208")}: 'root' requires 'a' attribute to be set.", hint: desc do
       jaba do end # D43F2208
     end
-    assert_jaba_file_error "'top_level' requires 'a' attribute to be set.", "8CF3DCA2", hint: desc do
+    assert_jaba_file_error "'root' requires 'a' attribute to be set.", "8CF3DCA2", hint: desc do
       "# 8CF3DCA2"
     end
   end

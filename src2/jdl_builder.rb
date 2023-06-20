@@ -51,7 +51,7 @@ module JABA
       @base_api_class.include(@global_methods_module)
 
       @path_to_node_def["*"] = @common_attr_node_def
-      @top_level_node_def = make_definition(NodeDef, "top_level", nil) do |d|
+      @top_level_node_def = make_definition(NodeDef, "root", nil) do |d|
         d.set_title("TODO")
         d.set_api_class(@top_level_api_class)
       end
