@@ -1,6 +1,6 @@
 JABA::Context.define_core_jdl do
   global_method "__dir__" do
-    title "Returns the directory of the currently executing .jaba file"
+    title "Directory of the currently executing .jaba file"
   end
 
   global_method "available" do
@@ -12,7 +12,7 @@ JABA::Context.define_core_jdl do
   end
 
   global_method "extend_jdl" do
-    title "Extend jaba"
+    title "Extend jaba definition language"
     on_called do |&block|
       JABA.context.extend_jdl_on_the_fly(&block)
     end
@@ -56,7 +56,7 @@ JABA::Context.define_core_jdl do
   # Top level methods
 
   method "glob" do
-    title "glob files"
+    title "Glob for files"
     on_called do
     end
   end
@@ -83,13 +83,13 @@ JABA::Context.define_core_jdl do
   end
 
   attr "arch", type: :choice do
-    title "target architecture"
+    title "Target architecture"
     items [:x86, :x86_64]
     default :x86_64
   end
 
   attr "artefact_root", type: :dir do
-    title "Root of build artefacts the build system generates"
+    title "Root of generated build artefacts"
     flags :no_check_exist
     default do
       "#{buildsystem_root}/artefact"
@@ -105,7 +105,7 @@ JABA::Context.define_core_jdl do
   end
 
   attr "vcfiletype", variant: :hash, type: :string do
-    title "Visual C++ file types"
+    title "VisualC file types"
     key_type :ext
     default({
       ".h" => :ClInclude,
@@ -373,7 +373,7 @@ JABA::Context.define_jdl do
   end
 
   attr "target/src", variant: :array, type: :src do
-    title "Source file specification"
+    title "Specify source files"
     base_attr :root
     flags :per_config, :exportable
     flags :no_sort # sorted at project generation time
@@ -454,7 +454,7 @@ JABA::Context.define_jdl do
   end
 
   attr "target/targetname", type: :basename do
-    title "Base name of output file without extension"
+    title "Basename of output file without extension"
     note "Defaults to $(targetprefix)$(projname)$(targetsuffix)"
     flags :per_config
     default do

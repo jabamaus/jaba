@@ -149,16 +149,16 @@ class DocBuilder
 
   def write_reference_tree_node(node_def, w, depth, skip_self: false)
     if !skip_self
-      w << "#{'    ' * depth}- [#{node_def.md_label}](#{node_def.reference_manual_page})"
+      w << "#{'    ' * depth}- [#{node_def.md_label}](#{node_def.reference_manual_page}) #{node_def.title}"
       depth += 1
     end
     # TODO: generalise compound attrs
     node_def.attrs_and_methods_sorted.each do |d|
-      w << "#{'    ' * depth}- [#{d.md_label}](#{node_def.reference_manual_page}##{d.name})"
+      w << "#{'    ' * depth}- [#{d.md_label}](#{node_def.reference_manual_page}##{d.name}) #{d.title} #{d.attribute? && d.has_flag?(:read_only) ? "(read only)" : ""}"
       if d.attribute? && d.type_id == :compound
         depth += 1
         d.compound_def.attr_defs.each do |c|
-          w << "#{'    ' * depth}- [#{c.md_label}](#{node_def.reference_manual_page}##{c.name})"
+          w << "#{'    ' * depth}- [#{c.md_label}](#{node_def.reference_manual_page}##{c.name}) #{c.title}"
         end
         depth -= 1
       end
@@ -230,14 +230,12 @@ class DocBuilder
     w << "> | Property | Value  |"
     w << "> |-|-|"
     
-    type = ""
-    if ad.type_id
-      type << "#{ad.type_id.inspect}"
-    end
-    if ad.array?
-      type << " array"
+    type = if ad.single?
+      "#{ad.type_id}"
+    elsif ad.array?
+      "#{ad.type_id} array"
     elsif ad.hash?
-      type << " hash"
+      "hash (#{ad.key_type.name} => #{ad.type_id})"
     end
     md_row(w, :type, type)
     #ad.jaba_attr_type.get_reference_manual_rows(ad)&.each do |id, value|
@@ -325,7 +323,7 @@ class DocBuilder
     w = file.writer
     w << "## #{title}"
     if versioned
-      md_small(w, "This page applies to v#{JABA::VERSION}<br>")
+      w << md_small("This page applies to v#{JABA::VERSION}<br>")
     end
     if want_home
       w << if versioned
@@ -338,7 +336,7 @@ class DocBuilder
       end
     end
     yield w
-    md_small(w, "Generated on #{Time.now.strftime('%d-%B-%y at %H:%M:%S')} by #{html_link('https://github.com/ishani/MaMD', 'MaMD')} " \
+    w << md_small("Generated on #{Time.now.strftime('%d-%B-%y at %H:%M:%S')} by #{html_link('https://github.com/ishani/MaMD', 'MaMD')} " \
       "which uses #{html_link('https://github.com/yuin/goldmark', 'Goldmark')}, " \
       "#{html_link('https://github.com/alecthomas/chroma', 'Chroma')}, " \
       "#{html_link('https://rsms.me/inter', 'Inter')} and " \
@@ -350,8 +348,8 @@ class DocBuilder
     "<a href=\"#{href}\">#{text}</a>"
   end
 
-  def md_small(w, text)
-    w << "<sub><sup>#{text}</sup></sub>"
+  def md_small(text)
+    "<sub><sup>#{text}</sup></sub>"
   end
 
   def md_code(w, prefix: nil)
