@@ -7,6 +7,7 @@ module JABA
   # keys to strings so can lookup with strings or symbols
   class KeyToSHash < Hash
     def [](key) = super(key.to_s)
+    def fetch(key, default_value = nil) = super(key.to_s, default_value)
     def has_key?(key) = super(key.to_s)
     def []=(key, value); super(key.to_s, value); end
   end

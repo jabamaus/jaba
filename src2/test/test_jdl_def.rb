@@ -214,6 +214,29 @@ jtest "can register attributes as node options" do
   end
 end
 
+jtest "supports opening attribute definitions" do
+  jdl do
+    open_attr :a do
+      items [:c]
+      default :a # change default to :a
+    end
+    attr :a, type: :choice do
+      items [:a, :b]
+      default :b
+    end
+    open_attr :a do
+      items [:d]
+    end
+  end
+  jaba do
+    a.must_equal :a
+    a :c
+    a.must_equal :c
+    a :d
+    a.must_equal :d
+  end
+end
+
 # TODO: check that attr_option cannot reference another attr_option
 # TODO: check for duplicate options
 jtest "can register attributes as attribute options" do
@@ -230,7 +253,7 @@ jtest "can register attributes as attribute options" do
   a.value.must_equal 1
   a.option_value(:option).must_equal :b
 end
-
+ 
 jtest "fails if attribute type does not exist" do
   assert_jaba_error "Error at #{src_loc("CE16AD90")}: 'a' attribute invalid - ':unknown' must be one of [:basename, :bool, :choice, :compound, :dir, :ext, :file, :int, :null, :src, :string, :to_s, :uuid]" do
     jdl do

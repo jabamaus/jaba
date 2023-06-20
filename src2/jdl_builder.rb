@@ -11,8 +11,10 @@ module JABA
 
     def initialize(api_blocks = Context.standard_jdl_blocks)
       @building_jdl = false
-      @path_to_node_def = {}
-      @path_to_attr_def = {}
+      @all_definitions = []
+      @path_to_node_def = KeyToSHash.new
+      @path_to_attr_def = KeyToSHash.new
+      @attrs_to_open = KeyToSHash.new
       @base_api_class = Class.new(BasicObject) do
         undef_method :!, :!=, :==, :equal?, :__id__
 
@@ -60,7 +62,17 @@ module JABA
       api_blocks.each do |b|
         TopLevelAPI.execute(self, &b)
       end
+
+      @attrs_to_open.each do |path, blocks|
+        attr_def = lookup_attr_def(path)
+        blocks.each do |block|
+          attr_def.class.const_get("API").execute(attr_def, &block)
+        end
+      end
       @building_jdl = false
+
+      @all_definitions.each(&:post_create)
+
       @path_to_node_def.each do |path, node_def|
         node_def.attr_defs.sort_by! { |ad| ad.name }
         node_def.method_defs.sort_by! { |ad| ad.name }
@@ -181,6 +193,10 @@ module JABA
       end
     end
 
+    def set_open_attr(path, &block)
+      @attrs_to_open.push_value(path, block)
+    end
+
     def set_attr_option(path, variant: :single, type: :null, &block)
       def_class = case variant
         when :single
@@ -248,7 +264,7 @@ module JABA
       d.instance_variable_set(:@src_loc, APIBuilder.last_call_location)
       yield d if block_given?
       klass.const_get("API").execute(d, &block) if block
-      d.post_create
+      @all_definitions << d
       d
     end
 
