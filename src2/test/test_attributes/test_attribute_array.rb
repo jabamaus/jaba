@@ -417,14 +417,14 @@ jtest "supports value options" do
   jdl do
     attr :a, variant: :array do
       flags :allow_dupes
-      option :single, type: :int
+      option :opt_single, type: :int
       option :opt_array, variant: :array
       option :opt_single_choice, type: :choice do
         items [:a, :b, :c]
       end
     end
     attr :b, variant: :array do # dupes will be stripped
-      option :single, type: :int
+      option :opt_single, type: :int
       option :opt_array, variant: :array
       option :opt_single_choice, type: :choice do
         items [:a, :b, :c]

@@ -237,13 +237,13 @@ jtest "supports opening attribute definitions" do
   end
 end
 
-# TODO: check that attr_option cannot reference another attr_option
 # TODO: check for duplicate options
 jtest "can register attributes as attribute options" do
   jdl(level: :core) do
-    attr "a"
-    attr_option "a/option", type: :choice do
-      items [:a, :b, :c]
+    attr "a" do
+      option :option, type: :choice do
+        items [:a, :b, :c]
+      end
     end
   end
   op = jaba do
