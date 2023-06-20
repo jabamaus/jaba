@@ -122,7 +122,7 @@ module JABA
       @shared_lookup = {}
       @executing_jdl = 0
       @attr_def_block_stack = []
-      @target_lookup = SymbolKeyHash.new # target id to target node
+      @target_lookup = KeyToSHash.new # target id to target node
       @projects = []
       @project_lookup = {} # target node to project
     end
@@ -384,10 +384,10 @@ module JABA
               ad.definition_error("must be flagged with either :per_target or :per_config")
             end
           end
-          @target_attrs_ignore = SymbolKeyHash.new.tap do |h|
+          @target_attrs_ignore = KeyToSHash.new.tap do |h|
             @target_attr_defs.each { |ta| h[ta.name] = true }
           end
-          @config_attrs_ignore = SymbolKeyHash.new.tap do |h|
+          @config_attrs_ignore = KeyToSHash.new.tap do |h|
             @config_attr_defs.each { |ca| h[ca.name] = true }
           end
         end

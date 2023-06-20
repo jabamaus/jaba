@@ -7,7 +7,7 @@ module JABA
       @id = id
       @src_loc = src_loc # nil for root node. Updated dynamically in eval_jdl
       @attributes = []
-      @attribute_lookup = SymbolKeyHash.new
+      @attribute_lookup = KeyToSHash.new
       @attrs_to_ignore_when_setting = nil
       @attrs_to_ignore_when_getting = nil
       @children = []

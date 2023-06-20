@@ -16,6 +16,7 @@ core
 - look again at receiver of on_called
 - make logging and error functionality into Context class methods so they are always available.
 - prefix/postfix/delete/exclude should be specced with attr_option. exclude should get its type from its owning attr.
+- ability to open attr definitions for modification/extension. If this was possible then attr_option and flag option defs could go inside attr which is neater
 
 path attrs/src
 - Support **.h as alternative to **/*.h

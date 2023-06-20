@@ -4,6 +4,7 @@ module JABA
       :global_method,
       :method,
       :attr,
+      :open_attr,
       :attr_option,
       :node,
     )
@@ -401,7 +402,7 @@ module JABA
       @flags = []
       @flag_options = []
       @option_defs = []
-      @option_def_lookup = SymbolKeyHash.new
+      @option_def_lookup = KeyToSHash.new
       @default = nil
       @default_is_block = false
       @default_set = false

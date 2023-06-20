@@ -4,11 +4,11 @@ module JABA
     def self.mac? = false
   end
 
-  # SymbolKeyHash hash converts keys to symbols so can lookup with strings or symbols
-  class SymbolKeyHash < Hash
-    def [](key) = super(key.to_sym)
-    def has_key?(key) = super(key.to_sym)
-    def []=(key, value); super(key.to_sym, value); end
+  # keys to strings so can lookup with strings or symbols
+  class KeyToSHash < Hash
+    def [](key) = super(key.to_s)
+    def has_key?(key) = super(key.to_s)
+    def []=(key, value); super(key.to_s, value); end
   end
 
   module VSUtilities

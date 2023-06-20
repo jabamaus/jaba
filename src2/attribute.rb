@@ -62,7 +62,7 @@ module JABA
       super
       @value = nil
       @flag_options = []
-      @value_options = SymbolKeyHash.new
+      @value_options = KeyToSHash.new
       @in_on_set = false
     end
 
