@@ -187,8 +187,8 @@ class DocBuilder
   end
 
   def generate_node_reference(n)
-    write_markdown_page("#{n.name}.md", n.name, versioned: true) do |w|
-      w << "[#{JABA::VERSION} reference home](jaba_reference.html)  "
+    write_markdown_page("#{n.name}.md", n.name, versioned: true) do |w, nav|
+      nav << "[#{JABA::VERSION} reference home](jaba_reference.html)"
       w << "> "
       w << "> _#{n.title}_"
       w << "> "
@@ -325,17 +325,21 @@ class DocBuilder
     if versioned
       w << md_small("This page applies to v#{JABA::VERSION}<br>")
     end
+    nav = []
     if want_home
-      w << if versioned
-        "[home](../index.html)  "
+      nav << if versioned
+        "[home](../index.html)"
       else
-        "[home](index.html)  "
+        "[home](index.html)"
       end
       if versioned && versioned_home
-        w << "[#{JABA::VERSION} home](index.html)  "
+        nav << "[#{JABA::VERSION} home](index.html)"
       end
     end
-    yield w
+    wa = file.work_area
+    yield wa, nav
+    w << nav.join(" > ")
+    w.write_raw(wa)
     w << md_small("Generated on #{Time.now.strftime('%d-%B-%y at %H:%M:%S')} by #{html_link('https://github.com/ishani/MaMD', 'MaMD')} " \
       "which uses #{html_link('https://github.com/yuin/goldmark', 'Goldmark')}, " \
       "#{html_link('https://github.com/alecthomas/chroma', 'Chroma')}, " \
