@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+    <head>
+        <title>target</title>
+        <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code&display=swap"> 
+        <link rel="stylesheet" href="../mamd.css">
+    </head>
+    <body>
+        <h2 id="target">target</h2>
+<p><sub><sup>This page applies to v0.1-alpha<br></sup></sub>
+<a href="../index.html">home</a> &gt; <a href="index.html">0.1-alpha home</a> &gt; <a href="jaba_reference.html">0.1-alpha reference home</a></p>
+<blockquote>
+<p><em>Define a target</em></p>
+<ul>
+<li>Split into 'target' level attributes and 'config' level attributes</li>
+</ul>
+</blockquote>
+<p>41 members:</p>
+<ul>
+<li><a href="#bindir">bindir</a></li>
+<li><a href="#cflags">cflags</a></li>
+<li><a href="#charset">charset</a></li>
+<li><a href="#config">config</a></li>
+<li><a href="#configname">configname</a></li>
+<li><a href="#configs">configs</a></li>
+<li><a href="#cpplang">cpplang</a></li>
+<li><a href="#debug">debug</a></li>
+<li><a href="#define">define</a></li>
+<li><a href="#deps">deps</a></li>
+<li><a href="#exceptions">exceptions</a></li>
+<li><a href="#inc">inc</a></li>
+<li><a href="#lflags">lflags</a></li>
+<li><a href="#libdir">libdir</a></li>
+<li><a href="#libs">libs</a></li>
+<li><a href="#objdir">objdir</a></li>
+<li><a href="#projdir">projdir</a></li>
+<li><a href="#projname">projname</a></li>
+<li><a href="#projsuffix">projsuffix</a></li>
+<li><a href="#rtti">rtti</a></li>
+<li><a href="#rule">rule</a></li>
+<li><a href="#shell">shell</a></li>
+<li><a href="#src">src</a></li>
+<li><a href="#src_ext">src_ext</a></li>
+<li><a href="#syslibs">syslibs</a></li>
+<li><a href="#targetext">targetext</a></li>
+<li><a href="#targetname">targetname</a></li>
+<li><a href="#targetprefix">targetprefix</a></li>
+<li><a href="#targetsuffix">targetsuffix</a></li>
+<li><a href="#type">type</a></li>
+<li><a href="#vc_extension_settings">vc_extension_settings</a></li>
+<li><a href="#vc_extension_targets">vc_extension_targets</a></li>
+<li><a href="#vcglobal">vcglobal</a></li>
+<li><a href="#vcguid">vcguid</a></li>
+<li><a href="#vcimportlib">vcimportlib</a></li>
+<li><a href="#vcnowarn">vcnowarn</a></li>
+<li><a href="#vcprop">vcprop</a></li>
+<li><a href="#vctoolset">vctoolset</a></li>
+<li><a href="#vcwarnlevel">vcwarnlevel</a></li>
+<li><a href="#warnerror">warnerror</a></li>
+<li><a href="#winsdkver">winsdkver</a>
+<a id="bindir"></a></li>
+</ul>
+<h4 id="bindir">bindir</h4>
+<blockquote>
+<p><em>Output directory for executables</em></p>
+<ul>
+<li>Set on a per-config basis</li>
+<li>Does not check if path exists at generation time</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>dir</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:force</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="cflags"></a></p>
+<h4 id="cflags">cflags</h4>
+<blockquote>
+<p><em>Raw compiler command line switches</em></p>
+<ul>
+<li>Set on a per-config basis</li>
+<li>Exportable to dependents</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>string array</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:export, :export_only</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="charset"></a></p>
+<h4 id="charset">charset</h4>
+<blockquote>
+<p><em>Character set</em></p>
+<ul>
+<li>Set on a per-config basis</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>:unicode</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">charset</span> <span style="color:#d88200">:unicode</span>
+</pre></blockquote>
+<p><a id="config"></a></p>
+<h4 id="config">config</h4>
+<blockquote>
+<p><em>Current target config as an id</em></p>
+<ul>
+<li>Returns current config being processed. Use to define control flow to set config-specific atttributes</li>
+<li>Set on a per-config basis</li>
+<li>Read only</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>string</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;&quot;</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="configname"></a></p>
+<h4 id="configname">configname</h4>
+<blockquote>
+<p><em>Display name of config as seen in IDE</em></p>
+<ul>
+<li>Set on a per-config basis</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>string</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="configs"></a></p>
+<h4 id="configs">configs</h4>
+<blockquote>
+<p><em>Build configurations</em></p>
+<ul>
+<li>Set on a per-target basis</li>
+<li>Default value is overwritten rather than extended</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>string array</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>[:Debug, :Release]</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">configs</span> <span style="color:#f92672">[</span><span style="color:#d88200">:debug</span><span style="color:#111">,</span> <span style="color:#d88200">:release</span><span style="color:#f92672">]</span>
+</pre></blockquote>
+<p><a id="cpplang"></a></p>
+<h4 id="cpplang">cpplang</h4>
+<blockquote>
+<p><em>C++ language standard</em></p>
+<ul>
+<li>Set on a per-config basis</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;C++14&quot;</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="debug"></a></p>
+<h4 id="debug">debug</h4>
+<blockquote>
+<p><em>Flags config as a debug config</em></p>
+<ul>
+<li>Defaults to true if config id contains 'debug'</li>
+<li>Set on a per-config basis</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>bool</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="define"></a></p>
+<h4 id="define">define</h4>
+<blockquote>
+<p><em>Preprocessor defines</em></p>
+<ul>
+<li>Set on a per-config basis</li>
+<li>Exportable to dependents</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>string array</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:export, :export_only</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="deps"></a></p>
+<h4 id="deps">deps</h4>
+<blockquote>
+<p><em>Target dependencies</em></p>
+<ul>
+<li>List of ids of other cpp definitions. When a dependency is specified all the dependency's exports will be imported, the library will be linked to and a project level dependency created (unless :soft specified). To prevent linking specify :nolink - useful if only headers are required. A hard dependency is the default.This can be used for 'header only' dependencies</li>
+<li>Set on a per-target basis</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>string array</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:nolink</td>
+</tr>
+</tbody>
+</table>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">target</span> <span style="color:#d88200">:MyApp</span> <span style="color:#00a8c8">do</span>
+  <span style="color:#111">type</span> <span style="color:#d88200">:app</span>
+  <span style="color:#f92672">...</span>
+  <span style="color:#111">deps</span> <span style="color:#f92672">[</span><span style="color:#d88200">:MyLib</span><span style="color:#f92672">]</span>
+  <span style="color:#111">deps</span> <span style="color:#f92672">[</span><span style="color:#d88200">:MyLib2</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">type</span><span style="color:#111">:</span> <span style="color:#d88200">:soft</span> <span style="color:#75715e"># No hard project dependency so not required in workspace</span>
+<span style="color:#00a8c8">end</span>
+
+<span style="color:#111">target</span> <span style="color:#d88200">:MyLib</span> <span style="color:#00a8c8">do</span>
+  <span style="color:#111">type</span> <span style="color:#d88200">:lib</span>
+  <span style="color:#f92672">...</span>
+<span style="color:#00a8c8">end</span>
+
+<span style="color:#111">target</span> <span style="color:#d88200">:MyLib2</span> <span style="color:#00a8c8">do</span>
+  <span style="color:#111">type</span> <span style="color:#d88200">:lib</span>
+  <span style="color:#111">inc</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;.&#39;</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">:export</span>
+  <span style="color:#111">define</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;MYLIB2&#39;</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">:export</span>
+  <span style="color:#f92672">...</span>
+<span style="color:#00a8c8">end</span>
+</pre></blockquote>
+<p><a id="exceptions"></a></p>
+<h4 id="exceptions">exceptions</h4>
+<blockquote>
+<p><em>Enables C++ exceptions</em></p>
+<ul>
+<li>Set on a per-config basis</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>true</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">exceptions</span> <span style="color:#00a8c8">false</span> <span style="color:#75715e"># disable exceptions</span>
+</pre></blockquote>
+<p><a id="inc"></a></p>
+<h4 id="inc">inc</h4>
+<blockquote>
+<p><em>Include paths</em></p>
+<ul>
+<li>Set on a per-config basis</li>
+<li>Unsorted</li>
+<li>Exportable to dependents</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>dir array</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:force, :export, :export_only</td>
+</tr>
+</tbody>
+</table>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">inc</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;mylibrary/include&#39;</span><span style="color:#f92672">]</span>
+<span style="color:#111">inc</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;mylibrary/include&#39;</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">:export</span> <span style="color:#75715e"># Export include path to dependents</span>
+</pre></blockquote>
+<p><a id="lflags"></a></p>
+<h4 id="lflags">lflags</h4>
+<blockquote>
+<p><em>Raw linker command line switches</em></p>
+<ul>
+<li>Set on a per-config basis</li>
+<li>Exportable to dependents</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>string array</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:export, :export_only</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="libdir"></a></p>
+<h4 id="libdir">libdir</h4>
+<blockquote>
+<p><em>Output directory for libs</em></p>
+<ul>
+<li>Set on a per-config basis</li>
+<li>Does not check if path exists at generation time</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>dir</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:force</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="libs"></a></p>
+<h4 id="libs">libs</h4>
+<blockquote>
+<p><em>Paths to required non-system libs</em></p>
+<ul>
+<li>Set on a per-config basis</li>
+<li>Unsorted</li>
+<li>Does not check if path exists at generation time</li>
+<li>Exportable to dependents</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>file array</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:force, :export, :export_only</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="objdir"></a></p>
+<h4 id="objdir">objdir</h4>
+<blockquote>
+<p><em>Output directory for object files</em></p>
+<ul>
+<li>Set on a per-config basis</li>
+<li>Does not check if path exists at generation time</li>
+<li>Defaults to <a href="#arch">$(arch)</a>/obj/<a href="#config">$(config)</a>/<a href="#projname">$(projname)</a></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>dir</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:force</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="projdir"></a></p>
+<h4 id="projdir">projdir</h4>
+<blockquote>
+<p><em>Directory in which projects will be generated</em></p>
+<ul>
+<li>Set on a per-target basis</li>
+<li>Does not check if path exists at generation time</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>dir</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;.&quot;</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:force</td>
+</tr>
+</tbody>
+</table>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">target</span> <span style="color:#d88200">:MyApp</span> <span style="color:#00a8c8">do</span>
+  <span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;**/*&#39;</span><span style="color:#f92672">]</span> <span style="color:#75715e"># Get all src in $(root), which defaults to directory of definition file</span>
+  <span style="color:#111">projdir</span> <span style="color:#d88200">&#39;projects&#39;</span> <span style="color:#75715e"># Place generated projects in &#39;projects&#39; directory</span>
+<span style="color:#00a8c8">end</span>
+</pre></blockquote>
+<p><a id="projname"></a></p>
+<h4 id="projname">projname</h4>
+<blockquote>
+<p><em>Base name of project files</em></p>
+<ul>
+<li>Defaults to <a href="#id">$(id)</a><a href="#projsuffix">$(projsuffix)</a></li>
+<li>Set on a per-target basis</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>basename</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="projsuffix"></a></p>
+<h4 id="projsuffix">projsuffix</h4>
+<blockquote>
+<p><em>Optional suffix to be applied to $(projname)</em></p>
+<ul>
+<li>Has no effect if <a href="#projname">$(projname)</a> is set explicitly</li>
+<li>Set on a per-target basis</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>string</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;&quot;</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="rtti"></a></p>
+<h4 id="rtti">rtti</h4>
+<blockquote>
+<p><em>Enables runtime type information</em></p>
+<ul>
+<li>Set on a per-config basis</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>bool</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>false</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">rtti</span> <span style="color:#00a8c8">true</span>
+</pre></blockquote>
+<p><a id="rule"></a></p>
+<h4 id="rule">rule</h4>
+<blockquote>
+<p><em>TODO</em></p>
+<ul>
+<li>Unsorted</li>
+<li>Set on a per-config basis</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>compound array</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="cmd"></a></p>
+<h4 id="cmd">cmd</h4>
+<blockquote>
+<p><em>Command line to execute</em></p>
+<ul>
+<li>Must be specified</li>
+<li>Use :absolute to make usage of <a href="#input">$(input)</a> or <a href="#output">$(output)</a> in the command line use absolute paths. Otherwise they will be relative to the generated project.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>string</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:absolute</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="implicit_input"></a></p>
+<h4 id="implicit-input">implicit_input</h4>
+<blockquote>
+<p><em>Implicit input files</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>file</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;&quot;</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:force</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="input"></a></p>
+<h4 id="input">input</h4>
+<blockquote>
+<p><em>TODO</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>src array</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:force</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="msg"></a></p>
+<h4 id="msg">msg</h4>
+<blockquote>
+<p><em>Message</em></p>
+<ul>
+<li>Message that will be echoed to console on execution of the rule.</li>
+<li>Certain characters like &lt; &gt; | &amp; are automatically escaped to prevent unwanted side effects such as writing text to a file - this is a common reason why Visual Studio users are sometimes baffled as to why their custom build tool messages are not being printed.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>string</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;&quot;</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="output"></a></p>
+<h4 id="output">output</h4>
+<blockquote>
+<p><em>Output files</em></p>
+<ul>
+<li>Must be specified</li>
+<li>Does not check if path exists at generation time</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>file</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:force</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="shell"></a></p>
+<h4 id="shell">shell</h4>
+<blockquote>
+<p><em>Shell commands to execute during build</em></p>
+<ul>
+<li>Maps to build events in Visual Studio</li>
+<li>Set on a per-config basis</li>
+<li>Exportable to dependents</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>string array</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:export, :export_only</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="src"></a></p>
+<h4 id="src">src</h4>
+<blockquote>
+<p><em>Specify source files</em></p>
+<ul>
+<li>Set on a per-config basis</li>
+<li>Exportable to dependents</li>
+<li>Unsorted</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>src array</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:force, :export, :export_only</td>
+</tr>
+</tbody>
+</table>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#75715e"># Add all src in $(root) whose extension is in $(src_ext)</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;*&#39;</span><span style="color:#f92672">]</span>
+
+<span style="color:#75715e"># Add all src in $(root)/src whose extension is in $(src_ext), recursively</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;src/**/*&#39;</span><span style="color:#f92672">]</span>
+
+<span style="color:#75715e"># Glob matches are not required to add whole directory recursively (whose extension is in $(src_ext))</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;src&#39;</span><span style="color:#f92672">]</span>
+
+<span style="color:#75715e"># Add all src recursively but excluding test files</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;src&#39;</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">exclude</span><span style="color:#111">:</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;test/**/*&#39;</span><span style="color:#f92672">]</span>
+
+<span style="color:#75715e"># Add src explicitly</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;main.c&#39;</span><span style="color:#111">,</span> <span style="color:#d88200">&#39;io.c&#39;</span><span style="color:#f92672">]</span>
+
+<span style="color:#75715e"># Array brackets not required for one item</span>
+<span style="color:#111">src</span> <span style="color:#d88200">&#39;main.c&#39;</span>
+
+<span style="color:#75715e"># Add src explicitly even if extension not in $(src_ext)</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;build.jaba&#39;</span><span style="color:#f92672">]</span>
+
+<span style="color:#75715e"># Add src by glob match even if extension not in $(src_ext) only if has explicit extension</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;*.jaba&#39;</span><span style="color:#f92672">]</span>
+
+<span style="color:#75715e"># Force addition of file not on disk</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;does_not_exist.cpp&#39;</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">:force</span>
+
+<span style="color:#75715e"># Precede with ./ to force path to be relative to current jaba file even if $(root) points elsewhere.</span>
+<span style="color:#75715e"># Useful if you want to make $(root) point to a 3rd party distro but you want to add a local file</span>
+<span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;./local.cxx&#39;</span><span style="color:#f92672">]</span>
+
+<span style="color:#75715e"># Add src in bulk without needing quotes, commas or square brackets. Options can be added as normal.</span>
+<span style="color:#111">src</span> <span style="color:#d88200">%w(</span><span style="color:#d88200">main.c dmydln.c miniinit.c array.c ast.c bignum.c class.c compar.c compile.c</span><span style="color:#d88200">)</span>
+<span style="color:#111">src</span> <span style="color:#d88200">%w(</span><span style="color:#d88200">
+</span><span style="color:#d88200">  main.c dmydln.c miniinit.c array.c
+</span><span style="color:#d88200">  ast.c bignum.c class.c compar.c compile.c
+</span><span style="color:#d88200"></span><span style="color:#d88200">)</span>
+
+<span style="color:#75715e"># Place matching files in a specific folder location within the project file</span>
+<span style="color:#111">src</span> <span style="color:#d88200">&#39;*_win.cpp&#39;</span><span style="color:#111">,</span> <span style="color:#d88200">vpath</span><span style="color:#111">:</span> <span style="color:#d88200">&#39;win32&#39;</span>
+</pre></blockquote>
+<p><a id="src_ext"></a></p>
+<h4 id="src-ext">src_ext</h4>
+<blockquote>
+<p><em>File extensions used when matching src files</em></p>
+<ul>
+<li>Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.</li>
+<li>Set on a per-config basis</li>
+<li>Unsorted</li>
+<li>Exportable to dependents</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>ext array</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:export, :export_only</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="syslibs"></a></p>
+<h4 id="syslibs">syslibs</h4>
+<blockquote>
+<p><em>System libs</em></p>
+<ul>
+<li>Set on a per-config basis</li>
+<li>Unsorted</li>
+<li>Exportable to dependents</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>string array</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:export, :export_only</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="targetext"></a></p>
+<h4 id="targetext">targetext</h4>
+<blockquote>
+<p><em>Extension to apply to $(targetname)</em></p>
+<ul>
+<li>Defaults to standard extension for <a href="#type">$(type)</a> of project for target <a href="#platform">$(platform)</a></li>
+<li>Set on a per-config basis</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>ext</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="targetname"></a></p>
+<h4 id="targetname">targetname</h4>
+<blockquote>
+<p><em>Basename of output file without extension</em></p>
+<ul>
+<li>Defaults to <a href="#targetprefix">$(targetprefix)</a><a href="#projname">$(projname)</a><a href="#targetsuffix">$(targetsuffix)</a></li>
+<li>Set on a per-config basis</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>basename</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="targetprefix"></a></p>
+<h4 id="targetprefix">targetprefix</h4>
+<blockquote>
+<p><em>Prefix to apply to $(targetname)</em></p>
+<ul>
+<li>Has no effect if <a href="#targetname">$(targetname)</a> specified</li>
+<li>Set on a per-config basis</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>string</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;&quot;</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="targetsuffix"></a></p>
+<h4 id="targetsuffix">targetsuffix</h4>
+<blockquote>
+<p><em>Suffix to apply to $(targetname)</em></p>
+<ul>
+<li>Has no effect if <a href="#targetname">$(targetname)</a> specified</li>
+<li>Set on a per-config basis</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>string</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;&quot;</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="type"></a></p>
+<h4 id="type">type</h4>
+<blockquote>
+<p><em>Target type</em></p>
+<ul>
+<li>Set on a per-config basis</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>:app</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="vc_extension_settings"></a></p>
+<h4 id="vc-extension-settings">vc_extension_settings</h4>
+<blockquote>
+<p><em>Path to a .props file</em></p>
+<ul>
+<li>Set on a per-target basis</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>hash (ext =&gt; file)</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:force</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="vc_extension_targets"></a></p>
+<h4 id="vc-extension-targets">vc_extension_targets</h4>
+<blockquote>
+<p><em>Path to a .targets file</em></p>
+<ul>
+<li>Set on a per-target basis</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>hash (ext =&gt; file)</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:force</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="vcglobal"></a></p>
+<h4 id="vcglobal">vcglobal</h4>
+<blockquote>
+<p><em>Address Globals property group in a vcxproj directly</em></p>
+<ul>
+<li>Set on a per-target basis</li>
+<li>Exportable to dependents</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>hash (string =&gt; to_s)</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:export, :export_only</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="vcguid"></a></p>
+<h4 id="vcguid">vcguid</h4>
+<blockquote>
+<p><em>Globally unique id (GUID)</em></p>
+<ul>
+<li>Seeded by <a href="#projname">$(projname)</a>. Required by Visual Studio project files</li>
+<li>Set on a per-target basis</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>uuid</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="vcimportlib"></a></p>
+<h4 id="vcimportlib">vcimportlib</h4>
+<blockquote>
+<p><em>Name of import lib for use will dlls</em></p>
+<ul>
+<li>Set on a per-config basis</li>
+<li>Does not check if path exists at generation time</li>
+<li>Defaults to <a href="#projname">$(projname)</a><a href="#targetsuffix">$(targetsuffix)</a>.lib</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>file</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:force</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="vcnowarn"></a></p>
+<h4 id="vcnowarn">vcnowarn</h4>
+<blockquote>
+<p><em>Warnings to disable</em></p>
+<ul>
+<li>Set on a per-config basis</li>
+<li>Exportable to dependents</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>int array</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:export, :export_only</td>
+</tr>
+</tbody>
+</table>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">vcnowarn</span> <span style="color:#f92672">[</span><span style="color:#ae81ff">4100</span><span style="color:#f92672"></span><span style="color:#111">,</span> <span style="color:#ae81ff">4127</span><span style="color:#f92672"></span><span style="color:#111">,</span> <span style="color:#ae81ff">4244</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>
+</pre></blockquote>
+<p><a id="vcprop"></a></p>
+<h4 id="vcprop">vcprop</h4>
+<blockquote>
+<p><em>Address per-configuration sections of a vcxproj directly</em></p>
+<ul>
+<li>Set on a per-config basis</li>
+<li>Exportable to dependents</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>hash (string =&gt; to_s)</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td>:export, :export_only</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="vctoolset"></a></p>
+<h4 id="vctoolset">vctoolset</h4>
+<blockquote>
+<p><em>Toolset version to use</em></p>
+<ul>
+<li>Defaults to host's default toolset</li>
+<li>Set on a per-config basis</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="vcwarnlevel"></a></p>
+<h4 id="vcwarnlevel">vcwarnlevel</h4>
+<blockquote>
+<p><em>Visual Studio warning level</em></p>
+<ul>
+<li>Set on a per-config basis</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>3</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="warnerror"></a></p>
+<h4 id="warnerror">warnerror</h4>
+<blockquote>
+<p><em>Enable warnings as errors</em></p>
+<ul>
+<li>Set on a per-config basis</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>bool</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>false</td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">warnerror</span> <span style="color:#00a8c8">true</span>
+</pre></blockquote>
+<p><a id="winsdkver"></a></p>
+<h4 id="winsdkver">winsdkver</h4>
+<blockquote>
+<p><em>Windows SDK version</em></p>
+<ul>
+<li>Set on a per-target basis</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>type</em></td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>options</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">winsdkver</span> <span style="color:#d88200">&#39;10.0.18362.0&#39;</span>
+<span style="color:#75715e"># wrapper for</span>
+<span style="color:#111">vcglobal</span> <span style="color:#d88200">:WindowsTargetPlatformVersion</span><span style="color:#111">,</span> <span style="color:#111">winsdkver</span>
+</pre></blockquote>
+<p><sub><sup>Generated on 23-June-23 at 16:20:05 by <a href="https://github.com/ishani/MaMD">MaMD</a> which uses <a href="https://github.com/yuin/goldmark">Goldmark</a>, <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a></sup></sub></p>
+
+    </body>
+</html>

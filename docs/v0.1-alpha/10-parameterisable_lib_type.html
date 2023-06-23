@@ -9,48 +9,36 @@
     <body>
         <h2 id="10-parameterisable-lib-type">10-parameterisable_lib_type</h2>
 <p><sub><sup>This page applies to v0.1-alpha<br></sup></sub>
-<a href="../index.html">home</a><br />
-<a href="index.html">0.1-alpha home</a></p>
+<a href="../index.html">home</a> &gt; <a href="index.html">0.1-alpha home</a></p>
 <pre style="color:#272822;background-color:#fafafa"><span style="color:#75715e"># This example demonstrates how to set up a lib so that it can be either static or dynamic without duplicating code or</span>
 <span style="color:#75715e"># changing the app that depends on it.</span>
-<span style="color:#75715e"># </span>
-<span style="color:#75715e"># To change default lib type from command line:</span>
-<span style="color:#75715e">#</span>
-<span style="color:#75715e"># jaba -D cpp_default_lib_type lib</span>
-<span style="color:#75715e"># jaba -D cpp_default_lib_type dll</span>
 
-<span style="color:#111">defaults</span> <span style="color:#d88200">:cpp</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">platforms</span> <span style="color:#f92672">[</span><span style="color:#d88200">:windows_x86_64</span><span style="color:#f92672">]</span>
-  <span style="color:#111">project</span> <span style="color:#00a8c8">do</span>
-    <span style="color:#111">configs</span> <span style="color:#f92672">[</span><span style="color:#d88200">:Debug</span><span style="color:#111">,</span> <span style="color:#d88200">:Release</span><span style="color:#f92672">]</span>
+<span style="color:#111">extend_jdl</span> <span style="color:#00a8c8">do</span>
+  <span style="color:#00a8c8">attr</span> <span style="color:#d88200">:lib_type</span><span style="color:#111">,</span> <span style="color:#d88200">type</span><span style="color:#111">:</span> <span style="color:#d88200">:choice</span> <span style="color:#00a8c8">do</span>
+    <span style="color:#111">title</span> <span style="color:#d88200">&#34;</span><span style="color:#d88200">Lib type</span><span style="color:#d88200">&#34;</span>
+    <span style="color:#111">items</span> <span style="color:#f92672">[</span><span style="color:#d88200">:lib</span><span style="color:#111">,</span> <span style="color:#d88200">:dll</span><span style="color:#f92672">]</span>
+    <span style="color:#111">default</span> <span style="color:#d88200">:lib</span>
   <span style="color:#00a8c8">end</span>
 <span style="color:#00a8c8">end</span>
 
-<span style="color:#111">cpp</span> <span style="color:#d88200">:AppWithStaticOrDynamicLib</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">project</span> <span style="color:#00a8c8">do</span>
-    <span style="color:#111">type</span> <span style="color:#d88200">:console</span>
-    <span style="color:#111">src</span> <span style="color:#d88200">&#39;main.cpp&#39;</span>
-    <span style="color:#111">deps</span> <span style="color:#f92672">[</span><span style="color:#d88200">:StaticOrDynamicLib</span><span style="color:#f92672">]</span>
-  <span style="color:#00a8c8">end</span>
+<span style="color:#111">target</span> <span style="color:#d88200">:AppWithStaticOrDynamicLib</span> <span style="color:#00a8c8">do</span>
+  <span style="color:#111">type</span> <span style="color:#d88200">:console</span>
+  <span style="color:#111">src</span> <span style="color:#d88200">&#39;main.cpp&#39;</span>
+  <span style="color:#111">deps</span> <span style="color:#f92672">[</span><span style="color:#d88200">:StaticOrDynamicLib</span><span style="color:#f92672">]</span>
 <span style="color:#00a8c8">end</span>
 
-<span style="color:#111">cpp</span> <span style="color:#d88200">:StaticOrDynamicLib</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">root</span> <span style="color:#d88200">&#39;StaticOrDynamicLib&#39;</span>
-  <span style="color:#111">project</span> <span style="color:#00a8c8">do</span>
-    <span style="color:#111">type</span> <span style="color:#111">globals</span><span style="color:#f92672">.</span><span style="color:#111">cpp_default_lib_type</span>
-    <span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;.&#39;</span><span style="color:#f92672">]</span>
-  <span style="color:#00a8c8">end</span>
-  <span style="color:#111">config</span> <span style="color:#00a8c8">do</span>
-    <span style="color:#111">inc</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;include&#39;</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">:export</span>
-    <span style="color:#00a8c8">case</span> <span style="color:#111">type</span>
-    <span style="color:#00a8c8">when</span> <span style="color:#d88200">:lib</span>
-      <span style="color:#111">define</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;SODL_STATIC&#39;</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">:export</span>
-    <span style="color:#00a8c8">when</span> <span style="color:#d88200">:dll</span>
-      <span style="color:#111">define</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;DLL_EXPORT&#39;</span><span style="color:#f92672">]</span>
-    <span style="color:#00a8c8">end</span>
+<span style="color:#111">target</span> <span style="color:#d88200">:StaticOrDynamicLib</span><span style="color:#111">,</span> <span style="color:#d88200">root</span><span style="color:#111">:</span> <span style="color:#d88200">&#39;StaticOrDynamicLib&#39;</span> <span style="color:#00a8c8">do</span>
+  <span style="color:#111">type</span> <span style="color:#111">lib_type</span>
+  <span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;.&#39;</span><span style="color:#f92672">]</span>
+  <span style="color:#111">inc</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;include&#39;</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">:export</span>
+  <span style="color:#00a8c8">case</span> <span style="color:#111">type</span>
+  <span style="color:#00a8c8">when</span> <span style="color:#d88200">:lib</span>
+    <span style="color:#111">define</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;SODL_STATIC&#39;</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">:export</span>
+  <span style="color:#00a8c8">when</span> <span style="color:#d88200">:dll</span>
+    <span style="color:#111">define</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;DLL_EXPORT&#39;</span><span style="color:#f92672">]</span>
   <span style="color:#00a8c8">end</span>
 <span style="color:#00a8c8">end</span>
-</pre><p><sub><sup>Generated by <a href="https://github.com/ishani/MaMD">MaMD</a> which uses <a href="https://github.com/yuin/goldmark">Goldmark</a>, <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a></sup></sub></p>
+</pre><p><sub><sup>Generated on 23-June-23 at 16:20:05 by <a href="https://github.com/ishani/MaMD">MaMD</a> which uses <a href="https://github.com/yuin/goldmark">Goldmark</a>, <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a></sup></sub></p>
 
     </body>
 </html>

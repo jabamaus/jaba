@@ -9,195 +9,89 @@
     <body>
         <h2 id="jaba-language-reference">Jaba language reference</h2>
 <p><sub><sup>This page applies to v0.1-alpha<br></sup></sub>
-<a href="../index.html">home</a><br />
-<a href="index.html">0.1-alpha home</a></p>
+<a href="../index.html">home</a> &gt; <a href="index.html">0.1-alpha home</a></p>
 <ul>
-<li>Types
+<li><a href="root.html">root</a> TODO
 <ul>
-<li><a href="jaba_type_arch.html">arch</a>
+<li><a href="root.html#arch">arch</a> Target architecture</li>
+<li><a href="root.html#artefact_root">artefact_root</a> Root of generated build artefacts</li>
+<li><a href="root.html#buildsystem">buildsystem</a> Target build system</li>
+<li><a href="root.html#buildsystem_root">buildsystem_root</a> Root of generated build system</li>
+<li><a href="root.html#glob">glob()</a> Glob for files</li>
+<li><a href="root.html#platform">platform</a> Target platform</li>
+<li><a href="root.html#shared">shared()</a> Define a shared definition</li>
+<li><a href="root.html#target">target</a> Define a target</li>
+<li><a href="root.html#vcfiletype">vcfiletype</a> VisualC file types</li>
+<li><a href="target.html">target</a> Define a target
 <ul>
-<li><a href="jaba_type_arch.html#arm64?">arm64?</a></li>
-<li><a href="jaba_type_arch.html#vsname">vsname</a></li>
-<li><a href="jaba_type_arch.html#x86?">x86?</a></li>
-<li><a href="jaba_type_arch.html#x86_64?">x86_64?</a></li>
+<li><a href="target.html#bindir">bindir</a> Output directory for executables</li>
+<li><a href="target.html#cflags">cflags</a> Raw compiler command line switches</li>
+<li><a href="target.html#charset">charset</a> Character set</li>
+<li><a href="target.html#config">config</a> Current target config as an id (read only)</li>
+<li><a href="target.html#configname">configname</a> Display name of config as seen in IDE</li>
+<li><a href="target.html#configs">configs</a> Build configurations</li>
+<li><a href="target.html#cpplang">cpplang</a> C++ language standard</li>
+<li><a href="target.html#debug">debug</a> Flags config as a debug config</li>
+<li><a href="target.html#define">define</a> Preprocessor defines</li>
+<li><a href="target.html#deps">deps</a> Target dependencies</li>
+<li><a href="target.html#exceptions">exceptions</a> Enables C++ exceptions</li>
+<li><a href="target.html#inc">inc</a> Include paths</li>
+<li><a href="target.html#lflags">lflags</a> Raw linker command line switches</li>
+<li><a href="target.html#libdir">libdir</a> Output directory for libs</li>
+<li><a href="target.html#libs">libs</a> Paths to required non-system libs</li>
+<li><a href="target.html#objdir">objdir</a> Output directory for object files</li>
+<li><a href="target.html#projdir">projdir</a> Directory in which projects will be generated</li>
+<li><a href="target.html#projname">projname</a> Base name of project files</li>
+<li><a href="target.html#projsuffix">projsuffix</a> Optional suffix to be applied to $(projname)</li>
+<li><a href="target.html#rtti">rtti</a> Enables runtime type information</li>
+<li><a href="target.html#rule">rule</a> TODO
+<ul>
+<li><a href="target.html#cmd">cmd</a> Command line to execute</li>
+<li><a href="target.html#implicit_input">implicit_input</a> Implicit input files</li>
+<li><a href="target.html#input">input</a> TODO</li>
+<li><a href="target.html#msg">msg</a> Message</li>
+<li><a href="target.html#output">output</a> Output files</li>
 </ul>
 </li>
-<li><a href="jaba_type_category.html">category</a>
-<ul>
-<li><a href="jaba_type_category.html#guid">guid</a></li>
-<li><a href="jaba_type_category.html#name">name</a></li>
-<li><a href="jaba_type_category.html#parent">parent</a></li>
-</ul>
-</li>
-<li><a href="jaba_type_cpp.html">cpp</a>
-<ul>
-<li><a href="jaba_type_cpp.html#config">config</a></li>
-<li><a href="jaba_type_cpp.html#generate">generate</a></li>
-<li><a href="jaba_type_cpp.html#host">host</a></li>
-<li><a href="jaba_type_cpp.html#platforms">platforms</a></li>
-<li><a href="jaba_type_cpp.html#project">project</a></li>
-<li><a href="jaba_type_cpp.html#root">root</a></li>
-</ul>
-</li>
-<li><a href="jaba_type_cpp_config.html">cpp_config</a>
-<ul>
-<li><a href="jaba_type_cpp_config.html#arch">arch</a></li>
-<li><a href="jaba_type_cpp_config.html#bindir">bindir</a></li>
-<li><a href="jaba_type_cpp_config.html#cflags">cflags</a></li>
-<li><a href="jaba_type_cpp_config.html#character_set">character_set</a></li>
-<li><a href="jaba_type_cpp_config.html#config">config</a></li>
-<li><a href="jaba_type_cpp_config.html#configname">configname</a></li>
-<li><a href="jaba_type_cpp_config.html#cpp_standard">cpp_standard</a></li>
-<li><a href="jaba_type_cpp_config.html#debug">debug</a></li>
-<li><a href="jaba_type_cpp_config.html#define">define</a></li>
-<li><a href="jaba_type_cpp_config.html#exceptions">exceptions</a></li>
-<li><a href="jaba_type_cpp_config.html#importlib">importlib</a></li>
-<li><a href="jaba_type_cpp_config.html#inc">inc</a></li>
-<li><a href="jaba_type_cpp_config.html#libdir">libdir</a></li>
-<li><a href="jaba_type_cpp_config.html#libs">libs</a></li>
-<li><a href="jaba_type_cpp_config.html#nowarn">nowarn</a></li>
-<li><a href="jaba_type_cpp_config.html#objdir">objdir</a></li>
-<li><a href="jaba_type_cpp_config.html#pch">pch</a></li>
-<li><a href="jaba_type_cpp_config.html#pchsrc">pchsrc</a></li>
-<li><a href="jaba_type_cpp_config.html#res_inc">res_inc</a></li>
-<li><a href="jaba_type_cpp_config.html#rtti">rtti</a></li>
-<li><a href="jaba_type_cpp_config.html#rule">rule</a></li>
-<li><a href="jaba_type_cpp_config.html#shell">shell</a></li>
-<li><a href="jaba_type_cpp_config.html#syslibs">syslibs</a></li>
-<li><a href="jaba_type_cpp_config.html#targetext">targetext</a></li>
-<li><a href="jaba_type_cpp_config.html#targetname">targetname</a></li>
-<li><a href="jaba_type_cpp_config.html#targetprefix">targetprefix</a></li>
-<li><a href="jaba_type_cpp_config.html#targetsuffix">targetsuffix</a></li>
-<li><a href="jaba_type_cpp_config.html#toolset">toolset</a></li>
-<li><a href="jaba_type_cpp_config.html#vcfprop">vcfprop</a></li>
-<li><a href="jaba_type_cpp_config.html#vcprop">vcprop</a></li>
-<li><a href="jaba_type_cpp_config.html#vcwarnlevel">vcwarnlevel</a></li>
-<li><a href="jaba_type_cpp_config.html#warnerror">warnerror</a></li>
-</ul>
-</li>
-<li><a href="jaba_type_cpp_project.html">cpp_project</a>
-<ul>
-<li><a href="jaba_type_cpp_project.html#category">category</a></li>
-<li><a href="jaba_type_cpp_project.html#configs">configs</a></li>
-<li><a href="jaba_type_cpp_project.html#deps">deps</a></li>
-<li><a href="jaba_type_cpp_project.html#guid">guid</a></li>
-<li><a href="jaba_type_cpp_project.html#platform">platform</a></li>
-<li><a href="jaba_type_cpp_project.html#projdir">projdir</a></li>
-<li><a href="jaba_type_cpp_project.html#projname">projname</a></li>
-<li><a href="jaba_type_cpp_project.html#projsuffix">projsuffix</a></li>
-<li><a href="jaba_type_cpp_project.html#src">src</a></li>
-<li><a href="jaba_type_cpp_project.html#src_exclude">src_exclude</a></li>
-<li><a href="jaba_type_cpp_project.html#src_ext">src_ext</a></li>
-<li><a href="jaba_type_cpp_project.html#type">type</a></li>
-<li><a href="jaba_type_cpp_project.html#vc_extension_settings">vc_extension_settings</a></li>
-<li><a href="jaba_type_cpp_project.html#vc_extension_targets">vc_extension_targets</a></li>
-<li><a href="jaba_type_cpp_project.html#vcglobal">vcglobal</a></li>
-<li><a href="jaba_type_cpp_project.html#winsdkver">winsdkver</a></li>
-<li><a href="jaba_type_cpp_project.html#workspace">workspace</a></li>
-</ul>
-</li>
-<li><a href="jaba_type_globals.html">globals</a>
-<ul>
-<li><a href="jaba_type_globals.html#artefact_root">artefact_root</a></li>
-<li><a href="jaba_type_globals.html#buildsystem_root">buildsystem_root</a></li>
-<li><a href="jaba_type_globals.html#cpp_default_lib_type">cpp_default_lib_type</a></li>
-<li><a href="jaba_type_globals.html#target_host">target_host</a></li>
-<li><a href="jaba_type_globals.html#vcfiletype">vcfiletype</a></li>
-</ul>
-</li>
-<li><a href="jaba_type_host.html">host</a>
-<ul>
-<li><a href="jaba_type_host.html#cpp_project_classname">cpp_project_classname</a></li>
-<li><a href="jaba_type_host.html#cpp_src_ext">cpp_src_ext</a></li>
-<li><a href="jaba_type_host.html#cpp_supported_platforms">cpp_supported_platforms</a></li>
-<li><a href="jaba_type_host.html#major_version">major_version</a></li>
-<li><a href="jaba_type_host.html#ninja?">ninja?</a></li>
-<li><a href="jaba_type_host.html#toolset">toolset</a></li>
-<li><a href="jaba_type_host.html#version">version</a></li>
-<li><a href="jaba_type_host.html#version_year">version_year</a></li>
-<li><a href="jaba_type_host.html#visual_studio?">visual_studio?</a></li>
-<li><a href="jaba_type_host.html#vs2010?">vs2010?</a></li>
-<li><a href="jaba_type_host.html#vs2012?">vs2012?</a></li>
-<li><a href="jaba_type_host.html#vs2013?">vs2013?</a></li>
-<li><a href="jaba_type_host.html#vs2015?">vs2015?</a></li>
-<li><a href="jaba_type_host.html#vs2017?">vs2017?</a></li>
-<li><a href="jaba_type_host.html#vs2019?">vs2019?</a></li>
-<li><a href="jaba_type_host.html#vs2022?">vs2022?</a></li>
-<li><a href="jaba_type_host.html#workspace_classname">workspace_classname</a></li>
-<li><a href="jaba_type_host.html#xcode?">xcode?</a></li>
-</ul>
-</li>
-<li><a href="jaba_type_platform.html">platform</a>
-<ul>
-<li><a href="jaba_type_platform.html#apple?">apple?</a></li>
-<li><a href="jaba_type_platform.html#cpp_src_ext">cpp_src_ext</a></li>
-<li><a href="jaba_type_platform.html#ios?">ios?</a></li>
-<li><a href="jaba_type_platform.html#macos?">macos?</a></li>
-<li><a href="jaba_type_platform.html#microsoft?">microsoft?</a></li>
-<li><a href="jaba_type_platform.html#valid_archs">valid_archs</a></li>
-<li><a href="jaba_type_platform.html#windows?">windows?</a></li>
-</ul>
-</li>
-<li><a href="jaba_type_rule.html">rule</a>
-<ul>
-<li><a href="jaba_type_rule.html#cmd">cmd</a></li>
-<li><a href="jaba_type_rule.html#implicit_input">implicit_input</a></li>
-<li><a href="jaba_type_rule.html#input">input</a></li>
-<li><a href="jaba_type_rule.html#msg">msg</a></li>
-<li><a href="jaba_type_rule.html#output">output</a></li>
-</ul>
-</li>
-<li><a href="jaba_type_workspace.html">workspace</a>
-<ul>
-<li><a href="jaba_type_workspace.html#name">name</a></li>
-<li><a href="jaba_type_workspace.html#namesuffix">namesuffix</a></li>
-<li><a href="jaba_type_workspace.html#primary">primary</a></li>
-<li><a href="jaba_type_workspace.html#projects">projects</a></li>
-<li><a href="jaba_type_workspace.html#root">root</a></li>
-<li><a href="jaba_type_workspace.html#workspacedir">workspacedir</a></li>
+<li><a href="target.html#shell">shell</a> Shell commands to execute during build</li>
+<li><a href="target.html#src">src</a> Specify source files</li>
+<li><a href="target.html#src_ext">src_ext</a> File extensions used when matching src files</li>
+<li><a href="target.html#syslibs">syslibs</a> System libs</li>
+<li><a href="target.html#targetext">targetext</a> Extension to apply to $(targetname)</li>
+<li><a href="target.html#targetname">targetname</a> Basename of output file without extension</li>
+<li><a href="target.html#targetprefix">targetprefix</a> Prefix to apply to $(targetname)</li>
+<li><a href="target.html#targetsuffix">targetsuffix</a> Suffix to apply to $(targetname)</li>
+<li><a href="target.html#type">type</a> Target type</li>
+<li><a href="target.html#vc_extension_settings">vc_extension_settings</a> Path to a .props file</li>
+<li><a href="target.html#vc_extension_targets">vc_extension_targets</a> Path to a .targets file</li>
+<li><a href="target.html#vcglobal">vcglobal</a> Address Globals property group in a vcxproj directly</li>
+<li><a href="target.html#vcguid">vcguid</a> Globally unique id (GUID)</li>
+<li><a href="target.html#vcimportlib">vcimportlib</a> Name of import lib for use will dlls</li>
+<li><a href="target.html#vcnowarn">vcnowarn</a> Warnings to disable</li>
+<li><a href="target.html#vcprop">vcprop</a> Address per-configuration sections of a vcxproj directly</li>
+<li><a href="target.html#vctoolset">vctoolset</a> Toolset version to use</li>
+<li><a href="target.html#vcwarnlevel">vcwarnlevel</a> Visual Studio warning level</li>
+<li><a href="target.html#warnerror">warnerror</a> Enable warnings as errors</li>
+<li><a href="target.html#winsdkver">winsdkver</a> Windows SDK version</li>
 </ul>
 </li>
 </ul>
 </li>
-<li>Attribute types
+</ul>
+<h4 id="global-methods">Global methods</h4>
 <ul>
-<li>basename</li>
-<li>block</li>
-<li>bool</li>
-<li>choice</li>
-<li>compound</li>
-<li>dir</li>
-<li>file</li>
-<li>int</li>
-<li>ref</li>
-<li>src_spec</li>
-<li>string</li>
-<li>symbol</li>
-<li>symbol_or_string</li>
-<li>to_s</li>
-<li>uuid</li>
+<li><a href="global_methods.html#__dir__">__dir__()</a> Directory of the currently executing .jaba file</li>
+<li><a href="global_methods.html#available">available()</a> Array of attributes/methods available in current scope</li>
+<li><a href="global_methods.html#clear">clear()</a> Clear an array or hash attribute</li>
+<li><a href="global_methods.html#extend_jdl">extend_jdl()</a> Extend jaba definition language</li>
+<li><a href="global_methods.html#fail">fail()</a> Raise an error</li>
+<li><a href="global_methods.html#include">include()</a> Include a shared definition or a .jaba file</li>
+<li><a href="global_methods.html#print">print()</a> Prints a non-newline terminated string to stdout</li>
+<li><a href="global_methods.html#puts">puts()</a> Prints a newline terminated string to stdout</li>
+<li><a href="global_methods.html#windows?">windows?()</a> Returns true if targeting windows</li>
+<li><a href="global_methods.html#x86_64?">x86_64?()</a> Returns true if targeting x86_64</li>
 </ul>
-</li>
-<li>Attribute variants
-<ul>
-<li>single</li>
-<li>array</li>
-<li>hash</li>
-</ul>
-</li>
-<li>Attribute flags
-<ul>
-<li>allow_dupes</li>
-<li>exportable</li>
-<li>expose</li>
-<li>no_check_exist</li>
-<li>no_sort</li>
-<li>read_only</li>
-<li>required</li>
-</ul>
-</li>
-</ul>
-<p><sub><sup>Generated by <a href="https://github.com/ishani/MaMD">MaMD</a> which uses <a href="https://github.com/yuin/goldmark">Goldmark</a>, <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a></sup></sub></p>
+<p><sub><sup>Generated on 23-June-23 at 16:20:05 by <a href="https://github.com/ishani/MaMD">MaMD</a> which uses <a href="https://github.com/yuin/goldmark">Goldmark</a>, <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a></sup></sub></p>
 
     </body>
 </html>
