@@ -81,6 +81,7 @@ class DocBuilder
   DOCS_HTML_DIR =               "#{DOCS_REPO_DIR}/docs"
 
   MAMD_DIR = "#{__dir__}/../../MaMD/_builds".cleanpath
+  MAMD_EXE = "MaMD_windows_amd64.exe"
 
   # TODO: check exit codes
 
@@ -111,8 +112,17 @@ class DocBuilder
     generate_examples
     generate_faqs
 
+    if !File.exist?(MAMD_DIR)
+      $stderr.puts "#{MAMD_DIR} not found"
+      exit(1)
+    end
+
     Dir.chdir(MAMD_DIR) do
-      cmd = "MaMD_windows_amd64.exe -i \"#{DOCS_MARKDOWN_DIR}\" -o \"#{DOCS_HTML_DIR}\""
+      if !File.exist?(MAMD_EXE)
+        $stderr.puts "#{MAMD_EXE} not found in #{MAMD_DIR}"
+        exit(1)
+      end
+      cmd = "#{MAMD_EXE} -i \"#{DOCS_MARKDOWN_DIR}\" -o \"#{DOCS_HTML_DIR}\""
       puts cmd
       system(cmd)
     end
