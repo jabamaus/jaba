@@ -480,7 +480,7 @@ module JABA
       @option_def_lookup[attr_def.name] = attr_def
     end
 
-    def each_option_def(&block) = @option_defs.each(&block)
+    def option_defs = @option_defs
     def lookup_option_def(name, attr, fail_if_not_found: true)
       od = @option_def_lookup[name]
       if od.nil? && fail_if_not_found
