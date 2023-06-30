@@ -1,13 +1,5 @@
 module JABA
-  class JDLBuilder
-    TopLevelAPI = APIBuilder.define(
-      :global_method,
-      :method,
-      :attr,
-      :open_attr,
-      :node,
-    )
-
+  class JDLBuilder < APIExposer
     def initialize(api_blocks = Context.standard_jdl_blocks)
       @building_jdl = false
       @all_definitions = []
@@ -59,13 +51,13 @@ module JABA
 
       @building_jdl = true
       api_blocks.each do |b|
-        TopLevelAPI.execute(self, &b)
+        api_execute(&b)
       end
 
       @attrs_to_open.each do |path, blocks|
         attr_def = lookup_attr_def(path)
         blocks.each do |block|
-          attr_def.class.const_get("API").execute(attr_def, &block)
+          attr_def.api_execute(&block)
         end
       end
       @building_jdl = false
@@ -83,7 +75,8 @@ module JABA
     def global_methods_node_def = @global_methods_node_def
     def top_level_node_def = @top_level_node_def
 
-    def set_node(path, &block)
+    expose :node
+    def node(path, &block)
       path = validate_path(path)
       if @path_to_node_def.has_key?(path)
         error("Duplicate '#{path}' node registered")
@@ -129,7 +122,8 @@ module JABA
       ad
     end
 
-    def set_attr(path, variant: :single, type: :null, &block)
+    expose :attr
+    def attr(path, variant: :single, type: :null, &block)
       path = validate_path(path)
       parent_path, name = split_jdl_path(path)
       node_def = lookup_node_def(parent_path)
@@ -177,16 +171,19 @@ module JABA
       end
     end
 
-    def set_open_attr(path, &block)
+    expose :open_attr
+    def open_attr(path, &block)
       @attrs_to_open.push_value(path, block)
     end
 
-    def set_global_method(name, &block)
+    expose :global_method
+    def global_method(name, &block)
       name = validate_name(name, regex: /^[a-zA-Z0-9_]+(\?)?$/)
       process_method(@global_methods_node_def, name, name, block)
     end
 
-    def set_method(path, &block)
+    expose :method
+    def method(path, &block)
       path = validate_path(path)
       parent_path, name = split_jdl_path(path)
 
@@ -219,9 +216,10 @@ module JABA
       d = klass.new
       d.instance_variable_set(:@jdl_builder, self)
       d.instance_variable_set(:@name, name)
-      d.instance_variable_set(:@src_loc, APIBuilder.last_call_location)
+      d.instance_variable_set(:@src_loc, last_call_location)
+      d.instance_variable_set(:@last_call_location, last_call_location)
       yield d if block_given?
-      klass.const_get("API").execute(d, &block) if block
+      d.api_execute(&block) if block
       @all_definitions << d if add
       d
     end
@@ -245,7 +243,7 @@ module JABA
       attr_def
     end
 
-    def error(msg) = JABA.error(msg, line: APIBuilder.last_call_location)
+    def error(msg) = JABA.error(msg, line: last_call_location)
 
     def validate_name(name, regex: /^[a-zA-Z0-9_]+$/)
       if !name.is_a?(String) && !name.is_a?(Symbol)
@@ -278,9 +276,7 @@ module JABA
     end
   end
 
-  class JDLDefinition
-    API = APIBuilder.define_module(:title, :note, :example)
-
+  class JDLDefinition < APIExposer
     def initialize
       @jdl_builder = nil # set by JDLBuilder
       @src_loc = nil # Set by JDLBuilder
@@ -298,10 +294,15 @@ module JABA
     def attribute? = false # overridden
     def method? = false # overridden
 
+    expose :title, :set_title
     def set_title(t) = @title = t
     def title = @title
+
+    expose :note, :set_note
     def set_note(n) = @notes << n
     def notes = @notes
+
+    expose :example, :set_example
     def set_example(e) = @examples << e
     def examples = @examples
 
@@ -322,12 +323,12 @@ module JABA
     end
 
     def definition_error(msg)
-      line = @jdl_builder.building_jdl? ? APIBuilder.last_call_location : src_loc
+      line = @jdl_builder.building_jdl? ? last_call_location : src_loc
       JABA.error("#{describe} invalid - #{msg}", line: line)
     end
 
     def definition_warn(msg)
-      line = @jdl_builder.building_jdl? ? APIBuilder.last_call_location : src_loc
+      line = @jdl_builder.building_jdl? ? last_call_location : src_loc
       JABA.warn(msg, line: line)
     end
   end
@@ -352,8 +353,6 @@ module JABA
   end
 
   class NodeDef < AttributeGroupDef
-    API = APIBuilder.define().include(JDLDefinition::API)
-
     def initialize
       super()
       @child_node_defs = []
@@ -364,8 +363,6 @@ module JABA
   end
 
   class MethodDef < JDLDefinition
-    API = APIBuilder.define(:on_called).include(JDLDefinition::API)
-
     def initialize
       super()
       @on_called = nil
@@ -373,22 +370,12 @@ module JABA
 
     def method? = true
     # on_called is optional
+    expose :on_called, :set_on_called
     def set_on_called(&block) = @on_called = block
     def on_called = @on_called
   end
 
   class AttributeBaseDef < JDLDefinition
-
-    # Additional attribute type-specific properties are added by attribute types
-    API = APIBuilder.define_module(
-      :flags,
-      :flag_options,
-      :option,
-      :default,
-      :validate,
-      :on_set,
-    ).include(JDLDefinition::API)
-
     def initialize(variant)
       super()
       @variant = variant
@@ -443,6 +430,7 @@ module JABA
 
     def flags = @flags
 
+    expose :flags, :set_flags
     def set_flags(*flags)
       flags.flatten.each do |f|
         fd = Context.lookup_attr_flag(f, fail_if_not_found: false)
@@ -461,6 +449,7 @@ module JABA
     def has_flag?(flag) = @flags.include?(flag)
     def flag_options = @flag_options
 
+    expose :flag_options, :set_flag_options
     def set_flag_options(*fo)
       fo.each do |o|
         if @flag_options.include?(o)
@@ -473,6 +462,7 @@ module JABA
 
     def has_flag_option?(fo) = @flag_options.include?(fo)
 
+    expose :option, :set_option
     def set_option(name, variant: :single, type: :null, &block)
       attr_def = @jdl_builder.send(:make_attribute, name, variant, type, block, @node_def, add: false)
       attr_def.post_create
@@ -489,8 +479,11 @@ module JABA
       od
     end
 
+    expose :validate, :set_validate
     def set_validate(&block) = @on_validate = block
     def on_validate = @on_validate
+    
+    expose :on_set, :set_on_set
     def set_on_set(&block) = @on_set = block
     def on_set = @on_set
 
@@ -498,6 +491,7 @@ module JABA
     def default_is_block? = @default_is_block
     def default_set? = @default_set
 
+    expose :default, :set_default
     def set_default(val = nil, &block)
       if type_id == :compound
         definition_error("compound attributes do not support a default value")
@@ -515,8 +509,6 @@ module JABA
   end
 
   class AttributeSingleDef < AttributeBaseDef
-    API = APIBuilder.define().include(AttributeBaseDef::API)
-
     def initialize
       super(:single)
     end
@@ -552,8 +544,6 @@ module JABA
   end
 
   class AttributeArrayDef < AttributeBaseDef
-    API = APIBuilder.define().include(AttributeBaseDef::API)
-
     def initialize
       super(:array)
     end
@@ -581,14 +571,13 @@ module JABA
   end
 
   class AttributeHashDef < AttributeBaseDef
-    API = APIBuilder.define(:key_type, :validate_key).include(AttributeBaseDef::API)
-
     def initialize
       super(:hash)
       @on_validate_key = nil
       @key_type = nil
     end
 
+    expose :key_type, :set_key_type
     def set_key_type(type_id)
       @key_type = Context.lookup_attr_type(type_id, fail_if_not_found: false)
       if @key_type.nil?
@@ -597,6 +586,8 @@ module JABA
     end
 
     def key_type = @key_type
+    
+    expose :validate_key, :set_validate_key
     def set_validate_key(&block) = @on_validate_key = block
     def on_validate_key = @on_validate_key
 

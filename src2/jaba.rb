@@ -4,7 +4,7 @@ require_relative "../../jrf/libs/jrfutils/core_ext"
 
 debug! if ARGV.include?("--debug") || ARGV.include?("-d")
 
-require_relative "../../jrf/libs/jrfutils/api_builder"
+require_relative "../../jrf/libs/jrfutils/api_exposer"
 require_relative "core_ext"
 require_relative "utils"
 require_relative "version"

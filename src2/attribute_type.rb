@@ -105,10 +105,10 @@ module JABA
   end
 
   class AttributeTypeChoice < AttributeType
-    APIBuilder.add_method(AttributeBaseDef::API, :items)
     AttributeBaseDef.class_eval do
       def items = @items
 
+      expose :items, :set_items
       def set_items(items)
         definition_warn("'items' contains duplicates") if items.uniq!
         @items.concat(items)
@@ -178,8 +178,8 @@ module JABA
 
   class AttributePathBase < AttributeTypeString
     # Register base_attr into AttributeDef
-    APIBuilder.add_method(AttributeBaseDef::API, :base_attr)
     AttributeBaseDef.class_eval do
+      expose :base_attr, :set_base_attr
       def base_attr = @base_attr
       def set_base_attr(attr_name) = @base_attr = attr_name
     end
