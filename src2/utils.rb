@@ -4,14 +4,6 @@ module JABA
     def self.mac? = false
   end
 
-  # keys to strings so can lookup with strings or symbols
-  class KeyToSHash < Hash
-    def [](key) = super(key.to_s)
-    def fetch(key, default_value = nil) = super(key.to_s, default_value)
-    def has_key?(key) = super(key.to_s)
-    def []=(key, value); super(key.to_s, value); end
-  end
-
   module VSUtilities
     def xml_group(w, tag, label: nil, label_at_end: true, condition: nil, close: false, depth: 1)
       if !close
