@@ -23,8 +23,17 @@ module JABA
     def src_loc = @src_loc
     def src_dir = @src_loc.src_loc_info[0].parent_path
     def jdl___dir__ = src_dir
+    
     def parent = @parent
     def children = @children
+    def get_child(id, fail_if_not_found: true)
+      child = @children.find{|c| c.id == id}
+      if child.nil? && fail_if_not_found
+        JABA.error("'#{id.inspect_unquoted}' child not found in #{describe} node")
+      end
+      child
+    end
+
     def attributes = @attributes
     def [](name) = search_attr(name).value
     def has_attribute?(name) = @attribute_lookup.has_key?(name)

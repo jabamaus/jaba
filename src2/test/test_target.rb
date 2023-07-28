@@ -20,10 +20,12 @@ jtest "target" do
       end
     end
   end
-  r = op[:root].children[0] # app root node
-  r.id.must_equal :myapp
-  r.children.size.must_equal 1
-  t = r.children[0] # target node
+  root = op[:root]
+  root.children.size.must_equal 1
+  myapp = root.get_child(:myapp) # app root node
+  myapp.id.must_equal :myapp
+  myapp.children.size.must_equal 1
+  t = myapp.children[0] # target node
   t.children.size.must_equal 2
   debug_conf = t.children[0]
   debug_conf[:configname].must_equal "Debug"
