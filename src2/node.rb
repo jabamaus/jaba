@@ -18,6 +18,9 @@ module JABA
       end
     end
 
+    # Never freeze a node. Freeze can get called as a consequence of replacing a string attr value
+    # with a node (eg when expanding dependencies). We never want the whole node to be frozen.
+    def freeze = self
     def describe = "'#{node_def.name.inspect_unquoted}'"
     def id = @id
     def src_loc = @src_loc
