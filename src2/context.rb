@@ -122,6 +122,7 @@ module JABA
       @shared_lookup = {}
       @executing_jdl = 0
       @attr_def_block_stack = []
+      @target_nodes = []
       @target_lookup = KeyToSHash.new # target id to target node
       @projects = []
       @project_lookup = {} # target node to project
@@ -209,14 +210,21 @@ module JABA
         process_node_def(nd)
       end
 
+      @target_nodes.each do |n|
+        n.get_attr(:deps).map_value! do |dep_id|
+          lookup_target(dep_id)
+        end
+      end
+
+      @target_nodes.sort_topological! do |n, &b|
+        n[:deps].each(&b)
+      end
+
       @root_node.visit do |n|
         n.attributes.each(&:process_flags)
       end
 
       @projects.each do |p|
-        p.node.get_attr(:deps).map_value! do |dep_id|
-          lookup_target(dep_id)
-        end
         p.process
       end
 
@@ -392,11 +400,13 @@ module JABA
           end
         end
         target_node = create_node(nd, parent: parent) do |node|
+          @target_nodes << node
           @target_lookup[nd.id] = node
           node.add_attrs(@jdl.common_attr_node_def.attr_defs)
           node.add_attrs(@target_attr_defs)
           node.ignore_attrs(set: @config_attrs_ignore, get: @config_attrs_ignore)
         end
+        # TODO: could root node now be combined into target node for a simpler hierarchy?
         configs = target_node[:configs]
         all_virtual = true
         configs.each do |id|
