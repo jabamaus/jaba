@@ -1,6 +1,6 @@
 module JABA
   class Node
-    def initialize(node_def, id, src_loc, parent)
+    def init(node_def, id, src_loc, parent)
       JABA.error("node_def must not be nil") if node_def.nil?
       @node_def = node_def
       @api_obj = @node_def.api_class.new(self)

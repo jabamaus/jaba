@@ -432,9 +432,10 @@ module JABA
       end
     end
 
-    def create_node(nd, parent:, eval_jdl: true)
+    def create_node(nd, klass: Node, parent:, eval_jdl: true)
       begin
-        node = Node.new(nd.node_def, nd.id, nd.src_loc, parent)
+        node = klass.new
+        node.init(nd.node_def, nd.id, nd.src_loc, parent)
         yield node if block_given?
         node.eval_jdl(&nd.block) if nd.block && eval_jdl
         node.post_create
