@@ -165,6 +165,12 @@ module JABA
     def [](index) = @elems[index]
     def each(&block) = @elems.each(&block)
     
+    def visit_elem(&block)
+      @elems.each do |e|
+        e.visit_elem(&block)
+      end
+    end
+    
     def map_value!(&block)
       @elems.each do |e|
         e.map_value!(&block)

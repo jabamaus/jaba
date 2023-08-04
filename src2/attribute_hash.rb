@@ -110,6 +110,12 @@ module JABA
     end
 
     def each(&block) = @hash.each(&block)
+
+    def visit_elem(&block)
+      @hash.each do |key, elem|
+        elem.visit_elem(&block)
+      end
+    end
     
     def process_flags; end # nothing yet
 
