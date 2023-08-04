@@ -1,10 +1,10 @@
 module JABA
   class Node
-    def init(node_def, id, src_loc, parent)
+    def init(node_def, sibling_id, src_loc, parent)
       JABA.error("node_def must not be nil") if node_def.nil?
       @node_def = node_def
       @api_obj = @node_def.api_class.new(self)
-      @id = id
+      @sibling_id = sibling_id
       @src_loc = src_loc # nil for root node. Updated dynamically in eval_jdl
       @attributes = []
       @attribute_lookup = KeyToSHash.new
@@ -14,6 +14,9 @@ module JABA
       @read_only = false
       @parent = parent
       if parent
+        if !sibling_id.nil? && parent.get_child(sibling_id, fail_if_not_found: false)
+          JABA.error("'#{sibling_id.inspect_unquoted} is not unique")
+        end
         parent.children << self
       end
     end
@@ -22,17 +25,18 @@ module JABA
     # with a node (eg when expanding dependencies). We never want the whole node to be frozen.
     def freeze = self
     def describe = "'#{node_def.name.inspect_unquoted}'"
-    def id = @id
+    def sibling_id = @sibling_id
     def src_loc = @src_loc
     def src_dir = @src_loc.src_loc_info[0].parent_path
     def jdl___dir__ = src_dir
     
     def parent = @parent
     def children = @children
-    def get_child(id, fail_if_not_found: true)
-      child = @children.find{|c| c.id == id}
+    def get_child(sibling_id, fail_if_not_found: true)
+      sibling_id = sibling_id.to_s
+      child = @children.find{|c| c.sibling_id.to_s == sibling_id}
       if child.nil? && fail_if_not_found
-        JABA.error("'#{id.inspect_unquoted}' child not found in #{describe} node")
+        JABA.error("'#{sibling_id.inspect_unquoted}' child not found in #{describe} node")
       end
       child
     end
@@ -95,7 +99,7 @@ module JABA
     end
 
     # Compound attrs don't have ids
-    def compound_attr? = @id.nil?
+    def compound_attr? = @sibling_id.nil?
     def root_node? = @parent.nil?
 
     def post_create

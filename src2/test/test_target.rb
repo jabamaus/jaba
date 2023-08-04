@@ -23,7 +23,7 @@ jtest "target" do
   root = op[:root]
   root.children.size.must_equal 1
   myapp = root.get_child(:myapp) # app root node
-  myapp.id.must_equal :myapp
+  myapp.sibling_id.must_equal :myapp
   myapp.children.size.must_equal 1
   t = myapp.children[0] # target node
   t.children.size.must_equal 2

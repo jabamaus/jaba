@@ -193,7 +193,7 @@ module JABA
       init_src_root
 
       tld = NodeDefData.new(@jdl.top_level_node_def, "root", nil, nil, nil)
-      create_node(tld, parent: nil) do |n|
+      create_node(tld, "root", parent: nil) do |n|
         n.add_attrs(@jdl.top_level_node_def.attr_defs)
         @root_node = n
         @output[:root] = n
@@ -368,7 +368,7 @@ module JABA
     def process_node_def(nd)
       parent = @root_node
       if !nd.node_def.option_attr_defs.empty? || !@jdl.common_attr_node_def.option_attr_defs.empty?
-        parent = create_node(nd, parent: parent, eval_jdl: false) do |node|
+        parent = create_node(nd, nd.id, parent: parent, eval_jdl: false) do |node|
           node.add_attrs(@jdl.common_attr_node_def.option_attr_defs)
           node.add_attrs(nd.node_def.option_attr_defs)
           node.get_attr(:id).set(nd.id)
@@ -399,21 +399,20 @@ module JABA
             @config_attr_defs.each { |ca| h[ca.name] = true }
           end
         end
-        target_node = create_node(nd, parent: parent) do |node|
+        target_node = create_node(nd, nd.id, parent: parent) do |node|
           @target_nodes << node
           @target_lookup[nd.id] = node
           node.add_attrs(@jdl.common_attr_node_def.attr_defs)
           node.add_attrs(@target_attr_defs)
           node.ignore_attrs(set: @config_attrs_ignore, get: @config_attrs_ignore)
         end
-        # TODO: could root node now be combined into target node for a simpler hierarchy?
         configs = target_node[:configs]
         all_virtual = true
-        configs.each do |id|
-          config = create_node(nd, parent: target_node) do |node|
+        configs.each do |cfg_id|
+          config = create_node(nd, cfg_id, parent: target_node) do |node|
             node.add_attrs(@config_attr_defs)
             node.ignore_attrs(set: @target_attrs_ignore)
-            node.get_attr(:config).set(id, __force: true)
+            node.get_attr(:config).set(cfg_id, __force: true)
           end
           if config[:type] != :virtual
             all_virtual = false
@@ -425,17 +424,17 @@ module JABA
           @project_lookup[target_node] = vcxproj
         end
       else
-        create_node(nd, parent: parent) do |node|
+        create_node(nd, nd.id, parent: parent) do |node|
           node.add_attrs(@jdl.common_attr_node_def.attr_defs)
           node.add_attrs(nd.node_def.attr_defs)
         end
       end
     end
 
-    def create_node(nd, klass: Node, parent:, eval_jdl: true)
+    def create_node(nd, sibling_id, klass: Node, parent:, eval_jdl: true)
       begin
         node = klass.new
-        node.init(nd.node_def, nd.id, nd.src_loc, parent)
+        node.init(nd.node_def, sibling_id, nd.src_loc, parent)
         yield node if block_given?
         node.eval_jdl(&nd.block) if nd.block && eval_jdl
         node.post_create
