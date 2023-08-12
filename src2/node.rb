@@ -277,6 +277,38 @@ module JABA
       end
     end
 
+    def import_exports(from_node)
+      # Skip single value attributes as they cannot export. The reason for this is that exporting it would simply
+      # overwrite the destination attribute creating a conflict. Which node should control the value? For this
+      # reason disallow.
+      #
+      from_node.attributes.each do |from_attr|
+        next if from_attr.attr_def.single?
+        attr = nil
+
+        # visit all attribute elements in array/hash
+        #
+        from_attr.visit_elem do |elem, key|
+          if elem.has_flag_option?(:export) || elem.has_flag_option?(:export_only)
+            # Get the corresponding attr in this project node. This will always be a hash or an array.
+            attr ||= get_attr(elem.name)
+            
+            foptions = elem.flag_options.dup
+            foptions.delete_if{|fo| fo == :export || fo == :export_only}
+
+            case attr.attr_def.variant
+            when :array
+              attr.set(elem.raw_value, *foptions, **elem.value_options)
+            when :hash
+              attr.set(key, elem.raw_value, *foptions, **elem.value_options)
+            else
+              JABA.error("Unhandled variant '#{variant.inspect_unquoted}'")
+            end
+          end
+        end
+      end
+    end
+
     private
 
     def do_jdl(called_from_jdl)
@@ -288,6 +320,51 @@ module JABA
       JABA.error(e.message, line: e.backtrace[0])
     ensure
       JABA.context.end_jdl if called_from_jdl
+    end
+  end
+
+  class TargetNode < Node
+    def each_config(&block) = @children.each(&block)
+
+    def get_matching_config(cfg_id, fail_if_not_found: true)
+      cfg = get_child(cfg_id, fail_if_not_found: false)
+      if cfg.nil? && fail_if_not_found
+        JABA.error("Could not find config in #{describe} to match #{other_cfg_node.describe}")
+      end
+      cfg
+    end
+
+    def process_deps
+      get_attr(:deps).each do |attr|
+        dep_node = attr.value
+        link = !attr.has_flag_option?(:nolink)
+        import_exports(dep_node)
+        each_config do |cfg_node|
+          dep_cfg_node = dep_node.get_matching_config(cfg_node.sibling_id)
+          cfg_node.import_exports(dep_cfg_node)
+        end
+      end
+    end
+
+    def apply_deps(dep_node, is_config: false, link: true)
+=begin
+    dep_attrs = dep_node.attrs
+    if is_config && link
+      case dep_attrs.type
+      when :lib
+        if attrs.type != :lib
+          target_node.attrs.libs ["#{dep_attrs.libdir}/#{dep_attrs.targetname}#{dep_attrs.targetext}"]
+        end
+      when :dll
+        if target_node.attrs.type != :lib
+          il = dep_attrs.importlib
+          if il # dlls don't always have import libs - eg plugins
+            target_node.attrs.libs ["#{dep_attrs.libdir}/#{il}"]
+          end
+        end
+      end
+    end
+=end
     end
   end
 end

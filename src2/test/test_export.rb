@@ -41,9 +41,15 @@ jtest "supports exporting attributes to dependents" do
       vcglobal :StringAttr2, 's2', :export_only # will be sent to dependents but won't be defined on self
       vcglobal :StringAttr3, 's3', :export
       # TODO: what happens if export :BoolAttr, false ? will it overwrite? Probably fail. Warn if same value.
-      define ['D']
       define ['C', 'B'], :export_only
-      define ['R'], :export if config == :Release
+      case config
+      when :Debug
+        define ['D'], :export
+      when :Release
+        define ['R'], :export
+      end
+      define 'D2', :export if config == :Debug
+      define 'R2', :export if config == :Release
       define ['E']
       inc ['include'], :force, :export
     end
@@ -54,10 +60,14 @@ jtest "supports exporting attributes to dependents" do
   app1[:vcglobal][:StringAttr2].must_equal "s2"
   app1[:vcglobal][:StringAttr3].must_equal "s3"
   app1d = app1.get_child(:Debug)
-  app1d[:define].must_equal ['A', 'B', 'C', 'F']
+  app1d[:define].must_equal ['A', 'B', 'C', 'D', 'D2', 'F']
+  app1d.get_attr(:define).visit_elem do |elem|
+    elem.has_flag_option?(:export).must_be_false
+    elem.has_flag_option?(:export_only).must_be_false
+  end
   app1d[:inc].must_equal ["#{temp_dir}/lib/include"]
   app1r = app1.get_child(:Release)
-  app1r[:define].must_equal ['A', 'B', 'C', 'F', 'R']
+  app1r[:define].must_equal ['A', 'B', 'C', 'F', 'R', 'R2']
   app1r[:inc].must_equal ["#{temp_dir}/lib/include"]
 =begin
   app2 = op[:cpp]['app2|windows']

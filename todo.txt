@@ -55,12 +55,10 @@ possible features
 - Ability to reverse engineer jaba definitions from existing vsprojects
 - Command line option to print full exception info
 - Have a command line switch to make all error messages contain absolute paths
-- Add invocations.txt to each example which cam execute in multiple ways?
+- Add invocations.txt to each example which can execute in multiple ways?
 - Ability to 'grab' functionality that auto-adds abilities, eg text file
 - Auto-delete non-generated files in buildsystem dir (cruft removal)
 - Support arrays in hash values? That would allow src attr to work as a value as well as a key.
-  There could be a more general concept that value options are actually attributes like node options.
-  This would give a lot more power and validation and would remove the need for a value option spec.
 
 docs
 - tag attrs as control flow attrs somehow for benefit of docs
@@ -77,14 +75,15 @@ jaba tool
 - clean command
 
 v2 new features/changes:
- - removed json output
- - rebased onto mruby
- - src files calculated immediately
- - rule inputs/outputs automatically added to src
- - dependencies pulled into solution automatically
- - per file defaults
- - delete stale projects in build system
- - ability to set src per config instead of per-project
- - ability to set target type per config instead of per-project
- - rethought transitive properties of dependencies
- - string/symbol/symbol_or_string combined into just string
+ - removed json output [DONE]
+ - rebased onto mruby [DONE]
+ - src files calculated immediately [DONE]
+ - rule inputs/outputs automatically added to src [DONE]
+ - dependencies pulled into solution automatically [TODO]
+ - per file defaults [TODO]
+ - delete stale projects in build system [TODO]
+ - ability to set src per config instead of per-project [DONE]
+ - ability to set target type per config instead of per-project [DONE]
+ - rethought transitive properties of dependencies [TODO]
+ - string/symbol/symbol_or_string combined into just string [DONE]
+ - key/value options are now attributes in their own right with attendant benefits [DONE]

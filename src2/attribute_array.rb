@@ -139,16 +139,6 @@ module JABA
       end
     end
 
-    # Clone other attribute and append to this array. Other attribute has already been validated and had any reference resolved.
-    # just clone raw value and options. Flags will be processed after, eg stripping duplicates.
-    #
-    def insert_clone(other)
-      value_options = other.value_options
-      f_options = other.flag_options
-      val = Marshal.load(Marshal.dump(other.raw_value))
-      make_elem(val, *f_options, validate: false, **value_options)
-    end
-
     def apply_pre_post_fix(pre, post, val)
       if pre || post
         if !val.string?
@@ -164,12 +154,7 @@ module JABA
     def empty? = @elems.empty?
     def [](index) = @elems[index]
     def each(&block) = @elems.each(&block)
-    
-    def visit_elem(&block)
-      @elems.each do |e|
-        e.visit_elem(&block)
-      end
-    end
+    def visit_elem(&block) = each(&block)
     
     def map_value!(&block)
       @elems.each do |e|

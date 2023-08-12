@@ -166,7 +166,6 @@ module JABA
 
     # This can only be called after the value has had its final value set as it gives raw access to value.
     def map_value! = @value = yield(@value)
-    def visit_elem = yield self
   end
 
   class AttributeSingle < AttributeElement

@@ -85,17 +85,6 @@ module JABA
       end
     end
 
-    # Clone other attribute and add into this hash. Other attribute has already been validated and had any reference resolved.
-    # just clone raw value and options. Flags will be processed after, eg stripping duplicates.
-    #
-    def insert_clone(other)
-      v_options = other.value_options
-      f_options = other.flag_options
-      key = v_options[:__key] # TODO: __key does not exist anymore
-      val = Marshal.load(Marshal.dump(other.raw_value))
-      insert_key(key, val, *f_options, **v_options)
-    end
-
     def clear = @hash.clear
 
     def fetch(key, fail_if_not_found: true)
@@ -111,9 +100,11 @@ module JABA
 
     def each(&block) = @hash.each(&block)
 
+    # Like each but yields value/key instead of key/value. Used in export system when
+    # iterating over array/hash attributes.
     def visit_elem(&block)
       @hash.each do |key, elem|
-        elem.visit_elem(&block)
+        yield elem, key
       end
     end
     

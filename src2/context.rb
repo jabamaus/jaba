@@ -220,10 +220,15 @@ module JABA
         n[:deps].each(&b)
       end
 
+      @target_nodes.reverse_each do |n|
+        n.process_deps
+      end
+
       @root_node.visit do |n|
         n.attributes.each(&:process_flags)
       end
 
+      # TODO: why is separate process/generate required?
       @projects.each do |p|
         p.process
       end
@@ -399,7 +404,7 @@ module JABA
             @config_attr_defs.each { |ca| h[ca.name] = true }
           end
         end
-        target_node = create_node(nd, nd.id, parent: parent) do |node|
+        target_node = create_node(nd, nd.id, klass: TargetNode, parent: parent) do |node|
           @target_nodes << node
           @target_lookup[nd.id] = node
           node.add_attrs(@jdl.common_attr_node_def.attr_defs)
