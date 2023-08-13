@@ -221,9 +221,13 @@ end
 jtest "handles sorting" do
   jdl do
     attr :a, variant: :array
-    attr :b, variant: :array
+    attr :b, variant: :array, type: :string do
+      flags :allow_dupes
+    end
     attr :c, variant: :array
-    attr :d, variant: :array
+    attr :d, variant: :array, type: :string do
+      flags :allow_dupes
+    end
     attr :e, variant: :array, type: :bool
     attr :f, variant: :array do
       flags :no_sort

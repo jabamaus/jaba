@@ -158,7 +158,7 @@ module JABA
 
     def <=>(other)
       if @value.respond_to?(:casecmp)
-        @value.to_s.casecmp(other.value.to_s) # to_s is required because symbols need to be compared to strings
+        @value.casecmp(other.value)
       else
         @value <=> other.value
       end
