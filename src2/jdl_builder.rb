@@ -247,7 +247,7 @@ module JABA
 
     def validate_name(name, regex: /^[a-zA-Z0-9_]+$/)
       if !name.is_a?(String) && !name.is_a?(Symbol)
-        error("'#{name.inspect_unquoted}' must be a String or a Symbol")
+        error("'#{name.inspect_unquoted}' must be a String or a Symbol but was a #{name.class}")
       end
       if name !~ regex
         error("'#{name}' is in invalid format")
