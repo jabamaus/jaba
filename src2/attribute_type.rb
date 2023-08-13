@@ -52,8 +52,28 @@ module JABA
     end
   end
 
+  class JABAString < ::String
+    def to_jaba_string = self
+    alias_method :old_equals, :==
+    def ==(other)
+      old_equals(other.symbol? ? other.to_jaba_string : other)
+    end     
+  end
+
+  class ::Symbol
+    def to_jaba_string = JABAString.new(name) # Symbol#name returns frozen string
+    alias_method :old_case_equals, :===
+    def ===(other)
+      old_case_equals(other.is_a?(JABAString) ? other.to_sym : other)
+    end
+  end
+
+  class ::String
+    def to_jaba_string = JABAString.new(self)
+  end
+
   class AttributeTypeString < AttributeType
-    def initialize(name = :string, default: "") = super(name, default: default)
+    def initialize(name = :string, default: JABAString.new) = super(name, default: default)
 
     def validate_value(attr_def, value, &block)
       if !value.string? && !value.symbol?
@@ -62,17 +82,11 @@ module JABA
     end
 
     # Can be specified as a symbol but stored internally as a string
-    def map_value(value, attr)
-      if value.is_a?(Symbol)
-        value.to_s
-      else
-        value
-      end
-    end
+    def map_value(value, attr) = value.to_jaba_string
   end
 
   class AttributeTypeTo_s < AttributeType
-    def initialize(name = :to_s, default: "") = super(name, default: default)
+    def initialize(name = :to_s, default: JABAString.new) = super(name, default: default)
 
     def validate_value(attr_def, value, &block)
       if !value.respond_to?(:to_s)
@@ -80,7 +94,7 @@ module JABA
       end
     end
 
-    def map_value(value, attr) = value.to_s
+    def map_value(value, attr) = value.to_s.to_jaba_string
   end
 
   class AttributeTypeBool < AttributeType

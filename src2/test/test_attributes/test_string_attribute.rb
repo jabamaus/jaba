@@ -9,7 +9,7 @@ jtest "validates default" do
   end
 end
 
-jtest "accepts symbols but stored as strings" do
+jtest "interopates with symbols" do
   jdl do
     attr :a, type: :string
     attr :b, variant: :array, type: :string
@@ -19,11 +19,19 @@ jtest "accepts symbols but stored as strings" do
   end
   jaba do
     a :b
-    a.must_equal "b"
+    a.must_equal "b" # Set as a symbol but stored as string
+    a.class.must_equal JABA::JABAString
     b [:c, :d, "e"]
     b.must_equal ["c", "d", "e"]
     c :a, :b
     c.must_equal({ "a": "b" })
+    (a == :b).must_be_true #  JABAString allows comparison with symbols
+    match = false
+    case a
+    when :b
+      match = true
+    end
+    match.must_be_true
   end
 end
 
