@@ -81,7 +81,7 @@ module JABA
     # This can only be called after the value has had its final value set as it gives raw access to value.
     def raw_value = @value
 
-    def set(*args, __force: false, **kwargs, &block)
+    def set(*args, __force: false, __map: true, **kwargs, &block)
       attr_error("#{describe} is read only") if read_only? && !__force
 
       new_value = if block_given?
@@ -134,7 +134,7 @@ module JABA
         end
       end
 
-      @value = attr_type.map_value(new_value, self)
+      @value = __map ? attr_type.map_value(new_value, self) : new_value
       @set = true
 
       if attr_def.on_set

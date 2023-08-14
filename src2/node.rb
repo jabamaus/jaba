@@ -297,11 +297,12 @@ module JABA
             foptions = elem.flag_options.dup
             foptions.delete_if { |fo| fo == :export || fo == :export_only }
 
+            # Pass __map: false as the values have already been mapped
             case attr.attr_def.variant
             when :array
-              attr.set(elem.raw_value, *foptions, **elem.value_options)
+              attr.set(elem.raw_value, *foptions, __map: false, **elem.value_options)
             when :hash
-              attr.set(key, elem.raw_value, *foptions, **elem.value_options)
+              attr.set(key, elem.raw_value, *foptions, __map: false, **elem.value_options)
             else
               JABA.error("Unhandled variant '#{variant.inspect_unquoted}'")
             end

@@ -20,6 +20,11 @@ jtest "supports exporting attributes to dependents" do
   make_file("app/main.cpp")
   make_file("lib/main.cpp")
   op = jaba do
+    extend_jdl do
+      attr "target/uuid", variant: :array, type: :uuid do
+        flags :per_target, :exportable
+      end
+    end
     target :app1, root: "#{td}/app" do
       type :console
       deps [:lib]
@@ -52,6 +57,7 @@ jtest "supports exporting attributes to dependents" do
       define "R2", :export if config == :Release
       define ["E"]
       inc ["include"], :force, :export
+      uuid "uuid", :export
     end
   end
 
@@ -59,6 +65,7 @@ jtest "supports exporting attributes to dependents" do
   app1[:vcglobal][:BoolAttr].must_equal "true"
   app1[:vcglobal][:StringAttr2].must_equal "s2"
   app1[:vcglobal][:StringAttr3].must_equal "s3"
+  app1[:uuid].must_equal ["{6D82CA6D-E690-5E45-975F-1F54D32A755A}"]
   app1d = app1.get_child(:Debug)
   app1d[:define].must_equal ["A", "B", "C", "D", "D2", "F"]
   app1d.get_attr(:define).visit_elem do |elem|
@@ -74,6 +81,7 @@ jtest "supports exporting attributes to dependents" do
   app2[:vcglobal][:BoolAttr].must_equal "true"
   app2[:vcglobal][:StringAttr2].must_equal "s2"
   app2[:vcglobal][:StringAttr3].must_equal "s3"
+  app2[:uuid].must_equal ["{6D82CA6D-E690-5E45-975F-1F54D32A755A}"]
   app2d = app2.get_child(:Debug)
   app2d[:define].must_equal ["A", "B", "C", "D", "D2", "F"]
   app2d[:inc].must_equal ["#{temp_dir}/lib/include"]
@@ -85,6 +93,7 @@ jtest "supports exporting attributes to dependents" do
   lib[:vcglobal][:StringAttr].must_equal "s"
   lib[:vcglobal].has_key?(:StringAttr2).must_be_false # due to :export_only
   lib[:vcglobal][:StringAttr3].must_equal("s3")
+  lib[:uuid].must_equal ["{6D82CA6D-E690-5E45-975F-1F54D32A755A}"]
   libd = lib.get_child(:Debug)
   libd[:define].must_equal ["D", "D2", "E"]
   libr = lib.get_child(:Release)
