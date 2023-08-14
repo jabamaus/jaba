@@ -225,7 +225,12 @@ module JABA
       end
 
       @root_node.visit do |n|
-        n.attributes.each(&:process_flags)
+        n.attributes.each do |attr|
+          attr.visit_elem do |elem|
+            :delete if elem.has_flag_option?(:export_only)
+          end
+          attr.process_flags
+        end
       end
 
       # TODO: why is separate process/generate required?

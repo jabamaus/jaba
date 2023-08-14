@@ -103,8 +103,8 @@ module JABA
     # Like each but yields value/key instead of key/value. Used in export system when
     # iterating over array/hash attributes.
     def visit_elem(&block)
-      @hash.each do |key, elem|
-        yield elem, key
+      @hash.delete_if do |key, elem|
+        block.call(elem, key) == :delete ? true : false
       end
     end
     

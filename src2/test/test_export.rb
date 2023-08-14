@@ -69,21 +69,24 @@ jtest "supports exporting attributes to dependents" do
   app1r = app1.get_child(:Release)
   app1r[:define].must_equal ['A', 'B', 'C', 'F', 'R', 'R2']
   app1r[:inc].must_equal ["#{temp_dir}/lib/include"]
-=begin
-  app2 = op[:cpp]['app2|windows']
-  app2[:vcglobal][:BoolAttr].must_equal(true)
-  app2[:vcglobal][:StringAttr2].must_equal('s2')
-  app2[:vcglobal][:StringAttr3].must_equal('s3')
-  app2[:configs][:x86][:Debug][:define].must_equal ['A', 'B', 'C', 'F']
-  app2[:configs][:x86][:Release][:define].must_equal ['A', 'B', 'C', 'F', 'R']
-  app2[:configs][:x86][:Debug][:inc].must_equal ["#{temp_dir}/lib/include"]
-  app2[:configs][:x86][:Release][:inc].must_equal ["#{temp_dir}/lib/include"]
 
-  lib = op[:cpp]['lib|windows']
-  lib[:vcglobal][:StringAttr].must_equal('s')
-  lib[:vcglobal].has_key?(:StringAttr2).must_equal(false)
+  app2 = op[:root].get_child(:app2).children[0]
+  app2[:vcglobal][:BoolAttr].must_equal "true"
+  app2[:vcglobal][:StringAttr2].must_equal "s2"
+  app2[:vcglobal][:StringAttr3].must_equal "s3"
+  app2d = app2.get_child(:Debug)
+  app2d[:define].must_equal ['A', 'B', 'C', 'D', 'D2', 'F']
+  app2d[:inc].must_equal ["#{temp_dir}/lib/include"]
+  app2r = app2.get_child(:Release)
+  app2r[:define].must_equal ['A', 'B', 'C', 'F', 'R', 'R2']
+  app2r[:inc].must_equal ["#{temp_dir}/lib/include"]
+
+  lib = op[:root].get_child(:lib).children[0]
+  lib[:vcglobal][:StringAttr].must_equal "s"
+  lib[:vcglobal].has_key?(:StringAttr2).must_be_false # due to :export_only
   lib[:vcglobal][:StringAttr3].must_equal('s3')
-  lib[:configs][:x86][:Debug][:define].must_equal ['D', 'E']
-  lib[:configs][:x86][:Release][:define].must_equal ['D', 'E', 'R']
-=end
+  libd = lib.get_child(:Debug)
+  libd[:define].must_equal ["D", "D2", "E"]
+  libr = lib.get_child(:Release)
+  libr[:define].must_equal ["E", "R", "R2"]
 end
