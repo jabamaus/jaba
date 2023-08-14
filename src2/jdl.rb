@@ -156,7 +156,7 @@ JABA::Context.define_jdl do
          "will be imported, the library will be linked to and a project level dependency created (unless :soft specified). " \
          "To prevent linking specify :nolink - useful if only headers are required. A hard dependency is the default." \
          'This can be used for \'header only\' dependencies'
-    flags :per_target
+    flags :per_target, :no_sort
     flag_options :nolink
     option :type, type: :choice do
       title "Dependency type"
