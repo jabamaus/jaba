@@ -157,11 +157,15 @@ module JABA
     end
 
     def <=>(other)
-      if @value.respond_to?(:casecmp)
-        @value.casecmp(other.value)
+      result = if @value.respond_to?(:casecmp)
+        raw_value.casecmp(other.raw_value)
       else
-        @value <=> other.value
+        raw_value <=> other.raw_value
       end
+      if result.nil?
+        attr_error("Failed to compare #{describe}::#{raw_value} with #{other.describe}::#{other.raw_value}")
+      end
+      result
     end
 
     # This can only be called after the value has had its final value set as it gives raw access to value.

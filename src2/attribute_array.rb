@@ -210,11 +210,7 @@ module JABA
     end
 
     def sort!
-      begin
-        @elems.stable_sort!
-      rescue StandardError => e
-        attr_error("Failed to sort #{describe}: #{e}")
-      end
+      @elems.stable_sort!
     end
   end
 end
