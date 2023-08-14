@@ -96,7 +96,7 @@ module JABA
             # Characters like < > | & are escaped to prevent unwanted behaviour when the msg is echoed
             d_msg = demacroise(msg, input, imp_input, d_output).to_escaped_DOS.to_escaped_xml
 
-            props = {FileType: :Document, Command: d_cmd, Outputs: output_rel}
+            props = { FileType: :Document, Command: d_cmd, Outputs: output_rel }
             if imp_input
               props[:AdditionalInputs] = imp_input_rel
             end

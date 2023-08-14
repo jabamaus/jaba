@@ -106,13 +106,13 @@ module JABA
         a = @value_options[k]
         if a.nil?
           a = case option_def.variant
-          when :single
-            AttributeSingle.new(option_def, @node)
-          when :array
-            AttributeArray.new(option_def, @node)
-          when :hash
-            AttributeHash.new(option_def, @node)
-          end
+            when :single
+              AttributeSingle.new(option_def, @node)
+            when :array
+              AttributeArray.new(option_def, @node)
+            when :hash
+              AttributeHash.new(option_def, @node)
+            end
           @value_options[k] = a
         end
         a.set_last_call_location(last_call_location)

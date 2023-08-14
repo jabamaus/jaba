@@ -29,12 +29,13 @@ module JABA
     def src_loc = @src_loc
     def src_dir = @src_loc.src_loc_info[0].parent_path
     def jdl___dir__ = src_dir
-    
+
     def parent = @parent
     def children = @children
+
     def get_child(sibling_id, fail_if_not_found: true)
       sibling_id = sibling_id.to_s
-      child = @children.find{|c| c.sibling_id.to_s == sibling_id}
+      child = @children.find { |c| c.sibling_id.to_s == sibling_id }
       if child.nil? && fail_if_not_found
         JABA.error("'#{sibling_id.inspect_unquoted}' child not found in #{describe} node")
       end
@@ -63,7 +64,7 @@ module JABA
       @attributes << a
       @attribute_lookup[attr_def.name] = a
     end
-    
+
     def ignore_attrs(set: nil, get: nil)
       @attrs_to_ignore_when_setting = set
       @attrs_to_ignore_when_getting = get
@@ -292,9 +293,9 @@ module JABA
           if elem.has_flag_option?(:export) || elem.has_flag_option?(:export_only)
             # Get the corresponding attr in this project node. This will always be a hash or an array.
             attr ||= get_attr(elem.name)
-            
+
             foptions = elem.flag_options.dup
-            foptions.delete_if{|fo| fo == :export || fo == :export_only}
+            foptions.delete_if { |fo| fo == :export || fo == :export_only }
 
             case attr.attr_def.variant
             when :array

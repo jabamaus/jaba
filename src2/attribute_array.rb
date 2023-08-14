@@ -64,7 +64,7 @@ module JABA
       end
 
       dupes = first_dupe = nil
-      
+
       values.each do |val|
         # need to make an element so that it has correct mapped value for duplicates
         # comparison. It will be discarded if it is a duplicate and :allow_dupes not set.
@@ -154,12 +154,13 @@ module JABA
     def empty? = @elems.empty?
     def [](index) = @elems[index]
     def each(&block) = @elems.each(&block)
+
     def visit_elem(&block)
       @elems.delete_if do |attr|
         block.call(attr) == :delete ? true : false
       end
     end
-    
+
     def map_value!(&block)
       @elems.each do |e|
         e.map_value!(&block)

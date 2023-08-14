@@ -107,7 +107,7 @@ module JABA
         block.call(elem, key) == :delete ? true : false
       end
     end
-    
+
     def process_flags; end # nothing yet
 
     private

@@ -253,7 +253,7 @@ jtest "can register attributes as attribute options" do
   a.value.must_equal 1
   a.option_value(:option).must_equal :b
 end
- 
+
 jtest "fails if attribute type does not exist" do
   assert_jaba_error "Error at #{src_loc("CE16AD90")}: 'a' attribute invalid - ':unknown' must be one of [:basename, :bool, :choice, :compound, :dir, :ext, :file, :int, :null, :src, :string, :to_s, :uuid]" do
     jdl do

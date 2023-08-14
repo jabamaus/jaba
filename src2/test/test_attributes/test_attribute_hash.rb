@@ -290,7 +290,7 @@ jtest "supports flag options" do
   end
   op = jaba do
     a :k, :v, :f1
-    a :k, :v, :f2 
+    a :k, :v, :f2
     a :k, :v2, :f3 # flags are additive even if value different
   end
   a = op[:root].get_attr(:a)
@@ -315,7 +315,7 @@ jtest "supports value options" do
   end
   op = jaba do
     JTest.assert_jaba_error "Error at #{JTest.src_loc("FA31131B")}: 'a' attribute does not support ':opt_invalid' option." do
-      a({k: :v}, opt_invalid: 2) # FA31131B
+      a({ k: :v }, opt_invalid: 2) # FA31131B
     end
     JTest.assert_jaba_error "Error at #{JTest.src_loc("518BF756")}: 'opt_single' attribute invalid - 'not an int' is a string - expected an integer." do
       a :k, :v, opt_single: "not an int" # 518BF756
@@ -329,7 +329,7 @@ jtest "supports value options" do
     a :k, :v, opt_single: 5, opt_array: [6, 7], opt_single_choice: :c
   end
   a = op[:root].get_attr(:a)
-  a.value.must_equal({k: :v})
+  a.value.must_equal({ k: :v })
   v = a.fetch(:k)
   v.option_value(:opt_single).must_equal 5
   v.option_value(:opt_single_choice).must_equal :c
@@ -394,11 +394,11 @@ jtest "supports expanding keys to arrays" do
   op = jaba do
     node :n, root: td do
       a "*.txt", "txt", :fo, vo: 1
-      a.must_equal({"#{td}/a.txt" => "txt", "#{td}/b.txt" => "txt", "#{td}/c.txt" => "txt"})
+      a.must_equal({ "#{td}/a.txt" => "txt", "#{td}/b.txt" => "txt", "#{td}/c.txt" => "txt" })
       clear :a
       a.must_equal({})
-      a({"*.txt" => "txt", "*.rb" => "rb"}, :fo, vo: 2)
-      a.must_equal({"#{td}/a.txt" => "txt", "#{td}/b.txt" => "txt", "#{td}/c.txt" => "txt", "#{td}/d.rb" => "rb", "#{td}/e.rb" => "rb"})
+      a({ "*.txt" => "txt", "*.rb" => "rb" }, :fo, vo: 2)
+      a.must_equal({ "#{td}/a.txt" => "txt", "#{td}/b.txt" => "txt", "#{td}/c.txt" => "txt", "#{td}/d.rb" => "rb", "#{td}/e.rb" => "rb" })
     end
   end
   a = op[:root].children[0].children[0].get_attr(:a)

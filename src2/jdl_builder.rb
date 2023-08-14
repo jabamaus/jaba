@@ -76,6 +76,7 @@ module JABA
     def top_level_node_def = @top_level_node_def
 
     expose :node
+
     def node(path, &block)
       path = validate_path(path)
       if @path_to_node_def.has_key?(path)
@@ -123,6 +124,7 @@ module JABA
     end
 
     expose :attr
+
     def attr(path, variant: :single, type: :null, &block)
       path = validate_path(path)
       parent_path, name = split_jdl_path(path)
@@ -172,17 +174,20 @@ module JABA
     end
 
     expose :open_attr
+
     def open_attr(path, &block)
       @attrs_to_open.push_value(path, block)
     end
 
     expose :global_method
+
     def global_method(name, &block)
       name = validate_name(name, regex: /^[a-zA-Z0-9_]+(\?)?$/)
       process_method(@global_methods_node_def, name, name, block)
     end
 
     expose :method
+
     def method(path, &block)
       path = validate_path(path)
       parent_path, name = split_jdl_path(path)
@@ -226,15 +231,15 @@ module JABA
 
     def make_attribute(name, variant, type, block, node_def, add: true)
       def_class = case variant
-      when :single
-        AttributeSingleDef
-      when :array
-        AttributeArrayDef
-      when :hash
-        AttributeHashDef
-      else
-        error("Invalid attribute variant '#{variant.inspect_unquoted}'")
-      end
+        when :single
+          AttributeSingleDef
+        when :array
+          AttributeArrayDef
+        when :hash
+          AttributeHashDef
+        else
+          error("Invalid attribute variant '#{variant.inspect_unquoted}'")
+        end
 
       attr_def = make_definition(def_class, name, block, add: add) do |ad|
         ad.set_node_def(node_def)
@@ -295,14 +300,17 @@ module JABA
     def method? = false # overridden
 
     expose :title, :set_title
+
     def set_title(t) = @title = t
     def title = @title
 
     expose :note, :set_note
+
     def set_note(n) = @notes << n
     def notes = @notes
 
     expose :example, :set_example
+
     def set_example(e) = @examples << e
     def examples = @examples
 
@@ -369,8 +377,10 @@ module JABA
     end
 
     def method? = true
+
     # on_called is optional
     expose :on_called, :set_on_called
+
     def set_on_called(&block) = @on_called = block
     def on_called = @on_called
   end
@@ -431,6 +441,7 @@ module JABA
     def flags = @flags
 
     expose :flags, :set_flags
+
     def set_flags(*flags)
       flags.flatten.each do |f|
         fd = Context.lookup_attr_flag(f, fail_if_not_found: false)
@@ -450,6 +461,7 @@ module JABA
     def flag_options = @flag_options
 
     expose :flag_options, :set_flag_options
+
     def set_flag_options(*fo)
       fo.each do |o|
         if @flag_options.include?(o)
@@ -463,6 +475,7 @@ module JABA
     def has_flag_option?(fo) = @flag_options.include?(fo)
 
     expose :option, :set_option
+
     def set_option(name, variant: :single, type: :null, &block)
       attr_def = @jdl_builder.send(:make_attribute, name, variant, type, block, @node_def, add: false)
       attr_def.post_create
@@ -471,6 +484,7 @@ module JABA
     end
 
     def option_defs = @option_defs
+
     def lookup_option_def(name, attr, fail_if_not_found: true)
       od = @option_def_lookup[name]
       if od.nil? && fail_if_not_found
@@ -480,10 +494,12 @@ module JABA
     end
 
     expose :validate, :set_validate
+
     def set_validate(&block) = @on_validate = block
     def on_validate = @on_validate
-    
+
     expose :on_set, :set_on_set
+
     def set_on_set(&block) = @on_set = block
     def on_set = @on_set
 
@@ -492,6 +508,7 @@ module JABA
     def default_set? = @default_set
 
     expose :default, :set_default
+
     def set_default(val = nil, &block)
       if type_id == :compound
         definition_error("compound attributes do not support a default value")
@@ -578,6 +595,7 @@ module JABA
     end
 
     expose :key_type, :set_key_type
+
     def set_key_type(type_id)
       @key_type = Context.lookup_attr_type(type_id, fail_if_not_found: false)
       if @key_type.nil?
@@ -586,8 +604,9 @@ module JABA
     end
 
     def key_type = @key_type
-    
+
     expose :validate_key, :set_validate_key
+
     def set_validate_key(&block) = @on_validate_key = block
     def on_validate_key = @on_validate_key
 

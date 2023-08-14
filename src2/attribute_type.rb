@@ -54,15 +54,19 @@ module JABA
 
   class JABAString < ::String
     def to_jaba_string = self
+
     alias_method :old_equals, :==
+
     def ==(other)
       old_equals(other.symbol? ? other.to_jaba_string : other)
-    end     
+    end
   end
 
   class ::Symbol
     def to_jaba_string = JABAString.new(name) # Symbol#name returns frozen string
+
     alias_method :old_case_equals, :===
+
     def ===(other)
       old_case_equals(other.is_a?(JABAString) ? other.to_sym : other)
     end
@@ -123,6 +127,7 @@ module JABA
       def items = @items
 
       expose :items, :set_items
+
       def set_items(items)
         definition_warn("'items' contains duplicates") if items.uniq!
         @items.concat(items)
@@ -194,6 +199,7 @@ module JABA
     # Register base_attr into AttributeDef
     AttributeBaseDef.class_eval do
       expose :base_attr, :set_base_attr
+
       def base_attr = @base_attr
       def set_base_attr(attr_name) = @base_attr = attr_name
     end

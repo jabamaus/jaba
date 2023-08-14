@@ -404,7 +404,7 @@ jtest "supports flag options" do
   end
   op[:warnings].must_equal [
     "Warning at #{src_loc("CD7C1057")}: Stripping duplicates [1] from 'b' attribute. See previous at #{src_loc("D9F57A3F")}.",
-    "Warning at #{src_loc("0606C35D")}: 'b' attribute was passed duplicate flag ':b'."
+    "Warning at #{src_loc("0606C35D")}: 'b' attribute was passed duplicate flag ':b'.",
   ]
   a = op[:root].get_attr(:a)
   a.value.must_equal [1, 1, 2]
