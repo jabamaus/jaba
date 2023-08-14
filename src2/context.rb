@@ -457,7 +457,7 @@ module JABA
     end
 
     def extend_jdl_on_the_fly(&block)
-      JDLBuilder::TopLevelAPI.execute(@jdl, &block)
+      @jdl.api_execute(&block)
       @root_node.node_def.attr_defs.each do |ad|
         if !@root_node.has_attribute?(ad.name)
           @root_node.add_attr(ad)
