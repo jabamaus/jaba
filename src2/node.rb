@@ -279,6 +279,7 @@ module JABA
     end
 
     def import_exports(from_node)
+      virtual = from_node[:virtual]
       # Skip single value attributes as they cannot export. The reason for this is that exporting it would simply
       # overwrite the destination attribute creating a conflict. Which node should control the value? For this
       # reason disallow.
@@ -290,7 +291,7 @@ module JABA
         # visit all attribute elements in array/hash
         #
         from_attr.visit_elem do |elem, key|
-          if elem.has_flag_option?(:export) || elem.has_flag_option?(:export_only)
+          if elem.has_flag_option?(:export) || elem.has_flag_option?(:export_only) || virtual
             # Get the corresponding attr in this project node. This will always be a hash or an array.
             attr ||= get_attr(elem.name)
 
@@ -335,9 +336,6 @@ module JABA
       end
       cfg
     end
-
-    # Target node is 'virtual' if all its configs are virtual
-    def virtual? = @children.all?{|cfg| cfg[:type] == :virtual}
 
     def process_deps
       get_attr(:deps).each do |attr|

@@ -227,7 +227,7 @@ module JABA
       @target_nodes.each do |n|
         n.get_attr(:deps).delete_if do |d|
           dep_node = d.value
-          dep_node.virtual?
+          dep_node[:virtual]
         end
       end
 
@@ -431,7 +431,7 @@ module JABA
             node.get_attr(:config).set(cfg_id, __force: true)
           end
         end
-        if !target_node.virtual?
+        if !target_node[:virtual]
           vcxproj = Vcxproj.new(target_node)
           @projects << vcxproj
           @project_lookup[target_node] = vcxproj

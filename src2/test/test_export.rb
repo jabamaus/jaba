@@ -62,14 +62,13 @@ jtest "supports exporting attributes to dependents" do
     # virtual libs do not get created but all their attrs are automatically exported
     target :virtual_lib, root: "#{td}/lib", virtual: true do
       type :lib
+      vcglobal :StringAttr4, "sd"
       case config
       when :Debug
         define ["VD"]
-        vcglobal :StringAttr4, "sd"
         syslibs ["debug.lib"]
       when :Release
         define ["VR"]
-        vcglobal :StringAttr4, "sd"
         syslibs ["release.lib"]
       end
     end
@@ -79,6 +78,7 @@ jtest "supports exporting attributes to dependents" do
   app1[:vcglobal][:BoolAttr].must_equal "true"
   app1[:vcglobal][:StringAttr2].must_equal "s2"
   app1[:vcglobal][:StringAttr3].must_equal "s3"
+  app1[:vcglobal][:StringAttr4].must_equal "sd"
   app1[:uuid].must_equal ["{6D82CA6D-E690-5E45-975F-1F54D32A755A}"]
   app1d = app1.get_child(:Debug)
   app1d[:define].must_equal ["A", "B", "C", "D", "D2", "F", "VD"]
@@ -87,21 +87,26 @@ jtest "supports exporting attributes to dependents" do
     elem.has_flag_option?(:export_only).must_be_false
   end
   app1d[:inc].must_equal ["#{temp_dir}/lib/include"]
+  app1d[:syslibs].must_equal ["debug.lib"]
   app1r = app1.get_child(:Release)
-  app1r[:define].must_equal ["A", "B", "C", "F", "R", "R2"]
+  app1r[:define].must_equal ["A", "B", "C", "F", "R", "R2", "VR"]
   app1r[:inc].must_equal ["#{temp_dir}/lib/include"]
+  app1r[:syslibs].must_equal ["release.lib"]
 
   app2 = op[:root].get_child(:app2).children[0]
   app2[:vcglobal][:BoolAttr].must_equal "true"
   app2[:vcglobal][:StringAttr2].must_equal "s2"
   app2[:vcglobal][:StringAttr3].must_equal "s3"
+  app2[:vcglobal][:StringAttr4].must_equal "sd"
   app2[:uuid].must_equal ["{6D82CA6D-E690-5E45-975F-1F54D32A755A}"]
   app2d = app2.get_child(:Debug)
-  app2d[:define].must_equal ["A", "B", "C", "D", "D2", "F"]
+  app2d[:define].must_equal ["A", "B", "C", "D", "D2", "F", "VD"]
   app2d[:inc].must_equal ["#{temp_dir}/lib/include"]
+  app2d[:syslibs].must_equal ["debug.lib"]
   app2r = app2.get_child(:Release)
-  app2r[:define].must_equal ["A", "B", "C", "F", "R", "R2"]
+  app2r[:define].must_equal ["A", "B", "C", "F", "R", "R2", "VR"]
   app2r[:inc].must_equal ["#{temp_dir}/lib/include"]
+  app2r[:syslibs].must_equal ["release.lib"]
 
   lib = op[:root].get_child(:lib).children[0]
   lib[:vcglobal][:StringAttr].must_equal "s"
