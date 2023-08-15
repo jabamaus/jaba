@@ -161,6 +161,8 @@ module JABA
       end
     end
 
+    def delete_if(&block) = @elems.delete_if(&block)
+      
     def map_value!(&block)
       @elems.each do |e|
         e.map_value!(&block)

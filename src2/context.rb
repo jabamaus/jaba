@@ -224,6 +224,13 @@ module JABA
         n.process_deps
       end
 
+      @target_nodes.each do |n|
+        n.get_attr(:deps).delete_if do |d|
+          dep_node = d.value
+          dep_node.virtual?
+        end
+      end
+
       @root_node.visit do |n|
         n.attributes.each do |attr|
           attr.visit_elem do |elem|
@@ -417,18 +424,14 @@ module JABA
           node.ignore_attrs(set: @config_attrs_ignore, get: @config_attrs_ignore)
         end
         configs = target_node[:configs]
-        all_virtual = true
         configs.each do |cfg_id|
           config = create_node(nd, cfg_id, parent: target_node) do |node|
             node.add_attrs(@config_attr_defs)
             node.ignore_attrs(set: @target_attrs_ignore)
             node.get_attr(:config).set(cfg_id, __force: true)
           end
-          if config[:type] != :virtual
-            all_virtual = false
-          end
         end
-        if !all_virtual
+        if !target_node.virtual?
           vcxproj = Vcxproj.new(target_node)
           @projects << vcxproj
           @project_lookup[target_node] = vcxproj

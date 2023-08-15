@@ -497,11 +497,16 @@ JABA::Context.define_jdl do
 
   attr "target/type", type: :choice do
     title "Target type"
-    items [:app, :console, :lib, :dll, :virtual]
+    items [:app, :console, :lib, :dll]
     flags :per_config
     default :app
   end
 
+  attr "target/virtual", type: :bool do
+    title "Virtual"
+    flags :node_option
+  end
+  
   attr "target/warnerror", type: :bool do
     title "Enable warnings as errors"
     flags :per_config

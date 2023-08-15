@@ -336,6 +336,9 @@ module JABA
       cfg
     end
 
+    # Target node is 'virtual' if all its configs are virtual
+    def virtual? = @children.all?{|cfg| cfg[:type] == :virtual}
+
     def process_deps
       get_attr(:deps).each do |attr|
         dep_node = attr.value

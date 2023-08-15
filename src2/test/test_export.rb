@@ -27,14 +27,14 @@ jtest "supports exporting attributes to dependents" do
     end
     target :app1, root: "#{td}/app" do
       type :console
-      deps [:lib]
+      deps [:lib, :virtual_lib]
       vcglobal :BoolAttr, true
       src ["main.cpp"]
       define ["F", "A"]
     end
     target :app2, root: "#{td}/app" do
       type :console
-      deps [:lib]
+      deps [:lib, :virtual_lib]
       vcglobal :BoolAttr, true
       src ["main.cpp"]
       define ["F", "A"]
@@ -59,6 +59,20 @@ jtest "supports exporting attributes to dependents" do
       inc ["include"], :force, :export
       uuid "uuid", :export
     end
+    # virtual libs do not get created but all their attrs are automatically exported
+    target :virtual_lib, root: "#{td}/lib", virtual: true do
+      type :lib
+      case config
+      when :Debug
+        define ["VD"]
+        vcglobal :StringAttr4, "sd"
+        syslibs ["debug.lib"]
+      when :Release
+        define ["VR"]
+        vcglobal :StringAttr4, "sd"
+        syslibs ["release.lib"]
+      end
+    end
   end
 
   app1 = op[:root].get_child(:app1).children[0]
@@ -67,7 +81,7 @@ jtest "supports exporting attributes to dependents" do
   app1[:vcglobal][:StringAttr3].must_equal "s3"
   app1[:uuid].must_equal ["{6D82CA6D-E690-5E45-975F-1F54D32A755A}"]
   app1d = app1.get_child(:Debug)
-  app1d[:define].must_equal ["A", "B", "C", "D", "D2", "F"]
+  app1d[:define].must_equal ["A", "B", "C", "D", "D2", "F", "VD"]
   app1d.get_attr(:define).visit_elem do |elem|
     elem.has_flag_option?(:export).must_be_false
     elem.has_flag_option?(:export_only).must_be_false
