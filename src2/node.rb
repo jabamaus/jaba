@@ -345,29 +345,23 @@ module JABA
         each_config do |cfg_node|
           dep_cfg_node = dep_node.get_matching_config(cfg_node.sibling_id)
           cfg_node.import_exports(dep_cfg_node)
-        end
-      end
-    end
-
-    def apply_deps(dep_node, is_config: false, link: true)
-=begin
-    dep_attrs = dep_node.attrs
-    if is_config && link
-      case dep_attrs.type
-      when :lib
-        if attrs.type != :lib
-          target_node.attrs.libs ["#{dep_attrs.libdir}/#{dep_attrs.targetname}#{dep_attrs.targetext}"]
-        end
-      when :dll
-        if target_node.attrs.type != :lib
-          il = dep_attrs.importlib
-          if il # dlls don't always have import libs - eg plugins
-            target_node.attrs.libs ["#{dep_attrs.libdir}/#{il}"]
+          if link
+            case dep_cfg_node[:type]
+            when :lib
+              if cfg_node[:type] != :lib
+                cfg_node.get_attr(:libs).set("#{dep_cfg_node[:libdir]}/#{dep_cfg_node[:targetname]}#{dep_cfg_node[:targetext]}")
+              end
+            when :dll
+              if cfg_node[:type] != :lib
+                il = dep_cfg_node[:importlib]
+                if il # dlls don't always have import libs - eg plugins
+                  cfg_node.get_attr(:libs).set("#{dep_cfg_node[:libdir]}/#{il}")
+                end
+              end
+            end
           end
         end
       end
-    end
-=end
     end
   end
 end
