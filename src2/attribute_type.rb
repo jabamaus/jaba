@@ -267,11 +267,11 @@ module JABA
       is_wc = abs_path.wildcard?
       return abs_path if !is_wc && !is_dir
 
-      src_ext = [".cpp", ".h"] # TODO
+      @src_ext ||= JABA.context.root_node[:src_ext]
+      extname = nil
 
       files = if is_wc
-          extname = abs_path.extname
-          src_ext << extname if !extname.empty? # ensure explicitly specified extensions are included
+          extname = abs_path.extname if !abs_path.extname.empty?
           fm.glob_files(abs_path)
         elsif is_dir
           if !fm.exist?(abs_path)
@@ -284,7 +284,7 @@ module JABA
         JABA.warn("'#{abs_path}' did not match any files ", line: attr_array.last_call_location)
         return files
       end
-      files = files.select { |f| src_ext.include?(f.extname) }
+      files = files.select { |f| extname == f.extname || @src_ext.include?(f.extname) }
       files
     end
   end

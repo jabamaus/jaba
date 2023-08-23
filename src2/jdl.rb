@@ -104,6 +104,18 @@ JABA::Context.define_core_jdl do
     end
   end
 
+  attr "src_ext", variant: :array, type: :ext do
+    title "File extensions used when matching src files"
+    note "Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes."
+    flags :no_sort
+    default do
+      ext = [".cpp", ".h", ".inl", ".c", ".cc", ".cxx", ".hpp"]
+      #ext.concat(host.cpp_src_ext) # TODO
+      #ext.concat(platform.cpp_src_ext) # TODO
+      ext
+    end
+  end
+
   attr "vcfiletype", variant: :hash, type: :string do
     title "VisualC file types"
     key_type :ext
@@ -428,18 +440,6 @@ JABA::Context.define_jdl do
       # Place matching files in a specific folder location within the project file
       src '*_win.cpp', vpath: 'win32'
     }
-  end
-
-  attr "target/src_ext", variant: :array, type: :ext do
-    title "File extensions used when matching src files"
-    note "Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes."
-    flags :per_config, :no_sort, :exportable
-    default do
-      ext = [".cpp", ".h", ".inl", ".c", ".cc", ".cxx", ".hpp"]
-      #ext.concat(host.cpp_src_ext) # TODO
-      #ext.concat(platform.cpp_src_ext) # TODO
-      ext
-    end
   end
 
   attr "target/libs", variant: :array, type: :file do

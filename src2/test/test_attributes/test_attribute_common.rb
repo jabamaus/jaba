@@ -124,7 +124,7 @@ end
 
 jtest "rejects modifying read only attributes" do
   each_variant_and_type do |av, at, desc, default_|
-    jdl do
+    jdl(level: :core) do
       attr :a, variant: av, type: at do
         flags :read_only
         items [:a, :b, :c] if at == :choice
