@@ -291,7 +291,7 @@ module JABA
         # visit all attribute elements in array/hash
         #
         from_attr.visit_elem do |elem, key|
-          if elem.has_flag_option?(:export) || elem.has_flag_option?(:export_only) || virtual
+          if elem.attr_def.has_flag?(:exportable) && (elem.has_flag_option?(:export) || elem.has_flag_option?(:export_only) || virtual)
             # Get the corresponding attr in this project node. This will always be a hash or an array.
             attr ||= get_attr(elem.name)
 
