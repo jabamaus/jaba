@@ -68,7 +68,9 @@ module JABA
         end
 
         cfg[:rule].each do |rule|
-          output = rule[:output]
+          output_attr = rule.get_attr(:output)
+          output = output_attr.value
+          output_vpath = output_attr.option_value(:vpath)
           imp_input = rule[:implicit_input]
           cmd_attr = rule.get_attr(:cmd)
           cmd = cmd_attr.value
@@ -78,8 +80,12 @@ module JABA
           rule[:input].each do |input|
             @file_to_file_type[input] = :CustomBuild
             d_output = demacroise(output, input, imp_input, nil)
-            src_attr.set(d_output, :force) # output may not exist on disk so force
-
+            # output may not exist on disk so force
+            if output_vpath
+              src_attr.set(d_output, :force, vpath: output_vpath)
+            else
+              src_attr.set(d_output, :force)
+            end
             input_rel = input.relative_path_from(@projdir, backslashes: true)
             imp_input_rel = imp_input.relative_path_from(@projdir, backslashes: true)
             output_rel = d_output.relative_path_from(@projdir, backslashes: true)

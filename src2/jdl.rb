@@ -356,6 +356,11 @@ JABA::Context.define_jdl do
     title "Output files"
     base_attr :root
     flags :required, :no_check_exist
+    option :vpath, type: :dir do
+      title "Virtual path"
+      note "Controls IDE project layout"
+      flags :no_check_exist
+    end
   end
 
   attr "target/rule/cmd", type: :string do
