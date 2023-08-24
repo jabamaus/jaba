@@ -43,7 +43,8 @@ module JABA
     end
 
     def attributes = @attributes
-    def [](name) = search_attr(name).value
+    def attr_value(name) = search_attr(name).value 
+    def [](name) = attr_value(name)
     def has_attribute?(name) = @attribute_lookup.has_key?(name)
 
     def add_attrs(attr_defs)
@@ -327,6 +328,12 @@ module JABA
   end
 
   class TargetNode < Node
+    def post_create
+      super
+      @root = attr_value(:root)
+    end
+
+    def root = @root
     def each_config(&block) = @children.each(&block)
 
     def get_matching_config(cfg_id, fail_if_not_found: true)

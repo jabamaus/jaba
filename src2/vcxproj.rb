@@ -115,7 +115,16 @@ module JABA
             ft = @file_to_file_type[sf]
             ft = @file_type_hash[sf.extname] if ft.nil?
             ft = :None if ft.nil?
-            sfi = SrcFileInfo.new(sf, rel, nil, ft, ext, [])
+
+            vpath_opt = sf_elem.option_value(:vpath)
+
+            # If no specified vpath then preserve the structure of the src files/folders. 
+            # It is important that vpath does not start with ..
+            #
+            vpath = vpath_opt ? vpath_opt : sf.parent_path
+            vpath = vpath.relative_path_from(@node.root, backslashes: true, nil_if_dot: true, no_dot_dot: true)
+  
+            sfi = SrcFileInfo.new(sf, rel, vpath, ft, ext, [])
             @src << sfi
             @src_lookup[sf] = sfi
           end
@@ -341,6 +350,46 @@ module JABA
 
     # See https://docs.microsoft.com/en-us/cpp/build/reference/vcxproj-filters-files?view=vs-2019
     def write_vcxproj_filters
+      file = JABA.context.file_manager.new_file(@vcxproj_filters_file, eol: :windows, encoding: 'UTF-8')
+      w = file.writer
+
+      w << XMLVERSION
+      w << "<Project ToolsVersion=\"4.0\" xmlns=\"#{XMLNS}\">"
+      
+      item_group(w) do
+        filters = {}
+        @src.each do |sf|
+          vp = sf.vpath
+          while vp && vp != '.' && !filters.key?(vp)
+            filters[vp] = nil
+            vp = vp.parent_path
+          end
+        end
+        
+        filters.each_key do |f|
+          w << "    <Filter Include=\"#{f}\">"
+          # According to Visual Studio docs UniqueIdentifier allows automation interfaces to find the filter.
+          # Seed the GUID from project file basename rather than absolute path as that could change
+          #
+          w << "      <UniqueIdentifier>#{Kernel.generate_uuid(namespace: @vcxproj_file.basename, name: f, braces: true)}</UniqueIdentifier>"
+          w << "    </Filter>"
+        end
+      end
+
+      item_group(w) do
+        @src.each do |sf|
+          if sf.vpath
+            w << "    <#{sf.file_type} Include=\"#{sf.projdir_rel}\">"
+            w << "      <Filter>#{sf.vpath}</Filter>"
+            w << "    </#{sf.file_type}>"
+          else
+            w << "    <#{sf.file_type} Include=\"#{sf.projdir_rel}\" />"
+          end
+        end
+      end
+      w << '</Project>'
+      w.chomp!
+      file.write
     end
   end
 end
