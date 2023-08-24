@@ -331,9 +331,11 @@ module JABA
     def post_create
       super
       @root = attr_value(:root)
+      @virtual = attr_value(:virtual)
     end
 
     def root = @root
+    def virtual? = @virtual
     def each_config(&block) = @children.each(&block)
 
     def get_matching_config(cfg_id, fail_if_not_found: true)
@@ -347,7 +349,7 @@ module JABA
     def process_deps
       get_attr(:deps).each do |attr|
         dep_node = attr.value
-        link = !attr.has_flag_option?(:nolink)
+        link = !attr.has_flag_option?(:nolink) && !dep_node.virtual?
         import_exports(dep_node)
         each_config do |cfg_node|
           dep_cfg_node = dep_node.get_matching_config(cfg_node.sibling_id)
