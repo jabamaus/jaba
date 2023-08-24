@@ -32,6 +32,8 @@ module JABA
         else
           return make_compound_attr(&block)
         end
+      elsif attr_def.type_id == :block
+        block
       else
         @node.eval_jdl(&block)
       end

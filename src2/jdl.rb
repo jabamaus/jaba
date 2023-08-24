@@ -155,6 +155,11 @@ JABA::Context.define_jdl do
 
   # Target level attributes, all flagged with :per_target
 
+  attr "target/per_target", type: :block do
+    title "Explicit per target block"
+    flags :per_target
+  end
+
   attr "target/configs", variant: :array, type: :string do
     title "Build configurations"
     flags :per_target, :overwrite_default
@@ -225,6 +230,11 @@ JABA::Context.define_jdl do
   end
 
   # Config level attributes
+
+  attr "target/per_config", type: :block do
+    title "Explicit per config block"
+    flags :per_config
+  end
 
   attr "target/config", type: :string do
     title "Current target config as an id"

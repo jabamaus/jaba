@@ -11,12 +11,13 @@ core
 - localise error strings into a single file, using macros for variable substitution. As well as being better for standardisation could support multiple languages.
 - Implement element deletion for hash attribute
 - Disallow ruby keywords as attr names, eg 'in' fails
-- implement 'virtual' (export only) and general export system
 - [BUG] Fix issue with buildsystem default being different in different files.
 - look again at receiver of on_called
 - make logging and error functionality into Context class methods so they are always available.
 - prefix/postfix/delete/exclude should be specced with attr_option. exclude should get its type from its owning attr.
-
+- Add a 'block' attr type and use it to implement 'per_target' and 'per_config' attr types so user can optionally
+  group attrs. Use for example in the mrbc rule code which should only be executed per-target
+  
 path attrs/src
 - Support **.h as alternative to **/*.h
 - :no_wildcard flag to disallow wildcards

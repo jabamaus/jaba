@@ -300,4 +300,22 @@ module JABA
       yield "compound cannot be nil" if value.nil?
     end
   end
+
+  class AttributeTypeBlock < AttributeType
+    def initialize = super(:block)
+
+    def init_attr_def(attr_def)
+      attr_def.set_flags(:no_sort, :allow_dupes) if attr_def.array?
+    end
+
+    def validate_value(attr_def, value)
+      yield "must be a block" if !value.proc?
+    end
+  
+    def map_value(value, attr)
+      block = value
+      attr.node.eval_jdl(&block)
+      block
+    end
+  end
 end

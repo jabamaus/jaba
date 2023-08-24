@@ -34,3 +34,18 @@ jtest "target" do
   release_conf[:configname].must_equal "Release"
   release_conf[:define].must_equal ["RELEASE"]
 end
+
+jtest "supports optional per target and per config blocks" do
+  assert_output 'tcc' do
+    jaba do
+      target :myapp do
+        per_target do
+          print 't'
+        end
+        per_config do
+          print 'c'
+        end
+      end
+    end
+  end
+end

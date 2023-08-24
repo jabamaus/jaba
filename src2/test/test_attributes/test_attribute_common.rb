@@ -18,6 +18,8 @@ module JabaTestMethods
     val = case type
       when :basename
         "basename"
+      when :block
+        Proc.new {}
       when :bool
         false
       when :choice
