@@ -425,7 +425,7 @@ module JABA
         end
         configs = target_node[:configs]
         configs.each do |cfg_id|
-          config = create_node(nd, cfg_id, parent: target_node) do |node|
+          create_node(nd, cfg_id, parent: target_node) do |node|
             node.add_attrs(@config_attr_defs)
             node.ignore_attrs(set: @target_attrs_ignore)
             node.get_attr(:config).set(cfg_id, __force: true)
