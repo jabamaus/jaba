@@ -135,4 +135,18 @@ module JABA
       attr_def.set_note("Must be specified")
     end
   end
+
+  class AttributeFlagExecuteImmediately < AttributeFlag
+    def initialize = super(:execute_immediately)
+
+    def compatible?(attr_def)
+      if attr_def.type_id != :block
+        yield "only allowed on :block attribute types"
+      end
+    end
+
+    def init_attr_def(attr_def)
+      attr_def.set_note("Causes block to be executed immediately rather than be cached")
+    end
+  end
 end

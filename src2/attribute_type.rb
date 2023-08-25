@@ -314,7 +314,9 @@ module JABA
   
     def map_value(value, attr)
       block = value
-      attr.node.eval_jdl(&block)
+      if attr.attr_def.has_flag?(:execute_immediately)
+        attr.node.eval_jdl(&block)
+      end
       block
     end
   end

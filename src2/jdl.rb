@@ -164,7 +164,7 @@ JABA::Context.define_jdl do
 
   attr "target/per_target", type: :block do
     title "Explicit per target block"
-    flags :per_target
+    flags :per_target, :execute_immediately
   end
 
   attr "target/configs", variant: :array, type: :string do
@@ -240,7 +240,7 @@ JABA::Context.define_jdl do
 
   attr "target/per_config", type: :block do
     title "Explicit per config block"
-    flags :per_config
+    flags :per_config, :execute_immediately
   end
 
   attr "target/config", type: :string do
