@@ -145,6 +145,9 @@ module JABA
       if attr_def.items.empty?
         attr_def.definition_error("'items' must be set")
       end
+      if attr_def.single? && !attr_def.default_set?
+        attr_def.set_flags(:required)
+      end
     end
 
     def value_from_cmdline(str, attr_def)

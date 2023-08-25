@@ -11,6 +11,7 @@ jtest "warns if items contains duplicates" do
   jdl do
     attr "b", type: :choice do
       items [:a, :a, :b, :b] # 234928DC
+      default :a
     end
   end
   op = jaba do end
@@ -39,10 +40,22 @@ jtest "requires default to be in items" do
   end
 end
 
+jtest "choice required if no default provided" do
+  jdl do
+    attr "a", type: :choice do
+      items [1, 2, 3]
+    end
+  end
+  assert_jaba_error "Error at #{src_loc("59CE07D9")}: 'root' requires 'a' attribute to be set." do
+    jaba do end # 59CE07D9
+  end
+end
+
 jtest "rejects invalid choices" do
   jdl do
     attr :a, type: :choice do
       items [:a, :b, :c]
+      default :a
     end
     attr :b, variant: :array, type: :choice do
       items [:a, :b, :c]

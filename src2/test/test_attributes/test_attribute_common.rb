@@ -145,7 +145,10 @@ jtest "supports setting a validator" do
   each_variant_and_type do |av, at, desc|
     jdl(level: :core) do
       attr :a, variant: av, type: at do
-        items [:a, :b, :c] if at == :choice
+        if at == :choice
+          items [:a, :b, :c]
+          default :a if av == :single
+        end 
         validate do |val|
           fail "failed"
         end
@@ -176,7 +179,10 @@ jtest "arrays and hashes can be cleared" do
   each_variant_and_type do |av, at, desc|
     jdl(level: :core) do
       attr :a, variant: av, type: at do
-        items [:a, :b, :c] if at == :choice
+        if at == :choice
+          items [:a, :b, :c]
+          default :a if av == :single
+        end
         key_type :int if av == :hash
         flags :allow_dupes if av == :array
       end
