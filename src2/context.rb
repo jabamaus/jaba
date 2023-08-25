@@ -116,6 +116,7 @@ module JABA
       @output = { warnings: @warnings, error: nil }
       @invoking_dir = Dir.getwd.freeze
       @src_root = nil
+      @src_root_dir = nil
       @file_manager = FileManager.new
       @jdl_file_lookup = {}
       @node_defs = []
@@ -131,7 +132,6 @@ module JABA
     def input = @input
     def output = @output
     def invoking_dir = @invoking_dir
-    def src_root = @src_root
     def file_manager = @file_manager
     def root_node = @root_node
     def begin_jdl = @executing_jdl += 1
@@ -155,10 +155,10 @@ module JABA
 
       file_manager.include_untracked # Include all generated files for the purpose of reporting back to the user
 
-      generated = file_manager.generated.map { |f| f.relative_path_from(src_root) }
-      added = file_manager.added.map { |f| f.relative_path_from(src_root) }.sort_no_case!
-      modified = file_manager.modified.map { |f| f.relative_path_from(src_root) }.sort_no_case!
-      unchanged = file_manager.unchanged.map { |f| f.relative_path_from(src_root) }.sort_no_case!
+      generated = file_manager.generated.map { |f| f.relative_path_from(@src_root_dir) }
+      added = file_manager.added.map { |f| f.relative_path_from(@src_root_dir) }.sort_no_case!
+      modified = file_manager.modified.map { |f| f.relative_path_from(@src_root_dir) }.sort_no_case!
+      unchanged = file_manager.unchanged.map { |f| f.relative_path_from(@src_root_dir) }.sort_no_case!
 
       summary = "Generated #{generated.size} files, #{added.size} added, #{modified.size} modified, #{unchanged.size} unchanged in #{duration}"
       summary << "\n"
@@ -202,7 +202,7 @@ module JABA
         if input.definitions
           @root_node.eval_jdl(&input.definitions)
         else
-          process_load_path(src_root, fail_if_empty: true)
+          process_load_path(@src_root, fail_if_empty: true)
         end
       end
 
@@ -253,6 +253,7 @@ module JABA
         JABA.error("either src_root or definitions block must be provided but not both")
       end
 
+      # src_root could be a .jaba file or a directory containing .jaba files
       @src_root = if input.definitions
           input.definitions.source_location[0].cleanpath
         else
@@ -260,9 +261,11 @@ module JABA
         end
       @src_root.freeze
 
-      if !File.exist?(src_root)
-        JABA.error("source root '#{src_root}' does not exist", want_backtrace: false)
+      if !File.exist?(@src_root)
+        JABA.error("source root '#{@src_root}' does not exist", want_backtrace: false)
       end
+
+      @src_root_dir = File.directory?(@src_root) ? @src_root : @src_root.parent_path
     end
 
     def set_top_level_attrs_from_cmdline
