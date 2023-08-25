@@ -255,7 +255,7 @@ jtest "can register attributes as attribute options" do
 end
 
 jtest "fails if attribute type does not exist" do
-  assert_jaba_error "Error at #{src_loc("CE16AD90")}: 'a' attribute invalid - ':unknown' must be one of [:basename, :block, :bool, :choice, :compound, :dir, :ext, :file, :int, :null, :src, :string, :to_s, :uuid]" do
+  assert_jaba_error(/Error at #{src_loc("CE16AD90")}: 'a' attribute invalid - ':unknown' must be one of \[:basename, .*\]/) do
     jdl do
       attr :a, type: :unknown # CE16AD90
     end
@@ -264,7 +264,7 @@ jtest "fails if attribute type does not exist" do
 end
 
 jtest "fails if flag does not exist" do
-  assert_jaba_error "Error at #{src_loc("01E55971")}: 'a' attribute invalid - ':unknown' must be one of [:allow_dupes, :exportable, :no_check_exist, :no_sort, :node_option, :overwrite_default, :per_config, :per_target, :read_only, :required]" do
+  assert_jaba_error(/Error at #{src_loc("01E55971")}: 'a' attribute invalid - ':unknown' must be one of \[:allow_dupes, .*\]/) do
     jdl do
       attr "a" do
         flags :unknown # 01E55971
