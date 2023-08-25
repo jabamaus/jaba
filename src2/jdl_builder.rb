@@ -421,12 +421,12 @@ module JABA
     end
 
     def post_create
+      __check(:@attr_type)
+      @attr_type.post_create_attr_def(self)
       super
       @default.freeze
       @flags.freeze
       @flag_options.freeze
-      __check(:@attr_type)
-      @attr_type.post_create_attr_def(self)
     end
 
     def describe = "'#{@name.inspect_unquoted}' attribute"
