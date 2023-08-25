@@ -21,7 +21,7 @@ include '../jrf/jrf.jaba'
 target :jrfjaba, root: "../jrf/libs/jrfutils" do
   type :lib
   deps [:jrfcore, :mruby]
-  include :mrbc_rule, src: ["core_ext.rb", "api_builder.rb", "fsm.rb", "cmdline.rb"]
+  include :mrbc_rule, rbsrc: ["core_ext.rb", "api_exposer.rb", "fsm.rb", "cmdline.rb"]
 end
 
 target :jaba do
@@ -31,6 +31,6 @@ target :jaba do
   deps [:mrubygems, :jrfcore]
   vcprop 'Link|EntryPointSymbol', :mainCRTStartup
   targetsuffix '_debug' if debug
-  bindir './bin'
-  include :mrbc_rule, src: ["src2/*.rb"]
+  bindir "bin"
+  include :mrbc_rule, rbsrc: ["src2/*.rb"]
 end 
