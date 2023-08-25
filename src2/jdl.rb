@@ -39,6 +39,13 @@ JABA::Context.define_core_jdl do
     on_called do |str| Kernel.puts(str) end
   end
 
+  global_method "src_root" do
+    title "Root directory of .jaba definitions"
+    on_called do
+      JABA.context.src_root_dir
+    end
+  end
+
   global_method "x86_64?" do
     title "Returns true if targeting x86_64"
     on_called do
@@ -100,7 +107,7 @@ JABA::Context.define_core_jdl do
     title "Root of generated build system"
     flags :no_check_exist
     default do
-      "buildsystem/#{buildsystem}"
+      "#{src_root}/buildsystem/#{buildsystem}"
     end
   end
 

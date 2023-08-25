@@ -132,6 +132,7 @@ module JABA
     def input = @input
     def output = @output
     def invoking_dir = @invoking_dir
+    def src_root_dir = @src_root_dir
     def file_manager = @file_manager
     def root_node = @root_node
     def begin_jdl = @executing_jdl += 1
@@ -266,6 +267,7 @@ module JABA
       end
 
       @src_root_dir = File.directory?(@src_root) ? @src_root : @src_root.parent_path
+      @src_root_dir.freeze
     end
 
     def set_top_level_attrs_from_cmdline
