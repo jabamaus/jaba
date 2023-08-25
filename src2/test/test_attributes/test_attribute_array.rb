@@ -432,6 +432,7 @@ jtest "supports value options" do
       option :opt_array, variant: :array
       option :opt_single_choice, type: :choice do
         items [:a, :b, :c]
+        default :a
       end
     end
   end

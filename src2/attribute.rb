@@ -120,6 +120,14 @@ module JABA
         a.set_last_call_location(last_call_location)
         a.set(v)
       end
+      @attr_def.option_defs.each do |od|
+        if od.has_flag?(:required)
+          vo = @value_options[od.name]
+          if vo.nil?
+            attr_error("#{describe} requires '#{od.name}' option to be set")
+          end
+        end
+      end
 
       attr_type = @attr_def.attr_type
 

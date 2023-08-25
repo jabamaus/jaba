@@ -247,6 +247,9 @@ jtest "can register attributes as attribute options" do
     end
   end
   op = jaba do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("CD4DDB07")}: 'a' attribute requires 'option' option to be set." do
+      a 1 # CD4DDB07
+    end
     a 1, option: :b
   end
   a = op[:root].get_attr(:a)
