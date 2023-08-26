@@ -27,7 +27,8 @@ module JABA
     def describe = "'#{node_def.name.inspect_unquoted}'"
     def sibling_id = @sibling_id
     def src_loc = @src_loc
-    def src_dir = @src_loc.src_loc_info[0].parent_path
+    def src_file = @src_loc.src_loc_info[0] 
+    def src_dir = src_file.parent_path
     def jdl___dir__ = src_dir
 
     def parent = @parent

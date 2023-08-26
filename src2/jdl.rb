@@ -111,6 +111,15 @@ JABA::Context.define_core_jdl do
     end
   end
 
+  attr "defaults", variant: :array, type: :block do
+    title "Set defaults at file or global scope"
+    option :scope, type: :choice do
+      title "Scope"
+      items [:file, :global]
+      flags :required
+    end
+  end
+
   attr "src_ext", variant: :array, type: :ext do
     title "File extensions used when matching src files"
     note "Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes."

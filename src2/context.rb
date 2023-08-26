@@ -123,6 +123,8 @@ module JABA
       @shared_lookup = {}
       @executing_jdl = 0
       @attr_def_block_stack = []
+      @global_scope_default_blocks = []
+      @file_scope_default_blocks = {}
       @target_nodes = []
       @target_lookup = KeyToSHash.new # target id to target node
       @projects = []
@@ -204,6 +206,21 @@ module JABA
           @root_node.eval_jdl(&input.definitions)
         else
           process_load_path(@src_root, fail_if_empty: true)
+        end
+      end
+
+      # Split default blocks into global and per-file
+      @root_node.get_attr(:defaults).each do |elem|
+        block = elem.value
+        scope = elem.option_value(:scope)
+        case scope
+        when :global
+          @global_scope_default_blocks << block
+        when :file
+          file = elem.src_loc.src_loc_info[0]
+          @file_scope_default_blocks.push_value(file, block)
+        else
+          JABA.error("Unrecognised scope '#{scope.inspect_unquoted}'")
         end
       end
 
@@ -427,6 +444,7 @@ module JABA
           node.add_attrs(@jdl.common_attr_node_def.attr_defs)
           node.add_attrs(@target_attr_defs)
           node.ignore_attrs(set: @config_attrs_ignore, get: @config_attrs_ignore)
+          apply_defaults(node)
         end
         configs = target_node[:configs]
         configs.each do |cfg_id|
@@ -434,6 +452,7 @@ module JABA
             node.add_attrs(@config_attr_defs)
             node.ignore_attrs(set: @target_attrs_ignore)
             node.get_attr(:config).set(cfg_id, __force: true)
+            apply_defaults(node)
           end
         end
         if !target_node.virtual?
@@ -461,6 +480,16 @@ module JABA
         msg = e.message.sub("frozen", "read only").capitalize_first
         msg.sub!(/:.*?$/, ".") if !mruby? # mruby does not inspect the value
         JABA.error(msg, line: e.backtrace[0])
+      end
+    end
+
+    def apply_defaults(node)
+      @global_scope_default_blocks.each do |b|
+        node.eval_jdl(&b)
+      end
+      file_scope_blocks = @file_scope_default_blocks[node.src_file]
+      file_scope_blocks&.each do |b|
+        node.eval_jdl(&b)
       end
     end
 
