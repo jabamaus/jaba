@@ -15,6 +15,7 @@ core
 - prefix/postfix/delete/exclude should be specced with attr_option. exclude should get its type from its owning attr.
 - Remove node_option flag and handle node options same as attribute options
 - Consider removing 'node' type and handle target definition same as defaults definition - ie with an array of block attributes
+- Add a general :nowarn option. This could replace the :force option. And have a command line switch to force showing of warningss
 
 path attrs/src
 - Support **.h as alternative to **/*.h

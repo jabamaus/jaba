@@ -95,6 +95,14 @@ JABA::Context.define_core_jdl do
     default :x86_64
   end
 
+  attr "buildsystem_root", type: :dir do
+    title "Root of generated build system"
+    flags :no_check_exist
+    default do
+      "#{src_root}/buildsystem/#{buildsystem}"
+    end
+  end
+
   attr "artefact_root", type: :dir do
     title "Root of generated build artefacts"
     flags :no_check_exist
@@ -103,11 +111,11 @@ JABA::Context.define_core_jdl do
     end
   end
 
-  attr "buildsystem_root", type: :dir do
-    title "Root of generated build system"
+  attr "generated_src_root", type: :dir do
+    title "Root location where for src files created during build"
     flags :no_check_exist
     default do
-      "#{src_root}/buildsystem/#{buildsystem}"
+      "#{buildsystem_root}/generated_src"
     end
   end
 
@@ -299,7 +307,7 @@ JABA::Context.define_jdl do
     default do
       "#{arch}/obj/#{config}/#{projname}"
     end
-    note "Defaults to $(arch)/obj/$(config)/$(projname)"
+    note "Defaults to $(artefact_root)/$(arch)/obj/$(config)/$(projname)"
   end
 
   attr "target/debug", type: :bool do
