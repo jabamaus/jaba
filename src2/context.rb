@@ -210,7 +210,8 @@ module JABA
       end
 
       # Split default blocks into global and per-file
-      @root_node.get_attr(:defaults).each do |elem|
+      
+      @root_node.get_attr(:defaults, fail_if_not_found: false)&.each do |elem|
         block = elem.value
         scope = elem.option_value(:scope)
         case scope
