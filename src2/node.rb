@@ -13,7 +13,7 @@ module JABA
       @children = []
       @read_only = false
       @parent = parent
-      if parent
+      if parent && !compound_attr?
         if !sibling_id.nil? && parent.get_child(sibling_id, fail_if_not_found: false)
           JABA.error("'#{sibling_id.inspect_unquoted} is not unique")
         end
@@ -232,6 +232,7 @@ module JABA
     def available(attrs_only: false)
       av = []
       visit_callable_attrs do |a, type|
+        next if compound_attr? && a.name == node_def.name # ensure compound cannot call itself recursively
         av << "#{a.name} (#{type})"
       end
       if !attrs_only

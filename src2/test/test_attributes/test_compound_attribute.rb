@@ -121,6 +121,22 @@ jtest "returned values cannot be modified" do
   end
 end
 
+jtest "compound cannot access itself" do
+  jdl do
+    attr :cmpd, type: :compound
+    attr "cmpd/a", type: :int
+  end
+  jaba do
+    cmpd do
+      a 1
+      JTest.assert_jaba_error "Error at #{JTest.src_loc("A29D84CF")}: 'cmpd' attr/method not defined. Available in this scope:\na (rw)" do
+        cmpd do # A29D84CF
+        end
+      end
+    end
+  end
+end
+
 jtest "has read only access to parent attrs" do
   jdl do
     attr :toplevel
@@ -237,4 +253,32 @@ jtest "works with hash" do
   end
 end
 
+jtest "works with on_set" do
+  jdl(level: :core) do
+    attr :cmpd, type: :compound do
+      on_set do
+        print a
+        print b
+      end
+    end
+    attr "cmpd/a", type: :string do
+      on_set do
+        print "on_set|a|"
+      end
+    end
+    attr "cmpd/b", type: :string do
+      on_set do
+        print "on_set|b|"
+      end
+    end
+  end
+  assert_output "on_set|a|on_set|b|c|d|" do
+    jaba do
+      cmpd do
+        a "c|"
+        b "d|"
+      end
+    end
+  end
+end
 # TODO: test registering value options in

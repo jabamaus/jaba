@@ -163,9 +163,11 @@ module JABA
         # Compound attr interface inherits parent nodes interface so it has read only access to its attrs
         cmp_api = Class.new(parent_class)
         cmp_api.set_inspect_name(name)
+        cmp_api.undef_method(name) # Ensure that compound cannot call itself recursively
 
         cmp_def = AttributeGroupDef.new
         cmp_def.instance_variable_set(:@jdl_builder, self)
+        cmp_def.instance_variable_set(:@name, name)
         cmp_def.set_api_class(cmp_api)
         cmp_def.set_parent_node_def(node_def)
         attr_def.set_compound_def(cmp_def)

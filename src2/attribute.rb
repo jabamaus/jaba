@@ -152,7 +152,8 @@ module JABA
           attr_error("Reentrancy detected in #{describe} on_set")
         end
         @in_on_set = true
-        @node.eval_jdl(new_value, &attr_def.on_set)
+        receiver = attr_def.compound? ? @value : @node
+        receiver.eval_jdl(new_value, &attr_def.on_set)
         @in_on_set = false
       end
     end
