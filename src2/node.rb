@@ -363,7 +363,8 @@ module JABA
               end
             when :dll
               if cfg_node[:type] != :lib
-                il = dep_cfg_node[:importlib]
+                # TODO: only if targeting visual studio
+                il = dep_cfg_node[:vcimportlib]
                 if il # dlls don't always have import libs - eg plugins
                   cfg_node.get_attr(:libs).set("#{dep_cfg_node[:libdir]}/#{il}")
                 end
