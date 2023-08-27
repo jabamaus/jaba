@@ -45,7 +45,7 @@ module JABA
   class FileManager
     def initialize
       @generated = []
-      @generated_lookup = {}
+      @new_files = {}
       @added = []
       @modified = []
       @unchanged = []
@@ -60,6 +60,7 @@ module JABA
     def modified = @modified
     def unchanged = @unchanged
     def generated = @generated
+    def file_created?(fn) = @new_files.key?(fn)
 
     ValidEols = [:unix, :windows, :native].freeze
 
@@ -70,7 +71,16 @@ module JABA
       if !ValidEols.include?(eol)
         JABA.error("'#{eol.inspect}' is an invalid eol style. Valid values: #{ValidEols.inspect}")
       end
-      JabaFile.new(self, filename.cleanpath, encoding, eol, track)
+      if @new_files.key?(filename)
+        JABA.error("Duplicate filename '#{filename}' detected")
+      end
+      @new_files[filename] = nil
+      f = JabaFile.new(self, filename.cleanpath, encoding, eol, track)
+      if block_given?
+        yield f.writer
+        return f.write
+      end
+      f
     end
 
     def write(file)
@@ -78,10 +88,6 @@ module JABA
 
       if file.str.empty?
         JABA.warn("'#{fn}' is empty", want_warn_line: false)
-      end
-
-      if @generated_lookup.key?(fn)
-        JABA.error("Duplicate filename '#{fn}' detected")
       end
 
       existing = read(fn, encoding: file.encoding)
@@ -102,15 +108,16 @@ module JABA
       else
         @untracked << fn
       end
-      @generated_lookup[fn] = nil
 
       dir = fn.parent_path
       if !exist?(dir)
         FileUtils.makedirs(dir)
+        @file_exist_cache[dir] = true
       end
 
       if status != :UNCHANGED
         IO.binwrite(fn, file.str)
+        @file_exist_cache[fn] = true
       end
       status
     end

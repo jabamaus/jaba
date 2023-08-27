@@ -68,6 +68,15 @@ jtest "detects invalid eol spec" do
   e.message.must_match "':undefined' is an invalid eol style. Valid values: [:unix, :windows, :native]"
 end
 
+jtest "can take a block" do
+  fn = "#{temp_dir}/f"
+  fm = JABA::Context.new.file_manager
+  fm.new_file(fn) do |w|
+    w << "a"
+  end
+  IO.read(fn).must_equal "a\n"
+end
+
 jtest "detects duplicates" do
   fn = "#{temp_dir}/f"
   fm = JABA::Context.new.file_manager
@@ -76,12 +85,10 @@ jtest "detects duplicates" do
   w << "a"
   f.write
   File.exist?(fn).must_be_true
-  f = fm.new_file(fn)
-  w = f.writer
-  w << "b"
-  assert_raises JABA::JabaError do
-    f.write
-  end.message.must_match(/Duplicate filename '.*' detected/)
+  IO.read(fn).must_equal("a\n")
+  assert_jaba_error(/Duplicate filename '#{fn}' detected/) do
+    fm.new_file(fn)
+  end
 end
 
 jtest "creates directories as necessary" do
