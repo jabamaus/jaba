@@ -394,6 +394,7 @@ JABA::Context.define_jdl do
       title "Virtual path"
       note "Controls IDE project layout"
       flags :no_check_exist
+      base_attr :root
     end
   end
 
@@ -432,6 +433,7 @@ JABA::Context.define_jdl do
       title "Virtual path"
       note "Controls IDE project layout"
       flags :no_check_exist
+      base_attr :root
     end
     option :properties, variant: :hash, type: :to_s do
       title "Per-file property"
@@ -479,6 +481,44 @@ JABA::Context.define_jdl do
       # Place matching files in a specific folder location within the project file
       src '*_win.cpp', vpath: 'win32'
     }
+  end
+
+  attr "target/write_src", variant: :array, type: :compound do
+    title "Creates a src and adds to build"
+    flags :per_config
+    on_set do
+      filename = fn
+      fm = JABA.context.file_manager
+      # write_file is called on a per-config basis so it has access to all attrs but
+      # don't write subsequent files with the same name
+      if !fm.file_created?(filename)
+        fm.new_file(filename) do |w|
+          w << line.join("\n")
+        end
+        vp = vpath
+        if vp
+          src filename, vpath: vp
+        else
+          src filename
+        end
+      end
+    end
+  end
+
+  attr "target/write_src/fn", type: :file do
+    title "Filename"
+    flags :no_check_exist
+  end
+
+  attr "target/write_src/vpath", type: :dir do
+    title "Virtual path"
+    note "Controls IDE project layout"
+    flags :no_check_exist
+    base_attr :root
+  end
+
+  attr "target/write_src/line", variant: :array, type: :to_s do
+    title "Line to add to file"
   end
 
   attr "target/libs", variant: :array, type: :file do

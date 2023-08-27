@@ -227,8 +227,8 @@ module JABA
     def map_value(path, attr)
       return path if path.empty?
       abs_path = make_path_absolute(path, attr)
-      if !JABA.context.file_manager.exist?(abs_path) &&
-         !attr.attr_def.has_flag?(:no_check_exist) &&
+      if !attr.attr_def.has_flag?(:no_check_exist) &&
+         !JABA.context.file_manager.exist?(abs_path) &&
          !attr.has_flag_option?(:force)
         attr.attr_error("'#{abs_path.inspect_unquoted}' does not exist on disk - use :force to add anyway.")
       end
