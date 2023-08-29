@@ -13,4 +13,3 @@ temp
 .vscode*
 *buildsystem/
 .jaba/
-examples/14-code_generation/generated

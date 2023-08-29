@@ -1,0 +1,36 @@
+include '../jrf/jrf.jaba'
+
+#workspace :jaba_ws do
+#  name 'jaba'
+#  projects [:jaba]
+#  projects [:mrubygems, :jrfcore, :jrfjaba] # TODO: deps not automatically pulled in
+#  workspacedir './'
+#end
+
+#defaults :cpp do
+#  platforms [:windows_x86_64]
+#  project do
+#    configs [:Debug, :Release]
+#  end
+#  config do
+#    define '_CRT_SECURE_NO_WARNINGS'
+#    character_set :mbcs
+#  end
+#end
+
+target :jrfjaba, root: "../jrf/libs/jrfutils" do
+  type :lib
+  deps [:jrfcore, :mruby]
+  include :mrbc_rule, rbsrc: ["core_ext.rb", "api_exposer.rb", "fsm.rb", "cmdline.rb"]
+end
+
+target :jaba do
+  type :console
+  src ["src/main.cpp"]
+  deps [:mruby, :jrfjaba]
+  deps [:mrubygems, :jrfcore]
+  vcprop 'Link|EntryPointSymbol', :mainCRTStartup
+  targetsuffix '_debug' if debug
+  bindir "bin"
+  include :mrbc_rule, rbsrc: ["src/*.rb"]
+end 

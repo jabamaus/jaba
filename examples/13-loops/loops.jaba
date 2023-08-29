@@ -2,12 +2,9 @@
 
 glob('examples/*') do |e| # eg examples/example1.cpp
   id = e.basename_no_ext # eg example1  
-  cpp id do
-    platforms [:windows_x86_64]
-    project do
-      type :console
-      configs [:Debug, :Release]
-      src e
-    end
+  target id do
+    type :console
+    configs [:debug, :release]
+    src e
   end
 end

@@ -1,145 +1,96 @@
-- Sort out policy on arguments in api classes
-- Allow plugins to have default id
-- Make cpp_project and cpp_platform into contained types
-- Change to make all modules manually included. eg 'include 'cpp''. Get rid of 'grab'.
-- Combine :symbol, :string and :symbol_or_string? Allow strings and symbols to be completely interchangeable?
-- Stop globals from having dependencies, reference attrs and compound attrs.
-- compound attr should not need a title. Could use the title of the jaba type.
-- Add test demonstrating plugins creating dependent objects as they are being processed, eg cpp plugin creates workspaces
-- Should be able to map property value in pre_property_set
-- I don't like pre/post property set much. Make it specific to each attr not called for every attr.
-- Disallow types being used as a compound attr from being flagged as singleton
-- Rather than attr :a, type: :compound, jaba_type: :type_with_plugin it could be
-  attr :a, embed: type_with_plugin
-- I wonder whether the role of build_output could be done by a plugin using process_definition
-- Doxygen and manifest files are good plugin examples
-- Put version number into every type and force it to be set in instance.
-- Consider storing whole callstack and then introducing JabaObject#error method.
-- Move block arg number checking into eval_jdl?
-- Add invocations.txt to each example which cam execute in multiple ways
-- Ability to 'grab' a text plugin that auto-adds ability to generate a text file to cpp projects.
-- Validate paths for missing / eg '../..debase-ruby_core_source/
-- option in tests to log to stdout
-- Add text_plugin.rb to examples in docs
-- Moving text into plugin has raised question about host. Need to set requied cpp_project_classname to ''. Not clean.
-- Should | be allowed in ids? Probably not.
-- Check error reporting in the case that there is an argument error inside Services#define. Needs to present internal callstack.
-- not sure about using inspect_unquoted everywhere in error msgs to explicitly show symbols...
-- localise error strings into a single file, using macros for variable substitution. As well as being better for standardisation could support multiple languages.
-- jaba attr types could register option into JabaAttributeDefinition. noderef/compound types could use it.
-- remove text plugin. Or even better turn into a compound attr and add to cpp.
-- consider making all paths relative to jaba file when in defaults and shared definitions
-- optimise copying of value options once they are more locked down.
-- move JabaAttributeType base class into extend folder
-- Have a look at RubyVM to try and precompile ruby
-- Should :definition_root basedir_spec be able to take its value from the setting attr? Eg if globals attr specifies a definition root base spec it be relative to the user definition.
-- Could be moving towards concept of a type requiring configuration
-- Support vcfprop at project level too
-- Review whether '.' is allowed in :basename type. Maybe Introduce and allow_ext option.
-- Introduce :extension type. Use for src_ext
-- rename windows_x86 to win_86?
-- Standardise 'expected/available' error msg, eg Available: [a|b|c|]
-- Regression tests for generated files!
-- consider putting .jaba inside buildsystem
-- Make build_output use an API so it can check that paths are absolute
-- wrap -D target_host vs2019 into a command line switch
-- enforce that paths stay within their base dir spec
-- Implement element deletion for hash attribute
-- auto document plugin API
-- Add a file copy feature (install?). Could use custom build rule.
-- Stats in docs, eg number of files in jaba release, size of zip.
-- Finish off input manager cmd work
-- Disallow nested src_roots 
-- should string attr be allowed to be set to nil? Probably not.
-- Add a 'referenced by' doc item for types.
-- make jaba clean clean the generated src, the .vs folder, the 'build' folder and optionally the 'buildsystem' folder.
-- Disallow ruby keywords as attr names, eg 'in' fails
-- Consider making all attributes require a type
-- Bed down value option type - eg call validators, testing
-- reorg tests into core folder and cpp folder
-- Stronger spec for value_options. Need to flag as array.
-- Overhaul workspace project glob matching
-- add cmd line test for
-  - symbol attr
-  - node ref attr
-  - symbol or string attr
-- add --list-globals option
-- rename items to choices
-* Implement jaba build command to build vs2019 solution
-* Categories in solution files.
-- flag to control whether absolute paths allowed in file/dir attrs. Eg build_root_offset is not an offset if absolute path used.
-  Is it even a path attr?
-- ability to have build tree out of src but projects in src? config option to base projdir off src_root instead of dest_root?
-- Make defaults work per-file. Introduce global_defaults. Or a scope option to defaults.
-* Automatically pull in dependencies into workspace
-- attr def properties should have help string/notes...
-- Allow default values to take options?
-- RUBY LICENSE REQUIREMENTS
-- consider having a globals per-type (eg cpp globals)
-- validate when --src-root can be specified. Should be required if no .jaba files in cwd and disallowed if there are.
-- Check attribute validators when parsing cmd line.
+core
+- versioning support
+- Revisit set_to_default and wipe. Have way of clearing to default and clearing fully, but don't count that as set=true
 - Employ did you mean style error reporting
   Error at basic_dll.jaba:8: 'defines' attribute not defined. Did you mean 'define'?
-- tag attrs as control flow attrs somehow for benefit of docs
-- add slnproperty which can address sln sections. Particularly useful when used with ExtensibilityGlobals
-- disband VSProj in favour of VSUtilities module
-- Move title/note/example into module and include
-- Have a command line switch to make all error messages contain absolute paths
-- support for 'overriding' attribute defs when opening types, including calling super
-- Make :nocheckexists do something
-- test :required flag compatibility
-- Revisit set_to_default and wipe. Have way of clearing to default and clearing fully, but don't count that as set=true
-- In defaults block are paths relative to the defaults file or the file of the definition being instanced?
-- Allow 'axes' of configs. Bear in mind that platforms can be any string.
-- Have some kind of spec for flag_options, eg
-
-flag_option :export do
-  note 'do exporting'
-  compatibility do
-    'only works on array and hash' if !array? && !hash?
-    end
-  end
-end
-
-- Having two arrays that reference the same type causes problems with :expose. Need to resolve this.
-Need to make it so that don't expose if attribute is not single value. Also need to prevent exposing
-if there are multiple attrs, with a warning.
-
-  attr_array :valid_archs, type: :ref do
-    note 'List of architectures supported by this platform'
-    node_type :arch
-    flags :required, :no_sort
-  end
-
-  attr_array :default_archs, type: :ref do
-    note 'List of default target architectures for this platform'
-    node_type :arch
-    flags :required, :no_sort
-  end
-
-- check for duplicate filenames at plugin level, with proper error reporting
+- Add title/example/notes to flag_options
+- Add sticky/transient concept to flag and value options
+- Validation and documentation specification for method args, similar to attribute options
 - Make _ID be id of the definition the code is in, such that it works even inside a block that is being executed in the context of a different jaba object
-- Ability to reverse engineer jaba definitions from existing vsprojects
-- Add check for re-entrancy when evaluating default blocks
-- consistent method names across tests and consistent brackets on must_equal
-- Create a table of attr mappings from jaba->premake->cmake
-- Bring back boolean reader, eg if debug?
-- Add 'underlying type' to attribute types? eg file.dir/src_spec are strings. Use this for extra validation and also to sort using casecmp
-- resolve issues around sorting with mixed type elements
-- Add wildcard validation to dir property
-- workspace categories
-- Allow debug?
-- Support **.h as alternative to **/*.h?
+- localise error strings into a single file, using macros for variable substitution. As well as being better for standardisation could support multiple languages.
+- Implement element deletion for hash attribute
+- Disallow ruby keywords as attr names, eg 'in' fails
+- look again at receiver of on_called
+- make logging and error functionality into Context class methods so they are always available.
+- prefix/postfix/delete/exclude should be specced with attr_option. exclude should get its type from its owning attr.
+- Remove node_option flag and handle node options same as attribute options
+- Add a general :nowarn option. This could replace the :force option. And have a command line switch to force showing of warningss
+- Test compound attr with value options
+- Add way of retrieving options in jdl:
+  src ".", vpath: "generated"
+  vpath = src getopt: :vpath
+- Investigate 'pull up' idea. Ramifications:
+ - configs need to be passed in as node options
+ - defaults needs to be able to set node options
+ - options need to support :overwite_default flag
+
+path attrs/src
+- Support **.h as alternative to **/*.h
+- :no_wildcard flag to disallow wildcards
+- wildcard validation
+- Validate paths for missing / eg '../..debase-ruby_core_source/
+- vpath support. Macros would make it more powerful.
+- flag to control whether absolute paths allowed in file/dir attrs. Eg build_root_offset is not an offset if absolute path used.
+  Is it even a path attr?
+- Review whether '.' is allowed in :basename type. Maybe Introduce and allow_ext option.
+- enforce that paths stay within their base dir spec?
+- exclude from build should be an :info option on src attr
+
+workspace
+- Automatically pull in dependencies in
+- categories
+- add slnproperty which can address sln sections. Particularly useful when used with ExtensibilityGlobals
+
+target
+- Make custom build rule support multiple outputs. Requires adding array subscript support to macros.
 - Make shell build events use macros
-- add grab bag to reference docs
-- Is ToolsVersion='16.0' needed?
+- Add 'install' to copy exes somewhere post build
+- Allow 'axes' of configs? Bear in mind that platforms can be any string.
+
+VisualC
 - support for debugger working directory via .user file
-- directive to only register shared modules when a file included?
-- Combine build_root and src_root into just src_root. buildsystem always goes in src root.
+- Is ToolsVersion='16.0' needed?
 
+test
+- vpath
+- Regression tests for generated files.
+- option in tests to log to stdout
+- reorg tests into core folder and target folder?
+- bring attr_hash tests back
 
-JABA RETHINK
-- app and lib are built in top level type.
-- root is a buit in concept
-- single level (eg no config no project blocks)
-- no direct reading. Use macros.
+possible features
+- Ability to reverse engineer jaba definitions from existing vsprojects
+- Command line option to print full exception info
+- Have a command line switch to make all error messages contain absolute paths
+- Add invocations.txt to each example which can execute in multiple ways?
+- Ability to 'grab' functionality that auto-adds abilities, eg text file
+- Auto-delete non-generated files in buildsystem dir (cruft removal)
+- Support arrays in hash values? That would allow src attr to work as a value as well as a key.
+
+docs
+- tag attrs as control flow attrs somehow for benefit of docs
+- ruby license requirements
+- Stats in docs, eg number of files in jaba release, size of zip.
+- Add node option attrs
+- Add attribute options
+- common attrs
+- methods
+
+jaba tool
+- add --list-globals option
+- Implement jaba build command to build vs solution
+- clean command
+
+v2 new features/changes:
+ - removed json output [DONE]
+ - rebased onto mruby [DONE]
+ - src files calculated immediately [DONE]
+ - rule inputs/outputs automatically added to src [DONE]
+ - dependencies pulled into solution automatically [TODO]
+ - per file defaults [DONE]
+ - delete stale projects in build system [TODO]
+ - ability to set src per config instead of per-project [DONE]
+ - ability to set target type per config instead of per-project [DONE]
+ - rethought transitive properties of dependencies [TODO]
+ - string/symbol/symbol_or_string combined into just string [DONE]
+ - key/value options are now attributes in their own right with attendant benefits [DONE]

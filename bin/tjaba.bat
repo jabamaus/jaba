@@ -1,2 +1,2 @@
 @echo off
-jtest -s %~dp0../test %*
+jtest_ruby -s %~dp0../test %*

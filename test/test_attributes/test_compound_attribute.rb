@@ -1,127 +1,284 @@
-# TODO: test with default blocks
-# TODO: test with references
-# TODO: test if block not provided
-# TODO: test disallowing referencing self
-# TODO: test works with :required
-# TODO: test works with :export
-# TODO: what about sorting? Disable?
-
-# TODO: split on_set tests out
-jtest 'works with all attribute variants' do
-  jaba do
-    type :test do
-      attr :node_single, type: :compound, jaba_type: :compound
-      attr_array :node_array, type: :compound, jaba_type: :compound
-      attr_hash :node_hash, key_type: :symbol, type: :compound, jaba_type: :compound
-      attr :platform, type: :ref, jaba_type: :platform
-      attr :sibling_single
-      attr_array :sibling_array do
-        flags :allow_dupes
+jtest "compound attr not allowed a default" do
+  jdl do
+    attr "cmpd", type: :compound do
+      default do # AE0C836F
       end
-      attr_hash :sibling_hash, key_type: :symbol
     end
-    type :compound do
-      attr :a do
-        # members of a compound attr can set values in 'sibling' attrs, which are actually in the parent node
-        on_set do |val|
-          sibling_single val * 2
-          sibling_array val * 2
-          sibling_hash val, val * 2
-        end
-      end
-      attr_array :b
-      attr_hash :c, key_type: :symbol
-      attr :d, type: :compound, jaba_type: :nested1
-    end
-    type :nested1 do
-      attr :e, type: :compound, jaba_type: :nested2
-    end
-    type :nested2 do
-      attr :f
-    end
-    test :t do
-      platform :windows
-      node_single do
-        a 1
-        b [2, 3]
-        if windows? # It can query attrs in parent node
-          c 4, 5
-        end
-        if ios?
-          b [6]
-        end
-        d do
-          e do # they can be nested
-            f 7
-          end
-        end
-      end
-      node_single.a.must_equal(1)
-      node_single.b.must_equal [2, 3]
-      node_single.c.must_equal({4 => 5})
-      node_single.d.e.f.must_equal(7)
-      sibling_single.must_equal(2)
-      sibling_array.must_equal [2]
-      sibling_hash.must_equal({1 => 2})
-
-      # Repeating overwrites/appends
-      node_single do
-        a 8
-        b [9, 10]
-        if windows?
-          c 11, 12
-        end
-        if ios?
-          b [13]
-        end
-        d do
-          e do
-            f 14
-          end
-        end
-      end
-      node_single.a.must_equal(8)
-      node_single.b.must_equal [2, 3, 9, 10]
-      node_single.c.must_equal({4 => 5, 11 => 12})
-      node_single.d.e.f.must_equal(14)
-      sibling_single.must_equal(16)
-      sibling_array.must_equal [2, 16]
-      sibling_hash.must_equal({1 => 2, 8 => 16})
-
-      node_array do
-        a 'a'
-        b ['c', 'd']
-        c :e, 'f'
-      end
-      node_array do
-        a 'a1'
-        b ['c1', 'd1']
-        c :e1, 'f1'
-      end
-      node_array[0].a.must_equal('a')
-      node_array[0].b.must_equal ['c', 'd']
-      node_array[0].c.must_equal({e: 'f'})
-      node_array[1].a.must_equal('a1')
-      node_array[1].b.must_equal ['c1', 'd1']
-      node_array[1].c.must_equal({e1: 'f1'})
-
-      node_hash :k1 do |key|
-        key.must_equal(:k1)
-        a 'a'
-        b ['c', 'd']
-        c :e, 'f'
-      end
-      node_hash :k2 do
-        a 'a1'
-        b ['c1', 'd1']
-        c :e1, 'f1'
-      end
-      node_hash[:k1].a.must_equal('a')
-      node_hash[:k1].b.must_equal ['c', 'd']
-      node_hash[:k1].c.must_equal({e: 'f'})
-      node_hash[:k2].a.must_equal('a1')
-      node_hash[:k2].b.must_equal ['c1', 'd1']
-      node_hash[:k2].c.must_equal({e1: 'f1'})
+  end
+  JTest.assert_jaba_error "Error at #{JTest.src_loc("AE0C836F")}: 'cmpd' attribute invalid - compound attributes do not support a default value." do
+    jaba do
     end
   end
 end
+
+jtest "works with compound as single attribute" do
+  jdl do
+    attr "cmpd", type: :compound
+    attr "cmpd/a" do
+      default 10
+    end
+    attr "cmpd/b"
+    attr "cmpd/c", variant: :array do
+      default [1]
+    end
+    attr "cmpd/d", variant: :hash do
+      key_type :string
+      default(a: :b)
+    end
+  end
+  op = jaba do
+    # check defaults
+    cmpd.a.must_equal 10
+    cmpd.b.must_be_nil # no default value
+    cmpd.c.must_equal [1]
+    cmpd.d.must_equal({ a: :b })
+
+    cmpd do # can be set in block form
+      a 1
+      b 2
+      c 2
+      d :c, :d
+    end
+    cmpd.a.must_equal 1
+    cmpd.b.must_equal 2
+    cmpd.c.must_equal [1, 2]
+    cmpd.d.must_equal({ a: :b, c: :d })
+
+    cmpd.b 3 # can set in object form
+    cmpd.b.must_equal 3
+    cmpd.d :e, :f
+    cmpd.d.must_equal({ a: :b, c: :d, e: :f })
+
+    cmpd do # repeated calls refer to same compound attr
+      a 4
+      b 5
+      c [3, 4]
+      d :e, :g
+    end
+    cmpd.a.must_equal 4
+    cmpd.b.must_equal 5
+    cmpd.c.must_equal [1, 2, 3, 4]
+    cmpd.d.must_equal({ a: :b, c: :d, e: :g })
+
+    cmpd.b 6
+    cmpd.b.must_equal 6
+    cmpd.c [5, 6]
+    cmpd.c.must_equal [1, 2, 3, 4, 5, 6]
+  end
+  cmpd = op[:root][:cmpd]
+  cmpd[:a].must_equal 4
+  cmpd[:b].must_equal 6
+  cmpd[:c].must_equal [1, 2, 3, 4, 5, 6]
+  cmpd[:d].must_equal({ a: :b, c: :d, e: :g })
+end
+
+jtest "works with compound as single attribute with nesting" do
+  jdl do
+    attr "cmpd", type: :compound
+    attr "cmpd/a" do default 1 end
+    attr "cmpd/nested1", type: :compound
+    attr "cmpd/nested1/b" do default 2 end
+    attr "cmpd/nested1/nested2", type: :compound
+    attr "cmpd/nested1/nested2/c" do default 3 end
+  end
+  op = jaba do
+    cmpd.nested1.nested2.c.must_equal 3
+    cmpd.nested1.b.must_equal 2
+    cmpd.a.must_equal 1
+    cmpd do
+      nested1 do
+        nested2 do
+          c 4
+        end
+      end
+    end
+    cmpd.nested1.nested2.c.must_equal 4
+    cmpd.nested1.nested2.c 5
+    cmpd.nested1.nested2.c.must_equal 5
+  end
+  cmpd = op[:root][:cmpd]
+  cmpd[:a].must_equal 1
+  cmpd[:nested1][:b].must_equal 2
+  cmpd[:nested1][:nested2][:c].must_equal 5
+end
+
+jtest "returned values cannot be modified" do
+  jdl do
+    attr "cmpd1", type: :compound
+    attr "cmpd1/cmpd2", type: :compound
+    attr "cmpd1/cmpd2/a", variant: :array do
+      default [1]
+    end
+  end
+  assert_jaba_error "Error at #{src_loc("0B4498EC")}: Can't modify read only Array." do
+    jaba do
+      cmpd1 do
+        cmpd2 do
+          a << 2 # 0B4498EC
+        end
+      end
+    end
+  end
+end
+
+jtest "compound cannot access itself" do
+  jdl do
+    attr :cmpd, type: :compound
+    attr "cmpd/a", type: :int
+  end
+  jaba do
+    cmpd do
+      a 1
+      JTest.assert_jaba_error "Error at #{JTest.src_loc("A29D84CF")}: 'cmpd' attr/method not defined. Available in this scope:\na (rw)" do
+        cmpd do # A29D84CF
+        end
+      end
+    end
+  end
+end
+
+jtest "has read only access to parent attrs" do
+  jdl do
+    attr :toplevel
+    node :node
+    attr "node/cmpd", type: :compound
+  end
+  jaba do
+    toplevel 1
+    node :n do
+      cmpd do
+        toplevel.must_equal 1
+        JTest.assert_jaba_error "Error at #{JTest.src_loc("082F7661")}: 'toplevel' attribute is read only in this scope." do
+          toplevel 2 # 082F7661
+        end
+      end
+    end
+  end
+end
+
+jtest "has write access to sibling attrs" do
+  jdl do
+    node :node
+    attr "node/cmpd", type: :compound
+    attr "node/cmpd/a"
+    attr "node/b"
+  end
+  jaba do
+    node :n do
+      b 1
+      cmpd do
+        b 2
+      end
+      b.must_equal 2
+    end
+  end
+end
+
+jtest "does not get copy of common attrs" do
+  jdl do
+    node :node
+    attr "*/common"
+    attr "node/cmpd", variant: :array, type: :compound
+    attr "node/cmpd/a"
+  end
+  jaba do
+    node :n do
+      common 1
+      cmpd do
+        common.must_equal 1
+        common 2 # compound attrs can set sibling attrs
+      end
+      common.must_equal 2
+    end
+    node :n2 do
+      common 2
+    end
+  end
+end
+
+jtest "works with array" do
+  jdl do
+    attr "cmpd", variant: :array, type: :compound
+    attr "cmpd/a"
+    attr "cmpd/b"
+  end
+  jaba do
+    cmpd do
+      a 1
+      b 2
+    end
+    cmpd do
+      a 3
+      b 4
+    end
+    cmpd do
+      a 5
+      b 6
+    end
+    cmpd.size.must_equal 3
+    cmpd[0].a.must_equal 1
+    cmpd[0].b.must_equal 2
+    cmpd[1].a.must_equal 3
+    cmpd[1].b.must_equal 4
+    cmpd[2].a.must_equal 5
+    cmpd[2].b.must_equal 6
+  end
+end
+
+jtest "works with hash" do
+  jdl do
+    attr "cmpd", variant: :hash, type: :compound do
+      key_type :string
+    end
+    attr "cmpd/a"
+    attr "cmpd/b"
+  end
+  jaba do
+    cmpd :a do
+      a 1
+      b 2
+    end
+    cmpd :b do
+      a 3
+      b 4
+    end
+    cmpd.size.must_equal 2
+    cmpd.has_key?(:a).must_be_true
+    cmpd.has_key?(:b).must_be_true
+    cmpd.has_key?(:c).must_be_false
+    cmpd[:a].a.must_equal 1
+    cmpd[:a].b.must_equal 2
+    cmpd[:b].a.must_equal 3
+    cmpd[:b].b.must_equal 4
+  end
+end
+
+jtest "works with on_set" do
+  jdl(level: :core) do
+    attr :cmpd, type: :compound do
+      on_set do
+        print a
+        print b
+      end
+    end
+    attr "cmpd/a", type: :string do
+      on_set do
+        print "on_set|a|"
+      end
+    end
+    attr "cmpd/b", type: :string do
+      on_set do
+        print "on_set|b|"
+      end
+    end
+  end
+  assert_output "on_set|a|on_set|b|c|d|" do
+    jaba do
+      cmpd do
+        a "c|"
+        b "d|"
+      end
+    end
+  end
+end
+# TODO: test registering value options in

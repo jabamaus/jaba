@@ -1,5 +1,7 @@
-  # TODO: validate key type is of specfied key_type
-jtest 'supports a default' do
+# TODO: validate key type is of specfied key_type
+=begin
+# TODO: test overwrite_default
+jtest "supports a default" do
   jaba(barebones: true) do
     type :test do
       attr :single1 do
@@ -9,18 +11,18 @@ jtest 'supports a default' do
       attr_hash :a, key_type: :symbol do
         flag_options :opt1, :opt2
       end
-      attr_hash :b, key_type: :symbol do
-        default({k: :v}) # value style default
+      attr_hash :b, key_type: :string do
+        default({ k: :v }) # value style default
         flag_options :opt1, :opt2
         value_option :vopt
       end
-      attr_hash :c, key_type: :symbol do
+      attr_hash :c, key_type: :string do
         default do # block style default
           { k1: 1, k2: 2 }
         end
         flag_options :opt1, :opt2
       end
-      attr_hash :d, key_type: :symbol do
+      attr_hash :d, key_type: :string do
         default do # block style default that references other attributes
           { k1: single1, k2: single2 }
         end
@@ -29,14 +31,14 @@ jtest 'supports a default' do
     end
     test :t do
       a.must_equal({})
-      
-      b[:k].must_equal(:v)
-      b.must_equal({k: :v})
 
-      c.must_equal({k1: 1, k2: 2})
+      b[:k].must_equal(:v)
+      b.must_equal({ k: :v })
+
+      c.must_equal({ k1: 1, k2: 2 })
 
       single2 2
-      d.must_equal({k1: 1, k2: 2})
+      d.must_equal({ k1: 1, k2: 2 })
 
       # test that defaults can be overridden
       #
@@ -44,48 +46,48 @@ jtest 'supports a default' do
       single1.must_equal(3)
 
       a :k, :v, :opt1
-      a.must_equal({k: :v})
+      a.must_equal({ k: :v })
 
       b :k, :v3, :opt1 # keep same key but overwrite value
       b :k2, :v2, :opt1, vopt: 1
       b :k3, :v3, :opt2
-      b.must_equal({k: :v3, k2: :v2, k3: :v3}) # New key value gets merged in with default
+      b.must_equal({ k: :v3, k2: :v2, k3: :v3 }) # New key value gets merged in with default
 
       c :k3, :v3, :opt1
       c :k4, :v4, :opt2
-      c.must_equal({k1: 1, k2: 2, k3: :v3, k4: :v4}) # New key value gets merged in with default when block form used
+      c.must_equal({ k1: 1, k2: 2, k3: :v3, k4: :v4 }) # New key value gets merged in with default when block form used
 
       d :k3, :v3, :opt2
       d :k4, :v4, :opt1
-      d.must_equal({k1: 3, k2: 2, k3: :v3, k4: :v4})
+      d.must_equal({ k1: 3, k2: 2, k3: :v3, k4: :v4 })
       generate do
         a = get_attr(:a)
-        a.fetch(:k).has_flag_option?(:opt1).must_equal(true)
+        a.fetch(:k).has_flag_option?(:opt1).must_be_true
         b = get_attr(:b)
-        b.fetch(:k).has_flag_option?(:opt1).must_equal(true)
-        b.fetch(:k2).has_flag_option?(:opt1).must_equal(true)
-        b.fetch(:k2).get_option_value(:vopt).must_equal(1)
-        b.fetch(:k3).has_flag_option?(:opt2).must_equal(true)
+        b.fetch(:k).has_flag_option?(:opt1).must_be_true
+        b.fetch(:k2).has_flag_option?(:opt1).must_be_true
+        b.fetch(:k2).option_value(:vopt).must_equal(1)
+        b.fetch(:k3).has_flag_option?(:opt2).must_be_true
         c = get_attr(:c)
-        c.fetch(:k1).has_flag_option?(:opt1).must_equal(true)
-        c.fetch(:k2).has_flag_option?(:opt1).must_equal(true)
-        c.fetch(:k3).has_flag_option?(:opt1).must_equal(true)
-        c.fetch(:k4).has_flag_option?(:opt2).must_equal(true)
+        c.fetch(:k1).has_flag_option?(:opt1).must_be_true
+        c.fetch(:k2).has_flag_option?(:opt1).must_be_true
+        c.fetch(:k3).has_flag_option?(:opt1).must_be_true
+        c.fetch(:k4).has_flag_option?(:opt2).must_be_true
         d = get_attr(:d)
-        d.fetch(:k1).has_flag_option?(:opt2).must_equal(true)
-        d.fetch(:k2).has_flag_option?(:opt2).must_equal(true)
-        d.fetch(:k3).has_flag_option?(:opt2).must_equal(true)
-        d.fetch(:k4).has_flag_option?(:opt1).must_equal(true)
+        d.fetch(:k1).has_flag_option?(:opt2).must_be_true
+        d.fetch(:k2).has_flag_option?(:opt2).must_be_true
+        d.fetch(:k3).has_flag_option?(:opt2).must_be_true
+        d.fetch(:k4).has_flag_option?(:opt1).must_be_true
       end
     end
   end
 
   # validates that default is a hash
   #
-  assert_jaba_error "Error at #{src_loc('DA7750A0')}: 'default' expects a hash but got '[]'." do
+  assert_jaba_error "Error at #{src_loc("DA7750A0")}: 'default' expects a hash but got '[]'." do
     jaba(barebones: true) do
       type :test do
-        attr_hash :a, key_type: :symbol do
+        attr_hash :a, key_type: :string do
           default [] # DA7750A0
         end
       end
@@ -94,10 +96,10 @@ jtest 'supports a default' do
 
   # It validates default is a hash when block form is used
   #
-  assert_jaba_error "Error at #{src_loc('BE9F9661')}: 't.a' hash attribute default requires a hash not a 'Integer'." do
+  assert_jaba_error "Error at #{src_loc("BE9F9661")}: 't.a' hash attribute default requires a hash not a 'Integer'." do
     jaba(barebones: true) do
       type :test do
-        attr_hash :a, key_type: :symbol do # BE9F9661
+        attr_hash :a, key_type: :string do # BE9F9661
           default do
             1
           end
@@ -109,11 +111,11 @@ jtest 'supports a default' do
 
   # It validates default elements respect attribute type
   #
-  assert_jaba_error "Error at #{src_loc('251B0D72')}: ':a' hash attribute default invalid: 'not a symbol' is a string - expected a symbol." do
+  assert_jaba_error "Error at #{src_loc("251B0D72")}: ':a' hash attribute default invalid: 'not a symbol' is a string - expected a symbol." do
     jaba(barebones: true) do
       type :test do
-        attr_hash :a, key_type: :symbol, type: :symbol do
-          default({k: 'not a symbol'}) # 251B0D72
+        attr_hash :a, key_type: :string, type: :symbol do
+          default({ k: "not a symbol" }) # 251B0D72
         end
       end
     end
@@ -122,12 +124,12 @@ jtest 'supports a default' do
   # TODO: validate key format
   # It validates default elements respect attribute type when block form used
   #
-  assert_jaba_error "Error at #{src_loc('BD581364')}: 't.a' hash attribute invalid: 'not a symbol' is a string - expected a symbol." do
+  assert_jaba_error "Error at #{src_loc("BD581364")}: 't.a' hash attribute invalid: 'not a symbol' is a string - expected a symbol." do
     jaba(barebones: true) do
       type :test do
         attr_hash :a, key_type: :symbol, type: :symbol do # BD581364
           default do
-            {k: 'not a symbol'}
+            { k: "not a symbol" }
           end
         end
       end
@@ -135,34 +137,31 @@ jtest 'supports a default' do
     end
   end
 end
-
-jtest 'checks for accessing uninitialised attributes' do
+=end
+jtest "checks for accessing uninitialised attributes" do
   # test with hash attr default using an unset attr
-  #
-  assert_jaba_error "Error at #{src_loc('6E82E6E7')}: Cannot read uninitialised 't.b' attribute - it might need a default value.", trace: [__FILE__, '4E88B4A0'] do
-    jaba(barebones: true) do
-      type :test do
-        attr :a
-        attr :b
-        attr_hash :c, key_type: :symbol do
-          default do
-            {k1: a, k2: b} # 6E82E6E7
-          end
-        end
-      end
-      test :t do
-        a 1
-        c # 4E88B4A0
+  jdl do
+    attr :a
+    attr :b
+    attr :c, variant: :hash do
+      key_type :string
+      default do
+        { k1: a, k2: b }
       end
     end
   end
-
+  assert_jaba_error "Error at #{src_loc("6E82E6E7")}: 'c' attribute default read uninitialised 'b' attribute - it might need a default value." do
+    jaba do
+      a 1
+      c # 6E82E6E7
+    end
+  end
+=begin
   # test with another attr using unset hash attr
-  #
-  assert_jaba_error "Error at #{src_loc('CE4EB215')}: Cannot read uninitialised 't.a' hash attribute - it might need a default value.", trace: [__FILE__, 'AA737C96'] do
+  assert_jaba_error "Error at #{src_loc("CE4EB215")}: Cannot read uninitialised 't.a' hash attribute - it might need a default value.", trace: [__FILE__, "AA737C96"] do
     jaba(barebones: true) do
       type :test do
-        attr_hash :a, key_type: :symbol
+        attr_hash :a, key_type: :string
         attr :b do
           default do
             a[:k] # CE4EB215
@@ -174,242 +173,188 @@ jtest 'checks for accessing uninitialised attributes' do
       end
     end
   end
+=end
 end
 
-jtest 'can be set' do
-  jaba(barebones: true) do
-    type :test do
-      attr_hash :a, key_type: :symbol
-      attr :b, type: :choice do
-        items [1, 2]
+jtest "can be set" do
+  jdl do
+    attr "a", variant: :hash do
+      key_type :string
+    end
+    attr "b", type: :choice do
+      items [1, 2]
+    end
+  end
+  jaba do
+    # Test basic set
+    a :k, :v
+    a[:k].must_equal(:v)
+
+    # Overwrite value
+    a :k, nil
+    a[:k].must_be_nil
+
+    # Overwrite back to original
+    a :k, :v
+    a[:k].must_equal(:v)
+
+    # Add key
+    a :k2, :v2
+    a[:k2].must_equal(:v2)
+
+    # Can be set by passing a hash  ``
+    a({ k3: :v3, k4: :v4 })
+    a.must_equal({ k: :v, k2: :v2, k3: :v3, k4: :v4 })
+
+    # Value can be set in block
+    #
+    b 1
+    a :key do
+      case b
+      when 1
+        :yes
+      else
+        :no
       end
     end
-    test :t do
-      # Test basic set
-      a :k, :v
-      a[:k].must_equal(:v)
-      
-      # Overwrite value
-      a :k, nil
-      a[:k].must_be_nil
-      
-      # Overwrite back to original
-      a :k, :v
-      a[:k].must_equal(:v)
-      
-      # Add key
-      a :k2, :v2
-      a[:k2].must_equal(:v2)
+    a[:key].must_equal :yes
+    b 2
+    a :key do
+      case b
+      when 1
+        :yes
+      else
+        :no
+      end
+    end
+    a[:key].must_equal :no
+  end
+end
 
-      # Value can be set in block
-      #
-      b 1
-      a :key do
-        case b
-        when 1
-          :yes
-        else
-          :no
-        end
+jtest "is not possible to modify returned hash" do
+  jdl do
+    attr "a", variant: :hash do
+      key_type :string
+    end
+    attr "b", variant: :hash do
+      key_type :string
+      default({ k: :v })
+    end
+    attr "c", variant: :hash do
+      key_type :string
+      default do
+        { k: :v }
       end
-      a[:key].must_equal :yes
-      b 2
-      a :key do
-        case b
-        when 1
-          :yes
-        else
-          :no
-        end
-      end
-      a[:key].must_equal :no
+    end
+  end
+  assert_jaba_error "Error at #{src_loc("648F776E")}: Can't modify read only Hash." do
+    jaba do
+      a[:k] = :v # 648F776E
+    end
+  end
+  assert_jaba_error "Error at #{src_loc("F788FD64")}: Can't modify read only Hash." do
+    jaba do
+      b[:k] = :v2 # F788FD64
+    end
+  end
+  assert_jaba_error "Error at #{src_loc("1F6A1970")}: Can't modify read only Hash." do
+    jaba do
+      b[:k] = :v2 # 1F6A1970
     end
   end
 end
 
-jtest 'is not possible to modify returned hash' do
-  assert_jaba_error "Error at #{src_loc('F788FD64')}: Can't modify read only Hash: {:k=>:v}" do
-    jaba(barebones: true) do
-      type :test do
-        attr_hash :a, key_type: :symbol do
-          default({k: :v})
-        end
-      end
-      test :t do
-        a[:k] = :v2 # F788FD64
+jtest "disallows no_sort and allow_dupes flags" do
+  jdl do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("366C343A")}: ':no_sort' attribute definition flag invalid: only allowed on array attributes." do
+      attr "a", variant: :hash do
+        key_type :string
+        flags :no_sort # 366C343A
       end
     end
-  end
-end
-
-jtest 'disallows no_sort flag' do
-  assert_jaba_error "Error at #{src_loc('366C343A')}: :no_sort attribute definition flag is only allowed on array attributes." do
-    jaba(barebones: true) do
-      type :test do
-        attr_hash :a, key_type: :symbol do
-          flags :no_sort # 366C343A
-        end
-      end
-    end
-  end
-end
-
-jtest 'disallows allow_dupes flag' do
-  assert_jaba_error "Error at #{src_loc('2E453551')}: :allow_dupes attribute definition flag is only allowed on array attributes." do
-    jaba(barebones: true) do
-      type :test do
-        attr_hash :a, key_type: :symbol do
-          flags :allow_dupes # 2E453551
-        end
-      end
-    end
-  end
-end
-
-jtest 'can accept flag options' do
-  jaba(barebones: true) do
-    type :test do
-      attr_hash :a, key_type: :symbol do
-        flag_options :f1, :f2, :f3
-      end
-    end
-    test :t do
-      a :k, :v, :f1, :f2
-      generate do
-        a = get_attr(:a)
-        elem = a.fetch(:k)
-        elem.value.must_equal(:v)
-        elem.has_flag_option?(:f1).must_equal(true)
-        elem.has_flag_option?(:f2).must_equal(true)
-        elem.has_flag_option?(:f3).must_equal(false)
-        elem.flag_options.must_equal [:f1, :f2]
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("2E453551")}: ':allow_dupes' attribute definition flag invalid: only allowed on array attributes." do
+      attr "b", variant: :hash do
+        key_type :string
+        flags :allow_dupes # 2E453551
       end
     end
   end
 end
 
-jtest 'can accept value options' do
-  jaba(barebones: true) do
-    type :test do
-      attr_hash :a, key_type: :symbol do
-        value_option :kv1
-        value_option :kv2
+jtest "supports flag options" do
+  jdl do
+    attr :a, variant: :hash do
+      key_type :string
+      flag_options :f1, :f2, :f3, :f4
+    end
+  end
+  op = jaba do
+    a :k, :v, :f1
+    a :k, :v, :f2
+    a :k, :v2, :f3 # flags are additive even if value different
+  end
+  a = op[:root].get_attr(:a)
+  elem = a.fetch(:k)
+  elem.value.must_equal(:v2)
+  elem.has_flag_option?(:f1).must_be_true
+  elem.has_flag_option?(:f2).must_be_true
+  elem.has_flag_option?(:f3).must_be_true
+  elem.has_flag_option?(:f4).must_be_false
+  elem.flag_options.must_equal [:f1, :f2, :f3]
+end
+
+jtest "supports value options" do
+  jdl do
+    attr :a, variant: :hash do
+      option :opt_single, type: :int
+      option :opt_array, variant: :array
+      option :opt_single_choice, type: :choice do
+        items [:a, :b, :c]
       end
     end
-    test :t do
-      a :k, :v, kv1: 'a', kv2: 'b'
-      generate do
-        a = get_attr(:a)
-        elem = a.fetch(:k)
-        elem.value.must_equal(:v)
-        elem.get_option_value(:kv1).must_equal('a')
-        elem.get_option_value(:kv2).must_equal('b')
-      end
+  end
+  op = jaba do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("FA31131B")}: 'a' attribute does not support ':opt_invalid' option." do
+      a({ k: :v }, opt_invalid: 2) # FA31131B
+    end
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("518BF756")}: 'opt_single' attribute invalid - 'not an int' is a string - expected an integer." do
+      a :k, :v, opt_single: "not an int" # 518BF756
+    end
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("C044A39E")}: 'opt_single_choice' attribute invalid - must be one of [:a, :b, :c] but got ':d'." do
+      a :k, :v, opt_single_choice: :d # C044A39E
+    end
+    a.empty?.must_be_true
+    a :k, :v, opt_single: 1, opt_array: [2, 3], opt_single_choice: :b
+    # opt_single previous value will be overwritten, opt_arrray will be extended
+    a :k, :v, opt_single: 5, opt_array: [6, 7], opt_single_choice: :c
+  end
+  a = op[:root].get_attr(:a)
+  a.value.must_equal({ k: :v })
+  v = a.fetch(:k)
+  v.option_value(:opt_single).must_equal 5
+  v.option_value(:opt_single_choice).must_equal :c
+  v.option_value(:opt_array).must_equal [2, 3, 6, 7]
+end
+
+jtest "validates key value supplied correctly" do
+  jdl do
+    attr :a, variant: :hash do
+      key_type :string
+    end
+  end
+  jaba do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("E4932204")}: 'a' attribute requires a key/value eg \"a :my_key, 'my value'\"" do
+      a key: "val" # E4932204
+    end
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("C567DBCD")}: 'a' attribute requires a key/value eg \"a :my_key, 'my value'\"" do
+      a :key # C567DBCD
     end
   end
 end
+=begin
+# TODO: test clear
 
-jtest 'can accept value and flag options' do
-  jaba(barebones: true) do
-    type :test do
-      attr_hash :a, key_type: :symbol do
-        value_option :kv1
-        value_option :kv2
-        flag_options [:flag_opt1, :flag_opt2, :flag_opt3]
-      end
-    end
-    test :t do
-      a :k, :v, :flag_opt1, :flag_opt2, kv1: 'a', kv2: 'b'
-      generate do
-        a = get_attr(:a)
-        elem = a.fetch(:k)
-        elem.value.must_equal(:v)
-        elem.has_flag_option?(:flag_opt1).must_equal(true)
-        elem.has_flag_option?(:flag_opt2).must_equal(true)
-        elem.has_flag_option?(:flag_opt3).must_equal(false)
-        elem.flag_options.must_equal [:flag_opt1, :flag_opt2]
-        elem.get_option_value(:kv1).must_equal('a')
-        elem.get_option_value(:kv2).must_equal('b')
-      end
-    end
-  end
-end
-
-jtest 'validates key value supplied correctly' do
-  assert_jaba_error "Error at #{src_loc('E4932204')}: 't.a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"" do
-    jaba(barebones: true) do
-      type :test do
-        attr_hash :a, key_type: :symbol
-      end
-      test :t do
-        a key: 'val' # E4932204
-      end
-    end
-  end
-  assert_jaba_error "Error at #{src_loc('C567DBCD')}: 't.a' hash attribute requires a key/value eg \"a :my_key, 'my value'\"" do
-    jaba(barebones: true) do
-      type :test do
-        attr_hash :a, key_type: :symbol
-      end
-      test :t do
-        a :key # C567DBCD
-      end
-    end
-  end
-end
-
-jtest 'supports setting a validator' do
-  # only hash attr has validate_key property
-  assert_jaba_error "Error at #{src_loc('95BFB40C')}: 'validate_key' property undefined." do
-    jaba(barebones: true) do
-      type :test do
-        attr_array :a do
-          validate_key do |key| # 95BFB40C
-          end
-        end
-      end
-    end
-  end
-  assert_jaba_error "Error at #{src_loc('52EE0D37')}: 't.a' hash attribute invalid: failed.", trace: [__FILE__, '51591CF8'] do
-    jaba(barebones: true) do
-      type :test do
-        attr_hash :a, key_type: :string do
-          validate_key do |key|
-            if key == 'invalid'
-              fail 'failed' # 52EE0D37
-            end
-          end
-        end
-      end
-      test :t do
-        a 'k1', :v
-        a 'invalid', :v # 51591CF8
-      end
-    end
-  end
-
-  assert_jaba_error "Error at #{src_loc('A01B3D5E')}: 't.a' hash attribute invalid: failed.", trace: [__FILE__, 'AC0009E0'] do
-    jaba(barebones: true) do
-      type :test do
-        attr_hash :a, key_type: :symbol do
-          validate do |val|
-            if val == 'invalid'
-              fail 'failed' # A01B3D5E
-            end
-          end
-        end
-      end
-      test :t do
-        a :k, :v
-        a :k, 'invalid' # AC0009E0
-      end
-    end
-  end
-end
-
-# TODO: test wipe
-
-jtest 'supports on_set hook' do
+jtest "supports on_set hook" do
   jaba(barebones: true) do
     type :test do
       attr_hash :a, key_type: :string do
@@ -428,8 +373,43 @@ jtest 'supports on_set hook' do
     end
     test :t do
       a 1, 2
-      b.must_equal({'1_b' => '2_b'})
-      c.must_equal '1_b2_b'
+      b.must_equal({ "1_b" => "2_b" })
+      c.must_equal "1_b2_b"
     end
   end
+end
+=end
+jtest "supports expanding keys to arrays" do
+  make_file("a.txt", "b.txt", "c.txt", "d.rb", "e.rb")
+  td = temp_dir
+  jdl(level: :core) do
+    node :node
+    attr "node/a", variant: :hash, type: :string do
+      key_type :src
+      flag_options :fo
+      base_attr :root
+      option :vo, type: :int
+    end
+  end
+  op = jaba do
+    node :n, root: td do
+      a "*.txt", "txt", :fo, vo: 1
+      a.must_equal({ "#{td}/a.txt" => "txt", "#{td}/b.txt" => "txt", "#{td}/c.txt" => "txt" })
+      clear :a
+      a.must_equal({})
+      a({ "*.txt" => "txt", "*.rb" => "rb" }, :fo, vo: 2)
+      a.must_equal({ "#{td}/a.txt" => "txt", "#{td}/b.txt" => "txt", "#{td}/c.txt" => "txt", "#{td}/d.rb" => "rb", "#{td}/e.rb" => "rb" })
+    end
+  end
+  a = op[:root].children[0].children[0].get_attr(:a)
+  a.fetch("#{td}/a.txt").has_flag_option?(:fo).must_be_true
+  a.fetch("#{td}/a.txt").option_value(:vo).must_equal(2)
+  a.fetch("#{td}/b.txt").has_flag_option?(:fo).must_be_true
+  a.fetch("#{td}/b.txt").option_value(:vo).must_equal(2)
+  a.fetch("#{td}/c.txt").has_flag_option?(:fo).must_be_true
+  a.fetch("#{td}/c.txt").option_value(:vo).must_equal(2)
+  a.fetch("#{td}/d.rb").has_flag_option?(:fo).must_be_true
+  a.fetch("#{td}/d.rb").option_value(:vo).must_equal(2)
+  a.fetch("#{td}/e.rb").has_flag_option?(:fo).must_be_true
+  a.fetch("#{td}/e.rb").option_value(:vo).must_equal(2)
 end
