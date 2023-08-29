@@ -1,0 +1,136 @@
+type :masm_rule do
+
+  title 'Microsoft Macro Assembler'
+
+  attr :AddFirstPassListing, type: :bool do
+    title 'Add First Pass Listing'
+    note 'Adds first-pass listing to listing file.     (/Sf). Sets /Sf'
+  end
+
+  attr :AdditionalOptions, type: :string do
+    title 'Additional Options'
+  end
+
+  attr :AssembledCodeListingFile, type: :string do
+    title 'Assembled Code Listing File'
+    note 'Generates an assembled code listing file.     (/Fl[file]). Sets /Fl"[value]"'
+  end
+
+  attr_array :BrowseFile, type: :string do
+    title 'Generate Browse Information File'
+    note 'Specifies whether to generate browse information file and its optional name or location of the browse information file.     (/FR[name]). Sets /FR"[value]"'
+  end
+
+  attr :CallingConvention, type: :choice do
+    title 'Calling Convention'
+    note 'Selects calling convention for your application.     (/Gc, /Gd. /Gz).'
+    items ["0", "1", "2", "3"]
+  end
+
+  attr :DisableSymbolTable, type: :bool do
+    title 'Disable Symbol Table'
+    note 'Turns off symbol table when producing a listing.     (/Sn). Sets /Sn'
+  end
+
+  attr :EnableAssemblyGeneratedCodeListing, type: :bool do
+    title 'Enable Assembly Generated Code Listing'
+    note 'Turns on listing of assembly-generated code.     (/Sg). Sets /Sg'
+  end
+
+  attr :EnableFalseConditionalsInListing, type: :bool do
+    title 'Enable False Conditionals In Listing'
+    note 'Turns on false conditionals in listing.     (/Sx). Sets /Sx'
+  end
+
+  attr :EnableMASM51Compatibility, type: :bool do
+    title 'Enable MASM 5.1 Compatibility'
+    note 'Enables M510 option for maximum compatibility with MASM 5.1.     (/Zm). Sets /Zm'
+  end
+
+  attr :ErrorReporting, type: :choice do
+    title 'Error Reporting'
+    note 'Reports internal assembler errors to Microsoft.     (/errorReport:[method]).'
+    items ["0", "1", "2", "3"]
+  end
+
+  attr :GenerateDebugInformation, type: :bool do
+    title 'Generate Debug Information'
+    note 'Generates Debug Information.     (/Zi). Sets /Zi'
+  end
+
+  attr :GeneratePreprocessedSourceListing, type: :bool do
+    title 'Generate Preprocessed Source Listing'
+    note 'Generates a preprocessed source listing to the Output Window.     (/EP). Sets /EP'
+  end
+
+  attr_array :IncludePaths, type: :string do
+    title 'Include Paths'
+    note 'Sets path for include file. A maximum of 10 /I options is allowed.     (/I [path]). Sets /I "[value]"'
+  end
+
+  attr :ListAllAvailableInformation, type: :bool do
+    title 'List All Available Information'
+    note 'Turns on listing of all available information.     (/Sa). Sets /Sa'
+  end
+
+  attr :MakeAllSymbolsPublic, type: :bool do
+    title 'Make All Symbols Public'
+    note 'Makes all symbols public.     (/Zf). Sets /Zf'
+  end
+
+  attr :NoLogo, type: :bool do
+    title 'Suppress Startup Banner'
+    note 'Suppress the display of the startup banner and information messages.     (/nologo). Sets /nologo'
+  end
+
+  attr :ObjectFileName, type: :string do
+    title 'Object File Name'
+    note 'Specifies the name of the output object file.     (/Fo:[file]). Sets /Fo"[value]"'
+  end
+
+  attr :PackAlignmentBoundary, type: :choice do
+    title 'Pack Alignment Boundary'
+    note 'Packs structures on the specified byte boundary. The alignment can be 1, 2, 4, 8 or 16.     (/Zp1, /Zp2, /Zp4, /Zp8, /Zp16).'
+    items ["0", "1", "2", "3", "4", "5"]
+  end
+
+  attr :PerformSyntaxCheckOnly, type: :bool do
+    title 'Perform Syntax Check Only'
+    note 'Performs a syntax check only.     (/Zs). Sets /Zs'
+  end
+
+  attr_array :PreprocessorDefinitions, type: :string do
+    title 'Preprocessor Definitions'
+    note 'Defines a text macro with the given name.     (/D[symbol]). Sets /D"[value]"'
+  end
+
+  attr :PreserveIdentifierCase, type: :choice do
+    title 'Preserve Identifier Case'
+    note 'Specifies preservation of case of user identifiers.     (/Cp, /Cu, /Cx).'
+    items ["0", "1", "2", "3"]
+  end
+
+  attr :TreatWarningsAsErrors, type: :bool do
+    title 'Treat Warnings As Errors'
+    note 'Returns an error code if warnings are generated.     (/WX). Sets /WX'
+  end
+
+  attr :UseSafeExceptionHandlers, type: :bool do
+    title 'Use Safe Exception Handlers'
+    note 'Marks the object as either containing no exception handlers or containing exception handlers that are all declared with .SAFESEH.     (/safeseh). Sets /safeseh'
+  end
+
+  attr :WarningLevel, type: :choice do
+    title 'Warning Level'
+    note 'Sets the warning level, where level = 0, 1, 2, or 3.    (/W0, /W1, /W2, /W3).'
+    items ["0", "1", "2", "3"]
+  end
+
+end
+
+open_type :cpp_config do
+  attr :masm, type: :compound, jaba_type: :masm_rule do
+    title 'masm custom build tool'
+  end
+end
+
