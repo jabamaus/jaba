@@ -1,4 +1,4 @@
-require_relative '../src2/jaba'
+require_relative '../src/jaba'
 
 module CommonUtils
   JABA_REPO_URL = "https://github.com/jabamaus/jaba.git"

@@ -26,11 +26,11 @@ end
 
 target :jaba do
   type :console
-  src ["src2/main.cpp"]
+  src ["src/main.cpp"]
   deps [:mruby, :jrfjaba]
   deps [:mrubygems, :jrfcore]
   vcprop 'Link|EntryPointSymbol', :mainCRTStartup
   targetsuffix '_debug' if debug
   bindir "bin"
-  include :mrbc_rule, rbsrc: ["src2/*.rb"]
+  include :mrbc_rule, rbsrc: ["src/*.rb"]
 end 

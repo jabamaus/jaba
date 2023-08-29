@@ -1,119 +1,69 @@
-jtest 'defaults to false' do
-  jaba(barebones: true) do
-    type :test do
-      attr :a, type: :bool
-    end
-    test :t do
-      a.must_equal(false)
+jtest "defaults to false" do
+  jdl do
+    attr "a", type: :bool
+  end
+  jaba do
+    a.must_be_false
+  end
+end
+
+jtest "supports boolean reader" do
+  jdl do
+    attr :a, type: :bool
+  end
+  jaba do
+    a?.must_be_false # question notation allowed for reading
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("3816FC96")}: 'a?' is a read only accessor and does not accept arguments." do
+      a? true # 3816FC96
     end
   end
 end
 
-jtest 'requires default to be true or false' do
-  assert_jaba_error "Error at #{src_loc('2521765F')}: ':b' attribute default invalid: '1' is a integer - expected [true|false]" do
-    jaba(barebones: true) do
-      type :test do
-        attr :b, type: :bool do
-          default 1 # 2521765F
-        end
+jtest "requires default to be true or false" do
+  jdl do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("2521765F")}: 'invalid' attribute invalid - 'default' invalid - '1' is a integer - expected [true|false]" do
+      attr "invalid", type: :bool do
+        default 1 # 2521765F
       end
     end
-  end
-  jaba(barebones: true) do
-    type :test do
-      attr :b, type: :bool do
-        default true
-      end
-      attr :c, type: :bool do
-        default false
-      end
+    attr "b_true", type: :bool do
+      default true
     end
-    test :t do
-      b.must_equal(true)
-      c.must_equal(false)
-    end
-  end
-end
-
-jtest 'only allows boolean values' do
-  assert_jaba_error "Error at #{src_loc('0108AEFB')}: 'b.c' attribute invalid: '1' is a integer - expected [true|false]" do
-    jaba(barebones: true) do
-      type :test do
-        attr :c, type: :bool do
-          default true
-        end
-      end
-      test :b do
-        c 1 # 0108AEFB
-      end
+    attr "b_false", type: :bool do
+      default false
     end
   end
   jaba do
-    type :test do
-      attr :b, type: :bool do
-        default true
-      end
-      attr :c, type: :bool do
-        default false
-      end
-    end
-    test :t do
-      b false
-      c true
-      b.must_equal(false)
-      c.must_equal(true)
-    end
+    b_true.must_be_true
+    b_false.must_be_false
   end
 end
 
-jtest 'works with required flag' do
-  assert_jaba_error "Error at #{src_loc('3C869B0D')}: 't.a' attribute requires a value. See #{src_loc('B959A565')}." do
-    jaba(barebones: true) do
-      type :test do
-        attr :a, type: :bool do # B959A565
-          flags :required
-        end
-      end
-      test :t do # 3C869B0D
-      end
-    end
+jtest "only allows boolean values" do
+  jdl do
+    attr "b", type: :bool
+  end
+  assert_jaba_file_error "'b' attribute invalid - '1' is a integer - expected [true|false]", "0108AEFB" do
+    "b 1 # 0108AEFB"
   end
 end
 
-jtest 'can be set from global_attrs' do
-  jaba(barebones: true, global_attrs: {
-    'a1': 'true',
-    'a2': false,
-    'a3': '1',
-    'a4': 0
-    }) do
-    open_type :globals do
-      attr :a1, type: :bool do
-        default false
-      end
-      attr :a2, type: :bool do
-        default true
-      end
-      attr :a3, type: :bool do
-        default false
-      end
-      attr :a4, type: :bool do
-        default true
-      end
-    end
-    type :test
-    test :t do
-      globals.a1.must_equal true
-      globals.a2.must_equal false
-      globals.a3.must_equal true
-      globals.a4.must_equal false
-    end
+jtest "can be set from cmdline" do
+  jdl do
+    attr :b1, type: :bool
+    attr :b2, type: :bool
+    attr :b3, type: :bool
+    attr :b4, type: :bool
+  end
+  jaba(
+    global_attrs_from_cmdline: { 'b1': "true", 'b2': "false", 'b3': "1", 'b4': "0" },
+  ) do
+    b1.must_equal true
+    b2.must_equal false
+    b3.must_equal true
+    b4.must_equal false
   end
 
-  op = jaba(barebones: true, global_attrs: {'a': '10'}, want_exceptions: false) do
-    open_type :globals do
-      attr :a, type: :bool
-    end
-  end
-  op[:error].must_equal "'10' invalid value for ':a' attribute - [true|false|0|1] expected"
+  op = jaba(global_attrs_from_cmdline: { 'b1': 10 }, want_exceptions: false) do end
+  op[:error].must_equal "Error: '10' invalid value for 'b1' attribute - [true|false|0|1] expected."
 end
