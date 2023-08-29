@@ -15,6 +15,14 @@ core
 - prefix/postfix/delete/exclude should be specced with attr_option. exclude should get its type from its owning attr.
 - Remove node_option flag and handle node options same as attribute options
 - Add a general :nowarn option. This could replace the :force option. And have a command line switch to force showing of warningss
+- Test compound attr with value options
+- Add way of retrieving options in jdl:
+  src ".", vpath: "generated"
+  vpath = src getopt: :vpath
+- Investigate 'pull up' idea. Ramifications:
+ - configs need to be passed in as node options
+ - defaults needs to be able to set node options
+ - options need to support :overwite_default flag
 
 path attrs/src
 - Support **.h as alternative to **/*.h
