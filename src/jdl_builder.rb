@@ -48,6 +48,7 @@ module JABA
         d.set_api_class(@top_level_api_class)
       end
       @path_to_node_def[nil] = @top_level_node_def
+      @target_defaults_attr_def = nil
 
       @building_jdl = true
       api_blocks.each do |b|
@@ -133,7 +134,21 @@ module JABA
       attr_def = make_attribute(name, variant, type, block, node_def)
       @path_to_attr_def[path] = attr_def
 
+      if name == "defaults"
+        if !@target_defaults_attr_def.nil?
+          error("@target_defaults_attr_def already set")
+        end
+        @target_defaults_attr_def = attr_def
+      end
+
       if attr_def.has_flag?(:node_option)
+        # If adding options to target node add same option to target defaults attr
+        if node_def.name == "target"
+          if @target_defaults_attr_def.nil?
+            error("@target_defaults_attr_def is nil")
+          end
+          @target_defaults_attr_def.add_option_def(attr_def)
+        end
         node_def.option_attr_defs << attr_def
       else
         node_def.attr_defs << attr_def
@@ -481,6 +496,10 @@ module JABA
     def set_option(name, variant: :single, type: :null, &block)
       attr_def = @jdl_builder.send(:make_attribute, name, variant, type, block, @node_def, add: false)
       attr_def.post_create
+      add_option_def(attr_def)
+    end
+
+    def add_option_def(attr_def)
       @option_defs << attr_def
       @option_def_lookup[attr_def.name] = attr_def
     end

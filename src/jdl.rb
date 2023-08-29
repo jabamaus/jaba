@@ -120,7 +120,7 @@ JABA::Context.define_core_jdl do
   end
 
   attr "defaults", variant: :array, type: :block do
-    title "Set defaults at file or global scope"
+    title "Set target defaults at file or global scope"
     option :scope, type: :choice do
       title "Scope"
       items [:file, :global]

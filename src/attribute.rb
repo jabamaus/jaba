@@ -160,10 +160,11 @@ module JABA
 
     def has_flag_option?(o) = @flag_options&.include?(o)
 
-    def option_value(name)
+    def option_value(name, pop: false)
       @attr_def.lookup_option_def(name, self) # check its valid
       attr = @value_options ? @value_options[name] : nil
       return nil if attr.nil?
+      @value_options.delete(name) if pop
       attr.value
     end
 

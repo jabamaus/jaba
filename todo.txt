@@ -21,7 +21,6 @@ core
   vpath = src getopt: :vpath
 - Investigate 'pull up' idea. Ramifications:
  - configs need to be passed in as node options
- - defaults needs to be able to set node options
  - options need to support :overwite_default flag
 
 path attrs/src
@@ -88,6 +87,7 @@ v2 new features/changes:
  - rule inputs/outputs automatically added to src [DONE]
  - dependencies pulled into solution automatically [TODO]
  - per file defaults [DONE]
+ - options can now be passed into defaults block which can be overriden [TODO]
  - delete stale projects in build system [TODO]
  - ability to set src per config instead of per-project [DONE]
  - ability to set target type per config instead of per-project [DONE]

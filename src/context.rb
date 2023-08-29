@@ -123,8 +123,8 @@ module JABA
       @shared_lookup = {}
       @executing_jdl = 0
       @attr_def_block_stack = []
-      @global_scope_default_blocks = []
-      @file_scope_default_blocks = {}
+      @target_defaults_global = []
+      @target_defaults_file = {}
       @target_nodes = []
       @target_lookup = KeyToSHash.new # target id to target node
       @projects = []
@@ -210,16 +210,17 @@ module JABA
       end
 
       # Split default blocks into global and per-file
-      
+      #
       @root_node.get_attr(:defaults, fail_if_not_found: false)&.each do |elem|
-        block = elem.value
-        scope = elem.option_value(:scope)
+        # retrieve and then delete scope option as it has done its work should not be interpreted
+        # as a target node option like the rest of the options
+        scope = elem.option_value(:scope, pop: true)
         case scope
         when :global
-          @global_scope_default_blocks << block
+          @target_defaults_global << elem
         when :file
           file = elem.src_loc.src_loc_info[0]
-          @file_scope_default_blocks.push_value(file, block)
+          @target_defaults_file.push_value(file, elem)
         else
           JABA.error("Unrecognised scope '#{scope.inspect_unquoted}'")
         end
@@ -412,6 +413,14 @@ module JABA
           node.add_attrs(@jdl.common_attr_node_def.option_attr_defs)
           node.add_attrs(nd.node_def.option_attr_defs)
           node.get_attr(:id).set(nd.id)
+          # copy in options passed into default blocks
+          each_default(node) do |attr|
+            attr.value_options.each do |attr_name, oattr|
+              attr = node.get_attr(attr_name)
+              attr.set_last_call_location(node.src_loc)
+              attr.set(oattr.value)
+            end
+          end
           nd.kwargs.each do |attr_name, val|
             attr = node.get_attr(attr_name)
             attr.set_last_call_location(node.src_loc)
@@ -484,13 +493,15 @@ module JABA
       end
     end
 
+    def each_default(node, &block)
+      @target_defaults_global.each(&block)
+      @target_defaults_file[node.src_file]&.each(&block)
+    end
+
     def apply_defaults(node)
-      @global_scope_default_blocks.each do |b|
-        node.eval_jdl(&b)
-      end
-      file_scope_blocks = @file_scope_default_blocks[node.src_file]
-      file_scope_blocks&.each do |b|
-        node.eval_jdl(&b)
+      each_default(node) do |attr|
+        block = attr.value
+        node.eval_jdl(&block)
       end
     end
 
