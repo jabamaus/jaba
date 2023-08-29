@@ -1,3 +1,4 @@
+require_relative "../../jrf/libs/jrfutils/cmdline_tool"
 require_relative 'common'
 require_relative '../examples/gen_all'
 
@@ -71,9 +72,7 @@ class JABA::NodeDef
   end
 end
 
-class DocBuilder
-  include CommonUtils
-  
+class DocBuilder < CmdlineTool
   DOCS_REPO_DIR =               "#{__dir__}/../../jaba_docs".cleanpath
   DOCS_HANDWRITTEN_DIR =        "#{DOCS_REPO_DIR}/handwritten"
   DOCS_MARKDOWN_DIR =           "#{DOCS_REPO_DIR}/markdown"
@@ -83,7 +82,12 @@ class DocBuilder
   MAMD_DIR = "#{__dir__}/../../MaMD/_builds".cleanpath
   MAMD_EXE = "MaMD_windows_amd64.exe"
 
-  # TODO: check exit codes
+  def help_string = "Buids jaba docs"
+  def run
+    process_cmd_line("djaba") do |c|
+    end
+    build
+  end
 
   def build
     if !File.exist?(DOCS_REPO_DIR)
@@ -113,18 +117,14 @@ class DocBuilder
     generate_faqs
 
     if !File.exist?(MAMD_DIR)
-      $stderr.puts "#{MAMD_DIR} not found"
-      exit(1)
+      fail "#{MAMD_DIR} not found"
     end
 
     Dir.chdir(MAMD_DIR) do
       if !File.exist?(MAMD_EXE)
-        $stderr.puts "#{MAMD_EXE} not found in #{MAMD_DIR}"
-        exit(1)
+        fail "#{MAMD_EXE} not found in #{MAMD_DIR}"
       end
-      cmd = "#{MAMD_EXE} -i \"#{DOCS_MARKDOWN_DIR}\" -o \"#{DOCS_HTML_DIR}\""
-      puts cmd
-      system(cmd)
+      shell_cmd("#{MAMD_EXE} -i \"#{DOCS_MARKDOWN_DIR}\" -o \"#{DOCS_HTML_DIR}\"")
     end
   end
 
@@ -379,5 +379,5 @@ class DocBuilder
 end
 
 if __FILE__ == $PROGRAM_NAME
-  DocBuilder.new.build
+  DocBuilder.new.run
 end
