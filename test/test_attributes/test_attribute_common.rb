@@ -27,15 +27,15 @@ module JabaTestMethods
       when :compound
         # handled by calling code
       when :dir
-        "#{__dir__}/../../../examples/01-basic_app"
+        "#{__dir__}/../../examples/01-basic_app"
       when :ext
         ".ext"
       when :file
-        "#{__dir__}/../../../examples/01-basic_app/basic_app.jaba"
+        "#{__dir__}/../../examples/01-basic_app/basic_app.jaba"
       when :int
         1
       when :src
-        "#{__dir__}/../../../examples/01-basic_app"
+        "#{__dir__}/../../examples/01-basic_app"
       when :string
         "string"
       when :to_s
