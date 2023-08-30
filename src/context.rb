@@ -260,11 +260,6 @@ module JABA
         end
       end
 
-      # TODO: why is separate process/generate required?
-      @projects.each do |p|
-        p.process
-      end
-
       @projects.each(&:generate)
     end
 

@@ -19,14 +19,6 @@ module JABA
 
     def initialize(target_node)
       @node = target_node
-    end
-
-    def node = @node
-    def projdir = @projdir
-    def vcxproj_file = @vcxproj_file
-    def guid = @guid
-
-    def process
       @projname = @node[:projname]
       @projdir = @node[:projdir]
       @vcxproj_file = "#{@projdir}/#{@projname}.vcxproj"
@@ -38,7 +30,14 @@ module JABA
       @src_lookup = {}
       @file_type_hash = JABA.context.root_node[:vcfiletype]
       @file_to_file_type = {}
+    end
 
+    def node = @node
+    def projdir = @projdir
+    def vcxproj_file = @vcxproj_file
+    def guid = @guid
+
+    def generate
       platform = @node[:platform]
       pb = @@project_builder[platform]
       JABA.error("No vcxproj project builder for '#{platform.inspect_unquoted}' platform") if pb.nil?
@@ -140,9 +139,6 @@ module JABA
           end
         end
       end
-    end
-
-    def generate
       write_vcxproj
       write_vcxproj_filters
     end
