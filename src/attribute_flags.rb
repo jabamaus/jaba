@@ -100,20 +100,6 @@ module JABA
     end
   end
 
-  class AttributeFlagPerConfig < AttributeFlag
-    def initialize = super(:per_config)
-
-    def compatible?(attr_def)
-      if attr_def.node_def.name != "target"
-        yield "only allowed on target node attributes"
-      end
-    end
-
-    def init_attr_def(attr_def)
-      attr_def.set_note "Set on a per-config basis"
-    end
-  end
-
   class AttributeFlagReadOnly < AttributeFlag
     def initialize = super(:read_only)
 

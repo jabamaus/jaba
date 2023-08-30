@@ -76,15 +76,6 @@ module JABA
       nil
     end
 
-    # If the attribute was never set by the user and it has a default set ensure that the default value
-    # is applied. Call set with no args to achieve this.
-    #
-    def finalise
-      if !set? && attr_def.default_set?
-        apply_default(force: true)
-      end
-    end
-
     def clear = @hash.clear
 
     def fetch(key, fail_if_not_found: true)

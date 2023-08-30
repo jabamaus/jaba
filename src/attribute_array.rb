@@ -36,7 +36,6 @@ module JABA
             postfix: nil,
             delete: nil,
             exclude: nil,
-            __force_set_default: false,
             **kwargs, &block)
 
       # It is possible for values to be nil, which happens if no args are passed. This can happen if the user
@@ -57,7 +56,7 @@ module JABA
 
       # If attribute has not been set and there is a default 'pull' the values in
       # and prepend them to the values passed in. Allows default value to make use of other attributes.
-      if !set? && attr_def.default_set? && (!attr_def.has_flag?(:overwrite_default) || __force_set_default)
+      if !set? && attr_def.default_set? && (!attr_def.has_flag?(:overwrite_default))
         default_values = JABA.context.execute_attr_def_block(self, attr_def.default)
         validate_default_block_value(default_values)
         values.prepend(*default_values)
@@ -128,15 +127,6 @@ module JABA
         @elems << e
       end
       e
-    end
-
-    # If the attribute was never set by the user and it has a default set ensure that the default value
-    # is applied. Call set with no args to achieve this.
-    #
-    def finalise
-      if !set? && attr_def.default_set?
-        set(__force_set_default: true)
-      end
     end
 
     def apply_pre_post_fix(pre, post, val)

@@ -8,8 +8,6 @@ module JABA
       @src_loc = src_loc # nil for root node. Updated dynamically in eval_jdl
       @attributes = []
       @attribute_lookup = KeyToSHash.new
-      @attrs_to_ignore_when_setting = nil
-      @attrs_to_ignore_when_getting = nil
       @children = []
       @read_only = false
       @parent = parent
@@ -67,13 +65,17 @@ module JABA
       @attribute_lookup[attr_def.name] = a
     end
 
-    def ignore_attrs(set: nil, get: nil)
-      @attrs_to_ignore_when_setting = set
-      @attrs_to_ignore_when_getting = get
+    def remove_attr(name)
+      if !has_attribute?(name)
+        JABA.error("Cannot remove '#{name.inspect_unquoted}' attribute - not found")
+      end
+      i = @attributes.find_index{|a| a.name == name}
+      if i.nil?
+        JABA.error("Failed to find '#{name.inspect_unquoted}' attribute index")
+      end
+      @attributes.delete_at(i)
+      @attribute_lookup.delete(name)
     end
-
-    def ignore_attr_get?(name) = @attrs_to_ignore_when_getting&.has_key?(name)
-    def ignore_attr_set?(name) = @attrs_to_ignore_when_setting&.has_key?(name)
 
     def node_def = @node_def
     def api_obj = @api_obj
@@ -108,17 +110,8 @@ module JABA
     def post_create
       @attributes.each do |a|
         if !a.set? && a.required?
-          if a.attr_def.has_flag?(:node_option)
-            JABA.error("#{describe} requires #{a.describe} to be passed in", errobj: self)
-          else
-            JABA.error("#{describe} requires #{a.describe} to be set", errobj: self)
-          end
+          JABA.error("#{describe} requires #{a.describe} to be set", errobj: self)
         end
-
-        a.finalise
-
-        # Note that it is still possible for attributes to not be marked as 'set' by this point, ie if the user never
-        # set it and it didn't have a default. But by this point the set flag has served it purpose.
       end
     end
 
@@ -159,17 +152,19 @@ module JABA
 
     # This is the only place that attrs values can be set or retrieved from user definitions.
     def jdl_process_attr(name, *args, __call_loc:, **kwargs, &block)
-      is_get = (args.empty? && kwargs.empty? && !block_given?)
+      is_get = (args.empty? && kwargs.empty? && !block)
       if is_get
-        return nil if ignore_attr_get?(name)
         a = search_attr(name)
-        a.set_last_call_location(__call_loc) if JABA.context.executing_jdl?
+        if JABA.context.executing_jdl?
+          a.set_last_call_location(__call_loc)
+        end
         return a.value
       else
-        return nil if ignore_attr_set?(name)
         a = get_attr(name, fail_if_not_found: false)
         if a
-          a.set_last_call_location(__call_loc) if JABA.context.executing_jdl?
+          if JABA.context.executing_jdl?
+            a.set_last_call_location(__call_loc)
+          end
           if @read_only
             a.attr_error("#{a.describe} is read only in this scope")
           end
@@ -179,7 +174,9 @@ module JABA
           # readonly. Issue a suitable error.
           a = search_attr(name, skip_self: true, fail_if_not_found: false)
           if a
-            a.set_last_call_location(__call_loc) if JABA.context.executing_jdl?
+            if JABA.context.executing_jdl?
+              a.set_last_call_location(__call_loc)
+            end
             # Compound attributes are allowed to set 'sibling' attributes which are in its parent node
             if compound_attr? && a.node == @parent
               a.set(*args, **kwargs, &block)
@@ -191,6 +188,21 @@ module JABA
           end
         end
         return nil
+      end
+    end
+
+    def pull_up(attr)
+      # TODO: check for commonality
+      ca = @children[0].get_attr(attr.name)
+      ca.visit_elem do |elem, key|
+        if attr.attr_def.variant == :hash
+          attr.set(key, elem.value, *elem.flag_options, __map: false, **elem.value_options_raw)
+        else
+          attr.set(elem.value, *elem.flag_options, __map: false, **elem.value_options_raw)
+        end
+      end
+      @children.each do |c|
+        c.remove_attr(attr.name)
       end
     end
 
@@ -281,6 +293,7 @@ module JABA
       end
     end
 
+    # TODO: move out
     def import_exports(from_node)
       virtual = from_node[:virtual]
       # Skip single value attributes as they cannot export. The reason for this is that exporting it would simply
@@ -304,9 +317,9 @@ module JABA
             # Pass __map: false as the values have already been mapped
             case attr.attr_def.variant
             when :array
-              attr.set(elem.raw_value, *foptions, __map: false, **elem.value_options)
+              attr.set(elem.raw_value, *foptions, __map: false, **elem.value_options_raw)
             when :hash
-              attr.set(key, elem.raw_value, *foptions, __map: false, **elem.value_options)
+              attr.set(key, elem.raw_value, *foptions, __map: false, **elem.value_options_raw)
             else
               JABA.error("Unhandled variant '#{variant.inspect_unquoted}'")
             end

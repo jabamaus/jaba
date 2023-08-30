@@ -22,6 +22,10 @@ core
 - Investigate 'pull up' idea. Ramifications:
  - configs need to be passed in as node options
  - options need to support :overwite_default flag
+ - change shared blocks to use :block attrs rather than custom code
+- Check for commonality in pull_up and add test
+- Chekc that pull_up works with compounds
+- Make write_src per_target and don't write file in on_set
 
 path attrs/src
 - Support **.h as alternative to **/*.h

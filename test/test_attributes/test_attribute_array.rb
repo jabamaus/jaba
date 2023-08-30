@@ -49,7 +49,9 @@ jtest "array supports a default" do
   end
 
   assert_jaba_error "Error at #{src_loc("33EF0612")}: 'd' attribute 'default' invalid - 'not a bool' is a string - expected [true|false]" do
-    jaba do end
+    jaba do
+      d
+    end
   end
 
   jdl do

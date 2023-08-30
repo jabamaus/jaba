@@ -175,6 +175,7 @@ jtest "can register attributes as node options" do
       flags :node_option, :required
     end
     node "node1"
+    attr "node1/body_attr", type: :int
     attr "node1/a" do
       flags :node_option
     end
@@ -183,14 +184,19 @@ jtest "can register attributes as node options" do
       flags :node_option, :required
     end
   end
+  # non-option attrs cannot be passed in
+  assert_jaba_error "Error at #{src_loc("A683789B")}: 'body_attr' attribute must be set in the definition body." do
+    jaba do
+      node1 :n, body_attr: 1 do # A683789B
+      end
+    end
+  end
   jaba do
     node1 :n, a: 1, common_option: 2, common_option_required: 3 do
       a.must_equal 1
       common_option.must_equal 2
       common_option_required.must_equal 3
-      # TODO
-      #available.must_equal ["a (read)"]
-      JTest.assert_jaba_error "Error at #{JTest.src_loc("70E5EB5C")}: 'a' attribute is read only in this scope." do
+      JTest.assert_jaba_error "Error at #{JTest.src_loc("70E5EB5C")}: 'a' attribute is read only." do
         a 2 # 70E5EB5C
       end
     end

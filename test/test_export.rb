@@ -74,7 +74,7 @@ jtest "supports exporting attributes to dependents" do
     end
   end
 
-  app1 = op[:root].get_child(:app1).children[0]
+  app1 = op[:root].get_child(:app1)
   app1[:vcglobal][:BoolAttr].must_equal "true"
   app1[:vcglobal][:StringAttr2].must_equal "s2"
   app1[:vcglobal][:StringAttr3].must_equal "s3"
@@ -93,7 +93,7 @@ jtest "supports exporting attributes to dependents" do
   app1r[:inc].must_equal ["#{temp_dir}/lib/include"]
   app1r[:syslibs].must_equal ["release.lib"]
 
-  app2 = op[:root].get_child(:app2).children[0]
+  app2 = op[:root].get_child(:app2)
   app2[:vcglobal][:BoolAttr].must_equal "true"
   app2[:vcglobal][:StringAttr2].must_equal "s2"
   app2[:vcglobal][:StringAttr3].must_equal "s3"
@@ -108,7 +108,7 @@ jtest "supports exporting attributes to dependents" do
   app2r[:inc].must_equal ["#{temp_dir}/lib/include"]
   app2r[:syslibs].must_equal ["release.lib"]
 
-  lib = op[:root].get_child(:lib).children[0]
+  lib = op[:root].get_child(:lib)
   lib[:vcglobal][:StringAttr].must_equal "s"
   lib[:vcglobal].has_key?(:StringAttr2).must_be_false # due to :export_only
   lib[:vcglobal][:StringAttr3].must_equal("s3")

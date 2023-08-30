@@ -5,6 +5,7 @@ module JABA
       @node = node
       @last_call_location = nil
       @set = false
+      @read_only = @attr_def.has_flag?(:read_only)
     end
 
     def to_s = "#{type_id} attribute" # For debugger
@@ -15,7 +16,8 @@ module JABA
     def attr_def = @attr_def
     def set? = @set
     def required? = @attr_def.has_flag?(:required)
-    def read_only? = attr_def.has_flag?(:read_only)
+    def read_only? = @read_only
+    def set_read_only = @read_only = true
     def src_loc = @last_call_location
     def last_call_location = @last_call_location
     def set_last_call_location(loc) = @last_call_location = loc
@@ -79,6 +81,7 @@ module JABA
 
     def flag_options = @flag_options
     def value_options = @value_options
+    def value_options_raw = @value_options.transform_values { |e| e.value }
 
     # This can only be called after the value has had its final value set as it gives raw access to value.
     def raw_value = @value
@@ -209,18 +212,6 @@ module JABA
         @value.api_obj
       else
         @value.freeze
-      end
-    end
-
-    # If the attribute was never set by the user and it has a default set ensure that the default value
-    # is applied. Call set with no args to achieve this.
-    #
-    def finalise
-      # TODO: exercise this code in test
-      if !set?
-        #  if attr_def.default_set?
-        #    set(JABA.context.execute_attr_def_block(self, attr_def.default))
-        #  end
       end
     end
   end

@@ -174,14 +174,6 @@ end # end core jdl
 JABA::Context.define_jdl do
   node "target" do
     title "Define a target"
-    note "Split into 'target' level attributes and 'config' level attributes"
-  end
-
-  # Target level attributes, all flagged with :per_target
-
-  attr "target/per_target", type: :block do
-    title "Explicit per target block"
-    flags :per_target, :execute_immediately
   end
 
   attr "target/configs", variant: :array, type: :string do
@@ -253,23 +245,15 @@ JABA::Context.define_jdl do
     flags :per_target
   end
 
-  # Config level attributes
-
-  attr "target/per_config", type: :block do
-    title "Explicit per config block"
-    flags :per_config, :execute_immediately
-  end
-
   attr "target/config", type: :string do
     title "Current target config as an id"
     note "Returns current config being processed. Use to define control flow to set config-specific atttributes"
-    flags :per_config, :read_only
+    flags :read_only
     # TODO: examples, including regexes
   end
 
   attr "target/configname", type: :string do
     title "Display name of config as seen in IDE"
-    flags :per_config
     default do
       config.capitalize_first
     end
@@ -277,14 +261,13 @@ JABA::Context.define_jdl do
 
   attr "target/cpplang", type: :choice do
     title "C++ language standard"
-    flags :per_config
     items ["C++11", "C++14", "C++17", "C++20", "C++23"]
     default "C++14"
   end
 
   attr "target/bindir", type: :dir do
     title "Output directory for executables"
-    flags :per_config, :no_check_exist
+    flags :no_check_exist
     base_attr :artefact_root
     default do
       "#{arch}/bin/#{config}"
@@ -293,7 +276,7 @@ JABA::Context.define_jdl do
 
   attr "target/libdir", type: :dir do
     title "Output directory for libs"
-    flags :per_config, :no_check_exist
+    flags :no_check_exist
     base_attr :artefact_root
     default do
       "#{arch}/lib/#{config}"
@@ -302,7 +285,7 @@ JABA::Context.define_jdl do
 
   attr "target/objdir", type: :dir do
     title "Output directory for object files"
-    flags :per_config, :no_check_exist
+    flags :no_check_exist
     base_attr :artefact_root
     default do
       "#{arch}/obj/#{config}/#{projname}"
@@ -313,7 +296,6 @@ JABA::Context.define_jdl do
   attr "target/debug", type: :bool do
     title "Flags config as a debug config"
     note 'Defaults to true if config id contains \'debug\''
-    flags :per_config
     default do
       config =~ /debug/i ? true : false
     end
@@ -327,36 +309,34 @@ JABA::Context.define_jdl do
       :unicode,
     ]
     default :unicode
-    flags :per_config
     example "charset :unicode"
   end
 
   attr "target/cflags", variant: :array, type: :string do
     title "Raw compiler command line switches"
-    flags :per_config, :exportable
+    flags :exportable
   end
 
   attr "target/lflags", variant: :array, type: :string do
     title "Raw linker command line switches"
-    flags :per_config, :exportable
+    flags :exportable
   end
 
   attr "target/define", variant: :array, type: :string do
     title "Preprocessor defines"
-    flags :per_config, :exportable
+    flags :exportable
   end
 
   attr "target/inc", variant: :array, type: :dir do
     title "Include paths"
     base_attr :root
-    flags :per_config, :no_sort, :exportable
+    flags :no_sort, :exportable
     example "inc ['mylibrary/include']"
     example "inc ['mylibrary/include'], :export # Export include path to dependents"
   end
 
   attr "target/exceptions", type: :choice do
     title "Enables C++ exceptions"
-    flags :per_config
     items [true, false]
     items [:structured] # Windows only
     default true
@@ -365,13 +345,11 @@ JABA::Context.define_jdl do
 
   attr "target/rtti", type: :bool do
     title "Enables runtime type information"
-    flags :per_config
     example "rtti true"
   end
 
   attr "target/rule", variant: :array, type: :compound do
     title "TODO"
-    flags :per_config
   end
 
   attr "target/rule/input", variant: :array, type: :src do
@@ -416,7 +394,7 @@ JABA::Context.define_jdl do
   attr "target/shell", variant: :array, type: :string do
     title "Shell commands to execute during build"
     note "Maps to build events in Visual Studio"
-    flags :per_config, :exportable
+    flags :exportable
     option :when, type: :choice do
       title "When shell command should be run"
       items [:PreBuild, :PreLink, :PostBuild]
@@ -427,8 +405,7 @@ JABA::Context.define_jdl do
   attr "target/src", variant: :array, type: :src do
     title "Specify source files"
     base_attr :root
-    flags :per_config, :exportable
-    flags :no_sort # sorted at project generation time
+    flags :exportable, :no_sort # sorted at project generation time
     option :vpath, type: :dir do
       title "Virtual path"
       note "Controls IDE project layout"
@@ -485,7 +462,6 @@ JABA::Context.define_jdl do
 
   attr "target/write_src", variant: :array, type: :compound do
     title "Creates a src and adds to build"
-    flags :per_config
     on_set do
       filename = fn
       fm = JABA.context.file_manager
@@ -524,18 +500,17 @@ JABA::Context.define_jdl do
   attr "target/libs", variant: :array, type: :file do
     title "Paths to required non-system libs"
     base_attr :root
-    flags :per_config, :no_sort, :no_check_exist, :exportable
+    flags :no_sort, :no_check_exist, :exportable
   end
 
   attr "target/syslibs", variant: :array, type: :string do
     title "System libs"
-    flags :per_config, :no_sort, :exportable
+    flags :no_sort, :exportable
   end
 
   attr "target/targetname", type: :basename do
     title "Basename of output file without extension"
     note "Defaults to $(targetprefix)$(projname)$(targetsuffix)"
-    flags :per_config
     default do
       "#{targetprefix}#{projname}#{targetsuffix}"
     end
@@ -544,19 +519,16 @@ JABA::Context.define_jdl do
   attr "target/targetprefix", type: :string do
     title "Prefix to apply to $(targetname)"
     note "Has no effect if $(targetname) specified"
-    flags :per_config
   end
 
   attr "target/targetsuffix", type: :string do
     title "Suffix to apply to $(targetname)"
     note "Has no effect if $(targetname) specified"
-    flags :per_config
   end
 
   attr "target/targetext", type: :ext do
     title "Extension to apply to $(targetname)"
     note "Defaults to standard extension for $(type) of project for target $(platform)"
-    flags :per_config
     default do
       case platform
       when :windows
@@ -577,7 +549,6 @@ JABA::Context.define_jdl do
   attr "target/type", type: :choice do
     title "Target type"
     items [:app, :console, :lib, :dll]
-    flags :per_config
     default :app
   end
 
@@ -588,7 +559,6 @@ JABA::Context.define_jdl do
   
   attr "target/warnerror", type: :bool do
     title "Enable warnings as errors"
-    flags :per_config
     example "warnerror true"
   end
 
@@ -646,7 +616,7 @@ JABA::Context.define_jdl do
 
   attr "target/vcimportlib", type: :file do
     title "Name of import lib for use will dlls"
-    flags :per_config, :no_check_exist
+    flags :no_check_exist
     note "Defaults to $(projname)$(targetsuffix).lib"
     default do
       "#{projname}#{targetsuffix}.lib"
@@ -656,14 +626,12 @@ JABA::Context.define_jdl do
 
   attr "target/vcwarnlevel", type: :choice do
     title "Visual Studio warning level"
-    flags :per_config
     items [1, 2, 3, 4]
     default 3
   end
 
   attr "target/vcnowarn", variant: :array, type: :int do
     title "Warnings to disable"
-    flags :per_config
     flags :exportable
     example "vcnowarn [4100, 4127, 4244]"
   end
@@ -671,7 +639,7 @@ JABA::Context.define_jdl do
   attr "target/vcprop", variant: :hash, type: :to_s do
     title "Address per-configuration sections of a vcxproj directly"
     key_type :string
-    flags :per_config, :exportable
+    flags :exportable
     option :condition, type: :string do
       title "Condition string"
     end
@@ -685,7 +653,6 @@ JABA::Context.define_jdl do
   attr "target/vctoolset", type: :choice do
     title "Toolset version to use"
     note "Defaults to host's default toolset"
-    flags :per_config
     items ["v100", "v110", "v120", "v140", "v141", "v142", "v143"]
     default do
       "v143" # TODO

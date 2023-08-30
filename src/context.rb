@@ -407,74 +407,85 @@ module JABA
     end
 
     def process_node_def(nd)
-      parent = @root_node
-      if !nd.node_def.option_attr_defs.empty? || !@jdl.common_attr_node_def.option_attr_defs.empty?
-        parent = create_node(nd, nd.id, parent: parent, eval_jdl: false) do |node|
-          node.add_attrs(@jdl.common_attr_node_def.option_attr_defs)
-          node.add_attrs(nd.node_def.option_attr_defs)
-          node.get_attr(:id).set(nd.id)
-          # copy in options passed into default blocks
-          each_default(node) do |attr|
-            attr.value_options.each do |attr_name, oattr|
-              attr = node.get_attr(attr_name)
-              attr.set_last_call_location(node.src_loc)
-              attr.set(oattr.value)
+      is_target = nd.node_def.name == "target"
+      klass = is_target ? TargetNode : Node
+
+      node = create_node(nd, nd.id, klass: klass, parent: @root_node, eval_jdl: !is_target) do |n|
+        n.add_attrs(@jdl.common_attr_node_def.option_attr_defs)
+        n.add_attrs(@jdl.common_attr_node_def.attr_defs)
+        n.add_attrs(nd.node_def.option_attr_defs)
+        n.add_attrs(nd.node_def.attr_defs)
+
+        id_attr = n.get_attr(:id, fail_if_not_found: false)
+        if id_attr
+          id_attr.set(nd.id)
+        end
+
+        if is_target
+          @target_nodes << n
+          @target_lookup[nd.id] = n
+
+          # Set options that were passed into default block(s)
+          #
+          each_default(n) do |a|
+            a.value_options.each do |name, oattr|
+              a = n.get_attr(name)
+              a.set_last_call_location(n.src_loc)
+              a.set(oattr.value)
             end
           end
-          nd.kwargs.each do |attr_name, val|
-            attr = node.get_attr(attr_name)
-            attr.set_last_call_location(node.src_loc)
-            attr.set(val)
+        end
+
+        # Set options that were passed into actual definition
+        #
+        nd.kwargs.each do |name, val|
+          a = n.get_attr(name)
+          a.set_last_call_location(n.src_loc)
+          if !a.attr_def.has_flag?(:node_option)
+            a.attr_error("#{a.describe} must be set in the definition body")
+          end
+          a.set(val)
+        end
+
+        # Check that all required options were passed in and make them read only from now on
+        #
+        n.attributes.each do |a|
+          ad = a.attr_def
+          if ad.has_flag?(:node_option)
+            if ad.has_flag?(:required) && !a.set?
+              JABA.error("#{n.describe} requires #{a.describe} to be passed in", errobj: n)
+            end
+            a.set_read_only
           end
         end
       end
-      if nd.node_def.name == "target"
-        if @target_attr_defs.nil?
-          @target_attr_defs = []
-          @config_attr_defs = []
-          nd.node_def.attr_defs.each do |ad|
-            if ad.has_flag?(:per_target)
-              @target_attr_defs << ad
-            elsif ad.has_flag?(:per_config)
-              @config_attr_defs << ad
-            else
-              ad.definition_error("must be flagged with either :per_target or :per_config")
-            end
-          end
-          @target_attrs_ignore = KeyToSHash.new.tap do |h|
-            @target_attr_defs.each { |ta| h[ta.name] = true }
-          end
-          @config_attrs_ignore = KeyToSHash.new.tap do |h|
-            @config_attr_defs.each { |ca| h[ca.name] = true }
-          end
+      if is_target
+        process_target(nd, node)
+      end
+    end
+
+    def process_target(nd, target_node)
+      target_node[:configs].each do |cfg_id|
+        create_node(nd, cfg_id, parent: target_node) do |n|
+          n.add_attrs(@jdl.common_attr_node_def.attr_defs)
+          n.add_attrs(nd.node_def.attr_defs)
+          n.get_attr(:config).set(cfg_id, __force: true)
+          apply_defaults(n)
         end
-        target_node = create_node(nd, nd.id, klass: TargetNode, parent: parent) do |node|
-          @target_nodes << node
-          @target_lookup[nd.id] = node
-          node.add_attrs(@jdl.common_attr_node_def.attr_defs)
-          node.add_attrs(@target_attr_defs)
-          node.ignore_attrs(set: @config_attrs_ignore, get: @config_attrs_ignore)
-          apply_defaults(node)
+      end
+
+      target_node.attributes.each do |a|
+        if a.attr_def.has_flag?(:per_target)
+          target_node.pull_up(a)
         end
-        configs = target_node[:configs]
-        configs.each do |cfg_id|
-          create_node(nd, cfg_id, parent: target_node) do |node|
-            node.add_attrs(@config_attr_defs)
-            node.ignore_attrs(set: @target_attrs_ignore)
-            node.get_attr(:config).set(cfg_id, __force: true)
-            apply_defaults(node)
-          end
-        end
-        if !target_node.virtual?
-          vcxproj = Vcxproj.new(target_node)
-          @projects << vcxproj
-          @project_lookup[target_node] = vcxproj
-        end
-      else
-        create_node(nd, nd.id, parent: parent) do |node|
-          node.add_attrs(@jdl.common_attr_node_def.attr_defs)
-          node.add_attrs(nd.node_def.attr_defs)
-        end
+      end
+
+      target_node.post_create
+
+      if !target_node.virtual?
+        vcxproj = Vcxproj.new(target_node)
+        @projects << vcxproj
+        @project_lookup[target_node] = vcxproj
       end
     end
 
@@ -483,8 +494,10 @@ module JABA
         node = klass.new
         node.init(nd.node_def, sibling_id, nd.src_loc, parent)
         yield node if block_given?
-        node.eval_jdl(&nd.block) if nd.block && eval_jdl
-        node.post_create
+        if eval_jdl
+          node.eval_jdl(&nd.block) if nd.block
+          node.post_create
+        end
         return node
       rescue FrozenError => e
         msg = e.message.sub("frozen", "read only").capitalize_first

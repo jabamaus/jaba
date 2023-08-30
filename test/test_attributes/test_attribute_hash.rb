@@ -401,7 +401,7 @@ jtest "supports expanding keys to arrays" do
       a.must_equal({ "#{td}/a.txt" => "txt", "#{td}/b.txt" => "txt", "#{td}/c.txt" => "txt", "#{td}/d.rb" => "rb", "#{td}/e.rb" => "rb" })
     end
   end
-  a = op[:root].children[0].children[0].get_attr(:a)
+  a = op[:root].children[0].get_attr(:a)
   a.fetch("#{td}/a.txt").has_flag_option?(:fo).must_be_true
   a.fetch("#{td}/a.txt").option_value(:vo).must_equal(2)
   a.fetch("#{td}/b.txt").has_flag_option?(:fo).must_be_true
