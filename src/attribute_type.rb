@@ -314,13 +314,5 @@ module JABA
     def validate_value(attr_def, value)
       yield "must be a block" if !value.proc?
     end
-  
-    def map_value(value, attr)
-      block = value
-      if attr.attr_def.has_flag?(:execute_immediately)
-        attr.node.eval_jdl(&block)
-      end
-      block
-    end
   end
 end
