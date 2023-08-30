@@ -47,7 +47,7 @@ module JABA
 
       @node.eval_jdl(self, &pb)
 
-      each_config do |cfg|
+      @node.each_config do |cfg|
         cfg.eval_jdl(self, cfg[:type], &cb)
         src_attr = cfg.get_attr(:src)
         vcprop_attr = cfg.get_attr(:vcprop)
@@ -143,8 +143,6 @@ module JABA
       write_vcxproj_filters
     end
 
-    def each_config(&block) = @node.children.each(&block)
-
     def demacroise(str, input, implicit_input, output)
       str = str.dup
       matches = str.scan(/(\$\((.+?)(\.(.+?))?\))/)
@@ -186,7 +184,7 @@ module JABA
       @ps = file.work_area
       @idg = file.work_area
 
-      each_config do |cfg|
+      @node.each_config do |cfg|
         platform = "x64" # TODO: cfg.attrs.arch.attrs.vsname
         cfg_name = cfg[:configname]
         @item_def_groups = {}
@@ -294,7 +292,7 @@ module JABA
 =end
       end
 
-      each_config do |cfg|
+      @node.each_config do |cfg|
         # TODO: ExtensionSettings
       end
 
@@ -337,7 +335,7 @@ module JABA
 =end
       end
 
-      each_config do |cfg|
+      @node.each_config do |cfg|
         # TODO: extension targets
       end
       w << "</Project>"
