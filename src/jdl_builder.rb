@@ -217,6 +217,13 @@ module JABA
       process_method(node_def, path, name, block)
     end
 
+    def define_top_level_method(id, &block)
+      if @top_level_api_class.method_defined?(id)
+        JABA.error("'#{id}' method already defined")
+      end
+      @top_level_api_class.define_method(id, &block)
+    end
+
     private
 
     def process_method(node_def, path, name, block)

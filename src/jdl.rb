@@ -75,6 +75,13 @@ JABA::Context.define_core_jdl do
     end
   end
 
+  method "method" do
+    title "Define a utility method"
+    on_called do |id, &block|
+      JABA.context.jdl_builder.define_top_level_method(id, &block)
+    end
+  end
+
   # Top level attributes
 
   attr "buildsystem", type: :choice do

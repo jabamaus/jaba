@@ -26,7 +26,7 @@ jtest "catches constant errors in block form" do
 end
 
 jtest "catches constant errors in jaba file form" do
-  assert_jaba_file_error(/uninitialized constant #<Class:.+>::BADCODE\./, 1) do
+  assert_jaba_file_error(/uninitialized constant #<Class:.*>::BADCODE\./, 1) do
     "BADCODE"
   end
 end

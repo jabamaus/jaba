@@ -140,6 +140,7 @@ module JABA
     def begin_jdl = @executing_jdl += 1
     def end_jdl = @executing_jdl -= 1
     def executing_jdl? = @executing_jdl > 0
+    def jdl_builder = @jdl
 
     def execute
       begin

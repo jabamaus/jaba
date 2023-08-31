@@ -4,6 +4,13 @@ module JABA
       JABA.error("node_def must not be nil") if node_def.nil?
       @node_def = node_def
       @api_obj = @node_def.api_class.new(self)
+      
+      def @api_obj.singleton_method_added(id)
+        if id != :singleton_method_added
+          JABA.error("Ruby method definitions are not allowed. Use 'method' at file scope", line: ::Kernel.calling_location)
+        end
+      end
+
       @sibling_id = sibling_id
       @src_loc = src_loc # nil for root node. Updated dynamically in eval_jdl
       @attributes = []

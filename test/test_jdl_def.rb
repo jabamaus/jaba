@@ -144,6 +144,28 @@ jtest "can register methods globally" do
   end
 end
 
+jtest "can register utility methods" do
+  assert_output "1|2|Debug|3|Release|3|" do
+    jaba do
+      JTest.assert_jaba_error "Error at #{JTest.src_loc("7809F3B5")}: Ruby method definitions are not allowed. Use 'method' at file scope." do
+        def invalid ; end # 7809F3B5
+      end
+      method :util do |arg, opt: nil|
+        print "#{arg}|#{opt}|"
+        return 4
+      end
+      JTest.assert_jaba_error "Error at #{JTest.src_loc("65DC2F5C")}: 'util' method already defined." do
+        method :util do # 65DC2F5C
+        end
+      end
+      util(1, opt: 2).must_equal 4
+      target :app do
+        util config, opt: 3
+      end
+    end
+  end
+end
+
 jtest "can register attributes into nodes" do
   jdl do
     node "node1"
