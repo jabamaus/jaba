@@ -332,6 +332,9 @@ JABA::Context.define_jdl do
   attr "target/define", variant: :array, type: :string do
     title "Preprocessor defines"
     flags :exportable
+    example "define \"MYDEFINE\""
+    example "define [\"DEFINE1\", \"DEFINE2\", \"DEFINE3=1\"]"
+    example "define debug? ? \"DEBUG\" : \"RELEASE\""
   end
 
   attr "target/inc", variant: :array, type: :dir do

@@ -25,12 +25,12 @@ jtest "target" do
   app = root.get_child(:app)
   app.sibling_id.must_equal :app
   app.children.size.must_equal 2
-  debug_conf = app.children[0]
-  debug_conf[:configname].must_equal "Debug"
-  debug_conf[:define].must_equal ["D"]
-  release_conf = app.children[1]
-  release_conf[:configname].must_equal "Release"
-  release_conf[:define].must_equal ["R"]
+  d = app.get_child(:Debug)
+  d[:configname].must_equal "Debug"
+  d[:define].must_equal ["D"]
+  r = app.get_child(:Release)
+  r[:configname].must_equal "Release"
+  r[:define].must_equal ["R"]
 end
 
 jtest "supports default block" do
@@ -50,39 +50,34 @@ jtest "supports default block" do
       projname "My#{id}"
     end
     defaults scope: :file, myopt2: 3, array: [2, 3] do # myopt2 overrides global default, array will append
-      if debug?
-        define 'D'
-      else
-        define 'R'
-      end
+      define debug? ? 'D' : 'R'
     end
-    target :app1, array: [4, 5] do
-    end
-    target :app2, myopt1: 4 do
-    end
+    target :app1, array: [4, 5]
+    target :app2, myopt1: 4
   end
   root = op[:root]
-  app1 = root.get_child(:app1)
-  app1[:projname].must_equal "Myapp1"
-  app1[:myopt1].must_equal 1
-  app1[:myopt2].must_equal 3
-  app1[:array].must_equal [1, 2, 3, 4, 5]
-  debug_conf = app1.children[0]
-  debug_conf[:define].must_equal ["D"]
-  debug_conf[:config].must_equal "Debug"
-  rel_conf = app1.children[1]
-  rel_conf[:config].must_equal "Release"
-  rel_conf[:define].must_equal ["R"]
 
-  app2 = root.get_child(:app2)
-  app2[:projname].must_equal "Myapp2"
-  app2[:myopt1].must_equal 4
-  app2[:myopt2].must_equal 3
-  app2[:array].must_equal [1, 2, 3]
-  debug_conf = app2.children[0]
-  debug_conf[:define].must_equal ["D"]
-  debug_conf[:config].must_equal "Debug"
-  rel_conf = app2.children[1]
-  rel_conf[:config].must_equal "Release"
-  rel_conf[:define].must_equal ["R"]
+  a1 = root.get_child(:app1)
+  a1[:projname].must_equal "Myapp1"
+  a1[:myopt1].must_equal 1
+  a1[:myopt2].must_equal 3
+  a1[:array].must_equal [1, 2, 3, 4, 5]
+  d = a1.get_child(:Debug)
+  d[:define].must_equal ["D"]
+  d[:config].must_equal "Debug"
+  r = a1.get_child(:Release)
+  r[:config].must_equal "Release"
+  r[:define].must_equal ["R"]
+
+  a2 = root.get_child(:app2)
+  a2[:projname].must_equal "Myapp2"
+  a2[:myopt1].must_equal 4
+  a2[:myopt2].must_equal 3
+  a2[:array].must_equal [1, 2, 3]
+  d = a2.get_child(:Debug)
+  d[:define].must_equal ["D"]
+  d[:config].must_equal "Debug"
+  r = a2.get_child(:Release)
+  r[:config].must_equal "Release"
+  r[:define].must_equal ["R"]
 end
