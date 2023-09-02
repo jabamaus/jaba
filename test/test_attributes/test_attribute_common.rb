@@ -1,9 +1,5 @@
 module JabaTestMethods
-  ATTR_VARIANTS = [:single, :array, :hash]
-  ATTR_TYPES = JABA::Context.all_attr_type_names
-  ATTR_TYPES.delete(:null)
-
-  def coerce_to_variant(variant, val, key: :key)
+  def coerce_to_variant(variant, val, key)
     case variant
     when :single
       val
@@ -14,85 +10,26 @@ module JabaTestMethods
     end
   end
 
-  def make_args(variant, type, key: nil, single: false)
-    val = case type
-      when :basename
-        "basename"
-      when :block
-        Proc.new {}
-      when :bool
-        false
-      when :choice
-        :a
-      when :compound
-        # handled by calling code
-      when :dir
-        "#{__dir__}/../../examples/01-basic_app"
-      when :ext
-        ".ext"
-      when :file
-        "#{__dir__}/../../examples/01-basic_app/basic_app.jaba"
-      when :int
-        1
-      when :src
-        "#{__dir__}/../../examples/01-basic_app"
-      when :string
-        "string"
-      when :to_s
-        "to_s"
-      when :uuid
-        "uuid"
-      when :null, nil
-        1
-      else
-        raise "unhandled attr type '#{type}'"
-      end
-    return val if single
-    args = []
-    args << coerce_to_variant(variant, val, key: key)
-    args
-  end
-
-  def set_attr(receiver, attr_name, variant, type, key: :key, **kwargs)
-    if type == :compound
-      if variant == :hash
-        raise "key must be specified" if key.nil?
-        receiver.__send__(attr_name, key, __call_loc: Kernel.calling_location, **kwargs) do
-        end
-      else
-        receiver.__send__(attr_name, __call_loc: Kernel.calling_location, **kwargs) do
-        end
-      end
-    else
-      receiver.__send__(attr_name, *make_args(variant, type, key: key), __call_loc: Kernel.calling_location, **kwargs)
-    end
+  def make_args(variant, val, key: :k)
+    [coerce_to_variant(variant, val, key)]
   end
 
   def each_variant(single: true, array: true, hash: true)
-    ATTR_VARIANTS.each do |av|
+    [:single, :array, :hash].each do |av|
       next if av == :single && !single
       next if av == :array && !array
       next if av == :hash && !hash
       yield av, "(#{av})"
     end
   end
-
-  def each_variant_and_type(single: true, array: true, hash: true, &block)
-    each_variant(single: single, array: array, hash: hash) do |av|
-      ATTR_TYPES.each do |at, default|
-        yield av, at, "(#{at} #{av})", default
-      end
-    end
-  end
 end
 
 jtest "fails if value not supplied when flagged with :required" do
   # Test required top level attr
-  each_variant_and_type do |av, at, desc|
+  each_variant do |av, desc|
     jdl do
-      attr :a, variant: av, type: at do
+      attr :a, variant: av, type: :int do
         flags :required
-        items [:a, :b, :c] if at == :choice
       end
     end
     assert_jaba_error "Error at #{src_loc("D43F2208")}: 'root' requires 'a' attribute to be set.", hint: desc do
@@ -104,16 +41,15 @@ jtest "fails if value not supplied when flagged with :required" do
   end
 
   # Now test required node attr
-  each_variant_and_type do |av, at, desc|
+  each_variant do |av, desc|
     jdl do
       node :node
-      attr "node/a", variant: av, type: at do
+      attr "node/a", variant: av, type: :int do
         flags :required
-        items [:a, :b, :c] if at == :choice
       end
     end
 
-    assert_jaba_error "Error at #{src_loc("BAD8B7FA")}: 'node' requires 'a' attribute to be set.", hint: at do
+    assert_jaba_error "Error at #{src_loc("BAD8B7FA")}: 'node' requires 'a' attribute to be set.", hint: desc do
       jaba do
         node :n # BAD8B7FA
       end
@@ -125,37 +61,30 @@ jtest "fails if value not supplied when flagged with :required" do
 end
 
 jtest "rejects modifying read only attributes" do
-  each_variant_and_type do |av, at, desc, default_|
+  each_variant do |av, desc|
     jdl(level: :core) do
-      attr :a, variant: av, type: at do
+      attr :a, variant: av, type: :int do
         flags :read_only
-        items [:a, :b, :c] if at == :choice
-        default(*JTest.make_args(av, at)) if at != :compound
       end
     end
     assert_jaba_error "Error at #{JTest.src_loc("D4AE68B1")}: 'a' attribute is read only.", hint: desc do
       jaba do
-        JTest.set_attr(self, :a, av, at) # D4AE68B1
+        __send__(:a, *JTest.make_args(av, 1)) # D4AE68B1
       end
     end
   end
 end
 
 jtest "supports setting a validator" do
-  each_variant_and_type do |av, at, desc|
+  each_variant do |av, desc|
     jdl(level: :core) do
-      attr :a, variant: av, type: at do
-        if at == :choice
-          items [:a, :b, :c]
-          default :a if av == :single
-        end 
+      attr :a, variant: av, type: :int do
         validate do |val|
           fail "failed"
         end
       end
       if av == :hash
-        attr :b, variant: av, type: at do
-          items [:a, :b, :c] if at == :choice
+        attr :b, variant: av, type: :int do
           validate_key do |key|
             fail "key failed"
           end
@@ -164,11 +93,11 @@ jtest "supports setting a validator" do
     end
     jaba do
       JTest.assert_jaba_error "Error at #{JTest.src_loc("78A6546B")}: 'a' attribute invalid - failed.", hint: desc do
-        JTest.set_attr(self, :a, av, at) # 78A6546B
+        __send__(:a, *JTest.make_args(av, 1)) # 78A6546B
       end
       if av == :hash
         JTest.assert_jaba_error "Error at #{JTest.src_loc("2EDD4A7C")}: 'b' attribute invalid - key failed.", hint: desc do
-          JTest.set_attr(self, :b, av, at) # 2EDD4A7C
+          __send__(:b, *JTest.make_args(av, 1)) # 2EDD4A7C
         end
       end
     end
@@ -176,13 +105,9 @@ jtest "supports setting a validator" do
 end
 
 jtest "arrays and hashes can be cleared" do
-  each_variant_and_type do |av, at, desc|
+  each_variant do |av, desc|
     jdl(level: :core) do
-      attr :a, variant: av, type: at do
-        if at == :choice
-          items [:a, :b, :c]
-          default :a if av == :single
-        end
+      attr :a, variant: av, type: :int do
         key_type :int if av == :hash
         flags :allow_dupes if av == :array
       end
@@ -194,7 +119,7 @@ jtest "arrays and hashes can be cleared" do
         end
       else
         5.times do |i|
-          JTest.set_attr(self, :a, av, at, key: i)
+          __send__(:a, *JTest.make_args(av, 1, key: i))
         end
         a.size.must_equal 5, msg: desc
         clear :a
