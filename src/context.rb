@@ -514,15 +514,6 @@ module JABA
       end
     end
 
-    def extend_jdl_on_the_fly(&block)
-      @jdl.api_execute(&block)
-      @root_node.node_def.attr_defs.each do |ad|
-        if !@root_node.has_attribute?(ad.name)
-          @root_node.add_attr(ad)
-        end
-      end
-    end
-
     def validate_id(id, what)
       if !(id.symbol? || id.string?) || id !~ /^[a-zA-Z0-9_\-.|]+$/
         msg = if id.nil?

@@ -34,18 +34,18 @@ jtest "target" do
 end
 
 jtest "supports default block" do
-  op = jaba do
-    extend_jdl do
-      attr "target/myopt1", type: :int do
-        flags :node_option
-      end
-      attr "target/myopt2", type: :int do
-        flags :node_option
-      end
-      attr "target/array", variant: :array, type: :int do
-        flags :node_option
-      end
+  jdl(level: :full) do
+    attr "target/myopt1", type: :int do
+      flags :node_option
     end
+    attr "target/myopt2", type: :int do
+      flags :node_option
+    end
+    attr "target/array", variant: :array, type: :int do
+      flags :node_option
+    end
+  end
+  op = jaba do
     defaults scope: :global, myopt1: 1, myopt2: 2, array: [1] do
       projname "My#{id}"
     end

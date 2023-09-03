@@ -19,12 +19,12 @@ jtest "supports exporting attributes to dependents" do
   td = temp_dir
   make_file("app/main.cpp")
   make_file("lib/main.cpp")
-  op = jaba do
-    extend_jdl do
-      attr "target/uuid", variant: :array, type: :uuid do
-        flags :per_target, :exportable
-      end
+  jdl(level: :full) do
+    attr "target/uuid", variant: :array, type: :uuid do
+      flags :per_target, :exportable
     end
+  end
+  op = jaba do
     target :app1, root: "#{td}/app" do
       type :console
       deps [:lib, :virtual_lib]

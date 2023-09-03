@@ -55,13 +55,6 @@ JABA::Context.define_core_jdl do
 
   # Top level methods
 
-  method "extend_jdl" do
-    title "Extend jaba definition language"
-    on_called do |&block|
-      JABA.context.extend_jdl_on_the_fly(&block)
-    end
-  end
-
   method "glob" do
     title "Glob for files"
     on_called do

@@ -62,6 +62,8 @@ possible features
 - Ability to 'grab' functionality that auto-adds abilities, eg text file
 - Auto-delete non-generated files in buildsystem dir (cruft removal)
 - Support arrays in hash values? That would allow src attr to work as a value as well as a key.
+- Ability for user to extend jdl. This must be done before any definitions are executed
+  and cannot be done inline. Could be placed in .jaba.jdl files which are executed first.
 
 docs
 - tag attrs as control flow attrs somehow for benefit of docs
