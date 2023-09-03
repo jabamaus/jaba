@@ -197,7 +197,10 @@ JABA::Context.define_jdl do
          "To prevent linking specify :nolink - useful if only headers are required. A hard dependency is the default." \
          'This can be used for \'header only\' dependencies'
     flags :per_target, :no_sort
-    flag_options :nolink
+    flag_option :nolink do
+      title "TODO"
+      note "TODO"
+    end
     option :type, type: :choice do
       title "Dependency type"
       items [:hard, :soft]
@@ -389,7 +392,10 @@ JABA::Context.define_jdl do
   attr "target/rule/cmd", type: :string do
     title "Command line to execute"
     flags :required
-    flag_options :absolute
+    flag_option :absolute do
+      title "TODO"
+      note "TODO"
+    end
     note "Use :absolute to make usage of $(input) or $(output) in the command line use absolute paths. " \
          "Otherwise they will be relative to the generated project."
   end

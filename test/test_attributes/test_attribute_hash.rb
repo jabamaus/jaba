@@ -285,7 +285,10 @@ jtest "supports flag options" do
   jdl do
     attr :a, variant: :hash do
       key_type :string
-      flag_options :f1, :f2, :f3, :f4
+      flag_option :f1
+      flag_option :f2
+      flag_option :f3
+      flag_option :f4
     end
   end
   op = jaba do
@@ -386,7 +389,7 @@ jtest "supports expanding keys to arrays" do
     node :node
     attr "node/a", variant: :hash, type: :string do
       key_type :src
-      flag_options :fo
+      flag_option :fo
       base_attr :root
       option :vo, type: :int
     end

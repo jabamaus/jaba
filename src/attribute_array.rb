@@ -73,6 +73,8 @@ module JABA
         else
           existing = @elems.find { |e| e.raw_value == elem.raw_value }
           if existing
+            # If no flag or key value options were passed it is considered a duplicate,
+            # else the options are merged into the existing element
             if elem.flag_options.empty? && elem.value_options.empty?
               first_dupe ||= existing
               dupes ||= []

@@ -224,8 +224,6 @@ module JABA
       @top_level_api_class.define_method(id, &block)
     end
 
-    private
-
     def process_method(node_def, path, name, block)
       klass = node_def.api_class
       if klass.method_defined?(name)
@@ -365,6 +363,17 @@ module JABA
     end
   end
 
+  class FlagOptionDef < JDLDefinition
+    def initialize
+      super()
+      @transient = false
+    end
+
+    expose :transient, :set_transient
+    def set_transient(t) = @transient = t
+    def transient? = @transient
+  end
+   
   class AttributeGroupDef < JDLDefinition
     def initialize
       super()
@@ -415,8 +424,9 @@ module JABA
       @variant = variant
       @attr_type = nil
       @flags = []
-      @flag_options = []
+      @flag_option_defs = []
       @option_defs = []
+      @flag_option_def_lookup = KeyToSHash.new
       @option_def_lookup = KeyToSHash.new
       @default = nil
       @default_is_block = false
@@ -450,7 +460,6 @@ module JABA
       super
       @default.freeze
       @flags.freeze
-      @flag_options.freeze
     end
 
     def describe = "'#{@name.inspect_unquoted}' attribute"
@@ -482,26 +491,28 @@ module JABA
 
     # TODO: check flag is valid
     def has_flag?(flag) = @flags.include?(flag)
-    def flag_options = @flag_options
 
-    expose :flag_options, :set_flag_options
-
-    def set_flag_options(*fo)
-      fo.each do |o|
-        if @flag_options.include?(o)
-          definition_warn("Duplicate flag option '#{o.inspect_unquoted}' specified")
-        else
-          @flag_options << o
-        end
-      end
+    expose :flag_option, :add_flag_option
+    def add_flag_option(name, &block)
+      # TODO: check duplicate
+      fodef = @jdl_builder.make_definition(FlagOptionDef, name, block, add: false)
+      fodef.post_create
+      @flag_option_defs << fodef
+      @flag_option_def_lookup[fodef.name] = fodef
     end
 
-    def has_flag_option?(fo) = @flag_options.include?(fo)
+    def lookup_flag_option_def(name, attr, fail_if_not_found: true)
+      od = @flag_option_def_lookup[name]
+      if od.nil? && fail_if_not_found
+        attr.attr_error("#{describe} does not support '#{name.inspect_unquoted}' flag option. Valid flags are #{@flag_option_defs.map(&:name)}")
+      end
+      od
+    end
 
     expose :option, :set_option
 
     def set_option(name, variant: :single, type: :null, &block)
-      attr_def = @jdl_builder.send(:make_attribute, name, variant, type, block, @node_def, add: false)
+      attr_def = @jdl_builder.make_attribute(name, variant, type, block, @node_def, add: false)
       attr_def.post_create
       add_option_def(attr_def)
     end

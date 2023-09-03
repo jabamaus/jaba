@@ -382,15 +382,19 @@ end
 jtest "supports flag options" do
   jdl do
     attr :a, variant: :array do
-      flag_options :a, :b, :c
+      flag_option :a
+      flag_option :b
+      flag_option :c
       flags :allow_dupes
     end
     attr :b, variant: :array do
-      flag_options :a, :b, :c
+      flag_option :a
+      flag_option :b
+      flag_option :c
     end
   end
   op = jaba do
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("0BE71C6C")}: Invalid flag option ':d' passed to 'a' attribute. Valid flags are [:a, :b, :c]" do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("0BE71C6C")}: 'a' attribute does not support ':d' flag option. Valid flags are [:a, :b, :c]" do
       a 1, :d # 0BE71C6C
     end
     # because :allow_dupes is specified these will all be separate elements

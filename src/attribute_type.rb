@@ -208,7 +208,11 @@ module JABA
     end
 
     def init_attr_def(attr_def)
-      attr_def.set_flag_options(:force)
+      attr_def.add_flag_option(:force) do
+        title "TODO"
+        note "TODO"
+        transient true
+      end
       attr_def.instance_variable_set(:@base_attr, nil)
     end
 

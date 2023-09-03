@@ -31,7 +31,14 @@ module JABA
     end
 
     def init_attr_def(attr_def)
-      attr_def.set_flag_options(:export, :export_only)
+      attr_def.add_flag_option(:export) do
+        title "TODO"
+        note "TODO"
+      end
+      attr_def.add_flag_option(:export_only) do
+        title "TODO"
+        note "TODO"
+      end
       attr_def.set_note "Exportable to dependents"
     end
   end

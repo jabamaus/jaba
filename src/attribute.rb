@@ -67,6 +67,7 @@ module JABA
       super
       @value = nil
       @flag_options = []
+      @transient_flag_options = []
       @value_options = KeyToSHash.new
       @in_on_set = false
     end
@@ -96,13 +97,14 @@ module JABA
         end
 
       args.each do |f|
-        if !attr_def.has_flag_option?(f)
-          attr_error("Invalid flag option '#{f.inspect_unquoted}' passed to #{describe}. Valid flags are #{attr_def.flag_options}")
-        end
+        fodef = @attr_def.lookup_flag_option_def(f, self)
         if @flag_options.include?(f)
           attr_warn("#{describe} was passed duplicate flag '#{f.inspect_unquoted}'")
         else
           @flag_options << f
+          if fodef.transient?
+            @transient_flag_options << f
+          end
         end
       end
 
@@ -149,7 +151,7 @@ module JABA
 
       @value = __map ? attr_type.map_value(new_value, self) : new_value
       @set = true
-
+      
       if attr_def.on_set
         if @in_on_set
           attr_error("Reentrancy detected in #{describe} on_set")
@@ -159,6 +161,10 @@ module JABA
         receiver.eval_jdl(new_value, &attr_def.on_set)
         @in_on_set = false
       end
+
+      @flag_options -= @transient_flag_options
+      @transient_flag_options.clear
+      nil
     end
 
     def has_flag_option?(o) = @flag_options&.include?(o)

@@ -242,6 +242,49 @@ jtest "can register attributes as node options" do
   end
 end
 
+# TODO: check for duplicate options
+jtest "can register attribute flag options" do
+  jdl(level: :core) do
+    attr "a", type: :int do
+      flag_option :option do
+        title "title"
+        note "note"
+      end
+      flag_option :transient do
+        transient true
+      end
+      on_set do
+# TODO: test options
+      end
+    end
+  end
+  op = jaba do
+    a 1, :option, :transient
+  end
+  r = op[:root]
+  r.get_attr(:a).has_flag_option?(:option).must_be_true
+  r.get_attr(:a).has_flag_option?(:transient).must_be_false
+end
+
+jtest "can register attribute key value options" do
+  jdl(level: :core) do
+    attr "a" do
+      option :option, type: :choice do
+        items [:a, :b, :c]
+      end
+    end
+  end
+  op = jaba do
+    JTest.assert_jaba_error "Error at #{JTest.src_loc("CD4DDB07")}: 'a' attribute requires 'option' option to be set." do
+      a 1 # CD4DDB07
+    end
+    a 1, option: :b
+  end
+  a = op[:root].get_attr(:a)
+  a.value.must_equal 1
+  a.option_value(:option).must_equal :b
+end
+
 jtest "supports opening attribute definitions" do
   jdl do
     open_attr :a do
@@ -263,26 +306,6 @@ jtest "supports opening attribute definitions" do
     a :d
     a.must_equal :d
   end
-end
-
-# TODO: check for duplicate options
-jtest "can register attributes as attribute options" do
-  jdl(level: :core) do
-    attr "a" do
-      option :option, type: :choice do
-        items [:a, :b, :c]
-      end
-    end
-  end
-  op = jaba do
-    JTest.assert_jaba_error "Error at #{JTest.src_loc("CD4DDB07")}: 'a' attribute requires 'option' option to be set." do
-      a 1 # CD4DDB07
-    end
-    a 1, option: :b
-  end
-  a = op[:root].get_attr(:a)
-  a.value.must_equal 1
-  a.option_value(:option).must_equal :b
 end
 
 jtest "fails if attribute type does not exist" do
