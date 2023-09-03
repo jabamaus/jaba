@@ -457,9 +457,13 @@ module JABA
     def post_create
       __check(:@attr_type)
       @attr_type.post_create_attr_def(self)
+      @flag_option_defs.each(&:post_create)
+      @option_defs.each(&:post_create)
       super
       @default.freeze
       @flags.freeze
+      @flag_option_defs.freeze
+      @option_defs.freeze
     end
 
     def describe = "'#{@name.inspect_unquoted}' attribute"
@@ -496,7 +500,6 @@ module JABA
     def add_flag_option(name, &block)
       # TODO: check duplicate
       fodef = @jdl_builder.make_definition(FlagOptionDef, name, block, add: false)
-      fodef.post_create
       @flag_option_defs << fodef
       @flag_option_def_lookup[fodef.name] = fodef
     end
@@ -513,7 +516,6 @@ module JABA
 
     def set_option(name, variant: :single, type: :null, &block)
       attr_def = @jdl_builder.make_attribute(name, variant, type, block, @node_def, add: false)
-      attr_def.post_create
       add_option_def(attr_def)
     end
 
