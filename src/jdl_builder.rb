@@ -512,9 +512,12 @@ module JABA
       od
     end
 
-    expose :option, :set_option
+    expose :option, :add_option
 
-    def set_option(name, variant: :single, type: :null, &block)
+    def add_option(name, variant: :single, type: :null, &block)
+      if type == :compound
+        definition_error("'#{name.inspect_unquoted}' option cannot be of type :compound")
+      end
       attr_def = @jdl_builder.make_attribute(name, variant, type, block, @node_def, add: false)
       add_option_def(attr_def)
     end

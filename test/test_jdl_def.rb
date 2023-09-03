@@ -272,6 +272,9 @@ jtest "can register attribute key value options" do
       option :option, type: :choice do
         items [:a, :b, :c]
       end
+      JTest.assert_jaba_error "Error at #{JTest.src_loc("045FE467")}: 'a' attribute invalid - ':invalid' option cannot be of type :compound." do
+        option :invalid, type: :compound # 045FE467
+      end
     end
   end
   op = jaba do
