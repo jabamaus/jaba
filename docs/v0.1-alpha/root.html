@@ -33,59 +33,311 @@
 <h4 id="arch">arch</h4>
 <blockquote>
 <p><em>Target architecture</em></p>
-<ul>
-<li>choice</li>
-<li>Default: :x86_64</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>choices</em></td>
+<td>:x86, :x86_64</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>:x86_64</td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="artefact_root"></a></p>
 <h4 id="artefact-root">artefact_root</h4>
 <blockquote>
 <p><em>Root of generated build artefacts</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>dir</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>dir</li>
 <li>Does not check if path exists at generation time</li>
-<li>Options: :force</li>
 </ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="buildsystem"></a></p>
 <h4 id="buildsystem">buildsystem</h4>
 <blockquote>
 <p><em>Target build system</em></p>
-<ul>
-<li>choice</li>
-<li>Default: :vs2022</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>choices</em></td>
+<td>:vs2019, :vs2022</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>:vs2022</td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="buildsystem_root"></a></p>
 <h4 id="buildsystem-root">buildsystem_root</h4>
 <blockquote>
 <p><em>Root of generated build system</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>dir</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>dir</li>
 <li>Does not check if path exists at generation time</li>
-<li>Options: :force</li>
 </ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="defaults"></a></p>
 <h4 id="defaults">defaults</h4>
 <blockquote>
 <p><em>Set target defaults at file or global scope</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>array</td>
+</tr>
+<tr>
+<td><em>elem type</em></td>
+<td>block</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>block array</li>
 <li>Unsorted</li>
 <li>Duplicates are allowed</li>
 </ul>
+<p><em>Options</em></p>
+<blockquote>
+<p><a id="scope"></a></p>
+<h4 id="scope">scope</h4>
+<blockquote>
+<p><em>Scope</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>choices</em></td>
+<td>:file, :global</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
+<ul>
+<li>Must be specified</li>
+</ul>
+</blockquote>
+<p><a id="configs"></a></p>
+<h4 id="configs">configs</h4>
+<blockquote>
+<p><em>Build configurations</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>array</td>
+</tr>
+<tr>
+<td><em>elem type</em></td>
+<td>string</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>[:Debug, :Release]</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
+<ul>
+<li>Default value is overwritten rather than extended</li>
+</ul>
+<p><em>Examples</em></p>
+<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">configs</span> <span style="color:#f92672">[</span><span style="color:#d88200">:debug</span><span style="color:#111">,</span> <span style="color:#d88200">:release</span><span style="color:#f92672">]</span>
+</pre></blockquote>
+<p><a id="virtual"></a></p>
+<h4 id="virtual">virtual</h4>
+<blockquote>
+<p><em>Virtual</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>bool</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>false</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</blockquote>
 </blockquote>
 <p><a id="generated_src_root"></a></p>
 <h4 id="generated-src-root">generated_src_root</h4>
 <blockquote>
 <p><em>Root location where for src files created during build</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>dir</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>dir</li>
 <li>Does not check if path exists at generation time</li>
-<li>Options: :force</li>
 </ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="glob"></a></p>
 <h4 id="glob">glob</h4>
@@ -101,10 +353,32 @@
 <h4 id="platform">platform</h4>
 <blockquote>
 <p><em>Target platform</em></p>
-<ul>
-<li>choice</li>
-<li>Default: :windows</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>choices</em></td>
+<td>:windows</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>:windows</td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="shared"></a></p>
 <h4 id="shared">shared</h4>
@@ -115,8 +389,26 @@
 <h4 id="src-ext">src_ext</h4>
 <blockquote>
 <p><em>File extensions used when matching src files</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>array</td>
+</tr>
+<tr>
+<td><em>elem type</em></td>
+<td>ext</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>ext array</li>
 <li>Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.</li>
 <li>Unsorted</li>
 </ul>
@@ -130,10 +422,32 @@
 <h4 id="vcfiletype">vcfiletype</h4>
 <blockquote>
 <p><em>VisualC file types</em></p>
-<ul>
-<li>hash (ext =&gt; string)</li>
-<li>Default: {&quot;.h&quot;=&gt;:ClInclude, &quot;.inl&quot;=&gt;:ClInclude, &quot;.hpp&quot;=&gt;:ClInclude, &quot;.cpp&quot;=&gt;:ClCompile, &quot;.c&quot;=&gt;:ClCompile, &quot;.cxx&quot;=&gt;:ClCompile, &quot;.cc&quot;=&gt;:ClCompile, &quot;.png&quot;=&gt;:Image, &quot;.asm&quot;=&gt;:MASM, &quot;.rc&quot;=&gt;:ResourceCompile, &quot;.natvis&quot;=&gt;:Natvis}</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>hash</td>
+</tr>
+<tr>
+<td><em>key type</em></td>
+<td>ext</td>
+</tr>
+<tr>
+<td><em>value type</em></td>
+<td>string</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>{&quot;.h&quot;=&gt;:ClInclude, &quot;.inl&quot;=&gt;:ClInclude, &quot;.hpp&quot;=&gt;:ClInclude, &quot;.cpp&quot;=&gt;:ClCompile, &quot;.c&quot;=&gt;:ClCompile, &quot;.cxx&quot;=&gt;:ClCompile, &quot;.cc&quot;=&gt;:ClCompile, &quot;.png&quot;=&gt;:Image, &quot;.asm&quot;=&gt;:MASM, &quot;.rc&quot;=&gt;:ResourceCompile, &quot;.natvis&quot;=&gt;:Natvis}</td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><sub><sup>Generated on 04-Sep-23 by <a href="https://github.com/ishani/MaMD">MaMD</a> using <a href="https://github.com/yuin/goldmark">Goldmark</a>, <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a></sup></sub></p>
 

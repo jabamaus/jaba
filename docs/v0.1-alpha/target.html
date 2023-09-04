@@ -60,30 +60,116 @@
 <h4 id="bindir">bindir</h4>
 <blockquote>
 <p><em>Output directory for executables</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>dir</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>dir</li>
 <li>Does not check if path exists at generation time</li>
-<li>Options: :force</li>
 </ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="cflags"></a></p>
 <h4 id="cflags">cflags</h4>
 <blockquote>
 <p><em>Raw compiler command line switches</em></p>
-<ul>
-<li>string array</li>
-<li>Exportable to dependents</li>
-<li>Options: :export, :export_only</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>array</td>
+</tr>
+<tr>
+<td><em>elem type</em></td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:export</em></td>
+<td><em>Export specified elements to dependent targets</em><br>- Set on source target and on dependent target</td>
+</tr>
+<tr>
+<td><em>:export_only</em></td>
+<td><em>Export specified elements to dependent targets</em><br>- Only set on the dependent target</td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="charset"></a></p>
 <h4 id="charset">charset</h4>
 <blockquote>
 <p><em>Character set</em></p>
-<ul>
-<li>choice</li>
-<li>Default: :unicode</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>choices</em></td>
+<td>:ascii, :mbcs, :unicode</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>:unicode</td>
+</tr>
+</tbody>
+</table>
 <p><em>Examples</em></p>
 <pre style="color:#272822;background-color:#fafafa"><span style="color:#111">charset</span> <span style="color:#d88200">:unicode</span>
 </pre></blockquote>
@@ -91,9 +177,26 @@
 <h4 id="config">config</h4>
 <blockquote>
 <p><em>Current target config as an id</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>string</li>
-<li>Default: &quot;&quot;</li>
 <li>Returns current config being processed. Use to define control flow to set config-specific atttributes</li>
 <li>Read only</li>
 </ul>
@@ -102,25 +205,80 @@
 <h4 id="configname">configname</h4>
 <blockquote>
 <p><em>Display name of config as seen in IDE</em></p>
-<ul>
-<li>string</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="cpplang"></a></p>
 <h4 id="cpplang">cpplang</h4>
 <blockquote>
 <p><em>C++ language standard</em></p>
-<ul>
-<li>choice</li>
-<li>Default: &quot;C++14&quot;</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>choices</em></td>
+<td>C++11, C++14, C++17, C++20, C++23</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;C++14&quot;</td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="debug"></a></p>
 <h4 id="debug">debug</h4>
 <blockquote>
 <p><em>Flags config as a debug config</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>bool</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>bool</li>
 <li>Defaults to true if config id contains 'debug'</li>
 </ul>
 </blockquote>
@@ -128,11 +286,43 @@
 <h4 id="define">define</h4>
 <blockquote>
 <p><em>Preprocessor defines</em></p>
-<ul>
-<li>string array</li>
-<li>Exportable to dependents</li>
-<li>Options: :export, :export_only</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>array</td>
+</tr>
+<tr>
+<td><em>elem type</em></td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:export</em></td>
+<td><em>Export specified elements to dependent targets</em><br>- Set on source target and on dependent target</td>
+</tr>
+<tr>
+<td><em>:export_only</em></td>
+<td><em>Export specified elements to dependent targets</em><br>- Only set on the dependent target</td>
+</tr>
+</tbody>
+</table>
 <p><em>Examples</em></p>
 <pre style="color:#272822;background-color:#fafafa"><span style="color:#111">define</span> <span style="color:#d88200">&#34;</span><span style="color:#d88200">MYDEFINE</span><span style="color:#d88200">&#34;</span>
 <span style="color:#111">define</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#34;</span><span style="color:#d88200">DEFINE1</span><span style="color:#d88200">&#34;</span><span style="color:#111">,</span> <span style="color:#d88200">&#34;</span><span style="color:#d88200">DEFINE2</span><span style="color:#d88200">&#34;</span><span style="color:#111">,</span> <span style="color:#d88200">&#34;</span><span style="color:#d88200">DEFINE3=1</span><span style="color:#d88200">&#34;</span><span style="color:#f92672">]</span>
@@ -142,13 +332,79 @@
 <h4 id="deps">deps</h4>
 <blockquote>
 <p><em>Target dependencies</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>array</td>
+</tr>
+<tr>
+<td><em>elem type</em></td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>string array</li>
 <li>List of ids of other cpp definitions. When a dependency is specified all the dependency's exports will be imported, the library will be linked to and a project level dependency created (unless :soft specified). To prevent linking specify :nolink - useful if only headers are required. A hard dependency is the default.This can be used for 'header only' dependencies</li>
 <li>Set on a per-target basis</li>
 <li>Unsorted</li>
-<li>Options: :nolink</li>
 </ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:nolink</em></td>
+<td><em>TODO</em><br>- TODO</td>
+</tr>
+</tbody>
+</table>
+<p><em>Options</em></p>
+<blockquote>
+<p><a id="type"></a></p>
+<h4 id="type">type</h4>
+<blockquote>
+<p><em>Dependency type</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>choices</em></td>
+<td>:hard, :soft</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>:hard</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</blockquote>
 <p><em>Examples</em></p>
 <pre style="color:#272822;background-color:#fafafa"><span style="color:#111">target</span> <span style="color:#d88200">:MyApp</span> <span style="color:#00a8c8">do</span>
   <span style="color:#111">type</span> <span style="color:#d88200">:app</span>
@@ -173,10 +429,32 @@
 <h4 id="exceptions">exceptions</h4>
 <blockquote>
 <p><em>Enables C++ exceptions</em></p>
-<ul>
-<li>choice</li>
-<li>Default: true</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>choices</em></td>
+<td>true, false, :structured</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>true</td>
+</tr>
+</tbody>
+</table>
 <p><em>Examples</em></p>
 <pre style="color:#272822;background-color:#fafafa"><span style="color:#111">exceptions</span> <span style="color:#00a8c8">false</span> <span style="color:#75715e"># disable exceptions</span>
 </pre></blockquote>
@@ -184,12 +462,51 @@
 <h4 id="inc">inc</h4>
 <blockquote>
 <p><em>Include paths</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>array</td>
+</tr>
+<tr>
+<td><em>elem type</em></td>
+<td>dir</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>dir array</li>
 <li>Unsorted</li>
-<li>Exportable to dependents</li>
-<li>Options: :force, :export, :export_only</li>
 </ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+<tr>
+<td><em>:export</em></td>
+<td><em>Export specified elements to dependent targets</em><br>- Set on source target and on dependent target</td>
+</tr>
+<tr>
+<td><em>:export_only</em></td>
+<td><em>Export specified elements to dependent targets</em><br>- Only set on the dependent target</td>
+</tr>
+</tbody>
+</table>
 <p><em>Examples</em></p>
 <pre style="color:#272822;background-color:#fafafa"><span style="color:#111">inc</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;mylibrary/include&#39;</span><span style="color:#f92672">]</span>
 <span style="color:#111">inc</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;mylibrary/include&#39;</span><span style="color:#f92672">]</span><span style="color:#111">,</span> <span style="color:#d88200">:export</span> <span style="color:#75715e"># Export include path to dependents</span>
@@ -198,56 +515,226 @@
 <h4 id="lflags">lflags</h4>
 <blockquote>
 <p><em>Raw linker command line switches</em></p>
-<ul>
-<li>string array</li>
-<li>Exportable to dependents</li>
-<li>Options: :export, :export_only</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>array</td>
+</tr>
+<tr>
+<td><em>elem type</em></td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:export</em></td>
+<td><em>Export specified elements to dependent targets</em><br>- Set on source target and on dependent target</td>
+</tr>
+<tr>
+<td><em>:export_only</em></td>
+<td><em>Export specified elements to dependent targets</em><br>- Only set on the dependent target</td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="libdir"></a></p>
 <h4 id="libdir">libdir</h4>
 <blockquote>
 <p><em>Output directory for libs</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>dir</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>dir</li>
 <li>Does not check if path exists at generation time</li>
-<li>Options: :force</li>
 </ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="libs"></a></p>
 <h4 id="libs">libs</h4>
 <blockquote>
 <p><em>Paths to required non-system libs</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>array</td>
+</tr>
+<tr>
+<td><em>elem type</em></td>
+<td>file</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>file array</li>
 <li>Unsorted</li>
 <li>Does not check if path exists at generation time</li>
-<li>Exportable to dependents</li>
-<li>Options: :force, :export, :export_only</li>
 </ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+<tr>
+<td><em>:export</em></td>
+<td><em>Export specified elements to dependent targets</em><br>- Set on source target and on dependent target</td>
+</tr>
+<tr>
+<td><em>:export_only</em></td>
+<td><em>Export specified elements to dependent targets</em><br>- Only set on the dependent target</td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="objdir"></a></p>
 <h4 id="objdir">objdir</h4>
 <blockquote>
 <p><em>Output directory for object files</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>dir</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>dir</li>
 <li>Does not check if path exists at generation time</li>
 <li>Defaults to <a href="#artefact_root">$(artefact_root)</a>/<a href="#arch">$(arch)</a>/obj/<a href="#config">$(config)</a>/<a href="#projname">$(projname)</a></li>
-<li>Options: :force</li>
 </ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="projdir"></a></p>
 <h4 id="projdir">projdir</h4>
 <blockquote>
 <p><em>Directory in which projects will be generated</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>dir</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;.&quot;</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>dir</li>
-<li>Default: &quot;.&quot;</li>
 <li>Set on a per-target basis</li>
 <li>Does not check if path exists at generation time</li>
-<li>Options: :force</li>
 </ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+</tbody>
+</table>
 <p><em>Examples</em></p>
 <pre style="color:#272822;background-color:#fafafa"><span style="color:#111">target</span> <span style="color:#d88200">:MyApp</span> <span style="color:#00a8c8">do</span>
   <span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;**/*&#39;</span><span style="color:#f92672">]</span> <span style="color:#75715e"># Get all src in $(root), which defaults to directory of definition file</span>
@@ -258,8 +745,26 @@
 <h4 id="projname">projname</h4>
 <blockquote>
 <p><em>Base name of project files</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>basename</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>basename</li>
 <li>Defaults to <a href="#id">$(id)</a><a href="#projsuffix">$(projsuffix)</a></li>
 <li>Set on a per-target basis</li>
 </ul>
@@ -268,9 +773,26 @@
 <h4 id="projsuffix">projsuffix</h4>
 <blockquote>
 <p><em>Optional suffix to be applied to $(projname)</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>string</li>
-<li>Default: &quot;&quot;</li>
 <li>Has no effect if <a href="#projname">$(projname)</a> is set explicitly</li>
 <li>Set on a per-target basis</li>
 </ul>
@@ -279,10 +801,28 @@
 <h4 id="rtti">rtti</h4>
 <blockquote>
 <p><em>Enables runtime type information</em></p>
-<ul>
-<li>bool</li>
-<li>Default: false</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>bool</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>false</td>
+</tr>
+</tbody>
+</table>
 <p><em>Examples</em></p>
 <pre style="color:#272822;background-color:#fafafa"><span style="color:#111">rtti</span> <span style="color:#00a8c8">true</span>
 </pre></blockquote>
@@ -290,8 +830,26 @@
 <h4 id="rule">rule</h4>
 <blockquote>
 <p><em>TODO</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>array</td>
+</tr>
+<tr>
+<td><em>elem type</em></td>
+<td>compound</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>compound array</li>
 <li>Unsorted</li>
 </ul>
 </blockquote>
@@ -299,39 +857,145 @@
 <h4 id="cmd">cmd</h4>
 <blockquote>
 <p><em>Command line to execute</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>string</li>
 <li>Must be specified</li>
 <li>Use :absolute to make usage of <a href="#input">$(input)</a> or <a href="#output">$(output)</a> in the command line use absolute paths. Otherwise they will be relative to the generated project.</li>
-<li>Options: :absolute</li>
 </ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:absolute</em></td>
+<td><em>TODO</em><br>- TODO</td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="implicit_input"></a></p>
 <h4 id="implicit-input">implicit_input</h4>
 <blockquote>
 <p><em>Implicit input files</em></p>
-<ul>
-<li>file</li>
-<li>Default: &quot;&quot;</li>
-<li>Options: :force</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>file</td>
+</tr>
+</tbody>
+</table>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="input"></a></p>
 <h4 id="input">input</h4>
 <blockquote>
 <p><em>TODO</em></p>
-<ul>
-<li>src array</li>
-<li>Options: :force</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>array</td>
+</tr>
+<tr>
+<td><em>elem type</em></td>
+<td>src</td>
+</tr>
+</tbody>
+</table>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="msg"></a></p>
 <h4 id="msg">msg</h4>
 <blockquote>
 <p><em>Message</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>string</li>
-<li>Default: &quot;&quot;</li>
 <li>Message that will be echoed to console on execution of the rule.</li>
 <li>Certain characters like &lt; &gt; | &amp; are automatically escaped to prevent unwanted side effects such as writing text to a file - this is a common reason why Visual Studio users are sometimes baffled as to why their custom build tool messages are not being printed.</li>
 </ul>
@@ -340,34 +1004,305 @@
 <h4 id="output">output</h4>
 <blockquote>
 <p><em>Output files</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>file</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>file</li>
 <li>Must be specified</li>
 <li>Does not check if path exists at generation time</li>
-<li>Options: :force</li>
 </ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+</tbody>
+</table>
+<p><em>Options</em></p>
+<blockquote>
+<p><a id="vpath"></a></p>
+<h4 id="vpath">vpath</h4>
+<blockquote>
+<p><em>Virtual path</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>dir</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;.&quot;</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
+<ul>
+<li>Controls IDE project layout</li>
+<li>Does not check if path exists at generation time</li>
+</ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</blockquote>
 </blockquote>
 <p><a id="shell"></a></p>
 <h4 id="shell">shell</h4>
 <blockquote>
 <p><em>Shell commands to execute during build</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>array</td>
+</tr>
+<tr>
+<td><em>elem type</em></td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>string array</li>
 <li>Maps to build events in Visual Studio</li>
-<li>Exportable to dependents</li>
-<li>Options: :export, :export_only</li>
 </ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:export</em></td>
+<td><em>Export specified elements to dependent targets</em><br>- Set on source target and on dependent target</td>
+</tr>
+<tr>
+<td><em>:export_only</em></td>
+<td><em>Export specified elements to dependent targets</em><br>- Only set on the dependent target</td>
+</tr>
+</tbody>
+</table>
+<p><em>Options</em></p>
+<blockquote>
+<p><a id="when"></a></p>
+<h4 id="when">when</h4>
+<blockquote>
+<p><em>When shell command should be run</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>choices</em></td>
+<td>:PreBuild, :PreLink, :PostBuild</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
+<ul>
+<li>Must be specified</li>
+</ul>
+</blockquote>
+</blockquote>
 </blockquote>
 <p><a id="src"></a></p>
 <h4 id="src">src</h4>
 <blockquote>
 <p><em>Specify source files</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>array</td>
+</tr>
+<tr>
+<td><em>elem type</em></td>
+<td>src</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>src array</li>
-<li>Exportable to dependents</li>
 <li>Unsorted</li>
-<li>Options: :force, :export, :export_only</li>
 </ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+<tr>
+<td><em>:export</em></td>
+<td><em>Export specified elements to dependent targets</em><br>- Set on source target and on dependent target</td>
+</tr>
+<tr>
+<td><em>:export_only</em></td>
+<td><em>Export specified elements to dependent targets</em><br>- Only set on the dependent target</td>
+</tr>
+</tbody>
+</table>
+<p><em>Options</em></p>
+<blockquote>
+<p><a id="vpath"></a></p>
+<h4 id="vpath-1">vpath</h4>
+<blockquote>
+<p><em>Virtual path</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>dir</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;.&quot;</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
+<ul>
+<li>Controls IDE project layout</li>
+<li>Does not check if path exists at generation time</li>
+</ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p><a id="properties"></a></p>
+<h4 id="properties">properties</h4>
+<blockquote>
+<p><em>Per-file property</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>hash</td>
+</tr>
+<tr>
+<td><em>key type</em></td>
+<td>string</td>
+</tr>
+<tr>
+<td><em>value type</em></td>
+<td>to_s</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
+<ul>
+<li>In the form <name>|<value></li>
+</ul>
+</blockquote>
+</blockquote>
 <p><em>Examples</em></p>
 <pre style="color:#272822;background-color:#fafafa"><span style="color:#75715e"># Add all src in $(root) whose extension is in $(src_ext)</span>
 <span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;*&#39;</span><span style="color:#f92672">]</span>
@@ -414,19 +1349,72 @@
 <h4 id="syslibs">syslibs</h4>
 <blockquote>
 <p><em>System libs</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>array</td>
+</tr>
+<tr>
+<td><em>elem type</em></td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>string array</li>
 <li>Unsorted</li>
-<li>Exportable to dependents</li>
-<li>Options: :export, :export_only</li>
 </ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:export</em></td>
+<td><em>Export specified elements to dependent targets</em><br>- Set on source target and on dependent target</td>
+</tr>
+<tr>
+<td><em>:export_only</em></td>
+<td><em>Export specified elements to dependent targets</em><br>- Only set on the dependent target</td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="targetext"></a></p>
 <h4 id="targetext">targetext</h4>
 <blockquote>
 <p><em>Extension to apply to $(targetname)</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>ext</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>ext</li>
 <li>Defaults to standard extension for <a href="#type">$(type)</a> of project for target <a href="#platform">$(platform)</a></li>
 </ul>
 </blockquote>
@@ -434,8 +1422,26 @@
 <h4 id="targetname">targetname</h4>
 <blockquote>
 <p><em>Basename of output file without extension</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>basename</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>basename</li>
 <li>Defaults to <a href="#targetprefix">$(targetprefix)</a><a href="#projname">$(projname)</a><a href="#targetsuffix">$(targetsuffix)</a></li>
 </ul>
 </blockquote>
@@ -443,9 +1449,26 @@
 <h4 id="targetprefix">targetprefix</h4>
 <blockquote>
 <p><em>Prefix to apply to $(targetname)</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>string</li>
-<li>Default: &quot;&quot;</li>
 <li>Has no effect if <a href="#targetname">$(targetname)</a> specified</li>
 </ul>
 </blockquote>
@@ -453,58 +1476,252 @@
 <h4 id="targetsuffix">targetsuffix</h4>
 <blockquote>
 <p><em>Suffix to apply to $(targetname)</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>string</li>
-<li>Default: &quot;&quot;</li>
 <li>Has no effect if <a href="#targetname">$(targetname)</a> specified</li>
 </ul>
 </blockquote>
 <p><a id="type"></a></p>
-<h4 id="type">type</h4>
+<h4 id="type-1">type</h4>
 <blockquote>
 <p><em>Target type</em></p>
-<ul>
-<li>choice</li>
-<li>Default: :app</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>choices</em></td>
+<td>:app, :console, :lib, :dll</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>:app</td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="vc_extension_settings"></a></p>
 <h4 id="vc-extension-settings">vc_extension_settings</h4>
 <blockquote>
 <p><em>Path to a .props file</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>hash</td>
+</tr>
+<tr>
+<td><em>key type</em></td>
+<td>ext</td>
+</tr>
+<tr>
+<td><em>value type</em></td>
+<td>file</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>hash (ext =&gt; file)</li>
 <li>Set on a per-target basis</li>
-<li>Options: :force</li>
 </ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="vc_extension_targets"></a></p>
 <h4 id="vc-extension-targets">vc_extension_targets</h4>
 <blockquote>
 <p><em>Path to a .targets file</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>hash</td>
+</tr>
+<tr>
+<td><em>key type</em></td>
+<td>ext</td>
+</tr>
+<tr>
+<td><em>value type</em></td>
+<td>file</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>hash (ext =&gt; file)</li>
 <li>Set on a per-target basis</li>
-<li>Options: :force</li>
 </ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="vcglobal"></a></p>
 <h4 id="vcglobal">vcglobal</h4>
 <blockquote>
 <p><em>Address Globals property group in a vcxproj directly</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>hash</td>
+</tr>
+<tr>
+<td><em>key type</em></td>
+<td>string</td>
+</tr>
+<tr>
+<td><em>value type</em></td>
+<td>to_s</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>hash (string =&gt; to_s)</li>
 <li>Set on a per-target basis</li>
-<li>Exportable to dependents</li>
-<li>Options: :export, :export_only</li>
 </ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:export</em></td>
+<td><em>Export specified elements to dependent targets</em><br>- Set on source target and on dependent target</td>
+</tr>
+<tr>
+<td><em>:export_only</em></td>
+<td><em>Export specified elements to dependent targets</em><br>- Only set on the dependent target</td>
+</tr>
+</tbody>
+</table>
+<p><em>Options</em></p>
+<blockquote>
+<p><a id="condition"></a></p>
+<h4 id="condition">condition</h4>
+<blockquote>
+<p><em>Condition</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</blockquote>
 </blockquote>
 <p><a id="vcguid"></a></p>
 <h4 id="vcguid">vcguid</h4>
 <blockquote>
 <p><em>Globally unique id (GUID)</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>uuid</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>uuid</li>
 <li>Seeded by <a href="#projname">$(projname)</a>. Required by Visual Studio project files</li>
 <li>Set on a per-target basis</li>
 </ul>
@@ -513,22 +1730,86 @@
 <h4 id="vcimportlib">vcimportlib</h4>
 <blockquote>
 <p><em>Name of import lib for use will dlls</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>file</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>file</li>
 <li>Does not check if path exists at generation time</li>
 <li>Defaults to <a href="#projname">$(projname)</a><a href="#targetsuffix">$(targetsuffix)</a>.lib</li>
-<li>Options: :force</li>
 </ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="vcnowarn"></a></p>
 <h4 id="vcnowarn">vcnowarn</h4>
 <blockquote>
 <p><em>Warnings to disable</em></p>
-<ul>
-<li>int array</li>
-<li>Exportable to dependents</li>
-<li>Options: :export, :export_only</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>array</td>
+</tr>
+<tr>
+<td><em>elem type</em></td>
+<td>int</td>
+</tr>
+</tbody>
+</table>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:export</em></td>
+<td><em>Export specified elements to dependent targets</em><br>- Set on source target and on dependent target</td>
+</tr>
+<tr>
+<td><em>:export_only</em></td>
+<td><em>Export specified elements to dependent targets</em><br>- Only set on the dependent target</td>
+</tr>
+</tbody>
+</table>
 <p><em>Examples</em></p>
 <pre style="color:#272822;background-color:#fafafa"><span style="color:#111">vcnowarn</span> <span style="color:#f92672">[</span><span style="color:#ae81ff">4100</span><span style="color:#f92672"></span><span style="color:#111">,</span> <span style="color:#ae81ff">4127</span><span style="color:#f92672"></span><span style="color:#111">,</span> <span style="color:#ae81ff">4244</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>
 </pre></blockquote>
@@ -536,18 +1817,102 @@
 <h4 id="vcprop">vcprop</h4>
 <blockquote>
 <p><em>Address per-configuration sections of a vcxproj directly</em></p>
-<ul>
-<li>hash (string =&gt; to_s)</li>
-<li>Exportable to dependents</li>
-<li>Options: :export, :export_only</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>hash</td>
+</tr>
+<tr>
+<td><em>key type</em></td>
+<td>string</td>
+</tr>
+<tr>
+<td><em>value type</em></td>
+<td>to_s</td>
+</tr>
+</tbody>
+</table>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:export</em></td>
+<td><em>Export specified elements to dependent targets</em><br>- Set on source target and on dependent target</td>
+</tr>
+<tr>
+<td><em>:export_only</em></td>
+<td><em>Export specified elements to dependent targets</em><br>- Only set on the dependent target</td>
+</tr>
+</tbody>
+</table>
+<p><em>Options</em></p>
+<blockquote>
+<p><a id="condition"></a></p>
+<h4 id="condition-1">condition</h4>
+<blockquote>
+<p><em>Condition string</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</blockquote>
 </blockquote>
 <p><a id="vctoolset"></a></p>
 <h4 id="vctoolset">vctoolset</h4>
 <blockquote>
 <p><em>Toolset version to use</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>choices</em></td>
+<td>v100, v110, v120, v140, v141, v142, v143</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>choice</li>
 <li>Defaults to host's default toolset</li>
 </ul>
 </blockquote>
@@ -555,19 +1920,59 @@
 <h4 id="vcwarnlevel">vcwarnlevel</h4>
 <blockquote>
 <p><em>Visual Studio warning level</em></p>
-<ul>
-<li>choice</li>
-<li>Default: 3</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>choices</em></td>
+<td>1, 2, 3, 4</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="warnerror"></a></p>
 <h4 id="warnerror">warnerror</h4>
 <blockquote>
 <p><em>Enable warnings as errors</em></p>
-<ul>
-<li>bool</li>
-<li>Default: false</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>bool</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>false</td>
+</tr>
+</tbody>
+</table>
 <p><em>Examples</em></p>
 <pre style="color:#272822;background-color:#fafafa"><span style="color:#111">warnerror</span> <span style="color:#00a8c8">true</span>
 </pre></blockquote>
@@ -575,9 +1980,34 @@
 <h4 id="winsdkver">winsdkver</h4>
 <blockquote>
 <p><em>Windows SDK version</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>choice</td>
+</tr>
+<tr>
+<td><em>choices</em></td>
+<td>10.0.16299.0, 10.0.17134.0, 10.0.17763.0, 10.0.18362.0, nil</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>nil</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>choice</li>
-<li>Default: nil</li>
 <li>Set on a per-target basis</li>
 </ul>
 <p><em>Examples</em></p>
@@ -589,8 +2019,26 @@
 <h4 id="write-src">write_src</h4>
 <blockquote>
 <p><em>Creates a src and adds to build</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>array</td>
+</tr>
+<tr>
+<td><em>elem type</em></td>
+<td>compound</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>compound array</li>
 <li>Unsorted</li>
 </ul>
 </blockquote>
@@ -598,32 +2046,113 @@
 <h4 id="fn">fn</h4>
 <blockquote>
 <p><em>Filename</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>file</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>file</li>
-<li>Default: &quot;&quot;</li>
 <li>Does not check if path exists at generation time</li>
-<li>Options: :force</li>
 </ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="line"></a></p>
 <h4 id="line">line</h4>
 <blockquote>
 <p><em>Line to add to file</em></p>
-<ul>
-<li>to_s array</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>array</td>
+</tr>
+<tr>
+<td><em>elem type</em></td>
+<td>to_s</td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><a id="vpath"></a></p>
-<h4 id="vpath">vpath</h4>
+<h4 id="vpath-2">vpath</h4>
 <blockquote>
 <p><em>Virtual path</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>dir</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;.&quot;</td>
+</tr>
+</tbody>
+</table>
+<p><em>Notes</em></p>
 <ul>
-<li>dir</li>
-<li>Default: &quot;.&quot;</li>
 <li>Controls IDE project layout</li>
 <li>Does not check if path exists at generation time</li>
-<li>Options: :force</li>
 </ul>
+<p><em>Flags</em></p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+</tbody>
+</table>
 </blockquote>
 <p><sub><sup>Generated on 04-Sep-23 by <a href="https://github.com/ishani/MaMD">MaMD</a> using <a href="https://github.com/yuin/goldmark">Goldmark</a>, <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a></sup></sub></p>
 
