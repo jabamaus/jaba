@@ -145,7 +145,7 @@ module JABA
       if attr_def.items.empty?
         attr_def.definition_error("'items' must be set")
       end
-      if attr_def.single? && !attr_def.default_set?
+      if attr_def.single? && !attr_def.default_set? && !attr_def.has_flag?(:required)
         attr_def.set_flags(:required)
       end
     end
@@ -209,8 +209,7 @@ module JABA
 
     def init_attr_def(attr_def)
       attr_def.add_flag_option(:force) do
-        title "TODO"
-        note "TODO"
+        title "Suppress warning if path does not exist"
         transient true
       end
       attr_def.instance_variable_set(:@base_attr, nil)

@@ -42,7 +42,12 @@ class String
 end
 
 class JABA::JDLDefinition
-  def md_label = name.escape_md_label
+  def md_label = name.to_s.escape_md_label
+  def write_notes(w)
+    notes.each do |n|
+      w << "- #{n.to_markdown_links(@jdl_builder)}"
+    end
+  end
 end
 
 class JABA::MethodDef
@@ -200,12 +205,6 @@ class DocBuilder < CmdlineTool
     end
   end
 
-  def write_notes(w, notes)
-    notes.each do |n|
-      w << "- #{n.to_markdown_links(@jdl)}"
-    end
-  end
-
   def generate_node_reference(n)
     write_markdown_page("#{n.name}.md", n.name, versioned: true) do |w, nav|
       nav << "[#{JABA::VERSION} reference home](jaba_reference.html)"
@@ -213,7 +212,7 @@ class DocBuilder < CmdlineTool
         w << ""
         w << "_#{n.title}_"
         w << ""
-        write_notes(w, n.notes)
+        n.write_notes(w)
         w << ""
       end
       w << ""
@@ -248,21 +247,59 @@ class DocBuilder < CmdlineTool
     w.with_prefix "> " do
       w << "_#{ad.title}_"
       w << ""
-      type = if ad.single?
-        "#{ad.type_id}"
+      w << "| K | V |"
+      w << "|-|-|"
+      md_row(w, :variant, ad.variant)
+
+      if ad.hash?
+        md_row(w, "key type", ad.key_type.name)
+        md_row(w, "value type", ad.type_id)
       elsif ad.array?
-        "#{ad.type_id} array"
-      elsif ad.hash?
-        "hash (#{ad.key_type.name} => #{ad.type_id})"
+        md_row(w, "elem type", ad.type_id)
+      else
+        md_row(w, "type", ad.type_id)
       end
-      w << "- #{type}"
-      if ad.default_set? && !ad.default.proc?
-        w << "- Default: #{ad.default.inspect}"
+      if ad.type_id == :choice
+        md_row(w, "choices", ad.items.map{|i| i.inspect_unquoted}.join(", "))
       end
-      write_notes(w, ad.notes)
+
+      if ad.default_set? && !ad.default.proc? && ad.default != ""
+        md_row(w, :default, ad.default.inspect)
+      end
+
+      if !ad.notes.empty?
+        w << ""
+        w << "*Notes*"
+        ad.write_notes(w)
+      end
+
       if !ad.flag_option_defs.empty?
-        w << "- Options: #{ad.flag_option_defs.map{|fo| fo.name.inspect}.join(', ')}"
+        w << ""
+        w << "*Flags*"
+        w << "| K | V |"
+        w << "|-|-|"
+        ad.flag_option_defs.each do |od|
+          row = "_#{od.title}_"
+          if !od.notes.empty?
+            row << "<br>"
+            od.notes.each do |n|
+              row << "- " << n
+            end
+          end
+          md_row(w, od.name.inspect_unquoted, row)
+        end
       end
+
+      if !ad.option_defs.empty?
+        w << ""
+        w << "*Options*"
+        w.with_prefix "> " do
+          ad.option_defs.each do |od|
+            write_attr_def(od, w)
+          end
+        end
+      end
+
       w << ""
       if !ad.examples.empty?
         w << "*Examples*"
@@ -283,7 +320,7 @@ class DocBuilder < CmdlineTool
     w.with_prefix "> " do
       w << "_#{d.title}_"
       w << ""
-      write_notes(w, d.notes)
+      d.write_notes(w)
     end
   end
 

@@ -17,7 +17,7 @@ module JABA
     end
 
     def init_attr_def(attr_def)
-      attr_def.set_note "Duplicates are allowed"
+      attr_def.add_note "Duplicates are allowed"
     end
   end
 
@@ -32,14 +32,13 @@ module JABA
 
     def init_attr_def(attr_def)
       attr_def.add_flag_option(:export) do
-        title "TODO"
-        note "TODO"
+        title "Export specified elements to dependent targets"
+        note "Set on source target and on dependent target"
       end
       attr_def.add_flag_option(:export_only) do
-        title "TODO"
-        note "TODO"
+        title "Export specified elements to dependent targets"
+        note "Only set on the dependent target"
       end
-      attr_def.set_note "Exportable to dependents"
     end
   end
 
@@ -55,7 +54,7 @@ module JABA
     end
 
     def init_attr_def(attr_def)
-      attr_def.set_note "Does not check if path exists at generation time"
+      attr_def.add_note "Does not check if path exists at generation time"
     end
   end
 
@@ -69,7 +68,7 @@ module JABA
     end
 
     def init_attr_def(attr_def)
-      attr_def.set_note "Unsorted"
+      attr_def.add_note "Unsorted"
     end
   end
 
@@ -89,7 +88,7 @@ module JABA
     end
 
     def init_attr_def(attr_def)
-      attr_def.set_note "Default value is overwritten rather than extended"
+      attr_def.add_note "Default value is overwritten rather than extended"
     end
   end
 
@@ -103,7 +102,7 @@ module JABA
     end
 
     def init_attr_def(attr_def)
-      attr_def.set_note "Set on a per-target basis"
+      attr_def.add_note "Set on a per-target basis"
     end
   end
 
@@ -111,7 +110,7 @@ module JABA
     def initialize = super(:read_only)
 
     def init_attr_def(attr_def)
-      attr_def.set_note "Read only"
+      attr_def.add_note "Read only"
     end
   end
 
@@ -125,7 +124,7 @@ module JABA
     end
 
     def init_attr_def(attr_def)
-      attr_def.set_note("Must be specified")
+      attr_def.add_note("Must be specified")
     end
   end
 end

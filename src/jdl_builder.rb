@@ -316,7 +316,7 @@ module JABA
     def jdl_builder = @jdl_builder
     def src_loc = @src_loc
     def name = @name
-    def to_s = @name
+    def to_s = @name.to_s
     def describe = "'#{name.inspect_unquoted}'"
     def attribute? = false # overridden
     def method? = false # overridden
@@ -326,14 +326,19 @@ module JABA
     def set_title(t) = @title = t
     def title = @title
 
-    expose :note, :set_note
+    expose :note, :add_note
 
-    def set_note(n) = @notes << n
+    def add_note(n)
+      if @notes.find_index(n)
+        definition_error("Duplicate note '#{n}' added")
+      end
+      @notes << n
+    end
     def notes = @notes
 
-    expose :example, :set_example
+    expose :example, :add_example
 
-    def set_example(e) = @examples << e
+    def add_example(e) = @examples << e
     def examples = @examples
 
     def post_create
@@ -487,6 +492,9 @@ module JABA
         end
         fd.compatible?(self) do |msg|
           definition_error("#{fd.describe} #{msg}")
+        end
+        if @flags.find_index(f)
+          definition_error("duplicate '#{f.inspect_unquoted}' flag specified")
         end
         fd.init_attr_def(self)
         @flags << f

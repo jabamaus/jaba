@@ -124,7 +124,6 @@ JABA::Context.define_core_jdl do
     option :scope, type: :choice do
       title "Scope"
       items [:file, :global]
-      flags :required
     end
   end
 
@@ -407,7 +406,6 @@ JABA::Context.define_jdl do
     option :when, type: :choice do
       title "When shell command should be run"
       items [:PreBuild, :PreLink, :PostBuild]
-      flags :required
     end
   end
 
