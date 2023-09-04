@@ -17,9 +17,13 @@
 <li><a href="root.html#artefact_root">artefact_root</a> Root of generated build artefacts</li>
 <li><a href="root.html#buildsystem">buildsystem</a> Target build system</li>
 <li><a href="root.html#buildsystem_root">buildsystem_root</a> Root of generated build system</li>
-<li><a href="root.html#glob">glob()</a> Glob for files</li>
+<li><a href="root.html#defaults">defaults</a> Set target defaults at file or global scope</li>
+<li><a href="root.html#generated_src_root">generated_src_root</a> Root location where for src files created during build</li>
+<li><a href="root.html#glob">glob</a> Glob for files</li>
+<li><a href="root.html#method">method</a> Define a utility method</li>
 <li><a href="root.html#platform">platform</a> Target platform</li>
-<li><a href="root.html#shared">shared()</a> Define a shared definition</li>
+<li><a href="root.html#shared">shared</a> Define a shared definition</li>
+<li><a href="root.html#src_ext">src_ext</a> File extensions used when matching src files</li>
 <li><a href="root.html#target">target</a> Define a target</li>
 <li><a href="root.html#vcfiletype">vcfiletype</a> VisualC file types</li>
 <li><a href="target.html">target</a> Define a target
@@ -29,7 +33,6 @@
 <li><a href="target.html#charset">charset</a> Character set</li>
 <li><a href="target.html#config">config</a> Current target config as an id (read only)</li>
 <li><a href="target.html#configname">configname</a> Display name of config as seen in IDE</li>
-<li><a href="target.html#configs">configs</a> Build configurations</li>
 <li><a href="target.html#cpplang">cpplang</a> C++ language standard</li>
 <li><a href="target.html#debug">debug</a> Flags config as a debug config</li>
 <li><a href="target.html#define">define</a> Preprocessor defines</li>
@@ -55,7 +58,6 @@
 </li>
 <li><a href="target.html#shell">shell</a> Shell commands to execute during build</li>
 <li><a href="target.html#src">src</a> Specify source files</li>
-<li><a href="target.html#src_ext">src_ext</a> File extensions used when matching src files</li>
 <li><a href="target.html#syslibs">syslibs</a> System libs</li>
 <li><a href="target.html#targetext">targetext</a> Extension to apply to $(targetname)</li>
 <li><a href="target.html#targetname">targetname</a> Basename of output file without extension</li>
@@ -73,25 +75,35 @@
 <li><a href="target.html#vcwarnlevel">vcwarnlevel</a> Visual Studio warning level</li>
 <li><a href="target.html#warnerror">warnerror</a> Enable warnings as errors</li>
 <li><a href="target.html#winsdkver">winsdkver</a> Windows SDK version</li>
+<li><a href="target.html#write_src">write_src</a> Creates a src and adds to build
+<ul>
+<li><a href="target.html#fn">fn</a> Filename</li>
+<li><a href="target.html#line">line</a> Line to add to file</li>
+<li><a href="target.html#vpath">vpath</a> Virtual path</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 <h4 id="global-methods">Global methods</h4>
+<blockquote>
+<p><em>Global methods are available in all contexts</em></p>
+</blockquote>
 <ul>
-<li><a href="global_methods.html#__dir__">__dir__()</a> Directory of the currently executing .jaba file</li>
-<li><a href="global_methods.html#available">available()</a> Array of attributes/methods available in current scope</li>
-<li><a href="global_methods.html#clear">clear()</a> Clear an array or hash attribute</li>
-<li><a href="global_methods.html#extend_jdl">extend_jdl()</a> Extend jaba definition language</li>
-<li><a href="global_methods.html#fail">fail()</a> Raise an error</li>
-<li><a href="global_methods.html#include">include()</a> Include a shared definition or a .jaba file</li>
-<li><a href="global_methods.html#print">print()</a> Prints a non-newline terminated string to stdout</li>
-<li><a href="global_methods.html#puts">puts()</a> Prints a newline terminated string to stdout</li>
-<li><a href="global_methods.html#windows?">windows?()</a> Returns true if targeting windows</li>
-<li><a href="global_methods.html#x86_64?">x86_64?()</a> Returns true if targeting x86_64</li>
+<li><a href="global_methods.html#__dir__">__dir__</a> Directory of the currently executing .jaba file</li>
+<li><a href="global_methods.html#available">available</a> Array of attributes/methods available in current scope</li>
+<li><a href="global_methods.html#clear">clear</a> Clear an array or hash attribute</li>
+<li><a href="global_methods.html#fail">fail</a> Raise an error</li>
+<li><a href="global_methods.html#include">include</a> Include a shared definition or a .jaba file</li>
+<li><a href="global_methods.html#print">print</a> Prints a non-newline terminated string to stdout</li>
+<li><a href="global_methods.html#puts">puts</a> Prints a newline terminated string to stdout</li>
+<li><a href="global_methods.html#src_root">src_root</a> Root directory of .jaba definitions</li>
+<li><a href="global_methods.html#windows?">windows?</a> Returns true if targeting windows</li>
+<li><a href="global_methods.html#x86_64?">x86_64?</a> Returns true if targeting x86_64</li>
 </ul>
-<p><sub><sup>Generated on 23-June-23 at 16:20:05 by <a href="https://github.com/ishani/MaMD">MaMD</a> which uses <a href="https://github.com/yuin/goldmark">Goldmark</a>, <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a></sup></sub></p>
+<p><sub><sup>Generated on 04-Sep-23 by <a href="https://github.com/ishani/MaMD">MaMD</a> using <a href="https://github.com/yuin/goldmark">Goldmark</a>, <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a></sup></sub></p>
 
     </body>
 </html>

@@ -13,15 +13,19 @@
 <blockquote>
 <p><em>TODO</em></p>
 </blockquote>
-<p>9 members:</p>
+<p>13 members:</p>
 <ul>
 <li><a href="#arch">arch</a></li>
 <li><a href="#artefact_root">artefact_root</a></li>
 <li><a href="#buildsystem">buildsystem</a></li>
 <li><a href="#buildsystem_root">buildsystem_root</a></li>
-<li><a href="#glob">glob()</a></li>
+<li><a href="#defaults">defaults</a></li>
+<li><a href="#generated_src_root">generated_src_root</a></li>
+<li><a href="#glob">glob</a></li>
+<li><a href="#method">method</a></li>
 <li><a href="#platform">platform</a></li>
-<li><a href="#shared">shared()</a></li>
+<li><a href="#shared">shared</a></li>
+<li><a href="#src_ext">src_ext</a></li>
 <li><a href="#target">target</a></li>
 <li><a href="#vcfiletype">vcfiletype</a>
 <a id="arch"></a></li>
@@ -29,189 +33,109 @@
 <h4 id="arch">arch</h4>
 <blockquote>
 <p><em>Target architecture</em></p>
-<table>
-<thead>
-<tr>
-<th>Property</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>type</em></td>
-<td>choice</td>
-</tr>
-<tr>
-<td><em>default</em></td>
-<td>:x86_64</td>
-</tr>
-<tr>
-<td><em>options</em></td>
-<td></td>
-</tr>
-</tbody>
-</table>
+<ul>
+<li>choice</li>
+<li>Default: :x86_64</li>
+</ul>
 </blockquote>
 <p><a id="artefact_root"></a></p>
 <h4 id="artefact-root">artefact_root</h4>
 <blockquote>
 <p><em>Root of generated build artefacts</em></p>
 <ul>
+<li>dir</li>
 <li>Does not check if path exists at generation time</li>
+<li>Options: :force</li>
 </ul>
-<table>
-<thead>
-<tr>
-<th>Property</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>type</em></td>
-<td>dir</td>
-</tr>
-<tr>
-<td><em>default</em></td>
-<td></td>
-</tr>
-<tr>
-<td><em>options</em></td>
-<td>:force</td>
-</tr>
-</tbody>
-</table>
 </blockquote>
 <p><a id="buildsystem"></a></p>
 <h4 id="buildsystem">buildsystem</h4>
 <blockquote>
 <p><em>Target build system</em></p>
-<table>
-<thead>
-<tr>
-<th>Property</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>type</em></td>
-<td>choice</td>
-</tr>
-<tr>
-<td><em>default</em></td>
-<td>:vs2022</td>
-</tr>
-<tr>
-<td><em>options</em></td>
-<td></td>
-</tr>
-</tbody>
-</table>
+<ul>
+<li>choice</li>
+<li>Default: :vs2022</li>
+</ul>
 </blockquote>
 <p><a id="buildsystem_root"></a></p>
 <h4 id="buildsystem-root">buildsystem_root</h4>
 <blockquote>
 <p><em>Root of generated build system</em></p>
 <ul>
+<li>dir</li>
 <li>Does not check if path exists at generation time</li>
+<li>Options: :force</li>
 </ul>
-<table>
-<thead>
-<tr>
-<th>Property</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>type</em></td>
-<td>dir</td>
-</tr>
-<tr>
-<td><em>default</em></td>
-<td></td>
-</tr>
-<tr>
-<td><em>options</em></td>
-<td>:force</td>
-</tr>
-</tbody>
-</table>
+</blockquote>
+<p><a id="defaults"></a></p>
+<h4 id="defaults">defaults</h4>
+<blockquote>
+<p><em>Set target defaults at file or global scope</em></p>
+<ul>
+<li>block array</li>
+<li>Unsorted</li>
+<li>Duplicates are allowed</li>
+</ul>
+</blockquote>
+<p><a id="generated_src_root"></a></p>
+<h4 id="generated-src-root">generated_src_root</h4>
+<blockquote>
+<p><em>Root location where for src files created during build</em></p>
+<ul>
+<li>dir</li>
+<li>Does not check if path exists at generation time</li>
+<li>Options: :force</li>
+</ul>
 </blockquote>
 <p><a id="glob"></a></p>
-<h4 id="glob">glob()</h4>
+<h4 id="glob">glob</h4>
 <blockquote>
 <p><em>Glob for files</em></p>
+</blockquote>
+<p><a id="method"></a></p>
+<h4 id="method">method</h4>
+<blockquote>
+<p><em>Define a utility method</em></p>
 </blockquote>
 <p><a id="platform"></a></p>
 <h4 id="platform">platform</h4>
 <blockquote>
 <p><em>Target platform</em></p>
-<table>
-<thead>
-<tr>
-<th>Property</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>type</em></td>
-<td>choice</td>
-</tr>
-<tr>
-<td><em>default</em></td>
-<td>:windows</td>
-</tr>
-<tr>
-<td><em>options</em></td>
-<td></td>
-</tr>
-</tbody>
-</table>
+<ul>
+<li>choice</li>
+<li>Default: :windows</li>
+</ul>
 </blockquote>
 <p><a id="shared"></a></p>
-<h4 id="shared">shared()</h4>
+<h4 id="shared">shared</h4>
 <blockquote>
 <p><em>Define a shared definition</em></p>
+</blockquote>
+<p><a id="src_ext"></a></p>
+<h4 id="src-ext">src_ext</h4>
+<blockquote>
+<p><em>File extensions used when matching src files</em></p>
+<ul>
+<li>ext array</li>
+<li>Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.</li>
+<li>Unsorted</li>
+</ul>
 </blockquote>
 <p><a id="target"></a></p>
 <h4 id="target">target</h4>
 <blockquote>
 <p><em>Define a target</em></p>
-<ul>
-<li>Split into 'target' level attributes and 'config' level attributes
-<a id="vcfiletype"></a></li>
-</ul>
 </blockquote>
+<p><a id="vcfiletype"></a></p>
 <h4 id="vcfiletype">vcfiletype</h4>
 <blockquote>
 <p><em>VisualC file types</em></p>
-<table>
-<thead>
-<tr>
-<th>Property</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>type</em></td>
-<td>hash (ext =&gt; string)</td>
-</tr>
-<tr>
-<td><em>default</em></td>
-<td>{&quot;.h&quot;=&gt;:ClInclude, &quot;.inl&quot;=&gt;:ClInclude, &quot;.hpp&quot;=&gt;:ClInclude, &quot;.cpp&quot;=&gt;:ClCompile, &quot;.c&quot;=&gt;:ClCompile, &quot;.cxx&quot;=&gt;:ClCompile, &quot;.cc&quot;=&gt;:ClCompile, &quot;.png&quot;=&gt;:Image, &quot;.asm&quot;=&gt;:MASM, &quot;.rc&quot;=&gt;:ResourceCompile, &quot;.natvis&quot;=&gt;:Natvis}</td>
-</tr>
-<tr>
-<td><em>options</em></td>
-<td></td>
-</tr>
-</tbody>
-</table>
+<ul>
+<li>hash (ext =&gt; string)</li>
+<li>Default: {&quot;.h&quot;=&gt;:ClInclude, &quot;.inl&quot;=&gt;:ClInclude, &quot;.hpp&quot;=&gt;:ClInclude, &quot;.cpp&quot;=&gt;:ClCompile, &quot;.c&quot;=&gt;:ClCompile, &quot;.cxx&quot;=&gt;:ClCompile, &quot;.cc&quot;=&gt;:ClCompile, &quot;.png&quot;=&gt;:Image, &quot;.asm&quot;=&gt;:MASM, &quot;.rc&quot;=&gt;:ResourceCompile, &quot;.natvis&quot;=&gt;:Natvis}</li>
+</ul>
 </blockquote>
-<p><sub><sup>Generated on 23-June-23 at 16:20:05 by <a href="https://github.com/ishani/MaMD">MaMD</a> which uses <a href="https://github.com/yuin/goldmark">Goldmark</a>, <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a></sup></sub></p>
+<p><sub><sup>Generated on 04-Sep-23 by <a href="https://github.com/ishani/MaMD">MaMD</a> using <a href="https://github.com/yuin/goldmark">Goldmark</a>, <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a></sup></sub></p>
 
     </body>
 </html>
