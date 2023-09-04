@@ -2,7 +2,6 @@ core
 - versioning support
 - Employ did you mean style error reporting
   Error at basic_dll.jaba:8: 'defines' attribute not defined. Did you mean 'define'?
-- Add sticky/transient concept to flag and value options
 - Validation and documentation specification for method args, similar to attribute options
 - Make _ID be id of the definition the code is in, such that it works even inside a block that is being executed in the context of a different jaba object
 - localise error strings into a single file, using macros for variable substitution. As well as being better for standardisation could support multiple languages.
@@ -10,13 +9,13 @@ core
 - Disallow ruby keywords as attr names, eg 'in' fails
 - make logging and error functionality into Context class methods so they are always available.
 - prefix/postfix/delete/exclude should be specced with attr_option. exclude should get its type from its owning attr.
-- Remove node_option flag and handle node options same as attribute options
+- Remove node_option flag and handle node options same as attribute options?
 - Add a general :nowarn option. This could replace the :force option. And have a command line switch to force showing of warningss
 - Test compound attr with value options
 - Add way of retrieving options in jdl:
   src ".", vpath: "generated"
   vpath = src getopt: :vpath
-- change shared blocks to use :block attrs rather than custom code
+- change shared blocks to use :block attrs rather than custom code?
 - Check for commonality in pull_up and add test
 - Chekc that pull_up works with compounds
 
@@ -41,7 +40,6 @@ target
 - Make custom build rule support multiple outputs. Requires adding array subscript support to macros.
 - Make shell build events use macros
 - Add 'install' to copy exes somewhere post build
-- Allow 'axes' of configs? Bear in mind that platforms can be any string.
 
 VisualC
 - support for debugger working directory via .user file
@@ -59,7 +57,6 @@ possible features
 - Command line option to print full exception info
 - Have a command line switch to make all error messages contain absolute paths
 - Add invocations.txt to each example which can execute in multiple ways?
-- Ability to 'grab' functionality that auto-adds abilities, eg text file
 - Auto-delete non-generated files in buildsystem dir (cruft removal)
 - Support arrays in hash values? That would allow src attr to work as a value as well as a key.
 - Ability for user to extend jdl. This must be done before any definitions are executed
@@ -86,7 +83,7 @@ v2 new features/changes:
  - rule inputs/outputs automatically added to src [DONE]
  - dependencies pulled into solution automatically [TODO]
  - per file defaults [DONE]
- - options can now be passed into defaults block which can be overriden [TODO]
+ - options can now be passed into defaults block which can be overriden [DONE]
  - delete stale projects in build system [TODO]
  - ability to set src per config instead of per-project [DONE]
  - ability to set target type per config instead of per-project [DONE]

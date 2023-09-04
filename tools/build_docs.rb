@@ -46,7 +46,7 @@ class JABA::JDLDefinition
 end
 
 class JABA::MethodDef
-  def md_label = "#{name}()".escape_md_label
+  def md_label = name.escape_md_label
 end
 
 class JABA::NodeDef
@@ -85,6 +85,7 @@ class DocBuilder < CmdlineTool
   def help_string = "Buids jaba docs"
   def run
     process_cmd_line("djaba") do |c|
+      c.add_flag("--incremental -i", help: "Do not do a full clean", var: :incremental)
     end
     build
   end
@@ -98,11 +99,8 @@ class DocBuilder < CmdlineTool
 
     FileUtils.makedirs(doc_temp) if !File.exist?(doc_temp)
 
-    # Delete markdown and docs dirs completely as they will be regenerated
-    FileUtils.remove_dir(DOCS_HTML_DIR) if File.exist?(DOCS_HTML_DIR)
-    FileUtils.remove_dir(DOCS_MARKDOWN_DIR) if File.exist?(DOCS_MARKDOWN_DIR)
-    FileUtils.mkdir(DOCS_HTML_DIR)
-    FileUtils.mkdir(DOCS_MARKDOWN_DIR)
+    ensure_dir(DOCS_HTML_DIR)
+    ensure_dir(DOCS_MARKDOWN_DIR)
 
     FileUtils.copy_file("#{DOCS_HANDWRITTEN_DIR}/mamd.css", "#{DOCS_HTML_DIR}/mamd.css")
     
@@ -124,8 +122,19 @@ class DocBuilder < CmdlineTool
       if !File.exist?(MAMD_EXE)
         fail "#{MAMD_EXE} not found in #{MAMD_DIR}"
       end
-      shell_cmd("#{MAMD_EXE} -i \"#{DOCS_MARKDOWN_DIR}\" -o \"#{DOCS_HTML_DIR}\"")
+      shell_cmd("#{MAMD_EXE} -i \"#{DOCS_MARKDOWN_DIR}\" -o \"#{DOCS_HTML_DIR}\" > nul", echo: !@incremental)
     end
+  end
+
+  def ensure_dir(dir)
+    if File.exist?(dir)
+      if @incremental
+        return
+      else
+        FileUtils.remove_dir(dir)
+      end
+    end
+    FileUtils.mkdir(dir)
   end
 
   def generate_handwritten
@@ -184,6 +193,7 @@ class DocBuilder < CmdlineTool
       end
       w << ""
       w << "#### Global methods"
+      w << "> _Global methods are available in all contexts_"
       write_reference_tree_node(@jdl.global_methods_node_def, w, 0, skip_self: true)
       generate_node_reference(@jdl.global_methods_node_def)
       w << ""
@@ -192,18 +202,20 @@ class DocBuilder < CmdlineTool
 
   def write_notes(w, notes)
     notes.each do |n|
-      w << "> - #{n.to_markdown_links(@jdl)}"
+      w << "- #{n.to_markdown_links(@jdl)}"
     end
   end
 
   def generate_node_reference(n)
     write_markdown_page("#{n.name}.md", n.name, versioned: true) do |w, nav|
       nav << "[#{JABA::VERSION} reference home](jaba_reference.html)"
-      w << "> "
-      w << "> _#{n.title}_"
-      w << "> "
-      write_notes(w, n.notes)
-      w << "> "
+      w.with_prefix "> " do
+        w << ""
+        w << "_#{n.title}_"
+        w << ""
+        write_notes(w, n.notes)
+        w << ""
+      end
       w << ""
       all = n.attrs_and_methods_sorted
       w << "#{all.size} member#{all.size == 1 ? '' : 's'}:  "
@@ -233,33 +245,32 @@ class DocBuilder < CmdlineTool
   def write_attr_def(ad, w)
     w << "<a id=\"#{ad.name}\"></a>" # anchor for the attribute eg 'src_ext'
     w << "#### #{ad.md_label}"
-    w << "> _#{ad.title}_"
-    w << "> "
-    write_notes(w, ad.notes)
-    w << "> "
-    w << "> | Property | Value  |"
-    w << "> |-|-|"
-    
-    type = if ad.single?
-      "#{ad.type_id}"
-    elsif ad.array?
-      "#{ad.type_id} array"
-    elsif ad.hash?
-      "hash (#{ad.key_type.name} => #{ad.type_id})"
-    end
-    md_row(w, :type, type)
-    #ad.jaba_attr_type.get_reference_manual_rows(ad)&.each do |id, value|
-    #  md_row(w, id, value)
-    #end
-    md_row(w, :default, ad.default.proc? ? nil : !ad.default.nil? ? ad.default.inspect : nil)
-    md_row(w, :options, ad.flag_options.map(&:inspect).join(', '))
-    w << ">"
-    if !ad.examples.empty?
-      w << "> *Examples*"
-      md_code(w, prefix: '>') do
-        ad.examples.each do |e|
-          e.split_and_trim_leading_whitespace.each do |line|
-            w << "> #{line}"
+    w.with_prefix "> " do
+      w << "_#{ad.title}_"
+      w << ""
+      type = if ad.single?
+        "#{ad.type_id}"
+      elsif ad.array?
+        "#{ad.type_id} array"
+      elsif ad.hash?
+        "hash (#{ad.key_type.name} => #{ad.type_id})"
+      end
+      w << "- #{type}"
+      if ad.default_set? && !ad.default.proc?
+        w << "- Default: #{ad.default.inspect}"
+      end
+      write_notes(w, ad.notes)
+      if !ad.flag_option_defs.empty?
+        w << "- Options: #{ad.flag_option_defs.map{|fo| fo.name.inspect}.join(', ')}"
+      end
+      w << ""
+      if !ad.examples.empty?
+        w << "*Examples*"
+        md_code(w) do
+          ad.examples.each do |e|
+            e.split_and_trim_leading_whitespace.each do |line|
+              w << line
+            end
           end
         end
       end
@@ -269,9 +280,11 @@ class DocBuilder < CmdlineTool
   def write_method_def(d, w)
     w << "<a id=\"#{d.name}\"></a>"
     w << "#### #{d.md_label}"
-    w << "> _#{d.title}_"
-    w << "> "
-    write_notes(w, d.notes)
+    w.with_prefix "> " do
+      w << "_#{d.title}_"
+      w << ""
+      write_notes(w, d.notes)
+    end
   end
 
   def generate_examples
@@ -328,7 +341,6 @@ class DocBuilder < CmdlineTool
 
   def write_markdown_page(md, title, versioned:, want_home: true, versioned_home: true)
     fn = versioned ? "#{DOCS_MARKDOWN_VERSIONED_DIR}/#{md}" : "#{DOCS_MARKDOWN_DIR}/#{md}"
-    puts "Writing #{fn}"
     file = @file_manager.new_file(fn)
     w = file.writer
     w << "## #{title}"
@@ -350,31 +362,25 @@ class DocBuilder < CmdlineTool
     yield wa, nav
     w << nav.join(" > ")
     w.write_raw(wa)
-    w << md_small("Generated on #{Time.now.strftime('%d-%B-%y at %H:%M:%S')} by #{html_link('https://github.com/ishani/MaMD', 'MaMD')} " \
-      "which uses #{html_link('https://github.com/yuin/goldmark', 'Goldmark')}, " \
+    w << md_small("Generated on #{Time.now.strftime('%d-%b-%y')} by #{html_link('https://github.com/ishani/MaMD', 'MaMD')} " \
+      "using #{html_link('https://github.com/yuin/goldmark', 'Goldmark')}, " \
       "#{html_link('https://github.com/alecthomas/chroma', 'Chroma')}, " \
       "#{html_link('https://rsms.me/inter', 'Inter')} and " \
       "#{html_link('https://github.com/tonsky/FiraCode', 'FiraCode')}")
-    file.write
+    if file.write != :UNCHANGED
+      puts "Writing #{file.filename}"
+    end
   end
 
-  def html_link(href, text)
-    "<a href=\"#{href}\">#{text}</a>"
-  end
+  def html_link(href, text) = "<a href=\"#{href}\">#{text}</a>"
+  def md_small(text) = "<sub><sup>#{text}</sup></sub>"
+  def md_row(w, p, v) = w << "| _#{p}_ | #{v} |"
 
-  def md_small(text)
-    "<sub><sup>#{text}</sup></sub>"
-  end
-
-  def md_code(w, prefix: nil)
-    w << "#{prefix}```ruby"
+  def md_code(w)
+    w << "```ruby"
     yield
-    w << "#{prefix}```"
+    w << "```"
     w << ""
-  end
-  
-  def md_row(w, p, v)
-    w << "> | _#{p}_ | #{v} |"
   end
 end
 

@@ -7,14 +7,33 @@ module JABA
         else
           String.new(encoding: encoding)
         end
+      @prefixes = nil
     end
 
     def str = @str
     def to_s = @str
-    def <<(str) = @str.concat(str, "\n")
+    def <<(str)
+      @prefixes&.each do |p|
+        @str << p
+      end
+      @str.concat(str, "\n")
+      self
+    end
     def write_raw(str) = @str.concat(str.to_s)
     def newline = @str.concat("\n")
     def chomp! = @str.chomp!
+
+    def push_prefix(p)
+      @prefixes ||= []
+      @prefixes.push(p)
+    end
+    def pop_prefix = @prefixes.pop
+
+    def with_prefix(p)
+      push_prefix(p)
+      yield
+      pop_prefix
+    end
   end
 
   class JabaFile

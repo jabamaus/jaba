@@ -512,6 +512,8 @@ module JABA
       od
     end
 
+    def flag_option_defs = @flag_option_defs
+
     expose :option, :add_option
 
     def add_option(name, variant: :single, type: :null, &block)
