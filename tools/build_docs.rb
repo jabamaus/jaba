@@ -222,8 +222,8 @@ class DocBuilder < CmdlineTool
 
       all.each do |d|
         w << "- [#{d.md_label}](##{d.name})"
-       end
-
+      end
+      w << ""
       all.each do |d|
         if d.attribute?
           write_attr_def(d, w)
@@ -270,12 +270,14 @@ class DocBuilder < CmdlineTool
       if !ad.notes.empty?
         w << ""
         w << "*Notes*"
+        w << ""
         ad.write_notes(w)
       end
 
       if !ad.flag_option_defs.empty?
         w << ""
         w << "*Flags*"
+        w << ""
         w << "| K | V |"
         w << "|-|-|"
         ad.flag_option_defs.each do |od|
@@ -288,6 +290,7 @@ class DocBuilder < CmdlineTool
           end
           md_row(w, od.name.inspect_unquoted, row)
         end
+        w << ""
       end
 
       if !ad.option_defs.empty?
@@ -300,9 +303,9 @@ class DocBuilder < CmdlineTool
         end
       end
 
-      w << ""
       if !ad.examples.empty?
         w << "*Examples*"
+        w << ""
         md_code(w) do
           ad.examples.each do |e|
             e.split_and_trim_leading_whitespace.each do |line|
@@ -312,6 +315,7 @@ class DocBuilder < CmdlineTool
         end
       end
     end
+    w << ""
   end
   
   def write_method_def(d, w)
