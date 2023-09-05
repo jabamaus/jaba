@@ -1,3 +1,6 @@
+require "redcarpet"
+require "coderay"
+require 'cgi/util'
 require_relative "../../jrf/libs/jrfutils/cmdline_tool"
 require_relative 'common'
 require_relative '../examples/gen_all'
@@ -45,7 +48,7 @@ class JABA::JDLDefinition
   def md_label = name.to_s.escape_md_label
   def write_notes(w)
     notes.each do |n|
-      w << "- #{n.to_markdown_links(@jdl_builder)}"
+      w << "- #{CGI.escapeHTML(n).to_markdown_links(@jdl_builder)}"
     end
   end
 end
@@ -81,16 +84,15 @@ class DocBuilder < CmdlineTool
   DOCS_REPO_DIR =               "#{__dir__}/../../jaba_docs".cleanpath
   DOCS_HANDWRITTEN_DIR =        "#{DOCS_REPO_DIR}/handwritten"
   DOCS_MARKDOWN_DIR =           "#{DOCS_REPO_DIR}/markdown"
-  DOCS_MARKDOWN_VERSIONED_DIR = "#{DOCS_REPO_DIR}/markdown/v#{JABA::VERSION}"
+  DOCS_MARKDOWN_DIR_VERSIONED = "#{DOCS_MARKDOWN_DIR}/v#{JABA::VERSION}"
   DOCS_HTML_DIR =               "#{DOCS_REPO_DIR}/docs"
-
-  MAMD_DIR = "#{__dir__}/../../MaMD/_builds".cleanpath
-  MAMD_EXE = "MaMD_windows_amd64.exe"
+  DOCS_HTML_DIR_VERSIONED =     "#{DOCS_HTML_DIR}/v#{JABA::VERSION}"
 
   def help_string = "Buids jaba docs"
   def run
     process_cmd_line("djaba") do |c|
       c.add_flag("--incremental -i", help: "Do not do a full clean", var: :incremental)
+      c.add_flag("--dump-markdown -m", help: "Dump markdown for debugging", var: :dump_markdown)
     end
     build
   end
@@ -105,13 +107,15 @@ class DocBuilder < CmdlineTool
     FileUtils.makedirs(doc_temp) if !File.exist?(doc_temp)
 
     ensure_dir(DOCS_HTML_DIR)
-    ensure_dir(DOCS_MARKDOWN_DIR)
+    ensure_dir(DOCS_MARKDOWN_DIR, recreate: @dump_markdown)
+    ensure_dir(DOCS_MARKDOWN_DIR_VERSIONED, recreate: @dump_markdown)
 
     FileUtils.copy_file("#{DOCS_HANDWRITTEN_DIR}/mamd.css", "#{DOCS_HTML_DIR}/mamd.css")
     
     ctxt = JABA::Context.new
     @file_manager = ctxt.file_manager
     @jdl = JABA::JDLBuilder.new
+    @pages = []
 
     generate_handwritten
     generate_versioned_index
@@ -119,27 +123,19 @@ class DocBuilder < CmdlineTool
     generate_examples
     generate_faqs
 
-    if !File.exist?(MAMD_DIR)
-      fail "#{MAMD_DIR} not found"
-    end
-
-    Dir.chdir(MAMD_DIR) do
-      if !File.exist?(MAMD_EXE)
-        fail "#{MAMD_EXE} not found in #{MAMD_DIR}"
-      end
-      shell_cmd("#{MAMD_EXE} -i \"#{DOCS_MARKDOWN_DIR}\" -o \"#{DOCS_HTML_DIR}\" > nul", echo: !@incremental)
-    end
+    puts "Done!"
   end
 
-  def ensure_dir(dir)
+  def ensure_dir(dir, recreate: true)
     if File.exist?(dir)
       if @incremental
         return
       else
+        puts "Deleting #{dir}"
         FileUtils.remove_dir(dir)
       end
     end
-    FileUtils.mkdir(dir)
+    FileUtils.makedirs(dir) if recreate
   end
 
   def generate_handwritten
@@ -153,14 +149,14 @@ class DocBuilder < CmdlineTool
       c.sub!(/^## .+/, '')
 
       want_home = basename == 'index.md' ? false : true
-      write_markdown_page(md.basename, title, want_home: want_home, versioned: false) do |w|
+      write_page(md.basename_no_ext, title, want_home: want_home, versioned: false) do |w|
         w << c
       end
     end
   end
 
   def generate_versioned_index
-    write_markdown_page('index.md', 'Jaba docs', versioned: true, versioned_home: false) do |w|
+    write_page('index', 'Jaba docs', versioned: true, versioned_home: false) do |w|
       w << ""
       w << "- [Jaba language reference](jaba_reference.html)"
       w << "- Examples"
@@ -190,7 +186,7 @@ class DocBuilder < CmdlineTool
   end
 
   def generate_reference_doc
-    write_markdown_page('jaba_reference.md', 'Jaba language reference', versioned: true) do |w|
+    write_page('jaba_reference', 'Jaba language reference', versioned: true) do |w|
       w << ""
       @jdl.top_level_node_def.visit do |nd, depth|
         write_reference_tree_node(nd, w, depth)
@@ -198,7 +194,9 @@ class DocBuilder < CmdlineTool
       end
       w << ""
       w << "#### Global methods"
-      w << "> _Global methods are available in all contexts_"
+      w << ""
+      w << "_Global methods are available in all contexts_"
+      w << ""
       write_reference_tree_node(@jdl.global_methods_node_def, w, 0, skip_self: true)
       generate_node_reference(@jdl.global_methods_node_def)
       w << ""
@@ -206,7 +204,7 @@ class DocBuilder < CmdlineTool
   end
 
   def generate_node_reference(n)
-    write_markdown_page("#{n.name}.md", n.name, versioned: true) do |w, nav|
+    write_page(n.name, n.name, versioned: true) do |w, nav|
       nav << "[#{JABA::VERSION} reference home](jaba_reference.html)"
       w.with_prefix "> " do
         w << ""
@@ -306,13 +304,7 @@ class DocBuilder < CmdlineTool
       if !ad.examples.empty?
         w << "*Examples*"
         w << ""
-        md_code(w) do
-          ad.examples.each do |e|
-            e.split_and_trim_leading_whitespace.each do |line|
-              w << line
-            end
-          end
-        end
+        md_code(w, ad.examples.join("\n"))
       end
     end
     w << ""
@@ -330,15 +322,11 @@ class DocBuilder < CmdlineTool
 
   def generate_examples
     iterate_examples do |dirname, full_dir|
-      write_markdown_page("#{dirname}.md", dirname, versioned: true) do |w|
+      write_page(dirname, dirname, versioned: true) do |w|
         Dir.glob("#{full_dir}/*.jaba").each do |jaba_file|
           str = @file_manager.read(jaba_file, fail_if_not_found: true)
-          md_code(w) do
-            # TODO: extract top comments and turn into formatted markdown
-            str.split_and_trim_leading_whitespace.each do |line|
-              w << line
-            end
-          end
+          w << ""
+          md_code(w, str)
         end
       end
     end
@@ -346,7 +334,7 @@ class DocBuilder < CmdlineTool
 
   def generate_faqs
     # TODO: check for duplicate ids
-    write_markdown_page('jaba_faqs.md', 'Jaba FAQs', versioned: false) do |w|
+    write_page('jaba_faqs', 'Jaba FAQs', versioned: false) do |w|
       faqs = {}
       IO.read("#{DOCS_HANDWRITTEN_DIR}/faqs_src.txt").scan(/^\[(.*?)\]\s*\[(.*?)\](.*?)----[-]*/m) do |anchor, section, entry|
         lines = entry.split("\n")
@@ -380,10 +368,13 @@ class DocBuilder < CmdlineTool
     end
   end
 
-  def write_markdown_page(md, title, versioned:, want_home: true, versioned_home: true)
-    fn = versioned ? "#{DOCS_MARKDOWN_VERSIONED_DIR}/#{md}" : "#{DOCS_MARKDOWN_DIR}/#{md}"
+  def write_page(basename, title, versioned:, want_home: true, versioned_home: true)
+    dir = versioned ? DOCS_HTML_DIR_VERSIONED : DOCS_HTML_DIR
+    fn = "#{dir}/#{basename}.html"
+    css = "#{DOCS_HTML_DIR}/mamd.css".relative_path_from(dir)
     file = @file_manager.new_file(fn)
-    w = file.writer
+    w = file.work_area
+
     w << "## #{title}"
     if versioned
       w << md_small("This page applies to v#{JABA::VERSION}<br>")
@@ -399,17 +390,43 @@ class DocBuilder < CmdlineTool
         nav << "[#{JABA::VERSION} home](index.html)"
       end
     end
-    wa = file.work_area
-    yield wa, nav
+    w2 = file.work_area
+    yield w2, nav
     w << nav.join(" > ")
-    w.write_raw(wa)
-    w << md_small("Generated on #{Time.now.strftime('%d-%b-%y')} by #{html_link('https://github.com/ishani/MaMD', 'MaMD')} " \
-      "using #{html_link('https://github.com/yuin/goldmark', 'Goldmark')}, " \
-      "#{html_link('https://github.com/alecthomas/chroma', 'Chroma')}, " \
+    w.write_raw(w2)
+    w << md_small("Generated on #{Time.now.strftime('%d-%b-%y')} using #{html_link('https://github.com/vmg/redcarpet', 'Redcarpet')}, " \
+      "#{html_link('https://github.com/rubychan/coderay', 'CodeRay')}, " \
       "#{html_link('https://rsms.me/inter', 'Inter')} and " \
-      "#{html_link('https://github.com/tonsky/FiraCode', 'FiraCode')}")
+      "#{html_link('https://github.com/tonsky/FiraCode', 'FiraCode')}" \
+      ". css by Harry Denholm.")
+
+    if @dump_markdown
+      mddir = versioned ? DOCS_MARKDOWN_DIR_VERSIONED : DOCS_MARKDOWN_DIR
+      mdf = "#{mddir}/#{basename}.md"
+      puts "Dumping #{mdf}"
+      IO.write(mdf, w.str)
+    end
+
+    xhtml = Redcarpet::Render::XHTML.new
+    md = Redcarpet::Markdown.new(xhtml, tables: true, no_intra_emphasis: true, fenced_code_blocks: true)
+    mdhtml = md.render(w.str)
+
+    w3 = file.writer
+    w3 << "<!DOCTYPE html>"
+    w3 << "<\html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en-us\" lang=\"en-us\">"
+    w3 << "  <head>"
+    w3 << "    <title>#{title}</title>"
+    w3 << "    <link rel=\"stylesheet\" href=\"https://rsms.me/inter/inter.css\">"
+    w3 << "    <link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css?family=Fira+Code&display=swap\">"
+    w3 << "    <link rel=\"stylesheet\" href=\"#{css}\">"
+    w3 << "  </head>"
+    w3 << "<body>"
+    w3.write_raw(mdhtml)
+    w3 << "</body>"
+    w3 << "</html>"
+
     if file.write != :UNCHANGED
-      puts "Writing #{file.filename}"
+      puts "Writing #{file.filename.relative_path_from(DOCS_HTML_DIR)}"
     end
   end
 
@@ -417,10 +434,11 @@ class DocBuilder < CmdlineTool
   def md_small(text) = "<sub><sup>#{text}</sup></sub>"
   def md_row(w, p, v) = w << "| _#{p}_ | #{v} |"
 
-  def md_code(w)
-    w << "```ruby"
-    yield
-    w << "```"
+  def md_code(w, code)
+    html = CodeRay.scan(code, :ruby).div
+    html.split_and_trim_leading_whitespace.each do |line|
+      w << line
+    end
     w << ""
   end
 end
