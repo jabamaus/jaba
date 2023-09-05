@@ -71,7 +71,6 @@ module JABA
       @untracked = []
       @file_exist_cache = {}
       @glob_cache = {}
-      @file_read_cache = {}
       @is_directory_cache = {}
     end
 
@@ -143,26 +142,21 @@ module JABA
 
     def include_untracked = @generated.concat(@untracked)
 
-    def read(filename, encoding: nil, fail_if_not_found: false, freeze: true)
+    def read(filename, encoding: nil, fail_if_not_found: false)
       if !filename.absolute_path?
         JABA.error("'#{filename}' must be an absolute path")
       end
 
       fn = filename.cleanpath
-      str = @file_read_cache[fn]
-      if str.nil?
-        if !exist?(fn)
-          if fail_if_not_found
-            JABA.error("'#{fn}' does not exist - cannot read")
-          else
-            return nil
-          end
+      if !exist?(fn)
+        if fail_if_not_found
+          JABA.error("'#{fn}' does not exist - cannot read")
         else
-          str = IO.binread(fn)
-          str.force_encoding(encoding) if encoding
-          str.freeze if freeze # Don't want cache entries being inadvertently modified
-          @file_read_cache[fn] = str
+          return nil
         end
+      else
+        str = IO.binread(fn)
+        str.force_encoding(encoding) if encoding
       end
       str
     end
