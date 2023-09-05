@@ -1,28 +1,31 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
-    <head>
-        <title>14-code_generation</title>
-        <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code&display=swap"> 
-        <link rel="stylesheet" href="../mamd.css">
-    </head>
-    <body>
-        <h2 id="14-code-generation">14-code_generation</h2>
+  <head>
+    <title>14-code_generation</title>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code&display=swap">
+    <link rel="stylesheet" href="../mamd.css">
+  </head>
+<body>
+<h2>14-code_generation</h2>
+
 <p><sub><sup>This page applies to v0.1-alpha<br></sup></sub>
 <a href="../index.html">home</a> &gt; <a href="index.html">0.1-alpha home</a></p>
-<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">target</span> <span style="color:#d88200">:CodegenExample</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">type</span> <span style="color:#d88200">:console</span>
-  <span style="color:#111">src</span> <span style="color:#f92672">[</span><span style="color:#d88200">&#39;main.cpp&#39;</span><span style="color:#111">,</span> <span style="color:#d88200">&#39;generator.rb&#39;</span><span style="color:#f92672">]</span>
-  <span style="color:#111">src</span> <span style="color:#d88200">%w(</span><span style="color:#d88200">src1.h src2.h</span><span style="color:#d88200">)</span><span style="color:#111">,</span> <span style="color:#d88200">:force</span><span style="color:#111">,</span> <span style="color:#d88200">prefix</span><span style="color:#111">:</span> <span style="color:#d88200">&#39;generated/&#39;</span>
-  <span style="color:#111">rule</span> <span style="color:#00a8c8">do</span>
-    <span style="color:#111">input</span> <span style="color:#d88200">&#39;*.xyz&#39;</span>
-    <span style="color:#111">output</span> <span style="color:#d88200">&#39;generated/$(input.basename_no_ext).cpp&#39;</span>
-    <span style="color:#111">implicit_input</span> <span style="color:#d88200">&#39;generator.rb&#39;</span>
-    <span style="color:#111">cmd</span> <span style="color:#d88200">&#39;ruby $(implicit_input) $(input) $(output)&#39;</span>
-    <span style="color:#111">msg</span> <span style="color:#d88200">&#39;$(input.basename) -&gt; $(output.basename)&#39;</span>
-  <span style="color:#00a8c8">end</span>
-<span style="color:#00a8c8">end</span>
-</pre><p><sub><sup>Generated on 04-Sep-23 by <a href="https://github.com/ishani/MaMD">MaMD</a> using <a href="https://github.com/yuin/goldmark">Goldmark</a>, <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a></sup></sub></p>
 
-    </body>
+<pre><code class="ruby">target :CodegenExample do
+  type :console
+  src [&#39;main.cpp&#39;, &#39;generator.rb&#39;]
+  src %w(src1.h src2.h), :force, prefix: &#39;generated/&#39;
+  rule do
+    input &#39;*.xyz&#39;
+    output &#39;generated/$(input.basename_no_ext).cpp&#39;
+    implicit_input &#39;generator.rb&#39;
+    cmd &#39;ruby $(implicit_input) $(input) $(output)&#39;
+    msg &#39;$(input.basename) -&gt; $(output.basename)&#39;
+  end
+end
+</code></pre>
+
+<p><sub><sup>Generated on 05-Sep-23 by <a href="https://github.com/vmg/redcarpet">Redcarpet</a> using <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm</sup></sub></p>
+</body>
 </html>

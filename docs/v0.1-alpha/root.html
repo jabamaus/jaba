@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
-    <head>
-        <title>root</title>
-        <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code&display=swap"> 
-        <link rel="stylesheet" href="../mamd.css">
-    </head>
-    <body>
-        <h2 id="root">root</h2>
+  <head>
+    <title>root</title>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code&display=swap">
+    <link rel="stylesheet" href="../mamd.css">
+  </head>
+<body>
+<h2>root</h2>
+
 <p><sub><sup>This page applies to v0.1-alpha<br></sup></sub>
 <a href="../index.html">home</a> &gt; <a href="index.html">0.1-alpha home</a> &gt; <a href="jaba_reference.html">0.1-alpha reference home</a></p>
+
 <blockquote>
 <p><em>TODO</em></p>
 </blockquote>
-<p>13 members:</p>
+
+<p>13 members:  </p>
+
 <ul>
 <li><a href="#arch">arch</a></li>
 <li><a href="#artefact_root">artefact_root</a></li>
@@ -27,20 +31,22 @@
 <li><a href="#shared">shared</a></li>
 <li><a href="#src_ext">src_ext</a></li>
 <li><a href="#target">target</a></li>
-<li><a href="#vcfiletype">vcfiletype</a>
-<a id="arch"></a></li>
+<li><a href="#vcfiletype">vcfiletype</a></li>
 </ul>
-<h4 id="arch">arch</h4>
+
+<p><a id="arch"></a></p>
+
+<h4>arch</h4>
+
 <blockquote>
 <p><em>Target architecture</em></p>
-<table>
-<thead>
+
+<table><thead>
 <tr>
 <th>K</th>
 <th>V</th>
 </tr>
-</thead>
-<tbody>
+</thead><tbody>
 <tr>
 <td><em>variant</em></td>
 <td>single</td>
@@ -57,21 +63,22 @@
 <td><em>default</em></td>
 <td>:x86_64</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 </blockquote>
+
 <p><a id="artefact_root"></a></p>
-<h4 id="artefact-root">artefact_root</h4>
+
+<h4>artefact_root</h4>
+
 <blockquote>
 <p><em>Root of generated build artefacts</em></p>
-<table>
-<thead>
+
+<table><thead>
 <tr>
 <th>K</th>
 <th>V</th>
 </tr>
-</thead>
-<tbody>
+</thead><tbody>
 <tr>
 <td><em>variant</em></td>
 <td>single</td>
@@ -80,40 +87,42 @@
 <td><em>type</em></td>
 <td>dir</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
+
 <p><em>Notes</em></p>
+
 <ul>
 <li>Does not check if path exists at generation time</li>
 </ul>
+
 <p><em>Flags</em></p>
-<table>
-<thead>
+
+<table><thead>
 <tr>
 <th>K</th>
 <th>V</th>
 </tr>
-</thead>
-<tbody>
+</thead><tbody>
 <tr>
 <td><em>:force</em></td>
 <td><em>Suppress warning if path does not exist</em></td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 </blockquote>
+
 <p><a id="buildsystem"></a></p>
-<h4 id="buildsystem">buildsystem</h4>
+
+<h4>buildsystem</h4>
+
 <blockquote>
 <p><em>Target build system</em></p>
-<table>
-<thead>
+
+<table><thead>
 <tr>
 <th>K</th>
 <th>V</th>
 </tr>
-</thead>
-<tbody>
+</thead><tbody>
 <tr>
 <td><em>variant</em></td>
 <td>single</td>
@@ -130,21 +139,22 @@
 <td><em>default</em></td>
 <td>:vs2022</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 </blockquote>
+
 <p><a id="buildsystem_root"></a></p>
-<h4 id="buildsystem-root">buildsystem_root</h4>
+
+<h4>buildsystem_root</h4>
+
 <blockquote>
 <p><em>Root of generated build system</em></p>
-<table>
-<thead>
+
+<table><thead>
 <tr>
 <th>K</th>
 <th>V</th>
 </tr>
-</thead>
-<tbody>
+</thead><tbody>
 <tr>
 <td><em>variant</em></td>
 <td>single</td>
@@ -153,40 +163,42 @@
 <td><em>type</em></td>
 <td>dir</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
+
 <p><em>Notes</em></p>
+
 <ul>
 <li>Does not check if path exists at generation time</li>
 </ul>
+
 <p><em>Flags</em></p>
-<table>
-<thead>
+
+<table><thead>
 <tr>
 <th>K</th>
 <th>V</th>
 </tr>
-</thead>
-<tbody>
+</thead><tbody>
 <tr>
 <td><em>:force</em></td>
 <td><em>Suppress warning if path does not exist</em></td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 </blockquote>
+
 <p><a id="defaults"></a></p>
-<h4 id="defaults">defaults</h4>
+
+<h4>defaults</h4>
+
 <blockquote>
 <p><em>Set target defaults at file or global scope</em></p>
-<table>
-<thead>
+
+<table><thead>
 <tr>
 <th>K</th>
 <th>V</th>
 </tr>
-</thead>
-<tbody>
+</thead><tbody>
 <tr>
 <td><em>variant</em></td>
 <td>array</td>
@@ -195,27 +207,31 @@
 <td><em>elem type</em></td>
 <td>block</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
+
 <p><em>Notes</em></p>
+
 <ul>
 <li>Unsorted</li>
 <li>Duplicates are allowed</li>
 </ul>
+
 <p><em>Options</em></p>
+
 <blockquote>
 <p><a id="scope"></a></p>
-<h4 id="scope">scope</h4>
+
+<h4>scope</h4>
+
 <blockquote>
 <p><em>Scope</em></p>
-<table>
-<thead>
+
+<table><thead>
 <tr>
 <th>K</th>
 <th>V</th>
 </tr>
-</thead>
-<tbody>
+</thead><tbody>
 <tr>
 <td><em>variant</em></td>
 <td>single</td>
@@ -228,25 +244,28 @@
 <td><em>choices</em></td>
 <td>:file, :global</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
+
 <p><em>Notes</em></p>
+
 <ul>
 <li>Must be specified</li>
 </ul>
 </blockquote>
+
 <p><a id="configs"></a></p>
-<h4 id="configs">configs</h4>
+
+<h4>configs</h4>
+
 <blockquote>
 <p><em>Build configurations</em></p>
-<table>
-<thead>
+
+<table><thead>
 <tr>
 <th>K</th>
 <th>V</th>
 </tr>
-</thead>
-<tbody>
+</thead><tbody>
 <tr>
 <td><em>variant</em></td>
 <td>array</td>
@@ -259,27 +278,32 @@
 <td><em>default</em></td>
 <td>[:Debug, :Release]</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
+
 <p><em>Notes</em></p>
+
 <ul>
-<li>Default value is overwritten rather than extended</li>
+<li>Default value is overwritten rather than extended
+<em>Examples</em></li>
 </ul>
-<p><em>Examples</em></p>
-<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">configs</span> <span style="color:#f92672">[</span><span style="color:#d88200">:debug</span><span style="color:#111">,</span> <span style="color:#d88200">:release</span><span style="color:#f92672">]</span>
-</pre></blockquote>
+
+<pre><code class="ruby">configs [:debug, :release]
+</code></pre>
+</blockquote>
+
 <p><a id="virtual"></a></p>
-<h4 id="virtual">virtual</h4>
+
+<h4>virtual</h4>
+
 <blockquote>
 <p><em>Virtual</em></p>
-<table>
-<thead>
+
+<table><thead>
 <tr>
 <th>K</th>
 <th>V</th>
 </tr>
-</thead>
-<tbody>
+</thead><tbody>
 <tr>
 <td><em>variant</em></td>
 <td>single</td>
@@ -292,23 +316,24 @@
 <td><em>default</em></td>
 <td>false</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 </blockquote>
 </blockquote>
 </blockquote>
+
 <p><a id="generated_src_root"></a></p>
-<h4 id="generated-src-root">generated_src_root</h4>
+
+<h4>generated_src_root</h4>
+
 <blockquote>
 <p><em>Root location where for src files created during build</em></p>
-<table>
-<thead>
+
+<table><thead>
 <tr>
 <th>K</th>
 <th>V</th>
 </tr>
-</thead>
-<tbody>
+</thead><tbody>
 <tr>
 <td><em>variant</em></td>
 <td>single</td>
@@ -317,50 +342,54 @@
 <td><em>type</em></td>
 <td>dir</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
+
 <p><em>Notes</em></p>
+
 <ul>
 <li>Does not check if path exists at generation time</li>
 </ul>
+
 <p><em>Flags</em></p>
-<table>
-<thead>
+
+<table><thead>
 <tr>
 <th>K</th>
 <th>V</th>
 </tr>
-</thead>
-<tbody>
+</thead><tbody>
 <tr>
 <td><em>:force</em></td>
 <td><em>Suppress warning if path does not exist</em></td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 </blockquote>
+
 <p><a id="glob"></a></p>
-<h4 id="glob">glob</h4>
+
+<h4>glob</h4>
+
 <blockquote>
 <p><em>Glob for files</em></p>
-</blockquote>
+
 <p><a id="method"></a></p>
-<h4 id="method">method</h4>
-<blockquote>
+
+<h4>method</h4>
+
 <p><em>Define a utility method</em></p>
-</blockquote>
+
 <p><a id="platform"></a></p>
-<h4 id="platform">platform</h4>
-<blockquote>
+
+<h4>platform</h4>
+
 <p><em>Target platform</em></p>
-<table>
-<thead>
+
+<table><thead>
 <tr>
 <th>K</th>
 <th>V</th>
 </tr>
-</thead>
-<tbody>
+</thead><tbody>
 <tr>
 <td><em>variant</em></td>
 <td>single</td>
@@ -377,26 +406,28 @@
 <td><em>default</em></td>
 <td>:windows</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 </blockquote>
+
 <p><a id="shared"></a></p>
-<h4 id="shared">shared</h4>
+
+<h4>shared</h4>
+
 <blockquote>
 <p><em>Define a shared definition</em></p>
-</blockquote>
+
 <p><a id="src_ext"></a></p>
-<h4 id="src-ext">src_ext</h4>
-<blockquote>
+
+<h4>src_ext</h4>
+
 <p><em>File extensions used when matching src files</em></p>
-<table>
-<thead>
+
+<table><thead>
 <tr>
 <th>K</th>
 <th>V</th>
 </tr>
-</thead>
-<tbody>
+</thead><tbody>
 <tr>
 <td><em>variant</em></td>
 <td>array</td>
@@ -405,31 +436,35 @@
 <td><em>elem type</em></td>
 <td>ext</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
+
 <p><em>Notes</em></p>
+
 <ul>
 <li>Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes.</li>
 <li>Unsorted</li>
 </ul>
 </blockquote>
+
 <p><a id="target"></a></p>
-<h4 id="target">target</h4>
+
+<h4>target</h4>
+
 <blockquote>
 <p><em>Define a target</em></p>
-</blockquote>
+
 <p><a id="vcfiletype"></a></p>
-<h4 id="vcfiletype">vcfiletype</h4>
-<blockquote>
+
+<h4>vcfiletype</h4>
+
 <p><em>VisualC file types</em></p>
-<table>
-<thead>
+
+<table><thead>
 <tr>
 <th>K</th>
 <th>V</th>
 </tr>
-</thead>
-<tbody>
+</thead><tbody>
 <tr>
 <td><em>variant</em></td>
 <td>hash</td>
@@ -446,10 +481,9 @@
 <td><em>default</em></td>
 <td>{&quot;.h&quot;=&gt;:ClInclude, &quot;.inl&quot;=&gt;:ClInclude, &quot;.hpp&quot;=&gt;:ClInclude, &quot;.cpp&quot;=&gt;:ClCompile, &quot;.c&quot;=&gt;:ClCompile, &quot;.cxx&quot;=&gt;:ClCompile, &quot;.cc&quot;=&gt;:ClCompile, &quot;.png&quot;=&gt;:Image, &quot;.asm&quot;=&gt;:MASM, &quot;.rc&quot;=&gt;:ResourceCompile, &quot;.natvis&quot;=&gt;:Natvis}</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 </blockquote>
-<p><sub><sup>Generated on 04-Sep-23 by <a href="https://github.com/ishani/MaMD">MaMD</a> using <a href="https://github.com/yuin/goldmark">Goldmark</a>, <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a></sup></sub></p>
 
-    </body>
+<p><sub><sup>Generated on 05-Sep-23 by <a href="https://github.com/vmg/redcarpet">Redcarpet</a> using <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm</sup></sub></p>
+</body>
 </html>

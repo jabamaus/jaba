@@ -1,73 +1,78 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
-    <head>
-        <title>20-plugin</title>
-        <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code&display=swap"> 
-        <link rel="stylesheet" href="../mamd.css">
-    </head>
-    <body>
-        <h2 id="20-plugin">20-plugin</h2>
+  <head>
+    <title>20-plugin</title>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code&display=swap">
+    <link rel="stylesheet" href="../mamd.css">
+  </head>
+<body>
+<h2>20-plugin</h2>
+
 <p><sub><sup>This page applies to v0.1-alpha<br></sup></sub>
 <a href="../index.html">home</a> &gt; <a href="index.html">0.1-alpha home</a></p>
-<pre style="color:#272822;background-color:#fafafa"><span style="color:#111">text</span> <span style="color:#d88200">:example</span> <span style="color:#00a8c8">do</span>
-  <span style="color:#111">content</span> <span style="color:#d88200">%Q{</span><span style="color:#d88200">Add a block of raw text using ruby&#39;s %Q string literal notation.
-</span><span style="color:#d88200">Makes it easy to write formatted text including newlines
-</span><span style="color:#d88200"></span><span style="color:#d88200">}</span>
-  <span style="color:#111">line</span> <span style="color:#d88200">&#39;Add a line explicitly&#39;</span>
-<span style="color:#00a8c8">end</span>
-</pre><pre style="color:#272822;background-color:#fafafa"><span style="color:#111">type</span> <span style="color:#d88200">:text</span> <span style="color:#00a8c8">do</span>
-  
-  <span style="color:#111">title</span> <span style="color:#d88200">&#39;Basic text file that is written to HDD&#39;</span>
 
-  <span style="color:#00a8c8">attr</span> <span style="color:#d88200">:filename</span><span style="color:#111">,</span> <span style="color:#d88200">type</span><span style="color:#111">:</span> <span style="color:#d88200">:file</span> <span style="color:#00a8c8">do</span>
-    <span style="color:#111">title</span> <span style="color:#d88200">&#39;Path of the filename to be generated&#39;</span>
-    <span style="color:#111">basedir_spec</span> <span style="color:#d88200">:definition_root</span>
-    <span style="color:#111">default</span> <span style="color:#00a8c8">do</span>
-      <span style="color:#d88200">&#34;</span><span style="color:#d88200">#{</span><span style="color:#111">id</span><span style="color:#d88200">}</span><span style="color:#d88200">.txt</span><span style="color:#d88200">&#34;</span>
-    <span style="color:#00a8c8">end</span>
-  <span style="color:#00a8c8">end</span>
-  
-  <span style="color:#00a8c8">attr</span> <span style="color:#d88200">:content</span><span style="color:#111">,</span> <span style="color:#d88200">type</span><span style="color:#111">:</span> <span style="color:#d88200">:to_s</span> <span style="color:#00a8c8">do</span>
-    <span style="color:#111">title</span> <span style="color:#d88200">&#39;Content as a single multiline string&#39;</span>
-    <span style="color:#111">note</span> <span style="color:#d88200">&#39;Directly set content of file as a string.&#39;</span>
-  <span style="color:#00a8c8">end</span>
-  
-  <span style="color:#111">attr_array</span> <span style="color:#d88200">:line</span><span style="color:#111">,</span> <span style="color:#d88200">type</span><span style="color:#111">:</span> <span style="color:#d88200">:to_s</span> <span style="color:#00a8c8">do</span>
-    <span style="color:#111">title</span> <span style="color:#d88200">&#39;Adds a line of content to file&#39;</span>
-    <span style="color:#111">flags</span> <span style="color:#d88200">:allow_dupes</span><span style="color:#111">,</span> <span style="color:#d88200">:no_sort</span>
-  <span style="color:#00a8c8">end</span>
-  
-  <span style="color:#00a8c8">attr</span> <span style="color:#d88200">:eol</span><span style="color:#111">,</span> <span style="color:#d88200">type</span><span style="color:#111">:</span> <span style="color:#d88200">:choice</span> <span style="color:#00a8c8">do</span>
-    <span style="color:#111">title</span> <span style="color:#d88200">&#39;End of line style&#39;</span>
-    <span style="color:#111">items</span> <span style="color:#f92672">[</span><span style="color:#d88200">:lf</span><span style="color:#111">,</span> <span style="color:#d88200">:crlf</span><span style="color:#111">,</span> <span style="color:#d88200">:native</span><span style="color:#f92672">]</span>
-    <span style="color:#111">default</span> <span style="color:#d88200">:native</span>
-  <span style="color:#00a8c8">end</span>
+<pre><code class="ruby">text :example do
+  content %Q{Add a block of raw text using ruby&#39;s %Q string literal notation.
+Makes it easy to write formatted text including newlines
+}
+  line &#39;Add a line explicitly&#39;
+end
+</code></pre>
 
-  <span style="color:#111">plugin</span> <span style="color:#d88200">:text</span> <span style="color:#00a8c8">do</span>
-    <span style="color:#00a8c8">def</span> <span style="color:#75af00"></span><span style="color:#f92672"></span><span style="color:#75af00">generate</span>
-      <span style="color:#111">services</span><span style="color:#f92672">.</span><span style="color:#111">nodes</span><span style="color:#f92672">.</span><span style="color:#111">each</span> <span style="color:#00a8c8">do</span> <span style="color:#f92672">|</span><span style="color:#111">n</span><span style="color:#f92672">|</span>
-        <span style="color:#111">attrs</span> <span style="color:#f92672">=</span> <span style="color:#111">n</span><span style="color:#f92672">.</span><span style="color:#111">attrs</span>
-        <span style="color:#111">file</span> <span style="color:#f92672">=</span> <span style="color:#111">services</span><span style="color:#f92672">.</span><span style="color:#111">new_file</span><span style="color:#111">(</span><span style="color:#111">attrs</span><span style="color:#f92672">.</span><span style="color:#111">filename</span><span style="color:#111">,</span> <span style="color:#d88200">eol</span><span style="color:#111">:</span> <span style="color:#111">attrs</span><span style="color:#f92672">.</span><span style="color:#111">eol</span><span style="color:#111">,</span> <span style="color:#d88200">capacity</span><span style="color:#111">:</span> <span style="color:#ae81ff">1024</span><span style="color:#f92672"></span><span style="color:#111">)</span>
-        <span style="color:#111">w</span> <span style="color:#f92672">=</span> <span style="color:#111">file</span><span style="color:#f92672">.</span><span style="color:#111">writer</span>
-        <span style="color:#111">c</span> <span style="color:#f92672">=</span> <span style="color:#111">attrs</span><span style="color:#f92672">.</span><span style="color:#111">content</span>
-        <span style="color:#111">w</span><span style="color:#f92672">.</span><span style="color:#111">write_raw</span><span style="color:#111">(</span><span style="color:#111">c</span><span style="color:#111">)</span> <span style="color:#00a8c8">if</span> <span style="color:#111">c</span>
-        <span style="color:#111">lines</span> <span style="color:#f92672">=</span> <span style="color:#111">attrs</span><span style="color:#f92672">.</span><span style="color:#111">line</span>
-        <span style="color:#00a8c8">if</span> <span style="color:#f92672">!</span><span style="color:#111">lines</span><span style="color:#f92672">.</span><span style="color:#111">empty?</span>
-          <span style="color:#111">w</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#d88200">&#34;</span><span style="color:#d88200">#{</span><span style="color:#111">lines</span><span style="color:#f92672">.</span><span style="color:#111">join</span><span style="color:#111">(</span><span style="color:#d88200">&#34;</span><span style="color:#8045ff">\n</span><span style="color:#d88200">&#34;</span><span style="color:#111">)</span><span style="color:#d88200">}</span><span style="color:#d88200">&#34;</span>
-        <span style="color:#00a8c8">end</span>
-        <span style="color:#111">file</span><span style="color:#f92672">.</span><span style="color:#111">write</span>
-      <span style="color:#00a8c8">end</span>
-    <span style="color:#00a8c8">end</span>
-    
-    <span style="color:#00a8c8">def</span> <span style="color:#75af00"></span><span style="color:#f92672"></span><span style="color:#75af00">build_output</span><span style="color:#111">(</span><span style="color:#111">root</span><span style="color:#111">)</span>
-      <span style="color:#111">services</span><span style="color:#f92672">.</span><span style="color:#111">nodes</span><span style="color:#f92672">.</span><span style="color:#111">each</span> <span style="color:#00a8c8">do</span> <span style="color:#f92672">|</span><span style="color:#111">n</span><span style="color:#f92672">|</span>
-        <span style="color:#111">root</span><span style="color:#f92672">[</span><span style="color:#d88200">:filename</span><span style="color:#f92672">]</span> <span style="color:#f92672">=</span> <span style="color:#111">n</span><span style="color:#f92672">.</span><span style="color:#111">attrs</span><span style="color:#f92672">.</span><span style="color:#111">filename</span>
-      <span style="color:#00a8c8">end</span>
-    <span style="color:#00a8c8">end</span>
-  <span style="color:#00a8c8">end</span>
-<span style="color:#00a8c8">end</span>
-</pre><p><sub><sup>Generated on 04-Sep-23 by <a href="https://github.com/ishani/MaMD">MaMD</a> using <a href="https://github.com/yuin/goldmark">Goldmark</a>, <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a></sup></sub></p>
+<pre><code class="ruby">type :text do
 
-    </body>
+  title &#39;Basic text file that is written to HDD&#39;
+
+  attr :filename, type: :file do
+    title &#39;Path of the filename to be generated&#39;
+    basedir_spec :definition_root
+    default do
+      &quot;#{id}.txt&quot;
+    end
+  end
+
+  attr :content, type: :to_s do
+    title &#39;Content as a single multiline string&#39;
+    note &#39;Directly set content of file as a string.&#39;
+  end
+
+  attr_array :line, type: :to_s do
+    title &#39;Adds a line of content to file&#39;
+    flags :allow_dupes, :no_sort
+  end
+
+  attr :eol, type: :choice do
+    title &#39;End of line style&#39;
+    items [:lf, :crlf, :native]
+    default :native
+  end
+
+  plugin :text do
+    def generate
+      services.nodes.each do |n|
+        attrs = n.attrs
+        file = services.new_file(attrs.filename, eol: attrs.eol, capacity: 1024)
+        w = file.writer
+        c = attrs.content
+        w.write_raw(c) if c
+        lines = attrs.line
+        if !lines.empty?
+          w &lt;&lt; &quot;#{lines.join(&quot;\n&quot;)}&quot;
+        end
+        file.write
+      end
+    end
+
+    def build_output(root)
+      services.nodes.each do |n|
+        root[:filename] = n.attrs.filename
+      end
+    end
+  end
+end
+</code></pre>
+
+<p><sub><sup>Generated on 05-Sep-23 by <a href="https://github.com/vmg/redcarpet">Redcarpet</a> using <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm</sup></sub></p>
+</body>
 </html>

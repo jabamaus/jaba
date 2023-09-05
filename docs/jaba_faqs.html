@@ -1,57 +1,81 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
-    <head>
-        <title>jaba_faqs</title>
-        <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code&display=swap"> 
-        <link rel="stylesheet" href="mamd.css">
-    </head>
-    <body>
-        <h2 id="jaba-faqs">Jaba FAQs</h2>
+  <head>
+    <title>Jaba FAQs</title>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code&display=swap">
+    <link rel="stylesheet" href="mamd.css">
+  </head>
+<body>
+<h2>Jaba FAQs</h2>
+
 <p><a href="index.html">home</a></p>
+
 <ul>
 <li><a href="#General">General</a>
+
 <ul>
 <li><a href="#WhatGenerators">What generators does jaba currently support?</a></li>
 <li><a href="#SupportMake">Is jaba going to support make?</a></li>
 <li><a href="#WhyRuby">Why is Jaba written in ruby?</a></li>
 <li><a href="#HowMuchRuby">How much ruby knowledge do I need?</a></li>
-<li><a href="#WhyNotAutomatic">Why doesn't jaba update the build automatically when .jaba files change? Why do I have to run jaba manually when I change the build?</a></li>
+<li><a href="#WhyNotAutomatic">Why doesn&#39;t jaba update the build automatically when .jaba files change? Why do I have to run jaba manually when I change the build?</a></li>
 <li><a href="#ShouldCheckin">Should buildsystem files (eg Visual Studio/Xcode projects/ninja files etc) be checked into source control?</a></li>
 <li><a href="#AbsoluteFiles">Does jaba put absolute file paths in generated files?</a></li>
+</ul></li>
 </ul>
-</li>
-</ul>
-<p><a id="General"></a></p>
-<h2 id="general">General</h2>
-<p><a id="WhatGenerators"></a></p>
-<h4 id="what-generators-does-jaba-currently-support">What generators does jaba currently support?</h4>
-<p>Currently only Visual Studio (win32/x64) but there are plans to support Xcode (ios/osx) and Ninja (linux).</p>
-<p><a id="SupportMake"></a></p>
-<h4 id="is-jaba-going-to-support-make">Is jaba going to support make?</h4>
-<p>No. As far as I am concerned there is no need now that we have Ninja.</p>
-<p><a id="WhyRuby"></a></p>
-<h4 id="why-is-jaba-written-in-ruby">Why is Jaba written in ruby?</h4>
-<p><a id="HowMuchRuby"></a></p>
-<h4 id="how-much-ruby-knowledge-do-i-need">How much ruby knowledge do I need?</h4>
-<p>Hardly any. See <a href="jaba_ruby_knowledge.html">Ruby knowledge</a>.</p>
-<p><a id="WhyNotAutomatic"></a></p>
-<h4 id="why-doesnt-jaba-update-the-build-automatically-when-jaba-files-change-why-do-i-have-to-run-jaba-manually-when-i-change-the-build">Why doesn't jaba update the build automatically when .jaba files change? Why do I have to run jaba manually when I change the build?</h4>
-<p>This one requires some discussion but there are three main reasons:</p>
-<ul>
-<li>jaba heavily espouses the power, simplicity and flexibility of glob matching which is incompatible with automatically updating the build due to the time penalty for detecting new files. Using glob matching can make jaba definitions really clean and simple and can greatly reduce the time spent manually specifying source files, include paths and many other paths as it lets the system do the work. Of course manual specification is still possible and sometimes the best approach. A hybrid can also be used.</li>
-<li>The writers of build systems, notably Ninja, have worked very hard to squeeze out every drop of performance for incremental builds. I don't want to hurt that by invoking jaba at the beginning of each and every build, even if the operation is 'high performance'.</li>
-<li>Minimises risk to the build.</li>
-</ul>
-<p>The down side is that jaba will need to be invoked manually when you update the build. Personally I don't find this to be a problem, indeed I prefer it, because I like to know what's changed in the build before the build starts. Jaba does not touch unmodified files so project files are not unnecessarily reloaded.</p>
-<p>The only time this does become a problem is when project files are not checked in (probably the standard approach with build generation systems these days, although see next FAQ). This leads to the need to run jaba after a branch update to ensure the build is up to date. Mitigating this is a simple matter of using a shell script to do the update and adding a call to jaba. This could be done by continuous integration, which would also verify the build.</p>
-<p><a id="ShouldCheckin"></a></p>
-<h4 id="should-buildsystem-files-eg-visual-studioxcode-projectsninja-files-etc-be-checked-into-source-control">Should buildsystem files (eg Visual Studio/Xcode projects/ninja files etc) be checked into source control?</h4>
-<p>Its up to you. Jaba is designed to allow you to do this and does not place any absolute paths in generated build files. There are good reasons for doing this on some occasions. Firstly you know that the codebase will build out of the box without any build generation system required (if continuous integration is properly used). Secondly, and very importantly, you can see what is going on in the build via source control diffs. This is a fantastically useful tool to see what's going on and demystify things, especially when things go wrong. This is a strong case for checking in at least a few build files. I always do this and its served me well. Of course if you are targeting a lot of platforms and you are in an environment where every developer does it their own way this may be less desirable.</p>
-<p><a id="AbsoluteFiles"></a></p>
-<h4 id="does-jaba-put-absolute-file-paths-in-generated-files">Does jaba put absolute file paths in generated files?</h4>
-<p>Absolutely not :) All paths are relative.</p>
-<p><sub><sup>Generated on 04-Sep-23 by <a href="https://github.com/ishani/MaMD">MaMD</a> using <a href="https://github.com/yuin/goldmark">Goldmark</a>, <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a></sup></sub></p>
 
-    </body>
+<p><a id="General"></a></p>
+
+<h2>General</h2>
+
+<p><a id="WhatGenerators"></a></p>
+
+<h4>What generators does jaba currently support?</h4>
+
+<p>Currently only Visual Studio (win32/x64) but there are plans to support Xcode (ios/osx) and Ninja (linux).</p>
+
+<p><a id="SupportMake"></a></p>
+
+<h4>Is jaba going to support make?</h4>
+
+<p>No. As far as I am concerned there is no need now that we have Ninja.</p>
+
+<p><a id="WhyRuby"></a></p>
+
+<h4>Why is Jaba written in ruby?</h4>
+
+<p><a id="HowMuchRuby"></a></p>
+
+<h4>How much ruby knowledge do I need?</h4>
+
+<p>Hardly any. See <a href="jaba_ruby_knowledge.html">Ruby knowledge</a>.</p>
+
+<p><a id="WhyNotAutomatic"></a></p>
+
+<h4>Why doesn&#39;t jaba update the build automatically when .jaba files change? Why do I have to run jaba manually when I change the build?</h4>
+
+<p>This one requires some discussion but there are three main reasons:
+- jaba heavily espouses the power, simplicity and flexibility of glob matching which is incompatible with automatically updating the build due to the time penalty for detecting new files. Using glob matching can make jaba definitions really clean and simple and can greatly reduce the time spent manually specifying source files, include paths and many other paths as it lets the system do the work. Of course manual specification is still possible and sometimes the best approach. A hybrid can also be used.
+- The writers of build systems, notably Ninja, have worked very hard to squeeze out every drop of performance for incremental builds. I don&#39;t want to hurt that by invoking jaba at the beginning of each and every build, even if the operation is &#39;high performance&#39;.
+- Minimises risk to the build.</p>
+
+<p>The down side is that jaba will need to be invoked manually when you update the build. Personally I don&#39;t find this to be a problem, indeed I prefer it, because I like to know what&#39;s changed in the build before the build starts. Jaba does not touch unmodified files so project files are not unnecessarily reloaded.</p>
+
+<p>The only time this does become a problem is when project files are not checked in (probably the standard approach with build generation systems these days, although see next FAQ). This leads to the need to run jaba after a branch update to ensure the build is up to date. Mitigating this is a simple matter of using a shell script to do the update and adding a call to jaba. This could be done by continuous integration, which would also verify the build.</p>
+
+<p><a id="ShouldCheckin"></a></p>
+
+<h4>Should buildsystem files (eg Visual Studio/Xcode projects/ninja files etc) be checked into source control?</h4>
+
+<p>Its up to you. Jaba is designed to allow you to do this and does not place any absolute paths in generated build files. There are good reasons for doing this on some occasions. Firstly you know that the codebase will build out of the box without any build generation system required (if continuous integration is properly used). Secondly, and very importantly, you can see what is going on in the build via source control diffs. This is a fantastically useful tool to see what&#39;s going on and demystify things, especially when things go wrong. This is a strong case for checking in at least a few build files. I always do this and its served me well. Of course if you are targeting a lot of platforms and you are in an environment where every developer does it their own way this may be less desirable.</p>
+
+<p><a id="AbsoluteFiles"></a></p>
+
+<h4>Does jaba put absolute file paths in generated files?</h4>
+
+<p>Absolutely not :) All paths are relative.</p>
+
+<p><sub><sup>Generated on 05-Sep-23 by <a href="https://github.com/vmg/redcarpet">Redcarpet</a> using <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm</sup></sub></p>
+</body>
 </html>
