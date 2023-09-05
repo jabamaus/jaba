@@ -108,7 +108,7 @@ module JABA
         JABA.warn("'#{fn}' is empty", want_warn_line: false)
       end
 
-      existing = read(fn, encoding: file.encoding)
+      existing = read(fn, encoding: file.encoding, normalize_eol: false)
 
       status = if existing.nil?
           @added << fn
@@ -142,7 +142,7 @@ module JABA
 
     def include_untracked = @generated.concat(@untracked)
 
-    def read(filename, encoding: nil, fail_if_not_found: false)
+    def read(filename, encoding: nil, fail_if_not_found: false, normalize_eol: true)
       if !filename.absolute_path?
         JABA.error("'#{filename}' must be an absolute path")
       end
@@ -157,6 +157,7 @@ module JABA
       else
         str = IO.binread(fn)
         str.force_encoding(encoding) if encoding
+        str.delete!("\r") if normalize_eol
       end
       str
     end
