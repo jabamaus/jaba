@@ -12,20 +12,21 @@
 <p><sub><sup>This page applies to v0.1-alpha<br></sup></sub>
 <a href="../index.html">home</a> &gt; <a href="index.html">0.1-alpha home</a></p>
 
-<pre><code class="ruby">include &#39;../02-basic_static_lib&#39;
-include &#39;../03-basic_dynamic_lib&#39;
-include &#39;3rdParty/ThirdPartyLib&#39;
+<div class="CodeRay">
+  <div class="code"><pre>include <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">../02-basic_static_lib</span><span style="color:#710">'</span></span>
+include <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">../03-basic_dynamic_lib</span><span style="color:#710">'</span></span>
+include <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">3rdParty/ThirdPartyLib</span><span style="color:#710">'</span></span>
 
-target :AppWithDependencies do
-  type :console
-  src [&#39;main.cpp&#39;]
-  deps [:BasicStaticLib, :BasicDynamicLib, :ThirdPartyLib]
-end
+target <span style="color:#A60">:AppWithDependencies</span> <span style="color:#080;font-weight:bold">do</span>
+  type <span style="color:#A60">:console</span>
+  src [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">main.cpp</span><span style="color:#710">'</span></span>]
+  deps [<span style="color:#A60">:BasicStaticLib</span>, <span style="color:#A60">:BasicDynamicLib</span>, <span style="color:#A60">:ThirdPartyLib</span>]
+<span style="color:#080;font-weight:bold">end</span>
 
-# TODO: add soft dependency example
-# TODO: add export only example
-</code></pre>
+<span style="color:#777"># TODO: add soft dependency example</span>
+<span style="color:#777"># TODO: add export only example</span></pre></div>
+</div>
 
-<p><sub><sup>Generated on 05-Sep-23 by <a href="https://github.com/vmg/redcarpet">Redcarpet</a> using <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm</sup></sub></p>
+<p><sub><sup>Generated on 05-Sep-23 using <a href="https://github.com/vmg/redcarpet">Redcarpet</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm.</sup></sub></p>
 </body>
 </html>

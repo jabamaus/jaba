@@ -12,67 +12,71 @@
 <p><sub><sup>This page applies to v0.1-alpha<br></sup></sub>
 <a href="../index.html">home</a> &gt; <a href="index.html">0.1-alpha home</a></p>
 
-<pre><code class="ruby">text :example do
-  content %Q{Add a block of raw text using ruby&#39;s %Q string literal notation.
+<div class="CodeRay">
+  <div class="code"><pre>text <span style="color:#A60">:example</span> <span style="color:#080;font-weight:bold">do</span>
+  content <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">%Q{</span><span style="color:#D20">Add a block of raw text using ruby's %Q string literal notation.
 Makes it easy to write formatted text including newlines
-}
-  line &#39;Add a line explicitly&#39;
-end
-</code></pre>
+</span><span style="color:#710">}</span></span>
+  line <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Add a line explicitly</span><span style="color:#710">'</span></span>
+<span style="color:#080;font-weight:bold">end</span>
+</pre></div>
+</div>
 
-<pre><code class="ruby">type :text do
+<div class="CodeRay">
+  <div class="code"><pre>type <span style="color:#A60">:text</span> <span style="color:#080;font-weight:bold">do</span>
+  
+  title <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Basic text file that is written to HDD</span><span style="color:#710">'</span></span>
 
-  title &#39;Basic text file that is written to HDD&#39;
+  attr <span style="color:#A60">:filename</span>, <span style="color:#606">type</span>: <span style="color:#A60">:file</span> <span style="color:#080;font-weight:bold">do</span>
+    title <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Path of the filename to be generated</span><span style="color:#710">'</span></span>
+    basedir_spec <span style="color:#A60">:definition_root</span>
+    default <span style="color:#080;font-weight:bold">do</span>
+      <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="background-color:hsla(0,0%,0%,0.07);color:black"><span style="font-weight:bold;color:#666">#{</span>id<span style="font-weight:bold;color:#666">}</span></span><span style="color:#D20">.txt</span><span style="color:#710">&quot;</span></span>
+    <span style="color:#080;font-weight:bold">end</span>
+  <span style="color:#080;font-weight:bold">end</span>
+  
+  attr <span style="color:#A60">:content</span>, <span style="color:#606">type</span>: <span style="color:#A60">:to_s</span> <span style="color:#080;font-weight:bold">do</span>
+    title <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Content as a single multiline string</span><span style="color:#710">'</span></span>
+    note <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Directly set content of file as a string.</span><span style="color:#710">'</span></span>
+  <span style="color:#080;font-weight:bold">end</span>
+  
+  attr_array <span style="color:#A60">:line</span>, <span style="color:#606">type</span>: <span style="color:#A60">:to_s</span> <span style="color:#080;font-weight:bold">do</span>
+    title <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Adds a line of content to file</span><span style="color:#710">'</span></span>
+    flags <span style="color:#A60">:allow_dupes</span>, <span style="color:#A60">:no_sort</span>
+  <span style="color:#080;font-weight:bold">end</span>
+  
+  attr <span style="color:#A60">:eol</span>, <span style="color:#606">type</span>: <span style="color:#A60">:choice</span> <span style="color:#080;font-weight:bold">do</span>
+    title <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">End of line style</span><span style="color:#710">'</span></span>
+    items [<span style="color:#A60">:lf</span>, <span style="color:#A60">:crlf</span>, <span style="color:#A60">:native</span>]
+    default <span style="color:#A60">:native</span>
+  <span style="color:#080;font-weight:bold">end</span>
 
-  attr :filename, type: :file do
-    title &#39;Path of the filename to be generated&#39;
-    basedir_spec :definition_root
-    default do
-      &quot;#{id}.txt&quot;
-    end
-  end
-
-  attr :content, type: :to_s do
-    title &#39;Content as a single multiline string&#39;
-    note &#39;Directly set content of file as a string.&#39;
-  end
-
-  attr_array :line, type: :to_s do
-    title &#39;Adds a line of content to file&#39;
-    flags :allow_dupes, :no_sort
-  end
-
-  attr :eol, type: :choice do
-    title &#39;End of line style&#39;
-    items [:lf, :crlf, :native]
-    default :native
-  end
-
-  plugin :text do
-    def generate
-      services.nodes.each do |n|
+  plugin <span style="color:#A60">:text</span> <span style="color:#080;font-weight:bold">do</span>
+    <span style="color:#080;font-weight:bold">def</span> <span style="color:#06B;font-weight:bold">generate</span>
+      services.nodes.each <span style="color:#080;font-weight:bold">do</span> |n|
         attrs = n.attrs
-        file = services.new_file(attrs.filename, eol: attrs.eol, capacity: 1024)
+        file = services.new_file(attrs.filename, <span style="color:#606">eol</span>: attrs.eol, <span style="color:#606">capacity</span>: <span style="color:#00D">1024</span>)
         w = file.writer
         c = attrs.content
-        w.write_raw(c) if c
+        w.write_raw(c) <span style="color:#080;font-weight:bold">if</span> c
         lines = attrs.line
-        if !lines.empty?
-          w &lt;&lt; &quot;#{lines.join(&quot;\n&quot;)}&quot;
-        end
+        <span style="color:#080;font-weight:bold">if</span> !lines.empty?
+          w &lt;&lt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="background-color:hsla(0,0%,0%,0.07);color:black"><span style="font-weight:bold;color:#666">#{</span>lines.join(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#b0b">\n</span><span style="color:#710">&quot;</span></span>)<span style="font-weight:bold;color:#666">}</span></span><span style="color:#710">&quot;</span></span>
+        <span style="color:#080;font-weight:bold">end</span>
         file.write
-      end
-    end
+      <span style="color:#080;font-weight:bold">end</span>
+    <span style="color:#080;font-weight:bold">end</span>
+    
+    <span style="color:#080;font-weight:bold">def</span> <span style="color:#06B;font-weight:bold">build_output</span>(root)
+      services.nodes.each <span style="color:#080;font-weight:bold">do</span> |n|
+        root[<span style="color:#A60">:filename</span>] = n.attrs.filename
+      <span style="color:#080;font-weight:bold">end</span>
+    <span style="color:#080;font-weight:bold">end</span>
+  <span style="color:#080;font-weight:bold">end</span>
+<span style="color:#080;font-weight:bold">end</span>
+</pre></div>
+</div>
 
-    def build_output(root)
-      services.nodes.each do |n|
-        root[:filename] = n.attrs.filename
-      end
-    end
-  end
-end
-</code></pre>
-
-<p><sub><sup>Generated on 05-Sep-23 by <a href="https://github.com/vmg/redcarpet">Redcarpet</a> using <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm</sup></sub></p>
+<p><sub><sup>Generated on 05-Sep-23 using <a href="https://github.com/vmg/redcarpet">Redcarpet</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm.</sup></sub></p>
 </body>
 </html>

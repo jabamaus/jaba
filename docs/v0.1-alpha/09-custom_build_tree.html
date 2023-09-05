@@ -12,15 +12,17 @@
 <p><sub><sup>This page applies to v0.1-alpha<br></sup></sub>
 <a href="../index.html">home</a> &gt; <a href="index.html">0.1-alpha home</a></p>
 
-<pre><code class="ruby">target :AppWithCustomisedBuildTree do
-  type :console
-  src [&#39;main.cpp&#39;]
-  bindir &quot;custom_build_tree/bin/#{config}&quot;
-  libdir &quot;custom_build_tree/lib/#{config}&quot;
-  objdir &quot;custom_build_tree/obj/#{config}&quot;
-end
-</code></pre>
+<div class="CodeRay">
+  <div class="code"><pre>target <span style="color:#A60">:AppWithCustomisedBuildTree</span> <span style="color:#080;font-weight:bold">do</span>
+  type <span style="color:#A60">:console</span>
+  src [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">main.cpp</span><span style="color:#710">'</span></span>]
+  bindir <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">custom_build_tree/bin/</span><span style="background-color:hsla(0,0%,0%,0.07);color:black"><span style="font-weight:bold;color:#666">#{</span>config<span style="font-weight:bold;color:#666">}</span></span><span style="color:#710">&quot;</span></span>
+  libdir <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">custom_build_tree/lib/</span><span style="background-color:hsla(0,0%,0%,0.07);color:black"><span style="font-weight:bold;color:#666">#{</span>config<span style="font-weight:bold;color:#666">}</span></span><span style="color:#710">&quot;</span></span>
+  objdir <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">custom_build_tree/obj/</span><span style="background-color:hsla(0,0%,0%,0.07);color:black"><span style="font-weight:bold;color:#666">#{</span>config<span style="font-weight:bold;color:#666">}</span></span><span style="color:#710">&quot;</span></span>
+<span style="color:#080;font-weight:bold">end</span>
+</pre></div>
+</div>
 
-<p><sub><sup>Generated on 05-Sep-23 by <a href="https://github.com/vmg/redcarpet">Redcarpet</a> using <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm</sup></sub></p>
+<p><sub><sup>Generated on 05-Sep-23 using <a href="https://github.com/vmg/redcarpet">Redcarpet</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm.</sup></sub></p>
 </body>
 </html>

@@ -12,20 +12,22 @@
 <p><sub><sup>This page applies to v0.1-alpha<br></sup></sub>
 <a href="../index.html">home</a> &gt; <a href="index.html">0.1-alpha home</a></p>
 
-<pre><code class="ruby">target :CodegenExample do
-  type :console
-  src [&#39;main.cpp&#39;, &#39;generator.rb&#39;]
-  src %w(src1.h src2.h), :force, prefix: &#39;generated/&#39;
-  rule do
-    input &#39;*.xyz&#39;
-    output &#39;generated/$(input.basename_no_ext).cpp&#39;
-    implicit_input &#39;generator.rb&#39;
-    cmd &#39;ruby $(implicit_input) $(input) $(output)&#39;
-    msg &#39;$(input.basename) -&gt; $(output.basename)&#39;
-  end
-end
-</code></pre>
+<div class="CodeRay">
+  <div class="code"><pre>target <span style="color:#A60">:CodegenExample</span> <span style="color:#080;font-weight:bold">do</span>
+  type <span style="color:#A60">:console</span>
+  src [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">main.cpp</span><span style="color:#710">'</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">generator.rb</span><span style="color:#710">'</span></span>]
+  src <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">%w(</span><span style="color:#D20">src1.h src2.h</span><span style="color:#710">)</span></span>, <span style="color:#A60">:force</span>, <span style="color:#606">prefix</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">generated/</span><span style="color:#710">'</span></span>
+  rule <span style="color:#080;font-weight:bold">do</span>
+    input <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">*.xyz</span><span style="color:#710">'</span></span>
+    output <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">generated/$(input.basename_no_ext).cpp</span><span style="color:#710">'</span></span>
+    implicit_input <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">generator.rb</span><span style="color:#710">'</span></span>
+    cmd <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ruby $(implicit_input) $(input) $(output)</span><span style="color:#710">'</span></span>
+    msg <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">$(input.basename) -&gt; $(output.basename)</span><span style="color:#710">'</span></span>
+  <span style="color:#080;font-weight:bold">end</span>
+<span style="color:#080;font-weight:bold">end</span>
+</pre></div>
+</div>
 
-<p><sub><sup>Generated on 05-Sep-23 by <a href="https://github.com/vmg/redcarpet">Redcarpet</a> using <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm</sup></sub></p>
+<p><sub><sup>Generated on 05-Sep-23 using <a href="https://github.com/vmg/redcarpet">Redcarpet</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm.</sup></sub></p>
 </body>
 </html>

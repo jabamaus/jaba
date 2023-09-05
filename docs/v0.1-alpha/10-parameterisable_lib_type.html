@@ -12,36 +12,38 @@
 <p><sub><sup>This page applies to v0.1-alpha<br></sup></sub>
 <a href="../index.html">home</a> &gt; <a href="index.html">0.1-alpha home</a></p>
 
-<pre><code class="ruby"># This example demonstrates how to set up a lib so that it can be either static or dynamic without duplicating code or
-# changing the app that depends on it.
+<div class="CodeRay">
+  <div class="code"><pre><span style="color:#777"># This example demonstrates how to set up a lib so that it can be either static or dynamic without duplicating code or</span>
+<span style="color:#777"># changing the app that depends on it.</span>
 
-extend_jdl do
-  attr :lib_type, type: :choice do
-    title &quot;Lib type&quot;
-    items [:lib, :dll]
-    default :lib
-  end
-end
+extend_jdl <span style="color:#080;font-weight:bold">do</span>
+  attr <span style="color:#A60">:lib_type</span>, <span style="color:#606">type</span>: <span style="color:#A60">:choice</span> <span style="color:#080;font-weight:bold">do</span>
+    title <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">Lib type</span><span style="color:#710">&quot;</span></span>
+    items [<span style="color:#A60">:lib</span>, <span style="color:#A60">:dll</span>]
+    default <span style="color:#A60">:lib</span>
+  <span style="color:#080;font-weight:bold">end</span>
+<span style="color:#080;font-weight:bold">end</span>
 
-target :AppWithStaticOrDynamicLib do
-  type :console
-  src &#39;main.cpp&#39;
-  deps [:StaticOrDynamicLib]
-end
+target <span style="color:#A60">:AppWithStaticOrDynamicLib</span> <span style="color:#080;font-weight:bold">do</span>
+  type <span style="color:#A60">:console</span>
+  src <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">main.cpp</span><span style="color:#710">'</span></span>
+  deps [<span style="color:#A60">:StaticOrDynamicLib</span>]
+<span style="color:#080;font-weight:bold">end</span>
 
-target :StaticOrDynamicLib, root: &#39;StaticOrDynamicLib&#39; do
+target <span style="color:#A60">:StaticOrDynamicLib</span>, <span style="color:#606">root</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">StaticOrDynamicLib</span><span style="color:#710">'</span></span> <span style="color:#080;font-weight:bold">do</span>
   type lib_type
-  src [&#39;.&#39;]
-  inc [&#39;include&#39;], :export
-  case type
-  when :lib
-    define [&#39;SODL_STATIC&#39;], :export
-  when :dll
-    define [&#39;DLL_EXPORT&#39;]
-  end
-end
-</code></pre>
+  src [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">.</span><span style="color:#710">'</span></span>]
+  inc [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">include</span><span style="color:#710">'</span></span>], <span style="color:#A60">:export</span>
+  <span style="color:#080;font-weight:bold">case</span> type
+  <span style="color:#080;font-weight:bold">when</span> <span style="color:#A60">:lib</span>
+    define [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">SODL_STATIC</span><span style="color:#710">'</span></span>], <span style="color:#A60">:export</span>
+  <span style="color:#080;font-weight:bold">when</span> <span style="color:#A60">:dll</span>
+    define [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">DLL_EXPORT</span><span style="color:#710">'</span></span>]
+  <span style="color:#080;font-weight:bold">end</span>
+<span style="color:#080;font-weight:bold">end</span>
+</pre></div>
+</div>
 
-<p><sub><sup>Generated on 05-Sep-23 by <a href="https://github.com/vmg/redcarpet">Redcarpet</a> using <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm</sup></sub></p>
+<p><sub><sup>Generated on 05-Sep-23 using <a href="https://github.com/vmg/redcarpet">Redcarpet</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm.</sup></sub></p>
 </body>
 </html>

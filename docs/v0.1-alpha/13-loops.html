@@ -12,18 +12,20 @@
 <p><sub><sup>This page applies to v0.1-alpha<br></sup></sub>
 <a href="../index.html">home</a> &gt; <a href="index.html">0.1-alpha home</a></p>
 
-<pre><code class="ruby"># This example demonstrates easily creating multiple similar apps
+<div class="CodeRay">
+  <div class="code"><pre><span style="color:#777"># This example demonstrates easily creating multiple similar apps</span>
 
-glob(&#39;examples/*&#39;) do |e| # eg examples/example1.cpp
-  id = e.basename_no_ext # eg example1  
-  target id do
-    type :console
-    configs [:debug, :release]
+glob(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">examples/*</span><span style="color:#710">'</span></span>) <span style="color:#080;font-weight:bold">do</span> |e| <span style="color:#777"># eg examples/example1.cpp</span>
+  id = e.basename_no_ext <span style="color:#777"># eg example1  </span>
+  target id <span style="color:#080;font-weight:bold">do</span>
+    type <span style="color:#A60">:console</span>
+    configs [<span style="color:#A60">:debug</span>, <span style="color:#A60">:release</span>]
     src e
-  end
-end
-</code></pre>
+  <span style="color:#080;font-weight:bold">end</span>
+<span style="color:#080;font-weight:bold">end</span>
+</pre></div>
+</div>
 
-<p><sub><sup>Generated on 05-Sep-23 by <a href="https://github.com/vmg/redcarpet">Redcarpet</a> using <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm</sup></sub></p>
+<p><sub><sup>Generated on 05-Sep-23 using <a href="https://github.com/vmg/redcarpet">Redcarpet</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm.</sup></sub></p>
 </body>
 </html>

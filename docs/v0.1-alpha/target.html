@@ -180,8 +180,9 @@
 
 <p><em>Examples</em></p>
 
-<pre><code class="ruby">charset :unicode
-</code></pre>
+<div class="CodeRay">
+  <div class="code"><pre>charset <span style="color:#A60">:unicode</span></pre></div>
+</div>
 </blockquote>
 
 <p><a id="config"></a></p>
@@ -344,10 +345,11 @@
 
 <p><em>Examples</em></p>
 
-<pre><code class="ruby">define &quot;MYDEFINE&quot;
-define [&quot;DEFINE1&quot;, &quot;DEFINE2&quot;, &quot;DEFINE3=1&quot;]
-define debug? ? &quot;DEBUG&quot; : &quot;RELEASE&quot;
-</code></pre>
+<div class="CodeRay">
+  <div class="code"><pre>define <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">MYDEFINE</span><span style="color:#710">&quot;</span></span>
+define [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">DEFINE1</span><span style="color:#710">&quot;</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">DEFINE2</span><span style="color:#710">&quot;</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">DEFINE3=1</span><span style="color:#710">&quot;</span></span>]
+define debug? ? <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">DEBUG</span><span style="color:#710">&quot;</span></span> : <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">RELEASE</span><span style="color:#710">&quot;</span></span></pre></div>
+</div>
 </blockquote>
 
 <p><a id="deps"></a></p>
@@ -433,25 +435,28 @@ define debug? ? &quot;DEBUG&quot; : &quot;RELEASE&quot;
 <p><em>Examples</em></p>
 </blockquote>
 
-<pre><code class="ruby">target :MyApp do
-  type :app
-  ...
-  deps [:MyLib]
-  deps [:MyLib2], type: :soft # No hard project dependency so not required in workspace
-end
+<div class="CodeRay">
+  <div class="code"><pre>
+      target <span style="color:#A60">:MyApp</span> <span style="color:#080;font-weight:bold">do</span>
+        type <span style="color:#A60">:app</span>
+        ...
+        deps [<span style="color:#A60">:MyLib</span>]
+        deps [<span style="color:#A60">:MyLib2</span>], <span style="color:#606">type</span>: <span style="color:#A60">:soft</span> <span style="color:#777"># No hard project dependency so not required in workspace</span>
+      <span style="color:#080;font-weight:bold">end</span>
+      
+      target <span style="color:#A60">:MyLib</span> <span style="color:#080;font-weight:bold">do</span>
+        type <span style="color:#A60">:lib</span>
+        ...
+      <span style="color:#080;font-weight:bold">end</span>
 
-target :MyLib do
-  type :lib
-  ...
-end
-
-target :MyLib2 do
-  type :lib
-  inc [&#39;.&#39;], :export
-  define [&#39;MYLIB2&#39;], :export
-  ...
-end
-</code></pre>
+      target <span style="color:#A60">:MyLib2</span> <span style="color:#080;font-weight:bold">do</span>
+        type <span style="color:#A60">:lib</span>
+        inc [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">.</span><span style="color:#710">'</span></span>], <span style="color:#A60">:export</span>
+        define [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">MYLIB2</span><span style="color:#710">'</span></span>], <span style="color:#A60">:export</span>
+        ...
+      <span style="color:#080;font-weight:bold">end</span>
+    </pre></div>
+</div>
 </blockquote>
 
 <p><a id="exceptions"></a></p>
@@ -487,8 +492,9 @@ end
 
 <p><em>Examples</em></p>
 
-<pre><code class="ruby">exceptions false # disable exceptions
-</code></pre>
+<div class="CodeRay">
+  <div class="code"><pre>exceptions <span style="color:#069">false</span> <span style="color:#777"># disable exceptions</span></pre></div>
+</div>
 </blockquote>
 
 <p><a id="inc"></a></p>
@@ -544,9 +550,10 @@ end
 
 <p><em>Examples</em></p>
 
-<pre><code class="ruby">inc [&#39;mylibrary/include&#39;]
-inc [&#39;mylibrary/include&#39;], :export # Export include path to dependents
-</code></pre>
+<div class="CodeRay">
+  <div class="code"><pre>inc [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mylibrary/include</span><span style="color:#710">'</span></span>]
+inc [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mylibrary/include</span><span style="color:#710">'</span></span>], <span style="color:#A60">:export</span> <span style="color:#777"># Export include path to dependents</span></pre></div>
+</div>
 </blockquote>
 
 <p><a id="lflags"></a></p>
@@ -783,11 +790,14 @@ inc [&#39;mylibrary/include&#39;], :export # Export include path to dependents
 
 <p><em>Examples</em></p>
 
-<pre><code class="ruby">target :MyApp do
-  src [&#39;**/*&#39;] # Get all src in $(root), which defaults to directory of definition file
-  projdir &#39;projects&#39; # Place generated projects in &#39;projects&#39; directory
-end
-</code></pre>
+<div class="CodeRay">
+  <div class="code"><pre>
+      target <span style="color:#A60">:MyApp</span> <span style="color:#080;font-weight:bold">do</span>
+        src [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">**/*</span><span style="color:#710">'</span></span>] <span style="color:#777"># Get all src in $(root), which defaults to directory of definition file</span>
+        projdir <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">projects</span><span style="color:#710">'</span></span> <span style="color:#777"># Place generated projects in 'projects' directory</span>
+      <span style="color:#080;font-weight:bold">end</span>
+    </pre></div>
+</div>
 </blockquote>
 
 <p><a id="projname"></a></p>
@@ -881,8 +891,9 @@ end
 
 <p><em>Examples</em></p>
 
-<pre><code class="ruby">rtti true
-</code></pre>
+<div class="CodeRay">
+  <div class="code"><pre>rtti <span style="color:#069">true</span></pre></div>
+</div>
 </blockquote>
 
 <p><a id="rule"></a></p>
@@ -1391,47 +1402,50 @@ end
 <p><em>Examples</em></p>
 </blockquote>
 
-<pre><code class="ruby"># Add all src in $(root) whose extension is in $(src_ext)
-src [&#39;*&#39;]
+<div class="CodeRay">
+  <div class="code"><pre>
+      <span style="color:#777"># Add all src in $(root) whose extension is in $(src_ext)</span>
+      src [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">*</span><span style="color:#710">'</span></span>]
 
-# Add all src in $(root)/src whose extension is in $(src_ext), recursively
-src [&#39;src/**/*&#39;]
+      <span style="color:#777"># Add all src in $(root)/src whose extension is in $(src_ext), recursively</span>
+      src [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">src/**/*</span><span style="color:#710">'</span></span>]
 
-# Glob matches are not required to add whole directory recursively (whose extension is in $(src_ext))
-src [&#39;src&#39;]
+      <span style="color:#777"># Glob matches are not required to add whole directory recursively (whose extension is in $(src_ext))</span>
+      src [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">src</span><span style="color:#710">'</span></span>]
 
-# Add all src recursively but excluding test files
-src [&#39;src&#39;], exclude: [&#39;test/**/*&#39;]
+      <span style="color:#777"># Add all src recursively but excluding test files</span>
+      src [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">src</span><span style="color:#710">'</span></span>], <span style="color:#606">exclude</span>: [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">test/**/*</span><span style="color:#710">'</span></span>]
 
-# Add src explicitly
-src [&#39;main.c&#39;, &#39;io.c&#39;]
+      <span style="color:#777"># Add src explicitly</span>
+      src [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">main.c</span><span style="color:#710">'</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">io.c</span><span style="color:#710">'</span></span>]
 
-# Array brackets not required for one item
-src &#39;main.c&#39;
+      <span style="color:#777"># Array brackets not required for one item</span>
+      src <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">main.c</span><span style="color:#710">'</span></span>
 
-# Add src explicitly even if extension not in $(src_ext)
-src [&#39;build.jaba&#39;]
+      <span style="color:#777"># Add src explicitly even if extension not in $(src_ext)</span>
+      src [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">build.jaba</span><span style="color:#710">'</span></span>]
 
-# Add src by glob match even if extension not in $(src_ext) only if has explicit extension
-src [&#39;*.jaba&#39;]
+      <span style="color:#777"># Add src by glob match even if extension not in $(src_ext) only if has explicit extension</span>
+      src [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">*.jaba</span><span style="color:#710">'</span></span>]
 
-# Force addition of file not on disk
-src [&#39;does_not_exist.cpp&#39;], :force
+      <span style="color:#777"># Force addition of file not on disk</span>
+      src [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">does_not_exist.cpp</span><span style="color:#710">'</span></span>], <span style="color:#A60">:force</span>
 
-# Precede with ./ to force path to be relative to current jaba file even if $(root) points elsewhere.
-# Useful if you want to make $(root) point to a 3rd party distro but you want to add a local file
-src [&#39;./local.cxx&#39;]
+      <span style="color:#777"># Precede with ./ to force path to be relative to current jaba file even if $(root) points elsewhere.</span>
+      <span style="color:#777"># Useful if you want to make $(root) point to a 3rd party distro but you want to add a local file</span>
+      src [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">./local.cxx</span><span style="color:#710">'</span></span>]
 
-# Add src in bulk without needing quotes, commas or square brackets. Options can be added as normal.
-src %w(main.c dmydln.c miniinit.c array.c ast.c bignum.c class.c compar.c compile.c)
-src %w(
-  main.c dmydln.c miniinit.c array.c
-  ast.c bignum.c class.c compar.c compile.c
-)
+      <span style="color:#777"># Add src in bulk without needing quotes, commas or square brackets. Options can be added as normal.</span>
+      src <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">%w(</span><span style="color:#D20">main.c dmydln.c miniinit.c array.c ast.c bignum.c class.c compar.c compile.c</span><span style="color:#710">)</span></span>
+      src <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">%w(</span><span style="color:#D20">
+        main.c dmydln.c miniinit.c array.c
+        ast.c bignum.c class.c compar.c compile.c
+      </span><span style="color:#710">)</span></span>
 
-# Place matching files in a specific folder location within the project file
-src &#39;*_win.cpp&#39;, vpath: &#39;win32&#39;
-</code></pre>
+      <span style="color:#777"># Place matching files in a specific folder location within the project file</span>
+      src <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">*_win.cpp</span><span style="color:#710">'</span></span>, <span style="color:#606">vpath</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">win32</span><span style="color:#710">'</span></span>
+    </pre></div>
+</div>
 </blockquote>
 
 <p><a id="syslibs"></a></p>
@@ -1929,8 +1943,9 @@ src &#39;*_win.cpp&#39;, vpath: &#39;win32&#39;
 
 <p><em>Examples</em></p>
 
-<pre><code class="ruby">vcnowarn [4100, 4127, 4244]
-</code></pre>
+<div class="CodeRay">
+  <div class="code"><pre>vcnowarn [<span style="color:#00D">4100</span>, <span style="color:#00D">4127</span>, <span style="color:#00D">4244</span>]</pre></div>
+</div>
 </blockquote>
 
 <p><a id="vcprop"></a></p>
@@ -2102,8 +2117,9 @@ src &#39;*_win.cpp&#39;, vpath: &#39;win32&#39;
 
 <p><em>Examples</em></p>
 
-<pre><code class="ruby">warnerror true
-</code></pre>
+<div class="CodeRay">
+  <div class="code"><pre>warnerror <span style="color:#069">true</span></pre></div>
+</div>
 </blockquote>
 
 <p><a id="winsdkver"></a></p>
@@ -2144,10 +2160,11 @@ src &#39;*_win.cpp&#39;, vpath: &#39;win32&#39;
 <em>Examples</em></li>
 </ul>
 
-<pre><code class="ruby">winsdkver &#39;10.0.18362.0&#39;
-# wrapper for
-vcglobal :WindowsTargetPlatformVersion, winsdkver
-</code></pre>
+<div class="CodeRay">
+  <div class="code"><pre>winsdkver <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">10.0.18362.0</span><span style="color:#710">'</span></span>
+<span style="color:#777"># wrapper for</span>
+vcglobal <span style="color:#A60">:WindowsTargetPlatformVersion</span>, winsdkver</pre></div>
+</div>
 </blockquote>
 
 <p><a id="write_src"></a></p>
@@ -2297,6 +2314,6 @@ vcglobal :WindowsTargetPlatformVersion, winsdkver
 </tbody></table>
 </blockquote>
 
-<p><sub><sup>Generated on 05-Sep-23 by <a href="https://github.com/vmg/redcarpet">Redcarpet</a> using <a href="https://github.com/alecthomas/chroma">Chroma</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm</sup></sub></p>
+<p><sub><sup>Generated on 05-Sep-23 using <a href="https://github.com/vmg/redcarpet">Redcarpet</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm.</sup></sub></p>
 </body>
 </html>
