@@ -129,6 +129,7 @@ module JABA
       @target_lookup = KeyToSHash.new # target id to target node
       @projects = []
       @project_lookup = {} # target node to project
+      $last_call_location = nil
     end
 
     def input = @input
