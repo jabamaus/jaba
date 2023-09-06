@@ -556,7 +556,7 @@ JABA::Context.define_jdl do
   attr "target/type", type: :choice do
     title "Target type"
     items [:app, :console, :lib, :dll]
-    default :app
+    default :console
   end
 
   attr "target/virtual", type: :bool do
