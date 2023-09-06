@@ -86,18 +86,18 @@ jtest "includes things" do
   end
 end
 
-jtest "supports passing keyword args to shared definitions" do
+jtest "supports passing args to shared definitions" do
   jdl(level: :core) do
     node :node
     attr "node/c"
   end
   jaba do
-    shared :a do |arg1:, arg2: nil, arg3: "f"|
-      c "#{arg1}#{arg2}#{arg3}"
+    shared :a do |arg1, arg2, arg3: "f", arg4: nil|
+      c "#{arg1}#{arg2}#{arg3}#{arg4}"
     end
     node :n do
-      include :a, arg1: "d", arg3: "e"
-      c.must_equal "de"
+      include :a, "d", "e", arg3: "f"
+      c.must_equal "def"
     end
   end
 end

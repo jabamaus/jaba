@@ -291,12 +291,12 @@ module JABA
       a.clear
     end
 
-    def jdl_include(spec, **kwargs)
+    def jdl_include(spec, *args, **kwargs)
       if root_node?
         JABA.context.process_include(spec)
       else
         block = JABA.context.lookup_shared(spec)
-        eval_jdl(**kwargs, &block)
+        eval_jdl(*args, **kwargs, &block)
       end
     end
 
