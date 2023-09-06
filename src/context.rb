@@ -340,7 +340,7 @@ module JABA
         if files.empty?
           msg = "No .jaba files found in '#{p}'"
           if fail_if_empty
-            JABA.error(msg, want_backtrace: false)
+            JABA.error(msg, want_backtrace: false, want_err_line: false)
           else
             JABA.warn(msg)
           end
