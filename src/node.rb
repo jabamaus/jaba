@@ -311,6 +311,7 @@ module JABA
       #
       from_node.attributes.each do |from_attr|
         next if from_attr.attr_def.single?
+        next if from_attr.attr_def.has_flag?(:node_option)
         attr = nil
 
         # visit all attribute elements in array/hash
