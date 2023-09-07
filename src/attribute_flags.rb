@@ -28,6 +28,9 @@ module JABA
       if !attr_def.array? && !attr_def.hash?
         yield "only allowed on array/hash attributes"
       end
+      if attr_def.has_flag?(:node_option)
+        yield "attributes flagged with :node_option cannot be :exportable"
+      end
     end
 
     def init_attr_def(attr_def)
