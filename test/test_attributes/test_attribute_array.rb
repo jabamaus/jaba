@@ -216,8 +216,8 @@ jtest "handles duplicates" do
   w = op[:warnings]
   w.size.must_equal 2
   # Previous duplicate location only reported if on different line
-  w[0].must_equal "Warning at #{src_loc("DD827579")}: Stripping duplicates [6, 7, 7] from 'a' attribute."
-  w[1].must_equal "Warning at #{src_loc("A34DE72A")}: Stripping duplicates [\"aa\", \"ab\", \"ac\"] from 'd' attribute. See previous at test_attribute_array.rb:#{src_line("3A77A0E4")}."
+  w[0].must_equal "Warning at #{src_loc("DD827579")}: [6, 7, 7] dupes stripped from 'a' attribute."
+  w[1].must_equal "Warning at #{src_loc("A34DE72A")}: [\"aa\", \"ab\", \"ac\"] dupes stripped from 'd' attribute. See previous at test_attribute_array.rb:#{src_line("3A77A0E4")}."
 end
 
 jtest "handles sorting" do
@@ -409,7 +409,7 @@ jtest "supports flag options" do
     b 1, :b # 0606C35D duplicate flag warning issued
   end
   op[:warnings].must_equal [
-    "Warning at #{src_loc("CD7C1057")}: Stripping duplicates [1] from 'b' attribute. See previous at #{src_loc("D9F57A3F")}.",
+    "Warning at #{src_loc("CD7C1057")}: [1] dupes stripped from 'b' attribute. See previous at #{src_loc("D9F57A3F")}.",
     "Warning at #{src_loc("0606C35D")}: 'b' attribute was passed duplicate flag ':b'.",
   ]
   a = op[:root].get_attr(:a)
@@ -465,5 +465,5 @@ jtest "supports value options" do
   b[0].option_value(:opt_single).must_equal 12
   b[0].option_value(:opt_single_choice).must_equal :b
   b[0].option_value(:opt_array).must_equal [10, 11, 13, 14]
-  op[:warnings].must_equal ["Warning at #{src_loc("ED3FB7CD")}: Stripping duplicates [8] from 'b' attribute. See previous at #{src_loc("D08E9A99")}."]
+  op[:warnings].must_equal ["Warning at #{src_loc("ED3FB7CD")}: [8] dupes stripped from 'b' attribute. See previous at #{src_loc("D08E9A99")}."]
 end

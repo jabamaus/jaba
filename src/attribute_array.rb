@@ -90,7 +90,7 @@ module JABA
       end
 
       if dupes
-        msg = "Stripping duplicates #{dupes} from #{describe}"
+        msg = "#{dupes} dupes stripped from #{describe}"
         if first_dupe.src_loc != src_loc
           msg << ". See previous at #{first_dupe.src_loc.src_loc_describe}"
         end
