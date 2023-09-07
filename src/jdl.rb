@@ -348,12 +348,12 @@ JABA::Context.define_jdl do
     example "exceptions false # disable exceptions"
   end
 
-  attr "target/pch", type: :src do
+  attr "target/pch", type: :file do
     title "Precompiled header file"
     base_attr :root
   end
 
-  attr "target/pchsrc", type: :src do
+  attr "target/pchsrc", type: :file do
     title "Precompiled source file"
     base_attr :root
   end

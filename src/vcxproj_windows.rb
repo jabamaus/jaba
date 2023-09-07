@@ -107,11 +107,11 @@ JABA::Vcxproj.config_builder(:windows) do |vcxproj, cfg_type|
   end
 
   vcprop 'ClCompile|PrecompiledHeader' do
-    :Use if pch
+    :Use if !pch.empty?
   end
 
   vcprop 'ClCompile|PrecompiledHeaderFile' do
-    pch.basename if pch
+    pch.basename if !pch.empty?
   end
 
   vcprop "ClCompile|PreprocessorDefinitions" do
