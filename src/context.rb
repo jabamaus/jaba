@@ -462,12 +462,15 @@ module JABA
     end
 
     def process_target(nd, target_node)
+      target_node.pre_create_configs
       target_node[:configs].each do |cfg_id|
         create_node(nd, cfg_id, parent: target_node) do |n|
           n.add_attrs(@jdl.common_attr_node_def.attr_defs)
           n.add_attrs(nd.node_def.attr_defs)
           n.get_attr(:config).set(cfg_id, __force: true)
-          apply_defaults(n)
+          if !target_node.virtual?
+            apply_defaults(n)
+          end
         end
       end
 

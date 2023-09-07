@@ -118,3 +118,58 @@ jtest "supports exporting attributes to dependents" do
   libr = lib.get_child(:Release)
   libr[:define].must_equal ["E", "R", "R2"]
 end
+
+jtest "virtual targets warn if non-exportable attrs used" do
+  jdl(level: :full) do
+    attr "target/a", variant: :array, type: :int do
+      flags :allow_dupes, :per_target
+    end
+  end
+  op = jaba do
+    target :app do
+      deps :virtual_lib
+    end
+    target :virtual_lib, virtual: true do
+      type :lib
+      a 1 # B9C7088C
+    end
+  end
+  op[:warnings].must_equal ["Warning at #{src_loc("B9C7088C")}: Non-exportable 'a' attribute ignored."]
+end
+
+jtest "virtual targets do not gain defaults" do
+  jdl(level: :full) do
+    attr "target/per_target", variant: :array, type: :int do
+      flags :allow_dupes, :exportable, :per_target
+    end
+    attr "target/per_config", variant: :array, type: :int do
+      flags :allow_dupes, :exportable, :per_target
+    end
+  end
+  op = jaba do
+    # virtual targets don't inherit contents of defaults block but they do inerhit
+    # the options passed in.
+    defaults scope: :global, configs: [:d, :r, :p] do
+      per_target 1
+      per_config 4
+    end
+    target :app do
+      per_target 2
+      per_config 5
+      deps :virtual_lib
+    end
+    target :virtual_lib, virtual: true do
+      type :lib
+      per_target 3
+      per_config 6
+    end
+  end
+  t = op[:root].get_child(:app)
+  t[:per_target].must_equal [1, 2, 3] # if virtual_lib had defaults applied there would be an additional 1
+  d = t.get_child(:d)
+  d[:per_config].must_equal [4, 5, 6]
+  r = t.get_child(:d)
+  r[:per_config].must_equal [4, 5, 6]
+  p = t.get_child(:d)
+  p[:per_config].must_equal [4, 5, 6]
+end

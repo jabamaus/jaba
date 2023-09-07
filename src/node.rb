@@ -201,6 +201,8 @@ module JABA
     def pull_up(attr)
       # TODO: check for commonality
       ca = @children[0].get_attr(attr.name)
+      attr.set_last_call_location(ca.last_call_location)
+
       ca.visit_elem do |elem, key|
         if attr.attr_def.variant == :hash
           attr.set(key, elem.value, *elem.flag_options, __map: false, **elem.value_options_raw)
@@ -314,22 +316,26 @@ module JABA
         # visit all attribute elements in array/hash
         #
         from_attr.visit_elem do |elem, key|
-          if elem.attr_def.has_flag?(:exportable) && (elem.has_flag_option?(:export) || elem.has_flag_option?(:export_only) || virtual)
-            # Get the corresponding attr in this project node. This will always be a hash or an array.
-            attr ||= get_attr(elem.name)
+          if elem.attr_def.has_flag?(:exportable)
+            if elem.has_flag_option?(:export) || elem.has_flag_option?(:export_only) || virtual
+              # Get the corresponding attr in this project node. This will always be a hash or an array.
+              attr ||= get_attr(elem.name)
 
-            foptions = elem.flag_options.dup
-            foptions.delete_if { |fo| fo == :export || fo == :export_only }
+              foptions = elem.flag_options.dup
+              foptions.delete_if { |fo| fo == :export || fo == :export_only }
 
-            # Pass __map: false as the values have already been mapped
-            case attr.attr_def.variant
-            when :array
-              attr.set(elem.raw_value, *foptions, __map: false, **elem.value_options_raw)
-            when :hash
-              attr.set(key, elem.raw_value, *foptions, __map: false, **elem.value_options_raw)
-            else
-              JABA.error("Unhandled variant '#{variant.inspect_unquoted}'")
+              # Pass __map: false as the values have already been mapped
+              case attr.attr_def.variant
+              when :array
+                attr.set(elem.raw_value, *foptions, __map: false, **elem.value_options_raw)
+              when :hash
+                attr.set(key, elem.raw_value, *foptions, __map: false, **elem.value_options_raw)
+              else
+                JABA.error("Unhandled variant '#{variant.inspect_unquoted}'")
+              end
             end
+          elsif virtual
+            from_attr.attr_warn("Non-exportable 'a' attribute ignored")
           end
         end
       end
@@ -350,8 +356,7 @@ module JABA
   end
 
   class TargetNode < Node
-    def post_create
-      super
+    def pre_create_configs
       @root = attr_value(:root)
       @virtual = attr_value(:virtual)
     end
