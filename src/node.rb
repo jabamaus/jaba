@@ -335,7 +335,7 @@ module JABA
               end
             end
           elsif virtual
-            from_attr.attr_warn("Non-exportable 'a' attribute ignored")
+            from_attr.attr_warn("Non-exportable #{from_attr.describe} ignored")
           end
         end
       end
