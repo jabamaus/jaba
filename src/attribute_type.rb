@@ -225,8 +225,6 @@ module JABA
       end
     end
 
-    # TOOO: need to think carefully about how path specification works with shared defs
-    # and how to force paths to be specified relative to jaba file.
     def map_value(path, attr)
       return path if path.empty?
       abs_path = make_path_absolute(path, attr)
