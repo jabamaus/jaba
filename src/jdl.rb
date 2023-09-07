@@ -348,6 +348,16 @@ JABA::Context.define_jdl do
     example "exceptions false # disable exceptions"
   end
 
+  attr "target/pch", type: :src do
+    title "Precompiled header file"
+    base_attr :root
+  end
+
+  attr "target/pchsrc", type: :src do
+    title "Precompiled source file"
+    base_attr :root
+  end
+
   attr "target/rtti", type: :bool do
     title "Enables runtime type information"
     example "rtti true"

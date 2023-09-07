@@ -106,13 +106,13 @@ JABA::Vcxproj.config_builder(:windows) do |vcxproj, cfg_type|
     end
   end
 
-  #vcprop 'ClCompile|PrecompiledHeader' do
-  #  :Use if pch
-  #end
+  vcprop 'ClCompile|PrecompiledHeader' do
+    :Use if pch
+  end
 
-  #vcprop 'ClCompile|PrecompiledHeaderFile' do
-  #  pch.basename if pch
-  #end
+  vcprop 'ClCompile|PrecompiledHeaderFile' do
+    pch.basename if pch
+  end
 
   vcprop "ClCompile|PreprocessorDefinitions" do
     define.vs_join(inherit: "%(PreprocessorDefinitions)")
