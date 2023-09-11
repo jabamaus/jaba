@@ -1,13 +1,9 @@
 core
-- versioning support
-- Employ did you mean style error reporting
-  Error at basic_dll.jaba:8: 'defines' attribute not defined. Did you mean 'define'?
 - Validation and documentation specification for method args, similar to attribute options
 - Make _ID be id of the definition the code is in, such that it works even inside a block that is being executed in the context of a different jaba object
 - localise error strings into a single file, using macros for variable substitution. As well as being better for standardisation could support multiple languages.
 - Implement element deletion for hash attribute
 - Disallow ruby keywords as attr names, eg 'in' fails
-- make logging and error functionality into Context class methods so they are always available.
 - prefix/postfix/delete/exclude should be specced with attr_option. exclude should get its type from its owning attr.
 - Remove node_option flag and handle node options same as attribute options?
 - Add a general :nowarn option. This could replace the :force option. And have a command line switch to force showing of warningss
@@ -17,7 +13,7 @@ core
   vpath = src getopt: :vpath
 - change shared blocks to use :block attrs rather than custom code?
 - Check for commonality in pull_up and add test
-- Chekc that pull_up works with compounds
+- Check that pull_up works with compounds
 
 path attrs/src
 - Support **.h as alternative to **/*.h
@@ -32,7 +28,8 @@ path attrs/src
 - exclude from build should be an :info option on src attr
 
 workspace
-- Automatically pull in dependencies in
+- add dependencies recursively
+- Support for specifying targets via glob match
 - categories
 - add slnproperty which can address sln sections. Particularly useful when used with ExtensibilityGlobals
 
@@ -49,8 +46,8 @@ test
 - vpath
 - Regression tests for generated files.
 - option in tests to log to stdout
-- reorg tests into core folder and target folder?
 - bring attr_hash tests back
+- workspaces
 
 possible features
 - Ability to reverse engineer jaba definitions from existing vsprojects
@@ -61,6 +58,8 @@ possible features
 - Support arrays in hash values? That would allow src attr to work as a value as well as a key.
 - Ability for user to extend jdl. This must be done before any definitions are executed
   and cannot be done inline. Could be placed in .jaba.jdl files which are executed first.
+- Did you mean style error reporting: Error at basic_dll.jaba:8: 'defines' attribute not defined. Did you mean 'define'?
+- versioning support
 
 docs
 - tag attrs as control flow attrs somehow for benefit of docs
@@ -81,7 +80,7 @@ v2 new features/changes:
  - rebased onto mruby [DONE]
  - src files calculated immediately [DONE]
  - rule inputs/outputs automatically added to src [DONE]
- - dependencies pulled into solution automatically [TODO]
+ - dependencies pulled into solution automatically [DONE]
  - per file defaults [DONE]
  - options can now be passed into defaults block which can be overriden [DONE]
  - delete stale projects in build system [TODO]
@@ -90,3 +89,5 @@ v2 new features/changes:
  - rethought transitive properties of dependencies [TODO]
  - string/symbol/symbol_or_string combined into just string [DONE]
  - key/value options are now attributes in their own right with attendant benefits [DONE]
+ - Everything within a target block is now executed per-config. Per-project attrs are then 'pulled up'.
+   Eliminates issues with accessing uninitialised attributes [DONE]

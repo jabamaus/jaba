@@ -676,4 +676,32 @@ JABA::Context.define_jdl do
       #host.toolset
     end
   end
+  
+  node "workspace" do
+    title "Define a workspace"
+  end
+
+  attr "workspace/dir", type: :dir do
+    title 'Directory in which workspaces will be generated'
+    base_attr :buildsystem_root
+    flags :no_check_exist # May get created during generation
+  end
+
+  attr "workspace/targets", variant: :array, type: :string do
+    title "Targets to add to workspace"
+    flags :required, :no_sort
+  end
+
+  attr "workspace/name", type: :string do
+    title "Basename of workspace files"
+    note "Defaults to $(id)$(namesuffix)"
+    default do
+      "#{id}#{namesuffix}"
+    end
+  end
+
+  attr "workspace/namesuffix", type: :string do
+    title "Optional suffix to be applied to $(name)"
+    note "Has no effect if $(name) is set explicitly"
+  end 
 end

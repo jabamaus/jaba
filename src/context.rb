@@ -129,6 +129,8 @@ module JABA
       @target_lookup = KeyToSHash.new # target id to target node
       @projects = []
       @project_lookup = {} # target node to project
+      @workspace_nodes = []
+      @workspaces = []
       $last_call_location = nil
     end
 
@@ -253,6 +255,14 @@ module JABA
         end
       end
 
+      @projects.each do |p|
+        p.init_dependencies
+      end
+
+      @workspace_nodes.each do |n|
+        process_workspace(n)
+      end
+
       @root_node.visit do |n|
         n.attributes.each do |attr|
           attr.visit_elem do |elem|
@@ -263,6 +273,7 @@ module JABA
       end
 
       @projects.each(&:generate)
+      @workspaces.each(&:generate)
     end
 
     def init_src_root
@@ -458,6 +469,8 @@ module JABA
       end
       if is_target
         process_target(nd, node)
+      elsif nd.node_def.name == "workspace"
+        @workspace_nodes << node
       end
     end
 
@@ -487,6 +500,27 @@ module JABA
         @projects << vcxproj
         @project_lookup[target_node] = vcxproj
       end
+    end
+
+    def process_workspace(node)
+      target_spec_elems = node.get_attr(:targets)
+      projects = []
+      target_spec_elems.each do |spec_elem|
+        spec = spec_elem.value
+        t = lookup_target(spec, fail_if_not_found: false)
+        if t.nil?
+          spec_elem.attr_error("'#{spec.inspect_unquoted}' target undefined")
+        end
+        p = lookup_project(t)
+        projects << p
+        projects.concat(p.dependencies) # TODO: add recursively
+      end
+      projects.uniq!
+      if projects.empty?
+        JABA.error("'#{node[:id]}' workspace has no targets", line: node.src_loc)
+      end
+      sln = Sln.new(node, projects)
+      @workspaces << sln
     end
 
     def create_node(nd, sibling_id, klass: Node, parent:, eval_jdl: true)

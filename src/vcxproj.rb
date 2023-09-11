@@ -30,12 +30,27 @@ module JABA
       @src_lookup = {}
       @file_type_hash = JABA.context.root_node[:vcfiletype]
       @file_to_file_type = {}
+      @dependencies = []
     end
 
     def node = @node
+    def projname = @projname
     def projdir = @projdir
     def vcxproj_file = @vcxproj_file
     def guid = @guid
+    def dependencies = @dependencies
+
+    def init_dependencies
+      deps = @node.get_attr(:deps)
+      deps.each do |attr|
+        dep_node = attr.value
+        soft = attr.option_value(:type) == :soft
+        if !soft
+          proj = JABA.context.lookup_project(dep_node)
+          @dependencies << proj
+        end
+      end
+    end
 
     def generate
       platform = @node[:platform]
@@ -305,19 +320,13 @@ module JABA
         w.write_raw(src_area)
       end
 
-      deps = @node.get_attr(:deps)
-      if !deps.empty?
+      if !@dependencies.empty?
         item_group(w) do
-          deps.each do |attr|
-            dep_node = attr.value
-            soft = attr.option_value(:type) == :soft
-            if !soft
-              proj = JABA.context.lookup_project(dep_node)
-              w << "    <ProjectReference Include=\"#{proj.vcxproj_file.relative_path_from(projdir, backslashes: true)}\">"
-              w << "      <Project>#{proj.guid}</Project>"
-              # TODO: reference properties
-              w << "    </ProjectReference>"
-            end
+          @dependencies.each do |proj|
+            w << "    <ProjectReference Include=\"#{proj.vcxproj_file.relative_path_from(projdir, backslashes: true)}\">"
+            w << "      <Project>#{proj.guid}</Project>"
+            # TODO: reference properties
+            w << "    </ProjectReference>"
           end
         end
       end

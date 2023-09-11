@@ -21,6 +21,7 @@ require_relative "attribute_array"
 require_relative "attribute_hash"
 require_relative "vcxproj"
 require_relative "vcxproj_windows"
+require_relative "sln"
 
 module JABA
 
