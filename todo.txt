@@ -14,6 +14,8 @@ core
 - change shared blocks to use :block attrs rather than custom code?
 - Check for commonality in pull_up and add test
 - Check that pull_up works with compounds
+- Add dependencies between node defs so targets are all processed before workspaces
+- make target dependencies recursive
 
 path attrs/src
 - Support **.h as alternative to **/*.h

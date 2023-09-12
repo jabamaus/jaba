@@ -513,7 +513,7 @@ module JABA
         end
         p = lookup_project(t)
         projects << p
-        projects.concat(p.dependencies) # TODO: add recursively
+        projects.concat(p.dependencies)
       end
       projects.uniq!
       if projects.empty?
