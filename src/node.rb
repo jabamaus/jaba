@@ -19,8 +19,9 @@ module JABA
       @read_only = false
       @parent = parent
       if parent && !compound_attr?
-        if !sibling_id.nil? && parent.get_child(sibling_id, fail_if_not_found: false)
-          JABA.error("'#{sibling_id.inspect_unquoted} is not unique")
+        sibling = parent.get_child(sibling_id, fail_if_not_found: false)
+        if sibling && sibling.node_def.name == @node_def.name
+          JABA.error("'#{sibling_id.inspect_unquoted}' is not unique amongst '#{@node_def.name}' node types. See previous at #{sibling.src_loc.src_loc_describe}", line: src_loc)
         end
         parent.children << self
       end
