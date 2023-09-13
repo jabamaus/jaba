@@ -182,6 +182,20 @@ JABA::Context.define_jdl do
     example "configs [:debug, :release]"
   end
 
+  attr "target/config", type: :string do
+    title "Current target config as an id"
+    note "Returns current config being processed. Use to define control flow to set config-specific atttributes"
+    flags :read_only
+    # TODO: examples, including regexes
+  end
+
+  attr "target/configname", type: :string do
+    title "Display name of config as seen in IDE"
+    default do
+      config.capitalize_first
+    end
+  end
+  
   attr "target/deps", variant: :array, type: :string do
     title "Target dependencies"
     note 'List of ids of other cpp definitions. When a dependency is specified all the dependency\'s exports ' \
@@ -245,20 +259,6 @@ JABA::Context.define_jdl do
     title "Optional suffix to be applied to $(projname)"
     note "Has no effect if $(projname) is set explicitly"
     flags :per_target
-  end
-
-  attr "target/config", type: :string do
-    title "Current target config as an id"
-    note "Returns current config being processed. Use to define control flow to set config-specific atttributes"
-    flags :read_only
-    # TODO: examples, including regexes
-  end
-
-  attr "target/configname", type: :string do
-    title "Display name of config as seen in IDE"
-    default do
-      config.capitalize_first
-    end
   end
 
   attr "target/cpplang", type: :choice do
