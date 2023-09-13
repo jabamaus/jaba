@@ -178,7 +178,7 @@ JABA::Context.define_jdl do
   attr "target/configs", variant: :array, type: :string do
     title "Build configurations"
     flags :node_option, :overwrite_default
-    default [:Debug, :Release]
+    default [:debug, :release]
     example "configs [:debug, :release]"
   end
 
