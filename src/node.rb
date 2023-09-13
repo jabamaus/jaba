@@ -382,9 +382,9 @@ module JABA
       end
       return matches.first if matches.size == 1
       if matches.size > 1
-        JABA.error("Found multiple matches") # TODO: improve
+        JABA.error("In #{src_target.sibling_id}->#{sibling_id} dependency found multiple matches: [#{matches.map{|c| c.sibling_id}.join(', ')}]", line: src_loc) # TODO: improve
       end
-      JABA.error("In #{src_target.sibling_id}->#{sibling_id} dependency could not find a config in '#{sibling_id}' to match '#{cfg_id.inspect_unquoted}'. Available: [#{@children.map{|c| c.sibling_id}.join(',')}]", line: src_loc)
+      JABA.error("In #{src_target.sibling_id}->#{sibling_id} dependency could not find a config in '#{sibling_id}' to match '#{cfg_id.inspect_unquoted}'. Available: [#{@children.map{|c| c.sibling_id}.join(', ')}]", line: src_loc)
     end
 
     def process_deps
