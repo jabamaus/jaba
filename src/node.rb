@@ -367,12 +367,24 @@ module JABA
     def virtual? = @virtual
     def each_config(&block) = @children.each(&block)
 
-    def get_matching_config(cfg_id, fail_if_not_found: true)
+    def get_matching_config(cfg_node)
+      src_target = cfg_node.parent
+      cfg_id = cfg_node.sibling_id
+      # Try an exact match first
       cfg = get_child(cfg_id, fail_if_not_found: false)
-      if cfg.nil? && fail_if_not_found
-        JABA.error("Could not find config in #{describe} to match '#{cfg_id.inspect_unquoted}'. Available: #{@children.map{|c| c.sibling_id}}")
+      return cfg if cfg
+      # If not found try a unique substring match
+      matches = []
+      @children.each do |c|
+        if c.sibling_id =~ /#{cfg_id}/i || cfg_id =~ /#{c.sibling_id}/i
+          matches << c
+        end
       end
-      cfg
+      return matches.first if matches.size == 1
+      if matches.size > 1
+        JABA.error("Found multiple matches") # TODO: improve
+      end
+      JABA.error("In #{src_target.sibling_id}->#{sibling_id} dependency could not find a config in '#{sibling_id}' to match '#{cfg_id.inspect_unquoted}'. Available: [#{@children.map{|c| c.sibling_id}.join(',')}]", line: src_loc)
     end
 
     def process_deps
@@ -381,7 +393,7 @@ module JABA
         link = !attr.has_flag_option?(:nolink) && !dep_node.virtual?
         import_exports(dep_node)
         each_config do |cfg_node|
-          dep_cfg_node = dep_node.get_matching_config(cfg_node.sibling_id)
+          dep_cfg_node = dep_node.get_matching_config(cfg_node)
           cfg_node.import_exports(dep_cfg_node)
           if link
             case dep_cfg_node[:type]

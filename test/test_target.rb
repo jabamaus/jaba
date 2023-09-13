@@ -81,3 +81,20 @@ jtest "supports default block" do
   r[:config].must_equal "Release"
   r[:define].must_equal ["R"]
 end
+
+jtest "it supports config mapping" do
+  op = jaba do
+    target :lib1, virtual: true, configs: [:debug, :release] do
+      define configname
+    end
+    # jaba will auto match obvious matches
+    target :app1, configs: [:app_debug, :app_release] do
+      deps :lib1
+    end
+  end
+  app = op[:root].get_child(:app1)
+  d = app.get_child(:app_debug)
+  d[:define].must_equal ['Debug']
+  r = app.get_child(:app_release)
+  r[:define].must_equal ['Release']
+end

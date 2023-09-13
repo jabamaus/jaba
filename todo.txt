@@ -16,6 +16,7 @@ core
 - Check that pull_up works with compounds
 - Add dependencies between node defs so targets are all processed before workspaces
 - make target dependencies recursive
+- look again at deps being per_config
 
 path attrs/src
 - Support **.h as alternative to **/*.h
