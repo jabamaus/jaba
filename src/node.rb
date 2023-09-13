@@ -370,7 +370,7 @@ module JABA
     def get_matching_config(cfg_id, fail_if_not_found: true)
       cfg = get_child(cfg_id, fail_if_not_found: false)
       if cfg.nil? && fail_if_not_found
-        JABA.error("Could not find config in #{describe} to match '#{cfg_id.inspect_unquoted}'")
+        JABA.error("Could not find config in #{describe} to match '#{cfg_id.inspect_unquoted}'. Available: #{@children.map{|c| c.sibling_id}}")
       end
       cfg
     end
