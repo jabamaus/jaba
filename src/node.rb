@@ -299,7 +299,12 @@ module JABA
         JABA.context.process_include(spec)
       else
         block = JABA.context.lookup_shared(spec)
+        # TODO: i think this needs to be stack to account for chain of includes with modules in different files.
+        # TODO: and needs testing
+        old_src_loc = @src_loc
+        @src_loc = "#{block.source_location[0]}:#{block.source_location[1]}"
         eval_jdl(*args, **kwargs, &block)
+        @src_loc = old_src_loc
       end
     end
 
