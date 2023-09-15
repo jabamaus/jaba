@@ -17,6 +17,8 @@ core
 - Add dependencies between node defs so targets are all processed before workspaces
 - make target dependencies recursive
 - look again at deps being per_config
+- 'all' workspace
+- is x86_64 right? Investigate.
 
 path attrs/src
 - Support **.h as alternative to **/*.h
