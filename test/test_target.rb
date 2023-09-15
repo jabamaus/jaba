@@ -25,10 +25,10 @@ jtest "target" do
   app = root.get_child(:app)
   app.sibling_id.must_equal :app
   app.children.size.must_equal 2
-  d = app.get_child(:Debug)
+  d = app.get_child(:debug)
   d[:configname].must_equal "Debug"
   d[:define].must_equal ["D"]
-  r = app.get_child(:Release)
+  r = app.get_child(:release)
   r[:configname].must_equal "Release"
   r[:define].must_equal ["R"]
 end
@@ -62,11 +62,11 @@ jtest "supports default block" do
   a1[:myopt1].must_equal 1
   a1[:myopt2].must_equal 3
   a1[:array].must_equal [1, 2, 3, 4, 5]
-  d = a1.get_child(:Debug)
+  d = a1.get_child(:debug)
   d[:define].must_equal ["D"]
-  d[:config].must_equal "Debug"
-  r = a1.get_child(:Release)
-  r[:config].must_equal "Release"
+  d[:config].must_equal "debug"
+  r = a1.get_child(:release)
+  r[:config].must_equal "release"
   r[:define].must_equal ["R"]
 
   a2 = root.get_child(:app2)
@@ -74,11 +74,11 @@ jtest "supports default block" do
   a2[:myopt1].must_equal 4
   a2[:myopt2].must_equal 3
   a2[:array].must_equal [1, 2, 3]
-  d = a2.get_child(:Debug)
+  d = a2.get_child(:debug)
   d[:define].must_equal ["D"]
-  d[:config].must_equal "Debug"
-  r = a2.get_child(:Release)
-  r[:config].must_equal "Release"
+  d[:config].must_equal "debug"
+  r = a2.get_child(:release)
+  r[:config].must_equal "release"
   r[:define].must_equal ["R"]
 end
 

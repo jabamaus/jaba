@@ -48,13 +48,13 @@ jtest "supports exporting attributes to dependents" do
       # TODO: what happens if export :BoolAttr, false ? will it overwrite? Probably fail. Warn if same value.
       define ["C", "B"], :export_only
       case config
-      when :Debug
+      when :debug
         define ["D"], :export
-      when :Release
+      when :release
         define ["R"], :export
       end
-      define "D2", :export if config == :Debug
-      define "R2", :export if config == :Release
+      define "D2", :export if config == :debug
+      define "R2", :export if config == :release
       define ["E"]
       inc ["include"], :force, :export
       uuid "uuid", :export
@@ -64,10 +64,10 @@ jtest "supports exporting attributes to dependents" do
       type :lib
       vcglobal :StringAttr4, "sd"
       case config
-      when :Debug
+      when :debug
         define ["VD"]
         syslibs ["debug.lib"]
-      when :Release
+      when :release
         define ["VR"]
         syslibs ["release.lib"]
       end
@@ -80,7 +80,7 @@ jtest "supports exporting attributes to dependents" do
   app1[:vcglobal][:StringAttr3].must_equal "s3"
   app1[:vcglobal][:StringAttr4].must_equal "sd"
   app1[:uuid].must_equal ["{6D82CA6D-E690-5E45-975F-1F54D32A755A}"]
-  app1d = app1.get_child(:Debug)
+  app1d = app1.get_child(:debug)
   app1d[:define].must_equal ["A", "B", "C", "D", "D2", "F", "VD"]
   app1d.get_attr(:define).visit_elem do |elem|
     elem.has_flag_option?(:export).must_be_false
@@ -88,7 +88,7 @@ jtest "supports exporting attributes to dependents" do
   end
   app1d[:inc].must_equal ["#{temp_dir}/lib/include"]
   app1d[:syslibs].must_equal ["debug.lib"]
-  app1r = app1.get_child(:Release)
+  app1r = app1.get_child(:release)
   app1r[:define].must_equal ["A", "B", "C", "F", "R", "R2", "VR"]
   app1r[:inc].must_equal ["#{temp_dir}/lib/include"]
   app1r[:syslibs].must_equal ["release.lib"]
@@ -99,11 +99,11 @@ jtest "supports exporting attributes to dependents" do
   app2[:vcglobal][:StringAttr3].must_equal "s3"
   app2[:vcglobal][:StringAttr4].must_equal "sd"
   app2[:uuid].must_equal ["{6D82CA6D-E690-5E45-975F-1F54D32A755A}"]
-  app2d = app2.get_child(:Debug)
+  app2d = app2.get_child(:debug)
   app2d[:define].must_equal ["A", "B", "C", "D", "D2", "F", "VD"]
   app2d[:inc].must_equal ["#{temp_dir}/lib/include"]
   app2d[:syslibs].must_equal ["debug.lib"]
-  app2r = app2.get_child(:Release)
+  app2r = app2.get_child(:release)
   app2r[:define].must_equal ["A", "B", "C", "F", "R", "R2", "VR"]
   app2r[:inc].must_equal ["#{temp_dir}/lib/include"]
   app2r[:syslibs].must_equal ["release.lib"]
@@ -113,9 +113,9 @@ jtest "supports exporting attributes to dependents" do
   lib[:vcglobal].has_key?(:StringAttr2).must_be_false # due to :export_only
   lib[:vcglobal][:StringAttr3].must_equal("s3")
   lib[:uuid].must_equal ["{6D82CA6D-E690-5E45-975F-1F54D32A755A}"]
-  libd = lib.get_child(:Debug)
+  libd = lib.get_child(:debug)
   libd[:define].must_equal ["D", "D2", "E"]
-  libr = lib.get_child(:Release)
+  libr = lib.get_child(:release)
   libr[:define].must_equal ["E", "R", "R2"]
 end
 

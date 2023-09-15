@@ -145,7 +145,7 @@ jtest "can register methods globally" do
 end
 
 jtest "can register utility methods" do
-  assert_output "1|2|Debug|3|Release|3|" do
+  assert_output "1|2|debug|3|release|3|" do
     jaba do
       JTest.assert_jaba_error "Error at #{JTest.src_loc("7809F3B5")}: Ruby method definitions are not allowed. Use 'method' at file scope." do
         def invalid ; end # 7809F3B5
