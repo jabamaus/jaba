@@ -19,6 +19,10 @@ core
 - look again at deps being per_config
 - 'all' workspace
 - is x86_64 right? Investigate.
+- defining a shared module in one file and consuming in a completely different place is problematic and
+  terribly confusing. What about if there is the ability to include a virtual target (rather than just depend
+  on it)? virtual targets have their own root. Could then just merge attrs in. Maybe a new category
+  like 'base target' or something.
 
 path attrs/src
 - Support **.h as alternative to **/*.h

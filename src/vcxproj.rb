@@ -82,6 +82,7 @@ module JABA
         end
 
         cfg[:rule].each do |rule|
+          input_attr_array = rule.get_attr(:input)
           output_attr = rule.get_attr(:output)
           output = output_attr.value
           output_vpath = output_attr.option_value(:vpath)
@@ -91,7 +92,9 @@ module JABA
           cmd_abs = cmd_attr.has_flag_option?(:absolute)
           msg = rule[:msg]
 
-          rule[:input].each do |input|
+          input_attr_array.each do |input_attr|
+            input = input_attr.value
+            input_vpath = input_attr.option_value(:vpath)
             @file_to_file_type[input] = :CustomBuild
             d_output = demacroise(output, input, imp_input, nil)
             # output may not exist on disk so force
@@ -121,7 +124,11 @@ module JABA
               props[:AdditionalInputs] = imp_input_rel
             end
             props[:Message] = d_msg
-            src_attr.set(input, properties: props)
+            if input_vpath
+              src_attr.set(input, properties: props, vpath: input_vpath)
+            else
+              src_attr.set(input, properties: props)
+            end
           end
         end
 
@@ -136,13 +143,17 @@ module JABA
             ft = @file_type_hash[sf.extname] if ft.nil?
             ft = :None if ft.nil?
 
-            vpath_opt = sf_elem.option_value(:vpath)
+            vpath = sf_elem.option_value(:vpath)
 
             # If no specified vpath then preserve the structure of the src files/folders. 
             # It is important that vpath does not start with ..
             #
-            vpath = vpath_opt ? vpath_opt : sf.parent_path
-            vpath = vpath.relative_path_from(@node.root, backslashes: true, nil_if_dot: true, no_dot_dot: true)
+            if vpath.nil?
+              vpath = sf.parent_path.relative_path_from(@node.root, backslashes: true, nil_if_dot: true, no_dot_dot: true)
+            end
+            if vpath == '.'
+              vpath = nil
+            end
   
             sfi = SrcFileInfo.new(sf, rel, vpath, ft, ext, [])
             @src << sfi

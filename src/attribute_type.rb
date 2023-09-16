@@ -198,6 +198,20 @@ module JABA
     end
   end
 
+  # rel path attr is just a string in path form and does not necessarily map to a physical file
+  # and is not made absolute
+  class AttributeTypeRelPath < AttributeTypeString
+    def initialize(name = :rel_path) = super(name)
+    
+    def validate_value(attr_def, path)
+      super
+      path.validate_path do |msg|
+        JABA.warn("#{attr_def.describe} not specified cleanly: #{msg}", line: $last_call_location)
+      end
+      # TODO:
+    end
+  end
+
   class AttributePathBase < AttributeTypeString
     # Register base_attr into AttributeDef
     AttributeBaseDef.class_eval do

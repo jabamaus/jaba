@@ -370,6 +370,10 @@ JABA::Context.define_jdl do
   attr "target/rule/input", variant: :array, type: :src do
     title "TODO"
     base_attr :root
+    option :vpath, type: :rel_path do
+      title "Virtual path"
+      note "Controls IDE project layout"
+    end
   end
 
   # TODO: shouldn't this be array?
@@ -383,11 +387,9 @@ JABA::Context.define_jdl do
     title "Output files"
     base_attr :root
     flags :required, :no_check_exist
-    option :vpath, type: :dir do
+    option :vpath, type: :rel_path do
       title "Virtual path"
       note "Controls IDE project layout"
-      flags :no_check_exist
-      base_attr :root
     end
   end
 
@@ -423,11 +425,9 @@ JABA::Context.define_jdl do
     title "Specify source files"
     base_attr :root
     flags :exportable, :no_sort # sorted at project generation time
-    option :vpath, type: :dir do
+    option :vpath, type: :rel_path do
       title "Virtual path"
       note "Controls IDE project layout"
-      flags :no_check_exist
-      base_attr :root
     end
     option :properties, variant: :hash, type: :to_s do
       title "Per-file property"
@@ -503,11 +503,9 @@ JABA::Context.define_jdl do
     flags :no_check_exist
   end
 
-  attr "target/write_src/vpath", type: :dir do
+  attr "target/write_src/vpath", type: :rel_path do
     title "Virtual path"
     note "Controls IDE project layout"
-    flags :no_check_exist
-    base_attr :root
   end
 
   attr "target/write_src/line", variant: :array, type: :to_s do
