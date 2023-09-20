@@ -132,7 +132,7 @@ JABA::Context.define_core_jdl do
     note "Defaults to standard C/C++ file types and host/platform-specific files, but more can be added for informational purposes."
     flags :no_sort
     default do
-      ext = [".cpp", ".h", ".inl", ".c", ".cc", ".cxx", ".hpp"]
+      ext = [".cpp", ".h", ".inl", ".c", ".cc", ".cxx", ".hpp", ".jaba"]
       #ext.concat(host.cpp_src_ext) # TODO
       #ext.concat(platform.cpp_src_ext) # TODO
       ext

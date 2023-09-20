@@ -22,7 +22,10 @@ core
 - defining a shared module in one file and consuming in a completely different place is problematic and
   terribly confusing. What about if there is the ability to include a virtual target (rather than just depend
   on it)? virtual targets have their own root. Could then just merge attrs in. Maybe a new category
-  like 'base target' or something.
+  like 'base target' or something. Also shared modules don't necessarily get per-file defaults from the
+  file they are in which is confusing.
+- The football app has shown up the issue that it is too easy for the buildsystem to end up in src.
+  Need to prevent this from happening.
 
 path attrs/src
 - Support **.h as alternative to **/*.h
