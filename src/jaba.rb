@@ -1,11 +1,11 @@
 require "fileutils"
 require "digest/sha1"
 require "tsort"
-require_relative "../../jrf/libs/jrfutils/core_ext"
+require_relative "../../jrf/jrf/utils/core_ext"
 
 debug! if ARGV.include?("--debug") || ARGV.include?("-d")
 
-require_relative "../../jrf/libs/jrfutils/api_exposer"
+require_relative "../../jrf/jrf/utils/api_exposer"
 require_relative "core_ext"
 require_relative "utils"
 require_relative "version"
@@ -52,7 +52,7 @@ module JABA
 end
 
 if __FILE__ == $PROGRAM_NAME
-  require_relative "../../jrf/libs/jrfutils/cmdline"
+  require_relative "../../jrf/jrf/utils/cmdline"
 
   class Jaba
     def run
