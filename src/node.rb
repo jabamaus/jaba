@@ -404,14 +404,14 @@ module JABA
             case dep_cfg_node[:type]
             when :lib
               if cfg_node[:type] != :lib
-                cfg_node.get_attr(:libs).set("#{dep_cfg_node[:libdir]}/#{dep_cfg_node[:targetname]}#{dep_cfg_node[:targetext]}")
+                cfg_node.get_attr(:libs).set("#{dep_cfg_node[:libdir]}/#{dep_cfg_node[:targetname]}#{dep_cfg_node[:targetext]}", :force)
               end
             when :dll
               if cfg_node[:type] != :lib
                 # TODO: only if targeting visual studio
                 il = dep_cfg_node[:vcimportlib]
                 if il # dlls don't always have import libs - eg plugins
-                  cfg_node.get_attr(:libs).set("#{dep_cfg_node[:libdir]}/#{il}")
+                  cfg_node.get_attr(:libs).set("#{dep_cfg_node[:libdir]}/#{il}", :force)
                 end
               end
             end
