@@ -98,3 +98,24 @@ jtest "it supports config mapping" do
   r = app.get_child(:app_release)
   r[:define].must_equal ['Release']
 end
+
+jtest "app target gets all static library dependencies" do
+  op = jaba do
+    target :lib1 do
+      type :lib
+    end
+    target :lib2 do
+      type :lib
+      deps :lib1
+    end
+    target :lib3 do
+      type :lib
+      deps :lib2
+    end
+    target :app do
+      deps :lib3
+    end
+  end
+  app = op[:root].get_child(:app)
+  app[:deps].map{|d| d.sibling_id}.must_equal [:lib3, :lib2, :lib1]
+end

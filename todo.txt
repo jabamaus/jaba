@@ -26,6 +26,7 @@ core
   file they are in which is confusing.
 - The football app has shown up the issue that it is too easy for the buildsystem to end up in src.
   Need to prevent this from happening.
+- remove 'console' from 'type' attr. Should just be 'app', 'lib', 'so'.
 
 path attrs/src
 - Support **.h as alternative to **/*.h
