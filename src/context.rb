@@ -235,8 +235,9 @@ module JABA
       end
 
       @target_nodes.each do |n|
-        n.get_attr(:deps).map_value! do |dep_id|
-          lookup_target(dep_id)
+        deps = n.get_attr(:deps)
+        deps.map_value! do |dep_id|
+          lookup_target(dep_id, errobj: deps)
         end
       end
 
@@ -564,9 +565,9 @@ module JABA
       end
     end
 
-    def lookup_target(id, fail_if_not_found: true)
+    def lookup_target(id, fail_if_not_found: true, errobj: nil)
       t = @target_lookup[id]
-      JABA.error("'#{id.inspect_unquoted}' not found") if t.nil? && fail_if_not_found
+      JABA.error("'#{id.inspect_unquoted}' not found", errobj: errobj) if t.nil? && fail_if_not_found
       t
     end
 
