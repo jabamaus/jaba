@@ -515,7 +515,7 @@ JABA::Context.define_jdl do
   attr "target/libs", variant: :array, type: :file do
     title "Paths to required non-system libs"
     base_attr :root
-    flags :no_sort, :no_check_exist, :exportable
+    flags :no_sort, :exportable
   end
 
   attr "target/syslibs", variant: :array, type: :string do
