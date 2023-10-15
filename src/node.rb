@@ -355,7 +355,7 @@ module JABA
       yield
     rescue ScriptError => e # script errors don't have a backtrace
       JABA.error(e.message, type: :script_error)
-    rescue NameError => e
+    rescue NameError, TypeError => e
       JABA.error(e.message, line: e.backtrace[0])
     ensure
       JABA.context.end_jdl if called_from_jdl
