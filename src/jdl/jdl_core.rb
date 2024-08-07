@@ -264,7 +264,7 @@ JABA::Context.define_jdl do
   attr "target/cpplang", type: :choice do
     title "C++ language standard"
     items ["C++11", "C++14", "C++17", "C++20", "C++23"]
-    default "C++14"
+    default "C++20"
   end
 
   attr "target/bindir", type: :dir do
