@@ -5,7 +5,7 @@ module JABA
           JABA.error("Only UTF-8 encoding supported") if (encoding && encoding != "UTF-8")
           String.new # mruby is UTF-8 as standard via MRB_UTF8_STRING define
         else
-          String.new(encoding: encoding)
+          encoding ? String.new(encoding: encoding) : String.new
         end
       @prefixes = nil
     end
