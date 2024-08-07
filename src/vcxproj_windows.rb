@@ -100,9 +100,11 @@ JABA::Vcxproj.config_builder(:windows) do |vcxproj, cfg_type|
     when "C++17"
       :stdcpp17
     when "C++20"
-      :stdcpplatest
+      :stdcpp20
     when "C++23"
-      fail "#{cpplang} not supported in Visual Studio yet"
+      :stdcpplatest
+    else
+      fail "#{cpplang} not supported by Visual Studio"
     end
   end
 
