@@ -63,7 +63,6 @@ test
 - workspaces
 
 possible features
-- Ability to reverse engineer jaba definitions from existing vsprojects
 - Command line option to print full exception info
 - Have a command line switch to make all error messages contain absolute paths
 - Add invocations.txt to each example which can execute in multiple ways?
@@ -73,6 +72,7 @@ possible features
   and cannot be done inline. Could be placed in .jaba.jdl files which are executed first.
 - Did you mean style error reporting: Error at basic_dll.jaba:8: 'defines' attribute not defined. Did you mean 'define'?
 - versioning support
+- It would be good if common libraries were like jrfui were able to be shared across codebases
 
 docs
 - tag attrs as control flow attrs somehow for benefit of docs
