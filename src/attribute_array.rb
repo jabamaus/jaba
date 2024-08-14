@@ -191,7 +191,9 @@ module JABA
           end
         end
         if @elems.size == n_elems
-          JABA.warn("no elements deleted", line: src_loc)
+          if JABA.context.input.verbose?
+            JABA.warn("no elements deleted", line: src_loc)
+          end
         end
       end
     end
