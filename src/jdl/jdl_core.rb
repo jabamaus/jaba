@@ -332,6 +332,10 @@ JABA::Context.define_jdl do
     example "define debug? ? \"DEBUG\" : \"RELEASE\""
   end
 
+  method "target/glob" do
+    title "Glob for files"
+  end
+
   attr "target/inc", variant: :array, type: :dir do
     title "Include paths"
     base_attr :root

@@ -308,6 +308,14 @@ module JABA
       end
     end
 
+    def jdl_glob(spec)
+      files = []
+      Array(spec).each do |s|
+        files.concat(JABA.context.file_manager.glob_files("#{attr_value('root')}/#{s}".cleanpath))
+      end
+      files
+    end
+
     # TODO: move out
     def import_exports(from_node)
       virtual = from_node[:virtual]
