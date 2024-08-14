@@ -225,7 +225,7 @@ module JABA
           return send(node_meth, *args, **kwargs, &block)
         end
       end
-      JABA.error("No method handler for #{name.inspect_unquoted} defined")
+      JABA.error("No method handler for '#{meth_def.name.inspect_unquoted}' defined")
     end
 
     def visit_callable_attrs(rdonly: false, &block)
