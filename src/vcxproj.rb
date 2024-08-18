@@ -69,6 +69,12 @@ module JABA
         vsplatform = "x64" # TODO: cfg.attrs.arch.attrs.vsname
         cfg_name = cfg[:configname]
 
+        pchsrc_attr = cfg.get_attr(:pchsrc)
+        pchsrc = pchsrc_attr.value
+        if !pchsrc.empty?
+          cfg.get_attr(:src).set pchsrc, properties: {PrecompiledHeader: :Create}
+        end
+
         shell_cmds = {}
         cfg.get_attr(:shell).each do |attr|
           value = attr.value

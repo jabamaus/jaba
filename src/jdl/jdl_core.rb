@@ -435,7 +435,7 @@ JABA::Context.define_jdl do
     end
     option :properties, variant: :hash, type: :to_s do
       title "Per-file property"
-      note "In the form <name>|<value>"
+      note "In the form 'src <file>, properties: {name: :value}'"
     end
     example %Q{
       # Add all src in $(root) whose extension is in $(src_ext)
@@ -478,6 +478,9 @@ JABA::Context.define_jdl do
 
       # Place matching files in a specific folder location within the project file
       src '*_win.cpp', vpath: 'win32'
+
+      # Set a per-file property or properties
+      src 'main.cpp', properties: {MyPropertyName1: :MyPropertyValue1, MyPropertyName2: :MyPropertyValue2}
     }
   end
 
