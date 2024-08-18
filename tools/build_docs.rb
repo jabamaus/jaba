@@ -1,7 +1,7 @@
 require "redcarpet"
 require "coderay"
 require 'cgi/util'
-require_relative "../../jrf/libs/jrfutils/cmdline_tool"
+require_relative "../../jrf/jrf/utils/cmdline_tool"
 require_relative 'common'
 require_relative '../examples/gen_all'
 
