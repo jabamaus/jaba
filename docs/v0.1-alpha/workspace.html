@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+  <head>
+    <title>workspace</title>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code&display=swap">
+    <link rel="stylesheet" href="../mamd.css">
+  </head>
+<body>
+<h2>workspace</h2>
+
+<p><sub><sup>This page applies to v0.1-alpha<br></sup></sub>
+<a href="../index.html">home</a> &gt; <a href="index.html">0.1-alpha home</a> &gt; <a href="jaba_reference.html">0.1-alpha reference home</a></p>
+
+<blockquote>
+<p><em>Define a workspace</em></p>
+</blockquote>
+
+<p>4 members:  </p>
+
+<ul>
+<li><a href="#dir">dir</a></li>
+<li><a href="#name">name</a></li>
+<li><a href="#namesuffix">namesuffix</a></li>
+<li><a href="#targets">targets</a></li>
+</ul>
+
+<p><a id="dir"></a></p>
+
+<h4>dir</h4>
+
+<blockquote>
+<p><em>Directory in which workspaces will be generated</em></p>
+
+<table><thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>dir</td>
+</tr>
+<tr>
+<td><em>default</em></td>
+<td>&quot;.&quot;</td>
+</tr>
+</tbody></table>
+
+<p><em>Notes</em></p>
+
+<ul>
+<li>Does not check if path exists at generation time</li>
+</ul>
+
+<p><em>Flags</em></p>
+
+<table><thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+</tbody></table>
+</blockquote>
+
+<p><a id="name"></a></p>
+
+<h4>name</h4>
+
+<blockquote>
+<p><em>Basename of workspace files</em></p>
+
+<table><thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>string</td>
+</tr>
+</tbody></table>
+
+<p><em>Notes</em></p>
+
+<ul>
+<li>Defaults to <a href="#id">$(id)</a><a href="#namesuffix">$(namesuffix)</a></li>
+</ul>
+</blockquote>
+
+<p><a id="namesuffix"></a></p>
+
+<h4>namesuffix</h4>
+
+<blockquote>
+<p><em>Optional suffix to be applied to $(name)</em></p>
+
+<table><thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>string</td>
+</tr>
+</tbody></table>
+
+<p><em>Notes</em></p>
+
+<ul>
+<li>Has no effect if <a href="#name">$(name)</a> is set explicitly</li>
+</ul>
+</blockquote>
+
+<p><a id="targets"></a></p>
+
+<h4>targets</h4>
+
+<blockquote>
+<p><em>Targets to add to workspace</em></p>
+
+<table><thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><em>variant</em></td>
+<td>array</td>
+</tr>
+<tr>
+<td><em>elem type</em></td>
+<td>string</td>
+</tr>
+</tbody></table>
+
+<p><em>Notes</em></p>
+
+<ul>
+<li>Must be specified</li>
+<li>Unsorted</li>
+</ul>
+</blockquote>
+
+<p><sub><sup>Generated on 18-Aug-24 using <a href="https://github.com/vmg/redcarpet">Redcarpet</a>, <a href="https://github.com/rubychan/coderay">CodeRay</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm.</sup></sub></p>
+</body>
+</html>

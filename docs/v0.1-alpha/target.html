@@ -16,7 +16,7 @@
 <p><em>Define a target</em></p>
 </blockquote>
 
-<p>40 members:  </p>
+<p>43 members:  </p>
 
 <ul>
 <li><a href="#bindir">bindir</a></li>
@@ -29,11 +29,14 @@
 <li><a href="#define">define</a></li>
 <li><a href="#deps">deps</a></li>
 <li><a href="#exceptions">exceptions</a></li>
+<li><a href="#glob">glob</a></li>
 <li><a href="#inc">inc</a></li>
 <li><a href="#lflags">lflags</a></li>
 <li><a href="#libdir">libdir</a></li>
 <li><a href="#libs">libs</a></li>
 <li><a href="#objdir">objdir</a></li>
+<li><a href="#pch">pch</a></li>
+<li><a href="#pchsrc">pchsrc</a></li>
 <li><a href="#projdir">projdir</a></li>
 <li><a href="#projname">projname</a></li>
 <li><a href="#projsuffix">projsuffix</a></li>
@@ -267,7 +270,7 @@
 </tr>
 <tr>
 <td><em>default</em></td>
-<td>&quot;C++14&quot;</td>
+<td>&quot;C++20&quot;</td>
 </tr>
 </tbody></table>
 </blockquote>
@@ -497,11 +500,17 @@ define debug? ? <span style="background-color:hsla(0,100%,50%,0.05)"><span style
 </div>
 </blockquote>
 
+<p><a id="glob"></a></p>
+
+<h4>glob</h4>
+
+<blockquote>
+<p><em>Glob for files</em></p>
+
 <p><a id="inc"></a></p>
 
 <h4>inc</h4>
 
-<blockquote>
 <p><em>Include paths</em></p>
 
 <table><thead>
@@ -669,7 +678,6 @@ inc [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#71
 
 <ul>
 <li>Unsorted</li>
-<li>Does not check if path exists at generation time</li>
 </ul>
 
 <p><em>Flags</em></p>
@@ -724,6 +732,82 @@ inc [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#71
 <li>Does not check if path exists at generation time</li>
 <li>Defaults to <a href="#artefact_root">$(artefact_root)</a>/<a href="#arch">$(arch)</a>/obj/<a href="#config">$(config)</a>/<a href="#projname">$(projname)</a></li>
 </ul>
+
+<p><em>Flags</em></p>
+
+<table><thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+</tbody></table>
+</blockquote>
+
+<p><a id="pch"></a></p>
+
+<h4>pch</h4>
+
+<blockquote>
+<p><em>Precompiled header file</em></p>
+
+<table><thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>file</td>
+</tr>
+</tbody></table>
+
+<p><em>Flags</em></p>
+
+<table><thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><em>:force</em></td>
+<td><em>Suppress warning if path does not exist</em></td>
+</tr>
+</tbody></table>
+</blockquote>
+
+<p><a id="pchsrc"></a></p>
+
+<h4>pchsrc</h4>
+
+<blockquote>
+<p><em>Precompiled source file</em></p>
+
+<table><thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>file</td>
+</tr>
+</tbody></table>
 
 <p><em>Flags</em></p>
 
@@ -1045,6 +1129,40 @@ inc [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#71
 <td><em>Suppress warning if path does not exist</em></td>
 </tr>
 </tbody></table>
+
+<p><em>Options</em></p>
+
+<blockquote>
+<p><a id="vpath"></a></p>
+
+<h4>vpath</h4>
+
+<blockquote>
+<p><em>Virtual path</em></p>
+
+<table><thead>
+<tr>
+<th>K</th>
+<th>V</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><em>variant</em></td>
+<td>single</td>
+</tr>
+<tr>
+<td><em>type</em></td>
+<td>rel_path</td>
+</tr>
+</tbody></table>
+
+<p><em>Notes</em></p>
+
+<ul>
+<li>Controls IDE project layout</li>
+</ul>
+</blockquote>
+</blockquote>
 </blockquote>
 
 <p><a id="msg"></a></p>
@@ -1144,11 +1262,7 @@ inc [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#71
 </tr>
 <tr>
 <td><em>type</em></td>
-<td>dir</td>
-</tr>
-<tr>
-<td><em>default</em></td>
-<td>&quot;.&quot;</td>
+<td>rel_path</td>
 </tr>
 </tbody></table>
 
@@ -1156,22 +1270,7 @@ inc [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#71
 
 <ul>
 <li>Controls IDE project layout</li>
-<li>Does not check if path exists at generation time</li>
 </ul>
-
-<p><em>Flags</em></p>
-
-<table><thead>
-<tr>
-<th>K</th>
-<th>V</th>
-</tr>
-</thead><tbody>
-<tr>
-<td><em>:force</em></td>
-<td><em>Suppress warning if path does not exist</em></td>
-</tr>
-</tbody></table>
 </blockquote>
 </blockquote>
 </blockquote>
@@ -1335,11 +1434,7 @@ inc [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#71
 </tr>
 <tr>
 <td><em>type</em></td>
-<td>dir</td>
-</tr>
-<tr>
-<td><em>default</em></td>
-<td>&quot;.&quot;</td>
+<td>rel_path</td>
 </tr>
 </tbody></table>
 
@@ -1347,22 +1442,7 @@ inc [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#71
 
 <ul>
 <li>Controls IDE project layout</li>
-<li>Does not check if path exists at generation time</li>
 </ul>
-
-<p><em>Flags</em></p>
-
-<table><thead>
-<tr>
-<th>K</th>
-<th>V</th>
-</tr>
-</thead><tbody>
-<tr>
-<td><em>:force</em></td>
-<td><em>Suppress warning if path does not exist</em></td>
-</tr>
-</tbody></table>
 </blockquote>
 
 <p><a id="properties"></a></p>
@@ -1643,7 +1723,7 @@ inc [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#71
 </tr>
 <tr>
 <td><em>default</em></td>
-<td>:app</td>
+<td>:console</td>
 </tr>
 </tbody></table>
 </blockquote>
@@ -2284,11 +2364,7 @@ vcglobal <span style="color:#A60">:WindowsTargetPlatformVersion</span>, winsdkve
 </tr>
 <tr>
 <td><em>type</em></td>
-<td>dir</td>
-</tr>
-<tr>
-<td><em>default</em></td>
-<td>&quot;.&quot;</td>
+<td>rel_path</td>
 </tr>
 </tbody></table>
 
@@ -2296,24 +2372,9 @@ vcglobal <span style="color:#A60">:WindowsTargetPlatformVersion</span>, winsdkve
 
 <ul>
 <li>Controls IDE project layout</li>
-<li>Does not check if path exists at generation time</li>
 </ul>
-
-<p><em>Flags</em></p>
-
-<table><thead>
-<tr>
-<th>K</th>
-<th>V</th>
-</tr>
-</thead><tbody>
-<tr>
-<td><em>:force</em></td>
-<td><em>Suppress warning if path does not exist</em></td>
-</tr>
-</tbody></table>
 </blockquote>
 
-<p><sub><sup>Generated on 05-Sep-23 using <a href="https://github.com/vmg/redcarpet">Redcarpet</a>, <a href="https://github.com/rubychan/coderay">CodeRay</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm.</sup></sub></p>
+<p><sub><sup>Generated on 18-Aug-24 using <a href="https://github.com/vmg/redcarpet">Redcarpet</a>, <a href="https://github.com/rubychan/coderay">CodeRay</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm.</sup></sub></p>
 </body>
 </html>
