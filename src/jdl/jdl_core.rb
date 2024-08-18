@@ -509,11 +509,12 @@ JABA::Context.define_jdl do
         fm.new_file(filename) do |w|
           w << line.join("\n")
         end
-        vp = vpath
+        vp = option_value(:fn, :vpath)
+        props = option_value(:fn, :properties)
         if vp
-          src filename, vpath: vp
+          src filename, vpath: vp, properties: props
         else
-          src filename
+          src filename, properties: props
         end
       end
     end
@@ -522,11 +523,14 @@ JABA::Context.define_jdl do
   attr "target/write_src/fn", type: :file do
     title "Filename"
     flags :no_check_exist
-  end
-
-  attr "target/write_src/vpath", type: :rel_path do
-    title "Virtual path"
-    note "Controls IDE project layout"
+    option :properties, variant: :hash, type: :to_s do
+      title "Per-file property"
+      note "In the form 'src <file>, properties: {name: :value}'"
+    end
+    option :vpath, type: :rel_path do
+      title "Virtual path"
+      note "Controls IDE project layout"
+    end
   end
 
   attr "target/write_src/line", variant: :array, type: :to_s do
