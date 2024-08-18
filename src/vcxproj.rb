@@ -92,6 +92,7 @@ module JABA
           output_attr = rule.get_attr(:output)
           output = output_attr.value
           output_vpath = output_attr.option_value(:vpath)
+          output_properties = output_attr.option_value(:properties) || {}
           imp_input = rule[:implicit_input]
           cmd_attr = rule.get_attr(:cmd)
           cmd = cmd_attr.value
@@ -105,9 +106,9 @@ module JABA
             d_output = demacroise(output, input, imp_input, nil)
             # output may not exist on disk so force
             if output_vpath
-              src_attr.set(d_output, :force, vpath: output_vpath)
+              src_attr.set(d_output, :force, vpath: output_vpath, properties: output_properties)
             else
-              src_attr.set(d_output, :force)
+              src_attr.set(d_output, :force, properties: output_properties)
             end
             input_rel = input.relative_path_from(@projdir, backslashes: true)
             imp_input_rel = imp_input.relative_path_from(@projdir, backslashes: true)

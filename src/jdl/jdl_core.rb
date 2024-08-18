@@ -395,6 +395,10 @@ JABA::Context.define_jdl do
       title "Virtual path"
       note "Controls IDE project layout"
     end
+    option :properties, variant: :hash, type: :to_s do
+      title "Per-file property"
+      note "In the form 'src <file>, properties: {name: :value}'"
+    end
   end
 
   attr "target/rule/cmd", type: :string do
