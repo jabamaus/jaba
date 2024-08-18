@@ -199,6 +199,10 @@ module JABA
       end
     end
 
+    def jdl_option_value(attr, option)
+      get_attr(attr).option_value(option)
+    end
+
     def pull_up(attr)
       # TODO: check for commonality
       ca = @children[0].get_attr(attr.name)

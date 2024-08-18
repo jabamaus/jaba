@@ -168,6 +168,16 @@ JABA::Context.define_core_jdl do
     title "TODO"
     flags :node_option
   end
+
+  method "*/option_value" do
+    title "Get value of previous set option"
+    example %Q{
+      src 'file.cpp', properties: {:MyProp => :MyVal}, vpath: 'MyDir'
+      option_value(:src, :properties) # returns {:MyProp => :MyVal}
+      option_value(:src, :vpath) # returns 'MyDir'
+    }
+  end
+
 end # end core jdl
 
 JABA::Context.define_jdl do
