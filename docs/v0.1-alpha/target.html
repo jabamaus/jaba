@@ -1475,7 +1475,7 @@ inc [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#71
 <p><em>Notes</em></p>
 
 <ul>
-<li>In the form &lt;name&gt;|&lt;value&gt;</li>
+<li>In the form &#39;src &lt;file&gt;, properties: {name: :value}&#39;</li>
 </ul>
 </blockquote>
 
@@ -1524,6 +1524,9 @@ inc [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#71
 
       <span style="color:#777"># Place matching files in a specific folder location within the project file</span>
       src <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">*_win.cpp</span><span style="color:#710">'</span></span>, <span style="color:#606">vpath</span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">win32</span><span style="color:#710">'</span></span>
+
+      <span style="color:#777"># Set a per-file property or properties</span>
+      src <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">main.cpp</span><span style="color:#710">'</span></span>, <span style="color:#606">properties</span>: {<span style="color:#606">MyPropertyName1</span>: <span style="color:#A60">:MyPropertyValue1</span>, <span style="color:#606">MyPropertyName2</span>: <span style="color:#A60">:MyPropertyValue2</span>}
     </pre></div>
 </div>
 </blockquote>
