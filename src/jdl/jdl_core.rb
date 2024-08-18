@@ -362,9 +362,10 @@ JABA::Context.define_jdl do
     example "exceptions false # disable exceptions"
   end
 
-  attr "target/pch", type: :file do
+  attr "target/pch", type: :rel_path do
     title "Precompiled header file"
     base_attr :root
+    note "In Visual Studio this must be the exact string inside the #include statement in each src file"
   end
 
   attr "target/pchsrc", type: :file do
