@@ -503,6 +503,7 @@ JABA::Context.define_jdl do
     title "Creates a src and adds to build"
     on_set do
       filename = fn
+      
       fm = JABA.context.file_manager
       # write_file is called on a per-config basis so it has access to all attrs but
       # don't write subsequent files with the same name
@@ -510,13 +511,14 @@ JABA::Context.define_jdl do
         fm.new_file(filename) do |w|
           w << line.join("\n")
         end
-        vp = option_value(:fn, :vpath)
-        props = option_value(:fn, :properties)
-        if vp
-          src filename, vpath: vp, properties: props
-        else
-          src filename, properties: props
-        end
+      end
+      
+      vp = option_value(:fn, :vpath)
+      props = option_value(:fn, :properties) || {}
+      if vp
+        src filename, vpath: vp, properties: props
+      else
+        src filename, properties: props
       end
     end
   end
