@@ -1,24 +1,9 @@
-#if 0
-#include "vld.h"
-#endif
-#include <stdexcept>
-#include "jaba/ireps.h"
-#include "jrfjaba/ireps.h"
-#include "jrfcore/mrb_state.h"
-#include "mrubygems.h"
+#include "jrfcore/console_app.h"
 
-void run(MrbState& mrb)
-{
-  mrubygems_init(mrb);
-  jrfjaba::register_ireps(mrb);
-  jaba::register_ireps(mrb);
-  mrb.run(src2_jaba_symbol);
-  mrubygems_term(mrb);
-  mrb.term();
-}
+extern "C" const uint8_t jaba_irep[];
 
 int main(int argc, char* argv[])
 {
-  MrbState mrb;
-  return mrb.execute(&run, argc, argv);
+  ConsoleApp app;
+  return app.run(argc, argv, jaba_irep);
 }
