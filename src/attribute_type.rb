@@ -172,7 +172,7 @@ module JABA
     def initialize(name = :uuid) = super(name)
 
     def map_value(value, attr)
-      Kernel.generate_uuid(namespace: "JabaAttributeTypeUUID", name: value, braces: true)
+      Kernel.psuedo_uuid_from_string(value, namespace: "JabaAttributeTypeUUID", braces: true)
     end
   end
 

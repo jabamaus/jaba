@@ -1,5 +1,4 @@
 require "fileutils"
-require "digest/sha1"
 require "tsort"
 require_relative "../../jrf/jrf/utils/core_ext"
 
