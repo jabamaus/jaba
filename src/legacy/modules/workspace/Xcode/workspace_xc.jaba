@@ -1,3 +1,0 @@
-open_instance 'host|xcode' do
-  workspace_classname 'Xcworkspace'
-end
