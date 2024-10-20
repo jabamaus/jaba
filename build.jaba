@@ -2,7 +2,6 @@ include '../jrf/jrf.jaba'
 
 workspace :jaba do
   targets [:jaba]
-  dir __dir__
 end
 
 target :jaba do
