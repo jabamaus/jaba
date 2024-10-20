@@ -73,6 +73,9 @@ if __FILE__ == $PROGRAM_NAME
       clm.register_cmd(:build, help: "Execute build")
       clm.register_cmd(:clean, help: "Clean build")
       clm.register_cmd(:help, help: "Open jaba web help")
+      clm.register_cmd(:convert, help: "Convert vcxproj to jaba spec") do |c|
+        c.add_value("--vcxproj -p", help: "Path to vcxproj file", var: :vcxproj)
+      end
 
       clm.process
       clm.finalise
@@ -93,6 +96,9 @@ if __FILE__ == $PROGRAM_NAME
           end
         system("#{cmd} #{JABA::DOCS_URL}")
         return 0
+      elsif clm.cmd_specified?(:convert)
+        convert_vcxproj
+        return 0;
       end
 
       @src_root = Dir.getwd if @src_root.nil?
@@ -121,6 +127,20 @@ if __FILE__ == $PROGRAM_NAME
 
     def help_string = "Jaba build system generator v#{JABA::VERSION}"
     def error(msg) = $stderr.puts msg
+  end
+
+  def convert_vcxproj
+    if !File.exist?(@vcxproj)
+      error("#{@vcxproj} not found")
+      return 1;
+    end
+    require_relative 'vcxproj_converter'
+    begin
+      JABA::VcxprojConverter.new(@vcxproj).run
+    rescue => e
+      error(e.message)
+      return 1
+    end
   end
 
   exit(Jaba.new.run)

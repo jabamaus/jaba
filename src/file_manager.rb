@@ -80,6 +80,16 @@ module JABA
     def generated = @generated
     def file_created?(fn) = @new_files.key?(fn)
 
+    def report
+      added.each do |f|
+        puts "  #{f} [A]\n"
+      end
+      modified.each do |f|
+        puts "  #{f} [M]\n"
+      end
+      puts "Generated #{generated.size} files, #{added.size} added, #{modified.size} modified, #{unchanged.size} unchanged"
+    end
+
     ValidEols = [:unix, :windows, :native].freeze
 
     def new_file(filename, eol: :unix, encoding: nil, track: true)
