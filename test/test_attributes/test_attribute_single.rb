@@ -89,7 +89,7 @@ jtest "supports default value" do
   r[:b].must_equal 2
   r[:c].must_equal "1_2"
   r[:d].must_equal "1_2"
-  r[:e].must_equal "{3BD8F1BB-E5D7-5F5F-BC5D-6451E9D05F0E}" # e is not set but default should still be mapped to a uuid
+  r[:e].must_equal "{06C50E6D-8FEA-55A7-C314-000012D689E8}" # e is not set but default should still be mapped to a uuid
 
   # test with attr default using an unset attr
   assert_jaba_error "Error at #{src_loc("2F003EB7")}: 'c' attribute default read uninitialised 'b' attribute - it might need a default value." do

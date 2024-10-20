@@ -79,7 +79,7 @@ jtest "supports exporting attributes to dependents" do
   app1[:vcglobal][:StringAttr2].must_equal "s2"
   app1[:vcglobal][:StringAttr3].must_equal "s3"
   app1[:vcglobal][:StringAttr4].must_equal "sd"
-  app1[:uuid].must_equal ["{6D82CA6D-E690-5E45-975F-1F54D32A755A}"]
+  app1[:uuid].must_equal ["{06C50E6D-8FEA-55AE-38B7-00003DB02145}"]
   app1d = app1.get_child(:debug)
   app1d[:define].must_equal ["A", "B", "C", "D", "D2", "F", "VD"]
   app1d.get_attr(:define).visit_elem do |elem|
@@ -98,7 +98,7 @@ jtest "supports exporting attributes to dependents" do
   app2[:vcglobal][:StringAttr2].must_equal "s2"
   app2[:vcglobal][:StringAttr3].must_equal "s3"
   app2[:vcglobal][:StringAttr4].must_equal "sd"
-  app2[:uuid].must_equal ["{6D82CA6D-E690-5E45-975F-1F54D32A755A}"]
+  app2[:uuid].must_equal ["{06C50E6D-8FEA-55AE-38B7-00003DB02145}"]
   app2d = app2.get_child(:debug)
   app2d[:define].must_equal ["A", "B", "C", "D", "D2", "F", "VD"]
   app2d[:inc].must_equal ["#{temp_dir}/lib/include"]
@@ -112,7 +112,7 @@ jtest "supports exporting attributes to dependents" do
   lib[:vcglobal][:StringAttr].must_equal "s"
   lib[:vcglobal].has_key?(:StringAttr2).must_be_false # due to :export_only
   lib[:vcglobal][:StringAttr3].must_equal("s3")
-  lib[:uuid].must_equal ["{6D82CA6D-E690-5E45-975F-1F54D32A755A}"]
+  lib[:uuid].must_equal ["{06C50E6D-8FEA-55AE-38B7-00003DB02145}"]
   libd = lib.get_child(:debug)
   libd[:define].must_equal ["D", "D2", "E"]
   libr = lib.get_child(:release)

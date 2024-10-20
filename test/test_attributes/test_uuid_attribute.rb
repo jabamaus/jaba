@@ -29,10 +29,10 @@ jtest "generates a UUID from a string" do
       end
     end
   end
-  a_uuid = "{1F824C00-702A-52EA-906E-54C0F6C87AED}"
-  b_uuid = "{E4B88B6B-5EA8-5DE8-A73D-D65CEB533AEA}"
-  c_uuid = "{44B023A5-12E8-5495-AAF0-9B6AF83C0338}"
-  d_uuid = "{C1ACE80B-6A8A-501F-924C-652DE5E19B50}"
+  a_uuid = "{06C50E6D-8FEA-55AC-3639-0000BD23CA42}"
+  b_uuid = "{06C50E6D-8FEA-55AC-4E45-0000B16D3B61}"
+  c_uuid = "{06C50E6D-8FEA-55AC-6651-0000A5B6AC80}"
+  d_uuid = "{06C50E6D-8FEA-55AC-7E5D-00009A001D9F}"
 
   jaba do
     a.must_equal(a_uuid)
