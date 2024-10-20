@@ -8,9 +8,6 @@ core
 - Remove node_option flag and handle node options same as attribute options?
 - Add a general :nowarn option. This could replace the :force option. And have a command line switch to force showing of warningss
 - Test compound attr with value options
-- Add way of retrieving options in jdl:
-  src ".", vpath: "generated"
-  vpath = src getopt: :vpath
 - change shared blocks to use :block attrs rather than custom code?
 - Check for commonality in pull_up and add test
 - Check that pull_up works with compounds
