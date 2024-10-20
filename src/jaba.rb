@@ -83,16 +83,15 @@ if __FILE__ == $PROGRAM_NAME
       end
 
       if clm.cmd_specified?(:help)
-        url = "#{JABA.jaba_docs_url}/v#{VERSION}"
-        cmd = if OS.windows?
+        cmd = if JABA::OS.windows?
             "start"
-          elsif OS.mac?
+          elsif JABA::OS.mac?
             "open"
           else
             error("Unsupported platform")
             return 1
           end
-        system("#{cmd} #{url}")
+        system("#{cmd} #{JABA::DOCS_URL}")
         return 0
       end
 
