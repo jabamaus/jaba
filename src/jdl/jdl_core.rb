@@ -598,6 +598,7 @@ JABA::Context.define_jdl do
   attr "target/virtual", type: :bool do
     title "Virtual"
     flags :node_option
+    note "Virtual targets do not inherit defaults"
   end
   
   attr "target/warnerror", type: :bool do
