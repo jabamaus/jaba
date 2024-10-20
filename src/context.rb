@@ -147,6 +147,7 @@ module JABA
 
     def execute
       begin
+        @input_block&.call(input)
         profile(input.profile?) do
           run
         end
@@ -189,8 +190,6 @@ module JABA
     end
 
     def do_run
-      @input_block&.call(input)
-
       @jdl = if !@@overridden_jdl_blocks.empty?
           JDLBuilder.new(@@overridden_jdl_blocks)
         else
