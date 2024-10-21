@@ -2128,7 +2128,27 @@ inc [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#71
 </tr>
 </tbody></table>
 </blockquote>
+
+<p><em>Examples</em></p>
 </blockquote>
+
+<div class="CodeRay">
+  <div class="code"><pre>
+      <span style="color:#777"># Insert property into first PropertyGroup section (the one that contains ConfigurationType)</span>
+      vcprop <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">PG1|MyProperty</span><span style="color:#710">'</span></span>, <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">MyValue</span><span style="color:#710">'</span></span>
+
+      <span style="color:#777"># Insert property into second PropertyGroup section</span>
+      vcprop <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">PG2|MyProperty2</span><span style="color:#710">'</span></span>, <span style="color:#00D">10</span>
+
+      <span style="color:#777"># Insert boolean property into ClCompile section</span>
+      vcprop <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ClCompile|BufferSecurityCheck</span><span style="color:#710">'</span></span>, <span style="color:#069">false</span>
+
+      <span style="color:#777"># Can use a symbol for property value. Same result as using quoted string.</span>
+      vcprop <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Link|EntryPointSymbol</span><span style="color:#710">'</span></span>, <span style="color:#A60">:mainCRTStartup</span>
+
+      vcprop <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">Midl|SuppressStartupBanner, true
+    </span></span></pre></div>
+</div>
 </blockquote>
 
 <p><a id="vctoolset"></a></p>
@@ -2442,6 +2462,6 @@ vcglobal <span style="color:#A60">:WindowsTargetPlatformVersion</span>, winsdkve
 </tbody></table>
 </blockquote>
 
-<p><sub><sup>Generated on 18-Aug-24 using <a href="https://github.com/vmg/redcarpet">Redcarpet</a>, <a href="https://github.com/rubychan/coderay">CodeRay</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm.</sup></sub></p>
+<p><sub><sup>Generated on 21-Oct-24 using <a href="https://github.com/vmg/redcarpet">Redcarpet</a>, <a href="https://github.com/rubychan/coderay">CodeRay</a>, <a href="https://rsms.me/inter">Inter</a> and <a href="https://github.com/tonsky/FiraCode">FiraCode</a>. css by Harry Denholm.</sup></sub></p>
 </body>
 </html>
