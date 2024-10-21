@@ -692,6 +692,21 @@ JABA::Context.define_jdl do
         fail "Must be of form <group>|<property> but was '#{key}'"
       end
     end
+    example %Q{
+      # Insert property into first PropertyGroup section (the one that contains ConfigurationType)
+      vcprop 'PG1|MyProperty', 'MyValue'
+
+      # Insert property into second PropertyGroup section
+      vcprop 'PG2|MyProperty2', 10
+
+      # Insert boolean property into ClCompile section
+      vcprop 'ClCompile|BufferSecurityCheck', false
+
+      # Can use a symbol for property value. Same result as using quoted string.
+      vcprop 'Link|EntryPointSymbol', :mainCRTStartup
+
+      vcprop 'Midl|SuppressStartupBanner, true
+    }
   end
 
   attr "target/vctoolset", type: :choice do
