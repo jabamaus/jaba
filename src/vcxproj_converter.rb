@@ -1,4 +1,5 @@
 require 'rexml'
+require 'rexml/xpath'
 
 module JABA
   class VcxprojConverter
@@ -7,49 +8,70 @@ module JABA
       @src_files = []
       @headers = []
       @projname = nil
-      @type = nil
-      @pch = nil
+      @config_to_property = {}
     end
+
+    def error(msg) = JABA.error("In #{@vcxproj.basename}: #{msg}")
+    def warn(msg) = JABA.warn("In #{@vcxproj.basename}: #{msg}")
 
     def run
       xml = IO.read(@vcxproj)
       doc = REXML::Document.new(xml)
+      REXML::XPath.each(doc, "//Project/ItemGroup[@Label='ProjectConfigurations']/ProjectConfiguration") do |e|
+        cfg = e.attributes["Include"] 
+        if cfg !~ /^.*\|(.*)$/
+          error "Couldn't extract configuration from '#{cfg}'"
+        end
+        platform = $1
+        case platform
+        when 'x64', 'Win32'
+          @config_to_property[cfg] = []
+        else
+          error "Unhandled platform '#{platform}'"
+        end
+      end
+      if @config_to_property.empty?
+        error "No configurations were extracted"
+      end
+
       doc.elements.each("Project/PropertyGroup") do |e|
-        if e.attributes['Label'] == 'Globals'
+        case e.attributes['Label']
+        when 'Globals'
           pn = e.elements["ProjectName"]
           @projname = pn.text if pn
-        elsif e.attributes['Label'] == 'Configuration'
-          type = e.elements["ConfigurationType"]
-          if type
-            type = type.text
-            if @type && @type != type
-              JABA.error("Mixed type not yet supported")
-            end
-            @type = type
-          end
-        elsif e.attributes['Label'] == 'UserMacros'
+        when 'Configuration' # Contains ConfigurationType
+          cfg = cfg_from_condition(e)
+          insert_properties(cfg, e)
+        when 'UserMacros'
+          # Ignore
         else # PropertyGroup with no attributes
         end
       end
       doc.elements.each("Project/ItemDefinitionGroup") do |e|
+        condition = e.attributes["Condition"]
+        cfg = case condition
+        when /'\$\(Configuration\)\|\$\(Platform\)'==/
+          cfg_from_condition(e)
+        else
+          warn "Unandled condition in #{e}"
+        end
+        next if !cfg
         e.elements.each do |group|
           case group.name
-          when 'ClCompile'
-            pch = group.elements["PrecompiledHeaderFile"]
-            if pch
-              pch = pch.text.to_forward_slashes
-              if @pch && @pch != pch
-                JABA.error("Mixed pchs not supported")
-              end
-              @pch = pch
-            end
-          when 'Link'
+          when 'ClCompile', 'Link'
+            insert_properties(cfg, group)
+          when 'Midl'
+            # nothing
+          when 'ResourceCompile'
+          when 'PreBuildEvent'
+          when 'PostBuildEvent'
+          else
+            error "Unhandled ItemDefinitionGroup '#{group.name}'"
           end
         end
       end
       doc.elements.each("Project/ItemGroup") do |e|
-        if e.attributes["Label"] == 'ProjectConfigurations'
-        else
+        if e.attributes["Label"]
           e.elements.each do |c|
             case c.name
             when 'ClCompile', 'ClInclude'
@@ -60,19 +82,21 @@ module JABA
               when /\.(h|hpp)$/
                 @headers << file
               else
-                JABA.warn("Unhandled file type '#{file}'")
+                warn "Unhandled file type '#{file}'"
               end
             when 'MASM'
               # TODO
             when 'ResourceCompile'
               # TODO
+            when 'ProjectConfiguration'
+              # already dealt with
             else
-              JABA.warn("Unhandled ItemGroup type '#{c.name}'")
+              warn "Unhandled ItemGroup type '#{c.name}'"
             end
           end
         end
       end
-
+      
       if @projname.nil?
         @projname = @vcxproj.basename_no_ext
       end
@@ -120,13 +144,22 @@ module JABA
       w.newline
     end
     
-    def get_cfg(elem)
+    def cfg_from_condition(elem)
       condition = elem.attributes['Condition']
-      return nil if condition !~ /^'\$\(Configuration\)/
       if condition !~ /'\$\(Configuration\)\|\$\(Platform\)'=='(.+)'/
-        raise "Failed to extract configuration from #{condition}"
+        error "Failed to extract configuration from '#{condition}'"
       end
       $1
+    end
+
+    def insert_properties(cfg, elem)
+      elem.elements.each do |c|
+        name = c.name
+        value = c.text
+        error "Could read property name from '#{elem}'" if name.nil?
+        error "Could read property falue from '#{elem}'" if value.nil?
+        @config_to_property.push_value(cfg, "<#{name}>#{value}")
+      end
     end
   end
 end
