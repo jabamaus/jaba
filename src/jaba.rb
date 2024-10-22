@@ -82,25 +82,29 @@ if __FILE__ == $PROGRAM_NAME
 
       if @show_help
         clm.show_help
-        return 0
-      end
-
-      if clm.cmd_specified?(:help)
+      elsif clm.cmd_specified?(:help)
         cmd = if JABA::OS.windows?
             "start"
           elsif JABA::OS.mac?
             "open"
           else
-            error("Unsupported platform")
-            return 1
+            error "Unsupported platform"
           end
         system("#{cmd} #{JABA::DOCS_URL}")
-        return 0
+      elsif clm.cmd_specified?(:gen)
+        run_jaba
       elsif clm.cmd_specified?(:convert)
         convert_vcxproj
-        return 0;
+      elsif clm.cmd_specified?(:build)
+        # TODO
+      elsif clm.cmd_specified?(:clean)
+        # TODO
+      else
+        error "unrecognised command"
       end
+    end
 
+    def run_jaba
       @src_root = Dir.getwd if @src_root.nil?
 
       output = JABA.run do |j|
@@ -111,37 +115,39 @@ if __FILE__ == $PROGRAM_NAME
       end
 
       if output.nil? || output.empty?
-        error("INTERNAL ERROR: Jaba failed to return any output")
-        return 1
+        error "INTERNAL ERROR: Jaba failed to return any output"
       end
 
       if output[:error]
-        error(output[:error])
-        return 1
+        $stderr.puts(output[:error])
       end
 
       puts output[:summary]
       puts output[:warnings] if !output[:warnings].empty?
-      return 0
     end
 
     def help_string = "Jaba build system generator v#{JABA::VERSION}"
-    def error(msg) = $stderr.puts msg
+    
+    def error(msg)
+      $stderr.puts msg
+      exit 1
+    end
   end
 
   def convert_vcxproj
     if !File.exist?(@vcxproj)
-      error("#{@vcxproj} not found")
-      return 1;
+      error "#{@vcxproj} not found"
     end
     require_relative 'vcxproj_converter'
-    begin
-      JABA::VcxprojConverter.new(@vcxproj).run
-    rescue => e
-      error(e.message)
-      return 1
-    end
+    JABA::VcxprojConverter.new(@vcxproj).run
   end
 
-  exit(Jaba.new.run)
+  begin
+    Jaba.new.run
+  rescue => e
+    $stderr.puts e.full_message
+    exit 1
+  rescue SystemExit => e
+    exit(e.status)
+  end
 end
