@@ -130,6 +130,16 @@ module JABA
         write_src(w, @src_files, common_src_prefix)
         w << ""
         write_src(w, @headers, common_header_prefix)
+        w.newline
+        @common_properties.each do |key, val|
+          jaba_attr = vcprop_to_jaba_attr(key)
+          if jaba_attr.nil?
+            w << "  vcprop '#{key}', #{val}"
+          elsif jaba_attr != :ignore
+            attr_val = transform_vcprop_value(jaba_attr, val)
+            w << "  #{jaba_attr} #{attr_val}"
+          end
+        end
         w << "end"
       end
       fm.report
@@ -161,6 +171,40 @@ module JABA
       w.newline
     end
     
+    def vcprop_to_jaba_attr(vcprop)
+      case vcprop
+      when 'ClCompile|AdditionalIncludeDirectories'
+        'inc'
+      when 'ClCompile|WarningLevel'
+        'vcwarnlevel'
+      when 'PG2|OutDir', 'PG2|IntDir'
+        :ignore # defer to jaba standard outdir
+      else
+        nil
+      end
+    end
+
+    def transform_vcprop_value(jaba_attr, val)
+      case jaba_attr
+      when 'inc'
+        demacroise(val)
+        paths = val.split(';')
+        paths.delete('%(AdditionalIncludeDirectories)')
+        "[#{paths.map{|p| "'#{p}'"}.join(", ")}]"
+      when 'vcwarnlevel'
+        if val !~ /Level(\d)/
+          error "Could not read warning level from '#{val}'"
+        end
+        $1.to_i
+      else
+        error "Unhandled jaba attr '#{jaba_attr}'"
+      end
+    end
+
+    def demacroise(val)
+      val.gsub!("$(ProjectDir)", '#{projdir}')
+    end
+
     def find_commonality
       first = @configs[0]
       first.properties.delete_if do |key, val|
@@ -207,6 +251,16 @@ module JABA
       if properties.key?(key)
         error "Duplicate key '#{key}' detected in #{properties}"
       end
+
+      value = case value
+      when "true"
+        true
+      when "false"
+        false
+      else
+        "\"#{value}\""
+      end
+
       properties[key] = value
     end
   end
