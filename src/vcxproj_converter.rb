@@ -3,15 +3,22 @@ require 'rexml/xpath'
 
 module JABA
   class VcxprojConverter
+
+    Config = Struct.new(:name, :properties)
+
     def initialize(vcxproj)
       @vcxproj = vcxproj
       @src_files = []
       @headers = []
       @projname = nil
-      @config_to_property = {}
+      @configs = []
+      @common_properties = {}
     end
 
-    def error(msg) = JABA.error("In #{@vcxproj.basename}: #{msg}")
+    def error(msg)
+      puts caller
+      JABA.error("In #{@vcxproj.basename}: #{msg}")
+    end
     def warn(msg) = JABA.warn("In #{@vcxproj.basename}: #{msg}")
 
     def run
@@ -25,26 +32,32 @@ module JABA
         platform = $1
         case platform
         when 'x64', 'Win32'
-          @config_to_property[cfg] = []
+          @configs << Config.new(cfg, {})
         else
           error "Unhandled platform '#{platform}'"
         end
       end
-      if @config_to_property.empty?
+      if @configs.empty?
         error "No configurations were extracted"
       end
 
       doc.elements.each("Project/PropertyGroup") do |e|
-        case e.attributes['Label']
+        # config can be on parent property group or individual properties
+        parent_cfg = cfg_from_condition(e, fail_if_not_found: false)
+        label = e.attributes['Label']
+        case label
         when 'Globals'
           pn = e.elements["ProjectName"]
           @projname = pn.text if pn
-        when 'Configuration' # Contains ConfigurationType
-          cfg = cfg_from_condition(e)
-          insert_properties(cfg, e)
-        when 'UserMacros'
-          # Ignore
-        else # PropertyGroup with no attributes
+        when 'Configuration', nil # PG1 Contains ConfigurationType
+          group = label.nil? ? "PG2" : "PG1"
+          e.elements.each do |p|
+            cfg = parent_cfg ? parent_cfg : cfg_from_condition(p, fail_if_not_found: false)
+            insert_property(p, group, cfg, p.name, p.text)
+          end
+        when 'UserMacros' # Ignore
+        else
+          error "Unhanded PropertyGroup label '#{label}'"
         end
       end
       doc.elements.each("Project/ItemDefinitionGroup") do |e|
@@ -53,13 +66,15 @@ module JABA
         when /'\$\(Configuration\)\|\$\(Platform\)'==/
           cfg_from_condition(e)
         else
-          warn "Unandled condition in #{e}"
+          warn "Unhandled condition #{condition} in #{e.name}"
         end
         next if !cfg
         e.elements.each do |group|
           case group.name
           when 'ClCompile', 'Link'
-            insert_properties(cfg, group)
+            group.elements.each do |p|
+              insert_property(p, group.name, cfg, p.name, p.text)
+            end
           when 'Midl'
             # nothing
           when 'ResourceCompile'
@@ -71,7 +86,7 @@ module JABA
         end
       end
       doc.elements.each("Project/ItemGroup") do |e|
-        if e.attributes["Label"]
+        if e.attributes["Label"].nil?
           e.elements.each do |c|
             case c.name
             when 'ClCompile', 'ClInclude'
@@ -91,7 +106,7 @@ module JABA
             when 'ProjectConfiguration'
               # already dealt with
             else
-              warn "Unhandled ItemGroup type '#{c.name}'"
+              error "Unhandled ItemGroup type '#{c.name}'"
             end
           end
         end
@@ -100,6 +115,8 @@ module JABA
       if @projname.nil?
         @projname = @vcxproj.basename_no_ext
       end
+
+      find_commonality
 
       common_src_prefix = process_src(@src_files)
       common_header_prefix = process_src(@headers)
@@ -144,22 +161,53 @@ module JABA
       w.newline
     end
     
-    def cfg_from_condition(elem)
+    def find_commonality
+      first = @configs[0]
+      first.properties.delete_if do |key, val|
+        common = true
+        1.upto(@configs.size - 1) do |i|
+          other = @configs[i]
+          if !other.properties.key?(key)
+            common = false
+            break
+          end
+        end
+        if common
+          1.upto(@configs.size - 1) do |i|
+            other = @configs[i]
+            other.properties.delete(key)
+          end
+          if @common_properties.key?(key)
+            error "Duplicate common property '#{key}' detected"
+          end
+          @common_properties[key] = val
+        end
+        common # delete if common
+      end
+    end
+
+    def cfg_from_condition(elem, fail_if_not_found: true)
       condition = elem.attributes['Condition']
-      if condition !~ /'\$\(Configuration\)\|\$\(Platform\)'=='(.+)'/
+      if condition !~ /'\$\(Configuration\)\|\$\(Platform\)'=='(.+)'/ && fail_if_not_found
         error "Failed to extract configuration from '#{condition}'"
       end
       $1
     end
 
-    def insert_properties(cfg, elem)
-      elem.elements.each do |c|
-        name = c.name
-        value = c.text
-        error "Could read property name from '#{elem}'" if name.nil?
-        error "Could read property falue from '#{elem}'" if value.nil?
-        @config_to_property.push_value(cfg, "<#{name}>#{value}")
+    def insert_property(elem, group_name, cfg, name, value)
+      return if value.nil? # Strip if no value
+      error "Could not read property name from '#{elem}'" if name.nil?
+      properties = @common_properties
+      if cfg
+        cfg = @configs.find{|c| c.name == cfg}
+        error "Could not find '#{cfg}' config" if cfg.nil?
+        properties = cfg.properties
       end
+      key = "#{group_name}|#{name}"
+      if properties.key?(key)
+        error "Duplicate key '#{key}' detected in #{properties}"
+      end
+      properties[key] = value
     end
   end
 end
