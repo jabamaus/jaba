@@ -6,8 +6,10 @@ module JABA
 
     Config = Struct.new(:name, :properties)
 
-    def initialize(vcxproj)
+    def initialize(vcxproj, outdir)
       @vcxproj = vcxproj
+      @vcxproj_dir = File.expand_path(vcxproj).parent_path
+      @outdir = outdir
       @src_files = []
       @headers = []
       @projname = nil
@@ -16,7 +18,6 @@ module JABA
     end
 
     def error(msg)
-      puts caller
       JABA.error("In #{@vcxproj.basename}: #{msg}")
     end
     def warn(msg) = JABA.warn("In #{@vcxproj.basename}: #{msg}")
@@ -125,18 +126,18 @@ module JABA
       puts "Generating #{fn}..."
 
       fm = FileManager.new
-      fm.new_file(File.expand_path(fn)) do |w|
+      fm.new_file(File.expand_path("#{@outdir}/#{fn}")) do |w|
         w << "target :#{@projname} do"
         write_src(w, @src_files, common_src_prefix)
         w << ""
         write_src(w, @headers, common_header_prefix)
         w.newline
-        @common_properties.each do |key, val|
-          jaba_attr = vcprop_to_jaba_attr(key)
+        @common_properties.each do |vcprop, val|
+          jaba_attr = vcprop_to_jaba_attr(vcprop)
           if jaba_attr.nil?
-            w << "  vcprop '#{key}', #{val}"
+            w << "  vcprop '#{vcprop}', #{val}"
           elsif jaba_attr != :ignore
-            attr_val = transform_vcprop_value(jaba_attr, val)
+            attr_val = transform_vcprop_value(vcprop, jaba_attr, val)
             w << "  #{jaba_attr} #{attr_val}"
           end
         end
@@ -175,22 +176,33 @@ module JABA
       case vcprop
       when 'ClCompile|AdditionalIncludeDirectories'
         'inc'
+      when 'ClCompile|PreprocessorDefinitions'
+        'define'
       when 'ClCompile|WarningLevel'
         'vcwarnlevel'
-      when 'PG2|OutDir', 'PG2|IntDir'
-        :ignore # defer to jaba standard outdir
+      when *[
+        'PG2|IntDir', # defer to jaba defaults
+        'PG2|OutDir', # defer to jaba defaults
+        'PG2|_ProjectFileVersion',
+        'Link|SubSystem' # automatically set by jaba
+        ]
+        :ignore
       else
         nil
       end
     end
 
-    def transform_vcprop_value(jaba_attr, val)
+    def transform_vcprop_value(vcprop, jaba_attr, val)
+      # Remove group eg ClCompile|AdditionalIncludeDirectories becomes AdditionalIncludeDirectories
+      vcprop_name = vcprop.split("|")[1]
+      # Remove trailing eg %(AdditionalIncludeDirectories) from all property values
+      val.sub!("%(#{vcprop_name})", "")
+
       case jaba_attr
+      when 'define'
+        "[#{val.split(";").map(&:quote!).join(", ")}]"
       when 'inc'
-        demacroise(val)
-        paths = val.split(';')
-        paths.delete('%(AdditionalIncludeDirectories)')
-        "[#{paths.map{|p| "'#{p}'"}.join(", ")}]"
+        process_path_array(val)
       when 'vcwarnlevel'
         if val !~ /Level(\d)/
           error "Could not read warning level from '#{val}'"
@@ -201,8 +213,17 @@ module JABA
       end
     end
 
+    def process_path_array(val)
+      paths = val.split(";").map do |p|
+        demacroise(p)
+        p.relative_path_from!(@outdir)
+        p.quote!
+      end
+      "[#{paths.join(", ")}]"
+    end
+    
     def demacroise(val)
-      val.gsub!("$(ProjectDir)", '#{projdir}')
+      val.gsub!("$(ProjectDir)", @vcxproj_dir)
     end
 
     def find_commonality
@@ -258,7 +279,7 @@ module JABA
       when "false"
         false
       else
-        "\"#{value}\""
+        value
       end
 
       properties[key] = value
