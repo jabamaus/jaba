@@ -14,7 +14,7 @@ module JABA
       @headers = []
       @projname = nil
       @configs = []
-      @common_properties = {}
+      @common_vcprops = {}
     end
 
     def error(msg)
@@ -132,7 +132,7 @@ module JABA
         w << ""
         write_src(w, @headers, common_header_prefix)
         w.newline
-        @common_properties.each do |vcprop, val|
+        @common_vcprops.each do |vcprop, val|
           jaba_attr = vcprop_to_jaba_attr(vcprop)
           if jaba_attr.nil?
             w << "  vcprop '#{vcprop}', #{val}"
@@ -175,11 +175,13 @@ module JABA
     def vcprop_to_jaba_attr(vcprop)
       case vcprop
       when 'ClCompile|AdditionalIncludeDirectories'
-        'inc'
+        :inc
       when 'ClCompile|PreprocessorDefinitions'
-        'define'
+        :define
       when 'ClCompile|WarningLevel'
-        'vcwarnlevel'
+        :vcwarnlevel
+      when 'Link|AdditionalDependencies'
+        :syslibs
       when *[
         'PG2|IntDir', # defer to jaba defaults
         'PG2|OutDir', # defer to jaba defaults
@@ -199,11 +201,13 @@ module JABA
       val.sub!("%(#{vcprop_name})", "")
 
       case jaba_attr
-      when 'define'
+      when :define
         "[#{val.split(";").map(&:quote!).join(", ")}]"
-      when 'inc'
+      when :inc
         process_path_array(val)
-      when 'vcwarnlevel'
+      when :syslibs
+        "[#{val.split(";").map(&:quote!).join(", ")}]"
+      when :vcwarnlevel
         if val !~ /Level(\d)/
           error "Could not read warning level from '#{val}'"
         end
@@ -242,10 +246,10 @@ module JABA
             other = @configs[i]
             other.properties.delete(key)
           end
-          if @common_properties.key?(key)
+          if @common_vcprops.key?(key)
             error "Duplicate common property '#{key}' detected"
           end
-          @common_properties[key] = val
+          @common_vcprops[key] = val
         end
         common # delete if common
       end
@@ -262,7 +266,7 @@ module JABA
     def insert_property(elem, group_name, cfg, name, value)
       return if value.nil? # Strip if no value
       error "Could not read property name from '#{elem}'" if name.nil?
-      properties = @common_properties
+      properties = @common_vcprops
       if cfg
         cfg = @configs.find{|c| c.name == cfg}
         error "Could not find '#{cfg}' config" if cfg.nil?
