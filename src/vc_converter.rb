@@ -309,7 +309,7 @@ module JABA
         common = true
         1.upto(@configs.size - 1) do |i|
           other = @configs[i]
-          if !other.properties.key?(key)
+          if !other.properties.key?(key) || other.properties[key] != val
             common = false
             break
           end
