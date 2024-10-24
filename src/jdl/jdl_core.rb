@@ -711,12 +711,9 @@ JABA::Context.define_jdl do
 
   attr "target/vctoolset", type: :choice do
     title "Toolset version to use"
-    note "Defaults to host's default toolset"
-    items ["v100", "v110", "v120", "v140", "v141", "v142", "v143"]
-    default do
-      "v143" # TODO
-      #host.toolset
-    end
+    note "Defaults to default platform toolset for version of Visual Studio in use"
+    items ['$(DefaultPlatformToolset)', "v100", "v110", "v120", "v140", "v141", "v142", "v143"]
+    default '$(DefaultPlatformToolset)'
   end
   
   node "workspace" do
