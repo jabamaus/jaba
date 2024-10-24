@@ -6,6 +6,7 @@ module JABA
 
     def initialize(sln, outdir)
       @sln = sln
+      @sln_name = @sln.basename_no_ext
       @sln_dir = File.expand_path(sln).parent_path
       @outdir = outdir
       @projects = []
@@ -25,13 +26,21 @@ module JABA
 
       @projects.sort_by!{|p| p.projname}
 
+      @str << "workspace :#{@sln_name} do\n"
+      @str << "  targets %w(\n"
+      @projects.each do |p|
+        @str << "    #{p.projname}\n"
+      end
+      @str << "  )\n"
+      @str << "end\n\n"
+
       @projects.each do |p|
         p.resolve_deps(@guid_to_project)
         p.write_to_str(@str)
         @str << "\n"
       end
 
-      fn = "#{@sln.basename_no_ext}.jaba"
+      fn = "#{@sln_name}.jaba"
       puts "Generating #{fn}..."
 
       fm = FileManager.new
@@ -223,11 +232,10 @@ module JABA
     def process_src(files)
       return nil if files.size < 2
       files.sort_no_case!
-      prefix = files.common_path_prefix
-      if prefix == '/'
+      prefix = files.common_prefix
+      if prefix.empty?
         prefix = nil
-      end
-      if prefix
+      else
         @src_files.each do |f|
           f.delete_prefix!(prefix)
         end
