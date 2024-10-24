@@ -187,22 +187,25 @@ module JABA
 
       s << "target :#{@projname} do\n"
       
-      write_src(s, @src_files, @common_src_prefix)
-      write_src(s, @headers, @common_header_prefix)
+      @common_vcprops.each do |vcprop, val|
+        jaba_attr = vcprop_to_jaba_attr(vcprop)
+        if jaba_attr.nil?
+          s << "  vcprop '#{vcprop}', #{val.string? ? val.single_quote! : val}\n"
+        elsif jaba_attr != :ignore
+          attr_val = transform_vcprop_value(vcprop, jaba_attr, val)
+          if !attr_val.nil? # Strip nil values
+            s << "  #{jaba_attr} #{attr_val}\n"
+          end
+        end
+      end
 
       if !@deps.empty?
         s << "  deps [#{@deps.map{|p| ":#{p.projname}"}.join(", ")}]\n"
       end
+      
+      write_src(s, @src_files, @common_src_prefix)
+      write_src(s, @headers, @common_header_prefix)
 
-      @common_vcprops.each do |vcprop, val|
-        jaba_attr = vcprop_to_jaba_attr(vcprop)
-        if jaba_attr.nil?
-          s << "  vcprop '#{vcprop}', #{val}\n"
-        elsif jaba_attr != :ignore
-          attr_val = transform_vcprop_value(vcprop, jaba_attr, val)
-          s << "  #{jaba_attr} #{attr_val}\n"
-        end
-      end
       s << "end\n"
     end
 
@@ -247,15 +250,24 @@ module JABA
     
     def vcprop_to_jaba_attr(vcprop)
       case vcprop
-      when 'ClCompile|AdditionalIncludeDirectories'
+      when *['ClCompile|AdditionalIncludeDirectories', 'PG2|IncludePath']
         :inc
+      when 'ClCompile|PrecompiledHeaderFile'
+        :pch
       when 'ClCompile|PreprocessorDefinitions'
         :define
       when 'ClCompile|WarningLevel'
         :vcwarnlevel
       when 'Link|AdditionalDependencies'
         :syslibs
+      when 'PG1|ConfigurationType'
+        :type
+      when 'PG1|PlatformToolset'
+        :vctoolset
       when *[
+        'ClCompile|AdditionalUsingDirectories', # not supported
+        'ClCompile|MultiProcessorCompilation', # vc is multiprocessor by default
+        'ClCompile|PrecompiledHeader', # Automatically set if pch is used
         'PG2|IntDir', # defer to jaba defaults
         'PG2|OutDir', # defer to jaba defaults
         'PG2|_ProjectFileVersion',
@@ -270,16 +282,31 @@ module JABA
     def transform_vcprop_value(vcprop, jaba_attr, val)
       # Remove group eg ClCompile|AdditionalIncludeDirectories becomes AdditionalIncludeDirectories
       vcprop_name = vcprop.split("|")[1]
-      # Remove trailing eg %(AdditionalIncludeDirectories) from all property values
-      val.sub!("%(#{vcprop_name})", "")
+      # Remove trailing $(Property) or %(Property) from all property values
+      val.sub!(/(%|\$)\(#{vcprop_name}\)/, "")
 
       case jaba_attr
       when :define
-        "[#{val.split(";").map(&:quote!).join(", ")}]"
+        "[#{val.split(";").map(&:single_quote!).join(", ")}]"
       when :inc
         process_path_array(val)
+      when :pch
+        val.single_quote!
       when :syslibs
-        "[#{val.split(";").map(&:quote!).join(", ")}]"
+        "[#{val.split(";").map(&:single_quote!).join(", ")}]"
+      when :type
+        case val
+        when 'StaticLibrary'
+          ":lib"
+        when 'DynamicLibrary'
+          ":dll"
+        when 'Application'
+          ":app"
+        else
+          error "unhandled #{vcprop} value '#{val}"
+        end
+      when :vctoolset
+        val != '$(DefaultPlatformToolset)' ? val : nil
       when :vcwarnlevel
         if val !~ /Level(\d)/
           error "Could not read warning level from '#{val}'"
@@ -294,7 +321,7 @@ module JABA
       paths = val.split(";").map do |p|
         demacroise(p)
         p.relative_path_from!(@outdir)
-        p.quote!
+        p.single_quote!
       end
       "[#{paths.join(", ")}]"
     end
