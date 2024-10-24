@@ -72,12 +72,13 @@ if __FILE__ == $PROGRAM_NAME
 
       clm.register_cmd(:build, help: "Execute build")
       clm.register_cmd(:clean, help: "Clean build")
-      
-      clm.register_cmd(:convert, help: "Convert vcxproj to jaba spec") do |c|
-        c.add_value("--vcxproj -p", help: "Path to vcxproj file", var: :vcxproj)
-        c.add_value("--outdir -o", help: "Path to generated .jaba file. Defaults to cwd.", var: :outdir)
+
+      clm.register_cmd(:convert, help: "Convert .sln to jaba spec") do |c|
+        c.add_value("--vcxproj -p", help: "Path to .vcxporj file", var: :vcxproj)
+        c.add_value("--sln -s", help: "Path to sln file", var: :sln)
+        c.add_value("--outdir -o", help: "Parent directory of generated .jaba file. Defaults to cwd.", var: :outdir)
       end
-      
+
       clm.register_cmd(:help, help: "Open jaba web help")
 
       clm.process
@@ -97,7 +98,7 @@ if __FILE__ == $PROGRAM_NAME
       elsif clm.cmd_specified?(:gen)
         run_jaba
       elsif clm.cmd_specified?(:convert)
-        convert_vcxproj
+        vc_convert
       elsif clm.cmd_specified?(:build)
         # TODO
       elsif clm.cmd_specified?(:clean)
@@ -130,20 +131,28 @@ if __FILE__ == $PROGRAM_NAME
     end
 
     def help_string = "Jaba build system generator v#{JABA::VERSION}"
-    
+
     def error(msg)
       $stderr.puts msg
       exit 1
     end
   end
 
-  def convert_vcxproj
-    if !File.exist?(@vcxproj)
-      error "#{@vcxproj} not found"
-    end
+  def vc_convert
+    require_relative 'vc_converter'
     @outdir = Dir.getwd if @outdir.nil?
-    require_relative 'vcxproj_converter'
-    JABA::VcxprojConverter.new(@vcxproj, @outdir).run
+    if @sln
+      if !File.exist?(@sln)
+        error "#{@sln} not found"
+      end
+      JABA::SlnConverter.new(@sln, @outdir).run
+    end
+    if @vcxproj
+      if !File.exist?(@vcxproj)
+        error "#{@vcxproj} not found"
+      end
+      JABA::VcxprojConverter.new(@vcxproj, @outdir).process.write.generate
+    end
   end
 
   begin

@@ -2,6 +2,35 @@ require 'rexml'
 require 'rexml/xpath'
 
 module JABA
+  class SlnConverter
+
+    def initialize(sln, outdir)
+      @sln = sln
+      @sln_dir = File.expand_path(sln).parent_path
+      @outdir = outdir
+    end
+
+    def run
+      @str = String.new
+      @str << "defaults scope: :file do\n"
+      @str << "end\n\n"
+      IO.read(@sln).scan(/Project\("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}"\) = ".*?", "(.*?)"/) do
+        c = VcxprojConverter.new("#{@sln_dir}/#{$1}", @outdir)
+        c.process
+        c.write_to_str(@str)
+        @str << "\n"
+      end
+      fn = "#{@sln.basename_no_ext}.jaba"
+      puts "Generating #{fn}..."
+
+      fm = FileManager.new
+      fm.new_file(File.expand_path("#{@outdir}/#{fn}")) do |w|
+        w << @str
+      end
+      fm.report
+    end
+  end
+
   class VcxprojConverter
 
     Config = Struct.new(:name, :properties)
@@ -17,12 +46,10 @@ module JABA
       @common_vcprops = {}
     end
 
-    def error(msg)
-      JABA.error("In #{@vcxproj.basename}: #{msg}")
-    end
+    def error(msg) = JABA.error("In #{@vcxproj.basename}: #{msg}")
     def warn(msg) = JABA.warn("In #{@vcxproj.basename}: #{msg}")
 
-    def run
+    def process
       xml = IO.read(@vcxproj)
       doc = REXML::Document.new(xml)
       REXML::XPath.each(doc, "//Project/ItemGroup[@Label='ProjectConfigurations']/ProjectConfiguration") do |e|
@@ -100,12 +127,16 @@ module JABA
               else
                 warn "Unhandled file type '#{file}'"
               end
+            when 'CustomBuild'
+              # TODO
             when 'MASM'
               # TODO
             when 'ResourceCompile'
               # TODO
             when 'ProjectConfiguration'
               # already dealt with
+            when 'ProjectReference'
+              # TODO
             else
               error "Unhandled ItemGroup type '#{c.name}'"
             end
@@ -119,34 +150,46 @@ module JABA
 
       find_commonality
 
-      common_src_prefix = process_src(@src_files)
-      common_header_prefix = process_src(@headers)
+      @common_src_prefix = process_src(@src_files)
+      @common_header_prefix = process_src(@headers)
+      self
+    end
 
+    def write
+      @str = String.new
+      write_to_str(@str)
+      self
+    end
+
+    def write_to_str(s)
+      s << "target :#{@projname} do\n"
+      write_src(s, @src_files, @common_src_prefix)
+      write_src(s, @headers, @common_header_prefix)
+      @common_vcprops.each do |vcprop, val|
+        jaba_attr = vcprop_to_jaba_attr(vcprop)
+        if jaba_attr.nil?
+          s << "  vcprop '#{vcprop}', #{val}\n"
+        elsif jaba_attr != :ignore
+          attr_val = transform_vcprop_value(vcprop, jaba_attr, val)
+          s << "  #{jaba_attr} #{attr_val}\n"
+        end
+      end
+      s << "end\n"
+    end
+
+    def generate
       fn = "#{@projname}.jaba"
       puts "Generating #{fn}..."
 
       fm = FileManager.new
       fm.new_file(File.expand_path("#{@outdir}/#{fn}")) do |w|
-        w << "target :#{@projname} do"
-        write_src(w, @src_files, common_src_prefix)
-        w << ""
-        write_src(w, @headers, common_header_prefix)
-        w.newline
-        @common_vcprops.each do |vcprop, val|
-          jaba_attr = vcprop_to_jaba_attr(vcprop)
-          if jaba_attr.nil?
-            w << "  vcprop '#{vcprop}', #{val}"
-          elsif jaba_attr != :ignore
-            attr_val = transform_vcprop_value(vcprop, jaba_attr, val)
-            w << "  #{jaba_attr} #{attr_val}"
-          end
-        end
-        w << "end"
+        w << @str
       end
       fm.report
     end
 
     def process_src(files)
+      return nil if files.size < 2
       files.sort_no_case!
       prefix = files.common_path_prefix
       if prefix == '/'
@@ -160,16 +203,17 @@ module JABA
       prefix
     end
 
-    def write_src(w, files, prefix)
-      w << "  src %w("
+    def write_src(s, files, prefix)
+      return if files.empty?
+      s << "  src %w(\n"
       files.each do |f|
-        w << "    #{f}"
+        s << "    #{f}\n"
       end
-      w.write_raw "  )"
+      s << "  )"
       if prefix
-        w.write_raw ", prefix: '#{prefix}'"
+        s << ", prefix: '#{prefix}'"
       end
-      w.newline
+      s << "\n"
     end
     
     def vcprop_to_jaba_attr(vcprop)
@@ -290,3 +334,15 @@ module JABA
     end
   end
 end
+
+# TODO:
+# - dependencies
+# - per-platform per-config properties
+# - extract common defaults across sln
+# - per-file properties
+# - calculate target root
+# - be clever about exporting?
+# - custom build rules
+# - MASM
+# - put vcprops after other jaba attrs
+# - auto-infer glob matching?
