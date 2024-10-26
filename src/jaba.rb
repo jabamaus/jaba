@@ -1,5 +1,5 @@
 require "fileutils"
-require "tsort"
+require_relative "../../jrf/jrf/utils/tsort"
 require_relative "../../jrf/jrf/utils/core_ext"
 
 debug! if ARGV.include?("--debug") || ARGV.include?("-d")
