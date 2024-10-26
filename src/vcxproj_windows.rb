@@ -108,6 +108,8 @@ JABA::Vcxproj.config_builder(:windows) do |vcxproj, cfg_type|
     end
   end
 
+  vcprop 'ClCompile|MultiProcessorCompilation', true
+  
   vcprop 'ClCompile|PrecompiledHeader' do
     :Use if !pch.empty?
   end
