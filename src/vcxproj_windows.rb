@@ -91,6 +91,8 @@ JABA::Vcxproj.config_builder(:windows) do |vcxproj, cfg_type|
     end
   end
 
+  vcprop "ClCompile|InlineFunctionExpansion", :AnySuitable if !debug?
+
   vcprop "ClCompile|LanguageStandard" do
     case cpplang
     when "C++11"
