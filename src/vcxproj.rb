@@ -195,7 +195,7 @@ module JABA
         if repl.nil?
           JABA.error("Invalid macro '#{full_var}' in #{str}") # TODO: err_obj
         end
-        if !method.nil?
+        if method && !method.empty? # mruby can give an empty string here whereas ruby gives nil
           repl = repl.instance_eval(method)
         end
         # Important to use block form of gsub to disable backreferencing

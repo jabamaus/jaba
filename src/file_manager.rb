@@ -166,7 +166,7 @@ module JABA
         end
       else
         str = IO.binread(fn)
-        str.force_encoding(encoding) if encoding
+        str.force_encoding(encoding) if (encoding && !mruby?) # not supported or required by mruby
         str.delete!("\r") if normalize_eol
       end
       str
