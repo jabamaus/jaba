@@ -709,9 +709,9 @@ module JABA
       end
 
       puts "Invoking ruby-prof..."
-      RubyProf.start
-      yield
-      result = RubyProf.stop
+      result = RubyProf::Profile.new.profile do
+        yield
+      end
       file = "#{invoking_dir}/jaba.profile"
       str = String.new
       puts "Write profiling results to #{file}..."
