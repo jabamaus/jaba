@@ -4,13 +4,58 @@
 struct JabaDef
 {
   std::string title;
+  std::string notes;
+  std::string examples;
+};
+
+struct FlagOptionDef : public JabaDef
+{
+  bool transient;
+};
+
+struct AttributeBaseDef : public JabaDef
+{
+
+};
+
+struct AttributeSingleDef : public AttributeBaseDef
+{
+
+};
+
+struct AttributeArrayDef : public AttributeBaseDef
+{
+
+};
+
+struct AttributeHashDef : public AttributeBaseDef
+{
+
+};
+
+struct AttributeGroupDef : public JabaDef
+{
+  RClass* api_class;
+};
+
+struct NodeDef : public JabaDef
+{
+
+};
+
+struct MethodDef : public JabaDef
+{
+  mrb_value on_called;
 };
 
 struct JDLBuilder
 {
   MrbState* mrb;
   mrb_sym variant_sym;
-  mrb_value method_def_obj;
+  mrb_value attr_def_api_obj;
+  mrb_value node_def_api_obj;
+  mrb_value flag_option_def_api_obj;
+  mrb_value method_def_api_obj;
 };
 
 enum class JDLDefType
@@ -49,7 +94,7 @@ static void register_jdl_def(JDLDefType type)
   {
   case JDLDefType::GlobalMethod:
   {
-    mrb.instance_eval(jdlb.method_def_obj, 0, 0, block);
+    mrb.instance_eval(jdlb.method_def_api_obj, 0, 0, block);
   }
   break;
   case JDLDefType::Method:
@@ -116,6 +161,15 @@ static mrb_value jdl_example(mrb_state*, mrb_value self)
   return self;
 }
 
+static mrb_value jdl_transient(mrb_state*, mrb_value self)
+{
+  MrbState& mrb = *jdlb.mrb;
+  mrb.args_begin();
+  bool transient = mrb.pop_bool();
+  mrb.args_end();
+  return self;
+}
+
 static mrb_value jdl_on_called(mrb_state*, mrb_value self)
 {
   MrbState& mrb = *jdlb.mrb;
@@ -131,6 +185,12 @@ static void load_jdl(const char* name)
   MrbState& mrb = *jdlb.mrb;
   IrepData* irep = IRepRegistry::instance().lookup_irep(std::format("C:/james_projects/GitHub/jaba/src/jdl/{}.rb", name));
   mrb.load_irep(irep);
+}
+
+mrb_value create_api_obj(JDLBuilder& jdlb, const char* classname, std::initializer_list<const char*> methods)
+{
+  MrbState& mrb = *jdlb.mrb;
+  RClass* cls = mrb.define_class(classname);
 }
 
 void build_jdl(MrbState& mrb)
@@ -149,11 +209,17 @@ void build_jdl(MrbState& mrb)
   mrb.define_method("note", jdl_note, jdl_def);
   mrb.define_method("example", jdl_example, jdl_def);
 
-  RClass* method_def = mrb.define_class("JDLMethodDef", jdl_def);
+  RClass* flag_option_def = mrb.define_class("FlagOptionDef", jdl_def);
+  mrb.define_method("transient", jdl_transient, flag_option_def);
+  jdlb.flag_option_def_api_obj = mrb_obj_new(mrb.mrb, flag_option_def, 0, 0);
+
+  RClass* method_def = mrb.define_class("MethodDef", jdl_def);
   mrb.define_method("on_called", jdl_on_called, method_def);
+  jdlb.method_def_api_obj = mrb_obj_new(mrb.mrb, method_def, 0, 0);
 
-  jdlb.method_def_obj = mrb_obj_new(mrb.mrb, method_def, 0, 0);
-
+  RClass* attr_def = mrb.define_class("AttributeDef", jdl_def);
+  jdlb.attr_def_api_obj = mrb_obj_new(mrb.mrb, method_def, 0, 0);
+  
   load_jdl("core");
   load_jdl("target");
 }
