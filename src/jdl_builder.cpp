@@ -187,12 +187,6 @@ static void load_jdl(const char* name)
   mrb.load_irep(irep);
 }
 
-mrb_value create_api_obj(JDLBuilder& jdlb, const char* classname, std::initializer_list<const char*> methods)
-{
-  MrbState& mrb = *jdlb.mrb;
-  RClass* cls = mrb.define_class(classname);
-}
-
 void build_jdl(MrbState& mrb)
 {
   jdlb.mrb = &mrb;
