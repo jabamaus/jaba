@@ -51,7 +51,6 @@ struct MethodDef : public JabaDef
 struct JDLBuilder
 {
   MrbState* mrb;
-  mrb_sym variant_sym;
   mrb_value attr_def_api_obj;
   mrb_value node_def_api_obj;
   mrb_value flag_option_def_api_obj;
@@ -75,7 +74,7 @@ static void register_jdl_def(JDLDefType type)
   if (type == JDLDefType::Attr)
   {
     mrb.expect_kwarg(MRB_SYM(type));
-    mrb.expect_kwarg(jdlb.variant_sym);
+    mrb.expect_kwarg(MRB_SYM(variant));
   }
   mrb.args_begin();
   mrb_value block;
@@ -86,7 +85,7 @@ static void register_jdl_def(JDLDefType type)
   if (type == JDLDefType::Attr)
   {
     std::string_view type = mrb.pop_string(MRB_SYM(type));
-    std::string_view variant = mrb.pop_string(jdlb.variant_sym, false, "single");
+    std::string_view variant = mrb.pop_string(MRB_SYM(variant), false, "single");
   }
   mrb.args_end();
 
@@ -190,7 +189,6 @@ static void load_jdl(const char* name)
 void build_jdl(MrbState& mrb)
 {
   jdlb.mrb = &mrb;
-  jdlb.variant_sym = mrb_intern_lit(mrb.mrb, "variant");
 
   RClass* jdl = mrb.define_module("JDL");
   mrb.define_module_method(jdl, "global_method", jdl_global_method);
