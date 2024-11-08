@@ -62,6 +62,20 @@ mruby_config do |c|
   ]
 
   c.presyms = %w(
+    attr
+    AttributeDef
+    example
+    FlagOptionDef
+    global_method
+    JDL
+    JDLDef
+    method
+    MethodDef
+    node
+    note
+    on_called
+    title
+    transient
     type
     variant
   )

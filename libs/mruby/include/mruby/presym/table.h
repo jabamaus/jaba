@@ -46,6 +46,7 @@ static const uint16_t presym_length_table[] = {
   2,	/* || */
   3,	/* <=> */
   3,	/* === */
+  3,	/* JDL */
   3,	/* NAN */
   3,	/* []= */
   3,	/* abs */
@@ -116,6 +117,8 @@ static const uint16_t presym_length_table[] = {
   4,	/* nan? */
   4,	/* next */
   4,	/* nil? */
+  4,	/* node */
+  4,	/* note */
   4,	/* opts */
   4,	/* plen */
   4,	/* push */
@@ -174,10 +177,12 @@ static const uint16_t presym_length_table[] = {
   5,	/* start */
   5,	/* store */
   5,	/* times */
+  5,	/* title */
   5,	/* total */
   5,	/* union */
   5,	/* uniq! */
   6,	/* Fixnum */
+  6,	/* JDLDef */
   6,	/* Kernel */
   6,	/* Module */
   6,	/* Object */
@@ -204,6 +209,7 @@ static const uint16_t presym_length_table[] = {
   6,	/* lambda */
   6,	/* length */
   6,	/* longer */
+  6,	/* method */
   6,	/* offset */
   6,	/* others */
   6,	/* public */
@@ -235,6 +241,7 @@ static const uint16_t presym_length_table[] = {
   7,	/* default */
   7,	/* disable */
   7,	/* entries */
+  7,	/* example */
   7,	/* filter! */
   7,	/* finite? */
   7,	/* flatten */
@@ -293,6 +300,7 @@ static const uint16_t presym_length_table[] = {
   8,	/* str_each */
   8,	/* truncate */
   9,	/* Exception */
+  9,	/* MethodDef */
   9,	/* NameError */
   9,	/* TrueClass */
   9,	/* TypeError */
@@ -316,11 +324,13 @@ static const uint16_t presym_length_table[] = {
   9,	/* inherited */
   9,	/* iterator? */
   9,	/* object_id */
+  9,	/* on_called */
   9,	/* partition */
   9,	/* prepended */
   9,	/* protected */
   9,	/* satisfied */
   9,	/* separator */
+  9,	/* transient */
   9,	/* transpose */
   9,	/* values_at */
   10,	/* Comparable */
@@ -357,6 +367,7 @@ static const uint16_t presym_length_table[] = {
   11,	/* permutation */
   11,	/* respond_to? */
   11,	/* step_ratio= */
+  12,	/* AttributeDef */
   12,	/* RUBY_VERSION */
   12,	/* RuntimeError */
   12,	/* __ENCODING__ */
@@ -375,6 +386,7 @@ static const uint16_t presym_length_table[] = {
   12,	/* reverse_each */
   12,	/* undef_method */
   13,	/* ArgumentError */
+  13,	/* FlagOptionDef */
   13,	/* MRUBY_VERSION */
   13,	/* NoMemoryError */
   13,	/* NoMethodError */
@@ -389,6 +401,7 @@ static const uint16_t presym_length_table[] = {
   13,	/* default_proc= */
   13,	/* define_method */
   13,	/* extend_object */
+  13,	/* global_method */
   13,	/* in_lower_half */
   13,	/* instance_eval */
   13,	/* set_backtrace */
@@ -475,6 +488,7 @@ static const char * const presym_name_table[] = {
   "||",
   "<=>",
   "===",
+  "JDL",
   "NAN",
   "[]=",
   "abs",
@@ -545,6 +559,8 @@ static const char * const presym_name_table[] = {
   "nan?",
   "next",
   "nil?",
+  "node",
+  "note",
   "opts",
   "plen",
   "push",
@@ -603,10 +619,12 @@ static const char * const presym_name_table[] = {
   "start",
   "store",
   "times",
+  "title",
   "total",
   "union",
   "uniq!",
   "Fixnum",
+  "JDLDef",
   "Kernel",
   "Module",
   "Object",
@@ -633,6 +651,7 @@ static const char * const presym_name_table[] = {
   "lambda",
   "length",
   "longer",
+  "method",
   "offset",
   "others",
   "public",
@@ -664,6 +683,7 @@ static const char * const presym_name_table[] = {
   "default",
   "disable",
   "entries",
+  "example",
   "filter!",
   "finite?",
   "flatten",
@@ -722,6 +742,7 @@ static const char * const presym_name_table[] = {
   "str_each",
   "truncate",
   "Exception",
+  "MethodDef",
   "NameError",
   "TrueClass",
   "TypeError",
@@ -745,11 +766,13 @@ static const char * const presym_name_table[] = {
   "inherited",
   "iterator?",
   "object_id",
+  "on_called",
   "partition",
   "prepended",
   "protected",
   "satisfied",
   "separator",
+  "transient",
   "transpose",
   "values_at",
   "Comparable",
@@ -786,6 +809,7 @@ static const char * const presym_name_table[] = {
   "permutation",
   "respond_to?",
   "step_ratio=",
+  "AttributeDef",
   "RUBY_VERSION",
   "RuntimeError",
   "__ENCODING__",
@@ -804,6 +828,7 @@ static const char * const presym_name_table[] = {
   "reverse_each",
   "undef_method",
   "ArgumentError",
+  "FlagOptionDef",
   "MRUBY_VERSION",
   "NoMemoryError",
   "NoMethodError",
@@ -818,6 +843,7 @@ static const char * const presym_name_table[] = {
   "default_proc=",
   "define_method",
   "extend_object",
+  "global_method",
   "in_lower_half",
   "instance_eval",
   "set_backtrace",
