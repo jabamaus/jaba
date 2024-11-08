@@ -119,7 +119,7 @@ module JABA
       @src_root_dir = nil
       @file_manager = FileManager.new
       @jdl_file_lookup = {}
-      @node_defs = []
+      @node_defs = {}
       @shared_lookup = {}
       @executing_jdl = 0
       @attr_def_block_stack = []
@@ -198,7 +198,7 @@ module JABA
 
       init_src_root
 
-      tld = NodeDefData.new(@jdl.top_level_node_def, "root", nil, nil, nil)
+      tld = NodeDefData.new(@jdl.top_level_node_def, "root", nil, nil, [])
       create_node(tld, "root", parent: nil) do |n|
         n.add_attrs(@jdl.top_level_node_def.attr_defs)
         @root_node = n
@@ -229,7 +229,7 @@ module JABA
         end
       end
 
-      @node_defs.each do |nd|
+      @node_defs.each_value do |nd|
         process_node_def(nd)
       end
 
@@ -401,7 +401,7 @@ module JABA
       end
     end
 
-    NodeDefData = Data.define(:node_def, :id, :src_loc, :kwargs, :block)
+    NodeDefData = Data.define(:node_def, :id, :src_loc, :kwargs, :blocks)
 
     # Nodes are registered in the first pass and then subsequently processed. They
     # cannot be processed immediately because top level attributes need to be fully
@@ -411,7 +411,15 @@ module JABA
       id = args.shift
       validate_id(id, :node)
       JABA.error("Only a single id argument can be passed to '#{node_def.name.inspect_unquoted}'") if !args.empty?
-      @node_defs << NodeDefData.new(node_def, id, $last_call_location, kwargs, block)
+      nd = @node_defs[id]
+      if (nd && kwargs[:override] == true)
+        kwargs.delete(:override)
+        nd.kwargs.merge!(kwargs)
+      else
+        nd = NodeDefData.new(node_def, id, $last_call_location, kwargs, [])
+        @node_defs[id] = nd
+      end
+      nd.blocks << block if block
     end
 
     def process_node_def(nd)
@@ -529,7 +537,9 @@ module JABA
         node.init(nd.node_def, sibling_id, nd.src_loc, parent)
         yield node if block_given?
         if eval_jdl
-          node.eval_jdl(&nd.block) if nd.block
+          nd.blocks.each do |b|
+            node.eval_jdl(&b)
+          end
           node.post_create
         end
         return node

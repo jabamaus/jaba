@@ -148,15 +148,21 @@ class DocBuilder < CmdlineTool
       title = Regexp.last_match(1)
       c.sub!(/^## .+/, '')
 
-      want_home = basename == 'index.md' ? false : true
-      write_page(md.basename_no_ext, title, want_home: want_home, versioned: false) do |w|
+      want_home = true
+      want_date = false
+      if basename == 'index.md'
+        want_home = false
+        want_date = true
+      end
+
+      write_page(md.basename_no_ext, title, want_home: want_home, want_date: want_date, versioned: false) do |w|
         w << c
       end
     end
   end
 
   def generate_versioned_index
-    write_page('index', 'Jaba docs', versioned: true, versioned_home: false) do |w|
+    write_page('index', 'Jaba docs', versioned: true, want_date: true, versioned_home: false) do |w|
       w << ""
       w << "- [Jaba language reference](jaba_reference.html)"
       w << "- Examples"
@@ -368,7 +374,7 @@ class DocBuilder < CmdlineTool
     end
   end
 
-  def write_page(basename, title, versioned:, want_home: true, versioned_home: true)
+  def write_page(basename, title, versioned:, want_home: true, want_date: false, versioned_home: true)
     dir = versioned ? DOCS_HTML_DIR_VERSIONED : DOCS_HTML_DIR
     fn = "#{dir}/#{basename}.html"
     css = "#{DOCS_HTML_DIR}/mamd.css".relative_path_from(dir)
@@ -394,7 +400,8 @@ class DocBuilder < CmdlineTool
     yield w2, nav
     w << nav.join(" > ")
     w.write_raw(w2)
-    w << md_small("Generated on #{Time.now.strftime('%d-%b-%y')} using #{html_link('https://github.com/vmg/redcarpet', 'Redcarpet')}, " \
+    w << md_small("Generated #{want_date ? "on #{Time.now.strftime('%d-%b-%y')} " : ''}" \
+      "using #{html_link('https://github.com/vmg/redcarpet', 'Redcarpet')}, " \
       "#{html_link('https://github.com/rubychan/coderay', 'CodeRay')}, " \
       "#{html_link('https://rsms.me/inter', 'Inter')} and " \
       "#{html_link('https://github.com/tonsky/FiraCode', 'FiraCode')}" \
