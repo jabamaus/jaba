@@ -119,3 +119,23 @@ jtest "app target gets all static library dependencies" do
   app = op[:root].get_child(:app)
   app[:deps].map{|d| d.sibling_id}.must_equal [:lib3, :lib2, :lib1]
 end
+
+jtest "target supports override" do
+  make_file("MyLibOveriddenRoot/main.cpp")
+  op = jaba do
+    target :lib, root: "#{JTest.temp_dir}MyLibRoot" do
+      type :lib
+      define 'A'
+    end
+    target :lib, root: "#{JTest.temp_dir}/MyLibOveriddenRoot", override: true do
+      define 'B'
+    end
+    target :lib, override: true, virtual: true do
+      define 'C'
+    end
+  end
+  lib = op[:root].get_child(:lib)
+  lib[:root].must_equal "#{temp_dir}/MyLibOveriddenRoot"
+  d = lib.get_child(:debug)
+  d[:define].must_equal ['A', 'B', 'C']
+end
