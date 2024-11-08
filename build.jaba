@@ -4,6 +4,8 @@ workspace :jaba do
   targets [:jaba, :test_jrfcore]
 end
 
+target :mruby, root: 'libs/mruby', override: true
+
 target :jaba do
   type :console
   src ['src', 'src/*.rb', 'build.jaba']
