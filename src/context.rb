@@ -401,7 +401,7 @@ module JABA
       end
     end
 
-    NodeDefData = Data.define(:node_def, :id, :src_loc, :kwargs, :blocks)
+    NodeDefData = Struct.new(:node_def, :id, :src_loc, :kwargs, :blocks)
 
     # Nodes are registered in the first pass and then subsequently processed. They
     # cannot be processed immediately because top level attributes need to be fully
@@ -416,9 +416,10 @@ module JABA
         kwargs.delete(:override)
         nd.kwargs.merge!(kwargs)
       else
-        nd = NodeDefData.new(node_def, id, $last_call_location, kwargs, [])
+        nd = NodeDefData.new(node_def, id, nil, kwargs, [])
         @node_defs[id] = nd
       end
+      nd.src_loc = $last_call_location
       nd.blocks << block if block
     end
 
