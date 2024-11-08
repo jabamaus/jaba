@@ -190,26 +190,26 @@ void build_jdl(MrbState& mrb)
 {
   jdlb.mrb = &mrb;
 
-  RClass* jdl = mrb.define_module("JDL");
-  mrb.define_module_method(jdl, "global_method", jdl_global_method);
-  mrb.define_module_method(jdl, "method", jdl_method);
-  mrb.define_module_method(jdl, "attr", jdl_attr);
-  mrb.define_module_method(jdl, "node", jdl_node);
+  RClass* jdl = mrb.define_module(MRB_SYM(JDL));
+  mrb.define_module_method(MRB_SYM(global_method), jdl_global_method, jdl);
+  mrb.define_module_method(MRB_SYM(method), jdl_method, jdl);
+  mrb.define_module_method(MRB_SYM(attr), jdl_attr, jdl);
+  mrb.define_module_method(MRB_SYM(node), jdl_node, jdl);
 
-  RClass* jdl_def = mrb.define_class("JDLDef");
-  mrb.define_method("title", jdl_title, jdl_def);
-  mrb.define_method("note", jdl_note, jdl_def);
-  mrb.define_method("example", jdl_example, jdl_def);
+  RClass* jdl_def = mrb.define_class(MRB_SYM(JDLDef));
+  mrb.define_method(MRB_SYM(title), jdl_title, jdl_def);
+  mrb.define_method(MRB_SYM(note), jdl_note, jdl_def);
+  mrb.define_method(MRB_SYM(example), jdl_example, jdl_def);
 
-  RClass* flag_option_def = mrb.define_class("FlagOptionDef", jdl_def);
-  mrb.define_method("transient", jdl_transient, flag_option_def);
+  RClass* flag_option_def = mrb.define_class(MRB_SYM(FlagOptionDef), jdl_def);
+  mrb.define_method(MRB_SYM(transient), jdl_transient, flag_option_def);
   jdlb.flag_option_def_api_obj = mrb_obj_new(mrb.mrb, flag_option_def, 0, 0);
 
-  RClass* method_def = mrb.define_class("MethodDef", jdl_def);
-  mrb.define_method("on_called", jdl_on_called, method_def);
+  RClass* method_def = mrb.define_class(MRB_SYM(MethodDef), jdl_def);
+  mrb.define_method(MRB_SYM(on_called), jdl_on_called, method_def);
   jdlb.method_def_api_obj = mrb_obj_new(mrb.mrb, method_def, 0, 0);
 
-  RClass* attr_def = mrb.define_class("AttributeDef", jdl_def);
+  RClass* attr_def = mrb.define_class(MRB_SYM(AttributeDef), jdl_def);
   jdlb.attr_def_api_obj = mrb_obj_new(mrb.mrb, method_def, 0, 0);
   
   load_jdl("core");
