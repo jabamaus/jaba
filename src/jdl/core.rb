@@ -168,6 +168,22 @@ JDL.attr "*/root", type: :dir do
   flags :node_option
 end
 
+JDL.attr "*/override", type: :bool do
+  title "Overriding/extending previous definition of same name"
+  note "Without flagging node with override a multiple definition error will occur"
+  example %Q{
+    target :MyLib, root: 'libs/MyLib' do
+      define 'MYLIB'
+    end
+
+    # Without override: true this would fail
+    target :MyLib, override: true do
+      define 'MYLIB_EXTRA_DEFINE'
+    end
+  }
+  flags :node_option
+end
+
 JDL.method "*/option_value" do
   title "Get value of previous set option"
   example %Q{
