@@ -5,6 +5,7 @@ struct Jaba : public ConsoleApp
 {
   void main() override
   {
+    mrb.load_irep("C:/james_projects/GitHub/jrf/jrf/utils/cmdline.rb");
     build_jdl(mrb);
   }
 };

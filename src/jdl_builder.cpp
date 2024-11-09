@@ -182,8 +182,7 @@ static mrb_value jdl_on_called(mrb_state*, mrb_value self)
 static void load_jdl(const char* name)
 {
   MrbState& mrb = *jdlb.mrb;
-  IrepData* irep = IRepRegistry::instance().lookup_irep(std::format("C:/james_projects/GitHub/jaba/src/jdl/{}.rb", name));
-  mrb.load_irep(irep);
+  mrb.load_irep(std::format("C:/james_projects/GitHub/jaba/src/jdl/{}.rb", name));
 }
 
 void build_jdl(MrbState& mrb)
