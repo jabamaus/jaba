@@ -16,7 +16,7 @@ mruby_config do |c|
     #'mruby-compar-ext',
     'mruby-compiler',
     #'mruby-complex',
-    #'mruby-data',
+    'mruby-data',
     #'mruby-dir',
     #'mruby-enum-chain',
     #'mruby-enum-ext',

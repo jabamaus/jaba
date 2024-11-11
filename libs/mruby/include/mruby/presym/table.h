@@ -80,6 +80,7 @@ static const uint16_t presym_length_table[] = {
   3,	/* sym */
   3,	/* tmp */
   3,	/* val */
+  4,	/* Data */
   4,	/* Hash */
   4,	/* NONE */
   4,	/* Proc */
@@ -193,6 +194,7 @@ static const uint16_t presym_length_table[] = {
   6,	/* append */
   6,	/* chomp! */
   6,	/* concat */
+  6,	/* define */
   6,	/* delete */
   6,	/* detect */
   6,	/* divmod */
@@ -251,6 +253,7 @@ static const uint16_t presym_length_table[] = {
   7,	/* inspect */
   7,	/* keep_if */
   7,	/* member? */
+  7,	/* members */
   7,	/* message */
   7,	/* pattern */
   7,	/* pointer */
@@ -299,6 +302,7 @@ static const uint16_t presym_length_table[] = {
   8,	/* self_len */
   8,	/* str_each */
   8,	/* truncate */
+  9,	/* $__FILE__ */
   9,	/* Exception */
   9,	/* MethodDef */
   9,	/* NameError */
@@ -359,6 +363,7 @@ static const uint16_t presym_length_table[] = {
   11,	/* RegexpError */
   11,	/* ScriptError */
   11,	/* SyntaxError */
+  11,	/* __members__ */
   11,	/* attr_reader */
   11,	/* attr_writer */
   11,	/* capitalize! */
@@ -385,6 +390,7 @@ static const uint16_t presym_length_table[] = {
   12,	/* remove_const */
   12,	/* reverse_each */
   12,	/* undef_method */
+  13,	/* $PROGRAM_NAME */
   13,	/* ArgumentError */
   13,	/* FlagOptionDef */
   13,	/* MRUBY_VERSION */
@@ -522,6 +528,7 @@ static const char * const presym_name_table[] = {
   "sym",
   "tmp",
   "val",
+  "Data",
   "Hash",
   "NONE",
   "Proc",
@@ -635,6 +642,7 @@ static const char * const presym_name_table[] = {
   "append",
   "chomp!",
   "concat",
+  "define",
   "delete",
   "detect",
   "divmod",
@@ -693,6 +701,7 @@ static const char * const presym_name_table[] = {
   "inspect",
   "keep_if",
   "member?",
+  "members",
   "message",
   "pattern",
   "pointer",
@@ -741,6 +750,7 @@ static const char * const presym_name_table[] = {
   "self_len",
   "str_each",
   "truncate",
+  "$__FILE__",
   "Exception",
   "MethodDef",
   "NameError",
@@ -801,6 +811,7 @@ static const char * const presym_name_table[] = {
   "RegexpError",
   "ScriptError",
   "SyntaxError",
+  "__members__",
   "attr_reader",
   "attr_writer",
   "capitalize!",
@@ -827,6 +838,7 @@ static const char * const presym_name_table[] = {
   "remove_const",
   "reverse_each",
   "undef_method",
+  "$PROGRAM_NAME",
   "ArgumentError",
   "FlagOptionDef",
   "MRUBY_VERSION",
