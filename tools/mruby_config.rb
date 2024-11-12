@@ -31,7 +31,7 @@ mruby_config do |c|
     #'mruby-io',
     #'mruby-kernel-ext',
     #'mruby-math',
-    #'mruby-metaprog',
+    'mruby-metaprog', # eg send, instance_variable_get, define_singleton_method, 
     #'mruby-method',
     #'mruby-numeric-ext',
     #'mruby-object-ext',
@@ -65,6 +65,7 @@ mruby_config do |c|
     attr
     AttributeDef
     example
+    finalise
     FlagOptionDef
     global_method
     JDL
@@ -74,6 +75,7 @@ mruby_config do |c|
     node
     note
     on_called
+    process
     title
     transient
     type
