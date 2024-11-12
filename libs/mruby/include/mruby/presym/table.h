@@ -123,6 +123,7 @@ static const uint16_t presym_length_table[] = {
   4,	/* opts */
   4,	/* plen */
   4,	/* push */
+  4,	/* send */
   4,	/* size */
   4,	/* sort */
   4,	/* step */
@@ -255,10 +256,13 @@ static const uint16_t presym_length_table[] = {
   7,	/* member? */
   7,	/* members */
   7,	/* message */
+  7,	/* methods */
+  7,	/* nesting */
   7,	/* pattern */
   7,	/* pointer */
   7,	/* prepend */
   7,	/* private */
+  7,	/* process */
   7,	/* product */
   7,	/* reject! */
   7,	/* replace */
@@ -291,6 +295,7 @@ static const uint16_t presym_length_table[] = {
   8,	/* downcase */
   8,	/* each_key */
   8,	/* extended */
+  8,	/* finalise */
   8,	/* find_all */
   8,	/* flatten! */
   8,	/* has_key? */
@@ -318,6 +323,7 @@ static const uint16_t presym_length_table[] = {
   9,	/* byteslice */
   9,	/* const_get */
   9,	/* const_set */
+  9,	/* constants */
   9,	/* delete_at */
   9,	/* delete_if */
   9,	/* downcase! */
@@ -410,30 +416,45 @@ static const uint16_t presym_length_table[] = {
   13,	/* global_method */
   13,	/* in_lower_half */
   13,	/* instance_eval */
+  13,	/* remove_method */
   13,	/* set_backtrace */
   14,	/* LocalJumpError */
   14,	/* __upto_endless */
   14,	/* const_defined? */
   14,	/* interval_ratio */
   14,	/* method_missing */
+  14,	/* method_removed */
   14,	/* paragraph_mode */
+  14,	/* public_methods */
   15,	/* MRUBY_COPYRIGHT */
   15,	/* SystemCallError */
   15,	/* append_features */
+  15,	/* class_variables */
   15,	/* each_with_index */
   15,	/* initialize_copy */
   15,	/* interval_ratio= */
+  15,	/* local_variables */
   15,	/* method_defined? */
   15,	/* module_function */
+  15,	/* private_methods */
+  15,	/* singleton_class */
   16,	/* FloatDomainError */
   16,	/* MRUBY_RELEASE_NO */
   16,	/* SystemStackError */
+  16,	/* global_variables */
+  16,	/* included_modules */
+  16,	/* instance_methods */
   16,	/* prepend_features */
   17,	/* MRUBY_DESCRIPTION */
   17,	/* ZeroDivisionError */
   17,	/* generational_mode */
+  17,	/* protected_methods */
+  17,	/* singleton_methods */
   18,	/* MRUBY_RELEASE_DATE */
+  18,	/* class_variable_get */
+  18,	/* class_variable_set */
   18,	/* generational_mode= */
+  18,	/* instance_variables */
   19,	/* NotImplementedError */
   19,	/* RUBY_ENGINE_VERSION */
   19,	/* respond_to_missing? */
@@ -441,9 +462,16 @@ static const uint16_t presym_length_table[] = {
   20,	/* repeated_combination */
   20,	/* repeated_permutation */
   21,	/* __coerce_step_counter */
+  21,	/* instance_variable_get */
+  21,	/* instance_variable_set */
+  21,	/* remove_class_variable */
   22,	/* __repeated_combination */
   22,	/* singleton_method_added */
+  23,	/* class_variable_defined? */
+  23,	/* define_singleton_method */
   24,	/* remove_instance_variable */
+  26,	/* instance_variable_defined? */
+  26,	/* undefined_instance_methods */
 };
 
 static const char * const presym_name_table[] = {
@@ -571,6 +599,7 @@ static const char * const presym_name_table[] = {
   "opts",
   "plen",
   "push",
+  "send",
   "size",
   "sort",
   "step",
@@ -703,10 +732,13 @@ static const char * const presym_name_table[] = {
   "member?",
   "members",
   "message",
+  "methods",
+  "nesting",
   "pattern",
   "pointer",
   "prepend",
   "private",
+  "process",
   "product",
   "reject!",
   "replace",
@@ -739,6 +771,7 @@ static const char * const presym_name_table[] = {
   "downcase",
   "each_key",
   "extended",
+  "finalise",
   "find_all",
   "flatten!",
   "has_key?",
@@ -766,6 +799,7 @@ static const char * const presym_name_table[] = {
   "byteslice",
   "const_get",
   "const_set",
+  "constants",
   "delete_at",
   "delete_if",
   "downcase!",
@@ -858,30 +892,45 @@ static const char * const presym_name_table[] = {
   "global_method",
   "in_lower_half",
   "instance_eval",
+  "remove_method",
   "set_backtrace",
   "LocalJumpError",
   "__upto_endless",
   "const_defined?",
   "interval_ratio",
   "method_missing",
+  "method_removed",
   "paragraph_mode",
+  "public_methods",
   "MRUBY_COPYRIGHT",
   "SystemCallError",
   "append_features",
+  "class_variables",
   "each_with_index",
   "initialize_copy",
   "interval_ratio=",
+  "local_variables",
   "method_defined?",
   "module_function",
+  "private_methods",
+  "singleton_class",
   "FloatDomainError",
   "MRUBY_RELEASE_NO",
   "SystemStackError",
+  "global_variables",
+  "included_modules",
+  "instance_methods",
   "prepend_features",
   "MRUBY_DESCRIPTION",
   "ZeroDivisionError",
   "generational_mode",
+  "protected_methods",
+  "singleton_methods",
   "MRUBY_RELEASE_DATE",
+  "class_variable_get",
+  "class_variable_set",
   "generational_mode=",
+  "instance_variables",
   "NotImplementedError",
   "RUBY_ENGINE_VERSION",
   "respond_to_missing?",
@@ -889,7 +938,14 @@ static const char * const presym_name_table[] = {
   "repeated_combination",
   "repeated_permutation",
   "__coerce_step_counter",
+  "instance_variable_get",
+  "instance_variable_set",
+  "remove_class_variable",
   "__repeated_combination",
   "singleton_method_added",
+  "class_variable_defined?",
+  "define_singleton_method",
   "remove_instance_variable",
+  "instance_variable_defined?",
+  "undefined_instance_methods",
 };
