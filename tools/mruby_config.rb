@@ -19,7 +19,7 @@ mruby_config do |c|
     'mruby-data',
     #'mruby-dir',
     #'mruby-enum-chain',
-    #'mruby-enum-ext',
+    'mruby-enum-ext', # eg sort_by, find_index, any?
     #'mruby-enum-lazy',
     #'mruby-enumerator',
     #'mruby-errno',
@@ -47,7 +47,7 @@ mruby_config do |c|
     #'mruby-sleep',
     #'mruby-socket',
     #'mruby-sprintf',
-    #'mruby-string-ext',
+    'mruby-string-ext',
     #'mruby-struct',
     #'mruby-symbol-ext',
     #'mruby-time',
@@ -77,6 +77,8 @@ mruby_config do |c|
     note
     on_called
     process
+    puts
+    require_relative
     title
     transient
     type
