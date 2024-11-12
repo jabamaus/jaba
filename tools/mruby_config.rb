@@ -64,6 +64,7 @@ mruby_config do |c|
   c.presyms = %w(
     attr
     AttributeDef
+    CmdlineManager
     example
     FlagOptionDef
     global_method
