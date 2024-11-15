@@ -21,5 +21,5 @@ struct Jaba : public ConsoleApp
 int main(int argc, char* argv[])
 {
   Jaba app;
-  return app.run(argc, argv, MRubyService::ARGV | MRubyService::Regexp | MRubyService::RequireRelative);
+  return app.run(argc, argv, MRubyService::ARGV | MRubyService::RequireRelative);
 } 
