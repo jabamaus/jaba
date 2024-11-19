@@ -1,8 +1,8 @@
 
 mruby_config do |c|
   c.dest_dir = "#{__dir__}/../libs/mruby"
-  c.gems = 
-  [
+  c.fileio = false
+  c.core_gems = [
     'mruby-array-ext',
     'mruby-bigint', # required by psuedo_uuid_from_string
     #'mruby-bin-mirb',
@@ -17,7 +17,6 @@ mruby_config do |c|
     'mruby-compiler',
     #'mruby-complex',
     'mruby-data',
-    #'mruby-dir',
     #'mruby-enum-chain',
     'mruby-enum-ext', # eg sort_by, find_index, any?
     #'mruby-enum-lazy',
@@ -28,7 +27,6 @@ mruby_config do |c|
     'mruby-exit',
     #'mruby-fiber',
     #'mruby-hash-ext',
-    #'mruby-io',
     #'mruby-kernel-ext',
     #'mruby-math',
     'mruby-metaprog', # eg send, instance_variable_get, define_singleton_method, 
@@ -54,8 +52,11 @@ mruby_config do |c|
     #'mruby-toplevel-ext',
   ]
 
-  c.defines =
-  [
+  c.local_gems = [
+    #'mruby-json',
+  ]
+
+  c.defines = [
     'MRB_UTF8_STRING',
     #"MRB_STR_LENGTH_MAX=0",
     #"MRB_ARY_LENGTH_MAX=0",
