@@ -13,6 +13,10 @@ struct Jaba : public ConsoleApp
     mrb.load_irep("C:/james_projects/GitHub/jaba/src/cmdline_args.rb", clm);
     mrb.funcall(clm, MRB_SYM(process));
     mrb.funcall(clm, MRB_SYM(finalise));
+    if (mrb.iv_get_bool(cmd_vars, mrb.sym("@show_help")))
+    {
+      mrb.funcall(clm, mrb.sym("show_help"));
+    }
 
     build_jdl(mrb_jdl);
   }
