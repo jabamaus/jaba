@@ -48,7 +48,7 @@ mruby_config do |c|
     'mruby-string-ext',
     #'mruby-struct',
     #'mruby-symbol-ext',
-    #'mruby-time',
+    'mruby-time', # required by CmdlineManager#show_help
     #'mruby-toplevel-ext',
   ]
 

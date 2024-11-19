@@ -50,6 +50,7 @@ static const uint16_t presym_length_table[] = {
   2,	/* e3 */
   2,	/* ed */
   2,	/* ei */
+  2,	/* gm */
   2,	/* nv */
   2,	/* sv */
   2,	/* tr */
@@ -66,6 +67,7 @@ static const uint16_t presym_length_table[] = {
   3,	/* blk */
   3,	/* chr */
   3,	/* cmp */
+  3,	/* day */
   3,	/* dig */
   3,	/* div */
   3,	/* dup */
@@ -80,7 +82,9 @@ static const uint16_t presym_length_table[] = {
   3,	/* max */
   3,	/* mid */
   3,	/* min */
+  3,	/* mon */
   3,	/* new */
+  3,	/* now */
   3,	/* num */
   3,	/* obj */
   3,	/* oct */
@@ -91,6 +95,7 @@ static const uint16_t presym_length_table[] = {
   3,	/* quo */
   3,	/* res */
   3,	/* row */
+  3,	/* sec */
   3,	/* sep */
   3,	/* str */
   3,	/* sub */
@@ -98,12 +103,14 @@ static const uint16_t presym_length_table[] = {
   3,	/* sym */
   3,	/* tmp */
   3,	/* tr! */
+  3,	/* utc */
   3,	/* val */
   3,	/* zip */
   4,	/* Data */
   4,	/* Hash */
   4,	/* NONE */
   4,	/* Proc */
+  4,	/* Time */
   4,	/* all? */
   4,	/* any? */
   4,	/* arg0 */
@@ -117,6 +124,7 @@ static const uint16_t presym_length_table[] = {
   4,	/* ceil */
   4,	/* chop */
   4,	/* drop */
+  4,	/* dst? */
   4,	/* dump */
   4,	/* each */
   4,	/* elem */
@@ -126,10 +134,12 @@ static const uint16_t presym_length_table[] = {
   4,	/* fill */
   4,	/* find */
   4,	/* flag */
+  4,	/* gmt? */
   4,	/* grep */
   4,	/* gsub */
   4,	/* hash */
   4,	/* high */
+  4,	/* hour */
   4,	/* idx2 */
   4,	/* init */
   4,	/* join */
@@ -140,6 +150,7 @@ static const uint16_t presym_length_table[] = {
   4,	/* list */
   4,	/* loop */
   4,	/* map! */
+  4,	/* mday */
   4,	/* name */
   4,	/* nan? */
   4,	/* next */
@@ -170,7 +181,13 @@ static const uint16_t presym_length_table[] = {
   4,	/* type */
   4,	/* uniq */
   4,	/* upto */
+  4,	/* usec */
+  4,	/* utc? */
   4,	/* vals */
+  4,	/* wday */
+  4,	/* yday */
+  4,	/* year */
+  4,	/* zone */
   5,	/* @args */
   5,	/* @name */
   5,	/* Array */
@@ -192,6 +209,7 @@ static const uint16_t presym_length_table[] = {
   5,	/* clear */
   5,	/* clone */
   5,	/* count */
+  5,	/* ctime */
   5,	/* cycle */
   5,	/* depth */
   5,	/* exit! */
@@ -199,13 +217,16 @@ static const uint16_t presym_length_table[] = {
   5,	/* first */
   5,	/* floor */
   5,	/* found */
+  5,	/* getgm */
   5,	/* group */
   5,	/* gsub! */
   5,	/* index */
   5,	/* is_a? */
   5,	/* lines */
   5,	/* ljust */
+  5,	/* local */
   5,	/* merge */
+  5,	/* month */
   5,	/* names */
   5,	/* next! */
   5,	/* none? */
@@ -254,6 +275,8 @@ static const uint16_t presym_length_table[] = {
   6,	/* extend */
   6,	/* filter */
   6,	/* freeze */
+  6,	/* getutc */
+  6,	/* gmtime */
   6,	/* grep_v */
   6,	/* ifnone */
   6,	/* inject */
@@ -268,6 +291,7 @@ static const uint16_t presym_length_table[] = {
   6,	/* method */
   6,	/* min_by */
   6,	/* minmax */
+  6,	/* mktime */
   6,	/* offset */
   6,	/* others */
   6,	/* padstr */
@@ -296,6 +320,7 @@ static const uint16_t presym_length_table[] = {
   7,	/* Numeric */
   7,	/* __lines */
   7,	/* __merge */
+  7,	/* asctime */
   7,	/* bsearch */
   7,	/* casecmp */
   7,	/* collect */
@@ -309,6 +334,7 @@ static const uint16_t presym_length_table[] = {
   7,	/* filter! */
   7,	/* finite? */
   7,	/* flatten */
+  7,	/* friday? */
   7,	/* frozen? */
   7,	/* getbyte */
   7,	/* include */
@@ -321,6 +347,7 @@ static const uint16_t presym_length_table[] = {
   7,	/* message */
   7,	/* methods */
   7,	/* min_cmp */
+  7,	/* monday? */
   7,	/* nesting */
   7,	/* padding */
   7,	/* pattern */
@@ -340,6 +367,7 @@ static const uint16_t presym_length_table[] = {
   7,	/* shorter */
   7,	/* sort_by */
   7,	/* squeeze */
+  7,	/* sunday? */
   7,	/* to_enum */
   7,	/* to_hash */
   7,	/* to_proc */
@@ -368,6 +396,7 @@ static const uint16_t presym_length_table[] = {
   8,	/* find_all */
   8,	/* flat_map */
   8,	/* flatten! */
+  8,	/* getlocal */
   8,	/* group_by */
   8,	/* has_key? */
   8,	/* include? */
@@ -381,6 +410,7 @@ static const uint16_t presym_length_table[] = {
   8,	/* str_each */
   8,	/* swapcase */
   8,	/* truncate */
+  8,	/* tuesday? */
   9,	/* $__FILE__ */
   9,	/* Exception */
   9,	/* MethodDef */
@@ -411,6 +441,7 @@ static const uint16_t presym_length_table[] = {
   9,	/* infinite? */
   9,	/* inherited */
   9,	/* iterator? */
+  9,	/* localtime */
   9,	/* minmax_by */
   9,	/* object_id */
   9,	/* on_called */
@@ -418,8 +449,10 @@ static const uint16_t presym_length_table[] = {
   9,	/* prepended */
   9,	/* protected */
   9,	/* satisfied */
+  9,	/* saturday? */
   9,	/* separator */
   9,	/* swapcase! */
+  9,	/* thursday? */
   9,	/* transient */
   9,	/* transpose */
   9,	/* validated */
@@ -452,6 +485,7 @@ static const uint16_t presym_length_table[] = {
   10,	/* step_ratio */
   10,	/* superclass */
   10,	/* take_while */
+  10,	/* wednesday? */
   11,	/* BasicObject */
   11,	/* FrozenError */
   11,	/* RUBY_ENGINE */
@@ -629,6 +663,7 @@ static const char * const presym_name_table[] = {
   "e3",
   "ed",
   "ei",
+  "gm",
   "nv",
   "sv",
   "tr",
@@ -645,6 +680,7 @@ static const char * const presym_name_table[] = {
   "blk",
   "chr",
   "cmp",
+  "day",
   "dig",
   "div",
   "dup",
@@ -659,7 +695,9 @@ static const char * const presym_name_table[] = {
   "max",
   "mid",
   "min",
+  "mon",
   "new",
+  "now",
   "num",
   "obj",
   "oct",
@@ -670,6 +708,7 @@ static const char * const presym_name_table[] = {
   "quo",
   "res",
   "row",
+  "sec",
   "sep",
   "str",
   "sub",
@@ -677,12 +716,14 @@ static const char * const presym_name_table[] = {
   "sym",
   "tmp",
   "tr!",
+  "utc",
   "val",
   "zip",
   "Data",
   "Hash",
   "NONE",
   "Proc",
+  "Time",
   "all?",
   "any?",
   "arg0",
@@ -696,6 +737,7 @@ static const char * const presym_name_table[] = {
   "ceil",
   "chop",
   "drop",
+  "dst?",
   "dump",
   "each",
   "elem",
@@ -705,10 +747,12 @@ static const char * const presym_name_table[] = {
   "fill",
   "find",
   "flag",
+  "gmt?",
   "grep",
   "gsub",
   "hash",
   "high",
+  "hour",
   "idx2",
   "init",
   "join",
@@ -719,6 +763,7 @@ static const char * const presym_name_table[] = {
   "list",
   "loop",
   "map!",
+  "mday",
   "name",
   "nan?",
   "next",
@@ -749,7 +794,13 @@ static const char * const presym_name_table[] = {
   "type",
   "uniq",
   "upto",
+  "usec",
+  "utc?",
   "vals",
+  "wday",
+  "yday",
+  "year",
+  "zone",
   "@args",
   "@name",
   "Array",
@@ -771,6 +822,7 @@ static const char * const presym_name_table[] = {
   "clear",
   "clone",
   "count",
+  "ctime",
   "cycle",
   "depth",
   "exit!",
@@ -778,13 +830,16 @@ static const char * const presym_name_table[] = {
   "first",
   "floor",
   "found",
+  "getgm",
   "group",
   "gsub!",
   "index",
   "is_a?",
   "lines",
   "ljust",
+  "local",
   "merge",
+  "month",
   "names",
   "next!",
   "none?",
@@ -833,6 +888,8 @@ static const char * const presym_name_table[] = {
   "extend",
   "filter",
   "freeze",
+  "getutc",
+  "gmtime",
   "grep_v",
   "ifnone",
   "inject",
@@ -847,6 +904,7 @@ static const char * const presym_name_table[] = {
   "method",
   "min_by",
   "minmax",
+  "mktime",
   "offset",
   "others",
   "padstr",
@@ -875,6 +933,7 @@ static const char * const presym_name_table[] = {
   "Numeric",
   "__lines",
   "__merge",
+  "asctime",
   "bsearch",
   "casecmp",
   "collect",
@@ -888,6 +947,7 @@ static const char * const presym_name_table[] = {
   "filter!",
   "finite?",
   "flatten",
+  "friday?",
   "frozen?",
   "getbyte",
   "include",
@@ -900,6 +960,7 @@ static const char * const presym_name_table[] = {
   "message",
   "methods",
   "min_cmp",
+  "monday?",
   "nesting",
   "padding",
   "pattern",
@@ -919,6 +980,7 @@ static const char * const presym_name_table[] = {
   "shorter",
   "sort_by",
   "squeeze",
+  "sunday?",
   "to_enum",
   "to_hash",
   "to_proc",
@@ -947,6 +1009,7 @@ static const char * const presym_name_table[] = {
   "find_all",
   "flat_map",
   "flatten!",
+  "getlocal",
   "group_by",
   "has_key?",
   "include?",
@@ -960,6 +1023,7 @@ static const char * const presym_name_table[] = {
   "str_each",
   "swapcase",
   "truncate",
+  "tuesday?",
   "$__FILE__",
   "Exception",
   "MethodDef",
@@ -990,6 +1054,7 @@ static const char * const presym_name_table[] = {
   "infinite?",
   "inherited",
   "iterator?",
+  "localtime",
   "minmax_by",
   "object_id",
   "on_called",
@@ -997,8 +1062,10 @@ static const char * const presym_name_table[] = {
   "prepended",
   "protected",
   "satisfied",
+  "saturday?",
   "separator",
   "swapcase!",
+  "thursday?",
   "transient",
   "transpose",
   "validated",
@@ -1031,6 +1098,7 @@ static const char * const presym_name_table[] = {
   "step_ratio",
   "superclass",
   "take_while",
+  "wednesday?",
   "BasicObject",
   "FrozenError",
   "RUBY_ENGINE",
