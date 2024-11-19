@@ -2,7 +2,6 @@ register_cmd(:null, help: "") do |c|
   c.add_flag("--help", help: "Show help", var: :show_help)
   c.add_flag("--profile", help: "Profiles with ruby-prof gem", var: :profile, dev_only: true)
   c.add_flag("--verbose", help: "Prints extra information", var: :verbose)
-  c.add_flag("--debug -d", help: "Start debugger", dev_only: true)
 end
 
 register_cmd(:gen, help: "Regenerate buildsystem", default: true) do |c|
