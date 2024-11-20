@@ -10,5 +10,11 @@ target :jaba do
   deps [:jrfcore, :mruby]
   targetsuffix '_debug' if debug
   bindir "#{__dir__}/bin"
-  include :mrbc_rule, rbsrc: ["src/**/*.rb", "../jrf/jrf/utils/tsort.rb"]
+  include :mrbc_rule, rbsrc: [
+    "src/**/*.rb",
+    "../jrf/jrf/utils/api_exposer.rb",
+    "../jrf/jrf/utils/cmdline.rb",
+    "../jrf/jrf/utils/fsm.rb",
+    "../jrf/jrf/utils/tsort.rb"
+  ]
 end 
