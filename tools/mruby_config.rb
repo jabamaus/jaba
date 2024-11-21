@@ -36,6 +36,7 @@ mruby_config do |c|
     #'mruby-objectspace',
     #'mruby-os-memsize',
     #'mruby-pack',
+    'mruby-print',
     #'mruby-proc-binding',
     #'mruby-proc-ext',
     #'mruby-random', # shuffle

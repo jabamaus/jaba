@@ -20,6 +20,7 @@ static const uint16_t presym_length_table[] = {
   1,	/* k */
   1,	/* m */
   1,	/* n */
+  1,	/* p */
   1,	/* s */
   1,	/* v */
   1,	/* x */
@@ -231,6 +232,7 @@ static const uint16_t presym_length_table[] = {
   5,	/* next! */
   5,	/* none? */
   5,	/* other */
+  5,	/* print */
   5,	/* raise */
   5,	/* rjust */
   5,	/* round */
@@ -295,6 +297,7 @@ static const uint16_t presym_length_table[] = {
   6,	/* offset */
   6,	/* others */
   6,	/* padstr */
+  6,	/* printf */
   6,	/* public */
   6,	/* rassoc */
   6,	/* reduce */
@@ -358,6 +361,7 @@ static const uint16_t presym_length_table[] = {
   7,	/* product */
   7,	/* reject! */
   7,	/* replace */
+  7,	/* require */
   7,	/* reverse */
   7,	/* rotate! */
   7,	/* rstrip! */
@@ -366,6 +370,7 @@ static const uint16_t presym_length_table[] = {
   7,	/* setbyte */
   7,	/* shorter */
   7,	/* sort_by */
+  7,	/* sprintf */
   7,	/* squeeze */
   7,	/* sunday? */
   7,	/* to_enum */
@@ -411,7 +416,6 @@ static const uint16_t presym_length_table[] = {
   8,	/* swapcase */
   8,	/* truncate */
   8,	/* tuesday? */
-  9,	/* $__FILE__ */
   9,	/* Exception */
   9,	/* MethodDef */
   9,	/* NameError */
@@ -633,6 +637,7 @@ static const char * const presym_name_table[] = {
   "k",
   "m",
   "n",
+  "p",
   "s",
   "v",
   "x",
@@ -844,6 +849,7 @@ static const char * const presym_name_table[] = {
   "next!",
   "none?",
   "other",
+  "print",
   "raise",
   "rjust",
   "round",
@@ -908,6 +914,7 @@ static const char * const presym_name_table[] = {
   "offset",
   "others",
   "padstr",
+  "printf",
   "public",
   "rassoc",
   "reduce",
@@ -971,6 +978,7 @@ static const char * const presym_name_table[] = {
   "product",
   "reject!",
   "replace",
+  "require",
   "reverse",
   "rotate!",
   "rstrip!",
@@ -979,6 +987,7 @@ static const char * const presym_name_table[] = {
   "setbyte",
   "shorter",
   "sort_by",
+  "sprintf",
   "squeeze",
   "sunday?",
   "to_enum",
@@ -1024,7 +1033,6 @@ static const char * const presym_name_table[] = {
   "swapcase",
   "truncate",
   "tuesday?",
-  "$__FILE__",
   "Exception",
   "MethodDef",
   "NameError",
