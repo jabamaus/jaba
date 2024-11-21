@@ -553,6 +553,7 @@ static const uint16_t presym_length_table[] = {
   14,	/* CmdlineManager */
   14,	/* LocalJumpError */
   14,	/* __upto_endless */
+  14,	/* cmd_specified? */
   14,	/* collect_concat */
   14,	/* const_defined? */
   14,	/* delete_prefix! */
@@ -1170,6 +1171,7 @@ static const char * const presym_name_table[] = {
   "CmdlineManager",
   "LocalJumpError",
   "__upto_endless",
+  "cmd_specified?",
   "collect_concat",
   "const_defined?",
   "delete_prefix!",

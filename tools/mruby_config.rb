@@ -67,6 +67,7 @@ mruby_config do |c|
     attr
     AttributeDef
     CmdlineManager
+    cmd_specified?
     example
     finalise
     FlagOptionDef
