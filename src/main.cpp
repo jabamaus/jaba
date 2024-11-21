@@ -7,6 +7,7 @@ struct Jaba : public ConsoleApp
 
   void main() override
   {
+    mrb.define_constant("JABA_VERSION", mrb.string_value("0.1-alpha"));
     mrb.load_irep("C:/james_projects/GitHub/jrf/jrf/utils/cmdline.rb");
     mrb_value cmd_vars = mrb.obj_new(MRB_SYM(Object));
     mrb_value clm = mrb.obj_new(MRB_SYM(CmdlineManager), cmd_vars, mrb.string_value("Jaba"));
@@ -17,13 +18,15 @@ struct Jaba : public ConsoleApp
     {
       mrb.funcall(clm, mrb.sym("show_help"));
     }
-
-    build_jdl(mrb_jdl);
+    else if (mrb_true_p(mrb.funcall(clm, MRB_SYM_Q(cmd_specified), mrb.sym_value(mrb.sym("gen")))))
+    {
+      build_jdl(mrb_jdl);
+    }
   }
 };
 
 int main(int argc, char* argv[])
 {
   Jaba app;
-  return app.run(argc, argv, MRubyService::ARGV | MRubyService::RequireRelative);
+  return app.run(argc, argv, MRubyService::ARGV | MRubyService::CoreExt | MRubyService::RequireRelative);
 } 
