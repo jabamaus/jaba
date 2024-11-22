@@ -411,13 +411,15 @@ module JABA
       id = args.shift
       validate_id(id, :node)
       JABA.error("Only a single id argument can be passed to '#{node_def.name.inspect_unquoted}'") if !args.empty?
-      nd = @node_defs[id]
+      key = "#{node_def.name}|#{id}" # nodes of different type can have same id so include node_def name
+      nd = @node_defs[key]
       if (nd && kwargs[:override] == true)
         kwargs.delete(:override)
         nd.kwargs.merge!(kwargs)
       else
+        raise "Duplicate '#{key}' detected" if !nd.nil?
         nd = NodeDefData.new(node_def, id, nil, kwargs, [])
-        @node_defs[id] = nd
+        @node_defs[key] = nd
       end
       nd.src_loc = $last_call_location
       nd.blocks << block if block
