@@ -7,18 +7,18 @@ struct Jaba : public ConsoleApp
 
   void main() override
   {
-    mrb.define_constant("JABA_VERSION", mrb.string_value("0.1-alpha"));
+    mrb.define_constant("JABA_VERSION", mrb.to_value("0.1-alpha"));
     mrb.load_irep("C:/james_projects/GitHub/jrf/jrf/utils/cmdline.rb");
     mrb_value cmd_vars = mrb.obj_new(MRB_SYM(Object));
-    mrb_value clm = mrb.obj_new(MRB_SYM(CmdlineManager), cmd_vars, mrb.string_value("Jaba"));
+    mrb_value clm = mrb.obj_new(MRB_SYM(CmdlineManager), cmd_vars, mrb.to_value("Jaba"));
     mrb.load_irep("C:/james_projects/GitHub/jaba/src/cmdline_args.rb", clm);
     mrb.funcall(clm, MRB_SYM(process));
     mrb.funcall(clm, MRB_SYM(finalise));
-    if (mrb.iv_get_bool(cmd_vars, mrb.sym("@show_help")))
+    if (mrb.iv_get_b(cmd_vars, mrb.sym("@show_help")))
     {
       mrb.funcall(clm, mrb.sym("show_help"));
     }
-    else if (mrb_true_p(mrb.funcall(clm, MRB_SYM_Q(cmd_specified), mrb.sym_value(mrb.sym("gen")))))
+    else if (mrb_true_p(mrb.funcall(clm, MRB_SYM_Q(cmd_specified), mrb.to_value(mrb.sym("gen")))))
     {
       build_jdl(mrb_jdl);
     }
