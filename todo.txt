@@ -70,6 +70,7 @@ possible features
 - versioning support
 - It would be good if common libraries were like jrfui were able to be shared across codebases
 - How about only generating projects if they are in a workspace?
+- An option to vpath to preserve structure would be good
 
 docs
 - tag attrs as control flow attrs somehow for benefit of docs

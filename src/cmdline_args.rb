@@ -21,3 +21,4 @@ cmd(:convert, help: "Convert .sln to jaba spec") do |c|
 end
 
 cmd(:help, help: "Open jaba web help")
+cmd(:test, help: "Run built in tests")

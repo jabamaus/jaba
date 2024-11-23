@@ -8,7 +8,7 @@ target :mruby, root: 'libs/mruby', override: true
 
 target :jaba do
   type :console
-  src ['src', 'src/*.rb']
+  src ['src', 'src/*.rb', 'test']
   src [
     'build.jaba',
     'tools/mruby_config.rb',
@@ -16,7 +16,7 @@ target :jaba do
     '../jrf/jrf/utils/fsm.rb',
     '../jrf/jrf.jaba'
   ], vpath: '.'
-  deps [:jrfcore, :mruby]
+  deps [:jrfcore, :mruby, :catch2_custom_main]
   targetsuffix '_debug' if debug
   #bindir "#{__dir__}/bin"
   # TODO: due to a jaba limitation the rbrsc spec is not being respected
