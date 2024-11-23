@@ -187,7 +187,7 @@ static void load_jdl(const char* name)
 
 void build_jdl(MrbState& mrb)
 {
-  mrb.init(0, 0, MRubyService::None);
+  mrb.init();
   jdlb.mrb = &mrb;
 
   RClass* jdl = mrb.define_module(MRB_SYM(JDL));
