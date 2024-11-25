@@ -17,7 +17,7 @@ struct SectionNameTracker : public Catch::EventListenerBase
   }
   void sectionEnded(Catch::SectionStats const&) override
   {
-    section_path.remove_filename();
+    section_path.clear();
   }
 };
 
