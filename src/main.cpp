@@ -27,9 +27,10 @@ int run(int argc, char* argv[])
   }
   else if (cmd_specified(mrb, clm, "test"))
   {
-    // Pass through args from cmdline manager
-    char* argv_[] = { const_cast<char*>("test") };
-    int result = Catch::Session().run(1, argv_);
+    // TODO: Pass through args from cmdline manager
+    const char* argv_[] = { argv[0], "--reporter", "compact" };
+    int argc_ = sizeof(argv_) / sizeof(argv_[0]);
+    int result = Catch::Session().run(argc_, argv_);
     return result;
   }
   return 0;
