@@ -1,5 +1,9 @@
 include '../jrf/jrf.jaba'
 
+defaults scope: :global do
+  charset :mbcs # TODO: I think this should be jaba default
+end
+
 workspace :jaba do
   targets [:jaba, :test_jrfcore]
 end
@@ -16,6 +20,7 @@ target :jaba do
     '../jrf/jrf/utils/fsm.rb',
     '../jrf/jrf.jaba'
   ], vpath: '.'
+  inc 'src'
   deps [:jrfcore, :mruby, :catch2_custom_main]
   targetsuffix '_debug' if debug
   #bindir "#{__dir__}/bin"
