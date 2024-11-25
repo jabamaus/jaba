@@ -57,6 +57,7 @@ struct JDLBuilder
   mrb_value node_def_api_obj;
   mrb_value flag_option_def_api_obj;
   mrb_value method_def_api_obj;
+  const char* errfile;
   int errline = -1;
   std::string errmsg;
 };
@@ -73,7 +74,7 @@ template <typename... Args>
 void fail(JDLBuilder* b, std::format_string<Args...> fmt, Args&&... args)
 {
   MrbState& mrb = b->mrb;
-  b->errline = mrb.get_line_number();
+  mrb.caller_location(&b->errfile, &b->errline);
   b->errmsg = std::format(fmt, args...);
   throw std::runtime_error(b->errmsg);
 }
@@ -84,8 +85,6 @@ static const std::regex path_regex2(R"([a-zA-Z0-9]$)");
 static void register_jdl_def(JDLBuilder* b, JDLDefType type)
 {
   MrbState& mrb = b->mrb;
-
-  int line = mrb.get_line_number();
 
   if (type == JDLDefType::Attr)
   {
@@ -270,6 +269,11 @@ bool load_jdl_file_dynamically(JDLBuilder* b, std::string_view filepath)
     return false;
   }
   return true;
+}
+
+std::string_view jdl_errfile(JDLBuilder* b)
+{
+  return b->errfile;
 }
 
 int jdl_errline(JDLBuilder* b)
