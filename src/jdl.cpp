@@ -1,9 +1,9 @@
 #include <format>
 #include <regex>
 #include "jrfcore/mrbstate.h"
-#include "jdl_builder.h"
+#include "jdl.h"
 
-struct JabaDef
+struct JDLDef
 {
   const char* file;
   int line;
@@ -12,12 +12,12 @@ struct JabaDef
   std::string examples;
 };
 
-struct FlagOptionDef : public JabaDef
+struct FlagOptionDef : public JDLDef
 {
   bool transient;
 };
 
-struct AttributeBaseDef : public JabaDef
+struct AttributeBaseDef : public JDLDef
 {
 
 };
@@ -40,12 +40,12 @@ struct AttributeHashDef : public AttributeBaseDef
 struct MethodDef;
 struct NodeDef;
 
-struct GlobalMethodsDef : public JabaDef
+struct GlobalMethodsDef : public JDLDef
 {
   std::vector<MethodDef*> method_defs;
 };
 
-struct AttributeGroupDef : public JabaDef
+struct AttributeGroupDef : public JDLDef
 {
   RClass* api_class;
   NodeDef* parent_node_def;
@@ -54,17 +54,17 @@ struct AttributeGroupDef : public JabaDef
   std::vector<MethodDef*> method_defs;
 };
 
-struct NodeDef : public JabaDef
+struct NodeDef : public JDLDef
 {
 
 };
 
-struct MethodDef : public JabaDef
+struct MethodDef : public JDLDef
 {
   mrb_value on_called;
 };
 
-struct JDLBuilder
+struct JDL
 {
   MrbState mrb;
   mrb_value attr_def_api_obj;
@@ -84,7 +84,7 @@ struct JDLBuilder
   std::string errmsg;
 };
 
-enum class JDLDefType
+enum class JDLType
 {
   GlobalMethod,
   Method,
@@ -93,22 +93,22 @@ enum class JDLDefType
 };
 
 template <typename... Args>
-void fail(JDLBuilder* b, std::format_string<Args...> fmt, Args&&... args)
+void jdl_fail(JDL* j, std::format_string<Args...> fmt, Args&&... args)
 {
-  MrbState& mrb = b->mrb;
-  mrb.caller_location(&b->errfile, &b->errline);
-  b->errmsg = std::format(fmt, args...);
-  throw std::runtime_error(b->errmsg);
+  MrbState& mrb = j->mrb;
+  mrb.caller_location(&j->errfile, &j->errline);
+  j->errmsg = std::format(fmt, args...);
+  throw std::runtime_error(j->errmsg);
 }
 
 static const std::regex path_regex1(R"(^(\*\/)?([a-zA-Z0-9]+_?\/?)+$)");
 static const std::regex path_regex2(R"([a-zA-Z0-9]$)");
 
-static void register_jdl_def(JDLBuilder* b, JDLDefType type)
+static void jdl_register_def(JDL* j, JDLType type)
 {
-  MrbState& mrb = b->mrb;
+  MrbState& mrb = j->mrb;
 
-  if (type == JDLDefType::Attr)
+  if (type == JDLType::Attr)
   {
     mrb.expect_kwarg(MRB_SYM(type));
     mrb.expect_kwarg(MRB_SYM(variant));
@@ -122,10 +122,10 @@ static void register_jdl_def(JDLBuilder* b, JDLDefType type)
   if (!std::regex_match(name.data(), path_regex1) ||
       !std::regex_match(name.data(), path_regex2))
   {
-    fail(b, "'{}' is in invalid format", name);
+    jdl_fail(j, "'{}' is in invalid format", name);
   }
 
-  if (type == JDLDefType::Attr)
+  if (type == JDLType::Attr)
   {
     std::string_view type = mrb.pop_string(MRB_SYM(type));
     std::string_view variant = mrb.pop_string(MRB_SYM(variant), false, "single");
@@ -134,18 +134,18 @@ static void register_jdl_def(JDLBuilder* b, JDLDefType type)
 
   switch (type)
   {
-  case JDLDefType::GlobalMethod:
+  case JDLType::GlobalMethod:
   {
-    mrb.instance_eval(b->method_def_api_obj, 0, 0, block);
+    mrb.instance_eval(j->method_def_api_obj, 0, 0, block);
   }
   break;
-  case JDLDefType::Method:
+  case JDLType::Method:
     break;
-  case JDLDefType::Attr:
+  case JDLType::Attr:
   {
   }
   break;
-  case JDLDefType::Node:
+  case JDLType::Node:
     break;
   default:
     IO::error("Unhandled JDLDefType");
@@ -154,36 +154,36 @@ static void register_jdl_def(JDLBuilder* b, JDLDefType type)
 
 static mrb_value jdl_global_method(mrb_state* mrb_, mrb_value self)
 {
-  JDLBuilder* b = (JDLBuilder*)((MrbState*)mrb_->ud)->user_data();
-  register_jdl_def(b, JDLDefType::GlobalMethod);
+  JDL* j = (JDL*)((MrbState*)mrb_->ud)->user_data();
+  jdl_register_def(j, JDLType::GlobalMethod);
   return self;
 }
 
 static mrb_value jdl_method(mrb_state* mrb_, mrb_value self)
 {
-  JDLBuilder* b = (JDLBuilder*)((MrbState*)mrb_->ud)->user_data();
-  register_jdl_def(b, JDLDefType::Method);
+  JDL* j = (JDL*)((MrbState*)mrb_->ud)->user_data();
+  jdl_register_def(j, JDLType::Method);
   return self;
 }
 
 static mrb_value jdl_node(mrb_state* mrb_, mrb_value self)
 {
-  JDLBuilder* b = (JDLBuilder*)((MrbState*)mrb_->ud)->user_data();
-  register_jdl_def(b, JDLDefType::Node);
+  JDL* j = (JDL*)((MrbState*)mrb_->ud)->user_data();
+  jdl_register_def(j, JDLType::Node);
   return self;
 }
 
 static mrb_value jdl_attr(mrb_state* mrb_, mrb_value self)
 {
-  JDLBuilder* b = (JDLBuilder*)((MrbState*)mrb_->ud)->user_data();
-  register_jdl_def(b, JDLDefType::Attr);
+  JDL* j = (JDL*)((MrbState*)mrb_->ud)->user_data();
+  jdl_register_def(j, JDLType::Attr);
   return self;
 }
 
 static mrb_value jdl_title(mrb_state* mrb_, mrb_value self)
 {
-  JDLBuilder* b = (JDLBuilder*)((MrbState*)mrb_->ud)->user_data();
-  MrbState& mrb = b->mrb;
+  JDL* j = (JDL*)((MrbState*)mrb_->ud)->user_data();
+  MrbState& mrb = j->mrb;
   mrb.args_begin();
   std::string_view title = mrb.pop_string();
   mrb.args_end();
@@ -192,8 +192,8 @@ static mrb_value jdl_title(mrb_state* mrb_, mrb_value self)
 
 static mrb_value jdl_note(mrb_state* mrb_, mrb_value self)
 {
-  JDLBuilder* b = (JDLBuilder*)((MrbState*)mrb_->ud)->user_data();
-  MrbState& mrb = b->mrb;
+  JDL* j = (JDL*)((MrbState*)mrb_->ud)->user_data();
+  MrbState& mrb = j->mrb;
   mrb.args_begin();
   std::string_view note = mrb.pop_string();
   mrb.args_end();
@@ -202,8 +202,8 @@ static mrb_value jdl_note(mrb_state* mrb_, mrb_value self)
 
 static mrb_value jdl_example(mrb_state* mrb_, mrb_value self)
 {
-  JDLBuilder* b = (JDLBuilder*)((MrbState*)mrb_->ud)->user_data();
-  MrbState& mrb = b->mrb;
+  JDL* j = (JDL*)((MrbState*)mrb_->ud)->user_data();
+  MrbState& mrb = j->mrb;
   mrb.args_begin();
   std::string_view example = mrb.pop_string();
   mrb.args_end();
@@ -212,8 +212,8 @@ static mrb_value jdl_example(mrb_state* mrb_, mrb_value self)
 
 static mrb_value jdl_transient(mrb_state* mrb_, mrb_value self)
 {
-  JDLBuilder* b = (JDLBuilder*)((MrbState*)mrb_->ud)->user_data();
-  MrbState& mrb = b->mrb;
+  JDL* j = (JDL*)((MrbState*)mrb_->ud)->user_data();
+  MrbState& mrb = j->mrb;
   mrb.args_begin();
   bool transient = mrb.pop_bool();
   mrb.args_end();
@@ -222,8 +222,8 @@ static mrb_value jdl_transient(mrb_state* mrb_, mrb_value self)
 
 static mrb_value jdl_on_called(mrb_state* mrb_, mrb_value self)
 {
-  JDLBuilder* b = (JDLBuilder*)((MrbState*)mrb_->ud)->user_data();
-  MrbState& mrb = b->mrb;
+  JDL* j = (JDL*)((MrbState*)mrb_->ud)->user_data();
+  MrbState& mrb = j->mrb;
   mrb.args_begin();
   mrb_value block;
   mrb.pop_block(block);
@@ -231,12 +231,12 @@ static mrb_value jdl_on_called(mrb_state* mrb_, mrb_value self)
   return self;
 }
 
-JDLBuilder* init_jdl_builder()
+JDL* jdl_init()
 {
-  JDLBuilder* b = new JDLBuilder;
-  MrbState& mrb = b->mrb;
+  JDL* j = new JDL;
+  MrbState& mrb = j->mrb;
   mrb.init();
-  mrb.set_user_data(b);
+  mrb.set_user_data(j);
 
   RClass* jdl = mrb.define_module(MRB_SYM(JDL));
   mrb.define_module_method(MRB_SYM(global_method), jdl_global_method, jdl);
@@ -251,40 +251,40 @@ JDLBuilder* init_jdl_builder()
 
   RClass* flag_option_def = mrb.define_class(MRB_SYM(FlagOptionDef), jdl_def);
   mrb.define_method(MRB_SYM(transient), jdl_transient, flag_option_def);
-  b->flag_option_def_api_obj = mrb_obj_new(mrb.mrb, flag_option_def, 0, 0);
+  j->flag_option_def_api_obj = mrb_obj_new(mrb.mrb, flag_option_def, 0, 0);
 
   RClass* method_def = mrb.define_class(MRB_SYM(MethodDef), jdl_def);
   mrb.define_method(MRB_SYM(on_called), jdl_on_called, method_def);
-  b->method_def_api_obj = mrb_obj_new(mrb.mrb, method_def, 0, 0);
+  j->method_def_api_obj = mrb_obj_new(mrb.mrb, method_def, 0, 0);
 
   RClass* attr_def = mrb.define_class(MRB_SYM(AttributeDef), jdl_def);
-  b->attr_def_api_obj = mrb_obj_new(mrb.mrb, method_def, 0, 0);
+  j->attr_def_api_obj = mrb_obj_new(mrb.mrb, method_def, 0, 0);
 
-  MrbState& tmrb = b->tmrb;
+  MrbState& tmrb = j->tmrb;
   tmrb.init();
-  b->base_api = tmrb.define_class(tmrb.sym("BaseAPI"));
+  j->base_api = tmrb.define_class(tmrb.sym("BaseAPI"));
   // TODO: need to set an inspect name?
   // TODO: define method_missing to report undefined methods/attrs
-  b->top_level_api = tmrb.define_class(tmrb.sym("TopLevelAPI"), b->base_api);
-  b->common_attrs_module = tmrb.define_module(tmrb.sym("CommonAttrs"));
-  b->common_methods_module = tmrb.define_module(tmrb.sym("CommonMethods"));
-  b->global_methods_module = tmrb.define_module(tmrb.sym("GlobalMethods"));
+  j->top_level_api = tmrb.define_class(tmrb.sym("TopLevelAPI"), j->base_api);
+  j->common_attrs_module = tmrb.define_module(tmrb.sym("CommonAttrs"));
+  j->common_methods_module = tmrb.define_module(tmrb.sym("CommonMethods"));
+  j->global_methods_module = tmrb.define_module(tmrb.sym("GlobalMethods"));
 
   // Everything has access to global methods
-  tmrb.include_module(b->base_api, b->global_methods_module);
-  return b;
+  tmrb.include_module(j->base_api, j->global_methods_module);
+  return j;
 }
 
-void term_jdl_builder(JDLBuilder* b)
+void jdl_term(JDL* j)
 {
-  delete b;
+  delete j;
 }
 
-bool load_built_in_jdl_file(JDLBuilder* b, const char* name)
+bool jdl_load_built_in_file(JDL* j, const char* name)
 {
   try
   {
-    b->mrb.load_irep(std::format("C:/james_projects/GitHub/jaba/src/jdl/{}.rb", name));
+    j->mrb.load_irep(std::format("C:/james_projects/GitHub/jaba/src/jdl/{}.rb", name));
   }
   catch (std::runtime_error&)
   {
@@ -293,11 +293,11 @@ bool load_built_in_jdl_file(JDLBuilder* b, const char* name)
   return true;
 }
 
-bool load_jdl_file_dynamically(JDLBuilder* b, std::string_view filepath)
+bool jdl_load_file_dynamically(JDL* j, std::string_view filepath)
 {
   try
   {
-    b->mrb.load_rb_file(filepath);
+    j->mrb.load_rb_file(filepath);
   }
   catch (std::runtime_error&)
   {
@@ -306,17 +306,17 @@ bool load_jdl_file_dynamically(JDLBuilder* b, std::string_view filepath)
   return true;
 }
 
-std::string_view jdl_errfile(JDLBuilder* b)
+std::string_view jdl_errfile(JDL* j)
 {
-  return b->errfile;
+  return j->errfile;
 }
 
-int jdl_errline(JDLBuilder* b)
+int jdl_errline(JDL* j)
 {
-  return b->errline;
+  return j->errline;
 }
 
-std::string_view jdl_errmsg(JDLBuilder* b)
+std::string_view jdl_errmsg(JDL* j)
 {
-  return b->errmsg;
+  return j->errmsg;
 }
