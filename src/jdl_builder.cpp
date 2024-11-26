@@ -5,6 +5,8 @@
 
 struct JabaDef
 {
+  const char* file;
+  int line;
   std::string title;
   std::string notes;
   std::string examples;
@@ -35,9 +37,21 @@ struct AttributeHashDef : public AttributeBaseDef
 
 };
 
+struct MethodDef;
+struct NodeDef;
+
+struct GlobalMethodsDef : public JabaDef
+{
+  std::vector<MethodDef*> method_defs;
+};
+
 struct AttributeGroupDef : public JabaDef
 {
   RClass* api_class;
+  NodeDef* parent_node_def;
+  std::vector<AttributeBaseDef*> attr_defs;
+  std::vector<AttributeBaseDef*> option_attr_defs;
+  std::vector<MethodDef*> method_defs;
 };
 
 struct NodeDef : public JabaDef
@@ -57,6 +71,14 @@ struct JDLBuilder
   mrb_value node_def_api_obj;
   mrb_value flag_option_def_api_obj;
   mrb_value method_def_api_obj;
+
+  MrbState tmrb;
+  RClass* base_api;
+  RClass* top_level_api;
+  RClass* common_attrs_module;
+  RClass* common_methods_module;
+  RClass* global_methods_module;
+
   const char* errfile;
   int errline = -1;
   std::string errmsg;
@@ -237,6 +259,19 @@ JDLBuilder* init_jdl_builder()
 
   RClass* attr_def = mrb.define_class(MRB_SYM(AttributeDef), jdl_def);
   b->attr_def_api_obj = mrb_obj_new(mrb.mrb, method_def, 0, 0);
+
+  MrbState& tmrb = b->tmrb;
+  tmrb.init();
+  b->base_api = tmrb.define_class(tmrb.sym("BaseAPI"));
+  // TODO: need to set an inspect name?
+  // TODO: define method_missing to report undefined methods/attrs
+  b->top_level_api = tmrb.define_class(tmrb.sym("TopLevelAPI"), b->base_api);
+  b->common_attrs_module = tmrb.define_module(tmrb.sym("CommonAttrs"));
+  b->common_methods_module = tmrb.define_module(tmrb.sym("CommonMethods"));
+  b->global_methods_module = tmrb.define_module(tmrb.sym("GlobalMethods"));
+
+  // Everything has access to global methods
+  tmrb.include_module(b->base_api, b->global_methods_module);
   return b;
 }
 
