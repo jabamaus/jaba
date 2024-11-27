@@ -1,5 +1,6 @@
 #include "jrfcore/mrbstate.h"
 #include "catch_amalgamated.hpp"
+#include "jaba.h"
 
 bool cmd_specified(MrbState& mrb, mrb_value clm, const char* cmd)
 {
@@ -23,7 +24,10 @@ int run(int argc, char* argv[])
   }
   else if (cmd_specified(mrb, clm, "gen"))
   {
-
+    const char* src_root = mrb.iv_get_s(cmd_vars, mrb.sym("@src_root"), false);
+    Jaba* j = jaba_init(src_root);
+    jaba_run(j);
+    jaba_term(j);
   }
   else if (cmd_specified(mrb, clm, "test"))
   {
