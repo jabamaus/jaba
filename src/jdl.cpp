@@ -101,8 +101,10 @@ void jdl_fail(JDL* j, std::format_string<Args...> fmt, Args&&... args)
   throw std::runtime_error(j->errmsg);
 }
 
-static const std::regex path_regex1(R"(^(\*\/)?([a-zA-Z0-9]+_?\/?)+$)");
-static const std::regex path_regex2(R"([a-zA-Z0-9]$)");
+// Match optional */ at start of string followed by 0 or more path separated snake
+// case word tokens, ending in an alphanumbic.
+static const std::regex path_regex(R"(^(\*/)?([a-z]+_?/?)*[a-z0-9]$)");
+static const std::regex method_name_regex(R"(^[a-z0-9_]+(\?)?$)");
 
 static void jdl_register_def(JDL* j, JDLType type)
 {
@@ -119,8 +121,12 @@ static void jdl_register_def(JDL* j, JDLType type)
 
   std::string_view name = mrb.pop_string();
 
-  if (!std::regex_match(name.data(), path_regex1) ||
-      !std::regex_match(name.data(), path_regex2))
+  if (type == JDLType::GlobalMethod || type == JDLType::Method)
+  {
+    if (!std::regex_search(name.data(), method_name_regex))
+      jdl_fail(j, "'{}' is in invalid format", name);
+  }
+  else if (!std::regex_search(name.data(), path_regex))
   {
     jdl_fail(j, "'{}' is in invalid format", name);
   }
