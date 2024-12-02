@@ -8,3 +8,4 @@ void jaba_term(Jaba* j);
 void jaba_run(Jaba* j);
 void* jaba_alloc(Jaba* j, size_t nbytes);
 void jaba_fail(Jaba* j, std::string_view msg);
+void jaba_warn(Jaba* j, std::string_view msg);
