@@ -17,12 +17,19 @@ struct Jaba
   fs::path src_root_dir;
   JDL* jdl;
   MrbState mrb;
-  JabaNode* root_node;
+  RClass* node_api_class;
+  mrb_value node_api;
+  JabaNode* root_node = 0;
+  JabaNode* current_node = 0;
 };
 
-mrb_value obj_method_missing(mrb_state* mrb_, mrb_value self)
+mrb_value node_method_missing(mrb_state* mrb_, mrb_value self)
 {
   Jaba* j = (Jaba*)((MrbState*)mrb_->ud)->user_data();
+  j->mrb.args_begin();
+  std::string_view name = j->mrb.pop_string();
+  j->mrb.args_end();
+  jaba_node_process_attribute(j->current_node);
   return self;
 }
 
@@ -31,9 +38,13 @@ Jaba* jaba_init(const char* src_root)
   Jaba* j = new Jaba;
   j->allocator.reserve(1024 * 32);
   j->fm = fm_init();
-  j->mrb.init();
-  j->mrb.set_user_data(j);
-  j->mrb.define_method(MRB_SYM(method_missing), obj_method_missing);
+
+  MrbState& mrb = j->mrb;
+  mrb.init();
+  mrb.set_user_data(j);
+  j->node_api_class = mrb.define_class(mrb.sym("NodeAPI"));
+  mrb.define_method(MRB_SYM(method_missing), node_method_missing, j->node_api_class);
+  j->node_api = mrb.obj_new(mrb.sym("NodeAPI"));
 
   if (src_root)
     j->src_root = src_root;
@@ -74,7 +85,7 @@ void jaba_process_file(Jaba* j, const fs::path& path)
 
   @jdl_file_lookup[f] = nil
 #endif
-
+  j->mrb.load_rb_file(path.string(), j->node_api);
 }
 
 void jaba_process_load_path(Jaba* j, const fs::path& path, bool fail_if_empty = false)
@@ -120,6 +131,7 @@ void jaba_run(Jaba* j)
   jdl_load_built_in_file(j->jdl, "core"); // TODO: error handling
   jdl_load_built_in_file(j->jdl, "target");
   j->root_node = jaba_node_init(j);
+  j->current_node = j->root_node;
   jaba_process_load_path(j, j->src_root, true);
 }
 

@@ -71,14 +71,6 @@ struct JDL
   mrb_value node_def_api_obj;
   mrb_value flag_option_def_api_obj;
   mrb_value method_def_api_obj;
-
-  MrbState tmrb;
-  RClass* base_api;
-  RClass* top_level_api;
-  RClass* common_attrs_module;
-  RClass* common_methods_module;
-  RClass* global_methods_module;
-
   const char* errfile;
   int errline = -1;
   std::string errmsg;
@@ -266,18 +258,6 @@ JDL* jdl_init()
   RClass* attr_def = mrb.define_class(MRB_SYM(AttributeDef), jdl_def);
   j->attr_def_api_obj = mrb_obj_new(mrb.mrb, method_def, 0, 0);
 
-  MrbState& tmrb = j->tmrb;
-  tmrb.init();
-  j->base_api = tmrb.define_class(tmrb.sym("BaseAPI"));
-  // TODO: need to set an inspect name?
-  // TODO: define method_missing to report undefined methods/attrs
-  j->top_level_api = tmrb.define_class(tmrb.sym("TopLevelAPI"), j->base_api);
-  j->common_attrs_module = tmrb.define_module(tmrb.sym("CommonAttrs"));
-  j->common_methods_module = tmrb.define_module(tmrb.sym("CommonMethods"));
-  j->global_methods_module = tmrb.define_module(tmrb.sym("GlobalMethods"));
-
-  // Everything has access to global methods
-  tmrb.include_module(j->base_api, j->global_methods_module);
   return j;
 }
 
