@@ -94,7 +94,7 @@ void jdl_fail(JDL* j, std::format_string<Args...> fmt, Args&&... args)
 }
 
 // Match optional */ at start of string followed by 0 or more path separated snake
-// case word tokens, ending in an alphanumbic.
+// case word tokens, ending in an alphanumeric.
 static const std::regex path_regex(R"(^(\*/)?([a-z]+_?/?)*[a-z0-9]$)");
 static const std::regex method_name_regex(R"(^[a-z0-9_]+(\?)?$)");
 
