@@ -94,6 +94,7 @@ module JABA
           output_vpath = output_attr.option_value(:vpath)
           output_properties = output_attr.option_value(:properties) || {}
           imp_input = rule[:implicit_input]
+          imp_input = nil if imp_input.empty?
           cmd_attr = rule.get_attr(:cmd)
           cmd = cmd_attr.value
           cmd_abs = cmd_attr.has_flag_option?(:absolute)
@@ -111,7 +112,7 @@ module JABA
               src_attr.set(d_output, :force, properties: output_properties)
             end
             input_rel = input.relative_path_from(@projdir, backslashes: true)
-            imp_input_rel = imp_input.relative_path_from(@projdir, backslashes: true)
+            imp_input_rel = imp_input ? imp_input.relative_path_from(@projdir, backslashes: true) : nil
             output_rel = d_output.relative_path_from(@projdir, backslashes: true)
 
             d_cmd = if cmd_abs
