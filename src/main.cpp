@@ -1,6 +1,6 @@
 #include "jrfcore/console_app.h"
 
-extern "C" const uint8_t jaba_jaba_irep[];
+extern const uint8_t jaba_jaba_irep[];
 
 int main(int argc, char* argv[])
 {
