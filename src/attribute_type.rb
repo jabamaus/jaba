@@ -245,7 +245,11 @@ module JABA
       if !attr.attr_def.has_flag?(:no_check_exist) &&
          !JABA.context.file_manager.exist?(abs_path) &&
          !attr.has_flag_option?(:force)
-        attr.attr_error("'#{abs_path.inspect_unquoted}' does not exist on disk - use :force to add anyway.")
+         if attr.created_by_array_exclude?
+           attr.attr_warn("'#{abs_path.inspect_unquoted}' does not exist on disk")
+         else
+          attr.attr_error("'#{abs_path.inspect_unquoted}' does not exist on disk - use :force to add anyway.")
+         end
       end
       abs_path
     end

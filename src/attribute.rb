@@ -70,8 +70,11 @@ module JABA
       @transient_flag_options = []
       @value_options = KeyToSHash.new
       @in_on_set = false
+      @created_by_array_exclude = false
     end
 
+    def created_by_array_exclude? = @created_by_array_exclude
+          
     def value
       if attr_def.compound? && JABA.context.executing_jdl?
         @value.api_obj

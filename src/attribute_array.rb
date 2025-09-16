@@ -121,8 +121,11 @@ module JABA
       end
     end
 
-    def make_elem(val, *args, add: true, **kwargs)
+    def make_elem(val, *args, add: true, is_exclude: false, **kwargs)
       e = AttributeElement.new(@attr_def, @node)
+      if (is_exclude)
+        e.instance_variable_set(:@created_by_array_exclude, true)
+      end
       e.set_last_call_location(last_call_location)
       e.set(val, *args, **kwargs)
       if add
@@ -167,7 +170,7 @@ module JABA
           val
         else
           val = apply_pre_post_fix(prefix, postfix, val)
-          Array(at.map_value_array(val, self)).map { |e| make_elem(e, *args, add: false, **kwargs) }
+          Array(at.map_value_array(val, self)).map { |e| make_elem(e, *args, add: false, is_exclude: true, **kwargs) }
         end
       end
     end
