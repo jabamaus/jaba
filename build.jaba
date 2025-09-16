@@ -7,7 +7,7 @@ end
 target :jaba do
   type :console
   src ["src/main.cpp"]
-  deps [:jrfcore, :mruby]
+  deps [:jrffoundation, :jrfcore, :mruby]
   targetsuffix '_debug' if debug
   bindir "#{__dir__}/bin"
   include :mrbc_rule, rbsrc: [

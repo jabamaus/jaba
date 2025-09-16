@@ -1,4 +1,5 @@
-#include "jrfcore/console_app.h"
+#include "jrf/core/public/console_app.h"
+#include "mimalloc-new-delete.h"
 
 extern const uint8_t jaba_jaba_irep[];
 
