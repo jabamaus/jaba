@@ -7,7 +7,7 @@ module JABA
       @path_to_attr_def = KeyToSHash.new
       @attrs_to_open = KeyToSHash.new
       @base_api_class = Class.new(BasicObject) do
-        undef_method :!, :!=, :==, :equal?, :__id__
+        undef_method :!, :!=, :==, :equal?
 
         def initialize(node) = @node = node
 
