@@ -1,5 +1,5 @@
 JABA::Vcxproj.project_builder(:windows) do |vcxproj|
-  vcglobal :ProjectGuid, vcxproj.guid
+  vcglobal :ProjectGuid, "{#{vcxproj.guid}}"
   vcglobal :Keyword, "Win32Proj"
   vcglobal :RootNamespace, projname
   vcglobal :WindowsTargetPlatformVersion, winsdkver

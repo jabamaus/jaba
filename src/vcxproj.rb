@@ -343,7 +343,7 @@ module JABA
         item_group(w) do
           @dependencies.each do |proj|
             w << "    <ProjectReference Include=\"#{proj.vcxproj_file.relative_path_from(projdir, backslashes: true)}\">"
-            w << "      <Project>#{proj.guid}</Project>"
+            w << "      <Project>{#{proj.guid}}</Project>"
             # TODO: reference properties
             w << "    </ProjectReference>"
           end
